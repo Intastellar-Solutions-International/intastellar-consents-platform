@@ -1331,6 +1331,9 @@
     grid-template-columns: repeat(5, 1fr);
     gap: 12px;
 }
+.sa-kpi-strip--4 {
+    grid-template-columns: repeat(4, 1fr);
+}
 .sa-kpi-strip--6 {
     grid-template-columns: repeat(6, 1fr);
 }
@@ -1491,6 +1494,7 @@
 
 @media (max-width: 1200px) {
     .sa-kpi-strip    { grid-template-columns: repeat(3, 1fr); }
+    .sa-kpi-strip--4 { grid-template-columns: repeat(2, 1fr); }
     .sa-kpi-strip--6 { grid-template-columns: repeat(3, 1fr); }
     .sa-overview-geo { grid-template-columns: 1fr 1fr; }
 }
@@ -1501,7 +1505,7 @@
 }
 
 @media (max-width: 680px) {
-    .sa-kpi-strip, .sa-kpi-strip--6 { grid-template-columns: repeat(2, 1fr); }
+    .sa-kpi-strip, .sa-kpi-strip--4, .sa-kpi-strip--6 { grid-template-columns: repeat(2, 1fr); }
     .sa-overview-geo { grid-template-columns: 1fr; }
 }
 
