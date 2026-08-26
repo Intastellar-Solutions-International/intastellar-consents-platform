@@ -1105,7 +1105,7 @@ if(hasStat(c)){
 //   products: [{ id: 'SKU-1', name: 'Blue T-Shirt', price: 29.99, quantity: 2, category: 'Apparel' }] })
 // window.intaAnalytics.track('verification_code_send_failed', { data: { reason: 'invalid_phone_format' } })
 // Fires a minimal (unlinked) record always; upgrades to a session-linked
-// record only when the visitor has accepted statisticCookies. `data` is a
+// record only when the visitor has accepted statisticCookies. \`data\` is a
 // free-form flat object shown back in the dashboard next to the event —
 // shallow-sanitized here (and again server-side) rather than sent as-is.
 function track(name,opts){
