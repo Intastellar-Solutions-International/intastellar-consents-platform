@@ -88,15 +88,20 @@ export default async function handler(req, res) {
         )
     `).catch(() => {});
     await db.query(`
-        ALTER TABLE analytics_sites ADD COLUMN IF NOT EXISTS heatmaps_enabled          BOOLEAN  NOT NULL DEFAULT true;
-        ALTER TABLE analytics_sites ADD COLUMN IF NOT EXISTS recording_enabled         BOOLEAN  NOT NULL DEFAULT false;
-        ALTER TABLE analytics_sites ADD COLUMN IF NOT EXISTS recording_sample_rate     SMALLINT NOT NULL DEFAULT 20;
-        ALTER TABLE analytics_sites ADD COLUMN IF NOT EXISTS recording_retention_days  SMALLINT NOT NULL DEFAULT 30;
-        ALTER TABLE analytics_sites ADD COLUMN IF NOT EXISTS heatmap_retention_days    SMALLINT NOT NULL DEFAULT 90;
-        ALTER TABLE analytics_sites ADD COLUMN IF NOT EXISTS recording_block_selectors TEXT[]   NOT NULL DEFAULT '{}';
-        ALTER TABLE analytics_sites ADD COLUMN IF NOT EXISTS recording_mask_selectors  TEXT[]   NOT NULL DEFAULT '{}';
+        ALTER TABLE analytics_sites ADD COLUMN IF NOT EXISTS heatmaps_enabled          BOOLEAN      NOT NULL DEFAULT true;
+        ALTER TABLE analytics_sites ADD COLUMN IF NOT EXISTS recording_enabled         BOOLEAN      NOT NULL DEFAULT false;
+        ALTER TABLE analytics_sites ADD COLUMN IF NOT EXISTS recording_sample_rate     SMALLINT     NOT NULL DEFAULT 20;
+        ALTER TABLE analytics_sites ADD COLUMN IF NOT EXISTS recording_retention_days  SMALLINT     NOT NULL DEFAULT 30;
+        ALTER TABLE analytics_sites ADD COLUMN IF NOT EXISTS heatmap_retention_days    SMALLINT     NOT NULL DEFAULT 90;
+        ALTER TABLE analytics_sites ADD COLUMN IF NOT EXISTS recording_block_selectors TEXT[]       NOT NULL DEFAULT '{}';
+        ALTER TABLE analytics_sites ADD COLUMN IF NOT EXISTS recording_mask_selectors  TEXT[]       NOT NULL DEFAULT '{}';
         ALTER TABLE analytics_sites ADD COLUMN IF NOT EXISTS industry                  VARCHAR(32);
         ALTER TABLE analytics_sites ADD COLUMN IF NOT EXISTS business_type             VARCHAR(32);
+        ALTER TABLE analytics_sites ADD COLUMN IF NOT EXISTS datalayer_enabled         BOOLEAN      NOT NULL DEFAULT false;
+        ALTER TABLE analytics_sites ADD COLUMN IF NOT EXISTS lead_quality_enabled      BOOLEAN      NOT NULL DEFAULT false;
+        ALTER TABLE analytics_sites ADD COLUMN IF NOT EXISTS lead_require_engaged      BOOLEAN      NOT NULL DEFAULT false;
+        ALTER TABLE analytics_sites ADD COLUMN IF NOT EXISTS lead_qualifying_pages     TEXT[]       NOT NULL DEFAULT '{}';
+        ALTER TABLE analytics_sites ADD COLUMN IF NOT EXISTS lead_qualifying_events    TEXT[]       NOT NULL DEFAULT '{}';
     `).catch(() => {});
 
     // ── GET (list mode): which of this org's domains have analytics set up ────
