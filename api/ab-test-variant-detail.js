@@ -311,7 +311,11 @@ export default async function handler(req, res) {
             WHERE test_id = $1 AND variant_id = $2
             GROUP BY session_id
          )
-         SELECT c.target_tag, c.target_id, c.target_class, c.target_text, COUNT(*) AS n
+         SELECT
+             c.target_tag, c.target_id, c.target_class, c.target_text,
+             COUNT(*) AS n,
+             ROUND(AVG(c.y_pct))::int AS avg_y_pct,
+             MODE() WITHIN GROUP (ORDER BY c.pathname) AS top_page
          FROM assigned a
          JOIN analytics_clicks c
            ON c.session_id = a.session_id AND c.site_id = $3
@@ -322,6 +326,26 @@ export default async function handler(req, res) {
         [v.test_id, v.id, siteId, pageHostFilter]
     ).catch(() => ({ rows: [] }));
 
+    // ── Top visited pages for this variant's sessions ──────────────────────
+    const { rows: pageRows } = await db.query(
+        `WITH assigned AS (
+            SELECT session_id, MIN(assigned_at) AS first_assigned_at
+            FROM ab_test_assignments
+            WHERE test_id = $1 AND variant_id = $2
+            GROUP BY session_id
+         )
+         SELECT ae.pathname, COUNT(*) AS pageviews, COUNT(DISTINCT ae.session_id) AS sessions
+         FROM assigned a
+         JOIN analytics_events ae
+           ON ae.session_id = a.session_id AND ae.site_id = $3
+           AND ae.received_at >= a.first_assigned_at - INTERVAL '2 minutes'
+           AND ($4::text IS NULL OR ae.page_host = $4)
+         GROUP BY ae.pathname
+         ORDER BY pageviews DESC
+         LIMIT 10`,
+        [v.test_id, v.id, siteId, pageHostFilter]
+    ).catch(() => ({ rows: [] }));
+
     const clickTotals = clickTotalRows[0] || {};
     const clicks = {
         total: Number(clickTotals.clicks || 0),
@@ -329,11 +353,19 @@ export default async function handler(req, res) {
         topElements: elementRows.map(r => ({
             tag: r.target_tag, id: r.target_id, className: r.target_class,
             text: r.target_text, n: Number(r.n || 0),
+            avgYPct: r.avg_y_pct != null ? Number(r.avg_y_pct) : null,
+            topPage: r.top_page || null,
         })),
     };
 
+    const topPages = pageRows.map(r => ({
+        pathname: r.pathname,
+        pageviews: Number(r.pageviews || 0),
+        sessions: Number(r.sessions || 0),
+    }));
+
     return res.status(200).json({
         ...base, hasSite: true,
-        exposures, uniqueSessions, engagement, conversions, clicks,
+        exposures, uniqueSessions, engagement, conversions, clicks, topPages,
     });
 }

@@ -15,6 +15,21 @@ function fmtDuration(seconds) {
     return `${Math.floor(s / 60)}m ${s % 60}s`;
 }
 
+function pagePosition(yPct) {
+    if (yPct == null) return null;
+    if (yPct <= 25) return { label: "Above fold", color: "#7dd590" };
+    if (yPct <= 55) return { label: "Mid-page", color: "#88b0e8" };
+    if (yPct <= 80) return { label: "Lower", color: "#d4b87a" };
+    return { label: "Footer", color: "rgba(255,255,255,0.4)" };
+}
+
+function buildSelector(el) {
+    let s = el.tag || "?";
+    if (el.id) s += `#${el.id}`;
+    else if (el.className) s += `.${el.className.split(" ")[0]}`;
+    return s;
+}
+
 export default function PageExperimentVariantDetail() {
     const { handle, testId: testIdParam, variantId: variantIdParam } = useParams();
     const testId = parseInt(testIdParam, 10);
@@ -160,23 +175,112 @@ export default function PageExperimentVariantDetail() {
 
                                         <h4 className="pxp-detail__section-title">
                                             Top clicked elements
-                                            <InfoTip text="Every click recorded on this page after a session's first exposure to this variant, grouped by the element clicked and ranked by click count." />
+                                            <InfoTip text="Every click recorded after a session's first exposure to this variant, grouped by element. Position shows where on the page the element sits (as % from top). Page shows which URL the click most commonly happened on." />
                                         </h4>
                                         {!detail.clicks || detail.clicks.topElements.length === 0 ? (
                                             <p className="sa-panel__sub">No clicks recorded for this variant yet.</p>
-                                        ) : (
-                                            <ul className="pxp-detail-clicks">
-                                                {detail.clicks.topElements.map((el, i) => (
-                                                    <li key={i} className="pxp-detail-clicks__row">
-                                                        <code className="pxp-detail-clicks__selector">
-                                                            {el.tag}{el.id ? `#${el.id}` : ""}{el.className ? `.${el.className.split(" ")[0]}` : ""}
-                                                        </code>
-                                                        {el.text && <span className="pxp-detail-clicks__text">&ldquo;{el.text}&rdquo;</span>}
-                                                        <span className="pxp-detail-clicks__n">{el.n.toLocaleString("de-DE")} clicks</span>
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        )}
+                                        ) : (() => {
+                                            const maxN = Math.max(...detail.clicks.topElements.map(e => e.n), 1);
+                                            return (
+                                                <div className="pxp-report__table-scroll">
+                                                    <table className="sa-table pxp-report__table pxp-clicks-table">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Element</th>
+                                                                <th>Page</th>
+                                                                <th>Position</th>
+                                                                <th className="sa-table__num">Clicks</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            {detail.clicks.topElements.map((el, i) => {
+                                                                const pos = pagePosition(el.avgYPct);
+                                                                const barW = Math.round((el.n / maxN) * 100);
+                                                                return (
+                                                                    <tr key={i}>
+                                                                        <td>
+                                                                            <code className="pxp-detail-clicks__selector">
+                                                                                {buildSelector(el)}
+                                                                            </code>
+                                                                            {el.text && (
+                                                                                <span className="pxp-detail-clicks__text">&ldquo;{el.text}&rdquo;</span>
+                                                                            )}
+                                                                        </td>
+                                                                        <td className="pxp-clicks-table__page">
+                                                                            {el.topPage ? (
+                                                                                <span className="pxp-clicks-table__path" title={el.topPage}>
+                                                                                    {el.topPage.length > 32 ? `…${el.topPage.slice(-30)}` : el.topPage}
+                                                                                </span>
+                                                                            ) : "—"}
+                                                                        </td>
+                                                                        <td className="pxp-clicks-table__pos">
+                                                                            {pos ? (
+                                                                                <span className="pxp-clicks-table__pos-chip" style={{ color: pos.color }}>
+                                                                                    {pos.label}
+                                                                                    <span className="pxp-clicks-table__pos-pct">
+                                                                                        {el.avgYPct}%
+                                                                                    </span>
+                                                                                </span>
+                                                                            ) : "—"}
+                                                                        </td>
+                                                                        <td className="sa-table__num pxp-clicks-table__n">
+                                                                            <div className="pxp-clicks-table__bar-wrap">
+                                                                                <div className="pxp-clicks-table__bar" style={{ width: `${barW}%` }} />
+                                                                            </div>
+                                                                            {el.n.toLocaleString("de-DE")}
+                                                                        </td>
+                                                                    </tr>
+                                                                );
+                                                            })}
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            );
+                                        })()}
+
+                                        <h4 className="pxp-detail__section-title" style={{ marginTop: 28 }}>
+                                            Top visited pages
+                                            <InfoTip text="Pages visited by sessions exposed to this variant, ranked by pageview count. Requires the analytics tracking script to be installed on the variant's domain." />
+                                        </h4>
+                                        {!detail.topPages || detail.topPages.length === 0 ? (
+                                            <p className="sa-panel__sub">No page visit data for this variant yet.</p>
+                                        ) : (() => {
+                                            const maxPv = Math.max(...detail.topPages.map(p => p.pageviews), 1);
+                                            return (
+                                                <div className="pxp-report__table-scroll">
+                                                    <table className="sa-table pxp-report__table">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Page</th>
+                                                                <th className="sa-table__num">Pageviews</th>
+                                                                <th className="sa-table__num">Sessions</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            {detail.topPages.map((p, i) => {
+                                                                const barW = Math.round((p.pageviews / maxPv) * 100);
+                                                                return (
+                                                                    <tr key={i}>
+                                                                        <td>
+                                                                            <span className="pxp-clicks-table__path" title={p.pathname}>
+                                                                                {p.pathname.length > 50 ? `${p.pathname.slice(0, 48)}…` : p.pathname}
+                                                                            </span>
+                                                                        </td>
+                                                                        <td className="sa-table__num pxp-clicks-table__n">
+                                                                            <div className="pxp-clicks-table__bar-wrap">
+                                                                                <div className="pxp-clicks-table__bar" style={{ width: `${barW}%` }} />
+                                                                            </div>
+                                                                            {p.pageviews.toLocaleString("de-DE")}
+                                                                        </td>
+                                                                        <td className="sa-table__num">{p.sessions.toLocaleString("de-DE")}</td>
+                                                                    </tr>
+                                                                );
+                                                            })}
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            );
+                                        })()}
                                     </>
                                 )}
                             </div>
