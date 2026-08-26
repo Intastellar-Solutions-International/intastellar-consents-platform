@@ -163,6 +163,10 @@
       "memory": 256,
       "maxDuration": 20
     },
+    "api/analytics-forms.js": {
+      "memory": 256,
+      "maxDuration": 20
+    },
     "api/analytics-alert-configs.js": {
       "memory": 256,
       "maxDuration": 10

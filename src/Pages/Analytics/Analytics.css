@@ -5125,3 +5125,42 @@ details[open] .ca-context-summary::before { content: "▾"; }
     background: rgba(192,159,83,0.18);
     color: rgba(192,159,83,1);
 }
+
+/* ── Forms dashboard ──────────────────────────────────────────────────────────── */
+
+.sa-form-id {
+    display: block;
+    font-size: 13px;
+    color: rgba(210,210,220,0.9);
+    font-weight: 500;
+}
+
+.sa-form-action {
+    display: block;
+    font-size: 11px;
+    color: rgba(150,150,165,0.6);
+    margin-top: 2px;
+}
+
+.sa-table__page {
+    font-size: 11px;
+    color: rgba(150,150,165,0.7);
+    max-width: 280px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.sa-empty {
+    color: rgba(150,150,165,0.6);
+    font-size: 13px;
+    padding: 32px 0;
+    text-align: center;
+}
+
+.sa-loading {
+    color: rgba(150,150,165,0.6);
+    font-size: 13px;
+    padding: 32px 0;
+    text-align: center;
+}

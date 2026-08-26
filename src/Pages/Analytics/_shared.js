@@ -9,7 +9,7 @@ import {
     useSyncDomainFromRoute, isCombinedOrClearDomain,
     analyticsPath, analyticsAudiencePath, analyticsAcquisitionPath,
     analyticsConsentPath, analyticsAdSpendPath, analyticsAttributionPath,
-    analyticsConversionsPath, analyticsHeatmapPath,
+    analyticsConversionsPath, analyticsHeatmapPath, analyticsFormsPath,
 } from "../../Functions/domainPathSegments.js";
 
 export function authHeaders() {
@@ -401,6 +401,7 @@ export function AnalyticsSubNav({ domain }) {
         { label: "Ad Spend",    path: analyticsAdSpendPath(domain) },
         { label: "Attribution", path: analyticsAttributionPath(domain) },
         { label: "Conversions", path: analyticsConversionsPath(domain) },
+        { label: "Forms",       path: analyticsFormsPath(domain) },
         { label: "Heatmap",     path: analyticsHeatmapPath(domain) },
     ];
 
