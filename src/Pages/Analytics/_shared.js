@@ -380,7 +380,7 @@ export function useSiteConfig(domain) {
             { headers: authHeaders() })
             .then(r => r.ok ? r.json() : null)
             .then(d => {
-                if (!d) { setConfig(null); return; }
+                if (!d || d.noSiteKey) { setConfig(null); return; }
                 setConfig({ ...d, businessType: d.business_type ?? d.businessType ?? null });
             })
             .catch(() => {});

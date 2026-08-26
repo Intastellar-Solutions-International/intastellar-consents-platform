@@ -368,7 +368,7 @@ function SiteConfigSection({ domain }) {
         fetch(`${SITE_URL}?domain=${encodeURIComponent(domain)}`, { headers: authHeaders() })
             .then(r => r.ok ? r.json() : null)
             .then(d => {
-                if (d) {
+                if (d && !d.noSiteKey) {
                     setSite(d);
                     setIndustry(d.industry || "");
                     setBusinessType(d.businessType || d.business_type || "");

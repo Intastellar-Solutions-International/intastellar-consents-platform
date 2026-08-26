@@ -133,7 +133,7 @@ export default async function handler(req, res) {
             [orgId, domain]
         ).catch(() => ({ rows: [] }));
 
-        if (!rows.length) return res.status(404).json({ error: "No site key found for this domain." });
+        if (!rows.length) return res.status(200).json({ noSiteKey: true, domain });
         return res.status(200).json(rows[0]);
     }
 
