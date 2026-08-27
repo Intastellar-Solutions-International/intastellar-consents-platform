@@ -1339,6 +1339,48 @@ var _spaLastPath=location.pathname+location.search;
   },true);
 })();
 
+// ── Form field focus & validation errors ─────────────────────────────────
+// form_field_focus: fires when focus moves to a different field within a
+// started form. The server-side session join uses this to find where users
+// stopped — the last form_field_focus before a session ends without a
+// form_submit is the abandonment point. Only fires on field *changes* to
+// avoid noise from clicking the same field repeatedly.
+// form_error: fires when HTML5 validation rejects a field on submit attempt.
+// Both events skip password/PII fields by the same rules as form_submit.
+(function(){
+  var SKIP_TYPES={password:1,hidden:1,file:1,submit:1,button:1,reset:1,image:1};
+  var SKIP_NAMES=/card|cvv|cvc|ccv|ssn|tax|iban|bic|pin|secret|token|auth/i;
+  var lastFocused={};
+  document.addEventListener('focusin',function(e){
+    try{
+      var el=e.target,form=el&&el.form;
+      if(!form||!el.name)return;
+      var tp=(el.type||'text').toLowerCase();
+      if(SKIP_TYPES[tp]||SKIP_NAMES.test(el.name))return;
+      var fid=(form.getAttribute('data-analytics-id')||form.id||form.name||'').slice(0,64)||'form';
+      var fname=el.name.slice(0,40);
+      if(lastFocused[fid]===fname)return;
+      lastFocused[fid]=fname;
+      track('form_field_focus',{data:{formId:fid,field:fname,fieldType:tp}});
+    }catch(err){}
+  },true);
+  document.addEventListener('invalid',function(e){
+    try{
+      var el=e.target,form=el&&el.form;
+      if(!form||!el.name)return;
+      var tp=(el.type||'text').toLowerCase();
+      if(SKIP_TYPES[tp]||SKIP_NAMES.test(el.name))return;
+      var fid=(form.getAttribute('data-analytics-id')||form.id||form.name||'').slice(0,64)||'form';
+      track('form_error',{data:{
+        formId:fid,
+        field:el.name.slice(0,40),
+        fieldType:tp,
+        message:(el.validationMessage||'').slice(0,120)
+      }});
+    }catch(err){}
+  },true);
+})();
+
 // ── Video interactions ────────────────────────────────────────────────────
 // Attaches play / pause / 50% / complete events to all <video> elements,
 // including those added dynamically by React / SPA frameworks.
