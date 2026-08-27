@@ -33,7 +33,7 @@ function cleanFormId(id) {
     try { return new URL("https://x" + id).pathname.replace(/\/$/, "") || id; } catch { return id; }
 }
 
-function FormsTable({ forms }) {
+function FormsTable({ forms, abandonMap }) {
     const maxSubs = useMemo(() => Math.max(...(forms || []).map(f => f.submissions), 1), [forms]);
 
     if (!forms || !forms.length) {
@@ -46,8 +46,8 @@ function FormsTable({ forms }) {
                 <tr>
                     <th>Form</th>
                     <th className="sa-table__num">Submissions</th>
-                    <th className="sa-table__num">Started</th>
                     <th className="sa-table__num">Completion</th>
+                    <th className="sa-table__num">Abandoned</th>
                     <th className="sa-table__num">Pages</th>
                     <th>Top page</th>
                 </tr>
@@ -58,6 +58,12 @@ function FormsTable({ forms }) {
                     const rateColor = rate == null ? undefined
                         : rate < 30 ? "rgba(239,68,68,0.9)"
                         : rate < 60 ? "rgba(234,179,8,0.9)"
+                        : "rgba(34,197,94,0.9)";
+                    const ab = abandonMap?.[f.formId];
+                    const abRate = ab?.abandonmentRate;
+                    const abColor = abRate == null ? undefined
+                        : abRate > 70 ? "rgba(239,68,68,0.9)"
+                        : abRate > 40 ? "rgba(234,179,8,0.9)"
                         : "rgba(34,197,94,0.9)";
                     return (
                         <tr key={f.formId}>
@@ -71,9 +77,11 @@ function FormsTable({ forms }) {
                                 <MiniBar value={f.submissions} max={maxSubs} color="rgba(99,102,241,0.5)" />
                             </td>
                             <td className="sa-table__num">{f.submissions.toLocaleString("de-DE")}</td>
-                            <td className="sa-table__num">{f.starters > 0 ? f.starters.toLocaleString("de-DE") : "—"}</td>
                             <td className="sa-table__num" style={rateColor ? { color: rateColor, fontWeight: 600 } : {}}>
                                 {rate != null ? formatPercent(rate, 1) : "—"}
+                            </td>
+                            <td className="sa-table__num" style={abColor ? { color: abColor, fontWeight: 600 } : {}}>
+                                {abRate != null ? formatPercent(abRate, 1) : "—"}
                             </td>
                             <td className="sa-table__num">{f.pageCount}</td>
                             <td className="sa-table__page" title={f.topPage || ""}>
@@ -136,22 +144,40 @@ function AbandonmentTable({ abandonment }) {
             <thead>
                 <tr>
                     <th>Form</th>
+                    <th className="sa-table__num">Started</th>
                     <th className="sa-table__num">Abandoned</th>
-                    <th>Last field</th>
+                    <th className="sa-table__num">Rate</th>
+                    <th>Dropout field</th>
+                    <th className="sa-table__num">Avg fields</th>
                 </tr>
             </thead>
             <tbody>
-                {abandonment.map((r, i) => (
-                    <tr key={`${r.formId}-${i}`}>
-                        <td><span className="sa-form-id" title={r.formId}>{cleanFormId(r.formId)}</span></td>
-                        <td className="sa-table__num">{r.abandonedSessions.toLocaleString("de-DE")}</td>
-                        <td>
-                            {r.topDropoutField
-                                ? <code className="sa-field-name">{r.topDropoutField}</code>
-                                : <span className="sa-muted">unknown</span>}
-                        </td>
-                    </tr>
-                ))}
+                {abandonment.map((r, i) => {
+                    const rate = r.abandonmentRate;
+                    const rateColor = rate == null ? undefined
+                        : rate > 70 ? "rgba(239,68,68,0.9)"
+                        : rate > 40 ? "rgba(234,179,8,0.9)"
+                        : "rgba(34,197,94,0.9)";
+                    const fieldInfo = r.totalFields != null
+                        ? `${r.avgFieldsTouched != null ? r.avgFieldsTouched : "?"} / ${r.totalFields}`
+                        : r.avgFieldsTouched != null ? r.avgFieldsTouched : "—";
+                    return (
+                        <tr key={`${r.formId}-${i}`}>
+                            <td><span className="sa-form-id" title={r.formId}>{cleanFormId(r.formId)}</span></td>
+                            <td className="sa-table__num">{(r.totalStarted ?? 0).toLocaleString("de-DE")}</td>
+                            <td className="sa-table__num">{(r.abandonedSessions ?? 0).toLocaleString("de-DE")}</td>
+                            <td className="sa-table__num" style={rateColor ? { color: rateColor, fontWeight: 600 } : {}}>
+                                {rate != null ? formatPercent(rate, 1) : "—"}
+                            </td>
+                            <td>
+                                {r.topDropoutField
+                                    ? <code className="sa-field-name">{r.topDropoutField}</code>
+                                    : <span className="sa-muted">—</span>}
+                            </td>
+                            <td className="sa-table__num sa-muted">{fieldInfo}</td>
+                        </tr>
+                    );
+                })}
             </tbody>
         </table>
         </div>
@@ -169,8 +195,9 @@ function FormErrorsTable({ errors }) {
             <thead>
                 <tr>
                     <th>Form</th>
+                    <th>Type</th>
                     <th>Field</th>
-                    <th>Validation message</th>
+                    <th>Message</th>
                     <th className="sa-table__num">Count</th>
                 </tr>
             </thead>
@@ -178,11 +205,12 @@ function FormErrorsTable({ errors }) {
                 {errors.map((e, i) => (
                     <tr key={i}>
                         <td><span className="sa-form-id" title={e.formId}>{cleanFormId(e.formId)}</span></td>
-                        <td>{e.field ? <code className="sa-field-name">{e.field}</code> : "—"}</td>
+                        <td><span className={`sa-error-type sa-error-type--${e.errorType}`}>{e.errorType}</span></td>
+                        <td>{e.field ? <code className="sa-field-name">{e.field}</code> : <span className="sa-muted">—</span>}</td>
                         <td>
                             <span title={e.message || ""}>{
                                 e.message
-                                    ? (e.message.length > 80 ? e.message.slice(0, 79) + "…" : e.message)
+                                    ? (e.message.length > 60 ? e.message.slice(0, 59) + "…" : e.message)
                                     : "—"
                             }</span>
                             <MiniBar value={e.occurrences} max={maxOcc} color="rgba(239,68,68,0.35)" />
@@ -237,6 +265,12 @@ export default function AnalyticsForms() {
         label: d.day,
         num: d.submissions,
     }));
+
+    const abandonMap = useMemo(() => {
+        const m = {};
+        for (const r of (data?.abandonment || [])) m[r.formId] = r;
+        return m;
+    }, [data?.abandonment]);
 
     const completionRateVariant = (() => {
         const r = data?.totals?.completionRate;
@@ -314,7 +348,7 @@ export default function AnalyticsForms() {
                                     <h3 className="sa-panel__title">
                                         <IconFormFill className="sa-icon" /> Forms
                                     </h3>
-                                    <FormsTable forms={data.forms} />
+                                    <FormsTable forms={data.forms} abandonMap={abandonMap} />
                                 </div>
 
                                 <div className="sa-panel">

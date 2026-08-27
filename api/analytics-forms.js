@@ -205,14 +205,12 @@ export default async function handler(req, res) {
             ORDER BY started DESC
         `, [siteId, fromDate, toDate]),
 
-        // Session abandonment: sessions with form_started but no form_submit
-        // Joined with the last field touched (form_field_focus) per session+formId
+        // Session abandonment: per-form started/abandoned counts, rate, and dropout field
         db.query(`
             WITH started_sessions AS (
                 SELECT
                     session_id,
-                    COALESCE(extra_data->>'formId', 'unknown') AS form_id,
-                    MIN(received_at) AS started_at
+                    COALESCE(extra_data->>'formId', 'unknown') AS form_id
                 FROM analytics_custom_events
                 WHERE site_id = $1
                   AND received_at >= $2::date
@@ -232,17 +230,21 @@ export default async function handler(req, res) {
                   AND name = 'form_submit'
                   AND session_id IS NOT NULL
             ),
-            abandoned AS (
-                SELECT s.form_id, s.session_id
+            session_status AS (
+                SELECT
+                    s.form_id,
+                    s.session_id,
+                    (sub.session_id IS NULL) AS abandoned
                 FROM started_sessions s
                 LEFT JOIN submitted_sessions sub USING (session_id, form_id)
-                WHERE sub.session_id IS NULL
             ),
             last_field AS (
                 SELECT DISTINCT ON (f.session_id, COALESCE(f.extra_data->>'formId','unknown'))
                     f.session_id,
                     COALESCE(f.extra_data->>'formId', 'unknown') AS form_id,
-                    f.extra_data->>'field'                        AS last_field
+                    f.extra_data->>'field'                        AS last_field,
+                    COUNT(*) OVER (PARTITION BY f.session_id, COALESCE(f.extra_data->>'formId','unknown'))
+                        AS fields_touched
                 FROM analytics_custom_events f
                 WHERE f.site_id = $1
                   AND f.received_at >= $2::date
@@ -250,32 +252,54 @@ export default async function handler(req, res) {
                   AND f.name = 'form_field_focus'
                   AND f.session_id IS NOT NULL
                 ORDER BY f.session_id, COALESCE(f.extra_data->>'formId','unknown'), f.received_at DESC
+            ),
+            field_counts AS (
+                SELECT
+                    COALESCE(extra_data->>'formId', 'unknown') AS form_id,
+                    MAX((extra_data->>'fieldCount')::int)       AS total_fields
+                FROM analytics_custom_events
+                WHERE site_id = $1
+                  AND received_at >= $2::date
+                  AND received_at <  $3::date + interval '1 day'
+                  AND name = 'form_submit'
+                  AND (extra_data->>'fieldCount') IS NOT NULL
+                GROUP BY 1
             )
             SELECT
-                a.form_id,
-                COUNT(*)                           AS abandoned_sessions,
-                lf.last_field                      AS top_dropout_field,
-                COUNT(*) FILTER (WHERE lf.last_field IS NOT NULL) AS with_field_data
-            FROM abandoned a
-            LEFT JOIN last_field lf ON lf.session_id = a.session_id AND lf.form_id = a.form_id
-            GROUP BY a.form_id, lf.last_field
+                ss.form_id,
+                COUNT(*)                                             AS total_started,
+                COUNT(*) FILTER (WHERE ss.abandoned)                 AS abandoned_sessions,
+                ROUND(
+                    COUNT(*) FILTER (WHERE ss.abandoned)::numeric / NULLIF(COUNT(*), 0) * 100,
+                1)                                                   AS abandonment_rate,
+                MODE() WITHIN GROUP (ORDER BY lf.last_field)
+                    FILTER (WHERE ss.abandoned)                      AS top_dropout_field,
+                ROUND(AVG(lf.fields_touched) FILTER (WHERE ss.abandoned), 1)
+                                                                     AS avg_fields_touched,
+                fc.total_fields
+            FROM session_status ss
+            LEFT JOIN last_field lf
+                   ON lf.session_id = ss.session_id AND lf.form_id = ss.form_id
+            LEFT JOIN field_counts fc ON fc.form_id = ss.form_id
+            GROUP BY ss.form_id, fc.total_fields
             ORDER BY abandoned_sessions DESC
             LIMIT 30
         `, [siteId, fromDate, toDate]),
 
-        // Form validation errors from new form_error event
+        // Form errors — validation, network, and server errors
         db.query(`
             SELECT
-                COALESCE(extra_data->>'formId', 'unknown') AS form_id,
-                extra_data->>'field'                        AS field,
-                extra_data->>'message'                      AS message,
-                COUNT(*)                                    AS occurrences
+                COALESCE(extra_data->>'formId', 'unknown')    AS form_id,
+                COALESCE(extra_data->>'errorType', 'validation') AS error_type,
+                extra_data->>'field'                           AS field,
+                extra_data->>'message'                         AS message,
+                COUNT(*)                                       AS occurrences
             FROM analytics_custom_events
             WHERE site_id = $1
               AND received_at >= $2::date
               AND received_at <  $3::date + interval '1 day'
               AND name = 'form_error'
-            GROUP BY 1, 2, 3
+            GROUP BY 1, 2, 3, 4
             ORDER BY occurrences DESC
             LIMIT 50
         `, [siteId, fromDate, toDate]),
@@ -319,11 +343,16 @@ export default async function handler(req, res) {
         })),
         abandonment: abandonRes.rows.map(r => ({
             formId:           r.form_id,
+            totalStarted:     parseInt(r.total_started, 10) || 0,
             abandonedSessions: parseInt(r.abandoned_sessions, 10) || 0,
+            abandonmentRate:  r.abandonment_rate != null ? parseFloat(r.abandonment_rate) : null,
             topDropoutField:  r.top_dropout_field || null,
+            avgFieldsTouched: r.avg_fields_touched != null ? parseFloat(r.avg_fields_touched) : null,
+            totalFields:      r.total_fields != null ? parseInt(r.total_fields, 10) : null,
         })),
         formErrors: errorsRes.rows.map(r => ({
             formId:      r.form_id,
+            errorType:   r.error_type || 'validation',
             field:       r.field || null,
             message:     r.message || null,
             occurrences: parseInt(r.occurrences, 10) || 0,
