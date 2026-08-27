@@ -1232,7 +1232,7 @@ var _spaLastPath=location.pathname+location.search;
       if(!form||form.tagName!=='FORM')return;
       var fid=(form.getAttribute('data-analytics-id')||form.id||form.name||'').slice(0,64);
       var faction=(form.action||'').replace(/^https?:\\/\\/[^\\/]+/,'').slice(0,100);
-      if(!fid)fid=faction||'form';
+      if(!fid)fid=(faction.split('?')[0])||'form';
       var fields=[],els=form.elements;
       for(var i=0;i<els.length&&fields.length<20;i++){
         var el=els[i];

@@ -28,6 +28,11 @@ function useFormsReport(domain, fromIso, toIso) {
     return { data, loading };
 }
 
+function cleanFormId(id) {
+    if (!id) return "unknown";
+    try { return new URL("https://x" + id).pathname.replace(/\/$/, "") || id; } catch { return id; }
+}
+
 function FormsTable({ forms }) {
     const maxSubs = useMemo(() => Math.max(...(forms || []).map(f => f.submissions), 1), [forms]);
 
@@ -35,6 +40,7 @@ function FormsTable({ forms }) {
         return <p className="sa-notice">No form submissions in this period.</p>;
     }
     return (
+        <div className="sa-table-scroll">
         <table className="sa-table">
             <thead>
                 <tr>
@@ -56,8 +62,8 @@ function FormsTable({ forms }) {
                     return (
                         <tr key={f.formId}>
                             <td>
-                                <span className="sa-form-id">{f.formId}</span>
-                                {f.formAction && (
+                                <span className="sa-form-id" title={f.formId}>{cleanFormId(f.formId)}</span>
+                                {f.formAction && f.formAction !== cleanFormId(f.formId) && (
                                     <span className="sa-form-action" title={f.formAction}>
                                         {f.formAction.length > 40 ? f.formAction.slice(0, 40) + "…" : f.formAction}
                                     </span>
@@ -80,6 +86,7 @@ function FormsTable({ forms }) {
                 })}
             </tbody>
         </table>
+        </div>
     );
 }
 
@@ -124,18 +131,19 @@ function AbandonmentTable({ abandonment }) {
         return <p className="sa-notice">No abandoned sessions detected, or session tracking requires full consent.</p>;
     }
     return (
+        <div className="sa-table-scroll">
         <table className="sa-table">
             <thead>
                 <tr>
                     <th>Form</th>
-                    <th className="sa-table__num">Abandoned sessions</th>
-                    <th>Last field touched</th>
+                    <th className="sa-table__num">Abandoned</th>
+                    <th>Last field</th>
                 </tr>
             </thead>
             <tbody>
                 {abandonment.map((r, i) => (
                     <tr key={`${r.formId}-${i}`}>
-                        <td><span className="sa-form-id">{r.formId}</span></td>
+                        <td><span className="sa-form-id" title={r.formId}>{cleanFormId(r.formId)}</span></td>
                         <td className="sa-table__num">{r.abandonedSessions.toLocaleString("de-DE")}</td>
                         <td>
                             {r.topDropoutField
@@ -146,6 +154,7 @@ function AbandonmentTable({ abandonment }) {
                 ))}
             </tbody>
         </table>
+        </div>
     );
 }
 
@@ -155,6 +164,7 @@ function FormErrorsTable({ errors }) {
     }
     const maxOcc = Math.max(...errors.map(e => e.occurrences), 1);
     return (
+        <div className="sa-table-scroll">
         <table className="sa-table">
             <thead>
                 <tr>
@@ -167,7 +177,7 @@ function FormErrorsTable({ errors }) {
             <tbody>
                 {errors.map((e, i) => (
                     <tr key={i}>
-                        <td><span className="sa-form-id">{e.formId}</span></td>
+                        <td><span className="sa-form-id" title={e.formId}>{cleanFormId(e.formId)}</span></td>
                         <td>{e.field ? <code className="sa-field-name">{e.field}</code> : "—"}</td>
                         <td>
                             <span title={e.message || ""}>{
@@ -182,6 +192,7 @@ function FormErrorsTable({ errors }) {
                 ))}
             </tbody>
         </table>
+        </div>
     );
 }
 
@@ -298,38 +309,38 @@ export default function AnalyticsForms() {
                                 </div>
                             )}
 
-                            <div className="sa-panel">
-                                <h3 className="sa-panel__title">
-                                    <IconFormFill className="sa-icon" /> Forms
-                                </h3>
-                                <FormsTable forms={data.forms} />
-                            </div>
+                            <div className="sa-forms-grid sa-forms-grid--main">
+                                <div className="sa-panel">
+                                    <h3 className="sa-panel__title">
+                                        <IconFormFill className="sa-icon" /> Forms
+                                    </h3>
+                                    <FormsTable forms={data.forms} />
+                                </div>
 
-                            {data.topPages?.length > 0 && (
                                 <div className="sa-panel">
                                     <h3 className="sa-panel__title">
                                         <IconScrollDepth className="sa-icon" /> Top pages
                                     </h3>
                                     <TopPagesTable pages={data.topPages} />
                                 </div>
-                            )}
-
-                            <div className="sa-panel">
-                                <h3 className="sa-panel__title">
-                                    <IconTarget className="sa-icon" /> Device breakdown
-                                </h3>
-                                <DeviceTable devices={data.deviceBreakdown} />
                             </div>
 
-                            <div className="sa-panel">
-                                <h3 className="sa-panel__title">
-                                    <IconBarChart className="sa-icon" /> Session abandonment
-                                </h3>
-                                <p className="sa-panel__desc">Sessions where a form was started but never submitted.</p>
-                                <AbandonmentTable abandonment={data.abandonment} />
-                            </div>
+                            <div className="sa-forms-grid sa-forms-grid--bottom">
+                                <div className="sa-panel">
+                                    <h3 className="sa-panel__title">
+                                        <IconTarget className="sa-icon" /> Device breakdown
+                                    </h3>
+                                    <DeviceTable devices={data.deviceBreakdown} />
+                                </div>
 
-                            {(data.formErrors?.length > 0 || true) && (
+                                <div className="sa-panel">
+                                    <h3 className="sa-panel__title">
+                                        <IconBarChart className="sa-icon" /> Session abandonment
+                                    </h3>
+                                    <p className="sa-panel__desc">Sessions where a form was started but never submitted.</p>
+                                    <AbandonmentTable abandonment={data.abandonment} />
+                                </div>
+
                                 <div className="sa-panel">
                                     <h3 className="sa-panel__title">
                                         <IconFormFill className="sa-icon" /> Validation errors
@@ -337,7 +348,7 @@ export default function AnalyticsForms() {
                                     <p className="sa-panel__desc">Most common HTML5 validation failures captured by the embed script.</p>
                                     <FormErrorsTable errors={data.formErrors} />
                                 </div>
-                            )}
+                            </div>
                         </>
                     )}
                 </div>
