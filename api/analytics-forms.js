@@ -96,20 +96,20 @@ export default async function handler(req, res) {
                 COUNT(*) FILTER (WHERE name = 'form_started') AS starters
             FROM analytics_custom_events
             WHERE site_id = $1
-              AND created_at >= $2::date
-              AND created_at <  $3::date + interval '1 day'
+              AND received_at >= $2::date
+              AND received_at <  $3::date + interval '1 day'
               AND name IN ('form_submit', 'form_started')
         `, [siteId, fromDate, toDate]),
 
         // Daily submission trend
         db.query(`
             SELECT
-                DATE_TRUNC('day', created_at)::date AS day,
-                COUNT(*)                             AS submissions
+                DATE_TRUNC('day', received_at)::date AS day,
+                COUNT(*)                              AS submissions
             FROM analytics_custom_events
             WHERE site_id = $1
-              AND created_at >= $2::date
-              AND created_at <  $3::date + interval '1 day'
+              AND received_at >= $2::date
+              AND received_at <  $3::date + interval '1 day'
               AND name = 'form_submit'
             GROUP BY 1
             ORDER BY 1
@@ -121,12 +121,12 @@ export default async function handler(req, res) {
                 SELECT
                     COALESCE(extra_data->>'formId', 'unknown') AS form_id,
                     extra_data->>'action'                       AS form_action,
-                    page_url,
+                    pathname,
                     COUNT(*)                                    AS submissions
                 FROM analytics_custom_events
                 WHERE site_id = $1
-                  AND created_at >= $2::date
-                  AND created_at <  $3::date + interval '1 day'
+                  AND received_at >= $2::date
+                  AND received_at <  $3::date + interval '1 day'
                   AND name = 'form_submit'
                 GROUP BY 1, 2, 3
             ),
@@ -136,19 +136,19 @@ export default async function handler(req, res) {
                     COUNT(*)                                    AS starters
                 FROM analytics_custom_events
                 WHERE site_id = $1
-                  AND created_at >= $2::date
-                  AND created_at <  $3::date + interval '1 day'
+                  AND received_at >= $2::date
+                  AND received_at <  $3::date + interval '1 day'
                   AND name = 'form_started'
                 GROUP BY 1
             ),
             per_form AS (
                 SELECT
                     s.form_id,
-                    MAX(s.form_action)  AS form_action,
-                    SUM(s.submissions)  AS submissions,
-                    MAX(st.starters)    AS starters,
-                    COUNT(DISTINCT s.page_url) AS page_count,
-                    (array_agg(s.page_url ORDER BY s.submissions DESC))[1] AS top_page
+                    MAX(s.form_action)                                         AS form_action,
+                    SUM(s.submissions)                                          AS submissions,
+                    MAX(st.starters)                                            AS starters,
+                    COUNT(DISTINCT s.pathname)                                  AS page_count,
+                    (array_agg(s.pathname ORDER BY s.submissions DESC))[1]     AS top_page
                 FROM submits s
                 LEFT JOIN starters st USING (form_id)
                 GROUP BY s.form_id
@@ -172,14 +172,14 @@ export default async function handler(req, res) {
         // Top pages by form submission volume
         db.query(`
             SELECT
-                page_url,
+                pathname,
                 COUNT(*) AS submissions
             FROM analytics_custom_events
             WHERE site_id = $1
-              AND created_at >= $2::date
-              AND created_at <  $3::date + interval '1 day'
+              AND received_at >= $2::date
+              AND received_at <  $3::date + interval '1 day'
               AND name = 'form_submit'
-            GROUP BY page_url
+            GROUP BY pathname
             ORDER BY submissions DESC
             LIMIT 20
         `, [siteId, fromDate, toDate]),
@@ -209,7 +209,7 @@ export default async function handler(req, res) {
             topPage:        r.top_page || null,
         })),
         topPages: topPagesRes.rows.map(r => ({
-            page:        r.page_url,
+            page:        r.pathname,
             submissions: parseInt(r.submissions, 10) || 0,
         })),
     });
