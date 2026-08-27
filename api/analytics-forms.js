@@ -88,7 +88,7 @@ export default async function handler(req, res) {
     if (!siteRes.rows.length) return res.status(404).json({ error: "Site not found" });
     const siteId = siteRes.rows[0].id;
 
-    const [totalsRes, dailyRes, formsRes, topPagesRes] = await Promise.all([
+    const [totalsRes, dailyRes, formsRes, topPagesRes, deviceRes, abandonRes, errorsRes] = await Promise.all([
         // Overall submission + starter counts
         db.query(`
             SELECT
@@ -183,7 +183,106 @@ export default async function handler(req, res) {
             ORDER BY submissions DESC
             LIMIT 20
         `, [siteId, fromDate, toDate]),
-    ]).catch(() => [{ rows: [] }, { rows: [] }, { rows: [] }, { rows: [] }]);
+
+        // Device type breakdown: started vs submitted per device
+        db.query(`
+            SELECT
+                COALESCE(device_type, 'unknown')                              AS device,
+                COUNT(*) FILTER (WHERE name = 'form_started')                 AS started,
+                COUNT(*) FILTER (WHERE name = 'form_submit')                  AS submitted,
+                CASE WHEN COUNT(*) FILTER (WHERE name = 'form_started') > 0
+                     THEN LEAST(100, ROUND(
+                         COUNT(*) FILTER (WHERE name = 'form_submit')::numeric /
+                         COUNT(*) FILTER (WHERE name = 'form_started') * 100, 1))
+                     ELSE NULL
+                END AS completion_rate
+            FROM analytics_custom_events
+            WHERE site_id = $1
+              AND received_at >= $2::date
+              AND received_at <  $3::date + interval '1 day'
+              AND name IN ('form_started', 'form_submit')
+            GROUP BY 1
+            ORDER BY started DESC
+        `, [siteId, fromDate, toDate]),
+
+        // Session abandonment: sessions with form_started but no form_submit
+        // Joined with the last field touched (form_field_focus) per session+formId
+        db.query(`
+            WITH started_sessions AS (
+                SELECT
+                    session_id,
+                    COALESCE(extra_data->>'formId', 'unknown') AS form_id,
+                    MIN(received_at) AS started_at
+                FROM analytics_custom_events
+                WHERE site_id = $1
+                  AND received_at >= $2::date
+                  AND received_at <  $3::date + interval '1 day'
+                  AND name = 'form_started'
+                  AND session_id IS NOT NULL
+                GROUP BY 1, 2
+            ),
+            submitted_sessions AS (
+                SELECT DISTINCT
+                    session_id,
+                    COALESCE(extra_data->>'formId', 'unknown') AS form_id
+                FROM analytics_custom_events
+                WHERE site_id = $1
+                  AND received_at >= $2::date
+                  AND received_at <  $3::date + interval '1 day'
+                  AND name = 'form_submit'
+                  AND session_id IS NOT NULL
+            ),
+            abandoned AS (
+                SELECT s.form_id, s.session_id
+                FROM started_sessions s
+                LEFT JOIN submitted_sessions sub USING (session_id, form_id)
+                WHERE sub.session_id IS NULL
+            ),
+            last_field AS (
+                SELECT DISTINCT ON (f.session_id, COALESCE(f.extra_data->>'formId','unknown'))
+                    f.session_id,
+                    COALESCE(f.extra_data->>'formId', 'unknown') AS form_id,
+                    f.extra_data->>'field'                        AS last_field
+                FROM analytics_custom_events f
+                WHERE f.site_id = $1
+                  AND f.received_at >= $2::date
+                  AND f.received_at <  $3::date + interval '1 day'
+                  AND f.name = 'form_field_focus'
+                  AND f.session_id IS NOT NULL
+                ORDER BY f.session_id, COALESCE(f.extra_data->>'formId','unknown'), f.received_at DESC
+            )
+            SELECT
+                a.form_id,
+                COUNT(*)                           AS abandoned_sessions,
+                lf.last_field                      AS top_dropout_field,
+                COUNT(*) FILTER (WHERE lf.last_field IS NOT NULL) AS with_field_data
+            FROM abandoned a
+            LEFT JOIN last_field lf ON lf.session_id = a.session_id AND lf.form_id = a.form_id
+            GROUP BY a.form_id, lf.last_field
+            ORDER BY abandoned_sessions DESC
+            LIMIT 30
+        `, [siteId, fromDate, toDate]),
+
+        // Form validation errors from new form_error event
+        db.query(`
+            SELECT
+                COALESCE(extra_data->>'formId', 'unknown') AS form_id,
+                extra_data->>'field'                        AS field,
+                extra_data->>'message'                      AS message,
+                COUNT(*)                                    AS occurrences
+            FROM analytics_custom_events
+            WHERE site_id = $1
+              AND received_at >= $2::date
+              AND received_at <  $3::date + interval '1 day'
+              AND name = 'form_error'
+            GROUP BY 1, 2, 3
+            ORDER BY occurrences DESC
+            LIMIT 50
+        `, [siteId, fromDate, toDate]),
+    ]).catch(e => {
+        console.error('analytics-forms query error:', e.message);
+        return [{ rows: [] }, { rows: [] }, { rows: [] }, { rows: [] }, { rows: [] }, { rows: [] }, { rows: [] }];
+    });
 
     const totals = totalsRes.rows[0] || {};
     const submissions = parseInt(totals.submissions, 10) || 0;
@@ -211,6 +310,23 @@ export default async function handler(req, res) {
         topPages: topPagesRes.rows.map(r => ({
             page:        r.pathname,
             submissions: parseInt(r.submissions, 10) || 0,
+        })),
+        deviceBreakdown: deviceRes.rows.map(r => ({
+            device:         r.device,
+            started:        parseInt(r.started, 10) || 0,
+            submitted:      parseInt(r.submitted, 10) || 0,
+            completionRate: r.completion_rate != null ? parseFloat(r.completion_rate) : null,
+        })),
+        abandonment: abandonRes.rows.map(r => ({
+            formId:           r.form_id,
+            abandonedSessions: parseInt(r.abandoned_sessions, 10) || 0,
+            topDropoutField:  r.top_dropout_field || null,
+        })),
+        formErrors: errorsRes.rows.map(r => ({
+            formId:      r.form_id,
+            field:       r.field || null,
+            message:     r.message || null,
+            occurrences: parseInt(r.occurrences, 10) || 0,
         })),
     });
 }
