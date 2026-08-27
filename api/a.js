@@ -1375,10 +1375,84 @@ var _spaLastPath=location.pathname+location.search;
         formId:fid,
         field:el.name.slice(0,40),
         fieldType:tp,
+        errorType:'validation',
         message:(el.validationMessage||'').slice(0,120)
       }});
     }catch(err){}
   },true);
+})();
+
+// ── Form network / server error tracking ─────────────────────────────────
+// Patches fetch and XHR to detect failures that happen after a form submit.
+// Only fires form_error when a request fails within 15 s of a known submit.
+(function(){
+  var WIN=15000;
+  var Q={};// fid -> {t, action}
+  function _fid(form){
+    var f=(form.getAttribute('data-analytics-id')||form.id||form.name||'').slice(0,64);
+    var a=(form.action||'').replace(/^https?:\/\/[^\/]+/,'').split('?')[0].slice(0,100);
+    return f||a||'form';
+  }
+  document.addEventListener('submit',function(e){
+    try{
+      var form=e.target;
+      if(!form||form.tagName!=='FORM')return;
+      var fid=_fid(form);
+      var action=(form.action||'').replace(/^https?:\/\/[^\/]+/,'').split('?')[0].slice(0,100);
+      Q[fid]={t:Date.now(),action:action};
+    }catch(err){}
+  },true);
+  function findFid(url){
+    var path=(url||'').replace(/^https?:\/\/[^\/]+/,'').split('?')[0];
+    var now=Date.now(),best=null,bestS=0;
+    for(var fid in Q){
+      var s=Q[fid];
+      if(now-s.t>WIN){delete Q[fid];continue;}
+      var score=(s.action&&path.indexOf(s.action)===0)?2:1;
+      if(score>bestS){bestS=score;best=fid;}
+    }
+    return best;
+  }
+  function fireErr(fid,status,msg){
+    if(!fid)return;
+    track('form_error',{data:{
+      formId:fid,
+      errorType:status>=400?'server':'network',
+      status:status||0,
+      message:(msg||'').slice(0,120)
+    }});
+  }
+  if(window.fetch){
+    var _fetch=window.fetch;
+    window.fetch=function(input,init){
+      var url=input&&(typeof input==='string'?input:(input.url||''));
+      return _fetch.call(this,input,init).then(function(resp){
+        if(!resp.ok){var fid=findFid(url);if(fid)fireErr(fid,resp.status,'HTTP '+resp.status);}
+        return resp;
+      },function(err){
+        var fid=findFid(url);
+        if(fid)fireErr(fid,0,(err&&err.message)||'Network failure');
+        throw err;
+      });
+    };
+  }
+  if(window.XMLHttpRequest){
+    var _open=XMLHttpRequest.prototype.open;
+    var _send=XMLHttpRequest.prototype.send;
+    XMLHttpRequest.prototype.open=function(m,url){
+      this._aUrl=url;return _open.apply(this,arguments);
+    };
+    XMLHttpRequest.prototype.send=function(){
+      var xhr=this;
+      xhr.addEventListener('load',function(){
+        if(xhr.status>=400){var fid=findFid(xhr._aUrl);if(fid)fireErr(fid,xhr.status,'HTTP '+xhr.status);}
+      });
+      xhr.addEventListener('error',function(){
+        var fid=findFid(xhr._aUrl);if(fid)fireErr(fid,0,'Network failure');
+      });
+      return _send.apply(xhr,arguments);
+    };
+  }
 })();
 
 // ── Video interactions ────────────────────────────────────────────────────
