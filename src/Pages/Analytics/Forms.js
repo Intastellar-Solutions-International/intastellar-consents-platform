@@ -83,6 +83,108 @@ function FormsTable({ forms }) {
     );
 }
 
+function DeviceTable({ devices }) {
+    if (!devices || !devices.length) return <p className="sa-notice">No device data available.</p>;
+    const DEVICE_LABEL = { desktop: "Desktop", mobile: "Mobile", tablet: "Tablet", unknown: "Unknown" };
+    return (
+        <table className="sa-table">
+            <thead>
+                <tr>
+                    <th>Device</th>
+                    <th className="sa-table__num">Started</th>
+                    <th className="sa-table__num">Submitted</th>
+                    <th className="sa-table__num">Completion</th>
+                </tr>
+            </thead>
+            <tbody>
+                {devices.map(d => {
+                    const rate = d.completionRate;
+                    const rateColor = rate == null ? undefined
+                        : rate < 30 ? "rgba(239,68,68,0.9)"
+                        : rate < 60 ? "rgba(234,179,8,0.9)"
+                        : "rgba(34,197,94,0.9)";
+                    return (
+                        <tr key={d.device}>
+                            <td>{DEVICE_LABEL[d.device] || d.device}</td>
+                            <td className="sa-table__num">{d.started > 0 ? d.started.toLocaleString("de-DE") : "—"}</td>
+                            <td className="sa-table__num">{d.submitted.toLocaleString("de-DE")}</td>
+                            <td className="sa-table__num" style={rateColor ? { color: rateColor, fontWeight: 600 } : {}}>
+                                {rate != null ? formatPercent(rate, 1) : "—"}
+                            </td>
+                        </tr>
+                    );
+                })}
+            </tbody>
+        </table>
+    );
+}
+
+function AbandonmentTable({ abandonment }) {
+    if (!abandonment || !abandonment.length) {
+        return <p className="sa-notice">No abandoned sessions detected, or session tracking requires full consent.</p>;
+    }
+    return (
+        <table className="sa-table">
+            <thead>
+                <tr>
+                    <th>Form</th>
+                    <th className="sa-table__num">Abandoned sessions</th>
+                    <th>Last field touched</th>
+                </tr>
+            </thead>
+            <tbody>
+                {abandonment.map((r, i) => (
+                    <tr key={`${r.formId}-${i}`}>
+                        <td><span className="sa-form-id">{r.formId}</span></td>
+                        <td className="sa-table__num">{r.abandonedSessions.toLocaleString("de-DE")}</td>
+                        <td>
+                            {r.topDropoutField
+                                ? <code className="sa-field-name">{r.topDropoutField}</code>
+                                : <span className="sa-muted">unknown</span>}
+                        </td>
+                    </tr>
+                ))}
+            </tbody>
+        </table>
+    );
+}
+
+function FormErrorsTable({ errors }) {
+    if (!errors || !errors.length) {
+        return <p className="sa-notice">No validation errors recorded yet. Deploy the updated embed script to start capturing errors.</p>;
+    }
+    const maxOcc = Math.max(...errors.map(e => e.occurrences), 1);
+    return (
+        <table className="sa-table">
+            <thead>
+                <tr>
+                    <th>Form</th>
+                    <th>Field</th>
+                    <th>Validation message</th>
+                    <th className="sa-table__num">Count</th>
+                </tr>
+            </thead>
+            <tbody>
+                {errors.map((e, i) => (
+                    <tr key={i}>
+                        <td><span className="sa-form-id">{e.formId}</span></td>
+                        <td>{e.field ? <code className="sa-field-name">{e.field}</code> : "—"}</td>
+                        <td>
+                            <span title={e.message || ""}>{
+                                e.message
+                                    ? (e.message.length > 80 ? e.message.slice(0, 79) + "…" : e.message)
+                                    : "—"
+                            }</span>
+                            <MiniBar value={e.occurrences} max={maxOcc} color="rgba(239,68,68,0.35)" />
+                        </td>
+                        <td className="sa-table__num">{e.occurrences.toLocaleString("de-DE")}</td>
+                    </tr>
+                ))}
+            </tbody>
+        </table>
+    );
+}
+
 function TopPagesTable({ pages }) {
     const maxSubs = useMemo(() => Math.max(...(pages || []).map(p => p.submissions), 1), [pages]);
     if (!pages || !pages.length) return null;
@@ -209,6 +311,31 @@ export default function AnalyticsForms() {
                                         <IconScrollDepth className="sa-icon" /> Top pages
                                     </h3>
                                     <TopPagesTable pages={data.topPages} />
+                                </div>
+                            )}
+
+                            <div className="sa-panel">
+                                <h3 className="sa-panel__title">
+                                    <IconTarget className="sa-icon" /> Device breakdown
+                                </h3>
+                                <DeviceTable devices={data.deviceBreakdown} />
+                            </div>
+
+                            <div className="sa-panel">
+                                <h3 className="sa-panel__title">
+                                    <IconBarChart className="sa-icon" /> Session abandonment
+                                </h3>
+                                <p className="sa-panel__desc">Sessions where a form was started but never submitted.</p>
+                                <AbandonmentTable abandonment={data.abandonment} />
+                            </div>
+
+                            {(data.formErrors?.length > 0 || true) && (
+                                <div className="sa-panel">
+                                    <h3 className="sa-panel__title">
+                                        <IconFormFill className="sa-icon" /> Validation errors
+                                    </h3>
+                                    <p className="sa-panel__desc">Most common HTML5 validation failures captured by the embed script.</p>
+                                    <FormErrorsTable errors={data.formErrors} />
                                 </div>
                             )}
                         </>
