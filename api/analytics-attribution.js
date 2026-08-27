@@ -104,7 +104,7 @@ export default async function handler(req, res) {
 
     // Push status for these events
     const { rows: pushes } = await db.query(
-        `SELECT p.custom_event_id, p.platform, p.status, p.pushed_at, p.error_message
+        `SELECT p.id, p.custom_event_id, p.platform, p.status, p.pushed_at, p.error_message
          FROM analytics_conversion_pushes p
          JOIN analytics_sites s ON s.id = p.site_id
          WHERE p.organisation_id = $1
