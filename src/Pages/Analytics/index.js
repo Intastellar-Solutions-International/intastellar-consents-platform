@@ -135,9 +135,12 @@ function LivePanel({ domain, engagedUsers }) {
                         <p className="sa-live__section-title">Recent events</p>
                         <div className="sa-live__feed">
                             {(data.recent || []).slice(0, 12).map((e, i) => (
-                                <div key={i} className="sa-live__event">
+                                <div key={i} className={"sa-live__event" + (e.eventName ? " sa-live__event--custom" : "")}>
                                     <span className="sa-live__event-path" title={e.host ? `${e.host}${e.path}` : e.path}>
-                                        {e.host && e.host !== domain ? `${e.host}` : ""}{e.path}
+                                        {e.eventName
+                                            ? <span className="sa-live__event-name">{e.eventName.replace(/_/g, " ")}</span>
+                                            : <>{e.host && e.host !== domain ? `${e.host}` : ""}{e.path}</>
+                                        }
                                     </span>
                                     <div className="sa-live__event-meta">
                                         {e.country && <span className="sa-live__event-flag">{e.country}</span>}

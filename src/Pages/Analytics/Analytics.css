@@ -250,6 +250,17 @@
 
 .sa-live__event:last-child { border-bottom: none; }
 
+.sa-live__event--custom .sa-live__event-path {
+    color: rgba(129,140,248,0.8);
+}
+
+.sa-live__event-name {
+    font-family: inherit;
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0;
+}
+
 @keyframes sa-fade-in {
     from { opacity: 0; transform: translateY(-3px); }
     to   { opacity: 1; transform: translateY(0); }

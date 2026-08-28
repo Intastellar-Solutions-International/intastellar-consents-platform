@@ -83,25 +83,35 @@ export default async function handler(req, res) {
 
     const [totalsRes, minutesRes, pagesRes, hostsRes, recentRes, conversionsRes] = await Promise.all([
 
+        // Totals across both pageviews and custom events
         db.query(`
             SELECT
                 COUNT(*)                                                              AS total,
                 COUNT(*) FILTER (WHERE consent_level = 'minimal')                    AS minimal,
                 COUNT(*) FILTER (WHERE consent_level = 'full')                       AS full_count,
                 COUNT(DISTINCT session_id) FILTER (WHERE session_id IS NOT NULL)     AS sessions
-            FROM analytics_events
-            WHERE site_id = $1
-              AND received_at >= NOW() - INTERVAL '30 minutes'`,
+            FROM (
+                SELECT consent_level, session_id FROM analytics_events
+                WHERE site_id = $1 AND received_at >= NOW() - INTERVAL '30 minutes'
+                UNION ALL
+                SELECT consent_level, session_id FROM analytics_custom_events
+                WHERE site_id = $1 AND received_at >= NOW() - INTERVAL '30 minutes'
+            ) combined`,
             [siteId]
         ),
 
+        // Events per minute — pageviews + custom events combined
         db.query(`
             SELECT
                 DATE_TRUNC('minute', received_at) AS minute,
                 COUNT(*) AS events
-            FROM analytics_events
-            WHERE site_id = $1
-              AND received_at >= NOW() - INTERVAL '30 minutes'
+            FROM (
+                SELECT received_at FROM analytics_events
+                WHERE site_id = $1 AND received_at >= NOW() - INTERVAL '30 minutes'
+                UNION ALL
+                SELECT received_at FROM analytics_custom_events
+                WHERE site_id = $1 AND received_at >= NOW() - INTERVAL '30 minutes'
+            ) combined
             GROUP BY 1
             ORDER BY 1`,
             [siteId]
@@ -132,11 +142,17 @@ export default async function handler(req, res) {
             [siteId]
         ).catch(() => ({ rows: [] })),
 
+        // Recent activity: pageviews + custom events merged, newest first
         db.query(`
-            SELECT received_at, pathname, page_host, country_code, device_type, consent_level
+            SELECT received_at, pathname, page_host, country_code, device_type, consent_level,
+                   NULL::text AS event_name
             FROM analytics_events
-            WHERE site_id = $1
-              AND received_at >= NOW() - INTERVAL '30 minutes'
+            WHERE site_id = $1 AND received_at >= NOW() - INTERVAL '30 minutes'
+            UNION ALL
+            SELECT received_at, pathname, page_host, country_code, device_type, consent_level,
+                   name AS event_name
+            FROM analytics_custom_events
+            WHERE site_id = $1 AND received_at >= NOW() - INTERVAL '30 minutes'
             ORDER BY received_at DESC
             LIMIT 20`,
             [siteId]
@@ -196,12 +212,13 @@ export default async function handler(req, res) {
             views: parseInt(r.events),
         })),
         recent: recentRes.rows.map(r => ({
-            at:      r.received_at,
-            path:    r.pathname,
-            host:    r.page_host,
-            country: r.country_code,
-            device:  r.device_type,
-            level:   r.consent_level,
+            at:        r.received_at,
+            path:      r.pathname,
+            host:      r.page_host,
+            country:   r.country_code,
+            device:    r.device_type,
+            level:     r.consent_level,
+            eventName: r.event_name || null,
         })),
         conversions: conversionsRes.rows.map(r => ({
             name:       r.name,
