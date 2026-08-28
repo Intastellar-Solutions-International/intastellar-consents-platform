@@ -1403,13 +1403,15 @@ var _spaLastPath=location.pathname+location.search;
     }catch(err){}
   },true);
   function findFid(url){
+    // Never attribute analytics-endpoint failures to a form — avoids cascade.
+    if(!url||url.indexOf(EP)!==-1)return null;
     var path=(url||'').replace(/^https?:\/\/[^\/]+/,'').split('?')[0];
-    var now=Date.now(),best=null,bestS=0;
+    var now=Date.now(),best=null;
     for(var fid in Q){
       var s=Q[fid];
       if(now-s.t>WIN){delete Q[fid];continue;}
-      var score=(s.action&&path.indexOf(s.action)===0)?2:1;
-      if(score>bestS){bestS=score;best=fid;}
+      // Only match when the request URL starts with the form's action path.
+      if(s.action&&path.indexOf(s.action)===0){best=fid;break;}
     }
     return best;
   }
@@ -1423,10 +1425,12 @@ var _spaLastPath=location.pathname+location.search;
     }});
   }
   if(window.fetch){
-    var _fetch=window.fetch;
+    // .bind(window) so the native fetch always gets the right |this| regardless
+    // of how our wrapper is invoked (strict-mode bare call sets this=undefined).
+    var _fetch=window.fetch.bind(window);
     window.fetch=function(input,init){
       var url=input&&(typeof input==='string'?input:(input.url||''));
-      return _fetch.call(this,input,init).then(function(resp){
+      return _fetch(input,init).then(function(resp){
         if(!resp.ok){var fid=findFid(url);if(fid)fireErr(fid,resp.status,'HTTP '+resp.status);}
         return resp;
       },function(err){
