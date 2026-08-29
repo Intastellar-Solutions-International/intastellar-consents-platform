@@ -11,9 +11,9 @@
  *   ids     — array of specific push record IDs to retry
  *
  * Required env vars (platform-specific):
- *   GOOGLE_ADS_DEVELOPER_TOKEN   — per-API-user token from Google Ads API Centre
  *   GOOGLE_CLIENT_ID             — OAuth2 client_id for token refresh
  *   GOOGLE_CLIENT_SECRET         — OAuth2 client_secret for token refresh
+ *   (Google Ads uses the Data Manager API — no developer token needed)
  */
 
 import pkg from "pg";
@@ -141,47 +141,49 @@ async function getValidToken(db, connection) {
 // ── Platform push functions ───────────────────────────────────────────────────
 
 async function pushGoogleAds(connection, token, push) {
-    const devToken = process.env.GOOGLE_ADS_DEVELOPER_TOKEN;
-    if (!devToken) throw new Error("GOOGLE_ADS_DEVELOPER_TOKEN not configured");
     if (!connection.conversion_action) throw new Error("No conversion_action configured for this Google Ads connection");
 
-    const customerId  = (connection.account_id || "").replace(/-/g, "");
+    const customerId = (connection.account_id || "").replace(/-/g, "");
     if (!customerId) throw new Error("No account_id (customer ID) on connection");
 
-    // Format: "2024-01-15 14:30:00+00:00"
-    const dt = new Date(push.conversion_time);
-    const conversionDateTime = dt.toISOString().replace("T", " ").replace(/\.\d{3}Z$/, "+00:00");
+    // conversion_action is stored as a resource name e.g. customers/123/conversionActions/456;
+    // Data Manager API wants only the numeric ID as productDestinationId.
+    const conversionActionId = (connection.conversion_action || "").split("/").pop();
+    if (!conversionActionId) throw new Error("Could not parse numeric conversion action ID from: " + connection.conversion_action);
 
-    const body = {
-        conversions: [{
-            gclid:              push.click_id,
-            conversionAction:   connection.conversion_action,
-            conversionDateTime,
-            ...(push.value_usd != null && {
-                conversionValue: Number(push.value_usd),
-                currencyCode:    push.currency || "EUR",
-            }),
-        }],
-        partialFailure: true,
-    };
-
-    const headers = {
-        "Content-Type":       "application/json",
-        "Authorization":      `Bearer ${token}`,
-        "developer-token":    devToken,
+    const destination = {
+        reference: "ga-conv",
+        operatingAccount: { accountType: "GOOGLE_ADS", accountId: customerId },
+        productDestinationId: conversionActionId,
     };
     if (connection.login_customer_id) {
-        headers["login-customer-id"] = connection.login_customer_id.replace(/-/g, "");
+        destination.loginAccount = {
+            accountType: "GOOGLE_ADS",
+            accountId: connection.login_customer_id.replace(/-/g, ""),
+        };
     }
 
+    const event = {
+        destinationReferences: ["ga-conv"],
+        adIdentifiers: { gclid: push.click_id },
+        eventTimestamp: new Date(push.conversion_time).toISOString(),
+        ...(push.value_usd != null && {
+            conversionValue: Number(push.value_usd),
+            currency: push.currency || "EUR",
+        }),
+    };
+
     const resp = await fetch(
-        `https://googleads.googleapis.com/v25/customers/${customerId}:uploadClickConversions`,
-        { method: "POST", headers, body: JSON.stringify(body) }
+        "https://datamanager.googleapis.com/v1/events:ingest",
+        {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+            body: JSON.stringify({ destinations: [destination], events: [event] }),
+        }
     );
     const json = await resp.json().catch(() => ({}));
 
     if (!resp.ok) throw new Error(json?.error?.message || `HTTP ${resp.status}`);
-    if (json.partialFailureError) throw new Error(json.partialFailureError.message || "Partial failure");
 
     return json;
 }

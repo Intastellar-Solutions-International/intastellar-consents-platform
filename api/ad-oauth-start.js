@@ -51,7 +51,7 @@ function buildAuthUrl(platform, state) {
         case "google_ads": {
             const clientId = process.env.GOOGLE_CLIENT_ID;
             if (!clientId) return null;
-            const scope = encodeURIComponent("https://www.googleapis.com/auth/adwords");
+            const scope = encodeURIComponent("https://www.googleapis.com/auth/adwords https://www.googleapis.com/auth/datamanager");
             return `https://accounts.google.com/o/oauth2/v2/auth?client_id=${encodeURIComponent(clientId)}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}&state=${state}&access_type=offline&prompt=consent`;
         }
         case "meta_ads": {
