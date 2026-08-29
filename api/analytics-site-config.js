@@ -1,3 +1,4 @@
+import { getPool } from "./_db.js";
 /**
  * GET /api/analytics-site-config?site=<siteKey>
  *
@@ -7,25 +8,6 @@
  * the cached, byte-identical GET /api/a response so per-site config can change
  * without needing to bust that response's CDN cache.
  */
-
-import pkg from "pg";
-const { Pool } = pkg;
-
-let pool;
-function getPool() {
-    if (!pool) {
-        pool = new Pool({
-            connectionString: process.env.POSTGRES_URL,
-            ssl: { rejectUnauthorized: false },
-            max: 1,
-            idleTimeoutMillis: 10_000,
-            connectionTimeoutMillis: 5_000,
-            connectionTimeoutMillis: 5000,
-        });
-    }
-    return pool;
-}
-
 export default async function handler(req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");

@@ -1,3 +1,4 @@
+import { getPool } from "./_db.js";
 /**
  * GET    /api/analytics-events?domain=<domain>            → list conversion event definitions
  * POST   /api/analytics-events   body: { domain, name, kind, label } → create a definition
@@ -11,24 +12,6 @@
  *
  * Requires headers: Authorization: Bearer <token>   Organisation: <org_id>
  */
-
-import pkg from "pg";
-const { Pool } = pkg;
-
-let pool;
-function getPool() {
-    if (!pool) {
-        pool = new Pool({
-            connectionString: process.env.POSTGRES_URL,
-            ssl: { rejectUnauthorized: false },
-            max: 1,
-            idleTimeoutMillis: 10_000,
-            connectionTimeoutMillis: 5_000,
-        });
-    }
-    return pool;
-}
-
 const ALLOWED_ORIGINS = [
     "https://www.intastellarconsents.com",
     "https://www.consentsmanagement.com",

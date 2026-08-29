@@ -20,24 +20,8 @@
  * CORS: wildcard — designed to be called from any website.
  */
 
-import pkg from "pg";
-const { Pool } = pkg;
 import { scanDomain, BANNER_CATEGORY, categoryFromCookieName, describeCookie, vendorFromCookieName } from "./_scan-core.js";
-
-let pool;
-function getPool() {
-    if (!pool) {
-        pool = new Pool({
-            connectionString: process.env.POSTGRES_URL,
-            ssl: { rejectUnauthorized: false },
-            max: 1,
-            idleTimeoutMillis: 10_000,
-            connectionTimeoutMillis: 5_000,
-        });
-    }
-    return pool;
-}
-
+import { getPool } from "./_db.js";
 let tableReady = false;
 async function ensureTable(db) {
     if (tableReady) return;

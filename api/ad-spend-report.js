@@ -21,24 +21,8 @@
  * Required env vars: POSTGRES_URL
  */
 
-import pkg from "pg";
-const { Pool } = pkg;
 import { getEcbRates, fx, FALLBACK_RATES } from "./_fx.js";
-
-let pool;
-function getPool() {
-    if (!pool) {
-        pool = new Pool({
-            connectionString: process.env.POSTGRES_URL,
-            ssl: { rejectUnauthorized: false },
-            max: 1,
-            idleTimeoutMillis: 10_000,
-            connectionTimeoutMillis: 5_000,
-        });
-    }
-    return pool;
-}
-
+import { getPool } from "./_db.js";
 let _migrationsRun = false;
 async function ensureColumns(db) {
     if (_migrationsRun) return;

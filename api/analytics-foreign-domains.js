@@ -1,3 +1,4 @@
+import { getPool } from "./_db.js";
 /**
  * GET    /api/analytics-foreign-domains?domain=   → list foreign domains for a site
  * PATCH  /api/analytics-foreign-domains?domain=   body: { foreignDomain, approved } → approve/revoke
@@ -8,24 +9,6 @@
  * Unapproved foreign domains are logged but not tracked. Approved ones are
  * treated identically to the primary domain.
  */
-
-import pkg from "pg";
-const { Pool } = pkg;
-
-let pool;
-function getPool() {
-    if (!pool) {
-        pool = new Pool({
-            connectionString: process.env.POSTGRES_URL,
-            ssl: { rejectUnauthorized: false },
-            max: 1,
-            idleTimeoutMillis: 10_000,
-            connectionTimeoutMillis: 5_000,
-        });
-    }
-    return pool;
-}
-
 const ALLOWED_ORIGINS = [
     "https://www.intastellarconsents.com",
     "https://www.consentsmanagement.com",

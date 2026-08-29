@@ -1,3 +1,4 @@
+import { getPool } from "./_db.js";
 /**
  * GET  /api/ropa              — list entries (org-wide + domain-specific if ?domain= provided)
  * GET  /api/ropa?id=123       — get a single entry
@@ -10,24 +11,6 @@
  *   Authorization  Bearer <token>
  *   Organisation   <organisation_id>
  */
-
-import pkg from "pg";
-const { Pool } = pkg;
-
-let pool;
-function getPool() {
-    if (!pool) {
-        pool = new Pool({
-            connectionString: process.env.POSTGRES_URL,
-            ssl: { rejectUnauthorized: false },
-            max: 1,
-            idleTimeoutMillis: 10_000,
-            connectionTimeoutMillis: 5_000,
-        });
-    }
-    return pool;
-}
-
 let tableReady = false;
 async function ensureTable(db) {
     if (tableReady) return;

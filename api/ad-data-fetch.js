@@ -10,24 +10,8 @@
  *   GOOGLE_ADS_DEVELOPER_TOKEN — required for Google Ads API calls
  */
 
-import pkg from "pg";
-const { Pool } = pkg;
 import { tryRefreshToken as _tryRefreshToken, fetchPlatformData } from "./_ad-platform-fetch.js";
-
-let pool;
-function getPool() {
-    if (!pool) {
-        pool = new Pool({
-            connectionString: process.env.POSTGRES_URL,
-            ssl: { rejectUnauthorized: false },
-            max: 1,
-            idleTimeoutMillis: 10_000,
-            connectionTimeoutMillis: 5_000,
-        });
-    }
-    return pool;
-}
-
+import { getPool } from "./_db.js";
 function validateJwt(authHeader) {
     const match = (authHeader || "").match(/^Bearer\s+(.+)$/i);
     if (!match) return null;

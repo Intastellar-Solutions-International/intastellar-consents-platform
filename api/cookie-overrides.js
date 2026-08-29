@@ -1,3 +1,4 @@
+import { getPool } from "./_db.js";
 /**
  * GET  /api/cookie-overrides?domain=example.com  — load overrides for a domain
  * POST /api/cookie-overrides                      — upsert overrides for a domain
@@ -6,24 +7,6 @@
  *
  * POST body: { domain: string, overrides: Record<cookieName, { bannerCategory?, vendor?, description? }> }
  */
-
-import pkg from "pg";
-const { Pool } = pkg;
-
-let pool;
-function getPool() {
-    if (!pool) {
-        pool = new Pool({
-            connectionString: process.env.POSTGRES_URL,
-            ssl: { rejectUnauthorized: false },
-            max: 1,
-            idleTimeoutMillis: 10_000,
-            connectionTimeoutMillis: 5_000,
-        });
-    }
-    return pool;
-}
-
 const ALLOWED_ORIGINS = [
     "https://www.intastellarconsents.com",
     "https://www.consentsmanagement.com",

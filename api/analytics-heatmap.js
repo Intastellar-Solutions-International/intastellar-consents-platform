@@ -1,3 +1,4 @@
+import { getPool } from "./_db.js";
 /**
  * GET /api/analytics-heatmap?domain=<domain>&from=<YYYY-MM-DD>&to=<YYYY-MM-DD>[&pathname=<path>&host=<host>&device=all|desktop|tablet|mobile&grid=5]
  *
@@ -19,25 +20,6 @@
  * exact host a path was seen on, since the same pathname can exist on
  * different subdomains with different layouts.
  */
-
-import pkg from "pg";
-const { Pool } = pkg;
-
-let pool;
-function getPool() {
-    if (!pool) {
-        pool = new Pool({
-            connectionString: process.env.POSTGRES_URL,
-            ssl: { rejectUnauthorized: false },
-            max: 1,
-            idleTimeoutMillis: 10_000,
-            connectionTimeoutMillis: 5_000,
-            connectionTimeoutMillis: 5000,
-        });
-    }
-    return pool;
-}
-
 const ALLOWED_ORIGINS = [
     "https://www.intastellarconsents.com",
     "https://www.consentsmanagement.com",

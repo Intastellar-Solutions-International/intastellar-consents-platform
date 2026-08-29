@@ -25,10 +25,9 @@
  *   CRON_AD_SYNC_BACKFILL_DAYS  — how far back to fill on first run (default 30)
  */
 
-import pkg from "pg";
-const { Pool } = pkg;
 import { tryRefreshToken, fetchPlatformDataDaily } from "./_ad-platform-fetch.js";
 import { getEcbRates, fx } from "./_fx.js";
+import { getPool } from "./_db.js";
 
 function validateJwt(authHeader) {
     const match = (authHeader || "").match(/^Bearer\s+(.+)$/i);
@@ -44,21 +43,6 @@ function validateJwt(authHeader) {
         return payload;
     } catch { return null; }
 }
-
-let pool;
-function getPool() {
-    if (!pool) {
-        pool = new Pool({
-            connectionString: process.env.POSTGRES_URL,
-            ssl: { rejectUnauthorized: false },
-            max: 1,
-            idleTimeoutMillis: 10_000,
-            connectionTimeoutMillis: 5_000,
-        });
-    }
-    return pool;
-}
-
 const BACKFILL_DAYS = Math.min(
     parseInt(process.env.CRON_AD_SYNC_BACKFILL_DAYS || "30", 10),
     90

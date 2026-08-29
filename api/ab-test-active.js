@@ -1,3 +1,4 @@
+import { getPool } from "./_db.js";
 /**
  * GET /api/ab-test-active?site=<siteKey>&path=<pathname>
  *
@@ -16,25 +17,6 @@
  * every pageload across every customer site, so it must never surface as a
  * client-visible failure.
  */
-
-import pkg from "pg";
-const { Pool } = pkg;
-
-let pool;
-function getPool() {
-    if (!pool) {
-        pool = new Pool({
-            connectionString: process.env.POSTGRES_URL,
-            ssl: { rejectUnauthorized: false },
-            max: 1,
-            idleTimeoutMillis: 10_000,
-            connectionTimeoutMillis: 5_000,
-            connectionTimeoutMillis: 5000,
-        });
-    }
-    return pool;
-}
-
 // Strips a single trailing slash (but never the bare root) so a test saved
 // as "/pricing" still matches a visit to "/pricing/" — same normalization
 // applied to targetPath on write in api/ab-tests.js.

@@ -1,3 +1,4 @@
+import { getPool } from "./_db.js";
 /**
  * GET /api/analytics-attribution?domain=example.com&from=2024-01-01&to=2024-01-31
  *
@@ -6,24 +7,6 @@
  *
  * Required headers: Authorization: Bearer <token>, Organisation: <org_id>
  */
-
-import pkg from "pg";
-const { Pool } = pkg;
-
-let pool;
-function getPool() {
-    if (!pool) {
-        pool = new Pool({
-            connectionString: process.env.POSTGRES_URL,
-            ssl: { rejectUnauthorized: false },
-            max: 1,
-            idleTimeoutMillis: 10_000,
-            connectionTimeoutMillis: 5_000,
-        });
-    }
-    return pool;
-}
-
 function validateJwt(authHeader) {
     const match = (authHeader || "").match(/^Bearer\s+(.+)$/i);
     if (!match) return null;

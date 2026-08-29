@@ -1,3 +1,4 @@
+import { getPool } from "./_db.js";
 /**
  * GET /api/cron-enrich-discoveries
  *
@@ -19,28 +20,11 @@
  * Secured via CRON_SECRET (same pattern as cron-scan-domains).
  */
 
-import pkg from "pg";
-const { Pool } = pkg;
 import {
     vendorFromCookieName,
     categoryFromCookieName,
     VENDOR_META,
 } from "./_scan-core.js";
-
-let pool;
-function getPool() {
-    if (!pool) {
-        pool = new Pool({
-            connectionString: process.env.POSTGRES_URL,
-            ssl: { rejectUnauthorized: false },
-            max: 1,
-            idleTimeoutMillis: 10_000,
-            connectionTimeoutMillis: 5_000,
-        });
-    }
-    return pool;
-}
-
 // DDG category → our banner category
 const DDG_CATEGORY_MAP = {
     "Advertising Networks":          "marketing",

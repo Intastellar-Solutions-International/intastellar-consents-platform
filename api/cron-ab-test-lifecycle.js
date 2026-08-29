@@ -1,3 +1,4 @@
+import { getPool } from "./_db.js";
 /**
  * GET /api/cron-ab-test-lifecycle  (invoked by Vercel Cron, daily at 06:00 UTC)
  *
@@ -10,24 +11,6 @@
  * column still says. A day's delay here before the dashboard reflects
  * "Completed" is harmless.
  */
-
-import pkg from "pg";
-const { Pool } = pkg;
-
-let pool;
-function getPool() {
-    if (!pool) {
-        pool = new Pool({
-            connectionString: process.env.POSTGRES_URL,
-            ssl: { rejectUnauthorized: false },
-            max: 1,
-            idleTimeoutMillis: 10_000,
-            connectionTimeoutMillis: 5_000,
-        });
-    }
-    return pool;
-}
-
 async function ensureTables(db) {
     await db.query(`
         CREATE TABLE IF NOT EXISTS ab_tests (

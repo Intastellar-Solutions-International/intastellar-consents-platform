@@ -1,3 +1,4 @@
+import { getPool } from "./_db.js";
 /**
  * GET /api/jurisdiction-config-public?org=123
  *
@@ -28,24 +29,6 @@
  *
  * Response is cached for 5 minutes (CDN-friendly).
  */
-
-import pkg from "pg";
-const { Pool } = pkg;
-
-let pool;
-function getPool() {
-    if (!pool) {
-        pool = new Pool({
-            connectionString: process.env.POSTGRES_URL,
-            ssl: { rejectUnauthorized: false },
-            max: 1,
-            idleTimeoutMillis: 10_000,
-            connectionTimeoutMillis: 5_000,
-        });
-    }
-    return pool;
-}
-
 const FRAMEWORK_IDS = ["GDPR", "LGPD", "CCPA", "PDPA", "POPIA"];
 
 const AUTO_RESPONSE = {

@@ -1,3 +1,4 @@
+import { getPool } from "./_db.js";
 /**
  * GET /api/cookie-lookup?name=<cookie_name>
  *
@@ -15,8 +16,6 @@
  * CORS: wildcard — safe to call from any website.
  */
 
-import pkg from "pg";
-const { Pool } = pkg;
 import {
     describeCookie,
     categoryFromCookieName,
@@ -28,21 +27,6 @@ import {
     DATA_COUNTRIES,
     DATA_REGIONS,
 } from "./_scan-core.js";
-
-let pool;
-function getPool() {
-    if (!pool) {
-        pool = new Pool({
-            connectionString: process.env.POSTGRES_URL,
-            ssl: { rejectUnauthorized: false },
-            max: 1,
-            idleTimeoutMillis: 10_000,
-            connectionTimeoutMillis: 5_000,
-        });
-    }
-    return pool;
-}
-
 function buildVerifiedEntry(key, isPrefix, description) {
     const vendor     = vendorFromCookieName(key);
     const category   = categoryFromCookieName(key);

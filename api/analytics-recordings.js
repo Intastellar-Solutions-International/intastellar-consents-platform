@@ -10,25 +10,8 @@
  * Requires: Authorization: Bearer <token>   Organisation: <org_id>
  */
 
-import pkg from "pg";
-const { Pool } = pkg;
 import { get } from "@vercel/blob";
-
-let pool;
-function getPool() {
-    if (!pool) {
-        pool = new Pool({
-            connectionString: process.env.POSTGRES_URL,
-            ssl: { rejectUnauthorized: false },
-            max: 1,
-            idleTimeoutMillis: 10_000,
-            connectionTimeoutMillis: 5_000,
-            connectionTimeoutMillis: 5000,
-        });
-    }
-    return pool;
-}
-
+import { getPool } from "./_db.js";
 const ALLOWED_ORIGINS = [
     "https://www.intastellarconsents.com",
     "https://www.consentsmanagement.com",

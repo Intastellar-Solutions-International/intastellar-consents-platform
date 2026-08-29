@@ -8,24 +8,8 @@
  * 3. Hard-deletes click rows past each site's `heatmap_retention_days`.
  */
 
-import pkg from "pg";
-const { Pool } = pkg;
 import { del } from "@vercel/blob";
-
-let pool;
-function getPool() {
-    if (!pool) {
-        pool = new Pool({
-            connectionString: process.env.POSTGRES_URL,
-            ssl: { rejectUnauthorized: false },
-            max: 1,
-            idleTimeoutMillis: 10_000,
-            connectionTimeoutMillis: 5_000,
-        });
-    }
-    return pool;
-}
-
+import { getPool } from "./_db.js";
 export default async function handler(req, res) {
     const db = getPool();
 

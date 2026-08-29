@@ -13,30 +13,14 @@
  */
 
 import { createHash } from "crypto";
-import pkg from "pg";
-const { Pool } = pkg;
 import { scanDomain, describeCookie, vendorFromCookieName, categoryFromCookieName } from "./_scan-core.js";
+import { getPool } from "./_db.js";
 
 function fingerprint(transfers, cookies) {
     const t = transfers.map(x => x.host).sort();
     const c = cookies.map(x => x.name).sort();
     return createHash("sha1").update(JSON.stringify({ t, c })).digest("hex");
 }
-
-let pool;
-function getPool() {
-    if (!pool) {
-        pool = new Pool({
-            connectionString: process.env.POSTGRES_URL,
-            ssl: { rejectUnauthorized: false },
-            max: 1,
-            idleTimeoutMillis: 10_000,
-            connectionTimeoutMillis: 5_000,
-        });
-    }
-    return pool;
-}
-
 async function recordDiscoveries(db, scannedSite, cookies) {
     await db.query(`
         CREATE TABLE IF NOT EXISTS cookie_discoveries (

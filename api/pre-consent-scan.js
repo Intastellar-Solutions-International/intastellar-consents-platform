@@ -14,25 +14,10 @@
  *   POSTGRES_URL  — Neon connection string (EU Frankfurt)
  */
 
-import pkg from "pg";
-const { Pool } = pkg;
 import { scanDomain } from "./_scan-core.js";
+import { getPool } from "./_db.js";
 
 // ── DB pool (reused across warm invocations) ──────────────────────────────────
-let pool;
-function getPool() {
-    if (!pool) {
-        pool = new Pool({
-            connectionString: process.env.POSTGRES_URL,
-            ssl: { rejectUnauthorized: false },
-            max: 1,
-            idleTimeoutMillis: 10_000,
-            connectionTimeoutMillis: 5_000,
-        });
-    }
-    return pool;
-}
-
 // ── JWT validation (mirrors PHP — checks claims only, no signature) ────────────
 function validateJwt(authHeader) {
     const match = (authHeader || "").match(/^Bearer\s+(.+)$/i);

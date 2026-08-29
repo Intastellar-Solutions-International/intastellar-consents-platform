@@ -1,3 +1,4 @@
+import { getPool } from "./_db.js";
 /**
  * GET /api/cron-cleanup-scans  (invoked by Vercel Cron, daily at 03:30 UTC)
  *
@@ -5,24 +6,6 @@
  * Retains the 3 most recent completed scans per domain and deletes the rest.
  * Also purges stuck pending/in_progress rows older than 2 hours.
  */
-
-import pkg from "pg";
-const { Pool } = pkg;
-
-let pool;
-function getPool() {
-    if (!pool) {
-        pool = new Pool({
-            connectionString: process.env.POSTGRES_URL,
-            ssl: { rejectUnauthorized: false },
-            max: 1,
-            idleTimeoutMillis: 10_000,
-            connectionTimeoutMillis: 5_000,
-        });
-    }
-    return pool;
-}
-
 export default async function handler(req, res) {
     if (req.headers.authorization !== `Bearer ${process.env.CRON_SECRET}`) {
         return res.status(401).json({ error: "Unauthorized" });

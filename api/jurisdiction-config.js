@@ -1,3 +1,4 @@
+import { getPool } from "./_db.js";
 /**
  * GET  /api/jurisdiction-config  — fetch org's saved jurisdiction config
  * POST /api/jurisdiction-config  — save org's jurisdiction config
@@ -14,24 +15,6 @@
  *     updated_at      TIMESTAMPTZ DEFAULT NOW()
  *   );
  */
-
-import pkg from "pg";
-const { Pool } = pkg;
-
-let pool;
-function getPool() {
-    if (!pool) {
-        pool = new Pool({
-            connectionString: process.env.POSTGRES_URL,
-            ssl: { rejectUnauthorized: false },
-            max: 1,
-            idleTimeoutMillis: 10_000,
-            connectionTimeoutMillis: 5_000,
-        });
-    }
-    return pool;
-}
-
 let tableReady = false;
 async function ensureTable(db) {
     if (tableReady) return;

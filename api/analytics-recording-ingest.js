@@ -14,25 +14,8 @@
  * just knowledge of the URL.
  */
 
-import pkg from "pg";
-const { Pool } = pkg;
 import { put } from "@vercel/blob";
-
-let pool;
-function getPool() {
-    if (!pool) {
-        pool = new Pool({
-            connectionString: process.env.POSTGRES_URL,
-            ssl: { rejectUnauthorized: false },
-            max: 1,
-            idleTimeoutMillis: 10_000,
-            connectionTimeoutMillis: 5_000,
-            connectionTimeoutMillis: 5000,
-        });
-    }
-    return pool;
-}
-
+import { getPool } from "./_db.js";
 async function ensureTable(db) {
     await db.query(`
         CREATE TABLE IF NOT EXISTS analytics_recordings (

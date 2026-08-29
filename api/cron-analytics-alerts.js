@@ -1,3 +1,4 @@
+import { getPool } from "./_db.js";
 /**
  * Cron: /api/cron-analytics-alerts  (runs daily at 07:00 UTC per vercel.json)
  *
@@ -13,25 +14,6 @@
  * The consent platform's DB lives on a different server and is not queried
  * here; all metrics are computed from analytics_events (same DB as analytics).
  */
-
-import pkg from "pg";
-const { Pool } = pkg;
-
-let pool;
-function getPool() {
-    if (!pool) {
-        pool = new Pool({
-            connectionString: process.env.POSTGRES_URL,
-            ssl: { rejectUnauthorized: false },
-            max: 1,
-            idleTimeoutMillis: 10_000,
-            connectionTimeoutMillis: 5_000,
-            connectionTimeoutMillis: 20000,
-        });
-    }
-    return pool;
-}
-
 // ── Email ─────────────────────────────────────────────────────────────────────
 
 async function sendEmail({ to, subject, html }) {

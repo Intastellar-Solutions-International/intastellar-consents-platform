@@ -16,10 +16,8 @@
  *   POSTGRES_URL  — Neon connection string (EU Frankfurt)
  */
 
-import pkg from "pg";
-const { Pool } = pkg;
-
 import { vendorFromCookieName, VENDOR_META } from "./_scan-core.js";
+import { getPool } from "./_db.js";
 
 const BANNER_CATEGORY = {
     advertising:    "marketing",
@@ -119,21 +117,6 @@ function enrichWithBannerCategory(transfers, cookies, domain) {
     });
     return { enrichedTransfers, enrichedCookies };
 }
-
-let pool;
-function getPool() {
-    if (!pool) {
-        pool = new Pool({
-            connectionString: process.env.POSTGRES_URL,
-            ssl: { rejectUnauthorized: false },
-            max: 1,
-            idleTimeoutMillis: 10_000,
-            connectionTimeoutMillis: 5_000,
-        });
-    }
-    return pool;
-}
-
 const ALLOWED_ORIGINS = [
     "https://www.intastellarconsents.com",
     "https://www.consentsmanagement.com",

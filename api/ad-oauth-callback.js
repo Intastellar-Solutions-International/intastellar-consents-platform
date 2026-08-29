@@ -10,25 +10,9 @@
  *   MICROSOFT_ADS_DEVELOPER_TOKEN — required to list Microsoft Ads accounts
  */
 
-import pkg from "pg";
-const { Pool } = pkg;
 import { createHmac } from "crypto";
 import { fetchMicrosoftAdsAccounts } from "./_ad-platform-fetch.js";
-
-let pool;
-function getPool() {
-    if (!pool) {
-        pool = new Pool({
-            connectionString: process.env.POSTGRES_URL,
-            ssl: { rejectUnauthorized: false },
-            max: 1,
-            idleTimeoutMillis: 10_000,
-            connectionTimeoutMillis: 5_000,
-        });
-    }
-    return pool;
-}
-
+import { getPool } from "./_db.js";
 const REDIRECT_URI = process.env.OAUTH_REDIRECT_URI
     || "https://www.intastellarconsents.com/api/ad-oauth-callback";
 

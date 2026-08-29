@@ -1,3 +1,4 @@
+import { getPool } from "./_db.js";
 /**
  * GET  /api/a  → serves the Intastellar First-Party Analytics embed script
  * POST /api/a  → ingest endpoint receiving pageview events from embedded sites
@@ -7,24 +8,6 @@
  *  - Never store IP addresses (country derived from Vercel headers, raw IP discarded)
  *  - Only accept events whose site_id is registered and active
  */
-
-import pkg from "pg";
-const { Pool } = pkg;
-
-let pool;
-function getPool() {
-    if (!pool) {
-        pool = new Pool({
-            connectionString: process.env.POSTGRES_URL,
-            ssl: { rejectUnauthorized: false },
-            max: 1,
-            idleTimeoutMillis: 10_000,
-            connectionTimeoutMillis: 5_000,
-        });
-    }
-    return pool;
-}
-
 // ── GDPR-safe UA parsing ──────────────────────────────────────────────────────
 // We only categorise, never store the raw UA string.
 function parseUA(ua = "") {

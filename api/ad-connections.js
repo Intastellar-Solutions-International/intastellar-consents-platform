@@ -1,3 +1,4 @@
+import { getPool } from "./_db.js";
 /**
  * GET    /api/ad-connections?domain=example.com  — list connections for org (optionally filtered by domain)
  * DELETE /api/ad-connections?platform=google_ads&domain=example.com — remove a connection
@@ -7,24 +8,6 @@
  * Required env vars:
  *   POSTGRES_URL — Neon connection string
  */
-
-import pkg from "pg";
-const { Pool } = pkg;
-
-let pool;
-function getPool() {
-    if (!pool) {
-        pool = new Pool({
-            connectionString: process.env.POSTGRES_URL,
-            ssl: { rejectUnauthorized: false },
-            max: 1,
-            idleTimeoutMillis: 10_000,
-            connectionTimeoutMillis: 5_000,
-        });
-    }
-    return pool;
-}
-
 function validateJwt(authHeader) {
     const match = (authHeader || "").match(/^Bearer\s+(.+)$/i);
     if (!match) return null;

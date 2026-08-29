@@ -1,3 +1,4 @@
+import { getPool } from "./_db.js";
 /**
  * GET /api/cron-scan-domains
  *
@@ -26,24 +27,6 @@
  *   BASE_URL           — Override base URL for internal task calls
  *                        (defaults to https://$VERCEL_PROJECT_PRODUCTION_URL)
  */
-
-import pkg from "pg";
-const { Pool } = pkg;
-
-let pool;
-function getPool() {
-    if (!pool) {
-        pool = new Pool({
-            connectionString: process.env.POSTGRES_URL,
-            ssl: { rejectUnauthorized: false },
-            max: 1,
-            idleTimeoutMillis: 10_000,
-            connectionTimeoutMillis: 5_000,
-        });
-    }
-    return pool;
-}
-
 const FRESHNESS_DAYS = parseInt(process.env.SCAN_FRESHNESS_DAYS || "1", 10);
 const CONCURRENCY    = parseInt(process.env.SCAN_CONCURRENCY    || "10", 10);
 

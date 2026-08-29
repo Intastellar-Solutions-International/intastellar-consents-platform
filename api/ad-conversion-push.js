@@ -1,3 +1,4 @@
+import { getPool } from "./_db.js";
 /**
  * GET  /api/ad-conversion-push?domain=  — list recent push records for the org
  * POST /api/ad-conversion-push          — process pending conversions and push to ad platforms
@@ -15,24 +16,6 @@
  *   GOOGLE_CLIENT_SECRET         — OAuth2 client_secret for token refresh
  *   (Google Ads uses the Data Manager API — no developer token needed)
  */
-
-import pkg from "pg";
-const { Pool } = pkg;
-
-let pool;
-function getPool() {
-    if (!pool) {
-        pool = new Pool({
-            connectionString: process.env.POSTGRES_URL,
-            ssl: { rejectUnauthorized: false },
-            max: 1,
-            idleTimeoutMillis: 10_000,
-            connectionTimeoutMillis: 5_000,
-        });
-    }
-    return pool;
-}
-
 function validateJwt(authHeader) {
     const match = (authHeader || "").match(/^Bearer\s+(.+)$/i);
     if (!match) return null;
