@@ -77,6 +77,9 @@ const BOT_PATTERNS = [
     { re: /Timpibot/i,           name: "Timpibot",           category: "ai_crawler" },
     { re: /YouBot/i,             name: "YouBot",             category: "ai_crawler" },
     { re: /omgili/i,             name: "omgilibot",          category: "ai_crawler" },
+    { re: /ev-crawler/i,         name: "ev-crawler (Headline)", category: "ai_crawler" },
+    { re: /DuckAssistBot/i,      name: "DuckAssistBot",      category: "ai_crawler" },
+    { re: /quillbot/i,           name: "QuillBot",           category: "ai_crawler" },
 
     // Search engines
     // Google runs several distinct crawlers beyond the main web crawler — most
@@ -104,6 +107,7 @@ const BOT_PATTERNS = [
     { re: /YandexBot/i,          name: "YandexBot",          category: "search_engine" },
     { re: /Applebot/i,           name: "Applebot",           category: "search_engine" },
     { re: /SeznamBot/i,          name: "SeznamBot",          category: "search_engine" },
+    { re: /Sogou/i,              name: "Sogou Spider",        category: "search_engine" },
 
     // Social-share link preview fetchers
     { re: /facebookexternalhit/i, name: "Facebook",          category: "social_preview" },
@@ -118,6 +122,7 @@ const BOT_PATTERNS = [
     { re: /Pinterest/i,           name: "Pinterest",         category: "social_preview" },
 
     // SEO / backlink crawlers
+    { re: /AhrefsSiteAudit/i,    name: "AhrefsSiteAudit",    category: "seo_tool" },
     { re: /AhrefsBot/i,          name: "AhrefsBot",          category: "seo_tool" },
     { re: /SemrushBot/i,         name: "SemrushBot",         category: "seo_tool" },
     { re: /MJ12bot/i,            name: "MJ12bot",            category: "seo_tool" },
@@ -129,6 +134,8 @@ const BOT_PATTERNS = [
     // sites to power a company-data API (analytics/developer use cases),
     // rather than for search ranking, ad relevance, or AI training.
     { re: /DatapublicaBot/i,     name: "DatapublicaBot",     category: "data_aggregator" },
+    { re: /LeadBot/i,            name: "LeadBot",            category: "data_aggregator" },
+    { re: /ArgoWebsiteCrawler/i, name: "ArgoWebsiteCrawler", category: "data_aggregator" },
 
     // Uptime / synthetic monitors
     { re: /UptimeRobot/i,        name: "UptimeRobot",        category: "uptime_monitor" },
