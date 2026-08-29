@@ -126,6 +126,7 @@ export default function AnalyticsBots() {
                                         <tr>
                                             <th>Bot</th>
                                             <th>Category</th>
+                                            <th>Hosts contacted</th>
                                             <th className="sa-table__num">Hits</th>
                                             <th className="sa-table__bar" />
                                         </tr>
@@ -137,6 +138,11 @@ export default function AnalyticsBots() {
                                                 <td style={{ color: "rgba(150,150,150,0.7)", fontSize: "0.78rem" }}>
                                                     {CATEGORY_LABELS[b.category] || b.category}
                                                 </td>
+                                                <td style={{ fontSize: "0.78rem", color: "rgba(150,150,150,0.85)" }}>
+                                                    {b.hosts && b.hosts.length
+                                                        ? b.hosts.join(", ")
+                                                        : <span style={{ color: "rgba(130,130,130,0.4)" }}>—</span>}
+                                                </td>
                                                 <td className="sa-table__num">{b.n.toLocaleString("de-DE")}</td>
                                                 <td className="sa-table__bar">
                                                     <MiniBar value={b.n} max={maxBot} />
@@ -144,7 +150,7 @@ export default function AnalyticsBots() {
                                             </tr>
                                         ))}
                                         {!data.topBots.length && (
-                                            <tr><td colSpan={4} style={{ color: "rgba(130,130,130,0.55)", fontSize: "0.8rem" }}>No bot hits recorded</td></tr>
+                                            <tr><td colSpan={5} style={{ color: "rgba(130,130,130,0.55)", fontSize: "0.8rem" }}>No bot hits recorded</td></tr>
                                         )}
                                     </tbody>
                                 </table>
@@ -181,6 +187,11 @@ export default function AnalyticsBots() {
                                         <div key={i} className="sa-live__event">
                                             <span className="sa-live__event-path">{e.name} &middot; {e.pathname}</span>
                                             <div className="sa-live__event-meta">
+                                                {e.host && (
+                                                    <span className="sa-live__event-level" style={{ fontFamily: "monospace", fontSize: "0.74rem", opacity: 0.75 }}>
+                                                        {e.host}
+                                                    </span>
+                                                )}
                                                 {e.country && <span className="sa-live__event-flag">{e.country}</span>}
                                                 <span className="sa-live__event-level sa-live__event-level--minimal">
                                                     {CATEGORY_LABELS[e.category] || e.category}

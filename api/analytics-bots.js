@@ -92,7 +92,7 @@ export default async function handler(req, res) {
     if (!siteRows.length) return res.status(200).json({ noSiteKey: true });
     const siteId = siteRows[0].id;
 
-    const [totalsRes, categoryRes, botsRes, pagesRes, recentRes] = await Promise.all([
+    const [totalsRes, categoryRes, botsRes, pagesRes, recentRes, hostRes] = await Promise.all([
 
         db.query(
             `SELECT COUNT(*) AS total, COUNT(DISTINCT bot_name) AS unique_bots
@@ -110,7 +110,8 @@ export default async function handler(req, res) {
         ).catch(() => ({ rows: [] })),
 
         db.query(
-            `SELECT bot_name, bot_category, COUNT(*) AS n, MAX(received_at) AS last_seen
+            `SELECT bot_name, bot_category, COUNT(*) AS n, MAX(received_at) AS last_seen,
+                    array_agg(DISTINCT page_host ORDER BY page_host) FILTER (WHERE page_host IS NOT NULL) AS hosts
              FROM analytics_bot_visits
              WHERE site_id = $1 AND received_at >= $2 AND received_at < $3
              GROUP BY bot_name, bot_category
@@ -127,10 +128,20 @@ export default async function handler(req, res) {
         ).catch(() => ({ rows: [] })),
 
         db.query(
-            `SELECT received_at, bot_name, bot_category, pathname, country_code
+            `SELECT received_at, bot_name, bot_category, pathname, country_code, page_host
              FROM analytics_bot_visits
              WHERE site_id = $1 AND received_at >= $2 AND received_at < $3
              ORDER BY received_at DESC LIMIT 20`,
+            [siteId, fromDate, toDateExclusive]
+        ).catch(() => ({ rows: [] })),
+
+        db.query(
+            `SELECT page_host, bot_name, COUNT(*) AS n
+             FROM analytics_bot_visits
+             WHERE site_id = $1 AND received_at >= $2 AND received_at < $3
+               AND page_host IS NOT NULL
+             GROUP BY page_host, bot_name
+             ORDER BY n DESC LIMIT 50`,
             [siteId, fromDate, toDateExclusive]
         ).catch(() => ({ rows: [] })),
 
@@ -154,13 +165,17 @@ export default async function handler(req, res) {
         topBots: botsRes.rows.map(r => ({
             name: r.bot_name, category: r.bot_category,
             n: Number(r.n || 0), lastSeen: r.last_seen,
+            hosts: r.hosts || [],
         })),
         topPages: pagesRes.rows.map(r => ({
             pathname: r.pathname, n: Number(r.n || 0),
         })),
         recent: recentRes.rows.map(r => ({
             at: r.received_at, name: r.bot_name, category: r.bot_category,
-            pathname: r.pathname, country: r.country_code,
+            pathname: r.pathname, country: r.country_code, host: r.page_host,
+        })),
+        byHost: hostRes.rows.map(r => ({
+            host: r.page_host, bot: r.bot_name, n: Number(r.n || 0),
         })),
     });
 }
