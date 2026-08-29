@@ -500,7 +500,10 @@ if(!el)try{
 var SITE=el&&el.getAttribute('data-site');
 // Fallback: <script src=".../api/a?id=SITEKEY"> — no data-site attribute needed.
 if(!SITE){try{var _m=(el&&el.src||'').match(/[?&]id=([^&]*)/);if(_m)SITE=decodeURIComponent(_m[1]||'');}catch(e){}}
-if(!SITE)return;
+if(!SITE){
+  try{console.warn('[Intastellar Analytics] No data-site attribute found — tracking disabled. Add data-site="<your-site-key>" to the script tag.');}catch(e){}
+  return;
+}
 var EP=(el&&el.getAttribute('data-endpoint'))||'https://analytics.consentsmanagement.com/api/a';
 
 function gc(n){var m=document.cookie.match(new RegExp('(?:^|;\\\\s*)'+n+'=([^;]*)'));return m?decodeURIComponent(m[1]):null;}
@@ -980,7 +983,7 @@ function send(payload){
   // entirely rather than loosening CORS to accommodate it.
   try{
     if(window.fetch){
-      fetch(EP,{method:'POST',headers:{'Content-Type':'application/json'},body:payload,keepalive:true,credentials:'omit'}).catch(function(){});
+      fetch(EP,{method:'POST',headers:{'Content-Type':'application/json'},body:payload,keepalive:true,credentials:'omit'}).catch(function(err){try{console.warn('[Intastellar Analytics] Failed to send event:',err&&err.message||err);}catch(e){}});
       return;
     }
   }catch(e){}
