@@ -1384,7 +1384,7 @@ var _spaLastPath=location.pathname+location.search;
   var Q={};// fid -> {t, action}
   function _fid(form){
     var f=(form.getAttribute('data-analytics-id')||form.id||form.name||'').slice(0,64);
-    var a=(form.action||'').replace(/^https?:\/\/[^\/]+/,'').split('?')[0].slice(0,100);
+    var a=(form.action||'').replace(/^https?:\\/\\/[^\\/]+/,'').split('?')[0].slice(0,100);
     return f||a||'form';
   }
   document.addEventListener('submit',function(e){
@@ -1392,14 +1392,14 @@ var _spaLastPath=location.pathname+location.search;
       var form=e.target;
       if(!form||form.tagName!=='FORM')return;
       var fid=_fid(form);
-      var action=(form.action||'').replace(/^https?:\/\/[^\/]+/,'').split('?')[0].slice(0,100);
+      var action=(form.action||'').replace(/^https?:\\/\\/[^\\/]+/,'').split('?')[0].slice(0,100);
       Q[fid]={t:Date.now(),action:action};
     }catch(err){}
   },true);
   function findFid(url){
     // Never attribute analytics-endpoint failures to a form — avoids cascade.
     if(!url||url.indexOf(EP)!==-1)return null;
-    var path=(url||'').replace(/^https?:\/\/[^\/]+/,'').split('?')[0];
+    var path=(url||'').replace(/^https?:\\/\\/[^\\/]+/,'').split('?')[0];
     var now=Date.now(),best=null;
     for(var fid in Q){
       var s=Q[fid];
