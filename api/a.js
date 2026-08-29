@@ -460,6 +460,7 @@ async function ensureTables(db) {
         ALTER TABLE ab_test_assignments ADD COLUMN IF NOT EXISTS page_host TEXT;
         ALTER TABLE analytics_custom_events ADD COLUMN IF NOT EXISTS page_host VARCHAR(255);
         ALTER TABLE analytics_clicks ADD COLUMN IF NOT EXISTS page_host VARCHAR(255);
+        ALTER TABLE analytics_bot_visits ADD COLUMN IF NOT EXISTS page_host VARCHAR(255);
         ALTER TABLE analytics_custom_events ADD COLUMN IF NOT EXISTS products JSONB;
         -- Free-form key/value data passed as track(name, { data: {...} }) —
         -- e.g. { reason: 'invalid_phone_format' } on a
@@ -1724,12 +1725,13 @@ export default async function handler(req, res) {
     if (bot) {
         await db.query(
             `INSERT INTO analytics_bot_visits
-             (site_id, organisation_id, bot_name, bot_category, pathname, country_code, user_agent)
-             VALUES ($1,$2,$3,$4,$5,$6,$7)`,
+             (site_id, organisation_id, bot_name, bot_category, pathname, country_code, user_agent, page_host)
+             VALUES ($1,$2,$3,$4,$5,$6,$7,$8)`,
             [
                 siteId, orgId, bot.name, bot.category,
                 extractPathnameLoose(rawUrl), country,
                 String(req.headers["user-agent"] || "").slice(0, 500),
+                pageHostSanitized,
             ]
         ).catch(() => {});
         return res.status(202).end();
