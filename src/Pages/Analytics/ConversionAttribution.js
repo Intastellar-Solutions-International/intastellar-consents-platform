@@ -418,7 +418,7 @@ export default function ConversionAttribution() {
                                         },
                                         {
                                             title: "2. Set conversion action",
-                                            desc: "For Google Ads, set a conversion action resource name (e.g. customers/123/conversionActions/456) on your connection. For Microsoft Ads, set a conversion goal name.",
+                                            desc: "Go to Settings → Analytics Settings → Conversion actions. For Google Ads, choose from the dropdown. For Microsoft Ads, enter your conversion goal name.",
                                         },
                                         {
                                             title: "3. Fire conversion events",
