@@ -63,6 +63,11 @@ async function ensureTable(db) {
     await db.query(
         `ALTER TABLE pre_consent_scans ALTER COLUMN organisation_id DROP NOT NULL`
     );
+    await db.query(`
+        ALTER TABLE pre_consent_scans DROP CONSTRAINT IF EXISTS pre_consent_scans_status_check;
+        ALTER TABLE pre_consent_scans ADD CONSTRAINT pre_consent_scans_status_check
+            CHECK (status IN ('pending', 'in_progress', 'completed', 'failed'));
+    `).catch(() => {});
     tableReady = true;
 }
 
