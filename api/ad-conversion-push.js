@@ -175,7 +175,7 @@ async function pushGoogleAds(connection, token, push) {
     }
 
     const resp = await fetch(
-        `https://googleads.googleapis.com/v17/customers/${customerId}:uploadClickConversions`,
+        `https://googleads.googleapis.com/v25/customers/${customerId}:uploadClickConversions`,
         { method: "POST", headers, body: JSON.stringify(body) }
     );
     const json = await resp.json().catch(() => ({}));
