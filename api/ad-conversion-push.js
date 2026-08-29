@@ -12,8 +12,8 @@
  *
  * Required env vars (platform-specific):
  *   GOOGLE_ADS_DEVELOPER_TOKEN   — per-API-user token from Google Ads API Centre
- *   GOOGLE_ADS_CLIENT_ID         — OAuth2 client_id for token refresh
- *   GOOGLE_ADS_CLIENT_SECRET     — OAuth2 client_secret for token refresh
+ *   GOOGLE_CLIENT_ID             — OAuth2 client_id for token refresh
+ *   GOOGLE_CLIENT_SECRET         — OAuth2 client_secret for token refresh
  */
 
 import pkg from "pg";
@@ -67,8 +67,8 @@ function setCors(req, res) {
 // ── Token refresh ─────────────────────────────────────────────────────────────
 
 async function refreshGoogleToken(db, connection) {
-    const clientId     = process.env.GOOGLE_ADS_CLIENT_ID;
-    const clientSecret = process.env.GOOGLE_ADS_CLIENT_SECRET;
+    const clientId     = process.env.GOOGLE_CLIENT_ID;
+    const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
     if (!clientId || !clientSecret || !connection.refresh_token) return null;
 
     const resp = await fetch("https://oauth2.googleapis.com/token", {
