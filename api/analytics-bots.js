@@ -111,7 +111,7 @@ export default async function handler(req, res) {
 
         db.query(
             `SELECT bot_name, bot_category, COUNT(*) AS n, MAX(received_at) AS last_seen,
-                    array_agg(DISTINCT page_host ORDER BY page_host) FILTER (WHERE page_host IS NOT NULL) AS hosts
+                    array_agg(DISTINCT page_host) FILTER (WHERE page_host IS NOT NULL) AS hosts
              FROM analytics_bot_visits
              WHERE site_id = $1 AND received_at >= $2 AND received_at < $3
              GROUP BY bot_name, bot_category
