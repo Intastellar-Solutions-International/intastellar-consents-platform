@@ -252,8 +252,13 @@ export default async function handler(req, res) {
     if (req.method === "DELETE") {
         const { platform, domain } = req.query;
         if (!platform || !domain) return res.status(400).json({ error: "platform and domain are required" });
+        // Soft-disconnect: clear tokens but keep conversion_action and other settings so
+        // they survive a reconnect. The row without tokens is treated as disconnected by
+        // the GET handler (has_token = false) and the OAuth callback upserts tokens back in.
         await db.query(
-            `DELETE FROM ad_platform_connections WHERE organisation_id=$1 AND domain=$2 AND platform=$3`,
+            `UPDATE ad_platform_connections
+             SET access_token=NULL, refresh_token=NULL, token_expires_at=NULL, scopes=NULL, updated_at=NOW()
+             WHERE organisation_id=$1 AND domain=$2 AND platform=$3`,
             [orgId, domain, platform]
         );
         return res.status(200).json({ ok: true });
