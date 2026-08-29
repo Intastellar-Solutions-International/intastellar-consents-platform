@@ -28,7 +28,7 @@ function timeAgo(isoString) {
 }
 
 
-function LivePanel({ domain, engagedUsers }) {
+function LivePanel({ domain, siteKey, engagedUsers }) {
     const [data,      setData]    = useState(null);
     const [open,      setOpen]    = useState(true);
     const [countdown, setCountdown] = useState(LIVE_INTERVAL);
@@ -36,14 +36,16 @@ function LivePanel({ domain, engagedUsers }) {
     const fetchLive = useCallback(async () => {
         if (!domain) return;
         try {
-            const r = await fetch(
-                `${LIVE_URL}?domain=${encodeURIComponent(domain)}`,
-                { headers: authHeaders() }
-            );
+            // Prefer ?site= (site key) — avoids the domain-lookup step and any
+            // domain-matching mismatch. Fall back to ?domain= if key isn't known yet.
+            const qs = siteKey
+                ? `site=${encodeURIComponent(siteKey)}`
+                : `domain=${encodeURIComponent(domain)}`;
+            const r = await fetch(`${LIVE_URL}?${qs}`, { headers: authHeaders() });
             if (r.ok) setData(await r.json());
         } catch {}
         setCountdown(LIVE_INTERVAL);
-    }, [domain]);
+    }, [domain, siteKey]);
 
     useEffect(() => {
         fetchLive();
@@ -151,8 +153,13 @@ function LivePanel({ domain, engagedUsers }) {
                                     </div>
                                 </div>
                             ))}
-                            {!data.recent?.length && (
+                            {!data.recent?.length && !data.trackerMismatch && (
                                 <p style={{ color: "rgba(130,130,130,0.55)", fontSize: "0.8rem", margin: 0 }}>No events yet</p>
+                            )}
+                            {data.trackerMismatch && (
+                                <p style={{ color: "#e06c2b", fontSize: "0.8rem", margin: 0, lineHeight: 1.4 }}>
+                                    Tracker is sending events under a different site key — the script tag on <strong>{domain}</strong> likely has a stale or wrong <code>data-site</code> value. Check Analytics Settings → Script.
+                                </p>
                             )}
                         </div>
                     </div>
@@ -812,7 +819,7 @@ export default function SiteAnalytics() {
                                     </div>
                                     <AreaChart daily={data.daily} />
                                 </div>
-                                <LivePanel domain={domain} engagedUsers={data.totals.engagedUsers} />
+                                <LivePanel domain={domain} siteKey={siteConfig?.id} engagedUsers={data.totals.engagedUsers} />
                             </div>
 
                             {/* ── Geo row: map | countries | devices ─────────────── */}

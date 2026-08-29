@@ -50,19 +50,36 @@ export default async function handler(req, res) {
     const orgId = parseInt(req.headers.organisation || "", 10);
     if (!orgId) return res.status(400).json({ error: "Organisation header required" });
 
-    const domain = (req.query.domain || "").trim().toLowerCase();
-    if (!domain) return res.status(400).json({ error: "domain is required" });
-
     const db = getPool();
 
-    const { rows: siteRows } = await db.query(
-        `SELECT id FROM analytics_sites WHERE organisation_id = $1 AND LOWER(domain) = LOWER($2) AND active = true LIMIT 1`,
-        [orgId, domain]
-    ).catch(() => ({ rows: [] }));
+    // Accept either ?site=<siteId> (preferred — bypasses domain matching) or
+    // ?domain=<domain> (legacy — looks up the site key by domain).
+    const rawSite   = (req.query.site   || "").trim();
+    const rawDomain = (req.query.domain || "").trim().toLowerCase();
+    if (!rawSite && !rawDomain) return res.status(400).json({ error: "site or domain is required" });
 
-    if (!siteRows.length) return res.status(200).json({ noSiteKey: true });
+    let siteId, domain;
+    if (rawSite) {
+        // Validate the site key belongs to this org
+        const { rows: siteRows } = await db.query(
+            `SELECT id, domain FROM analytics_sites WHERE id = $1 AND organisation_id = $2 AND active = true LIMIT 1`,
+            [rawSite, orgId]
+        ).catch(() => ({ rows: [] }));
+        if (!siteRows.length) return res.status(200).json({ noSiteKey: true });
+        siteId = siteRows[0].id;
+        domain = siteRows[0].domain;
+    } else {
+        const { rows: siteRows } = await db.query(
+            `SELECT id, domain FROM analytics_sites WHERE organisation_id = $1 AND LOWER(domain) = LOWER($2) AND active = true LIMIT 1`,
+            [orgId, rawDomain]
+        ).catch(() => ({ rows: [] }));
+        if (!siteRows.length) return res.status(200).json({ noSiteKey: true });
+        siteId = siteRows[0].id;
+        domain = siteRows[0].domain;
+    }
 
-    const siteId = siteRows[0].id;
+    // Prevent edge/CDN caching — live data must always be fresh
+    res.setHeader("Cache-Control", "no-store");
 
     const [totalsRes, minutesRes, pagesRes, hostsRes, recentRes, conversionsRes] = await Promise.all([
 
@@ -163,6 +180,22 @@ export default async function handler(req, res) {
     ]).catch(() => Array(6).fill({ rows: [] }));
 
     const t = totalsRes.rows[0] || {};
+    const totalEvents = parseInt(t.total || 0);
+
+    // If no events found for this site key, check whether events exist for this
+    // domain under ANY site_id — a non-zero count means the tracker is running
+    // but using a wrong/stale site key. Zero means the tracker isn't sending.
+    let trackerMismatch = false;
+    if (!totalEvents) {
+        const { rows: mismatchRows } = await db.query(
+            `SELECT 1 FROM analytics_events
+              WHERE page_host = $1
+                AND received_at >= NOW() - INTERVAL '30 minutes'
+              LIMIT 1`,
+            [domain]
+        ).catch(() => ({ rows: [] }));
+        trackerMismatch = mismatchRows.length > 0;
+    }
 
     // Build a full 30-slot minute array (slot 0 = 30 min ago, slot 29 = most recent)
     const now = new Date();
@@ -181,10 +214,11 @@ export default async function handler(req, res) {
 
     return res.status(200).json({
         asOf:     now.toISOString(),
-        total:    parseInt(t.total    || 0),
+        total:    totalEvents,
         minimal:  parseInt(t.minimal  || 0),
         full:     parseInt(t.full_count || 0),
         sessions: parseInt(t.sessions || 0),
+        trackerMismatch,
         perMinute,
         topPages: pagesRes.rows.map(r => ({
             pathname: r.pathname,
