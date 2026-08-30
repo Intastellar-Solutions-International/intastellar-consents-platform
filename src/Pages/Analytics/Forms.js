@@ -148,6 +148,7 @@ function DeviceTable({ devices }) {
                     <th className="sa-table__num">Started</th>
                     <th className="sa-table__num">Submitted</th>
                     <th className="sa-table__num">Completion</th>
+                    <th className="sa-table__num">Error rate</th>
                 </tr>
             </thead>
             <tbody>
@@ -157,6 +158,11 @@ function DeviceTable({ devices }) {
                         : rate < 30 ? "rgba(239,68,68,0.9)"
                         : rate < 60 ? "rgba(234,179,8,0.9)"
                         : "rgba(34,197,94,0.9)";
+                    const errRate = d.errorRate;
+                    const errColor = errRate == null ? undefined
+                        : errRate > 30 ? "rgba(239,68,68,0.9)"
+                        : errRate > 10 ? "rgba(234,179,8,0.9)"
+                        : "rgba(34,197,94,0.9)";
                     return (
                         <tr key={d.device}>
                             <td>{DEVICE_LABEL[d.device] || d.device}</td>
@@ -165,11 +171,167 @@ function DeviceTable({ devices }) {
                             <td className="sa-table__num" style={rateColor ? { color: rateColor, fontWeight: 600 } : {}}>
                                 {rate != null ? formatPercent(rate, 1) : "—"}
                             </td>
+                            <td className="sa-table__num" style={errColor ? { color: errColor, fontWeight: 600 } : {}}>
+                                {errRate != null ? formatPercent(errRate, 1) : "—"}
+                            </td>
                         </tr>
                     );
                 })}
             </tbody>
         </table>
+    );
+}
+
+function fmtDuration(seconds) {
+    if (seconds == null) return "—";
+    const s = Math.round(seconds);
+    if (s < 60) return `${s}s`;
+    const m = Math.floor(s / 60), rem = s % 60;
+    return rem > 0 ? `${m}m ${rem}s` : `${m}m`;
+}
+
+function TimeToCompleteTable({ timeToComplete }) {
+    if (!timeToComplete || !timeToComplete.length) {
+        return <p className="sa-notice">No time data yet — requires session-linked form_field_focus and form_submit events from the same session.</p>;
+    }
+    return (
+        <div className="sa-table-scroll">
+        <table className="sa-table">
+            <thead>
+                <tr>
+                    <th>Form</th>
+                    <th className="sa-table__num">Sessions</th>
+                    <th className="sa-table__num">Median</th>
+                    <th className="sa-table__num">Average</th>
+                </tr>
+            </thead>
+            <tbody>
+                {timeToComplete.map((r, i) => (
+                    <tr key={i}>
+                        <td><span className="sa-form-id" title={r.formId}>{cleanFormId(r.formId)}</span></td>
+                        <td className="sa-table__num sa-muted">{r.sessions.toLocaleString("de-DE")}</td>
+                        <td className="sa-table__num" style={{ fontWeight: 600 }}>{fmtDuration(r.medianSeconds)}</td>
+                        <td className="sa-table__num sa-muted">{fmtDuration(r.avgSeconds)}</td>
+                    </tr>
+                ))}
+            </tbody>
+        </table>
+        </div>
+    );
+}
+
+function StepProgressTable({ stepProgress }) {
+    if (!stepProgress || !stepProgress.length) {
+        return (
+            <p className="sa-notice">
+                No step data yet. Add <code className="sa-field-name">data-analytics-step="1"</code> (etc.) to each step container,
+                or the embed will auto-detect Next/Continue button clicks.
+            </p>
+        );
+    }
+    // Group by formId so each form shows its own funnel
+    const byForm = [];
+    const seen = new Map();
+    for (const r of stepProgress) {
+        if (!seen.has(r.formId)) { seen.set(r.formId, []); byForm.push({ formId: r.formId, steps: seen.get(r.formId) }); }
+        seen.get(r.formId).push(r);
+    }
+    const maxReached = Math.max(...stepProgress.map(r => r.reached), 1);
+    return (
+        <div className="sa-table-scroll">
+        <table className="sa-table">
+            <thead>
+                <tr>
+                    <th>Form</th>
+                    <th>Step</th>
+                    <th className="sa-table__num">Reached</th>
+                    <th className="sa-table__num">Completed form</th>
+                    <th className="sa-table__num">Drop-off</th>
+                </tr>
+            </thead>
+            <tbody>
+                {byForm.map(({ formId, steps }) =>
+                    steps.map((r, i) => {
+                        const dropRate = r.completionRate != null ? 100 - r.completionRate : null;
+                        const dropColor = dropRate == null ? undefined
+                            : dropRate > 60 ? "rgba(239,68,68,0.9)"
+                            : dropRate > 30 ? "rgba(234,179,8,0.9)"
+                            : "rgba(34,197,94,0.9)";
+                        return (
+                            <tr key={`${formId}-${r.step}`}>
+                                {i === 0 && (
+                                    <td rowSpan={steps.length}>
+                                        <span className="sa-form-id" title={formId}>{cleanFormId(formId)}</span>
+                                    </td>
+                                )}
+                                <td><code className="sa-field-name">{r.step}</code></td>
+                                <td className="sa-table__num">
+                                    {r.reached.toLocaleString("de-DE")}
+                                    <MiniBar value={r.reached} max={maxReached} color="rgba(99,102,241,0.4)" />
+                                </td>
+                                <td className="sa-table__num sa-muted">{r.completed.toLocaleString("de-DE")}</td>
+                                <td className="sa-table__num" style={dropColor ? { color: dropColor, fontWeight: 600 } : {}}>
+                                    {dropRate != null ? formatPercent(dropRate, 1) : "—"}
+                                </td>
+                            </tr>
+                        );
+                    })
+                )}
+            </tbody>
+        </table>
+        </div>
+    );
+}
+
+const COUNTRY_NAMES = new Intl.DisplayNames(["en"], { type: "region" });
+function countryLabel(code) {
+    if (!code || code === "??") return "Unknown";
+    try { return COUNTRY_NAMES.of(code) || code; } catch { return code; }
+}
+
+function GeoBreakdownTable({ geoBreakdown }) {
+    if (!geoBreakdown || !geoBreakdown.length) {
+        return <p className="sa-notice">No geographic data available — requires country_code from geolocation.</p>;
+    }
+    const maxStarters = Math.max(...geoBreakdown.map(r => r.starters), 1);
+    return (
+        <div className="sa-table-scroll">
+        <table className="sa-table">
+            <thead>
+                <tr>
+                    <th>Country</th>
+                    <th className="sa-table__num">Started</th>
+                    <th className="sa-table__num">Submitted</th>
+                    <th className="sa-table__num">Errors</th>
+                    <th className="sa-table__num">Completion</th>
+                </tr>
+            </thead>
+            <tbody>
+                {geoBreakdown.map(r => {
+                    const rate = r.completionRate;
+                    const rateColor = rate == null ? undefined
+                        : rate < 30 ? "rgba(239,68,68,0.9)"
+                        : rate < 60 ? "rgba(234,179,8,0.9)"
+                        : "rgba(34,197,94,0.9)";
+                    return (
+                        <tr key={r.country}>
+                            <td>
+                                <span style={{ fontWeight: 500 }}>{countryLabel(r.country)}</span>
+                                <span className="sa-form-action">{r.country}</span>
+                                <MiniBar value={r.starters} max={maxStarters} color="rgba(99,102,241,0.4)" />
+                            </td>
+                            <td className="sa-table__num">{r.starters > 0 ? r.starters.toLocaleString("de-DE") : "—"}</td>
+                            <td className="sa-table__num">{r.submissions.toLocaleString("de-DE")}</td>
+                            <td className="sa-table__num sa-muted">{r.errors > 0 ? r.errors.toLocaleString("de-DE") : "—"}</td>
+                            <td className="sa-table__num" style={rateColor ? { color: rateColor, fontWeight: 600 } : {}}>
+                                {rate != null ? formatPercent(rate, 1) : "—"}
+                            </td>
+                        </tr>
+                    );
+                })}
+            </tbody>
+        </table>
+        </div>
     );
 }
 
@@ -536,6 +698,34 @@ export default function AnalyticsForms() {
                                     <ErrorRecoveryTable errorRecovery={data.errorRecovery} />
                                 </div>
                             </div>
+
+                            <div className="sa-forms-grid sa-forms-grid--insights">
+                                <div className="sa-panel">
+                                    <h3 className="sa-panel__title">
+                                        <IconScrollDepth className="sa-icon" /> Geographic breakdown
+                                    </h3>
+                                    <p className="sa-panel__desc">Completion rates and errors by country. Low completion in specific regions can signal localisation, payment, or connectivity issues.</p>
+                                    <GeoBreakdownTable geoBreakdown={data.geoBreakdown} />
+                                </div>
+
+                                <div className="sa-panel">
+                                    <h3 className="sa-panel__title">
+                                        <IconBarChart className="sa-icon" /> Time to complete
+                                    </h3>
+                                    <p className="sa-panel__desc">Median and average seconds from first field interaction to submission. High median on short forms indicates friction.</p>
+                                    <TimeToCompleteTable timeToComplete={data.timeToComplete} />
+                                </div>
+                            </div>
+
+                            {data.stepProgress?.length > 0 && (
+                                <div className="sa-panel">
+                                    <h3 className="sa-panel__title">
+                                        <IconTarget className="sa-icon" /> Multi-step progress
+                                    </h3>
+                                    <p className="sa-panel__desc">Sessions reaching each step and how many ultimately submitted. Drop-off = 100% minus the share that completed the form from that step.</p>
+                                    <StepProgressTable stepProgress={data.stepProgress} />
+                                </div>
+                            )}
                         </>
                     )}
                 </div>

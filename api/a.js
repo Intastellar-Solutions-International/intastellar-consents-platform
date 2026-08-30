@@ -1464,6 +1464,69 @@ var _spaLastPath=location.pathname+location.search;
   }
 })();
 
+// ── Multi-step form tracking ──────────────────────────────────────────────
+// Fires form_step when a user advances to the next step of a multi-step form.
+// Two detection paths run in parallel:
+//   1. Click-based: Next/Continue button clicks inside a <form>. Works
+//      automatically without any markup changes.
+//   2. Attribute-based: MutationObserver watches for data-analytics-step
+//      elements becoming visible (hidden attr / style / class changes).
+//      Add data-analytics-step="1", data-analytics-step="2", etc. to each
+//      step container to get the step number in the analytics data.
+(function(){
+  var NEXT_RE=/^(next|continue|weiter|siguiente|suivant|volgende|successivo|nästa|næste|seuraava|forward|proceed|avanti|prossimo)/i;
+  function _sfid(form){
+    var f=(form.getAttribute('data-analytics-id')||form.id||form.name||'').slice(0,64);
+    if(f)return f;
+    var cls=(form.className||'').trim().split(/\s+/)[0].slice(0,63);
+    return cls?'.'+cls:'form';
+  }
+  function fireStep(form,step,label){
+    try{
+      track('form_step',{data:{
+        formId:_sfid(form),
+        formClass:(form.className||'').slice(0,80),
+        step:String(step||'?').slice(0,20),
+        stepLabel:(label||'').slice(0,40)
+      }});
+    }catch(err){}
+  }
+  document.addEventListener('click',function(e){
+    try{
+      var el=e.target;
+      var btn=(el.tagName==='BUTTON'||el.getAttribute('type')==='button')
+        ?el:el.closest('button,[role="button"]');
+      if(!btn)return;
+      var form=btn.closest('form');
+      if(!form)return;
+      var txt=(btn.textContent||btn.getAttribute('value')||btn.getAttribute('aria-label')||'').trim();
+      if(!NEXT_RE.test(txt))return;
+      var stepEls=form.querySelectorAll('[data-analytics-step]'),step=null;
+      for(var i=0;i<stepEls.length;i++){
+        if(stepEls[i].offsetParent!==null){step=stepEls[i].getAttribute('data-analytics-step');break;}
+      }
+      fireStep(form,step,txt);
+    }catch(err){}
+  },true);
+  if(window.MutationObserver){
+    try{
+      new MutationObserver(function(muts){
+        muts.forEach(function(m){
+          try{
+            var el=m.target;
+            var step=el.getAttribute&&el.getAttribute('data-analytics-step');
+            if(!step||el.offsetParent===null)return;
+            var form=el.closest&&el.closest('form');
+            if(form)fireStep(form,step,'');
+          }catch(err){}
+        });
+      }).observe(document.body||document.documentElement,{
+        attributes:true,attributeFilter:['hidden','style','class'],subtree:true
+      });
+    }catch(e){}
+  }
+})();
+
 // ── Video interactions ────────────────────────────────────────────────────
 // Attaches play / pause / 50% / complete events to all <video> elements,
 // including those added dynamically by React / SPA frameworks.

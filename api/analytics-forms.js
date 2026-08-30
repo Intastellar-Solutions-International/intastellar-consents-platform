@@ -71,7 +71,7 @@ export default async function handler(req, res) {
     if (!siteRes.rows.length) return res.status(404).json({ error: "Site not found" });
     const siteId = siteRes.rows[0].id;
 
-    const [totalsRes, dailyRes, formsRes, topPagesRes, deviceRes, abandonRes, errorsRes, fieldErrorsRes, recoveryRes] = await Promise.all([
+    const [totalsRes, dailyRes, formsRes, topPagesRes, deviceRes, abandonRes, errorsRes, fieldErrorsRes, recoveryRes, timeRes, stepRes, geoRes] = await Promise.all([
         // Overall submission + starter counts
         db.query(`
             SELECT
@@ -167,23 +167,30 @@ export default async function handler(req, res) {
             LIMIT 20
         `, [siteId, fromDate, toDate]),
 
-        // Device type breakdown: started vs submitted per device
+        // Device type breakdown: started vs submitted vs errors per device
         db.query(`
             SELECT
                 COALESCE(device_type, 'unknown')                              AS device,
                 COUNT(*) FILTER (WHERE name = 'form_started')                 AS started,
                 COUNT(*) FILTER (WHERE name = 'form_submit')                  AS submitted,
+                COUNT(*) FILTER (WHERE name = 'form_error')                   AS errors,
                 CASE WHEN COUNT(*) FILTER (WHERE name = 'form_started') > 0
                      THEN LEAST(100, ROUND(
                          COUNT(*) FILTER (WHERE name = 'form_submit')::numeric /
                          COUNT(*) FILTER (WHERE name = 'form_started') * 100, 1))
                      ELSE NULL
-                END AS completion_rate
+                END AS completion_rate,
+                CASE WHEN COUNT(*) FILTER (WHERE name = 'form_started') > 0
+                     THEN ROUND(
+                         COUNT(*) FILTER (WHERE name = 'form_error')::numeric /
+                         COUNT(*) FILTER (WHERE name = 'form_started') * 100, 1)
+                     ELSE NULL
+                END AS error_rate
             FROM analytics_custom_events
             WHERE site_id = $1
               AND received_at >= $2::date
               AND received_at <  $3::date + interval '1 day'
-              AND name IN ('form_started', 'form_submit')
+              AND name IN ('form_started', 'form_submit', 'form_error')
             GROUP BY 1
             ORDER BY started DESC
         `, [siteId, fromDate, toDate]),
@@ -377,9 +384,129 @@ export default async function handler(req, res) {
             ORDER BY error_sessions DESC
             LIMIT 30
         `, [siteId, fromDate, toDate]),
+
+        // Time-to-complete: median and average seconds from first field_focus to
+        // form_submit, per form. Requires at least 2 matched sessions to be
+        // statistically meaningful (HAVING clause). Only session-linked events
+        // have both timestamps linkable — no session_id = no usable pair.
+        db.query(`
+            WITH first_focus AS (
+                SELECT
+                    COALESCE(extra_data->>'formId', 'unknown') AS form_id,
+                    session_id,
+                    MIN(received_at) AS focus_at
+                FROM analytics_custom_events
+                WHERE site_id = $1
+                  AND received_at >= $2::date
+                  AND received_at <  $3::date + interval '1 day'
+                  AND name = 'form_field_focus'
+                  AND session_id IS NOT NULL
+                GROUP BY 1, 2
+            ),
+            submits AS (
+                SELECT
+                    COALESCE(extra_data->>'formId', 'unknown') AS form_id,
+                    session_id,
+                    MIN(received_at) AS submit_at
+                FROM analytics_custom_events
+                WHERE site_id = $1
+                  AND received_at >= $2::date
+                  AND received_at <  $3::date + interval '1 day'
+                  AND name = 'form_submit'
+                  AND session_id IS NOT NULL
+                GROUP BY 1, 2
+            )
+            SELECT
+                ff.form_id,
+                COUNT(*)                                                          AS sessions,
+                ROUND(PERCENTILE_CONT(0.5) WITHIN GROUP (
+                    ORDER BY EXTRACT(EPOCH FROM (s.submit_at - ff.focus_at))
+                ))                                                                AS median_seconds,
+                ROUND(AVG(EXTRACT(EPOCH FROM (s.submit_at - ff.focus_at))))      AS avg_seconds
+            FROM first_focus ff
+            JOIN submits s ON s.form_id = ff.form_id AND s.session_id = ff.session_id
+            WHERE s.submit_at > ff.focus_at
+            GROUP BY ff.form_id
+            HAVING COUNT(*) >= 2
+            ORDER BY sessions DESC
+            LIMIT 30
+        `, [siteId, fromDate, toDate]),
+
+        // Multi-step progress: for each (form, step), how many sessions reached
+        // that step and how many eventually submitted. Requires form_step events
+        // fired by the embed's Next/Continue button detector or data-analytics-step
+        // attribute changes. Sorted by reached DESC so step order in the frontend
+        // follows natural funnel depth (most reached = earliest step).
+        db.query(`
+            WITH step_sessions AS (
+                SELECT
+                    COALESCE(extra_data->>'formId', 'unknown') AS form_id,
+                    extra_data->>'step'                         AS step,
+                    session_id
+                FROM analytics_custom_events
+                WHERE site_id = $1
+                  AND received_at >= $2::date
+                  AND received_at <  $3::date + interval '1 day'
+                  AND name = 'form_step'
+                  AND extra_data->>'step' IS NOT NULL
+                  AND session_id IS NOT NULL
+                GROUP BY 1, 2, 3
+            ),
+            submitted AS (
+                SELECT DISTINCT
+                    COALESCE(extra_data->>'formId', 'unknown') AS form_id,
+                    session_id
+                FROM analytics_custom_events
+                WHERE site_id = $1
+                  AND received_at >= $2::date
+                  AND received_at <  $3::date + interval '1 day'
+                  AND name = 'form_submit'
+                  AND session_id IS NOT NULL
+            )
+            SELECT
+                ss.form_id,
+                ss.step,
+                COUNT(DISTINCT ss.session_id)                     AS reached,
+                COUNT(DISTINCT sub.session_id)                    AS completed,
+                ROUND(
+                    COUNT(DISTINCT sub.session_id)::numeric /
+                    NULLIF(COUNT(DISTINCT ss.session_id), 0) * 100, 1
+                )                                                  AS completion_rate
+            FROM step_sessions ss
+            LEFT JOIN submitted sub ON sub.form_id = ss.form_id AND sub.session_id = ss.session_id
+            GROUP BY ss.form_id, ss.step
+            ORDER BY ss.form_id, reached DESC
+            LIMIT 100
+        `, [siteId, fromDate, toDate]),
+
+        // Geographic breakdown: submissions, starters, errors and completion rate
+        // per country. country_code is set by the ingest endpoint from the
+        // request's IP — present only when geolocation is enabled.
+        db.query(`
+            SELECT
+                COALESCE(NULLIF(country_code, ''), '??')              AS country,
+                COUNT(*) FILTER (WHERE name = 'form_submit')           AS submissions,
+                COUNT(*) FILTER (WHERE name = 'form_started')          AS starters,
+                COUNT(*) FILTER (WHERE name = 'form_error')            AS errors,
+                CASE WHEN COUNT(*) FILTER (WHERE name = 'form_started') > 0
+                     THEN LEAST(100, ROUND(
+                         COUNT(*) FILTER (WHERE name = 'form_submit')::numeric /
+                         COUNT(*) FILTER (WHERE name = 'form_started') * 100, 1))
+                     ELSE NULL
+                END AS completion_rate
+            FROM analytics_custom_events
+            WHERE site_id = $1
+              AND received_at >= $2::date
+              AND received_at <  $3::date + interval '1 day'
+              AND name IN ('form_started', 'form_submit', 'form_error')
+            GROUP BY 1
+            HAVING COUNT(*) FILTER (WHERE name IN ('form_started', 'form_submit')) > 0
+            ORDER BY starters DESC, submissions DESC
+            LIMIT 50
+        `, [siteId, fromDate, toDate]),
     ]).catch(e => {
         console.error('analytics-forms query error:', e.message);
-        return [{ rows: [] }, { rows: [] }, { rows: [] }, { rows: [] }, { rows: [] }, { rows: [] }, { rows: [] }, { rows: [] }, { rows: [] }];
+        return [{ rows: [] }, { rows: [] }, { rows: [] }, { rows: [] }, { rows: [] }, { rows: [] }, { rows: [] }, { rows: [] }, { rows: [] }, { rows: [] }, { rows: [] }, { rows: [] }];
     });
 
     const totals = totalsRes.rows[0] || {};
@@ -413,7 +540,9 @@ export default async function handler(req, res) {
             device:         r.device,
             started:        parseInt(r.started, 10) || 0,
             submitted:      parseInt(r.submitted, 10) || 0,
+            errors:         parseInt(r.errors, 10) || 0,
             completionRate: r.completion_rate != null ? parseFloat(r.completion_rate) : null,
+            errorRate:      r.error_rate != null ? parseFloat(r.error_rate) : null,
         })),
         abandonment: abandonRes.rows.map(r => ({
             formId:           r.form_id,
@@ -445,6 +574,26 @@ export default async function handler(req, res) {
             errorSessions:     parseInt(r.error_sessions, 10) || 0,
             recoveredSessions: parseInt(r.recovered_sessions, 10) || 0,
             recoveryRate:      r.recovery_rate != null ? parseFloat(r.recovery_rate) : null,
+        })),
+        timeToComplete: timeRes.rows.map(r => ({
+            formId:        r.form_id,
+            sessions:      parseInt(r.sessions, 10) || 0,
+            medianSeconds: r.median_seconds != null ? Number(r.median_seconds) : null,
+            avgSeconds:    r.avg_seconds != null ? Number(r.avg_seconds) : null,
+        })),
+        stepProgress: stepRes.rows.map(r => ({
+            formId:         r.form_id,
+            step:           r.step,
+            reached:        parseInt(r.reached, 10) || 0,
+            completed:      parseInt(r.completed, 10) || 0,
+            completionRate: r.completion_rate != null ? parseFloat(r.completion_rate) : null,
+        })),
+        geoBreakdown: geoRes.rows.map(r => ({
+            country:        r.country,
+            submissions:    parseInt(r.submissions, 10) || 0,
+            starters:       parseInt(r.starters, 10) || 0,
+            errors:         parseInt(r.errors, 10) || 0,
+            completionRate: r.completion_rate != null ? parseFloat(r.completion_rate) : null,
         })),
     });
 }
