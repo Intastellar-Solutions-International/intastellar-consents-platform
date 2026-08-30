@@ -71,7 +71,7 @@ export default async function handler(req, res) {
     if (!siteRes.rows.length) return res.status(404).json({ error: "Site not found" });
     const siteId = siteRes.rows[0].id;
 
-    const [totalsRes, dailyRes, formsRes, topPagesRes, deviceRes, abandonRes, errorsRes, fieldErrorsRes, recoveryRes, timeRes, stepRes, geoRes] = await Promise.all([
+    const [totalsRes, dailyRes, formsRes, topPagesRes, deviceRes, abandonRes, errorsRes, fieldErrorsRes, recoveryRes, timeRes, stepRes, geoRes, acqChannelRes, acqReferrerRes, acqPagesRes] = await Promise.all([
         // Overall submission + starter counts — two variants in one query:
         //   all events (any consent level, no session_id requirement) for the
         //   top-line KPIs, AND session-linked events only (session_id IS NOT NULL)
@@ -537,9 +537,116 @@ export default async function handler(req, res) {
             ORDER BY starters DESC, submissions DESC
             LIMIT 50
         `, [siteId, fromDate, toDate]),
+
+        // Acquisition channels: UTM source / medium / campaign → form funnel.
+        // Deduplicates form_submit by session so retries don't inflate submitted.
+        // Events without any UTM params appear as (direct) / (none) / (none).
+        db.query(`
+            WITH ch AS (
+                SELECT
+                    COALESCE(NULLIF(utm_source,   ''), '(direct)') AS source,
+                    COALESCE(NULLIF(utm_medium,   ''), '(none)')   AS medium,
+                    COALESCE(NULLIF(utm_campaign, ''), '(none)')   AS campaign,
+                    COUNT(DISTINCT CASE WHEN name = 'form_started' AND session_id IS NOT NULL THEN session_id END)
+                        + COUNT(*) FILTER (WHERE name = 'form_started' AND session_id IS NULL) AS starters,
+                    COUNT(DISTINCT CASE WHEN name = 'form_submit'  AND session_id IS NOT NULL THEN session_id END)
+                        + COUNT(*) FILTER (WHERE name = 'form_submit'  AND session_id IS NULL) AS submissions,
+                    COUNT(*) FILTER (WHERE name = 'form_error') AS errors
+                FROM analytics_custom_events
+                WHERE site_id = $1
+                  AND received_at >= $2::date
+                  AND received_at <  $3::date + interval '1 day'
+                  AND name IN ('form_started', 'form_submit', 'form_error')
+                GROUP BY source, medium, campaign
+            )
+            SELECT
+                source, medium, campaign,
+                starters, submissions, errors,
+                CASE WHEN starters > 0
+                     THEN LEAST(100, ROUND(submissions::numeric / starters * 100, 1))
+                     ELSE NULL END AS completion_rate
+            FROM ch
+            WHERE starters + submissions > 0
+            ORDER BY starters DESC, submissions DESC
+            LIMIT 50
+        `, [siteId, fromDate, toDate]),
+
+        // Referrer → form funnel. Joins session's first referrer from analytics_events
+        // (which stores referrer_host on pageviews) to the session's form events.
+        // Session-linked only — requires full consent.
+        db.query(`
+            WITH session_referrers AS (
+                SELECT DISTINCT ON (session_id)
+                    session_id,
+                    COALESCE(NULLIF(referrer_host, ''), '(direct)') AS referrer
+                FROM analytics_events
+                WHERE site_id = $1
+                  AND received_at >= $2::date
+                  AND received_at <  $3::date + interval '1 day'
+                  AND session_id IS NOT NULL
+                ORDER BY session_id, received_at ASC
+            ),
+            ref_agg AS (
+                SELECT
+                    sr.referrer,
+                    COUNT(DISTINCT CASE WHEN ce.name = 'form_started' THEN ce.session_id END) AS starters,
+                    COUNT(DISTINCT CASE WHEN ce.name = 'form_submit'  THEN ce.session_id END) AS submissions,
+                    COUNT(*) FILTER (WHERE ce.name = 'form_error') AS errors
+                FROM analytics_custom_events ce
+                JOIN session_referrers sr ON sr.session_id = ce.session_id
+                WHERE ce.site_id = $1
+                  AND ce.received_at >= $2::date
+                  AND ce.received_at <  $3::date + interval '1 day'
+                  AND ce.name IN ('form_started', 'form_submit', 'form_error')
+                GROUP BY sr.referrer
+            )
+            SELECT
+                referrer,
+                starters, submissions, errors,
+                CASE WHEN starters > 0
+                     THEN LEAST(100, ROUND(submissions::numeric / starters * 100, 1))
+                     ELSE NULL END AS completion_rate
+            FROM ref_agg
+            WHERE starters + submissions > 0
+            ORDER BY starters DESC, submissions DESC
+            LIMIT 30
+        `, [siteId, fromDate, toDate]),
+
+        // Form engagement by page: starts + submissions + completion rate per pathname.
+        // More useful than submission-only top pages because it surfaces pages where
+        // users start but don't finish.
+        db.query(`
+            WITH pg AS (
+                SELECT
+                    pathname,
+                    COUNT(DISTINCT CASE WHEN name = 'form_started' AND session_id IS NOT NULL THEN session_id END)
+                        + COUNT(*) FILTER (WHERE name = 'form_started' AND session_id IS NULL) AS starters,
+                    COUNT(DISTINCT CASE WHEN name = 'form_submit'  AND session_id IS NOT NULL THEN session_id END)
+                        + COUNT(*) FILTER (WHERE name = 'form_submit'  AND session_id IS NULL) AS submissions,
+                    COUNT(*) FILTER (WHERE name = 'form_error') AS errors
+                FROM analytics_custom_events
+                WHERE site_id = $1
+                  AND received_at >= $2::date
+                  AND received_at <  $3::date + interval '1 day'
+                  AND name IN ('form_started', 'form_submit', 'form_error')
+                  AND pathname IS NOT NULL
+                GROUP BY pathname
+            )
+            SELECT
+                pathname,
+                starters, submissions, errors,
+                CASE WHEN starters > 0
+                     THEN LEAST(100, ROUND(submissions::numeric / starters * 100, 1))
+                     ELSE NULL END AS completion_rate
+            FROM pg
+            WHERE starters + submissions > 0
+            ORDER BY starters DESC, submissions DESC
+            LIMIT 30
+        `, [siteId, fromDate, toDate]),
+
     ]).catch(e => {
         console.error('analytics-forms query error:', e.message);
-        return [{ rows: [] }, { rows: [] }, { rows: [] }, { rows: [] }, { rows: [] }, { rows: [] }, { rows: [] }, { rows: [] }, { rows: [] }, { rows: [] }, { rows: [] }, { rows: [] }];
+        return Array.from({ length: 15 }, () => ({ rows: [] }));
     });
 
     const totals = totalsRes.rows[0] || {};
@@ -630,6 +737,29 @@ export default async function handler(req, res) {
             country:        r.country,
             submissions:    parseInt(r.submissions, 10) || 0,
             starters:       parseInt(r.starters, 10) || 0,
+            errors:         parseInt(r.errors, 10) || 0,
+            completionRate: r.completion_rate != null ? parseFloat(r.completion_rate) : null,
+        })),
+        acqChannels: acqChannelRes.rows.map(r => ({
+            source:         r.source,
+            medium:         r.medium,
+            campaign:       r.campaign,
+            starters:       parseInt(r.starters, 10) || 0,
+            submissions:    parseInt(r.submissions, 10) || 0,
+            errors:         parseInt(r.errors, 10) || 0,
+            completionRate: r.completion_rate != null ? parseFloat(r.completion_rate) : null,
+        })),
+        acqReferrers: acqReferrerRes.rows.map(r => ({
+            referrer:       r.referrer,
+            starters:       parseInt(r.starters, 10) || 0,
+            submissions:    parseInt(r.submissions, 10) || 0,
+            errors:         parseInt(r.errors, 10) || 0,
+            completionRate: r.completion_rate != null ? parseFloat(r.completion_rate) : null,
+        })),
+        acqPages: acqPagesRes.rows.map(r => ({
+            pathname:       r.pathname,
+            starters:       parseInt(r.starters, 10) || 0,
+            submissions:    parseInt(r.submissions, 10) || 0,
             errors:         parseInt(r.errors, 10) || 0,
             completionRate: r.completion_rate != null ? parseFloat(r.completion_rate) : null,
         })),
