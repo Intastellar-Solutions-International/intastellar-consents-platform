@@ -64,11 +64,16 @@ export default async function handler(req, res) {
 
     if (req.method !== "GET") return res.status(405).end();
 
-    const { domain, from, to } = req.query;
+    const { domain, from, to, country: rawCountry } = req.query;
     if (!domain) return res.status(400).json({ error: "domain required" });
 
     const fromDate = from || new Date(Date.now() - 30 * 86400000).toISOString().slice(0, 10);
     const toDate   = to   || new Date().toISOString().slice(0, 10);
+
+    // Optional country filter — CHAR(2) ISO 3166-1 alpha-2, uppercase only
+    const country = rawCountry && /^[A-Z]{2}$/.test(rawCountry.toUpperCase())
+        ? rawCountry.toUpperCase()
+        : null;
 
     const db = getPool();
 
@@ -80,14 +85,17 @@ export default async function handler(req, res) {
     if (!siteRes.rows.length) return res.status(404).json({ error: "Site not found" });
     const siteId = siteRes.rows[0].id;
 
+    const params = country ? [siteId, fromDate, toDate, country] : [siteId, fromDate, toDate];
+
     const BASE_WHERE = `
         site_id = $1
         AND received_at >= $2::date
         AND received_at <  $3::date + interval '1 day'
         AND name = 'page_perf'
+        ${country ? "AND country_code = $4" : ""}
     `;
 
-    const [totalsRes, byPageRes, byDeviceRes, dailyRes] = await Promise.all([
+    const [totalsRes, byPageRes, byDeviceRes, dailyRes, byCountryRes] = await Promise.all([
 
         // Site-wide percentile distribution (P25/P50/P75/P90/P95) for every metric
         db.query(`
@@ -116,7 +124,7 @@ export default async function handler(req, res) {
                 COUNT(*) FILTER (WHERE extra_data->>'rating' = 'poor')               AS poor_count
             FROM analytics_custom_events
             WHERE ${BASE_WHERE}
-        `, [siteId, fromDate, toDate]),
+        `, params),
 
         // Per-page breakdown — P50/P75/P90 for LCP, P75 for other metrics
         db.query(`
@@ -139,7 +147,7 @@ export default async function handler(req, res) {
             HAVING COUNT(*) >= 3
             ORDER BY samples DESC
             LIMIT 50
-        `, [siteId, fromDate, toDate]),
+        `, params),
 
         // Per-device P75 breakdown
         db.query(`
@@ -156,7 +164,7 @@ export default async function handler(req, res) {
             WHERE ${BASE_WHERE}
             GROUP BY 1
             ORDER BY samples DESC
-        `, [siteId, fromDate, toDate]),
+        `, params),
 
         // Daily trend — P75 for all 5 sparkline metrics
         db.query(`
@@ -172,11 +180,35 @@ export default async function handler(req, res) {
             WHERE ${BASE_WHERE}
             GROUP BY 1
             ORDER BY 1
-        `, [siteId, fromDate, toDate]),
+        `, params),
+
+        // Per-country breakdown — only fetched on the main (unfiltered) view
+        country ? Promise.resolve({ rows: [] }) : db.query(`
+            SELECT
+                COALESCE(NULLIF(country_code, ''), '??') AS country,
+                COUNT(*)        AS samples,
+                ${P75("lcp")}   AS lcp_p75,
+                ${P75("cls")}   AS cls_p75,
+                ${P75("inp")}   AS inp_p75,
+                ${P75("ttfb")}  AS ttfb_p75,
+                COUNT(*) FILTER (WHERE extra_data->>'rating' = 'good')              AS good_count,
+                COUNT(*) FILTER (WHERE extra_data->>'rating' = 'needs-improvement') AS ni_count,
+                COUNT(*) FILTER (WHERE extra_data->>'rating' = 'poor')              AS poor_count
+            FROM analytics_custom_events
+            WHERE
+                site_id = $1
+                AND received_at >= $2::date
+                AND received_at <  $3::date + interval '1 day'
+                AND name = 'page_perf'
+            GROUP BY 1
+            HAVING COUNT(*) >= 5
+            ORDER BY samples DESC
+            LIMIT 50
+        \`, params),
 
     ]).catch(e => {
         console.error("analytics-performance query error:", e.message);
-        return Array.from({ length: 4 }, () => ({ rows: [] }));
+        return Array.from({ length: 5 }, () => ({ rows: [] }));
     });
 
     const t = totalsRes.rows[0] || {};
@@ -217,6 +249,7 @@ export default async function handler(req, res) {
         AND received_at >= $2::date
         AND received_at <  $3::date + interval '1 day'
         AND name = 'page_perf'
+        ${country ? "AND country_code = $4" : ""}
     `;
     const [lcpElemRes, slowResRes, longTaskRes, histogramRes] = await Promise.all([
 
@@ -236,7 +269,7 @@ export default async function handler(req, res) {
             GROUP BY 1, 2, 3, 4, 5
             ORDER BY occurrences DESC
             LIMIT 20
-        `, [siteId, fromDate, toDate]),
+        \`, params),
 
         // Slowest resources (>200 ms) aggregated by URL across all page_perf events
         db.query(`
@@ -257,7 +290,7 @@ export default async function handler(req, res) {
             HAVING COUNT(*) >= 1
             ORDER BY avg_dur DESC
             LIMIT 25
-        `, [siteId, fromDate, toDate]),
+        \`, params),
 
         // Main-thread long tasks aggregated by attributed script source
         db.query(`
@@ -276,7 +309,7 @@ export default async function handler(req, res) {
             GROUP BY 1
             ORDER BY occurrences DESC
             LIMIT 20
-        `, [siteId, fromDate, toDate]),
+        \`, params),
 
         // LCP histogram — 500 ms buckets, capped at 8 000 ms for the last bucket
         db.query(`
@@ -289,7 +322,7 @@ export default async function handler(req, res) {
               AND (extra_data->>'lcp')::numeric BETWEEN 1 AND 30000
             GROUP BY 1
             ORDER BY 1
-        `, [siteId, fromDate, toDate]),
+        \`, params),
 
     ]).catch(e => {
         console.error("analytics-performance attribution query error:", e.message);
@@ -357,6 +390,17 @@ export default async function handler(req, res) {
         histogram: histogramRes.rows.map(r => ({
             bucketMs: parseInt(r.bucket_ms, 10) || 0,
             count:    parseInt(r.count, 10) || 0,
+        })),
+        byCountry: byCountryRes.rows.map(r => ({
+            country:    r.country,
+            samples:    parseInt(r.samples, 10) || 0,
+            lcpP75:     fnum(r.lcp_p75),
+            clsP75:     fcls(r.cls_p75),
+            inpP75:     fnum(r.inp_p75),
+            ttfbP75:    fnum(r.ttfb_p75),
+            goodCount:  parseInt(r.good_count, 10) || 0,
+            niCount:    parseInt(r.ni_count,   10) || 0,
+            poorCount:  parseInt(r.poor_count, 10) || 0,
         })),
     });
 }
