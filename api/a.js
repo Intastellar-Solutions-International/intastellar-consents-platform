@@ -1918,7 +1918,13 @@ export default async function handler(req, res) {
                 if (typeof val === "string") clean[key] = val.slice(0, 500);
                 else if (typeof val === "number" && isFinite(val)) clean[key] = val;
                 else if (typeof val === "boolean") clean[key] = val;
-                else { try { clean[key] = JSON.stringify(val).slice(0, 500); } catch { /* skip unserializable value */ } }
+                // Preserve arrays and objects as native values so they land in JSONB as
+                // proper nested structures (not as stringified JSON strings).
+                else if (Array.isArray(val)) {
+                    try { const s = JSON.stringify(val); if (s.length <= 4000) clean[key] = val; } catch { /* skip */ }
+                } else if (typeof val === "object") {
+                    try { const s = JSON.stringify(val); if (s.length <= 2000) clean[key] = val; } catch { /* skip */ }
+                }
             }
             if (Object.keys(clean).length) extraData = JSON.stringify(clean);
         }
