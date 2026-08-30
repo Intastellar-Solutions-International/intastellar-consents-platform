@@ -204,7 +204,7 @@ export default async function handler(req, res) {
             HAVING COUNT(*) >= 5
             ORDER BY samples DESC
             LIMIT 50
-        \`, params),
+        `, params),
 
     ]).catch(e => {
         console.error("analytics-performance query error:", e.message);
@@ -269,7 +269,7 @@ export default async function handler(req, res) {
             GROUP BY 1, 2, 3, 4, 5
             ORDER BY occurrences DESC
             LIMIT 20
-        \`, params),
+        `, params),
 
         // Slowest resources (>200 ms) aggregated by URL across all page_perf events
         db.query(`
@@ -290,7 +290,7 @@ export default async function handler(req, res) {
             HAVING COUNT(*) >= 1
             ORDER BY avg_dur DESC
             LIMIT 25
-        \`, params),
+        `, params),
 
         // Main-thread long tasks aggregated by attributed script source
         db.query(`
@@ -309,7 +309,7 @@ export default async function handler(req, res) {
             GROUP BY 1
             ORDER BY occurrences DESC
             LIMIT 20
-        \`, params),
+        `, params),
 
         // LCP histogram — 500 ms buckets, capped at 8 000 ms for the last bucket
         db.query(`
@@ -322,7 +322,7 @@ export default async function handler(req, res) {
               AND (extra_data->>'lcp')::numeric BETWEEN 1 AND 30000
             GROUP BY 1
             ORDER BY 1
-        \`, params),
+        `, params),
 
     ]).catch(e => {
         console.error("analytics-performance attribution query error:", e.message);
