@@ -20,11 +20,18 @@
  * CORS: wildcard — this endpoint is designed to be called from any website.
  */
 
-import { scanDomain, describeCookie, categoryFromCookieName, vendorFromCookieName, VENDOR_META } from "./_scan-core.js";
 import { getPool } from "./_db.js";
+// _scan-core.js (which bundles Chromium/Puppeteer) is loaded dynamically so
+// it doesn't bloat the cold-start module graph for the common happy path.
 let tableReady = false;
 async function ensureTable(db) {
     if (tableReady) return;
+    // Fast existence check — one query instead of running DDL every cold start.
+    // Only falls through to full setup on a brand-new database.
+    const { rows: exists } = await db.query(
+        `SELECT 1 FROM information_schema.tables WHERE table_name = 'pre_consent_scans' LIMIT 1`
+    );
+    if (exists.length) { tableReady = true; return; }
     await db.query(`
         CREATE TABLE IF NOT EXISTS pre_consent_scans (
             id                SERIAL          PRIMARY KEY,
@@ -44,11 +51,9 @@ async function ensureTable(db) {
     await db.query(
         `CREATE INDEX IF NOT EXISTS idx_pcs_domain_status ON pre_consent_scans (domain, status)`
     );
-    // Drop NOT NULL on organisation_id if the table was created with the old schema
     await db.query(
         `ALTER TABLE pre_consent_scans ALTER COLUMN organisation_id DROP NOT NULL`
     );
-    // Migrate check constraint to include 'in_progress' (old DBs only had pending/completed/failed)
     await db.query(`
         ALTER TABLE pre_consent_scans DROP CONSTRAINT IF EXISTS pre_consent_scans_status_check;
         ALTER TABLE pre_consent_scans ADD CONSTRAINT pre_consent_scans_status_check
@@ -73,7 +78,8 @@ const BANNER_CATEGORIES = ["necessary", "security", "analytics", "marketing", "f
 // Shared data-processing: turns raw transfers + cookies arrays into the
 // grouped categories object the banner consumes.
 // overrides: Record<cookieName, { bannerCategory?, vendor?, description? }>
-function buildCategories(domain, transfers, rawCookies, overrides = {}, definitions = []) {
+function buildCategories(domain, transfers, rawCookies, overrides = {}, definitions = [], scanCore) {
+    const { categoryFromCookieName, vendorFromCookieName, describeCookie, VENDOR_META } = scanCore;
     const domainRoot = domain.split(".").slice(-2).join(".");
 
     const vendorMap = new Map();
@@ -204,7 +210,7 @@ async function loadOverrides(db, domain) {
     }
 }
 
-async function runBackgroundScan(domain, db) {
+async function runBackgroundScan(domain, db, scanCore) {
     // Skip if a scan is already running for this domain
     const { rows: active } = await db.query(
         `SELECT id FROM pre_consent_scans
@@ -229,7 +235,7 @@ async function runBackgroundScan(domain, db) {
         return;
     }
 
-    const { transfers, cookies: rawCookies, durationMs, error } = await scanDomain(domain);
+    const { transfers, cookies: rawCookies, durationMs, error } = await scanCore.scanDomain(domain);
     const finalStatus = error ? "failed" : "completed";
     const finalAt     = new Date().toISOString().slice(0, 19).replace("T", " ");
 
@@ -272,15 +278,20 @@ export default async function handler(req, res) {
         // Auto-create the table if this is a fresh database deployment
         await ensureTable(db);
 
-        // Happy path — completed scan already exists
-        const { rows } = await db.query(
-            `SELECT domain, scanned_at, transfers, cookies
-               FROM pre_consent_scans
-              WHERE domain = $1 AND status = 'completed'
-              ORDER BY scanned_at DESC
-              LIMIT 1`,
-            [domain]
-        );
+        // Load scan-core and query for a completed scan in parallel. scan-core
+        // (Chromium + Puppeteer) is cached after the first dynamic import so this
+        // resolves near-instantly on warm function instances.
+        const [scanCore, { rows }] = await Promise.all([
+            import("./_scan-core.js"),
+            db.query(
+                `SELECT domain, scanned_at, transfers, cookies
+                   FROM pre_consent_scans
+                  WHERE domain = $1 AND status = 'completed'
+                  ORDER BY scanned_at DESC
+                  LIMIT 1`,
+                [domain]
+            ),
+        ]);
 
         if (rows.length) {
             const row = rows[0];
@@ -288,15 +299,14 @@ export default async function handler(req, res) {
                 loadOverrides(db, row.domain),
                 loadDefinitions(db),
             ]);
-            res.setHeader("Cache-Control", "public, s-maxage=300, stale-while-revalidate=600");
+            res.setHeader("Cache-Control", "public, s-maxage=3600, stale-while-revalidate=86400");
             res.json({
                 domain:     row.domain,
                 scanned_at: row.scanned_at,
-                categories: buildCategories(row.domain, row.transfers, row.cookies, overrides, definitions),
+                categories: buildCategories(row.domain, row.transfers, row.cookies, overrides, definitions, scanCore),
             });
-            // Refresh the scan in the background so the next request always gets current data.
-            // Vercel keeps the function alive until this handler's Promise resolves.
-            await runBackgroundScan(domain, db).catch(err =>
+            // Refresh the scan in the background so the next request always gets fresh data.
+            await runBackgroundScan(domain, db, scanCore).catch(err =>
                 console.error("[cookie-banner] bg-scan error:", err.message)
             );
             return;
@@ -320,7 +330,7 @@ export default async function handler(req, res) {
         }
 
         // No scan at all — run one now and return the results to this visitor
-        const { transfers, cookies: rawCookies, durationMs, error } = await scanDomain(domain);
+        const { transfers, cookies: rawCookies, durationMs, error } = await scanCore.scanDomain(domain);
         const finalStatus = error ? "failed" : "completed";
         const finalAt     = new Date().toISOString().slice(0, 19).replace("T", " ");
 
@@ -349,11 +359,11 @@ export default async function handler(req, res) {
             loadOverrides(db, domain),
             loadDefinitions(db),
         ]);
-        res.setHeader("Cache-Control", "public, s-maxage=300, stale-while-revalidate=600");
+        res.setHeader("Cache-Control", "public, s-maxage=3600, stale-while-revalidate=86400");
         return res.json({
             domain,
             scanned_at: finalAt,
-            categories: buildCategories(domain, transfers, rawCookies, overrides, definitions),
+            categories: buildCategories(domain, transfers, rawCookies, overrides, definitions, scanCore),
         });
 
     } catch (err) {

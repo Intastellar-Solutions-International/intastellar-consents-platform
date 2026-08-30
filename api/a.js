@@ -1761,7 +1761,7 @@ export default async function handler(req, res) {
     // ── GET: serve the embed script ───────────────────────────────────────────
     if (req.method === "GET") {
         res.setHeader("Content-Type", "application/javascript; charset=utf-8");
-        res.setHeader("Cache-Control", "public, max-age=3600, stale-while-revalidate=86400");
+        res.setHeader("Cache-Control", "public, s-maxage=86400, stale-while-revalidate=604800, max-age=3600");
         return res.status(200).end(EMBED_SCRIPT);
     }
 
