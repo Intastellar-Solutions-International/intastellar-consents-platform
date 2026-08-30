@@ -385,32 +385,32 @@ export default function App() {
                                             </ErrorBoundary>}
                                         </Route>
                                         <Route path="/analytics/:handle/forms" exact>
-                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Forms Analytics" fullPage /> : <ErrorBoundary>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('growth') ? <TierGate minTier="growth" featureName="Forms Analytics" fullPage /> : <ErrorBoundary>
                                                 <AnalyticsForms />
                                             </ErrorBoundary>}
                                         </Route>
                                         <Route path="/analytics/forms" exact>
-                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Forms Analytics" fullPage /> : <ErrorBoundary>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('growth') ? <TierGate minTier="growth" featureName="Forms Analytics" fullPage /> : <ErrorBoundary>
                                                 <AnalyticsForms />
                                             </ErrorBoundary>}
                                         </Route>
                                         <Route path="/analytics/:handle/performance/country/:country" exact>
-                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Performance Analytics" fullPage /> : <ErrorBoundary>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('growth') ? <TierGate minTier="growth" featureName="Performance Analytics" fullPage /> : <ErrorBoundary>
                                                 <AnalyticsPerformance />
                                             </ErrorBoundary>}
                                         </Route>
                                         <Route path="/analytics/performance/country/:country" exact>
-                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Performance Analytics" fullPage /> : <ErrorBoundary>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('growth') ? <TierGate minTier="growth" featureName="Performance Analytics" fullPage /> : <ErrorBoundary>
                                                 <AnalyticsPerformance />
                                             </ErrorBoundary>}
                                         </Route>
                                         <Route path="/analytics/:handle/performance" exact>
-                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Performance Analytics" fullPage /> : <ErrorBoundary>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('growth') ? <TierGate minTier="growth" featureName="Performance Analytics" fullPage /> : <ErrorBoundary>
                                                 <AnalyticsPerformance />
                                             </ErrorBoundary>}
                                         </Route>
                                         <Route path="/analytics/performance" exact>
-                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Performance Analytics" fullPage /> : <ErrorBoundary>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('growth') ? <TierGate minTier="growth" featureName="Performance Analytics" fullPage /> : <ErrorBoundary>
                                                 <AnalyticsPerformance />
                                             </ErrorBoundary>}
                                         </Route>
