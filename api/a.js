@@ -1678,6 +1678,45 @@ function _formId(form){
     }catch(err){}
   },true);
 })();
+
+// ── Web Vitals / performance metrics ─────────────────────────────────────
+// Fires a single page_perf event when the page is unloaded or hidden, or
+// just before a SPA navigation (pushState/replaceState/popstate). Captures
+// LCP, CLS, INP (Chrome 96+), FCP, TTFB, and total load time.
+// All timings in milliseconds; CLS is unitless (3 decimal places).
+// Gracefully no-ops where PerformanceObserver is not supported.
+(function(){
+  try{
+    var _lcp=null,_cls=0,_inp=0,_fired=false;
+    try{new PerformanceObserver(function(l){var e=l.getEntries();if(e.length)_lcp=e[e.length-1].startTime;}).observe({type:'largest-contentful-paint',buffered:true});}catch(e){}
+    try{new PerformanceObserver(function(l){l.getEntries().forEach(function(e){if(!e.hadRecentInput)_cls+=e.value;});}).observe({type:'layout-shift',buffered:true});}catch(e){}
+    try{new PerformanceObserver(function(l){l.getEntries().forEach(function(e){if(e.duration>_inp)_inp=e.duration;});}).observe({type:'event',durationThreshold:16,buffered:true});}catch(e){}
+    function _fire(){
+      if(_fired)return;_fired=true;
+      try{
+        var nav=(performance.getEntriesByType&&performance.getEntriesByType('navigation')[0])||{};
+        var fcp=null;
+        try{var fe=performance.getEntriesByName('first-contentful-paint');if(fe&&fe.length)fcp=Math.round(fe[0].startTime);}catch(e){}
+        var ttfb=nav.responseStart>0?Math.round(nav.responseStart):null;
+        var load=nav.loadEventEnd>0?Math.round(nav.loadEventEnd):null;
+        var lcp=_lcp!=null?Math.round(_lcp):null;
+        var cls=Math.round(_cls*1000)/1000;
+        var inp=_inp>0?Math.round(_inp):null;
+        if(!ttfb&&!lcp&&!load)return;
+        var r='good';
+        if((lcp!=null&&lcp>=4000)||(cls>=0.25)||(inp!=null&&inp>=500))r='poor';
+        else if((lcp!=null&&lcp>=2500)||(cls>=0.1)||(inp!=null&&inp>=200))r='needs-improvement';
+        track('page_perf',{data:{lcp:lcp,cls:cls,inp:inp,fcp:fcp,ttfb:ttfb,load:load,rating:r}});
+      }catch(e){}
+    }
+    var _op=history.pushState,_or=history.replaceState;
+    history.pushState=function(){_fire();_op.apply(this,arguments);};
+    history.replaceState=function(){_fire();_or.apply(this,arguments);};
+    window.addEventListener('popstate',_fire);
+    document.addEventListener('visibilitychange',function(){if(document.visibilityState==='hidden')_fire();});
+    window.addEventListener('pagehide',_fire);
+  }catch(e){}
+})();
 })();`;
 
 // ─────────────────────────────────────────────────────────────────────────────

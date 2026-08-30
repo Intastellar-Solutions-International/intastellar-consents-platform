@@ -557,7 +557,7 @@ export default async function handler(req, res) {
                   AND received_at >= $2::date
                   AND received_at <  $3::date + interval '1 day'
                   AND name IN ('form_started', 'form_submit', 'form_error')
-                GROUP BY source, medium, campaign
+                GROUP BY 1, 2, 3
             )
             SELECT
                 source, medium, campaign,
