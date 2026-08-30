@@ -47,9 +47,10 @@ function validateJwt(authHeader) {
     } catch { return null; }
 }
 
-// Reusable P75 expressions for each metric (filters out NULL values)
-const P75 = (col) =>
-    `PERCENTILE_CONT(0.75) WITHIN GROUP (ORDER BY (extra_data->>'${col}')::numeric) FILTER (WHERE extra_data->>'${col}' IS NOT NULL AND (extra_data->>'${col}')::numeric > 0)`;
+// Percentile helper — generates a PERCENTILE_CONT expression for any metric + quantile
+const Pn = (col, p) =>
+    `PERCENTILE_CONT(${p}) WITHIN GROUP (ORDER BY (extra_data->>'${col}')::numeric) FILTER (WHERE extra_data->>'${col}' IS NOT NULL AND (extra_data->>'${col}')::numeric > 0)`;
+const P75 = (col) => Pn(col, 0.75);
 
 export default async function handler(req, res) {
     setCors(req, res);
@@ -88,16 +89,28 @@ export default async function handler(req, res) {
 
     const [totalsRes, byPageRes, byDeviceRes, dailyRes] = await Promise.all([
 
-        // Site-wide P75 for every metric + rating distribution
+        // Site-wide percentile distribution (P25/P50/P75/P90/P95) for every metric
         db.query(`
             SELECT
                 COUNT(*)                                                              AS sample_size,
-                ${P75("lcp")}                                                         AS lcp_p75,
-                ${P75("cls")}                                                         AS cls_p75,
-                ${P75("inp")}                                                         AS inp_p75,
-                ${P75("fcp")}                                                         AS fcp_p75,
-                ${P75("ttfb")}                                                        AS ttfb_p75,
-                ${P75("load")}                                                        AS load_p75,
+                ${Pn("lcp",  0.25)} AS lcp_p25,  ${Pn("lcp",  0.50)} AS lcp_p50,
+                ${P75("lcp")}       AS lcp_p75,  ${Pn("lcp",  0.90)} AS lcp_p90,
+                ${Pn("lcp",  0.95)} AS lcp_p95,
+                ${Pn("cls",  0.25)} AS cls_p25,  ${Pn("cls",  0.50)} AS cls_p50,
+                ${P75("cls")}       AS cls_p75,  ${Pn("cls",  0.90)} AS cls_p90,
+                ${Pn("cls",  0.95)} AS cls_p95,
+                ${Pn("inp",  0.25)} AS inp_p25,  ${Pn("inp",  0.50)} AS inp_p50,
+                ${P75("inp")}       AS inp_p75,  ${Pn("inp",  0.90)} AS inp_p90,
+                ${Pn("inp",  0.95)} AS inp_p95,
+                ${Pn("fcp",  0.25)} AS fcp_p25,  ${Pn("fcp",  0.50)} AS fcp_p50,
+                ${P75("fcp")}       AS fcp_p75,  ${Pn("fcp",  0.90)} AS fcp_p90,
+                ${Pn("fcp",  0.95)} AS fcp_p95,
+                ${Pn("ttfb",0.25)}  AS ttfb_p25, ${Pn("ttfb",0.50)}  AS ttfb_p50,
+                ${P75("ttfb")}      AS ttfb_p75, ${Pn("ttfb",0.90)}  AS ttfb_p90,
+                ${Pn("ttfb",0.95)}  AS ttfb_p95,
+                ${Pn("load",0.25)}  AS load_p25, ${Pn("load",0.50)}  AS load_p50,
+                ${P75("load")}      AS load_p75, ${Pn("load",0.90)}  AS load_p90,
+                ${Pn("load",0.95)}  AS load_p95,
                 COUNT(*) FILTER (WHERE extra_data->>'rating' = 'good')               AS good_count,
                 COUNT(*) FILTER (WHERE extra_data->>'rating' = 'needs-improvement')  AS ni_count,
                 COUNT(*) FILTER (WHERE extra_data->>'rating' = 'poor')               AS poor_count
@@ -105,19 +118,19 @@ export default async function handler(req, res) {
             WHERE ${BASE_WHERE}
         `, [siteId, fromDate, toDate]),
 
-        // Per-page P75 breakdown — sorted by sample count so high-traffic pages
-        // appear first (a slow page with 10 visitors matters less than a slow one
-        // with 10 000). Limit 50 to keep the response manageable.
+        // Per-page breakdown — P50/P75/P90 for LCP, P75 for other metrics
         db.query(`
             SELECT
                 pathname,
-                COUNT(*)        AS samples,
-                ${P75("lcp")}   AS lcp_p75,
-                ${P75("cls")}   AS cls_p75,
-                ${P75("inp")}   AS inp_p75,
-                ${P75("fcp")}   AS fcp_p75,
-                ${P75("ttfb")}  AS ttfb_p75,
-                ${P75("load")}  AS load_p75,
+                COUNT(*)           AS samples,
+                ${Pn("lcp",0.50)}  AS lcp_p50,
+                ${P75("lcp")}      AS lcp_p75,
+                ${Pn("lcp",0.90)}  AS lcp_p90,
+                ${P75("cls")}      AS cls_p75,
+                ${P75("inp")}      AS inp_p75,
+                ${P75("fcp")}      AS fcp_p75,
+                ${P75("ttfb")}     AS ttfb_p75,
+                ${P75("load")}     AS load_p75,
                 MODE() WITHIN GROUP (ORDER BY extra_data->>'rating') AS modal_rating
             FROM analytics_custom_events
             WHERE ${BASE_WHERE}
@@ -145,13 +158,15 @@ export default async function handler(req, res) {
             ORDER BY samples DESC
         `, [siteId, fromDate, toDate]),
 
-        // Daily trend — P75 LCP and CLS each day for the trend chart
+        // Daily trend — P75 for all 5 sparkline metrics
         db.query(`
             SELECT
                 DATE_TRUNC('day', received_at)::date AS day,
-                COUNT(*)      AS samples,
-                ${P75("lcp")} AS lcp_p75,
-                ${P75("cls")} AS cls_p75,
+                COUNT(*)       AS samples,
+                ${P75("lcp")}  AS lcp_p75,
+                ${P75("cls")}  AS cls_p75,
+                ${P75("inp")}  AS inp_p75,
+                ${P75("fcp")}  AS fcp_p75,
                 ${P75("ttfb")} AS ttfb_p75
             FROM analytics_custom_events
             WHERE ${BASE_WHERE}
@@ -177,12 +192,18 @@ export default async function handler(req, res) {
 
     function mapRow(r) {
         return {
-            lcpP75:  fnum(r.lcp_p75),
-            clsP75:  fcls(r.cls_p75),
-            inpP75:  fnum(r.inp_p75),
-            fcpP75:  fnum(r.fcp_p75),
-            ttfbP75: fnum(r.ttfb_p75),
-            loadP75: fnum(r.load_p75),
+            lcpP25:  fnum(r.lcp_p25),  lcpP50:  fnum(r.lcp_p50),
+            lcpP75:  fnum(r.lcp_p75),  lcpP90:  fnum(r.lcp_p90),  lcpP95:  fnum(r.lcp_p95),
+            clsP25:  fcls(r.cls_p25),  clsP50:  fcls(r.cls_p50),
+            clsP75:  fcls(r.cls_p75),  clsP90:  fcls(r.cls_p90),  clsP95:  fcls(r.cls_p95),
+            inpP25:  fnum(r.inp_p25),  inpP50:  fnum(r.inp_p50),
+            inpP75:  fnum(r.inp_p75),  inpP90:  fnum(r.inp_p90),  inpP95:  fnum(r.inp_p95),
+            fcpP25:  fnum(r.fcp_p25),  fcpP50:  fnum(r.fcp_p50),
+            fcpP75:  fnum(r.fcp_p75),  fcpP90:  fnum(r.fcp_p90),  fcpP95:  fnum(r.fcp_p95),
+            ttfbP25: fnum(r.ttfb_p25), ttfbP50: fnum(r.ttfb_p50),
+            ttfbP75: fnum(r.ttfb_p75), ttfbP90: fnum(r.ttfb_p90), ttfbP95: fnum(r.ttfb_p95),
+            loadP25: fnum(r.load_p25), loadP50: fnum(r.load_p50),
+            loadP75: fnum(r.load_p75), loadP90: fnum(r.load_p90), loadP95: fnum(r.load_p95),
         };
     }
 
@@ -197,7 +218,7 @@ export default async function handler(req, res) {
         AND received_at <  $3::date + interval '1 day'
         AND name = 'page_perf'
     `;
-    const [lcpElemRes, slowResRes, longTaskRes] = await Promise.all([
+    const [lcpElemRes, slowResRes, longTaskRes, histogramRes] = await Promise.all([
 
         // Which element was the LCP candidate on each page?
         db.query(`
@@ -257,9 +278,22 @@ export default async function handler(req, res) {
             LIMIT 20
         `, [siteId, fromDate, toDate]),
 
+        // LCP histogram — 500 ms buckets, capped at 8 000 ms for the last bucket
+        db.query(`
+            SELECT
+                LEAST(FLOOR((extra_data->>'lcp')::numeric / 500) * 500, 8000)::int AS bucket_ms,
+                COUNT(*) AS count
+            FROM analytics_custom_events
+            WHERE ${ATTR_WHERE}
+              AND extra_data->>'lcp' IS NOT NULL
+              AND (extra_data->>'lcp')::numeric BETWEEN 1 AND 30000
+            GROUP BY 1
+            ORDER BY 1
+        `, [siteId, fromDate, toDate]),
+
     ]).catch(e => {
         console.error("analytics-performance attribution query error:", e.message);
-        return Array.from({ length: 3 }, () => ({ rows: [] }));
+        return Array.from({ length: 4 }, () => ({ rows: [] }));
     });
 
     return res.status(200).json({
@@ -275,7 +309,14 @@ export default async function handler(req, res) {
             pathname:    r.pathname,
             samples:     parseInt(r.samples, 10) || 0,
             modalRating: r.modal_rating || null,
-            ...mapRow(r),
+            lcpP50:      fnum(r.lcp_p50),
+            lcpP75:      fnum(r.lcp_p75),
+            lcpP90:      fnum(r.lcp_p90),
+            clsP75:      fcls(r.cls_p75),
+            inpP75:      fnum(r.inp_p75),
+            fcpP75:      fnum(r.fcp_p75),
+            ttfbP75:     fnum(r.ttfb_p75),
+            loadP75:     fnum(r.load_p75),
         })),
         byDevice: byDeviceRes.rows.map(r => ({
             device:  r.device,
@@ -287,6 +328,8 @@ export default async function handler(req, res) {
             samples: parseInt(r.samples, 10) || 0,
             lcpP75:  fnum(r.lcp_p75),
             clsP75:  fcls(r.cls_p75),
+            inpP75:  fnum(r.inp_p75),
+            fcpP75:  fnum(r.fcp_p75),
             ttfbP75: fnum(r.ttfb_p75),
         })),
         lcpElements: lcpElemRes.rows.map(r => ({
@@ -310,6 +353,10 @@ export default async function handler(req, res) {
             occurrences: parseInt(r.occurrences, 10) || 0,
             avgDur:      fnum(r.avg_dur),
             maxDur:      parseInt(r.max_dur, 10) || 0,
+        })),
+        histogram: histogramRes.rows.map(r => ({
+            bucketMs: parseInt(r.bucket_ms, 10) || 0,
+            count:    parseInt(r.count, 10) || 0,
         })),
     });
 }
