@@ -225,7 +225,7 @@ function AbandonmentTable({ abandonment }) {
 
 function FormErrorsTable({ errors }) {
     if (!errors || !errors.length) {
-        return <p className="sa-notice">No validation errors recorded yet. Deploy the updated embed script to start capturing errors.</p>;
+        return <p className="sa-notice">No form errors recorded yet. Deploy the updated embed script to start capturing validation, network, and server errors.</p>;
     }
     const maxOcc = Math.max(...errors.map(e => e.occurrences), 1);
     return (
@@ -428,9 +428,9 @@ export default function AnalyticsForms() {
 
                                 <div className="sa-panel">
                                     <h3 className="sa-panel__title">
-                                        <IconFormFill className="sa-icon" /> Validation errors
+                                        <IconFormFill className="sa-icon" /> Form errors
                                     </h3>
-                                    <p className="sa-panel__desc">Most common HTML5 validation failures captured by the embed script.</p>
+                                    <p className="sa-panel__desc">Validation failures, network errors, and server errors captured during form submissions.</p>
                                     <FormErrorsTable errors={data.formErrors} />
                                 </div>
                             </div>
