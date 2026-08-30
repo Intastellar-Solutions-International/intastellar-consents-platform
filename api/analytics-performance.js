@@ -335,7 +335,7 @@ export default async function handler(req, res) {
         // Per-connection-type P75 breakdown (Network Information API effectiveType)
         db.query(`
             SELECT
-                COALESCE(extra_data->'net'->>'type', 'unknown') AS net_type,
+                extra_data->'net'->>'type'   AS net_type,
                 COUNT(*)       AS samples,
                 ${P75("lcp")}  AS lcp_p75,
                 ${P75("cls")}  AS cls_p75,
@@ -345,7 +345,7 @@ export default async function handler(req, res) {
                 ${P75("load")} AS load_p75
             FROM analytics_custom_events
             WHERE ${ATTR_WHERE}
-              AND extra_data->'net' IS NOT NULL
+              AND extra_data->'net'->>'type' IS NOT NULL
             GROUP BY 1
             ORDER BY samples DESC
         `, params),
