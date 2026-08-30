@@ -7,6 +7,7 @@ import {
     analyticsConversionsPath, analyticsPageExperimentsPath, analyticsFormsPath,
     analyticsCohortPath, analyticsAlertsPath,
     analyticsReportsPath, analyticsReportBuilderPath,
+    analyticsPerformancePath,
 } from "../../../Functions/domainPathSegments.js";
 
 export const reportsLinks = [
@@ -149,6 +150,10 @@ export function buildAnalyticsLinks(domain) {
         {
             name: "User Flow",
             path: analyticsUserFlowPath(domain),
+        },
+        {
+            name: "Performance",
+            path: analyticsPerformancePath(domain),
         },
         {
             divider: true,
