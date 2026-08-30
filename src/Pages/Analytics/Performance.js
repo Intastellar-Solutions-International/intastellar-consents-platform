@@ -1,8 +1,8 @@
-const { useState, useEffect, useMemo } = React;
+const { useState, useEffect, useMemo, useRef } = React;
 import { ScannerHost } from "../../API/host.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import { useAnalyticsPageChrome, authHeaders, MiniBar, formatPercent } from "./_shared.js";
-import { IconBarChart, IconTarget, IconScrollDepth, IconGlobe } from "./Icons.js";
+import { IconBarChart, IconTarget, IconScrollDepth, IconGlobe, IconClock, IconAlertTriangle } from "./Icons.js";
 import TrendLineChart from "./TrendLineChart.js";
 import "./Analytics.css";
 
@@ -243,6 +243,177 @@ function DeviceTable({ rows }) {
     );
 }
 
+// ── Lazy page screenshot ──────────────────────────────────────────────────
+// Fetches with auth headers (can't use plain <img src> for that), converts
+// to a blob URL, and only triggers when the element scrolls into view.
+function LazyScreenshot({ domain, path }) {
+    const ref      = useRef(null);
+    const [url, setUrl]     = useState(null);
+    const [failed, setFailed] = useState(false);
+
+    useEffect(() => {
+        const el = ref.current;
+        if (!el || !domain || !path) return;
+        let cancelled = false;
+
+        const obs = new IntersectionObserver(([entry]) => {
+            if (!entry.isIntersecting) return;
+            obs.disconnect();
+            const qs = new URLSearchParams({ domain, path }).toString();
+            fetch(`${ScannerHost}/api/analytics-screenshot?${qs}`, { headers: authHeaders() })
+                .then(r => r.ok ? r.blob() : Promise.reject())
+                .then(blob => { if (!cancelled) setUrl(URL.createObjectURL(blob)); })
+                .catch(() => { if (!cancelled) setFailed(true); });
+        }, { rootMargin: "300px" });
+
+        obs.observe(el);
+        return () => { obs.disconnect(); cancelled = true; };
+    }, [domain, path]);
+
+    // Revoke blob URL when it changes or component unmounts
+    useEffect(() => {
+        return () => { if (url) URL.revokeObjectURL(url); };
+    }, [url]);
+
+    return (
+        <div ref={ref} className="sa-perf-thumb" style={{ overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            {url    && <img src={url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />}
+            {failed && <span style={{ fontSize: "10px", color: "rgba(200,200,220,0.25)" }}>—</span>}
+            {!url && !failed && <div className="sa-perf-thumb-shimmer" />}
+        </div>
+    );
+}
+
+// ── LCP element table ─────────────────────────────────────────────────────
+const IMG_TAGS = new Set(["img", "picture", "video", "source"]);
+
+function lcpImgUrl(src, domain) {
+    if (!src) return null;
+    // Same-origin paths start with "/"; cross-origin stored as "cdn.host/path"
+    if (src.startsWith("/")) return `https://${domain}${src}`;
+    return `https://${src}`;
+}
+
+function LcpElemTable({ rows, domain }) {
+    if (!rows?.length) return null;
+    return (
+        <div className="sa-table-wrap">
+        <table className="sa-table">
+            <thead>
+                <tr>
+                    <th style={{ width: "96px" }}>Element</th>
+                    <th style={{ width: "96px" }}>Page</th>
+                    <th>Details</th>
+                    <th className="sa-num">LCP P75</th>
+                    <th className="sa-num">Seen</th>
+                </tr>
+            </thead>
+            <tbody>
+                {rows.map((r, i) => {
+                    const rating  = cwvRating("lcp", r.lcpP75);
+                    const color   = RATING_COLOR[rating];
+                    const desc    = [r.tag, r.elId ? `#${r.elId}` : null, r.cls ? `.${r.cls}` : null].filter(Boolean).join("");
+                    const imgUrl  = IMG_TAGS.has(r.tag) && r.src ? lcpImgUrl(r.src, domain) : null;
+                    return (
+                        <tr key={i}>
+                            <td>
+                                {imgUrl ? (
+                                    <img
+                                        src={imgUrl}
+                                        alt=""
+                                        loading="lazy"
+                                        className="sa-perf-thumb"
+                                        onError={e => { e.currentTarget.style.display = "none"; }}
+                                    />
+                                ) : (
+                                    <span className="sa-perf-thumb-placeholder">{r.tag || "?"}</span>
+                                )}
+                            </td>
+                            <td>
+                                <LazyScreenshot domain={domain} path={r.pathname || "/"} />
+                            </td>
+                            <td>
+                                <code>{desc || r.tag || "—"}</code>
+                                {r.src && <span className="sa-muted" style={{ display: "block", fontSize: "11px" }}>{r.src}</span>}
+                                <span className="sa-muted" style={{ display: "block", fontSize: "11px", marginTop: "2px" }}>{r.pathname || "—"}</span>
+                            </td>
+                            <td className="sa-num" style={color ? { color, fontWeight: 700 } : {}}>{fmtMs(r.lcpP75)}</td>
+                            <td className="sa-num">{r.occurrences}</td>
+                        </tr>
+                    );
+                })}
+            </tbody>
+        </table>
+        </div>
+    );
+}
+
+const RES_TYPE_LABEL = { script: "Script", img: "Image", link: "CSS", font: "Font", fetch: "Fetch", xmlhttprequest: "XHR", iframe: "iframe" };
+
+// ── Slow resources table ───────────────────────────────────────────────────
+function SlowResTable({ rows }) {
+    if (!rows?.length) return null;
+    return (
+        <div className="sa-table-wrap">
+        <table className="sa-table">
+            <thead>
+                <tr>
+                    <th>Resource</th>
+                    <th>Type</th>
+                    <th className="sa-num">Avg load</th>
+                    <th className="sa-num">Avg size</th>
+                    <th className="sa-num">Seen</th>
+                </tr>
+            </thead>
+            <tbody>
+                {rows.map((r, i) => {
+                    const slow = r.avgDur > 1000;
+                    const warn = r.avgDur > 500;
+                    return (
+                        <tr key={i}>
+                            <td><code style={{ wordBreak: "break-all", fontSize: "12px" }}>{r.url || "—"}</code></td>
+                            <td className="sa-muted">{RES_TYPE_LABEL[r.resourceType] || r.resourceType || "—"}</td>
+                            <td className="sa-num" style={slow ? { color: RATING_COLOR["poor"], fontWeight: 700 } : warn ? { color: RATING_COLOR["needs-improvement"], fontWeight: 700 } : {}}>{fmtMs(r.avgDur)}</td>
+                            <td className="sa-num sa-muted">{r.avgKb > 0 ? `${r.avgKb} KB` : "—"}</td>
+                            <td className="sa-num">{r.occurrences}</td>
+                        </tr>
+                    );
+                })}
+            </tbody>
+        </table>
+        </div>
+    );
+}
+
+// ── Long tasks table ───────────────────────────────────────────────────────
+function LongTaskTable({ rows }) {
+    if (!rows?.length) return null;
+    return (
+        <div className="sa-table-wrap">
+        <table className="sa-table">
+            <thead>
+                <tr>
+                    <th>Script / source</th>
+                    <th className="sa-num">Occurrences</th>
+                    <th className="sa-num">Avg block</th>
+                    <th className="sa-num">Max block</th>
+                </tr>
+            </thead>
+            <tbody>
+                {rows.map((r, i) => (
+                    <tr key={i}>
+                        <td><code style={{ wordBreak: "break-all", fontSize: "12px" }}>{r.src || "(same-origin — unattributed)"}</code></td>
+                        <td className="sa-num">{r.occurrences}</td>
+                        <td className="sa-num" style={{ color: r.avgDur > 200 ? RATING_COLOR["poor"] : RATING_COLOR["needs-improvement"], fontWeight: 700 }}>{fmtMs(r.avgDur)}</td>
+                        <td className="sa-num sa-muted">{fmtMs(r.maxDur)}</td>
+                    </tr>
+                ))}
+            </tbody>
+        </table>
+        </div>
+    );
+}
+
 // ── Main page ─────────────────────────────────────────────────────────────
 export default function AnalyticsPerformance() {
     document.title = "Performance | Site Analytics";
@@ -397,6 +568,45 @@ export default function AnalyticsPerformance() {
                                         Mobile devices typically show higher LCP and TTFB due to network constraints. A large gap between desktop and mobile signals missing responsive optimisation.
                                     </p>
                                     <DeviceTable rows={data.byDevice} />
+                                </div>
+                            )}
+
+                            {/* LCP element attribution */}
+                            {data.lcpElements?.length > 0 && (
+                                <div className="sa-panel">
+                                    <h3 className="sa-panel__title">
+                                        <IconTarget className="sa-icon" /> LCP element
+                                    </h3>
+                                    <p className="sa-panel__desc">
+                                        Which DOM element triggered Largest Contentful Paint on each page. Images and large text blocks are the most common causes of a slow LCP — optimise the element listed here first (lazy-load, compress, preload, or resize it).
+                                    </p>
+                                    <LcpElemTable rows={data.lcpElements} domain={domain} />
+                                </div>
+                            )}
+
+                            {/* Slow resources */}
+                            {data.slowResources?.length > 0 && (
+                                <div className="sa-panel">
+                                    <h3 className="sa-panel__title">
+                                        <IconClock className="sa-icon" /> Slow resources
+                                    </h3>
+                                    <p className="sa-panel__desc">
+                                        Assets that took longer than 200 ms to load, aggregated across all page views. Scripts and fonts are the most common culprits — consider self-hosting, deferring, or removing them. Size is transfer size (0 for cross-origin resources that don't set Timing-Allow-Origin).
+                                    </p>
+                                    <SlowResTable rows={data.slowResources} />
+                                </div>
+                            )}
+
+                            {/* Long tasks / main-thread blockers */}
+                            {data.longTasks?.length > 0 && (
+                                <div className="sa-panel">
+                                    <h3 className="sa-panel__title">
+                                        <IconAlertTriangle className="sa-icon" /> Main-thread blockers
+                                    </h3>
+                                    <p className="sa-panel__desc">
+                                        JavaScript tasks longer than 50 ms that block user interaction (the main thread). Anything over 200 ms will noticeably delay clicks and input. Same-origin tasks show as unattributed — this is a browser limitation of the Long Tasks API; cross-origin scripts (ads, analytics, chat widgets) are identified by source.
+                                    </p>
+                                    <LongTaskTable rows={data.longTasks} />
                                 </div>
                             )}
                         </>

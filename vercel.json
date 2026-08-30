@@ -159,6 +159,11 @@
       "memory": 256,
       "maxDuration": 10
     },
+    "api/analytics-screenshot.js": {
+      "memory": 1536,
+      "maxDuration": 45,
+      "regions": ["iad1"]
+    },
     "api/analytics-cohorts.js": {
       "memory": 256,
       "maxDuration": 20
