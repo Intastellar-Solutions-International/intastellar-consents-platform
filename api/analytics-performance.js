@@ -83,12 +83,16 @@ export default async function handler(req, res) {
     const db = getPool();
 
     const siteRes = await db.query(
-        `SELECT id FROM analytics_sites WHERE domain = $1 AND organisation_id = $2 LIMIT 1`,
+        `SELECT id, COALESCE(lead_qualifying_events, '{}') AS lead_qualifying_events
+         FROM analytics_sites WHERE domain = $1 AND organisation_id = $2 LIMIT 1`,
         [domain, orgId]
     ).catch(() => ({ rows: [] }));
 
     if (!siteRes.rows.length) return res.status(404).json({ error: "Site not found" });
     const siteId = siteRes.rows[0].id;
+    const qualifyingEvents = Array.isArray(siteRes.rows[0].lead_qualifying_events)
+        ? siteRes.rows[0].lead_qualifying_events.filter(Boolean)
+        : [];
 
     const params     = country ? [siteId, fromDate,     toDate,     country] : [siteId, fromDate,     toDate];
     const prevParams = country ? [siteId, prevFromDate, prevToDate, country] : [siteId, prevFromDate, prevToDate];
@@ -275,7 +279,10 @@ export default async function handler(req, res) {
         AND name = 'page_perf'
         ${country ? "AND country_code = $4" : ""}
     `;
-    const [lcpElemRes, slowResRes, longTaskRes, histogramRes, byNetworkRes, byBrowserRes, clsHistRes, inpHistRes] = await Promise.all([
+    // Business impact: always pass country as $4 (null when unfiltered) and qualifying events as $5
+    const biParams = [siteId, fromDate, toDate, country || null, qualifyingEvents];
+
+    const [lcpElemRes, slowResRes, longTaskRes, histogramRes, byNetworkRes, byBrowserRes, clsHistRes, inpHistRes, biRes] = await Promise.all([
 
         // Which element was the LCP candidate on each page?
         db.query(`
@@ -416,9 +423,47 @@ export default async function handler(req, res) {
             ORDER BY 1
         `, params),
 
+        // Business impact — conversion rate by CWV rating (full-consent sessions only)
+        // $4 = country filter (null = all), $5 = qualifying event names array
+        qualifyingEvents.length > 0 ? db.query(`
+            WITH perf_sessions AS (
+                SELECT session_id, extra_data->>'rating' AS rating
+                FROM analytics_custom_events
+                WHERE site_id = $1
+                  AND received_at >= $2::date
+                  AND received_at <  $3::date + interval '1 day'
+                  AND name = 'page_perf'
+                  AND session_id IS NOT NULL
+                  AND ($4::char(2) IS NULL OR country_code = $4)
+            ),
+            converted_sessions AS (
+                SELECT DISTINCT session_id
+                FROM analytics_custom_events
+                WHERE site_id = $1
+                  AND received_at >= $2::date
+                  AND received_at <  $3::date + interval '1 day'
+                  AND name = ANY($5::varchar[])
+                  AND session_id IS NOT NULL
+            )
+            SELECT
+                ps.rating,
+                COUNT(*)                    AS sessions,
+                COUNT(cs.session_id)        AS conversions
+            FROM perf_sessions ps
+            LEFT JOIN converted_sessions cs ON cs.session_id = ps.session_id
+            WHERE ps.rating IS NOT NULL
+            GROUP BY 1
+            ORDER BY CASE ps.rating
+                WHEN 'good'             THEN 1
+                WHEN 'needs-improvement' THEN 2
+                WHEN 'poor'             THEN 3
+                ELSE 4
+            END
+        `, biParams) : Promise.resolve({ rows: [] }),
+
     ]).catch(e => {
         console.error("analytics-performance attribution query error:", e.message);
-        return Array.from({ length: 8 }, () => ({ rows: [] }));
+        return Array.from({ length: 9 }, () => ({ rows: [] }));
     });
 
     return res.status(200).json({
@@ -542,5 +587,18 @@ export default async function handler(req, res) {
             };
         })(),
         prevPeriod: { from: prevFromDate, to: prevToDate },
+        qualifyingEvents,
+        businessImpact: qualifyingEvents.length === 0
+            ? null
+            : biRes.rows.map(r => {
+                const sessions    = parseInt(r.sessions,    10) || 0;
+                const conversions = parseInt(r.conversions, 10) || 0;
+                return {
+                    rating:          r.rating,
+                    sessions,
+                    conversions,
+                    conversionRate:  sessions > 0 ? Math.round(conversions / sessions * 1000) / 10 : 0,
+                };
+            }),
     });
 }
