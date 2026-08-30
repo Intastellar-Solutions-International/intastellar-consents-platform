@@ -6020,11 +6020,45 @@ details[open] .ca-context-summary::before { content: "▾"; }
     color: rgba(200,200,220,0.4);
     font-family: monospace;
 }
+/* ── 2-column panel grid ─────────────────────────────────────────────── */
+.sa-perf-2col {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 20px;
+    align-items: start;
+}
+
+/* ── Sparkline trend grid ─────────────────────────────────────────────── */
+.sa-perf-sparklines {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+}
+.sa-perf-sparkline-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 8px;
+    padding: 12px 12px 8px;
+}
+.sa-perf-sparkline-card__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: rgba(200,200,220,0.55);
+}
+
 @media (max-width: 1000px) {
     .sa-perf-cwv-row    { grid-template-columns: 1fr 1fr; }
     .sa-perf-timing-row { grid-template-columns: 1fr 1fr; }
+    .sa-perf-sparklines { grid-template-columns: 1fr 1fr 1fr; }
 }
 @media (max-width: 600px) {
     .sa-perf-cwv-row    { grid-template-columns: 1fr; }
     .sa-perf-timing-row { grid-template-columns: 1fr 1fr; }
+    .sa-perf-sparklines { grid-template-columns: 1fr 1fr; }
 }

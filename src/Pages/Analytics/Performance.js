@@ -181,11 +181,13 @@ function PageTable({ rows }) {
                     <th className="sa-table__num sa-table__sortable" onClick={() => toggleSort("samples")} style={{ cursor: "pointer" }}>
                         Samples{sortKey === "samples" ? (sortAsc ? " ↑" : " ↓") : ""}
                     </th>
-                    <Th k="lcpP75">LCP p75</Th>
-                    <Th k="clsP75">CLS p75</Th>
-                    <Th k="inpP75">INP p75</Th>
-                    <Th k="ttfbP75">TTFB p75</Th>
-                    <Th k="loadP75">Load p75</Th>
+                    <Th k="lcpP50">LCP P50</Th>
+                    <Th k="lcpP75">LCP P75</Th>
+                    <Th k="lcpP90">LCP P90</Th>
+                    <Th k="clsP75">CLS P75</Th>
+                    <Th k="inpP75">INP P75</Th>
+                    <Th k="ttfbP75">TTFB P75</Th>
+                    <Th k="loadP75">Load P75</Th>
                 </tr>
             </thead>
             <tbody>
@@ -195,7 +197,9 @@ function PageTable({ rows }) {
                             {r.pathname.length > 55 ? "…" + r.pathname.slice(-52) : r.pathname}
                         </td>
                         <td className="sa-table__num">{r.samples.toLocaleString("de-DE")}</td>
-                        <td className="sa-table__num"><MetricValue metric="lcp"  value={r.lcpP75}  /></td>
+                        <td className="sa-table__num"><MetricValue metric="lcp"  value={r.lcpP50}  /></td>
+                        <td className="sa-table__num" style={{ fontWeight: 700 }}><MetricValue metric="lcp"  value={r.lcpP75}  /></td>
+                        <td className="sa-table__num"><MetricValue metric="lcp"  value={r.lcpP90}  /></td>
                         <td className="sa-table__num"><MetricValue metric="cls"  value={r.clsP75}  /></td>
                         <td className="sa-table__num"><MetricValue metric="inp"  value={r.inpP75}  /></td>
                         <td className="sa-table__num"><MetricValue metric="ttfb" value={r.ttfbP75} /></td>
@@ -414,6 +418,193 @@ function LongTaskTable({ rows }) {
     );
 }
 
+// ── Trends over time — sparkline grid ────────────────────────────────────
+const SPARKLINE_DEFS = [
+    { key: "lcpP75",  label: "LCP",  metric: "lcp",  isCls: false },
+    { key: "inpP75",  label: "INP",  metric: "inp",  isCls: false },
+    { key: "fcpP75",  label: "FCP",  metric: "fcp",  isCls: false },
+    { key: "ttfbP75", label: "TTFB", metric: "ttfb", isCls: false },
+    { key: "clsP75",  label: "CLS",  metric: "cls",  isCls: true  },
+];
+
+function MetricSparklines({ daily }) {
+    if (!daily?.length) return null;
+    return (
+        <div className="sa-perf-sparklines">
+            {SPARKLINE_DEFS.map(s => {
+                const chartData = daily.map(d => ({ label: d.day, num: d[s.key] ?? 0 }));
+                const latest    = daily[daily.length - 1]?.[s.key];
+                const rating    = cwvRating(s.metric, latest);
+                const color     = RATING_COLOR[rating];
+                return (
+                    <div key={s.key} className="sa-perf-sparkline-card">
+                        <div className="sa-perf-sparkline-card__header">
+                            <span>{s.label}</span>
+                            <span style={color ? { color, fontWeight: 700 } : { color: "rgba(200,200,220,0.6)" }}>
+                                {s.isCls ? fmtCls(latest) : fmtMs(latest)}
+                            </span>
+                        </div>
+                        <TrendLineChart data={chartData} title={`${s.label} P75`} height={72} />
+                    </div>
+                );
+            })}
+        </div>
+    );
+}
+
+// ── Full percentile distribution table ───────────────────────────────────
+const PCTILE_METRICS = [
+    { key: "lcp",  label: "LCP",  desc: "Largest Contentful Paint", isCls: false },
+    { key: "cls",  label: "CLS",  desc: "Cumulative Layout Shift",  isCls: true  },
+    { key: "inp",  label: "INP",  desc: "Interaction to Next Paint",isCls: false },
+    { key: "fcp",  label: "FCP",  desc: "First Contentful Paint",   isCls: false },
+    { key: "ttfb", label: "TTFB", desc: "Time to First Byte",       isCls: false },
+    { key: "load", label: "Load", desc: "Full page load event",     isCls: false },
+];
+const PCTILE_COLS = ["P25", "P50", "P75", "P90", "P95"];
+
+function PercentileTable({ totals }) {
+    if (!totals) return null;
+    return (
+        <div className="sa-table-wrap">
+        <table className="sa-table">
+            <thead>
+                <tr>
+                    <th>Metric</th>
+                    {PCTILE_COLS.map(p => (
+                        <th key={p} className="sa-table__num" style={p === "P75" ? { fontWeight: 800 } : {}}>
+                            {p}
+                        </th>
+                    ))}
+                </tr>
+            </thead>
+            <tbody>
+                {PCTILE_METRICS.map(m => (
+                    <tr key={m.key}>
+                        <td>
+                            <strong>{m.label}</strong>
+                            <span className="sa-muted" style={{ display: "block", fontSize: "11px" }}>{m.desc}</span>
+                        </td>
+                        {PCTILE_COLS.map(p => {
+                            const field = `${m.key}${p}`;
+                            const v     = totals[field];
+                            const rating = cwvRating(m.key, v);
+                            const color  = RATING_COLOR[rating];
+                            return (
+                                <td
+                                    key={p}
+                                    className="sa-table__num"
+                                    style={{
+                                        ...(color ? { color } : {}),
+                                        fontWeight: p === "P75" ? 700 : undefined,
+                                    }}
+                                >
+                                    {m.isCls ? fmtCls(v) : fmtMs(v)}
+                                </td>
+                            );
+                        })}
+                    </tr>
+                ))}
+            </tbody>
+        </table>
+        </div>
+    );
+}
+
+// ── LCP histogram ─────────────────────────────────────────────────────────
+function LcpHistogram({ histogram }) {
+    if (!histogram?.length) return null;
+
+    const W = 600, H = 160;
+    const PAD = { t: 10, r: 12, b: 32, l: 36 };
+    const cW = W - PAD.l - PAD.r;
+    const cH = H - PAD.t - PAD.b;
+
+    // Fill in any missing buckets so bars are evenly spaced
+    const maxBucket = Math.max(...histogram.map(b => b.bucketMs));
+    const filled = [];
+    for (let ms = 0; ms <= maxBucket; ms += 500) {
+        const found = histogram.find(b => b.bucketMs === ms);
+        filled.push({ bucketMs: ms, count: found?.count ?? 0 });
+    }
+
+    const maxCount = Math.max(...filled.map(b => b.count), 1);
+    const barW = cW / filled.length;
+
+    function barFill(ms) {
+        if (ms < 2500) return "rgba(34,197,94,0.65)";
+        if (ms < 4000) return "rgba(234,179,8,0.65)";
+        return "rgba(239,68,68,0.65)";
+    }
+
+    function xLabel(ms) {
+        if (ms >= 8000) return "8s+";
+        if (ms === 0)   return "0";
+        return (ms / 1000).toFixed(1) + "s";
+    }
+
+    const gridLines = [0.25, 0.5, 0.75, 1.0];
+
+    // x position of the 2500ms and 4000ms threshold lines
+    const xThresh = (ms) => PAD.l + (ms / 500) * barW;
+
+    return (
+        <svg
+            viewBox={`0 0 ${W} ${H}`}
+            preserveAspectRatio="none"
+            style={{ width: "100%", display: "block", maxHeight: "180px" }}
+        >
+            {/* Y grid lines + labels */}
+            {gridLines.map(f => {
+                const y = PAD.t + cH - f * cH;
+                const v = Math.round(maxCount * f);
+                return (
+                    <g key={f}>
+                        <line x1={PAD.l} y1={y} x2={W - PAD.r} y2={y} stroke="rgba(255,255,255,0.05)" strokeWidth="1" />
+                        <text x={PAD.l - 4} y={y + 4} textAnchor="end" fontSize="9" fill="rgba(160,160,180,0.5)">{v}</text>
+                    </g>
+                );
+            })}
+
+            {/* Threshold lines */}
+            {[2500, 4000].map(ms => {
+                const x = xThresh(ms);
+                const col = ms === 2500 ? "rgba(234,179,8,0.45)" : "rgba(239,68,68,0.45)";
+                const lbl = ms === 2500 ? "2.5s" : "4s";
+                return (
+                    <g key={ms}>
+                        <line x1={x} y1={PAD.t} x2={x} y2={PAD.t + cH} stroke={col} strokeWidth="1" strokeDasharray="3,3" />
+                        <text x={x + 3} y={PAD.t + 9} fontSize="9" fill={col}>{lbl}</text>
+                    </g>
+                );
+            })}
+
+            {/* Bars */}
+            {filled.map((b, i) => {
+                const x    = PAD.l + i * barW;
+                const bh   = (b.count / maxCount) * cH;
+                const y    = PAD.t + cH - bh;
+                return (
+                    <rect key={i} x={x + 1} y={y} width={barW - 2} height={bh} fill={barFill(b.bucketMs)} rx="1">
+                        <title>{xLabel(b.bucketMs)}: {b.count.toLocaleString("de-DE")} page loads</title>
+                    </rect>
+                );
+            })}
+
+            {/* X labels — every other bucket */}
+            {filled.map((b, i) => {
+                if (i % 2 !== 0 && i !== filled.length - 1) return null;
+                const x = PAD.l + (i + 0.5) * barW;
+                return (
+                    <text key={i} x={x} y={H - PAD.b + 12} textAnchor="middle" fontSize="9" fill="rgba(160,160,180,0.6)">
+                        {xLabel(b.bucketMs)}
+                    </text>
+                );
+            })}
+        </svg>
+    );
+}
+
 // ── Main page ─────────────────────────────────────────────────────────────
 export default function AnalyticsPerformance() {
     document.title = "Performance | Site Analytics";
@@ -427,11 +618,6 @@ export default function AnalyticsPerformance() {
     } = useAnalyticsPageChrome();
 
     const { data, loading } = usePerfReport(domain, fromIso, toIso);
-
-    const trendData = useMemo(() => (data?.daily || []).map(d => ({
-        label: d.day,
-        num:   d.lcpP75 ?? 0,
-    })), [data]);
 
     const showData = data && !data.noData;
 
@@ -516,97 +702,123 @@ export default function AnalyticsPerformance() {
                                 </div>
                             </div>
 
-                            {/* CWV rating distribution */}
-                            <div className="sa-panel">
-                                <h3 className="sa-panel__title">
-                                    <IconTarget className="sa-icon" /> Overall rating
-                                </h3>
-                                <p className="sa-panel__desc">
-                                    Share of page views rated Good / Needs improvement / Poor based on all three Core Web Vitals (LCP, CLS, INP).
-                                </p>
-                                <RatingBar
-                                    goodPct={data.totals.goodPct}
-                                    niPct={data.totals.niPct}
-                                    poorPct={data.totals.poorPct}
-                                    goodCount={data.totals.goodCount}
-                                    niCount={data.totals.niCount}
-                                    poorCount={data.totals.poorCount}
-                                />
-                            </div>
-
-                            {/* LCP trend */}
-                            {trendData.length > 1 && (
+                            {/* Grid A: Overall rating + By device */}
+                            <div className="sa-perf-2col">
                                 <div className="sa-panel">
                                     <h3 className="sa-panel__title">
-                                        <IconBarChart className="sa-icon" /> LCP over time
+                                        <IconTarget className="sa-icon" /> Overall rating
                                     </h3>
-                                    <p className="sa-panel__desc">P75 Largest Contentful Paint per day. Spikes can indicate deployments, CDN outages, or new heavy content.</p>
-                                    <TrendLineChart data={trendData} title="LCP p75 (ms)" />
+                                    <p className="sa-panel__desc">
+                                        Share of page views rated Good / Needs improvement / Poor based on all three Core Web Vitals (LCP, CLS, INP).
+                                    </p>
+                                    <RatingBar
+                                        goodPct={data.totals.goodPct}
+                                        niPct={data.totals.niPct}
+                                        poorPct={data.totals.poorPct}
+                                        goodCount={data.totals.goodCount}
+                                        niCount={data.totals.niCount}
+                                        poorCount={data.totals.poorCount}
+                                    />
+                                </div>
+                                {data.byDevice?.length > 0 && (
+                                    <div className="sa-panel">
+                                        <h3 className="sa-panel__title">
+                                            <IconGlobe className="sa-icon" /> By device
+                                        </h3>
+                                        <p className="sa-panel__desc">
+                                            Mobile devices typically show higher LCP and TTFB due to network constraints. A large gap between desktop and mobile signals missing responsive optimisation.
+                                        </p>
+                                        <DeviceTable rows={data.byDevice} />
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Trends over time — full width so sparklines have room */}
+                            {data.daily?.length > 1 && (
+                                <div className="sa-panel">
+                                    <h3 className="sa-panel__title">
+                                        <IconBarChart className="sa-icon" /> Trends over time
+                                    </h3>
+                                    <p className="sa-panel__desc">P75 for each Core Web Vital per day. Spikes can indicate deployments, CDN outages, or newly-added heavy resources.</p>
+                                    <MetricSparklines daily={data.daily} />
                                 </div>
                             )}
 
-                            {/* Per-page breakdown */}
+                            {/* Grid B: Percentile distribution + LCP histogram */}
+                            <div className="sa-perf-2col">
+                                <div className="sa-panel">
+                                    <h3 className="sa-panel__title">
+                                        <IconTarget className="sa-icon" /> Percentile distribution
+                                    </h3>
+                                    <p className="sa-panel__desc">
+                                        P25 to P95 for every metric. P75 matches Google&apos;s CrUX definition — P90 and P95 reveal your worst-case tail.
+                                    </p>
+                                    <PercentileTable totals={data.totals} />
+                                </div>
+                                {data.histogram?.length > 0 && (
+                                    <div className="sa-panel">
+                                        <h3 className="sa-panel__title">
+                                            <IconBarChart className="sa-icon" /> LCP distribution
+                                        </h3>
+                                        <p className="sa-panel__desc">
+                                            Page loads by 500 ms LCP bucket. Green = Good (&lt;2.5 s), yellow = Needs improvement, red = Poor (&gt;4 s).
+                                        </p>
+                                        <LcpHistogram histogram={data.histogram} />
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Per-page breakdown — full width (9 columns) */}
                             {data.byPage?.length > 0 && (
                                 <div className="sa-panel">
                                     <h3 className="sa-panel__title">
                                         <IconScrollDepth className="sa-icon" /> By page
                                     </h3>
                                     <p className="sa-panel__desc">
-                                        P75 for each metric per page — click column headers to sort. Pages with fewer than 3 samples are excluded. High-traffic slow pages are the highest-impact fix.
+                                        LCP P50/P75/P90 per page plus other metrics — click headers to sort. Pages with fewer than 3 samples are excluded. The P50→P90 spread shows how consistent a page is.
                                     </p>
                                     <PageTable rows={data.byPage} />
                                 </div>
                             )}
 
-                            {/* Per-device breakdown */}
-                            {data.byDevice?.length > 0 && (
-                                <div className="sa-panel">
-                                    <h3 className="sa-panel__title">
-                                        <IconGlobe className="sa-icon" /> By device
-                                    </h3>
-                                    <p className="sa-panel__desc">
-                                        Mobile devices typically show higher LCP and TTFB due to network constraints. A large gap between desktop and mobile signals missing responsive optimisation.
-                                    </p>
-                                    <DeviceTable rows={data.byDevice} />
-                                </div>
-                            )}
-
-                            {/* LCP element attribution */}
+                            {/* LCP element — full width (has image thumbnails + screenshots) */}
                             {data.lcpElements?.length > 0 && (
                                 <div className="sa-panel">
                                     <h3 className="sa-panel__title">
                                         <IconTarget className="sa-icon" /> LCP element
                                     </h3>
                                     <p className="sa-panel__desc">
-                                        Which DOM element triggered Largest Contentful Paint on each page. Images and large text blocks are the most common causes of a slow LCP — optimise the element listed here first (lazy-load, compress, preload, or resize it).
+                                        Which DOM element triggered Largest Contentful Paint on each page. Optimise the element listed here first — lazy-load, compress, preload, or resize it.
                                     </p>
                                     <LcpElemTable rows={data.lcpElements} domain={domain} />
                                 </div>
                             )}
 
-                            {/* Slow resources */}
-                            {data.slowResources?.length > 0 && (
-                                <div className="sa-panel">
-                                    <h3 className="sa-panel__title">
-                                        <IconClock className="sa-icon" /> Slow resources
-                                    </h3>
-                                    <p className="sa-panel__desc">
-                                        Assets that took longer than 200 ms to load, aggregated across all page views. Scripts and fonts are the most common culprits — consider self-hosting, deferring, or removing them. Size is transfer size (0 for cross-origin resources that don't set Timing-Allow-Origin).
-                                    </p>
-                                    <SlowResTable rows={data.slowResources} />
-                                </div>
-                            )}
-
-                            {/* Long tasks / main-thread blockers */}
-                            {data.longTasks?.length > 0 && (
-                                <div className="sa-panel">
-                                    <h3 className="sa-panel__title">
-                                        <IconAlertTriangle className="sa-icon" /> Main-thread blockers
-                                    </h3>
-                                    <p className="sa-panel__desc">
-                                        JavaScript tasks longer than 50 ms that block user interaction (the main thread). Anything over 200 ms will noticeably delay clicks and input. Same-origin tasks show as unattributed — this is a browser limitation of the Long Tasks API; cross-origin scripts (ads, analytics, chat widgets) are identified by source.
-                                    </p>
-                                    <LongTaskTable rows={data.longTasks} />
+                            {/* Grid C: Slow resources + Main-thread blockers */}
+                            {(data.slowResources?.length > 0 || data.longTasks?.length > 0) && (
+                                <div className="sa-perf-2col">
+                                    {data.slowResources?.length > 0 && (
+                                        <div className="sa-panel">
+                                            <h3 className="sa-panel__title">
+                                                <IconClock className="sa-icon" /> Slow resources
+                                            </h3>
+                                            <p className="sa-panel__desc">
+                                                Assets that took longer than 200 ms to load. Scripts and fonts are the most common culprits — consider self-hosting, deferring, or removing them.
+                                            </p>
+                                            <SlowResTable rows={data.slowResources} />
+                                        </div>
+                                    )}
+                                    {data.longTasks?.length > 0 && (
+                                        <div className="sa-panel">
+                                            <h3 className="sa-panel__title">
+                                                <IconAlertTriangle className="sa-icon" /> Main-thread blockers
+                                            </h3>
+                                            <p className="sa-panel__desc">
+                                                JavaScript tasks longer than 50 ms that block user interaction. Anything over 200 ms will noticeably delay clicks and input.
+                                            </p>
+                                            <LongTaskTable rows={data.longTasks} />
+                                        </div>
+                                    )}
                                 </div>
                             )}
                         </>
