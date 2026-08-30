@@ -29,8 +29,47 @@ function useFormsReport(domain, fromIso, toIso) {
 }
 
 function cleanFormId(id) {
-    if (!id) return "unknown";
-    try { return new URL("https://x" + id).pathname.replace(/\/$/, "") || id; } catch { return id; }
+    if (!id || id === "unknown") return "unknown";
+    return id;
+}
+
+// Reads extra_data.formClass and returns the first meaningful class token as
+// ".className" if the formId itself looks like a bare fallback (path or "form").
+function formClassBadge(formId, formClass) {
+    if (!formClass) return null;
+    const firstClass = formClass.trim().split(/\s+/)[0];
+    if (!firstClass) return null;
+    // Only show the class badge when the formId isn't already a clear HTML id/name
+    const looksLikeFallback = !formId || formId === "form" || formId === "unknown" || formId.startsWith("/");
+    if (!looksLikeFallback) return null;
+    return "." + firstClass;
+}
+
+// Maps an "HTTP N" message string to a short human-readable description.
+// Returns null when the message isn't an HTTP status pattern.
+function httpCodeDesc(message) {
+    if (!message) return null;
+    const m = message.match(/^HTTP\s+(\d+)$/);
+    if (!m) return null;
+    const code = parseInt(m[1], 10);
+    if (code === 0)   return "No response — network failure, CORS block, or offline";
+    if (code === 400) return "Bad request";
+    if (code === 401) return "Unauthorized";
+    if (code === 403) return "Forbidden";
+    if (code === 404) return "Not found";
+    if (code === 405) return "Method not allowed";
+    if (code === 408) return "Request timeout";
+    if (code === 410) return "Gone — endpoint removed or redirect missing";
+    if (code === 413) return "Payload too large";
+    if (code === 422) return "Unprocessable entity";
+    if (code === 429) return "Rate limit — too many requests";
+    if (code === 500) return "Internal server error";
+    if (code === 502) return "Bad gateway";
+    if (code === 503) return "Service unavailable";
+    if (code === 504) return "Gateway timeout";
+    if (code >= 400 && code < 500) return "Client error";
+    if (code >= 500) return "Server error";
+    return null;
 }
 
 function FormsTable({ forms, abandonMap }) {
@@ -202,22 +241,34 @@ function FormErrorsTable({ errors }) {
                 </tr>
             </thead>
             <tbody>
-                {errors.map((e, i) => (
-                    <tr key={i}>
-                        <td><span className="sa-form-id" title={e.formId}>{cleanFormId(e.formId)}</span></td>
-                        <td><span className={`sa-error-type sa-error-type--${e.errorType}`}>{e.errorType}</span></td>
-                        <td>{e.field ? <code className="sa-field-name">{e.field}</code> : <span className="sa-muted">—</span>}</td>
-                        <td>
-                            <span title={e.message || ""}>{
-                                e.message
-                                    ? (e.message.length > 60 ? e.message.slice(0, 59) + "…" : e.message)
-                                    : "—"
-                            }</span>
-                            <MiniBar value={e.occurrences} max={maxOcc} color="rgba(239,68,68,0.35)" />
-                        </td>
-                        <td className="sa-table__num">{e.occurrences.toLocaleString("de-DE")}</td>
-                    </tr>
-                ))}
+                {errors.map((e, i) => {
+                    const classBadge = formClassBadge(e.formId, e.formClass);
+                    const codeDesc = httpCodeDesc(e.message);
+                    return (
+                        <tr key={i}>
+                            <td>
+                                <span className="sa-form-id" title={e.formId}>{cleanFormId(e.formId)}</span>
+                                {classBadge && (
+                                    <span className="sa-form-action" title={e.formClass}>{classBadge}</span>
+                                )}
+                            </td>
+                            <td><span className={`sa-error-type sa-error-type--${e.errorType}`}>{e.errorType}</span></td>
+                            <td>{e.field ? <code className="sa-field-name">{e.field}</code> : <span className="sa-muted">—</span>}</td>
+                            <td>
+                                <span title={e.message || ""}>{
+                                    e.message
+                                        ? (e.message.length > 60 ? e.message.slice(0, 59) + "…" : e.message)
+                                        : "—"
+                                }</span>
+                                {codeDesc && (
+                                    <span className="sa-http-desc">{codeDesc}</span>
+                                )}
+                                <MiniBar value={e.occurrences} max={maxOcc} color="rgba(239,68,68,0.35)" />
+                            </td>
+                            <td className="sa-table__num">{e.occurrences.toLocaleString("de-DE")}</td>
+                        </tr>
+                    );
+                })}
             </tbody>
         </table>
         </div>
