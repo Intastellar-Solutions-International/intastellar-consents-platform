@@ -35,6 +35,10 @@ const AUTO_EVENTS = [
     { name: "rage_click",      label: "Rage clicks",        Icon: IconCursorClick,  color: "#ef4444" },
     { name: "video_pause",     label: "Video pauses",       Icon: IconVideo,        color: "#8b5cf6" },
     { name: "page_perf",       label: "Page performance",    Icon: IconBarChart,     color: "#64748b" },
+    { name: "page_load",       label: "Page loads",          Icon: IconBarChart,     color: "#64748b" },
+    { name: "form_error",      label: "Form errors",         Icon: IconFormFill,     color: "#ef4444" },
+    { name: "form_success",    label: "Form successes",      Icon: IconFormFill,     color: "#10b981" },
+    { name: "form_field_focus",       label: "Form field focus",          Icon: IconExternalLink, color: "#64748b" },
 ];
 
 const AUTO_EVENT_NAMES = new Set(AUTO_EVENTS.map(e => e.name));
