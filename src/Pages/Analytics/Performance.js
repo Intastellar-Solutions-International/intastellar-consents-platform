@@ -1169,6 +1169,93 @@ function CountryTable({ rows, domain }) {
     );
 }
 
+// ── Business impact ───────────────────────────────────────────────────────
+function BusinessImpact({ businessImpact, qualifyingEvents }) {
+    // Not configured — qualifying events array is empty in site settings
+    if (businessImpact === null) {
+        return (
+            <div className="sa-perf-bi-empty">
+                <p>No qualifying events configured yet.</p>
+                <p>
+                    Go to <strong>Analytics → Settings → Qualifying events</strong> and add the event name
+                    you track when a visitor completes a key action — for example a booking confirmation,
+                    a form submission, or a purchase. Any event fired via{" "}
+                    <code>window.intaAnalytics.track(&quot;event_name&quot;)</code> can be used.
+                </p>
+            </div>
+        );
+    }
+
+    // Configured but no sessions matched in the date range
+    if (!businessImpact.length) {
+        return (
+            <div className="sa-perf-bi-empty">
+                <p>No conversion data in this date range.</p>
+                <p className="sa-muted" style={{ fontSize: 11 }}>
+                    Tracking: {qualifyingEvents.join(", ")}
+                </p>
+            </div>
+        );
+    }
+
+    const maxRate  = Math.max(...businessImpact.map(r => r.conversionRate), 0.01);
+    const goodRow  = businessImpact.find(r => r.rating === "good");
+    const poorRow  = businessImpact.find(r => r.rating === "poor");
+    const uplift   = goodRow && poorRow && poorRow.conversionRate > 0
+        ? ((goodRow.conversionRate - poorRow.conversionRate) / poorRow.conversionRate * 100)
+        : null;
+
+    return (
+        <div>
+            {uplift !== null && uplift > 0 && (
+                <div className="sa-perf-bi-callout">
+                    Sessions with <strong>Good</strong> Core Web Vitals convert at a{" "}
+                    <strong>{Math.round(uplift)}% higher rate</strong> than <strong>Poor</strong> sessions
+                    — a direct performance-to-revenue signal.
+                </div>
+            )}
+            {uplift !== null && uplift <= 0 && (
+                <div className="sa-perf-bi-callout sa-perf-bi-callout--neutral">
+                    No clear conversion uplift between Good and Poor sessions in this period.
+                    Consider a longer date range or check if the qualifying event fires on the right page.
+                </div>
+            )}
+            <div className="sa-perf-bi-rows">
+                {businessImpact.map(r => {
+                    const color   = RATING_COLOR[r.rating] || "rgba(160,160,180,0.6)";
+                    const label   = RATING_LABEL[r.rating]  || r.rating;
+                    const barPct  = maxRate > 0 ? (r.conversionRate / maxRate) * 100 : 0;
+                    return (
+                        <div key={r.rating} className="sa-perf-bi-row">
+                            <div className="sa-perf-bi-label">
+                                <span style={{ width: 8, height: 8, borderRadius: "50%",
+                                               background: color, display: "inline-block",
+                                               flexShrink: 0 }} />
+                                <span style={{ color }}>{label}</span>
+                            </div>
+                            <div className="sa-perf-bi-bar-wrap">
+                                <div className="sa-perf-bi-bar"
+                                     style={{ width: barPct + "%",
+                                              background: color.replace(/[\d.]+\)$/, "0.35)") }} />
+                            </div>
+                            <div className="sa-perf-bi-rate">
+                                {r.conversionRate.toFixed(1).replace(".", ",")}%
+                            </div>
+                            <div className="sa-perf-bi-sessions sa-muted">
+                                {r.conversions.toLocaleString("de-DE")} / {r.sessions.toLocaleString("de-DE")} sessions
+                            </div>
+                        </div>
+                    );
+                })}
+            </div>
+            <p className="sa-perf-scope-note" style={{ marginTop: 12 }}>
+                Full-consent sessions only (session_id required for correlation).
+                Tracking: <strong>{qualifyingEvents.join(", ")}</strong>.
+            </p>
+        </div>
+    );
+}
+
 // ── Main page (also handles /country/:country sub-route) ──────────────────
 export default function AnalyticsPerformance() {
     const { country } = useParams();
@@ -1483,14 +1570,18 @@ export default function AnalyticsPerformance() {
                                 </div>
                             )}
 
-                            {/* Business impact — data collection gap */}
-                            <div className="sa-panel sa-perf-gap-panel">
+                            {/* Business impact */}
+                            <div className="sa-panel">
                                 <h3 className="sa-panel__title">
-                                    <IconTarget className="sa-icon" /> Business impact — data not yet available
+                                    <IconTarget className="sa-icon" /> Business impact
                                 </h3>
                                 <p className="sa-panel__desc">
-                                    Comparing conversion rate by Core Web Vitals rating (Good vs. Poor) would appear here. This requires booking completion events to be tracked via <code>window.intaAnalytics.track()</code> on the <code>/new-booking/...</code> confirmation page. Once that funnel data is available, this section will surface the revenue impact of performance regressions.
+                                    Conversion rate segmented by Core Web Vitals rating. A higher rate for "Good" sessions confirms that improving performance directly drives business outcomes.
                                 </p>
+                                <BusinessImpact
+                                    businessImpact={data.businessImpact}
+                                    qualifyingEvents={data.qualifyingEvents}
+                                />
                             </div>
                         </>
                     )}

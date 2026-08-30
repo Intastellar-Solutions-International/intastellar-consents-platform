@@ -6250,3 +6250,76 @@ details[open] .ca-context-summary::before { content: "▾"; }
     padding: 1px 4px;
     border-radius: 3px;
 }
+
+/* ── Business impact ──────────────────────────────────────────────────────── */
+.sa-perf-bi-empty {
+    padding: 16px 0 8px;
+    color: rgba(150,150,170,0.75);
+    font-size: 13px;
+    line-height: 1.5;
+}
+.sa-perf-bi-empty code {
+    font-size: 11px;
+    background: rgba(255,255,255,0.07);
+    padding: 1px 5px;
+    border-radius: 3px;
+    color: rgba(200,200,220,0.7);
+}
+.sa-perf-bi-callout {
+    background: rgba(34,197,94,0.06);
+    border: 1px solid rgba(34,197,94,0.14);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 13px;
+    color: rgba(190,220,200,0.9);
+    margin-bottom: 16px;
+    line-height: 1.5;
+}
+.sa-perf-bi-callout--neutral {
+    background: rgba(234,179,8,0.05);
+    border-color: rgba(234,179,8,0.14);
+    color: rgba(220,200,160,0.8);
+}
+.sa-perf-bi-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.sa-perf-bi-row {
+    display: grid;
+    grid-template-columns: 170px 1fr 56px 180px;
+    align-items: center;
+    gap: 14px;
+}
+.sa-perf-bi-label {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 13px;
+    font-weight: 600;
+}
+.sa-perf-bi-bar-wrap {
+    height: 10px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 5px;
+    overflow: hidden;
+}
+.sa-perf-bi-bar {
+    height: 100%;
+    border-radius: 5px;
+    transition: width 0.4s;
+    min-width: 2px;
+}
+.sa-perf-bi-rate {
+    font-size: 14px;
+    font-weight: 700;
+    text-align: right;
+    color: rgba(220,220,240,0.9);
+}
+.sa-perf-bi-sessions {
+    font-size: 11px;
+}
+@media (max-width: 700px) {
+    .sa-perf-bi-row { grid-template-columns: 140px 1fr 50px; }
+    .sa-perf-bi-sessions { display: none; }
+}
