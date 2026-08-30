@@ -5635,17 +5635,42 @@ details[open] .ca-context-summary::before { content: "▾"; }
     grid-template-columns: 3fr 2fr;
 }
 
+.sa-forms-grid--acq {
+    grid-template-columns: 3fr 2fr;
+}
+
 @media (max-width: 1100px) {
     .sa-forms-grid--main     { grid-template-columns: 1fr; }
     .sa-forms-grid--bottom   { grid-template-columns: 1fr 1fr; }
     .sa-forms-grid--insights { grid-template-columns: 1fr; }
+    .sa-forms-grid--acq      { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 680px) {
     .sa-forms-grid--main     { grid-template-columns: 1fr; }
     .sa-forms-grid--bottom   { grid-template-columns: 1fr; }
     .sa-forms-grid--insights { grid-template-columns: 1fr; }
+    .sa-forms-grid--acq      { grid-template-columns: 1fr; }
     .sa-forms-grid { gap: 10px; margin-bottom: 10px; }
+}
+
+.sa-section-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 24px 0 4px;
+    color: rgba(150,150,165,0.6);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+.sa-section-divider::before,
+.sa-section-divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: rgba(255,255,255,0.07);
 }
 
 .sa-field-name {

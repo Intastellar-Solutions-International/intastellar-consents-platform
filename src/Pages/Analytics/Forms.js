@@ -4,7 +4,7 @@ import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import {
     useAnalyticsPageChrome, authHeaders, KpiCard, MiniBar, formatPercent,
 } from "./_shared.js";
-import { IconFormFill, IconBarChart, IconTarget, IconScrollDepth } from "./Icons.js";
+import { IconFormFill, IconBarChart, IconTarget, IconScrollDepth, IconGlobe } from "./Icons.js";
 import TrendLineChart from "./TrendLineChart.js";
 import "./Analytics.css";
 
@@ -547,6 +547,142 @@ function TopPagesTable({ pages }) {
     );
 }
 
+function completionColor(rate) {
+    if (rate == null) return undefined;
+    if (rate >= 70) return "rgba(34,197,94,0.9)";
+    if (rate >= 40) return "rgba(234,179,8,0.9)";
+    return "rgba(239,68,68,0.9)";
+}
+
+function AcqChannelsTable({ channels }) {
+    if (!channels || !channels.length) {
+        return <p className="sa-notice">No acquisition data yet. Add <code>?utm_source=&utm_campaign=</code> to campaign links to see channel performance here.</p>;
+    }
+    const maxStarters = Math.max(...channels.map(r => r.starters), 1);
+    return (
+        <div className="sa-table-scroll">
+        <table className="sa-table">
+            <thead>
+                <tr>
+                    <th>Source</th>
+                    <th>Medium</th>
+                    <th>Campaign</th>
+                    <th className="sa-table__num">Started</th>
+                    <th className="sa-table__num">Submitted</th>
+                    <th className="sa-table__num">Errors</th>
+                    <th className="sa-table__num">Completion</th>
+                </tr>
+            </thead>
+            <tbody>
+                {channels.map((r, i) => {
+                    const isDirect = r.source === "(direct)";
+                    const rate = r.completionRate;
+                    return (
+                        <tr key={i}>
+                            <td style={isDirect ? { color: "rgba(130,130,130,0.6)", fontStyle: "italic" } : {}}>
+                                {r.source}
+                                <MiniBar value={r.starters} max={maxStarters} color="rgba(99,179,237,0.45)" />
+                            </td>
+                            <td className="sa-muted">{r.medium}</td>
+                            <td className="sa-muted" title={r.campaign}>{r.campaign === "(none)" ? <span className="sa-muted">—</span> : r.campaign.length > 40 ? r.campaign.slice(0, 39) + "…" : r.campaign}</td>
+                            <td className="sa-table__num">{r.starters.toLocaleString("de-DE")}</td>
+                            <td className="sa-table__num">{r.submissions.toLocaleString("de-DE")}</td>
+                            <td className="sa-table__num">{r.errors > 0 ? <span style={{ color: "rgba(239,68,68,0.8)" }}>{r.errors.toLocaleString("de-DE")}</span> : <span className="sa-muted">—</span>}</td>
+                            <td className="sa-table__num" style={completionColor(rate) ? { color: completionColor(rate), fontWeight: 600 } : {}}>
+                                {rate != null ? formatPercent(rate, 1) : "—"}
+                            </td>
+                        </tr>
+                    );
+                })}
+            </tbody>
+        </table>
+        </div>
+    );
+}
+
+function AcqReferrersTable({ referrers }) {
+    if (!referrers || !referrers.length) {
+        return <p className="sa-notice">No referrer data yet — requires session-linked events (full consent).</p>;
+    }
+    const maxStarters = Math.max(...referrers.map(r => r.starters), 1);
+    return (
+        <div className="sa-table-scroll">
+        <table className="sa-table">
+            <thead>
+                <tr>
+                    <th>Referrer</th>
+                    <th className="sa-table__num">Started</th>
+                    <th className="sa-table__num">Submitted</th>
+                    <th className="sa-table__num">Completion</th>
+                </tr>
+            </thead>
+            <tbody>
+                {referrers.map((r, i) => {
+                    const isDirect = r.referrer === "(direct)";
+                    const rate = r.completionRate;
+                    return (
+                        <tr key={i}>
+                            <td
+                                className="sa-table__path"
+                                title={r.referrer}
+                                style={isDirect ? { color: "rgba(130,130,130,0.6)", fontStyle: "italic" } : {}}
+                            >
+                                {r.referrer}
+                                <MiniBar value={r.starters} max={maxStarters} color="rgba(192,159,83,0.45)" />
+                            </td>
+                            <td className="sa-table__num">{r.starters.toLocaleString("de-DE")}</td>
+                            <td className="sa-table__num">{r.submissions.toLocaleString("de-DE")}</td>
+                            <td className="sa-table__num" style={completionColor(rate) ? { color: completionColor(rate), fontWeight: 600 } : {}}>
+                                {rate != null ? formatPercent(rate, 1) : "—"}
+                            </td>
+                        </tr>
+                    );
+                })}
+            </tbody>
+        </table>
+        </div>
+    );
+}
+
+function AcqPagesTable({ pages }) {
+    if (!pages || !pages.length) return null;
+    const maxStarters = Math.max(...pages.map(p => p.starters), 1);
+    return (
+        <div className="sa-table-scroll">
+        <table className="sa-table">
+            <thead>
+                <tr>
+                    <th>Page</th>
+                    <th className="sa-table__num">Started</th>
+                    <th className="sa-table__num">Submitted</th>
+                    <th className="sa-table__num">Errors</th>
+                    <th className="sa-table__num">Completion</th>
+                </tr>
+            </thead>
+            <tbody>
+                {pages.map((p, i) => {
+                    const rate = p.completionRate;
+                    return (
+                        <tr key={i}>
+                            <td className="sa-table__path" title={p.pathname}>
+                                {p.pathname.length > 60 ? "…" + p.pathname.slice(-57) : p.pathname}
+                                <MiniBar value={p.starters} max={maxStarters} color="rgba(192,159,83,0.45)" />
+                            </td>
+                            <td className="sa-table__num">{p.starters.toLocaleString("de-DE")}</td>
+                            <td className="sa-table__num">{p.submissions.toLocaleString("de-DE")}</td>
+                            <td className="sa-table__num">{p.errors > 0 ? <span style={{ color: "rgba(239,68,68,0.8)" }}>{p.errors.toLocaleString("de-DE")}</span> : <span className="sa-muted">—</span>}</td>
+                            <td className="sa-table__num" style={completionColor(rate) ? { color: completionColor(rate), fontWeight: 600 } : {}}>
+                                {rate != null ? formatPercent(rate, 1) : "—"}
+                            </td>
+                        </tr>
+                    );
+                })}
+            </tbody>
+        </table>
+        </div>
+    );
+}
+
 export default function AnalyticsForms() {
     const {
         domain,
@@ -741,6 +877,39 @@ export default function AnalyticsForms() {
                                     </h3>
                                     <p className="sa-panel__desc">Sessions reaching each step and how many ultimately submitted. Drop-off = 100% minus the share that completed the form from that step.</p>
                                     <StepProgressTable stepProgress={data.stepProgress} />
+                                </div>
+                            )}
+
+                            {/* ── Acquisition ── */}
+                            <div className="sa-section-divider">
+                                <span>Acquisition</span>
+                            </div>
+
+                            <div className="sa-forms-grid sa-forms-grid--acq">
+                                <div className="sa-panel">
+                                    <h3 className="sa-panel__title">
+                                        <IconBarChart className="sa-icon" /> Channels
+                                    </h3>
+                                    <p className="sa-panel__desc">UTM-tagged traffic broken down by source, medium and campaign. Direct visits have no UTM parameters. Completion rate = session-deduplicated submitted ÷ started.</p>
+                                    <AcqChannelsTable channels={data.acqChannels} />
+                                </div>
+
+                                <div className="sa-panel">
+                                    <h3 className="sa-panel__title">
+                                        <IconGlobe className="sa-icon" /> Referrers
+                                    </h3>
+                                    <p className="sa-panel__desc">Where form users came from, matched via session to the first referrer of their visit. Session-linked only.</p>
+                                    <AcqReferrersTable referrers={data.acqReferrers} />
+                                </div>
+                            </div>
+
+                            {data.acqPages?.length > 0 && (
+                                <div className="sa-panel">
+                                    <h3 className="sa-panel__title">
+                                        <IconScrollDepth className="sa-icon" /> Form engagement by page
+                                    </h3>
+                                    <p className="sa-panel__desc">Pages where form interactions occurred. Low completion on a high-traffic page is the highest-impact bottleneck to fix.</p>
+                                    <AcqPagesTable pages={data.acqPages} />
                                 </div>
                             )}
                         </>
