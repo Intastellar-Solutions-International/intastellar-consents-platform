@@ -1701,9 +1701,9 @@ function _formId(form){
     try{new PerformanceObserver(function(l){l.getEntries().forEach(function(e){if(e.duration>_inp)_inp=e.duration;});}).observe({type:'event',durationThreshold:16,buffered:true});}catch(e){}
     try{new PerformanceObserver(function(l){
       l.getEntries().forEach(function(e){
-        var s=null;
-        try{var a=e.attribution&&e.attribution[0];if(a){s=a.containerSrc||a.containerName||null;if(s){try{s=new URL(s).pathname.slice(0,120);}catch(x){s=String(s).slice(0,120);}}}}catch(x){}
-        _longTasks.push({dur:Math.round(e.duration),src:s});
+        var s=null,ct=null;
+        try{var a=e.attribution&&e.attribution[0];if(a){ct=a.containerType||null;s=a.containerSrc||a.containerName||null;if(s){try{s=new URL(s).pathname.slice(0,120);}catch(x){s=String(s).slice(0,120);}}}}catch(x){}
+        _longTasks.push({dur:Math.round(e.duration),st:Math.round(e.startTime),src:s,ct:ct});
       });
     }).observe({type:'longtask',buffered:true});}catch(e){}
     /* Network Connection Type */
@@ -1753,9 +1753,11 @@ function _formId(form){
           slowRes=slow.slice(0,8);
         }catch(e){}
         var lt=_longTasks.slice(0,10);
+        var tbt=0;
+        for(var j=0;j<_longTasks.length;j++){var lt_j=_longTasks[j];if(lt_j.dur>50&&lt_j.st!=null&&(fcp==null||lt_j.st>=fcp)&&(load==null||lt_j.st<=load)){tbt+=lt_j.dur-50;}}
         var netInfo=null;
         if(effectiveType){netInfo={type:effectiveType,rtt:rtt!=null?Math.round(rtt):null,dl:downlink,save:saveData||false};}
-        track('page_perf',{data:{lcp:lcp,cls:cls,inp:inp,fcp:fcp,ttfb:ttfb,load:load,rating:r,lcpEl:_lcpEl||undefined,slowRes:slowRes.length?slowRes:undefined,longTasks:lt.length?lt:undefined,net:netInfo||undefined}});
+        track('page_perf',{data:{lcp:lcp,cls:cls,inp:inp,fcp:fcp,ttfb:ttfb,load:load,tbt:tbt>0?Math.round(tbt):null,rating:r,lcpEl:_lcpEl||undefined,slowRes:slowRes.length?slowRes:undefined,longTasks:lt.length?lt:undefined,net:netInfo||undefined}});
       }catch(e){}
     }
     var _op=history.pushState,_or=history.replaceState;

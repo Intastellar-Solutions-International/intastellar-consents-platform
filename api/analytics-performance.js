@@ -119,6 +119,7 @@ export default async function handler(req, res) {
                 ${Pn("load",0.25)}  AS load_p25, ${Pn("load",0.50)}  AS load_p50,
                 ${P75("load")}      AS load_p75, ${Pn("load",0.90)}  AS load_p90,
                 ${Pn("load",0.95)}  AS load_p95,
+                ${P75("tbt")}       AS tbt_p75,
                 COUNT(*) FILTER (WHERE extra_data->>'rating' = 'good')               AS good_count,
                 COUNT(*) FILTER (WHERE extra_data->>'rating' = 'needs-improvement')  AS ni_count,
                 COUNT(*) FILTER (WHERE extra_data->>'rating' = 'poor')               AS poor_count
@@ -175,7 +176,8 @@ export default async function handler(req, res) {
                 ${P75("cls")}  AS cls_p75,
                 ${P75("inp")}  AS inp_p75,
                 ${P75("fcp")}  AS fcp_p75,
-                ${P75("ttfb")} AS ttfb_p75
+                ${P75("ttfb")} AS ttfb_p75,
+                ${P75("tbt")}  AS tbt_p75
             FROM analytics_custom_events
             WHERE ${BASE_WHERE}
             GROUP BY 1
@@ -295,10 +297,14 @@ export default async function handler(req, res) {
         // Main-thread long tasks aggregated by attributed script source
         db.query(`
             SELECT
-                COALESCE(task->>'src', '')     AS src,
-                COUNT(*)                       AS occurrences,
-                ROUND(AVG((task->>'dur')::numeric)) AS avg_dur,
-                MAX((task->>'dur')::numeric)::int   AS max_dur
+                COALESCE(task->>'src', '')                                              AS src,
+                COUNT(*)                                                                AS occurrences,
+                ROUND(AVG((task->>'dur')::numeric))                                     AS avg_dur,
+                PERCENTILE_CONT(0.75) WITHIN GROUP (ORDER BY (task->>'dur')::numeric)   AS p75_dur,
+                MAX((task->>'dur')::numeric)::int                                        AS max_dur,
+                ROUND(AVG((task->>'st')::numeric))                                      AS avg_start,
+                MODE() WITHIN GROUP (ORDER BY task->>'ct')                              AS container_type,
+                ROUND(SUM(GREATEST((task->>'dur')::numeric - 50, 0)))                   AS total_blocking
             FROM analytics_custom_events,
               LATERAL jsonb_array_elements(
                 CASE WHEN jsonb_typeof(extra_data->'longTasks') = 'array'
@@ -307,7 +313,7 @@ export default async function handler(req, res) {
               ) AS task
             WHERE ${ATTR_WHERE}
             GROUP BY 1
-            ORDER BY occurrences DESC
+            ORDER BY total_blocking DESC
             LIMIT 20
         `, params),
 
@@ -351,6 +357,7 @@ export default async function handler(req, res) {
         totals: {
             sampleSize,
             ...mapRow(t),
+            tbtP75:   fnum(t.tbt_p75),
             goodCount, niCount, poorCount,
             goodPct:  pct(goodCount),
             niPct:    pct(niCount),
@@ -382,6 +389,7 @@ export default async function handler(req, res) {
             inpP75:  fnum(r.inp_p75),
             fcpP75:  fnum(r.fcp_p75),
             ttfbP75: fnum(r.ttfb_p75),
+            tbtP75:  fnum(r.tbt_p75),
         })),
         lcpElements: lcpElemRes.rows.map(r => ({
             pathname:    r.pathname,
@@ -400,10 +408,14 @@ export default async function handler(req, res) {
             avgKb:        parseInt(r.avg_kb, 10) || 0,
         })),
         longTasks: longTaskRes.rows.map(r => ({
-            src:         r.src || null,
-            occurrences: parseInt(r.occurrences, 10) || 0,
-            avgDur:      fnum(r.avg_dur),
-            maxDur:      parseInt(r.max_dur, 10) || 0,
+            src:           r.src || null,
+            occurrences:   parseInt(r.occurrences, 10) || 0,
+            avgDur:        fnum(r.avg_dur),
+            p75Dur:        fnum(r.p75_dur),
+            maxDur:        parseInt(r.max_dur, 10) || 0,
+            avgStart:      fnum(r.avg_start),
+            containerType: r.container_type || null,
+            totalBlocking: fnum(r.total_blocking),
         })),
         histogram: histogramRes.rows.map(r => ({
             bucketMs: parseInt(r.bucket_ms, 10) || 0,
