@@ -408,7 +408,7 @@ function LcpElemTable({ rows, domain }) {
     );
 }
 
-const RES_TYPE_LABEL = { script: "Script", img: "Image", link: "CSS", font: "Font", fetch: "Fetch", xmlhttprequest: "XHR", iframe: "iframe" };
+const RES_TYPE_LABEL = { script: "Script", img: "Image", link: "CSS", css: "BG image", font: "Font", fetch: "Fetch", xmlhttprequest: "XHR", iframe: "iframe", source: "Image", video: "Video", audio: "Audio" };
 
 // ── Slow resources table ───────────────────────────────────────────────────
 function SlowResTable({ rows }) {

@@ -1765,7 +1765,9 @@ function _formId(form){
             if(re.duration>200){
               var ru=re.name;
               try{var pu=new URL(re.name);ru=(pu.host!==location.host?pu.host:'')+pu.pathname.slice(0,100);}catch(x){}
-              slow.push({url:ru,dur:Math.round(re.duration),size:re.transferSize||0,type:re.initiatorType});
+              var rt=re.initiatorType;
+              if(rt==='link'){if(/\.(jpe?g|png|gif|webp|avif|svg|ico)(\?|#|$)/i.test(re.name))rt='img';else if(/\.(woff2?|ttf|otf|eot)(\?|#|$)/i.test(re.name))rt='font';}
+              slow.push({url:ru,dur:Math.round(re.duration),size:re.transferSize||0,type:rt});
             }
           }
           slow.sort(function(a,b){return b.dur-a.dur;});
