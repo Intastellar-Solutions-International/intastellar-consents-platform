@@ -34,6 +34,7 @@ const AUTO_EVENTS = [
     { name: "page_print",      label: "Page prints",        Icon: IconPrint,        color: "#64748b" },
     { name: "rage_click",      label: "Rage clicks",        Icon: IconCursorClick,  color: "#ef4444" },
     { name: "video_pause",     label: "Video pauses",       Icon: IconVideo,        color: "#8b5cf6" },
+    { name: "page_perf",       label: "Page performance",    Icon: IconBarChart,     color: "#64748b" },
 ];
 
 const AUTO_EVENT_NAMES = new Set(AUTO_EVENTS.map(e => e.name));
