@@ -1680,17 +1680,32 @@ function _formId(form){
 })();
 
 // ── Web Vitals / performance metrics ─────────────────────────────────────
-// Fires a single page_perf event when the page is unloaded or hidden, or
-// just before a SPA navigation (pushState/replaceState/popstate). Captures
-// LCP, CLS, INP (Chrome 96+), FCP, TTFB, and total load time.
-// All timings in milliseconds; CLS is unitless (3 decimal places).
-// Gracefully no-ops where PerformanceObserver is not supported.
+// Fires a single page_perf event when the page is unloaded, hidden, or just
+// before a SPA navigation. Captures LCP, CLS, INP, FCP, TTFB, load time,
+// the LCP element descriptor, top slow resources (>200 ms), and long tasks.
 (function(){
   try{
-    var _lcp=null,_cls=0,_inp=0,_fired=false;
-    try{new PerformanceObserver(function(l){var e=l.getEntries();if(e.length)_lcp=e[e.length-1].startTime;}).observe({type:'largest-contentful-paint',buffered:true});}catch(e){}
+    var _lcp=null,_lcpEl=null,_cls=0,_inp=0,_fired=false,_longTasks=[];
+    try{new PerformanceObserver(function(l){
+      var e=l.getEntries();if(e.length){
+        var last=e[e.length-1];_lcp=last.startTime;
+        var el=last.element;
+        if(el){
+          var s=el.currentSrc||el.src||el.getAttribute('data-src')||null;
+          if(s){try{s=new URL(s).pathname.slice(0,120);}catch(x){s=String(s).slice(0,120);}}
+          _lcpEl={tag:el.tagName.toLowerCase(),id:el.id||null,cls:(el.className||'').trim().split(' ')[0]||null,src:s};
+        }
+      }
+    }).observe({type:'largest-contentful-paint',buffered:true});}catch(e){}
     try{new PerformanceObserver(function(l){l.getEntries().forEach(function(e){if(!e.hadRecentInput)_cls+=e.value;});}).observe({type:'layout-shift',buffered:true});}catch(e){}
     try{new PerformanceObserver(function(l){l.getEntries().forEach(function(e){if(e.duration>_inp)_inp=e.duration;});}).observe({type:'event',durationThreshold:16,buffered:true});}catch(e){}
+    try{new PerformanceObserver(function(l){
+      l.getEntries().forEach(function(e){
+        var s=null;
+        try{var a=e.attribution&&e.attribution[0];if(a){s=a.containerSrc||a.containerName||null;if(s){try{s=new URL(s).pathname.slice(0,120);}catch(x){s=String(s).slice(0,120);}}}}catch(x){}
+        _longTasks.push({dur:Math.round(e.duration),src:s});
+      });
+    }).observe({type:'longtask',buffered:true});}catch(e){}
     function _fire(){
       if(_fired)return;_fired=true;
       try{
@@ -1706,7 +1721,22 @@ function _formId(form){
         var r='good';
         if((lcp!=null&&lcp>=4000)||(cls>=0.25)||(inp!=null&&inp>=500))r='poor';
         else if((lcp!=null&&lcp>=2500)||(cls>=0.1)||(inp!=null&&inp>=200))r='needs-improvement';
-        track('page_perf',{data:{lcp:lcp,cls:cls,inp:inp,fcp:fcp,ttfb:ttfb,load:load,rating:r}});
+        var slowRes=[];
+        try{
+          var res=performance.getEntriesByType('resource'),slow=[];
+          for(var i=0;i<res.length;i++){
+            var re=res[i];
+            if(re.duration>200){
+              var ru=re.name;
+              try{var pu=new URL(re.name);ru=(pu.host!==location.host?pu.host:'')+pu.pathname.slice(0,100);}catch(x){}
+              slow.push({url:ru,dur:Math.round(re.duration),size:re.transferSize||0,type:re.initiatorType});
+            }
+          }
+          slow.sort(function(a,b){return b.dur-a.dur;});
+          slowRes=slow.slice(0,8);
+        }catch(e){}
+        var lt=_longTasks.slice(0,10);
+        track('page_perf',{data:{lcp:lcp,cls:cls,inp:inp,fcp:fcp,ttfb:ttfb,load:load,rating:r,lcpEl:_lcpEl||undefined,slowRes:slowRes.length?slowRes:undefined,longTasks:lt.length?lt:undefined}});
       }catch(e){}
     }
     var _op=history.pushState,_or=history.replaceState;
