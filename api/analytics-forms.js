@@ -109,10 +109,10 @@ export default async function handler(req, res) {
         db.query(`
             WITH submits AS (
                 SELECT
-                    COALESCE(extra_data->>'formId', 'unknown') AS form_id,
-                    extra_data->>'action'                       AS form_action,
+                    COALESCE(NULLIF(extra_data->>'formId', ''), 'unknown') AS form_id,
+                    extra_data->>'action'                                   AS form_action,
                     pathname,
-                    COUNT(*)                                    AS submissions
+                    COUNT(*)                                                AS submissions
                 FROM analytics_custom_events
                 WHERE site_id = $1
                   AND received_at >= $2::date
@@ -122,8 +122,12 @@ export default async function handler(req, res) {
             ),
             starters AS (
                 SELECT
-                    COALESCE(extra_data->>'formId', 'unknown') AS form_id,
-                    COUNT(*)                                    AS starters
+                    CASE
+                        WHEN extra_data->>'formId' IN ('form','unknown') OR extra_data->>'formId' IS NULL OR extra_data->>'formId' = ''
+                        THEN COALESCE(NULLIF(extra_data->>'action', ''), 'form')
+                        ELSE extra_data->>'formId'
+                    END AS form_id,
+                    COUNT(*) AS starters
                 FROM analytics_custom_events
                 WHERE site_id = $1
                   AND received_at >= $2::date
@@ -207,7 +211,11 @@ export default async function handler(req, res) {
             WITH started_sessions AS (
                 SELECT
                     session_id,
-                    COALESCE(extra_data->>'formId', 'unknown') AS form_id
+                    CASE
+                        WHEN extra_data->>'formId' IN ('form','unknown') OR extra_data->>'formId' IS NULL OR extra_data->>'formId' = ''
+                        THEN COALESCE(NULLIF(extra_data->>'action', ''), 'form')
+                        ELSE extra_data->>'formId'
+                    END AS form_id
                 FROM analytics_custom_events
                 WHERE site_id = $1
                   AND received_at >= $2::date
@@ -219,7 +227,7 @@ export default async function handler(req, res) {
             submitted_sessions AS (
                 SELECT DISTINCT
                     session_id,
-                    COALESCE(extra_data->>'formId', 'unknown') AS form_id
+                    COALESCE(NULLIF(extra_data->>'formId', ''), 'unknown') AS form_id
                 FROM analytics_custom_events
                 WHERE site_id = $1
                   AND received_at >= $2::date
@@ -399,7 +407,11 @@ export default async function handler(req, res) {
         db.query(`
             WITH first_focus AS (
                 SELECT
-                    COALESCE(extra_data->>'formId', 'unknown') AS form_id,
+                    CASE
+                        WHEN extra_data->>'formId' IN ('form','unknown') OR extra_data->>'formId' IS NULL OR extra_data->>'formId' = ''
+                        THEN COALESCE(NULLIF(extra_data->>'action', ''), 'form')
+                        ELSE extra_data->>'formId'
+                    END AS form_id,
                     session_id,
                     MIN(received_at) AS focus_at
                 FROM analytics_custom_events
@@ -412,7 +424,7 @@ export default async function handler(req, res) {
             ),
             submits AS (
                 SELECT
-                    COALESCE(extra_data->>'formId', 'unknown') AS form_id,
+                    COALESCE(NULLIF(extra_data->>'formId', ''), 'unknown') AS form_id,
                     session_id,
                     MIN(received_at) AS submit_at
                 FROM analytics_custom_events

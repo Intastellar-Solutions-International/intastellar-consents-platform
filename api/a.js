@@ -1213,6 +1213,20 @@ var _spaLastPath=location.pathname+location.search;
   }catch(e){}
 })();
 
+// ── Shared form identifier ───────────────────────────────────────────────
+// All form tracking events must use this function so formIds are consistent
+// across form_submit, form_started, form_field_focus, form_error, and form_step.
+// Inconsistent formIds cause JOIN failures in analytics queries (empty completion
+// rate and abandonment columns in the dashboard).
+function _formId(form){
+  var f=(form.getAttribute('data-analytics-id')||form.id||form.name||'').slice(0,64);
+  if(f)return f;
+  var cls=(form.className||'').trim().split(/\s+/)[0].slice(0,63);
+  if(cls)return '.'+cls;
+  var a=(form.action||'').replace(/^https?:\\/\\/[^\\/]+/,'').split('?')[0].slice(0,100);
+  return a||'form';
+}
+
 // ── Automatic form tracking ───────────────────────────────────────────────
 // Fires a form_submit event on every <form> submit. Never captures field
 // values — only names and types — so no PII enters the pipeline.
@@ -1224,9 +1238,8 @@ var _spaLastPath=location.pathname+location.search;
     try{
       var form=e.target;
       if(!form||form.tagName!=='FORM')return;
-      var fid=(form.getAttribute('data-analytics-id')||form.id||form.name||'').slice(0,64);
+      var fid=_formId(form);
       var faction=(form.action||'').replace(/^https?:\\/\\/[^\\/]+/,'').slice(0,100);
-      if(!fid)fid=(faction.split('?')[0])||'form';
       var fields=[],els=form.elements;
       for(var i=0;i<els.length&&fields.length<20;i++){
         var el=els[i];
@@ -1322,7 +1335,7 @@ var _spaLastPath=location.pathname+location.search;
     try{
       var el=e.target,form=el&&el.form;
       if(!form)return;
-      var fid=(form.getAttribute('data-analytics-id')||form.id||form.name||'').slice(0,64)||'form';
+      var fid=_formId(form);
       if(started[fid])return;
       started[fid]=1;
       track('form_started',{data:{
@@ -1351,7 +1364,7 @@ var _spaLastPath=location.pathname+location.search;
       if(!form||!el.name)return;
       var tp=(el.type||'text').toLowerCase();
       if(SKIP_TYPES[tp]||SKIP_NAMES.test(el.name))return;
-      var fid=(form.getAttribute('data-analytics-id')||form.id||form.name||'').slice(0,64)||'form';
+      var fid=_formId(form);
       var fname=el.name.slice(0,40);
       if(lastFocused[fid]===fname)return;
       lastFocused[fid]=fname;
@@ -1364,9 +1377,7 @@ var _spaLastPath=location.pathname+location.search;
       if(!form||!el.name)return;
       var tp=(el.type||'text').toLowerCase();
       if(SKIP_TYPES[tp]||SKIP_NAMES.test(el.name))return;
-      var _base=(form.getAttribute('data-analytics-id')||form.id||form.name||'').slice(0,64);
-      var _cls=(form.className||'').trim().split(/\s+/)[0].slice(0,63);
-      var fid=_base||(_cls?'.'+_cls:'form');
+      var fid=_formId(form);
       track('form_error',{data:{
         formId:fid,
         formClass:(form.className||'').slice(0,80),
@@ -1385,18 +1396,7 @@ var _spaLastPath=location.pathname+location.search;
 (function(){
   var WIN=15000;
   var Q={};// fid -> {t, action, cls}
-  function _fid(form){
-    // Prefer explicit analytics ID, then HTML id/name; fall back to the first
-    // CSS class (prefixed with ".") rather than the action URL — the action is
-    // a URL path, not a form identity, and was causing "/" to appear as the
-    // form name in the dashboard when forms lacked id/name attributes.
-    var f=(form.getAttribute('data-analytics-id')||form.id||form.name||'').slice(0,64);
-    if(f)return f;
-    var cls=(form.className||'').trim().split(/\s+/)[0].slice(0,63);
-    if(cls)return '.'+cls;
-    var a=(form.action||'').replace(/^https?:\\/\\/[^\\/]+/,'').split('?')[0].slice(0,100);
-    return a||'form';
-  }
+  function _fid(form){return _formId(form);}
   document.addEventListener('submit',function(e){
     try{
       var form=e.target;
@@ -1475,12 +1475,7 @@ var _spaLastPath=location.pathname+location.search;
 //      step container to get the step number in the analytics data.
 (function(){
   var NEXT_RE=/^(next|continue|weiter|siguiente|suivant|volgende|successivo|nästa|næste|seuraava|forward|proceed|avanti|prossimo)/i;
-  function _sfid(form){
-    var f=(form.getAttribute('data-analytics-id')||form.id||form.name||'').slice(0,64);
-    if(f)return f;
-    var cls=(form.className||'').trim().split(/\s+/)[0].slice(0,63);
-    return cls?'.'+cls:'form';
-  }
+  function _sfid(form){return _formId(form);}
   function fireStep(form,step,label){
     try{
       track('form_step',{data:{
