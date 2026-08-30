@@ -70,6 +70,11 @@ export default async function handler(req, res) {
     const fromDate = from || new Date(Date.now() - 30 * 86400000).toISOString().slice(0, 10);
     const toDate   = to   || new Date().toISOString().slice(0, 10);
 
+    // Previous period — same length, immediately preceding
+    const dayDiff    = Math.max(1, Math.round((new Date(toDate) - new Date(fromDate)) / 86400000) + 1);
+    const prevToDate   = new Date(new Date(fromDate).getTime() - 86400000).toISOString().slice(0, 10);
+    const prevFromDate = new Date(new Date(fromDate).getTime() - dayDiff * 86400000).toISOString().slice(0, 10);
+
     // Optional country filter — CHAR(2) ISO 3166-1 alpha-2, uppercase only
     const country = rawCountry && /^[A-Z]{2}$/.test(rawCountry.toUpperCase())
         ? rawCountry.toUpperCase()
@@ -85,7 +90,8 @@ export default async function handler(req, res) {
     if (!siteRes.rows.length) return res.status(404).json({ error: "Site not found" });
     const siteId = siteRes.rows[0].id;
 
-    const params = country ? [siteId, fromDate, toDate, country] : [siteId, fromDate, toDate];
+    const params     = country ? [siteId, fromDate,     toDate,     country] : [siteId, fromDate,     toDate];
+    const prevParams = country ? [siteId, prevFromDate, prevToDate, country] : [siteId, prevFromDate, prevToDate];
 
     const BASE_WHERE = `
         site_id = $1
@@ -94,8 +100,10 @@ export default async function handler(req, res) {
         AND name = 'page_perf'
         ${country ? "AND country_code = $4" : ""}
     `;
+    // Reusable WHERE for the previous period — identical shape, different params
+    const PREV_WHERE = BASE_WHERE;
 
-    const [totalsRes, byPageRes, byDeviceRes, dailyRes, byCountryRes] = await Promise.all([
+    const [totalsRes, byPageRes, byDeviceRes, dailyRes, byCountryRes, prevTotalsRes] = await Promise.all([
 
         // Site-wide percentile distribution (P25/P50/P75/P90/P95) for every metric
         db.query(`
@@ -167,17 +175,17 @@ export default async function handler(req, res) {
             ORDER BY samples DESC
         `, params),
 
-        // Daily trend — P75 for all 5 sparkline metrics
+        // Daily trend — P50/P75/P90 per metric for band charts
         db.query(`
             SELECT
                 DATE_TRUNC('day', received_at)::date AS day,
-                COUNT(*)       AS samples,
-                ${P75("lcp")}  AS lcp_p75,
-                ${P75("cls")}  AS cls_p75,
-                ${P75("inp")}  AS inp_p75,
-                ${P75("fcp")}  AS fcp_p75,
-                ${P75("ttfb")} AS ttfb_p75,
-                ${P75("tbt")}  AS tbt_p75
+                COUNT(*)              AS samples,
+                ${Pn("lcp",  0.50)}   AS lcp_p50,  ${P75("lcp")}   AS lcp_p75,  ${Pn("lcp",  0.90)} AS lcp_p90,
+                ${Pn("cls",  0.50)}   AS cls_p50,  ${P75("cls")}   AS cls_p75,  ${Pn("cls",  0.90)} AS cls_p90,
+                ${Pn("inp",  0.50)}   AS inp_p50,  ${P75("inp")}   AS inp_p75,  ${Pn("inp",  0.90)} AS inp_p90,
+                ${Pn("fcp",  0.50)}   AS fcp_p50,  ${P75("fcp")}   AS fcp_p75,  ${Pn("fcp",  0.90)} AS fcp_p90,
+                ${Pn("ttfb", 0.50)}   AS ttfb_p50, ${P75("ttfb")}  AS ttfb_p75, ${Pn("ttfb", 0.90)} AS ttfb_p90,
+                ${P75("tbt")}         AS tbt_p75
             FROM analytics_custom_events
             WHERE ${BASE_WHERE}
             GROUP BY 1
@@ -208,9 +216,23 @@ export default async function handler(req, res) {
             LIMIT 50
         `, params),
 
+        // Previous-period totals — for period-over-period delta on metric cards
+        db.query(`
+            SELECT
+                ${P75("lcp")}  AS lcp_p75,
+                ${P75("cls")}  AS cls_p75,
+                ${P75("inp")}  AS inp_p75,
+                ${P75("fcp")}  AS fcp_p75,
+                ${P75("ttfb")} AS ttfb_p75,
+                ${P75("load")} AS load_p75,
+                ${P75("tbt")}  AS tbt_p75
+            FROM analytics_custom_events
+            WHERE ${PREV_WHERE}
+        `, prevParams),
+
     ]).catch(e => {
         console.error("analytics-performance query error:", e.message);
-        return Array.from({ length: 5 }, () => ({ rows: [] }));
+        return Array.from({ length: 6 }, () => ({ rows: [] }));
     });
 
     const t = totalsRes.rows[0] || {};
@@ -253,7 +275,7 @@ export default async function handler(req, res) {
         AND name = 'page_perf'
         ${country ? "AND country_code = $4" : ""}
     `;
-    const [lcpElemRes, slowResRes, longTaskRes, histogramRes, byNetworkRes] = await Promise.all([
+    const [lcpElemRes, slowResRes, longTaskRes, histogramRes, byNetworkRes, byBrowserRes, clsHistRes, inpHistRes] = await Promise.all([
 
         // Which element was the LCP candidate on each page?
         db.query(`
@@ -351,9 +373,52 @@ export default async function handler(req, res) {
             ORDER BY samples DESC
         `, params),
 
+        // Per-browser P75 breakdown (browser_family populated since schema migration)
+        db.query(`
+            SELECT
+                COALESCE(NULLIF(browser_family, ''), 'other') AS browser,
+                COUNT(*)        AS samples,
+                ${P75("lcp")}   AS lcp_p75,
+                ${P75("cls")}   AS cls_p75,
+                ${P75("inp")}   AS inp_p75,
+                ${P75("ttfb")}  AS ttfb_p75,
+                ${P75("load")}  AS load_p75
+            FROM analytics_custom_events
+            WHERE ${ATTR_WHERE}
+            GROUP BY 1
+            HAVING COUNT(*) >= 3
+            ORDER BY samples DESC
+        `, params),
+
+        // CLS histogram — 0.025 buckets, capped at 0.5 for the last bucket
+        db.query(`
+            SELECT
+                ROUND(LEAST(FLOOR((extra_data->>'cls')::numeric / 0.025) * 0.025, 0.5), 3)::numeric AS bucket,
+                COUNT(*) AS count
+            FROM analytics_custom_events
+            WHERE ${ATTR_WHERE}
+              AND extra_data->>'cls' IS NOT NULL
+              AND (extra_data->>'cls')::numeric BETWEEN 0.001 AND 2
+            GROUP BY 1
+            ORDER BY 1
+        `, params),
+
+        // INP histogram — 50 ms buckets, capped at 1000 ms for the last bucket
+        db.query(`
+            SELECT
+                LEAST(FLOOR((extra_data->>'inp')::numeric / 50) * 50, 1000)::int AS bucket_ms,
+                COUNT(*) AS count
+            FROM analytics_custom_events
+            WHERE ${ATTR_WHERE}
+              AND extra_data->>'inp' IS NOT NULL
+              AND (extra_data->>'inp')::numeric BETWEEN 1 AND 5000
+            GROUP BY 1
+            ORDER BY 1
+        `, params),
+
     ]).catch(e => {
         console.error("analytics-performance attribution query error:", e.message);
-        return Array.from({ length: 5 }, () => ({ rows: [] }));
+        return Array.from({ length: 8 }, () => ({ rows: [] }));
     });
 
     return res.status(200).json({
@@ -385,14 +450,14 @@ export default async function handler(req, res) {
             ...mapRow(r),
         })),
         daily: dailyRes.rows.map(r => ({
-            day:     r.day,
-            samples: parseInt(r.samples, 10) || 0,
-            lcpP75:  fnum(r.lcp_p75),
-            clsP75:  fcls(r.cls_p75),
-            inpP75:  fnum(r.inp_p75),
-            fcpP75:  fnum(r.fcp_p75),
-            ttfbP75: fnum(r.ttfb_p75),
-            tbtP75:  fnum(r.tbt_p75),
+            day:      r.day,
+            samples:  parseInt(r.samples, 10) || 0,
+            lcpP50:   fnum(r.lcp_p50),  lcpP75:  fnum(r.lcp_p75),  lcpP90:  fnum(r.lcp_p90),
+            clsP50:   fcls(r.cls_p50),  clsP75:  fcls(r.cls_p75),  clsP90:  fcls(r.cls_p90),
+            inpP50:   fnum(r.inp_p50),  inpP75:  fnum(r.inp_p75),  inpP90:  fnum(r.inp_p90),
+            fcpP50:   fnum(r.fcp_p50),  fcpP75:  fnum(r.fcp_p75),  fcpP90:  fnum(r.fcp_p90),
+            ttfbP50:  fnum(r.ttfb_p50), ttfbP75: fnum(r.ttfb_p75), ttfbP90: fnum(r.ttfb_p90),
+            tbtP75:   fnum(r.tbt_p75),
         })),
         lcpElements: lcpElemRes.rows.map(r => ({
             pathname:    r.pathname,
@@ -447,5 +512,35 @@ export default async function handler(req, res) {
             ttfbP75: fnum(r.ttfb_p75),
             loadP75: fnum(r.load_p75),
         })),
+        byBrowser: byBrowserRes.rows.map(r => ({
+            browser: r.browser,
+            samples: parseInt(r.samples, 10) || 0,
+            lcpP75:  fnum(r.lcp_p75),
+            clsP75:  fcls(r.cls_p75),
+            inpP75:  fnum(r.inp_p75),
+            ttfbP75: fnum(r.ttfb_p75),
+            loadP75: fnum(r.load_p75),
+        })),
+        clsHistogram: clsHistRes.rows.map(r => ({
+            bucket: parseFloat(r.bucket) || 0,
+            count:  parseInt(r.count, 10) || 0,
+        })),
+        inpHistogram: inpHistRes.rows.map(r => ({
+            bucketMs: parseInt(r.bucket_ms, 10) || 0,
+            count:    parseInt(r.count, 10) || 0,
+        })),
+        prevTotals: (() => {
+            const p = prevTotalsRes.rows[0] || {};
+            return {
+                lcpP75:  fnum(p.lcp_p75),
+                clsP75:  fcls(p.cls_p75),
+                inpP75:  fnum(p.inp_p75),
+                fcpP75:  fnum(p.fcp_p75),
+                ttfbP75: fnum(p.ttfb_p75),
+                loadP75: fnum(p.load_p75),
+                tbtP75:  fnum(p.tbt_p75),
+            };
+        })(),
+        prevPeriod: { from: prevFromDate, to: prevToDate },
     });
 }
