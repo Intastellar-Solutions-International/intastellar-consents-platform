@@ -461,6 +461,7 @@ async function ensureTables(db) {
         -- count/length and value length, no unbounded nesting — before it
         -- ever reaches this column.
         ALTER TABLE analytics_custom_events ADD COLUMN IF NOT EXISTS extra_data JSONB;
+        ALTER TABLE analytics_custom_events ADD COLUMN IF NOT EXISTS browser_family VARCHAR(32);
         CREATE TABLE IF NOT EXISTS analytics_foreign_domains (
             id              BIGSERIAL    PRIMARY KEY,
             site_id         VARCHAR(32)  NOT NULL,
@@ -1977,12 +1978,15 @@ export default async function handler(req, res) {
             if (Object.keys(clean).length) extraData = JSON.stringify(clean);
         }
 
+        const { browser: eventBrowserFamily } = parseUA(req.headers["user-agent"] || "");
+
         const { rows: evRows } = await db.query(
             `INSERT INTO analytics_custom_events
              (site_id, organisation_id, session_id, consent_level, consent_stat, consent_func, consent_adv,
               name, value_cents, currency, transaction_id, pathname, page_host, country_code, device_type, source,
-              gclid, msclkid, fbclid, utm_campaign, utm_content, utm_source, utm_medium, products, extra_data)
-             VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25)
+              gclid, msclkid, fbclid, utm_campaign, utm_content, utm_source, utm_medium, products, extra_data,
+              browser_family)
+             VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26)
              RETURNING id`,
             [
                 siteId, orgId, isMinimal ? null : (sid ? String(sid).slice(0, 64) : null),
@@ -1996,6 +2000,7 @@ export default async function handler(req, res) {
                 cleanGclid, cleanMsclkid, cleanFbclid,
                 cleanUtmCampaign, cleanUtmContent, cleanUtmSource, cleanUtmMedium,
                 products, extraData,
+                eventBrowserFamily || null,
             ]
         ).catch(() => ({ rows: [] }));
 
