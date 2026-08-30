@@ -190,6 +190,78 @@ export default async function handler(req, res) {
         return res.status(200).json({ noData: true });
     }
 
+    // Run attribution queries only when we know there's data
+    const ATTR_WHERE = `
+        site_id = $1
+        AND received_at >= $2::date
+        AND received_at <  $3::date + interval '1 day'
+        AND name = 'page_perf'
+    `;
+    const [lcpElemRes, slowResRes, longTaskRes] = await Promise.all([
+
+        // Which element was the LCP candidate on each page?
+        db.query(`
+            SELECT
+                pathname,
+                extra_data->'lcpEl'->>'tag'  AS tag,
+                extra_data->'lcpEl'->>'src'  AS src,
+                extra_data->'lcpEl'->>'cls'  AS cls,
+                extra_data->'lcpEl'->>'id'   AS el_id,
+                COUNT(*)                     AS occurrences,
+                ROUND(${P75("lcp")})         AS lcp_p75
+            FROM analytics_custom_events
+            WHERE ${ATTR_WHERE}
+              AND extra_data->'lcpEl' IS NOT NULL
+            GROUP BY 1, 2, 3, 4, 5
+            ORDER BY occurrences DESC
+            LIMIT 20
+        `, [siteId, fromDate, toDate]),
+
+        // Slowest resources (>200 ms) aggregated by URL across all page_perf events
+        db.query(`
+            SELECT
+                res->>'url'   AS url,
+                res->>'type'  AS resource_type,
+                COUNT(*)      AS occurrences,
+                ROUND(AVG((res->>'dur')::numeric))          AS avg_dur,
+                ROUND(AVG((res->>'size')::numeric) / 1024)  AS avg_kb
+            FROM analytics_custom_events,
+              LATERAL jsonb_array_elements(
+                CASE WHEN jsonb_typeof(extra_data->'slowRes') = 'array'
+                     THEN extra_data->'slowRes'
+                     ELSE '[]'::jsonb END
+              ) AS res
+            WHERE ${ATTR_WHERE}
+            GROUP BY 1, 2
+            HAVING COUNT(*) >= 1
+            ORDER BY avg_dur DESC
+            LIMIT 25
+        `, [siteId, fromDate, toDate]),
+
+        // Main-thread long tasks aggregated by attributed script source
+        db.query(`
+            SELECT
+                COALESCE(task->>'src', '')     AS src,
+                COUNT(*)                       AS occurrences,
+                ROUND(AVG((task->>'dur')::numeric)) AS avg_dur,
+                MAX((task->>'dur')::numeric)::int   AS max_dur
+            FROM analytics_custom_events,
+              LATERAL jsonb_array_elements(
+                CASE WHEN jsonb_typeof(extra_data->'longTasks') = 'array'
+                     THEN extra_data->'longTasks'
+                     ELSE '[]'::jsonb END
+              ) AS task
+            WHERE ${ATTR_WHERE}
+            GROUP BY 1
+            ORDER BY occurrences DESC
+            LIMIT 20
+        `, [siteId, fromDate, toDate]),
+
+    ]).catch(e => {
+        console.error("analytics-performance attribution query error:", e.message);
+        return Array.from({ length: 3 }, () => ({ rows: [] }));
+    });
+
     return res.status(200).json({
         totals: {
             sampleSize,
@@ -216,6 +288,28 @@ export default async function handler(req, res) {
             lcpP75:  fnum(r.lcp_p75),
             clsP75:  fcls(r.cls_p75),
             ttfbP75: fnum(r.ttfb_p75),
+        })),
+        lcpElements: lcpElemRes.rows.map(r => ({
+            pathname:    r.pathname,
+            tag:         r.tag || null,
+            src:         r.src  || null,
+            cls:         r.cls  || null,
+            elId:        r.el_id || null,
+            occurrences: parseInt(r.occurrences, 10) || 0,
+            lcpP75:      fnum(r.lcp_p75),
+        })),
+        slowResources: slowResRes.rows.map(r => ({
+            url:          r.url,
+            resourceType: r.resource_type || null,
+            occurrences:  parseInt(r.occurrences, 10) || 0,
+            avgDur:       fnum(r.avg_dur),
+            avgKb:        parseInt(r.avg_kb, 10) || 0,
+        })),
+        longTasks: longTaskRes.rows.map(r => ({
+            src:         r.src || null,
+            occurrences: parseInt(r.occurrences, 10) || 0,
+            avgDur:      fnum(r.avg_dur),
+            maxDur:      parseInt(r.max_dur, 10) || 0,
         })),
     });
 }
