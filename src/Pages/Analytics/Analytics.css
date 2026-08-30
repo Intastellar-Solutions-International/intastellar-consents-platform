@@ -6134,3 +6134,119 @@ details[open] .ca-context-summary::before { content: "▾"; }
     .sa-perf-timing-row { grid-template-columns: 1fr 1fr; }
     .sa-perf-sparklines { grid-template-columns: 1fr 1fr; }
 }
+
+/* ── Section labels ───────────────────────────────────────────────────────── */
+.sa-perf-section-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(160,160,180,0.45);
+    margin-bottom: 8px;
+    padding-left: 2px;
+}
+
+/* ── Period-over-period delta chip ────────────────────────────────────────── */
+.sa-perf-delta {
+    display: inline-block;
+    font-size: 13px;
+    font-weight: 600;
+    margin-left: 8px;
+    vertical-align: middle;
+}
+.sa-perf-cwv-card__value .sa-perf-delta {
+    font-size: 14px;
+}
+.sa-perf-timing-card__value .sa-perf-delta {
+    font-size: 11px;
+    margin-left: 5px;
+}
+
+/* ── Sparkline band chart label ───────────────────────────────────────────── */
+.sa-perf-sparkline-p75 {
+    font-size: 9px;
+    opacity: 0.5;
+    font-weight: 400;
+}
+
+/* ── Percentile range bar ─────────────────────────────────────────────────── */
+.sa-pctile-range-wrap {
+    position: relative;
+    height: 10px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 3px;
+    overflow: visible;
+    min-width: 100px;
+}
+.sa-pctile-range-bg {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    border-radius: 3px;
+    overflow: hidden;
+}
+.sa-pctile-range-bar {
+    position: absolute;
+    top: 1px;
+    bottom: 1px;
+    background: rgba(192,159,83,0.35);
+    border-radius: 2px;
+    min-width: 3px;
+}
+.sa-pctile-range-tick {
+    position: absolute;
+    top: -1px;
+    bottom: -1px;
+    width: 2px;
+    background: rgba(192,159,83,0.85);
+    border-radius: 1px;
+    transform: translateX(-50%);
+}
+
+/* ── PageTable LCP range bar ──────────────────────────────────────────────── */
+.sa-page-lcp-bar {
+    position: relative;
+    height: 8px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 3px;
+    min-width: 80px;
+    overflow: visible;
+}
+
+/* ── LongTask total-block horizontal bar ──────────────────────────────────── */
+.sa-blocker-bar-wrap {
+    flex: 1;
+    height: 6px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 3px;
+    overflow: hidden;
+    min-width: 40px;
+    max-width: 80px;
+}
+.sa-blocker-bar {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.3s;
+    min-width: 2px;
+}
+
+/* ── Scope / data-gap notes ───────────────────────────────────────────────── */
+.sa-perf-scope-note {
+    font-size: 11px;
+    color: rgba(150,150,170,0.6);
+    margin: 0 0 10px;
+    font-style: italic;
+}
+.sa-perf-gap-panel {
+    border-color: rgba(234,179,8,0.12) !important;
+    background: rgba(234,179,8,0.03) !important;
+}
+.sa-perf-gap-panel .sa-panel__title {
+    color: rgba(234,179,8,0.65);
+}
+.sa-perf-gap-panel code {
+    font-size: 11px;
+    background: rgba(255,255,255,0.06);
+    padding: 1px 4px;
+    border-radius: 3px;
+}
