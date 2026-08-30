@@ -553,6 +553,37 @@ export default async function handler(req, res) {
         convertedExitByNode.set(key, (convertedExitByNode.get(key) || 0) + r.sessions);
     }
 
+    // Validation errors per page — form_error events keyed by pathname so the
+    // frontend can overlay an indicator on any node whose page has errors.
+    // Only in all-traffic mode; goal views already scope the flow to a subset
+    // of sessions, and matching form errors back to those specific sessions
+    // would need a qualifying-sessions join that adds complexity for minimal
+    // gain. Not remapped through toKeepSets: the frontend simply skips nodes
+    // whose id is "(other)" on lookup, which is the right behaviour — we
+    // can't attribute errors to a heterogeneous long-tail bucket meaningfully.
+    let validationErrorRows = [];
+    if (!goalName) {
+        const { rows: errRows } = await db.query(
+            `SELECT
+                pathname                      AS node,
+                COUNT(*)                      AS occurrences,
+                COUNT(DISTINCT session_id)    AS sessions
+             FROM analytics_custom_events
+             WHERE site_id = $1
+               AND session_id IS NOT NULL
+               AND received_at >= $2 AND received_at < $3
+               AND name = 'form_error'
+               AND pathname IS NOT NULL
+             GROUP BY pathname`,
+            [siteId, fromDate, toDateExclusive]
+        ).catch(() => ({ rows: [] }));
+        validationErrorRows = errRows.map(r => ({
+            node: r.node,
+            occurrences: Number(r.occurrences),
+            sessions: Number(r.sessions),
+        }));
+    }
+
     // Host breakdown per page node — a bare pathname like "/" is genuinely
     // ambiguous when a site key is shared across a root domain and a
     // white-label/booking subdomain (see api/a.js's page_host column doc
@@ -655,5 +686,6 @@ export default async function handler(req, res) {
         transitionEdges,
         exitCounts,
         hostBreakdown,
+        validationErrors: validationErrorRows,
     });
 }
