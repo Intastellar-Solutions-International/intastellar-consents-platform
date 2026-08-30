@@ -251,7 +251,7 @@ export default async function handler(req, res) {
         AND name = 'page_perf'
         ${country ? "AND country_code = $4" : ""}
     `;
-    const [lcpElemRes, slowResRes, longTaskRes, histogramRes] = await Promise.all([
+    const [lcpElemRes, slowResRes, longTaskRes, histogramRes, byNetworkRes] = await Promise.all([
 
         // Which element was the LCP candidate on each page?
         db.query(`
@@ -324,9 +324,27 @@ export default async function handler(req, res) {
             ORDER BY 1
         `, params),
 
+        // Per-connection-type P75 breakdown (Network Information API effectiveType)
+        db.query(`
+            SELECT
+                COALESCE(extra_data->'net'->>'type', 'unknown') AS net_type,
+                COUNT(*)       AS samples,
+                ${P75("lcp")}  AS lcp_p75,
+                ${P75("cls")}  AS cls_p75,
+                ${P75("inp")}  AS inp_p75,
+                ${P75("fcp")}  AS fcp_p75,
+                ${P75("ttfb")} AS ttfb_p75,
+                ${P75("load")} AS load_p75
+            FROM analytics_custom_events
+            WHERE ${ATTR_WHERE}
+              AND extra_data->'net' IS NOT NULL
+            GROUP BY 1
+            ORDER BY samples DESC
+        `, params),
+
     ]).catch(e => {
         console.error("analytics-performance attribution query error:", e.message);
-        return Array.from({ length: 4 }, () => ({ rows: [] }));
+        return Array.from({ length: 5 }, () => ({ rows: [] }));
     });
 
     return res.status(200).json({
@@ -401,6 +419,16 @@ export default async function handler(req, res) {
             goodCount:  parseInt(r.good_count, 10) || 0,
             niCount:    parseInt(r.ni_count,   10) || 0,
             poorCount:  parseInt(r.poor_count, 10) || 0,
+        })),
+        byNetwork: byNetworkRes.rows.map(r => ({
+            netType: r.net_type,
+            samples: parseInt(r.samples, 10) || 0,
+            lcpP75:  fnum(r.lcp_p75),
+            clsP75:  fcls(r.cls_p75),
+            inpP75:  fnum(r.inp_p75),
+            fcpP75:  fnum(r.fcp_p75),
+            ttfbP75: fnum(r.ttfb_p75),
+            loadP75: fnum(r.load_p75),
         })),
     });
 }
