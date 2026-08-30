@@ -1777,7 +1777,13 @@ function _formId(form){
         var tbt=0,_tbtSeen={};
         for(var j=0;j<_longTasks.length;j++){var lt_j=_longTasks[j];if(lt_j.dur>50&&lt_j.st!=null&&!_tbtSeen[lt_j.st]&&(fcp==null||lt_j.st>=fcp)&&(load==null||lt_j.st<=load)){tbt+=lt_j.dur-50;_tbtSeen[lt_j.st]=1;}}
         var netInfo=null;
-        if(effectiveType){netInfo={type:effectiveType,rtt:rtt!=null?Math.round(rtt):null,dl:downlink,save:saveData||false};}
+        if(connection){
+          var nt=effectiveType||null;
+          if(!nt&&rtt!=null&&downlink!=null){
+            nt=rtt>2000||downlink<0.05?'slow-2g':rtt>1400||downlink<0.15?'2g':rtt>400||downlink<1?'3g':'4g';
+          }
+          if(nt){netInfo={type:nt,rtt:rtt!=null?Math.round(rtt):null,dl:downlink,save:saveData||false};}
+        }
         track('page_perf',{data:{lcp:lcp,cls:cls,inp:inp,fcp:fcp,ttfb:ttfb,load:load,tbt:tbt>0?Math.round(tbt):null,rating:r,lcpEl:_lcpEl||undefined,slowRes:slowRes.length?slowRes:undefined,longTasks:lt.length?lt:undefined,net:netInfo||undefined}});
       }catch(e){}
     }
