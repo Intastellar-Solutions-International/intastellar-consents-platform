@@ -304,6 +304,8 @@ export default async function handler(req, res) {
                 MAX((task->>'dur')::numeric)::int                                        AS max_dur,
                 ROUND(AVG((task->>'st')::numeric))                                      AS avg_start,
                 MODE() WITHIN GROUP (ORDER BY task->>'ct')                              AS container_type,
+                MODE() WITHIN GROUP (ORDER BY task->>'fn')                              AS function_name,
+                MODE() WITHIN GROUP (ORDER BY task->>'inv')                             AS invoker_type,
                 ROUND(SUM(GREATEST((task->>'dur')::numeric - 50, 0)))                   AS total_blocking
             FROM analytics_custom_events,
               LATERAL jsonb_array_elements(
@@ -415,6 +417,8 @@ export default async function handler(req, res) {
             maxDur:        parseInt(r.max_dur, 10) || 0,
             avgStart:      fnum(r.avg_start),
             containerType: r.container_type || null,
+            functionName:  r.function_name  || null,
+            invokerType:   r.invoker_type   || null,
             totalBlocking: fnum(r.total_blocking),
         })),
         histogram: histogramRes.rows.map(r => ({

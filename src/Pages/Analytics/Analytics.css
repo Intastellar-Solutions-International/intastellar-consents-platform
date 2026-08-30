@@ -5986,6 +5986,21 @@ details[open] .ca-context-summary::before { content: "▾"; }
 .sa-perf-empty p  { margin: 0 0 8px; font-size: 14px; }
 .sa-table__sortable { user-select: none; }
 .sa-table__sortable--active { color: rgba(192,159,83,0.9); }
+.sa-perf-badge {
+    display: inline-block;
+    font-size: 10px;
+    padding: 1px 6px;
+    border-radius: 4px;
+    background: rgba(255,255,255,0.07);
+    color: rgba(180,180,200,0.75);
+    border: 1px solid rgba(255,255,255,0.08);
+    white-space: nowrap;
+}
+.sa-perf-badge--warn {
+    background: rgba(234,179,8,0.1);
+    color: rgba(234,179,8,0.8);
+    border-color: rgba(234,179,8,0.2);
+}
 .sa-table-pager {
     display: flex;
     align-items: center;
@@ -6088,7 +6103,7 @@ details[open] .ca-context-summary::before { content: "▾"; }
 /* ── Sparkline trend grid ─────────────────────────────────────────────── */
 .sa-perf-sparklines {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(6, 1fr);
     gap: 10px;
 }
 .sa-perf-sparkline-card {
@@ -6112,7 +6127,7 @@ details[open] .ca-context-summary::before { content: "▾"; }
 @media (max-width: 1000px) {
     .sa-perf-cwv-row    { grid-template-columns: 1fr 1fr; }
     .sa-perf-timing-row { grid-template-columns: 1fr 1fr; }
-    .sa-perf-sparklines { grid-template-columns: 1fr 1fr 1fr; }
+    .sa-perf-sparklines { grid-template-columns: repeat(3, 1fr); }
 }
 @media (max-width: 600px) {
     .sa-perf-cwv-row    { grid-template-columns: 1fr; }

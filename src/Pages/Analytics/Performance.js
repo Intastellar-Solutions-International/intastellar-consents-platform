@@ -17,6 +17,7 @@ const THRESHOLDS = {
     fcp:  { good: 1800, poor: 3000, unit: "ms" },
     ttfb: { good: 800,  poor: 1800, unit: "ms" },
     load: { good: 3000, poor: 6000, unit: "ms" },
+    tbt:  { good: 200,  poor: 600,  unit: "ms" },
 };
 
 function cwvRating(metric, value) {
@@ -448,6 +449,16 @@ function SlowResTable({ rows }) {
 }
 
 // ── Long tasks table ───────────────────────────────────────────────────────
+const CT_LABEL  = { window: "same-origin", iframe: "iframe", embed: "embed" };
+const INV_LABEL = {
+    "event-listener":  "event handler",
+    "user-callback":   "timer / rAF",
+    "resolve-promise": "Promise",
+    "reject-promise":  "Promise (reject)",
+    "classic-script":  "script eval",
+    "module-script":   "module eval",
+};
+
 function LongTaskTable({ rows }) {
     if (!rows?.length) return null;
     return (
@@ -456,20 +467,49 @@ function LongTaskTable({ rows }) {
             <thead>
                 <tr>
                     <th>Script / source</th>
-                    <th className="sa-num">Occurrences</th>
-                    <th className="sa-num">Avg block</th>
-                    <th className="sa-num">Max block</th>
+                    <th className="sa-table__num">Seen</th>
+                    <th className="sa-table__num">Avg</th>
+                    <th className="sa-table__num">P75</th>
+                    <th className="sa-table__num">Peak</th>
+                    <th className="sa-table__num" title="Average time from navigation start when this task fires">Avg start</th>
+                    <th className="sa-table__num" title="Total ms blocked (sum of duration − 50 ms across all occurrences)">Total block</th>
                 </tr>
             </thead>
             <tbody>
-                {rows.map((r, i) => (
-                    <tr key={i}>
-                        <td><code style={{ wordBreak: "break-all", fontSize: "12px" }}>{r.src || "(same-origin — unattributed)"}</code></td>
-                        <td className="sa-num">{r.occurrences}</td>
-                        <td className="sa-num" style={{ color: r.avgDur > 200 ? RATING_COLOR["poor"] : RATING_COLOR["needs-improvement"], fontWeight: 700 }}>{fmtMs(r.avgDur)}</td>
-                        <td className="sa-num sa-muted">{fmtMs(r.maxDur)}</td>
-                    </tr>
-                ))}
+                {rows.map((r, i) => {
+                    const avgColor  = r.avgDur > 500 ? RATING_COLOR["poor"] : RATING_COLOR["needs-improvement"];
+                    const phase     = r.avgStart != null ? (r.avgStart < 5000 ? "load" : "post-load") : null;
+                    const ctLabel   = r.containerType ? CT_LABEL[r.containerType] || r.containerType : null;
+                    const invLabel  = r.invokerType ? INV_LABEL[r.invokerType] || r.invokerType : null;
+                    const srcLabel  = r.src || (r.functionName ? "(anonymous)" : "(unattributed)");
+                    return (
+                        <tr key={i}>
+                            <td>
+                                <code style={{ wordBreak: "break-all", fontSize: "12px" }}>{srcLabel}</code>
+                                {r.functionName && (
+                                    <span style={{ display: "block", fontSize: "11px", color: "rgba(180,180,220,0.6)", marginTop: 2 }}>
+                                        fn: <code style={{ fontSize: "11px" }}>{r.functionName}</code>
+                                    </span>
+                                )}
+                                {(ctLabel || invLabel || phase) && (
+                                    <span style={{ display: "flex", gap: 6, marginTop: 3, flexWrap: "wrap" }}>
+                                        {invLabel  && <span className="sa-perf-badge">{invLabel}</span>}
+                                        {ctLabel   && <span className="sa-perf-badge">{ctLabel}</span>}
+                                        {phase     && <span className={"sa-perf-badge" + (phase === "load" ? " sa-perf-badge--warn" : "")}>{phase}</span>}
+                                    </span>
+                                )}
+                            </td>
+                            <td className="sa-table__num">{r.occurrences}</td>
+                            <td className="sa-table__num" style={{ color: avgColor, fontWeight: 700 }}>{fmtMs(r.avgDur)}</td>
+                            <td className="sa-table__num" style={{ color: avgColor }}>{fmtMs(r.p75Dur)}</td>
+                            <td className="sa-table__num sa-muted">{fmtMs(r.maxDur)}</td>
+                            <td className="sa-table__num sa-muted">{r.avgStart != null ? fmtMs(r.avgStart) : "—"}</td>
+                            <td className="sa-table__num" style={{ fontWeight: 700, color: r.totalBlocking > 1000 ? RATING_COLOR["poor"] : RATING_COLOR["needs-improvement"] }}>
+                                {r.totalBlocking != null ? fmtMs(r.totalBlocking) : "—"}
+                            </td>
+                        </tr>
+                    );
+                })}
             </tbody>
         </table>
         </div>
@@ -529,6 +569,7 @@ const SPARKLINE_DEFS = [
     { key: "fcpP75",  label: "FCP",  metric: "fcp",  isCls: false },
     { key: "ttfbP75", label: "TTFB", metric: "ttfb", isCls: false },
     { key: "clsP75",  label: "CLS",  metric: "cls",  isCls: true  },
+    { key: "tbtP75",  label: "TBT",  metric: "tbt",  isCls: false },
 ];
 
 function MetricSparklines({ daily }) {
@@ -883,6 +924,15 @@ export default function AnalyticsPerformance() {
                                         <MetricValue metric="load" value={data.totals.loadP75} />
                                     </span>
                                 </div>
+                                {data.totals.tbtP75 != null && (
+                                    <div className="sa-perf-timing-card">
+                                        <span className="sa-perf-timing-card__label">TBT</span>
+                                        <span className="sa-perf-timing-card__sub">Total Blocking Time</span>
+                                        <span className="sa-perf-timing-card__value">
+                                            <MetricValue metric="tbt" value={data.totals.tbtP75} />
+                                        </span>
+                                    </div>
+                                )}
                                 <div className="sa-perf-timing-card">
                                     <span className="sa-perf-timing-card__label">{data.totals.sampleSize.toLocaleString("de-DE")}</span>
                                     <span className="sa-perf-timing-card__sub">Page samples</span>
@@ -1015,7 +1065,7 @@ export default function AnalyticsPerformance() {
                                                 <IconAlertTriangle className="sa-icon" /> Main-thread blockers
                                             </h3>
                                             <p className="sa-panel__desc">
-                                                JavaScript tasks longer than 50 ms that block user interaction. Anything over 200 ms will noticeably delay clicks and input.
+                                                JavaScript tasks longer than 50 ms that block user interaction. Sorted by total blocking time — the most impactful scripts appear first. "load" phase tasks fire during page load (affecting TBT); "post-load" tasks fire after and affect INP. Avg start is relative to navigation.
                                             </p>
                                             <LongTaskTable rows={data.longTasks} />
                                         </div>
