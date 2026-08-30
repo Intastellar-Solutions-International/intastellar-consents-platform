@@ -72,11 +72,18 @@ export default async function handler(req, res) {
     const siteId = siteRes.rows[0].id;
 
     const [totalsRes, dailyRes, formsRes, topPagesRes, deviceRes, abandonRes, errorsRes, fieldErrorsRes, recoveryRes, timeRes, stepRes, geoRes] = await Promise.all([
-        // Overall submission + starter counts
+        // Overall submission + starter counts — two variants in one query:
+        //   all events (any consent level, no session_id requirement) for the
+        //   top-line KPIs, AND session-linked events only (session_id IS NOT NULL)
+        //   for the session abandonment table. Keeping both in one pass avoids
+        //   a second round-trip and makes the denominator mismatch explicit in
+        //   the response so the frontend can surface it to the user.
         db.query(`
             SELECT
-                COUNT(*) FILTER (WHERE name = 'form_submit')  AS submissions,
-                COUNT(*) FILTER (WHERE name = 'form_started') AS starters
+                COUNT(*) FILTER (WHERE name = 'form_submit')                               AS submissions,
+                COUNT(*) FILTER (WHERE name = 'form_started')                              AS starters,
+                COUNT(*) FILTER (WHERE name = 'form_submit'  AND session_id IS NOT NULL)   AS session_submissions,
+                COUNT(*) FILTER (WHERE name = 'form_started' AND session_id IS NOT NULL)   AS session_starters
             FROM analytics_custom_events
             WHERE site_id = $1
               AND received_at >= $2::date
@@ -513,11 +520,16 @@ export default async function handler(req, res) {
     const submissions = parseInt(totals.submissions, 10) || 0;
     const starters    = parseInt(totals.starters,    10) || 0;
 
+    const sessionSubmissions = parseInt(totals.session_submissions, 10) || 0;
+    const sessionStarters    = parseInt(totals.session_starters,    10) || 0;
+
     return res.status(200).json({
         totals: {
             submissions,
             starters,
             completionRate: starters > 0 ? Math.min(100, Math.round((submissions / starters) * 1000) / 10) : null,
+            sessionSubmissions,
+            sessionStarters,
         },
         daily: dailyRes.rows.map(r => ({
             day: r.day,

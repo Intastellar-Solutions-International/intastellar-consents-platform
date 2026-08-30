@@ -602,6 +602,11 @@ export default function AnalyticsForms() {
                                     icon={<IconFormFill />}
                                     label="Form submissions"
                                     value={(data.totals.submissions ?? 0).toLocaleString("de-DE")}
+                                    sub={
+                                        data.totals.sessionSubmissions < data.totals.submissions
+                                            ? `${data.totals.sessionSubmissions.toLocaleString("de-DE")} session-linked`
+                                            : "all events, any consent"
+                                    }
                                 />
                                 <KpiCard
                                     icon={<IconTarget />}
@@ -609,6 +614,13 @@ export default function AnalyticsForms() {
                                     value={data.totals.starters > 0
                                         ? data.totals.starters.toLocaleString("de-DE")
                                         : "—"}
+                                    sub={
+                                        data.totals.starters > 0
+                                            ? (data.totals.sessionStarters < data.totals.starters
+                                                ? `${data.totals.sessionStarters.toLocaleString("de-DE")} session-linked`
+                                                : "all events, any consent")
+                                            : undefined
+                                    }
                                 />
                                 <KpiCard
                                     icon={<IconBarChart />}
@@ -617,7 +629,7 @@ export default function AnalyticsForms() {
                                         ? formatPercent(data.totals.completionRate, 1)
                                         : "—"}
                                     sub={data.totals.completionRate != null
-                                        ? "submits ÷ starters"
+                                        ? "all events, any consent level"
                                         : "No form_started events yet"}
                                     variant={completionRateVariant}
                                 />
@@ -668,7 +680,12 @@ export default function AnalyticsForms() {
                                     <h3 className="sa-panel__title">
                                         <IconBarChart className="sa-icon" /> Session abandonment
                                     </h3>
-                                    <p className="sa-panel__desc">Sessions where a form was started but never submitted.</p>
+                                    <p className="sa-panel__desc">
+                                        Session-linked events only (full consent required) — a subset of the top-line starters count.
+                                        {data.totals.sessionStarters < data.totals.starters && data.totals.starters > 0 && (
+                                            <>{" "}{data.totals.sessionStarters.toLocaleString("de-DE")} of {data.totals.starters.toLocaleString("de-DE")} starters have session tracking.</>
+                                        )}
+                                    </p>
                                     <AbandonmentTable abandonment={data.abandonment} />
                                 </div>
 
