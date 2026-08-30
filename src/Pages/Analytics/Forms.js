@@ -223,6 +223,90 @@ function AbandonmentTable({ abandonment }) {
     );
 }
 
+function FieldErrorTable({ fieldErrors }) {
+    if (!fieldErrors || !fieldErrors.length) {
+        return <p className="sa-notice">No field-level validation errors recorded yet.</p>;
+    }
+    const maxDropout = Math.max(...fieldErrors.map(r => r.dropoutSessions), 1);
+    return (
+        <div className="sa-table-scroll">
+        <table className="sa-table">
+            <thead>
+                <tr>
+                    <th>Form</th>
+                    <th>Field</th>
+                    <th className="sa-table__num">Error sessions</th>
+                    <th className="sa-table__num">Dropped off</th>
+                    <th className="sa-table__num">Blocking</th>
+                </tr>
+            </thead>
+            <tbody>
+                {fieldErrors.map((r, i) => {
+                    const rate = r.blockingRate;
+                    const rateColor = rate == null ? undefined
+                        : rate > 70 ? "rgba(239,68,68,0.9)"
+                        : rate > 40 ? "rgba(234,179,8,0.9)"
+                        : "rgba(34,197,94,0.9)";
+                    return (
+                        <tr key={i}>
+                            <td><span className="sa-form-id" title={r.formId}>{cleanFormId(r.formId)}</span></td>
+                            <td><code className="sa-field-name">{r.field}</code></td>
+                            <td className="sa-table__num">{r.errorSessions.toLocaleString("de-DE")}</td>
+                            <td className="sa-table__num">
+                                {r.dropoutSessions.toLocaleString("de-DE")}
+                                <MiniBar value={r.dropoutSessions} max={maxDropout} color="rgba(239,68,68,0.35)" />
+                            </td>
+                            <td className="sa-table__num" style={rateColor ? { color: rateColor, fontWeight: 600 } : {}}>
+                                {rate != null ? formatPercent(rate, 1) : "—"}
+                            </td>
+                        </tr>
+                    );
+                })}
+            </tbody>
+        </table>
+        </div>
+    );
+}
+
+function ErrorRecoveryTable({ errorRecovery }) {
+    if (!errorRecovery || !errorRecovery.length) {
+        return <p className="sa-notice">No error sessions recorded yet — recovery rate requires session-linked events.</p>;
+    }
+    return (
+        <div className="sa-table-scroll">
+        <table className="sa-table">
+            <thead>
+                <tr>
+                    <th>Form</th>
+                    <th className="sa-table__num">Error sessions</th>
+                    <th className="sa-table__num">Recovered</th>
+                    <th className="sa-table__num">Recovery rate</th>
+                </tr>
+            </thead>
+            <tbody>
+                {errorRecovery.map((r, i) => {
+                    const rate = r.recoveryRate;
+                    const rateColor = rate == null ? undefined
+                        : rate >= 60 ? "rgba(34,197,94,0.9)"
+                        : rate >= 30 ? "rgba(234,179,8,0.9)"
+                        : "rgba(239,68,68,0.9)";
+                    return (
+                        <tr key={i}>
+                            <td><span className="sa-form-id" title={r.formId}>{cleanFormId(r.formId)}</span></td>
+                            <td className="sa-table__num">{r.errorSessions.toLocaleString("de-DE")}</td>
+                            <td className="sa-table__num">{r.recoveredSessions.toLocaleString("de-DE")}</td>
+                            <td className="sa-table__num" style={rateColor ? { color: rateColor, fontWeight: 600 } : {}}>
+                                {rate != null ? formatPercent(rate, 1) : "—"}
+                            </td>
+                        </tr>
+                    );
+                })}
+            </tbody>
+        </table>
+        </div>
+    );
+}
+
 function FormErrorsTable({ errors }) {
     if (!errors || !errors.length) {
         return <p className="sa-notice">No form errors recorded yet. Deploy the updated embed script to start capturing validation, network, and server errors.</p>;
@@ -432,6 +516,24 @@ export default function AnalyticsForms() {
                                     </h3>
                                     <p className="sa-panel__desc">Validation failures, network errors, and server errors captured during form submissions.</p>
                                     <FormErrorsTable errors={data.formErrors} />
+                                </div>
+                            </div>
+
+                            <div className="sa-forms-grid sa-forms-grid--insights">
+                                <div className="sa-panel">
+                                    <h3 className="sa-panel__title">
+                                        <IconTarget className="sa-icon" /> Field error breakdown
+                                    </h3>
+                                    <p className="sa-panel__desc">Which fields cause errors that lead to abandonment. Blocking rate = sessions that errored on this field and never submitted.</p>
+                                    <FieldErrorTable fieldErrors={data.fieldErrors} />
+                                </div>
+
+                                <div className="sa-panel">
+                                    <h3 className="sa-panel__title">
+                                        <IconBarChart className="sa-icon" /> Error recovery rate
+                                    </h3>
+                                    <p className="sa-panel__desc">Of sessions that hit any form error, how many went on to submit successfully. Low rate means errors are blocking, not just annoying.</p>
+                                    <ErrorRecoveryTable errorRecovery={data.errorRecovery} />
                                 </div>
                             </div>
                         </>

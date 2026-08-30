@@ -71,7 +71,7 @@ export default async function handler(req, res) {
     if (!siteRes.rows.length) return res.status(404).json({ error: "Site not found" });
     const siteId = siteRes.rows[0].id;
 
-    const [totalsRes, dailyRes, formsRes, topPagesRes, deviceRes, abandonRes, errorsRes] = await Promise.all([
+    const [totalsRes, dailyRes, formsRes, topPagesRes, deviceRes, abandonRes, errorsRes, fieldErrorsRes, recoveryRes] = await Promise.all([
         // Overall submission + starter counts
         db.query(`
             SELECT
@@ -287,9 +287,99 @@ export default async function handler(req, res) {
             ORDER BY occurrences DESC
             LIMIT 50
         `, [siteId, fromDate, toDate]),
+
+        // Field-level error breakdown — which field caused the error AND led to
+        // the session abandoning (dropout_sessions = error sessions that never
+        // submitted). blocking_rate = dropout / error_sessions. Only covers
+        // errors with a field value (validation errors); network/server errors
+        // have NULL field and are excluded by the WHERE clause.
+        db.query(`
+            WITH error_sessions AS (
+                SELECT
+                    COALESCE(extra_data->>'formId', 'unknown') AS form_id,
+                    extra_data->>'field'                        AS field,
+                    session_id,
+                    COUNT(*)                                    AS error_count
+                FROM analytics_custom_events
+                WHERE site_id = $1
+                  AND received_at >= $2::date
+                  AND received_at <  $3::date + interval '1 day'
+                  AND name = 'form_error'
+                  AND extra_data->>'field' IS NOT NULL
+                  AND session_id IS NOT NULL
+                GROUP BY 1, 2, 3
+            ),
+            submitted_sessions AS (
+                SELECT DISTINCT
+                    COALESCE(extra_data->>'formId', 'unknown') AS form_id,
+                    session_id
+                FROM analytics_custom_events
+                WHERE site_id = $1
+                  AND received_at >= $2::date
+                  AND received_at <  $3::date + interval '1 day'
+                  AND name = 'form_submit'
+                  AND session_id IS NOT NULL
+            )
+            SELECT
+                es.form_id,
+                es.field,
+                COUNT(DISTINCT es.session_id)                                               AS error_sessions,
+                SUM(es.error_count)                                                          AS total_errors,
+                COUNT(DISTINCT es.session_id) FILTER (WHERE ss.session_id IS NULL)          AS dropout_sessions,
+                ROUND(
+                    COUNT(DISTINCT es.session_id) FILTER (WHERE ss.session_id IS NULL)::numeric /
+                    NULLIF(COUNT(DISTINCT es.session_id), 0) * 100,
+                1)                                                                           AS blocking_rate
+            FROM error_sessions es
+            LEFT JOIN submitted_sessions ss ON ss.form_id = es.form_id AND ss.session_id = es.session_id
+            GROUP BY es.form_id, es.field
+            ORDER BY dropout_sessions DESC, total_errors DESC
+            LIMIT 100
+        `, [siteId, fromDate, toDate]),
+
+        // Error recovery rate — of sessions that hit any form_error, what % went
+        // on to successfully submit anyway. Low recovery = errors are blocking;
+        // high recovery = errors are annoying but not fatal.
+        db.query(`
+            WITH error_sessions AS (
+                SELECT DISTINCT
+                    COALESCE(extra_data->>'formId', 'unknown') AS form_id,
+                    session_id
+                FROM analytics_custom_events
+                WHERE site_id = $1
+                  AND received_at >= $2::date
+                  AND received_at <  $3::date + interval '1 day'
+                  AND name = 'form_error'
+                  AND session_id IS NOT NULL
+            ),
+            submitted_sessions AS (
+                SELECT DISTINCT
+                    COALESCE(extra_data->>'formId', 'unknown') AS form_id,
+                    session_id
+                FROM analytics_custom_events
+                WHERE site_id = $1
+                  AND received_at >= $2::date
+                  AND received_at <  $3::date + interval '1 day'
+                  AND name = 'form_submit'
+                  AND session_id IS NOT NULL
+            )
+            SELECT
+                es.form_id,
+                COUNT(DISTINCT es.session_id)                AS error_sessions,
+                COUNT(DISTINCT ss.session_id)                AS recovered_sessions,
+                ROUND(
+                    COUNT(DISTINCT ss.session_id)::numeric /
+                    NULLIF(COUNT(DISTINCT es.session_id), 0) * 100,
+                1)                                           AS recovery_rate
+            FROM error_sessions es
+            LEFT JOIN submitted_sessions ss ON ss.form_id = es.form_id AND ss.session_id = es.session_id
+            GROUP BY es.form_id
+            ORDER BY error_sessions DESC
+            LIMIT 30
+        `, [siteId, fromDate, toDate]),
     ]).catch(e => {
         console.error('analytics-forms query error:', e.message);
-        return [{ rows: [] }, { rows: [] }, { rows: [] }, { rows: [] }, { rows: [] }, { rows: [] }, { rows: [] }];
+        return [{ rows: [] }, { rows: [] }, { rows: [] }, { rows: [] }, { rows: [] }, { rows: [] }, { rows: [] }, { rows: [] }, { rows: [] }];
     });
 
     const totals = totalsRes.rows[0] || {};
@@ -341,6 +431,20 @@ export default async function handler(req, res) {
             field:       r.field || null,
             message:     r.message || null,
             occurrences: parseInt(r.occurrences, 10) || 0,
+        })),
+        fieldErrors: fieldErrorsRes.rows.map(r => ({
+            formId:        r.form_id,
+            field:         r.field,
+            errorSessions: parseInt(r.error_sessions, 10) || 0,
+            totalErrors:   parseInt(r.total_errors, 10) || 0,
+            dropoutSessions: parseInt(r.dropout_sessions, 10) || 0,
+            blockingRate:  r.blocking_rate != null ? parseFloat(r.blocking_rate) : null,
+        })),
+        errorRecovery: recoveryRes.rows.map(r => ({
+            formId:            r.form_id,
+            errorSessions:     parseInt(r.error_sessions, 10) || 0,
+            recoveredSessions: parseInt(r.recovered_sessions, 10) || 0,
+            recoveryRate:      r.recovery_rate != null ? parseFloat(r.recovery_rate) : null,
         })),
     });
 }
