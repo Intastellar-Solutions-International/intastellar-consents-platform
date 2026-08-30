@@ -1364,9 +1364,12 @@ var _spaLastPath=location.pathname+location.search;
       if(!form||!el.name)return;
       var tp=(el.type||'text').toLowerCase();
       if(SKIP_TYPES[tp]||SKIP_NAMES.test(el.name))return;
-      var fid=(form.getAttribute('data-analytics-id')||form.id||form.name||'').slice(0,64)||'form';
+      var _base=(form.getAttribute('data-analytics-id')||form.id||form.name||'').slice(0,64);
+      var _cls=(form.className||'').trim().split(/\s+/)[0].slice(0,63);
+      var fid=_base||(_cls?'.'+_cls:'form');
       track('form_error',{data:{
         formId:fid,
+        formClass:(form.className||'').slice(0,80),
         field:el.name.slice(0,40),
         fieldType:tp,
         errorType:'validation',
@@ -1381,11 +1384,18 @@ var _spaLastPath=location.pathname+location.search;
 // Only fires form_error when a request fails within 15 s of a known submit.
 (function(){
   var WIN=15000;
-  var Q={};// fid -> {t, action}
+  var Q={};// fid -> {t, action, cls}
   function _fid(form){
+    // Prefer explicit analytics ID, then HTML id/name; fall back to the first
+    // CSS class (prefixed with ".") rather than the action URL — the action is
+    // a URL path, not a form identity, and was causing "/" to appear as the
+    // form name in the dashboard when forms lacked id/name attributes.
     var f=(form.getAttribute('data-analytics-id')||form.id||form.name||'').slice(0,64);
+    if(f)return f;
+    var cls=(form.className||'').trim().split(/\s+/)[0].slice(0,63);
+    if(cls)return '.'+cls;
     var a=(form.action||'').replace(/^https?:\\/\\/[^\\/]+/,'').split('?')[0].slice(0,100);
-    return f||a||'form';
+    return a||'form';
   }
   document.addEventListener('submit',function(e){
     try{
@@ -1393,7 +1403,7 @@ var _spaLastPath=location.pathname+location.search;
       if(!form||form.tagName!=='FORM')return;
       var fid=_fid(form);
       var action=(form.action||'').replace(/^https?:\\/\\/[^\\/]+/,'').split('?')[0].slice(0,100);
-      Q[fid]={t:Date.now(),action:action};
+      Q[fid]={t:Date.now(),action:action,cls:(form.className||'').slice(0,80)};
     }catch(err){}
   },true);
   function findFid(url){
@@ -1409,10 +1419,11 @@ var _spaLastPath=location.pathname+location.search;
     }
     return best;
   }
-  function fireErr(fid,status,msg){
+  function fireErr(fid,cls,status,msg){
     if(!fid)return;
     track('form_error',{data:{
       formId:fid,
+      formClass:cls||'',
       errorType:status>=400?'server':'network',
       status:status||0,
       message:(msg||'').slice(0,120)
@@ -1425,11 +1436,11 @@ var _spaLastPath=location.pathname+location.search;
     window.fetch=function(input,init){
       var url=input&&(typeof input==='string'?input:(input.url||''));
       return _fetch(input,init).then(function(resp){
-        if(!resp.ok){var fid=findFid(url);if(fid)fireErr(fid,resp.status,'HTTP '+resp.status);}
+        if(!resp.ok){var fid=findFid(url);if(fid)fireErr(fid,(Q[fid]||{}).cls||'',resp.status,'HTTP '+resp.status);}
         return resp;
       },function(err){
         var fid=findFid(url);
-        if(fid)fireErr(fid,0,(err&&err.message)||'Network failure');
+        if(fid)fireErr(fid,(Q[fid]||{}).cls||'',0,(err&&err.message)||'Network failure');
         throw err;
       });
     };
@@ -1443,10 +1454,10 @@ var _spaLastPath=location.pathname+location.search;
     XMLHttpRequest.prototype.send=function(){
       var xhr=this;
       xhr.addEventListener('load',function(){
-        if(xhr.status>=400){var fid=findFid(xhr._aUrl);if(fid)fireErr(fid,xhr.status,'HTTP '+xhr.status);}
+        if(xhr.status>=400){var fid=findFid(xhr._aUrl);if(fid)fireErr(fid,(Q[fid]||{}).cls||'',xhr.status,'HTTP '+xhr.status);}
       });
       xhr.addEventListener('error',function(){
-        var fid=findFid(xhr._aUrl);if(fid)fireErr(fid,0,'Network failure');
+        var fid=findFid(xhr._aUrl);if(fid)fireErr(fid,(Q[fid]||{}).cls||'',0,'Network failure');
       });
       return _send.apply(xhr,arguments);
     };

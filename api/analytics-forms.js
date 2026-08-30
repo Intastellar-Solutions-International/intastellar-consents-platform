@@ -272,17 +272,18 @@ export default async function handler(req, res) {
         // Form errors — validation, network, and server errors
         db.query(`
             SELECT
-                COALESCE(extra_data->>'formId', 'unknown')    AS form_id,
-                COALESCE(extra_data->>'errorType', 'validation') AS error_type,
-                extra_data->>'field'                           AS field,
-                extra_data->>'message'                         AS message,
-                COUNT(*)                                       AS occurrences
+                COALESCE(extra_data->>'formId', 'unknown')       AS form_id,
+                COALESCE(extra_data->>'formClass', '')            AS form_class,
+                COALESCE(extra_data->>'errorType', 'validation')  AS error_type,
+                extra_data->>'field'                              AS field,
+                extra_data->>'message'                            AS message,
+                COUNT(*)                                          AS occurrences
             FROM analytics_custom_events
             WHERE site_id = $1
               AND received_at >= $2::date
               AND received_at <  $3::date + interval '1 day'
               AND name = 'form_error'
-            GROUP BY 1, 2, 3, 4
+            GROUP BY 1, 2, 3, 4, 5
             ORDER BY occurrences DESC
             LIMIT 50
         `, [siteId, fromDate, toDate]),
@@ -335,6 +336,7 @@ export default async function handler(req, res) {
         })),
         formErrors: errorsRes.rows.map(r => ({
             formId:      r.form_id,
+            formClass:   r.form_class || null,
             errorType:   r.error_type || 'validation',
             field:       r.field || null,
             message:     r.message || null,
