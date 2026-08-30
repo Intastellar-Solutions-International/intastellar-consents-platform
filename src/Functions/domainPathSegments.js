@@ -183,6 +183,13 @@ export function analyticsPerformancePath(domainUnicode) {
     return `/analytics/${seg}/performance`;
 }
 
+export function analyticsPerformanceCountryPath(domainUnicode, countryCode) {
+    const seg = encodeDomainPathSegment(domainUnicode);
+    const cc  = encodeURIComponent((countryCode || "").toUpperCase());
+    if (!seg) return `/analytics/performance/country/${cc}`;
+    return `/analytics/${seg}/performance/country/${cc}`;
+}
+
 export function analyticsSettingsPath(domainUnicode) {
     const seg = encodeDomainPathSegment(domainUnicode);
     if (!seg) return "/analytics/settings";

@@ -1,7 +1,10 @@
 const { useState, useEffect, useMemo, useRef } = React;
+const useParams  = window.ReactRouterDOM.useParams;
+const useHistory = window.ReactRouterDOM.useHistory;
 import { ScannerHost } from "../../API/host.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import { useAnalyticsPageChrome, authHeaders, MiniBar, formatPercent } from "./_shared.js";
+import { analyticsPerformancePath, analyticsPerformanceCountryPath } from "../../Functions/domainPathSegments.js";
 import { IconBarChart, IconTarget, IconScrollDepth, IconGlobe, IconClock, IconAlertTriangle } from "./Icons.js";
 import TrendLineChart from "./TrendLineChart.js";
 import "./Analytics.css";
@@ -61,7 +64,7 @@ function MetricValue({ metric, value }) {
 }
 
 // ── Data fetching ─────────────────────────────────────────────────────────
-function usePerfReport(domain, fromIso, toIso) {
+function usePerfReport(domain, fromIso, toIso, country) {
     const [data,    setData]    = useState(null);
     const [loading, setLoading] = useState(false);
 
@@ -69,16 +72,38 @@ function usePerfReport(domain, fromIso, toIso) {
         if (!domain) { setData(null); return; }
         let ignore = false;
         setLoading(true);
-        const qs = new URLSearchParams({ domain, from: fromIso, to: toIso }).toString();
+        const qp = { domain, from: fromIso, to: toIso };
+        if (country) qp.country = country;
+        const qs = new URLSearchParams(qp).toString();
         fetch(`${ScannerHost}/api/analytics-performance?${qs}`, { headers: authHeaders() })
             .then(r => r.ok ? r.json() : null)
             .then(d => { if (!ignore) setData(d); })
             .catch(() => { if (!ignore) setData(null); })
             .finally(() => { if (!ignore) setLoading(false); });
         return () => { ignore = true; };
-    }, [domain, fromIso, toIso]);
+    }, [domain, fromIso, toIso, country]);
 
     return { data, loading };
+}
+
+// ── Country helpers ───────────────────────────────────────────────────────
+function countryFlag(code) {
+    if (!code || code.length !== 2) return "🌐";
+    try {
+        return String.fromCodePoint(
+            0x1F1E6 + code.charCodeAt(0) - 65,
+            0x1F1E6 + code.charCodeAt(1) - 65
+        );
+    } catch { return "🌐"; }
+}
+
+const _displayNames = typeof Intl !== "undefined" && Intl.DisplayNames
+    ? new Intl.DisplayNames(["en"], { type: "region" })
+    : null;
+
+function countryName(code) {
+    if (!code || code === "??") return "Unknown";
+    try { return _displayNames ? _displayNames.of(code) : code; } catch { return code; }
 }
 
 // ── CWV hero card ─────────────────────────────────────────────────────────
@@ -605,9 +630,78 @@ function LcpHistogram({ histogram }) {
     );
 }
 
-// ── Main page ─────────────────────────────────────────────────────────────
+// ── Country breakdown table ───────────────────────────────────────────────
+const Link = window.ReactRouterDOM.Link;
+
+function CountryTable({ rows, domain }) {
+    if (!rows?.length) return null;
+    return (
+        <div className="sa-table-scroll">
+        <table className="sa-table">
+            <thead>
+                <tr>
+                    <th>Country</th>
+                    <th className="sa-table__num">Samples</th>
+                    <th className="sa-table__num">LCP P75</th>
+                    <th className="sa-table__num">CLS P75</th>
+                    <th className="sa-table__num">INP P75</th>
+                    <th className="sa-table__num">TTFB P75</th>
+                    <th style={{ minWidth: 120 }}>Rating split</th>
+                </tr>
+            </thead>
+            <tbody>
+                {rows.map(r => {
+                    const rating   = cwvRating("lcp", r.lcpP75);
+                    const color    = RATING_COLOR[rating];
+                    const total    = (r.goodCount + r.niCount + r.poorCount) || 1;
+                    const goodPct  = r.goodCount / total * 100;
+                    const niPct   = r.niCount   / total * 100;
+                    const poorPct  = r.poorCount / total * 100;
+                    const to       = analyticsPerformanceCountryPath(domain, r.country);
+                    return (
+                        <tr key={r.country}>
+                            <td>
+                                <Link to={to} style={{ display: "flex", alignItems: "center", gap: 8, textDecoration: "none", color: "inherit" }}>
+                                    <span style={{ fontSize: 20, lineHeight: 1 }}>{countryFlag(r.country)}</span>
+                                    <span>
+                                        <span style={{ fontWeight: 600 }}>{countryName(r.country)}</span>
+                                        <span className="sa-muted" style={{ marginLeft: 6, fontSize: 11 }}>{r.country}</span>
+                                    </span>
+                                </Link>
+                            </td>
+                            <td className="sa-table__num">{r.samples.toLocaleString("de-DE")}</td>
+                            <td className="sa-table__num" style={color ? { color, fontWeight: 700 } : {}}>{fmtMs(r.lcpP75)}</td>
+                            <td className="sa-table__num"><MetricValue metric="cls"  value={r.clsP75}  /></td>
+                            <td className="sa-table__num"><MetricValue metric="inp"  value={r.inpP75}  /></td>
+                            <td className="sa-table__num"><MetricValue metric="ttfb" value={r.ttfbP75} /></td>
+                            <td>
+                                <div style={{ display: "flex", height: 8, borderRadius: 4, overflow: "hidden", minWidth: 100 }}>
+                                    {goodPct > 0 && <div style={{ width: goodPct + "%", background: "rgba(34,197,94,0.75)" }} title={`Good ${goodPct.toFixed(0)}%`} />}
+                                    {niPct  > 0 && <div style={{ width: niPct  + "%", background: "rgba(234,179,8,0.75)"  }} title={`Needs improvement ${niPct.toFixed(0)}%`} />}
+                                    {poorPct > 0 && <div style={{ width: poorPct + "%", background: "rgba(239,68,68,0.75)" }} title={`Poor ${poorPct.toFixed(0)}%`} />}
+                                </div>
+                            </td>
+                        </tr>
+                    );
+                })}
+            </tbody>
+        </table>
+        </div>
+    );
+}
+
+// ── Main page (also handles /country/:country sub-route) ──────────────────
 export default function AnalyticsPerformance() {
-    document.title = "Performance | Site Analytics";
+    const { country } = useParams();
+    const history     = useHistory();
+
+    const isCountryView = Boolean(country);
+    const flag          = isCountryView ? countryFlag(country) : null;
+    const cName         = isCountryView ? countryName(country) : null;
+
+    document.title = isCountryView
+        ? `${cName} — Performance | Site Analytics`
+        : "Performance | Site Analytics";
 
     const {
         domain,
@@ -617,14 +711,14 @@ export default function AnalyticsPerformance() {
         fromIso, toIso,
     } = useAnalyticsPageChrome();
 
-    const { data, loading } = usePerfReport(domain, fromIso, toIso);
+    const { data, loading } = usePerfReport(domain, fromIso, toIso, country || null);
 
     const showData = data && !data.noData;
 
     return (
         <div style={{ flex: "1", minWidth: 0 }}>
             <StickyPageTitle
-                title="Performance"
+                title={isCountryView ? `${flag} ${cName}` : "Performance"}
                 numberofDays={setLastDays}
                 getLastDays={getLastDays}
                 fromDate={fromDate}
@@ -634,13 +728,30 @@ export default function AnalyticsPerformance() {
             />
             <div className="dashboard-content">
                 <div className="sa-page">
+                    {/* Back link for country view */}
+                    {isCountryView && domain && (
+                        <div className="sa-perf-back">
+                            <button
+                                className="sa-perf-back__btn"
+                                onClick={() => history.push(analyticsPerformancePath(domain))}
+                            >
+                                ← Performance overview
+                            </button>
+                            <span className="sa-perf-back__title">
+                                <span style={{ fontSize: 22, marginRight: 8 }}>{flag}</span>
+                                {cName}
+                                <span className="sa-muted" style={{ marginLeft: 8, fontSize: 13, fontWeight: 400 }}>{country}</span>
+                            </span>
+                        </div>
+                    )}
+
                     {!domain && (
                         <p className="sa-notice">Select a domain to view performance data.</p>
                     )}
                     {domain && loading && <p className="sa-notice">Loading&hellip;</p>}
                     {domain && !loading && data?.noData && (
                         <div className="sa-perf-empty">
-                            <h3>No performance data yet</h3>
+                            <h3>No performance data yet{isCountryView ? ` for ${cName}` : ""}</h3>
                             <p>The embed script collects Core Web Vitals automatically once deployed. Data appears after visitors begin interacting with the site — metrics are sent when users navigate away or close the tab.</p>
                             <p className="sa-muted">Metrics captured: LCP, CLS, INP, FCP, TTFB, load time.</p>
                         </div>
@@ -819,6 +930,19 @@ export default function AnalyticsPerformance() {
                                             <LongTaskTable rows={data.longTasks} />
                                         </div>
                                     )}
+                                </div>
+                            )}
+
+                            {/* Country breakdown — main view only */}
+                            {!isCountryView && data.byCountry?.length > 0 && (
+                                <div className="sa-panel">
+                                    <h3 className="sa-panel__title">
+                                        <IconGlobe className="sa-icon" /> By country
+                                    </h3>
+                                    <p className="sa-panel__desc">
+                                        LCP, CLS, INP, and TTFB P75 per country. Click a row to open the full country breakdown. Countries with fewer than 5 samples are excluded.
+                                    </p>
+                                    <CountryTable rows={data.byCountry} domain={domain} />
                                 </div>
                             )}
                         </>

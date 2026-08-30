@@ -6020,6 +6020,33 @@ details[open] .ca-context-summary::before { content: "▾"; }
     color: rgba(200,200,220,0.4);
     font-family: monospace;
 }
+/* ── Country detail back bar ─────────────────────────────────────────── */
+.sa-perf-back {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 10px 0 4px;
+}
+.sa-perf-back__btn {
+    background: none;
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 6px;
+    color: rgba(200,200,220,0.7);
+    cursor: pointer;
+    font-size: 13px;
+    padding: 5px 12px;
+    transition: border-color 0.15s, color 0.15s;
+    white-space: nowrap;
+}
+.sa-perf-back__btn:hover { border-color: rgba(255,255,255,0.28); color: rgba(220,220,240,0.95); }
+.sa-perf-back__title {
+    font-size: 18px;
+    font-weight: 700;
+    color: rgba(220,220,240,0.9);
+    display: flex;
+    align-items: center;
+}
+
 /* ── 2-column panel grid ─────────────────────────────────────────────── */
 .sa-perf-2col {
     display: grid;

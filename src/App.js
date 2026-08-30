@@ -394,6 +394,16 @@ export default function App() {
                                                 <AnalyticsForms />
                                             </ErrorBoundary>}
                                         </Route>
+                                        <Route path="/analytics/:handle/performance/country/:country" exact>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Performance Analytics" fullPage /> : <ErrorBoundary>
+                                                <AnalyticsPerformance />
+                                            </ErrorBoundary>}
+                                        </Route>
+                                        <Route path="/analytics/performance/country/:country" exact>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Performance Analytics" fullPage /> : <ErrorBoundary>
+                                                <AnalyticsPerformance />
+                                            </ErrorBoundary>}
+                                        </Route>
                                         <Route path="/analytics/:handle/performance" exact>
                                             {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Performance Analytics" fullPage /> : <ErrorBoundary>
                                                 <AnalyticsPerformance />
