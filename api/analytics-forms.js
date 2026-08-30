@@ -178,31 +178,37 @@ export default async function handler(req, res) {
             LIMIT 20
         `, [siteId, fromDate, toDate]),
 
-        // Device type breakdown: started vs submitted vs errors per device
+        // Device type breakdown: started vs submitted vs errors per device.
+        // Deduplicates by session_id so that retries (multiple form_submit events
+        // in one session) don't inflate submitted above started.
         db.query(`
+            WITH dc AS (
+                SELECT
+                    COALESCE(device_type, 'unknown') AS device,
+                    COUNT(DISTINCT CASE WHEN name = 'form_started' AND session_id IS NOT NULL THEN session_id END)
+                        + COUNT(*) FILTER (WHERE name = 'form_started' AND session_id IS NULL) AS started,
+                    COUNT(DISTINCT CASE WHEN name = 'form_submit'  AND session_id IS NOT NULL THEN session_id END)
+                        + COUNT(*) FILTER (WHERE name = 'form_submit'  AND session_id IS NULL) AS submitted,
+                    COUNT(*) FILTER (WHERE name = 'form_error') AS errors
+                FROM analytics_custom_events
+                WHERE site_id = $1
+                  AND received_at >= $2::date
+                  AND received_at <  $3::date + interval '1 day'
+                  AND name IN ('form_started', 'form_submit', 'form_error')
+                GROUP BY 1
+            )
             SELECT
-                COALESCE(device_type, 'unknown')                              AS device,
-                COUNT(*) FILTER (WHERE name = 'form_started')                 AS started,
-                COUNT(*) FILTER (WHERE name = 'form_submit')                  AS submitted,
-                COUNT(*) FILTER (WHERE name = 'form_error')                   AS errors,
-                CASE WHEN COUNT(*) FILTER (WHERE name = 'form_started') > 0
-                     THEN LEAST(100, ROUND(
-                         COUNT(*) FILTER (WHERE name = 'form_submit')::numeric /
-                         COUNT(*) FILTER (WHERE name = 'form_started') * 100, 1))
-                     ELSE NULL
-                END AS completion_rate,
-                CASE WHEN COUNT(*) FILTER (WHERE name = 'form_started') > 0
-                     THEN ROUND(
-                         COUNT(*) FILTER (WHERE name = 'form_error')::numeric /
-                         COUNT(*) FILTER (WHERE name = 'form_started') * 100, 1)
-                     ELSE NULL
-                END AS error_rate
-            FROM analytics_custom_events
-            WHERE site_id = $1
-              AND received_at >= $2::date
-              AND received_at <  $3::date + interval '1 day'
-              AND name IN ('form_started', 'form_submit', 'form_error')
-            GROUP BY 1
+                device,
+                started,
+                submitted,
+                errors,
+                CASE WHEN started > 0
+                     THEN LEAST(100, ROUND(submitted::numeric / started * 100, 1))
+                     ELSE NULL END AS completion_rate,
+                CASE WHEN started > 0
+                     THEN ROUND(errors::numeric / started * 100, 1)
+                     ELSE NULL END AS error_rate
+            FROM dc
             ORDER BY started DESC
         `, [siteId, fromDate, toDate]),
 
@@ -501,25 +507,37 @@ export default async function handler(req, res) {
         // Geographic breakdown: submissions, starters, errors and completion rate
         // per country. country_code is set by the ingest endpoint from the
         // request's IP — present only when geolocation is enabled.
+        // Deduplicates by session_id so retries don't inflate submitted above started.
         db.query(`
+            WITH gc AS (
+                SELECT
+                    COALESCE(NULLIF(country_code, ''), '??') AS country,
+                    COUNT(DISTINCT CASE WHEN name = 'form_started' AND session_id IS NOT NULL THEN session_id END)
+                        + COUNT(*) FILTER (WHERE name = 'form_started' AND session_id IS NULL) AS starters,
+                    COUNT(DISTINCT CASE WHEN name = 'form_submit'  AND session_id IS NOT NULL THEN session_id END)
+                        + COUNT(*) FILTER (WHERE name = 'form_submit'  AND session_id IS NULL) AS submissions,
+                    COUNT(*) FILTER (WHERE name = 'form_error') AS errors
+                FROM analytics_custom_events
+                WHERE site_id = $1
+                  AND received_at >= $2::date
+                  AND received_at <  $3::date + interval '1 day'
+                  AND name IN ('form_started', 'form_submit', 'form_error')
+                GROUP BY 1
+                HAVING
+                    COUNT(DISTINCT CASE WHEN name = 'form_started' AND session_id IS NOT NULL THEN session_id END)
+                    + COUNT(*) FILTER (WHERE name = 'form_started' AND session_id IS NULL)
+                    + COUNT(DISTINCT CASE WHEN name = 'form_submit' AND session_id IS NOT NULL THEN session_id END)
+                    + COUNT(*) FILTER (WHERE name = 'form_submit' AND session_id IS NULL) > 0
+            )
             SELECT
-                COALESCE(NULLIF(country_code, ''), '??')              AS country,
-                COUNT(*) FILTER (WHERE name = 'form_submit')           AS submissions,
-                COUNT(*) FILTER (WHERE name = 'form_started')          AS starters,
-                COUNT(*) FILTER (WHERE name = 'form_error')            AS errors,
-                CASE WHEN COUNT(*) FILTER (WHERE name = 'form_started') > 0
-                     THEN LEAST(100, ROUND(
-                         COUNT(*) FILTER (WHERE name = 'form_submit')::numeric /
-                         COUNT(*) FILTER (WHERE name = 'form_started') * 100, 1))
-                     ELSE NULL
-                END AS completion_rate
-            FROM analytics_custom_events
-            WHERE site_id = $1
-              AND received_at >= $2::date
-              AND received_at <  $3::date + interval '1 day'
-              AND name IN ('form_started', 'form_submit', 'form_error')
-            GROUP BY 1
-            HAVING COUNT(*) FILTER (WHERE name IN ('form_started', 'form_submit')) > 0
+                country,
+                starters,
+                submissions,
+                errors,
+                CASE WHEN starters > 0
+                     THEN LEAST(100, ROUND(submissions::numeric / starters * 100, 1))
+                     ELSE NULL END AS completion_rate
+            FROM gc
             ORDER BY starters DESC, submissions DESC
             LIMIT 50
         `, [siteId, fromDate, toDate]),
