@@ -842,12 +842,10 @@
         background: rgba(255, 255, 255, 0.08);
     }
 
-    /* Offset main content next to the fixed menu control (SideNav pages) */
-    /* .sidebar-mobile-toggle ~ article,
-    .sidebar-mobile-toggle ~ main,
-    .sidebar-mobile-toggle ~ div.dashboard-content {
-        padding-left: 52px;
-    } */
+    /* Shift the sticky page title clear of the fixed sidebar toggle */
+    .infoHeader .dashboard-content {
+        padding-left: 56px;
+    }
 }
 
 @media (min-width: 769px) {

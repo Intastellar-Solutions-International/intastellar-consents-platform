@@ -5986,6 +5986,36 @@ details[open] .ca-context-summary::before { content: "▾"; }
 .sa-perf-empty p  { margin: 0 0 8px; font-size: 14px; }
 .sa-table__sortable { user-select: none; }
 .sa-table__sortable--active { color: rgba(192,159,83,0.9); }
+.sa-table-pager {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    padding: 8px 4px 2px;
+}
+.sa-table-pager__btn {
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 6px;
+    color: rgba(200,200,220,0.85);
+    font-size: 16px;
+    line-height: 1;
+    padding: 2px 10px 4px;
+    cursor: pointer;
+}
+.sa-table-pager__btn:disabled {
+    opacity: 0.3;
+    cursor: default;
+}
+.sa-table-pager__btn:not(:disabled):hover {
+    background: rgba(255,255,255,0.13);
+}
+.sa-table-pager__info {
+    font-size: 12px;
+    color: rgba(160,160,180,0.7);
+    min-width: 40px;
+    text-align: center;
+}
 .sa-perf-thumb {
     display: block;
     width: 88px;

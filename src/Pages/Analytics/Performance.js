@@ -169,10 +169,12 @@ function RatingBar({ goodPct, niPct, poorPct, goodCount, niCount, poorCount }) {
 function PageTable({ rows }) {
     const [sortKey, setSortKey] = useState("samples");
     const [sortAsc, setSortAsc] = useState(false);
+    const [page, setPage] = useState(0);
 
     function toggleSort(key) {
         if (sortKey === key) setSortAsc(a => !a);
         else { setSortKey(key); setSortAsc(false); }
+        setPage(0);
     }
 
     const sorted = useMemo(() => {
@@ -183,6 +185,8 @@ function PageTable({ rows }) {
         });
         return s;
     }, [rows, sortKey, sortAsc]);
+
+    const pageRows = sorted.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
 
     function Th({ k, children }) {
         const active = sortKey === k;
@@ -216,8 +220,8 @@ function PageTable({ rows }) {
                 </tr>
             </thead>
             <tbody>
-                {sorted.map((r, i) => (
-                    <tr key={i}>
+                {pageRows.map((r, i) => (
+                    <tr key={page * PAGE_SIZE + i}>
                         <td className="sa-table__path" title={r.pathname}>
                             {r.pathname.length > 55 ? "…" + r.pathname.slice(-52) : r.pathname}
                         </td>
@@ -233,6 +237,7 @@ function PageTable({ rows }) {
                 ))}
             </tbody>
         </table>
+        <TablePager page={page} setPage={setPage} total={sorted.length} />
         </div>
     );
 }
@@ -323,8 +328,32 @@ function lcpImgUrl(src, domain) {
     return `https://${src}`;
 }
 
+const PAGE_SIZE = 10;
+
+function TablePager({ page, setPage, total }) {
+    const totalPages = Math.ceil(total / PAGE_SIZE);
+    if (totalPages <= 1) return null;
+    return (
+        <div className="sa-table-pager">
+            <button
+                className="sa-table-pager__btn"
+                disabled={page === 0}
+                onClick={() => setPage(p => p - 1)}
+            >&#8249;</button>
+            <span className="sa-table-pager__info">{page + 1} / {totalPages}</span>
+            <button
+                className="sa-table-pager__btn"
+                disabled={page >= totalPages - 1}
+                onClick={() => setPage(p => p + 1)}
+            >&#8250;</button>
+        </div>
+    );
+}
+
 function LcpElemTable({ rows, domain }) {
+    const [page, setPage] = useState(0);
     if (!rows?.length) return null;
+    const pageRows = rows.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
     return (
         <div className="sa-table-wrap">
         <table className="sa-table">
@@ -338,13 +367,13 @@ function LcpElemTable({ rows, domain }) {
                 </tr>
             </thead>
             <tbody>
-                {rows.map((r, i) => {
+                {pageRows.map((r, i) => {
                     const rating  = cwvRating("lcp", r.lcpP75);
                     const color   = RATING_COLOR[rating];
                     const desc    = [r.tag, r.elId ? `#${r.elId}` : null, r.cls ? `.${r.cls}` : null].filter(Boolean).join("");
                     const imgUrl  = IMG_TAGS.has(r.tag) && r.src ? lcpImgUrl(r.src, domain) : null;
                     return (
-                        <tr key={i}>
+                        <tr key={page * PAGE_SIZE + i}>
                             <td>
                                 {imgUrl ? (
                                     <img
@@ -373,6 +402,7 @@ function LcpElemTable({ rows, domain }) {
                 })}
             </tbody>
         </table>
+        <TablePager page={page} setPage={setPage} total={rows.length} />
         </div>
     );
 }
@@ -381,7 +411,9 @@ const RES_TYPE_LABEL = { script: "Script", img: "Image", link: "CSS", font: "Fon
 
 // ── Slow resources table ───────────────────────────────────────────────────
 function SlowResTable({ rows }) {
+    const [page, setPage] = useState(0);
     if (!rows?.length) return null;
+    const pageRows = rows.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
     return (
         <div className="sa-table-wrap">
         <table className="sa-table">
@@ -395,11 +427,11 @@ function SlowResTable({ rows }) {
                 </tr>
             </thead>
             <tbody>
-                {rows.map((r, i) => {
+                {pageRows.map((r, i) => {
                     const slow = r.avgDur > 1000;
                     const warn = r.avgDur > 500;
                     return (
-                        <tr key={i}>
+                        <tr key={page * PAGE_SIZE + i}>
                             <td><code style={{ wordBreak: "break-all", fontSize: "12px" }}>{r.url || "—"}</code></td>
                             <td className="sa-muted">{RES_TYPE_LABEL[r.resourceType] || r.resourceType || "—"}</td>
                             <td className="sa-num" style={slow ? { color: RATING_COLOR["poor"], fontWeight: 700 } : warn ? { color: RATING_COLOR["needs-improvement"], fontWeight: 700 } : {}}>{fmtMs(r.avgDur)}</td>
@@ -410,6 +442,7 @@ function SlowResTable({ rows }) {
                 })}
             </tbody>
         </table>
+        <TablePager page={page} setPage={setPage} total={rows.length} />
         </div>
     );
 }
@@ -435,6 +468,52 @@ function LongTaskTable({ rows }) {
                         <td className="sa-num">{r.occurrences}</td>
                         <td className="sa-num" style={{ color: r.avgDur > 200 ? RATING_COLOR["poor"] : RATING_COLOR["needs-improvement"], fontWeight: 700 }}>{fmtMs(r.avgDur)}</td>
                         <td className="sa-num sa-muted">{fmtMs(r.maxDur)}</td>
+                    </tr>
+                ))}
+            </tbody>
+        </table>
+        </div>
+    );
+}
+
+// ── Network connection type table ─────────────────────────────────────────
+const NET_TYPE_LABEL = {
+    "4g":     "4G / WiFi",
+    "3g":     "3G",
+    "2g":     "2G",
+    "slow-2g":"Slow 2G",
+    "wifi":   "WiFi",
+    "ethernet":"Ethernet",
+    "cellular":"Cellular",
+    "unknown":"Unknown",
+};
+
+function NetworkTable({ rows }) {
+    if (!rows?.length) return null;
+    return (
+        <div className="sa-table-scroll">
+        <table className="sa-table">
+            <thead>
+                <tr>
+                    <th>Connection</th>
+                    <th className="sa-table__num">Samples</th>
+                    <th className="sa-table__num">LCP P75</th>
+                    <th className="sa-table__num">CLS P75</th>
+                    <th className="sa-table__num">INP P75</th>
+                    <th className="sa-table__num">TTFB P75</th>
+                    <th className="sa-table__num">Load P75</th>
+                </tr>
+            </thead>
+            <tbody>
+                {rows.map((r, i) => (
+                    <tr key={i}>
+                        <td style={{ fontWeight: 600 }}>{NET_TYPE_LABEL[r.netType] || r.netType}</td>
+                        <td className="sa-table__num">{r.samples.toLocaleString("de-DE")}</td>
+                        <td className="sa-table__num"><MetricValue metric="lcp"  value={r.lcpP75}  /></td>
+                        <td className="sa-table__num"><MetricValue metric="cls"  value={r.clsP75}  /></td>
+                        <td className="sa-table__num"><MetricValue metric="inp"  value={r.inpP75}  /></td>
+                        <td className="sa-table__num"><MetricValue metric="ttfb" value={r.ttfbP75} /></td>
+                        <td className="sa-table__num"><MetricValue metric="load" value={r.loadP75} /></td>
                     </tr>
                 ))}
             </tbody>
@@ -813,7 +892,7 @@ export default function AnalyticsPerformance() {
                                 </div>
                             </div>
 
-                            {/* Grid A: Overall rating + By device */}
+                            {/* Grid A: Overall rating + By device + By network */}
                             <div className="sa-perf-2col">
                                 <div className="sa-panel">
                                     <h3 className="sa-panel__title">
@@ -840,6 +919,17 @@ export default function AnalyticsPerformance() {
                                             Mobile devices typically show higher LCP and TTFB due to network constraints. A large gap between desktop and mobile signals missing responsive optimisation.
                                         </p>
                                         <DeviceTable rows={data.byDevice} />
+                                    </div>
+                                )}
+                                {data.byNetwork?.length > 0 && (
+                                    <div className="sa-panel">
+                                        <h3 className="sa-panel__title">
+                                            <IconClock className="sa-icon" /> By connection type
+                                        </h3>
+                                        <p className="sa-panel__desc">
+                                            Core Web Vitals per network connection quality. Slow-2G and 3G users reveal how well your site performs under constrained bandwidth.
+                                        </p>
+                                        <NetworkTable rows={data.byNetwork} />
                                     </div>
                                 )}
                             </div>
