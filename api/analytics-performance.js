@@ -268,6 +268,7 @@ export default async function handler(req, res) {
             FROM analytics_custom_events
             WHERE ${ATTR_WHERE}
               AND extra_data->'lcpEl' IS NOT NULL
+              AND extra_data->'lcpEl'->>'tag' IS NOT NULL
             GROUP BY 1, 2, 3, 4, 5
             ORDER BY occurrences DESC
             LIMIT 20

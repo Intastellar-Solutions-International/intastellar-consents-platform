@@ -329,7 +329,7 @@ function lcpImgUrl(src, domain) {
     return `https://${src}`;
 }
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 7;
 
 function TablePager({ page, setPage, total }) {
     const totalPages = Math.ceil(total / PAGE_SIZE);
@@ -460,7 +460,9 @@ const INV_LABEL = {
 };
 
 function LongTaskTable({ rows }) {
+    const [page, setPage] = useState(0);
     if (!rows?.length) return null;
+    const pageRows = rows.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
     return (
         <div className="sa-table-wrap">
         <table className="sa-table">
@@ -476,14 +478,14 @@ function LongTaskTable({ rows }) {
                 </tr>
             </thead>
             <tbody>
-                {rows.map((r, i) => {
+                {pageRows.map((r, i) => {
                     const avgColor  = r.avgDur > 500 ? RATING_COLOR["poor"] : RATING_COLOR["needs-improvement"];
                     const phase     = r.avgStart != null ? (r.avgStart < 5000 ? "load" : "post-load") : null;
                     const ctLabel   = r.containerType ? CT_LABEL[r.containerType] || r.containerType : null;
                     const invLabel  = r.invokerType ? INV_LABEL[r.invokerType] || r.invokerType : null;
                     const srcLabel  = r.src || (r.functionName ? "(anonymous)" : "(unattributed)");
                     return (
-                        <tr key={i}>
+                        <tr key={page * PAGE_SIZE + i}>
                             <td>
                                 <code style={{ wordBreak: "break-all", fontSize: "12px" }}>{srcLabel}</code>
                                 {r.functionName && (
@@ -512,6 +514,7 @@ function LongTaskTable({ rows }) {
                 })}
             </tbody>
         </table>
+        <TablePager page={page} setPage={setPage} total={rows.length} />
         </div>
     );
 }
@@ -933,13 +936,6 @@ export default function AnalyticsPerformance() {
                                         </span>
                                     </div>
                                 )}
-                                <div className="sa-perf-timing-card">
-                                    <span className="sa-perf-timing-card__label">{data.totals.sampleSize.toLocaleString("de-DE")}</span>
-                                    <span className="sa-perf-timing-card__sub">Page samples</span>
-                                    <span className="sa-perf-timing-card__value sa-muted" style={{ fontSize: "11px" }}>
-                                        Pages with &lt; 3 samples excluded from breakdown
-                                    </span>
-                                </div>
                             </div>
 
                             {/* Grid A: Overall rating + By device + By network */}
