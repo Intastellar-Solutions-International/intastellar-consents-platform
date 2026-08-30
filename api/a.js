@@ -1706,6 +1706,23 @@ function _formId(form){
         _longTasks.push({dur:Math.round(e.duration),src:s});
       });
     }).observe({type:'longtask',buffered:true});}catch(e){}
+    /* Network Connection Type */
+    var connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    var effectiveType = connection ? connection.effectiveType : null;
+    var rtt = connection ? connection.rtt : null;
+    var downlink = connection ? connection.downlink : null;
+    var saveData = connection ? connection.saveData : null;
+    var type = connection ? connection.type : null;
+    var onchange = connection ? connection.onchange : null;
+    var onqualitychange = connection ? connection.onqualitychange : null;
+    var onicecandidate = connection ? connection.onicecandidate : null;
+    var oniceconnectionstatechange = connection ? connection.oniceconnectionstatechange : null;
+    var onicegatheringstatechange = connection ? connection.onicegatheringstatechange : null;
+    var onicecandidateerror = connection ? connection.onicecandidateerror : null;
+    var onicecandidatepairchange = connection ? connection.onicecandidatepairchange : null;
+    var onicecandidatepairchange = connection ? connection.onicecandidatepairchange : null;
+    /* Send network connection type */
+    track('network_connection',{data:{effectiveType:effectiveType,rtt:rtt,downlink:downlink,saveData:saveData,type:type,onchange:onchange,onqualitychange:onqualitychange,onicecandidate:onicecandidate,oniceconnectionstatechange:oniceconnectionstatechange,onicegatheringstatechange:onicegatheringstatechange,onicecandidateerror:onicecandidateerror,onicecandidatepairchange:onicecandidatepairchange}});
     function _fire(){
       if(_fired)return;_fired=true;
       try{
@@ -1736,7 +1753,9 @@ function _formId(form){
           slowRes=slow.slice(0,8);
         }catch(e){}
         var lt=_longTasks.slice(0,10);
-        track('page_perf',{data:{lcp:lcp,cls:cls,inp:inp,fcp:fcp,ttfb:ttfb,load:load,rating:r,lcpEl:_lcpEl||undefined,slowRes:slowRes.length?slowRes:undefined,longTasks:lt.length?lt:undefined}});
+        var netInfo=null;
+        if(effectiveType||rtt!=null||downlink!=null){netInfo={type:effectiveType,rtt:rtt!=null?Math.round(rtt):null,dl:downlink,save:saveData||false};}
+        track('page_perf',{data:{lcp:lcp,cls:cls,inp:inp,fcp:fcp,ttfb:ttfb,load:load,rating:r,lcpEl:_lcpEl||undefined,slowRes:slowRes.length?slowRes:undefined,longTasks:lt.length?lt:undefined,net:netInfo||undefined}});
       }catch(e){}
     }
     var _op=history.pushState,_or=history.replaceState;
