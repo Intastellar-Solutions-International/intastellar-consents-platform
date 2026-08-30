@@ -1692,7 +1692,7 @@ function _formId(form){
         var el=last.element;
         if(el){
           var s=el.currentSrc||el.src||el.getAttribute('data-src')||null;
-          if(s){try{s=new URL(s).pathname.slice(0,120);}catch(x){s=String(s).slice(0,120);}}
+          if(s){try{var pu=new URL(s);s=(pu.host!==location.host?pu.host:'')+pu.pathname.slice(0,120);}catch(x){s=String(s).slice(0,120);}}
           _lcpEl={tag:el.tagName.toLowerCase(),id:el.id||null,cls:(el.className||'').trim().split(' ')[0]||null,src:s};
         }
       }
