@@ -455,6 +455,19 @@ export default function UserFlowDiagram({ data, conversionNode = null, ariaLabel
         return m;
     }, [data]);
 
+    // Validation errors per pathname — form_error events fired on sessions
+    // that visited that page. Only present in all-traffic mode (goal views
+    // don't include this field). Keyed by pathname (the node id for page
+    // columns), not by (depth, node), since errors are a property of the
+    // page itself and the same count applies wherever that page appears.
+    const validationErrorMap = useMemo(() => {
+        const m = new Map(); // pathname -> { occurrences, sessions }
+        for (const e of (data.validationErrors || [])) {
+            m.set(e.node, { occurrences: e.occurrences, sessions: e.sessions });
+        }
+        return m;
+    }, [data]);
+
     // Same depth→column mapping as exitMap, keyed to a node's per-host
     // session split — a bare pathname like "/" is ambiguous once a site key
     // is shared across a root domain and a booking/white-label subdomain
@@ -607,12 +620,24 @@ export default function UserFlowDiagram({ data, conversionNode = null, ariaLabel
                                     ? `rgba(240,235,225,${textOpacity * 0.75})`
                                     : `rgba(248,113,113,${isOn ? 0.9 : 0.2})`;
 
+                                // Validation errors for this page node (page columns only —
+                                // col 0 is acquisition channels, not real pathnames).
+                                // "(other)" nodes are skipped since they're a heterogeneous
+                                // bucket with no single page to attribute errors to.
+                                const errData = c > 0 && node.id !== "(other)"
+                                    ? validationErrorMap.get(node.id) ?? null
+                                    : null;
+                                const errSessions = errData?.sessions ?? 0;
+
                                 const nodeLabel = `${node.id}${hostSuffix(key)}`;
+                                const errSuffix = errData
+                                    ? ` · ⚠ ${errData.sessions.toLocaleString("de-DE")} error session${errData.sessions !== 1 ? "s" : ""} (${errData.occurrences.toLocaleString("de-DE")} total)`
+                                    : "";
                                 const tooltipText = highlight && isOn
-                                    ? `${nodeLabel}: ${displayPop.toLocaleString("de-DE")} of ${node.population.toLocaleString("de-DE")} sessions`
+                                    ? `${nodeLabel}: ${displayPop.toLocaleString("de-DE")} of ${node.population.toLocaleString("de-DE")} sessions${errSuffix}`
                                     : exitPctStr
-                                        ? `${nodeLabel}: ${node.population.toLocaleString("de-DE")} sessions · ↓ ${exitPctStr} drop-off (${exitSessions.toLocaleString("de-DE")} left)`
-                                        : `${nodeLabel}: ${node.population.toLocaleString("de-DE")} sessions`;
+                                        ? `${nodeLabel}: ${node.population.toLocaleString("de-DE")} sessions · ↓ ${exitPctStr} drop-off (${exitSessions.toLocaleString("de-DE")} left)${errSuffix}`
+                                        : `${nodeLabel}: ${node.population.toLocaleString("de-DE")} sessions${errSuffix}`;
 
                                 // Drop-off ribbon: a closed "fin" shape that starts from the
                                 // exit portion of the node's right edge (bottom fraction),
@@ -662,7 +687,7 @@ export default function UserFlowDiagram({ data, conversionNode = null, ariaLabel
                                         tabIndex={0}
                                         role="button"
                                         aria-pressed={isSelected}
-                                        aria-label={`${node.id}, ${displayPop.toLocaleString("de-DE")} sessions${!highlight && exitPctStr ? `, ${exitPctStr} drop-off` : ""}`}
+                                        aria-label={`${node.id}, ${displayPop.toLocaleString("de-DE")} sessions${!highlight && exitPctStr ? `, ${exitPctStr} drop-off` : ""}${errSessions > 0 ? `, ${errSessions.toLocaleString("de-DE")} error sessions` : ""}`}
                                         onKeyDown={e => {
                                             if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggleNode(c, node.id); }
                                         }}
@@ -695,6 +720,17 @@ export default function UserFlowDiagram({ data, conversionNode = null, ariaLabel
                                                 fill={rightLabelColor}
                                             >
                                                 {rightLabel}
+                                            </text>
+                                        )}
+                                        {errSessions > 0 && layout.height >= 38 && (
+                                            <text
+                                                x={x + 8}
+                                                y={y + layout.height - 5}
+                                                dominantBaseline="auto"
+                                                fontSize="8"
+                                                fill={`rgba(251,146,60,${isOn ? 0.9 : 0.3})`}
+                                            >
+                                                {`⚠ ${errSessions.toLocaleString("de-DE")}`}
                                             </text>
                                         )}
                                     </g>
