@@ -1754,7 +1754,7 @@ function _formId(form){
         }catch(e){}
         var lt=_longTasks.slice(0,10);
         var netInfo=null;
-        if(effectiveType||rtt!=null||downlink!=null){netInfo={type:effectiveType,rtt:rtt!=null?Math.round(rtt):null,dl:downlink,save:saveData||false};}
+        if(effectiveType){netInfo={type:effectiveType,rtt:rtt!=null?Math.round(rtt):null,dl:downlink,save:saveData||false};}
         track('page_perf',{data:{lcp:lcp,cls:cls,inp:inp,fcp:fcp,ttfb:ttfb,load:load,rating:r,lcpEl:_lcpEl||undefined,slowRes:slowRes.length?slowRes:undefined,longTasks:lt.length?lt:undefined,net:netInfo||undefined}});
       }catch(e){}
     }
