@@ -523,11 +523,6 @@ export default async function handler(req, res) {
                   AND received_at <  $3::date + interval '1 day'
                   AND name IN ('form_started', 'form_submit', 'form_error')
                 GROUP BY 1
-                HAVING
-                    COUNT(DISTINCT CASE WHEN name = 'form_started' AND session_id IS NOT NULL THEN session_id END)
-                    + COUNT(*) FILTER (WHERE name = 'form_started' AND session_id IS NULL)
-                    + COUNT(DISTINCT CASE WHEN name = 'form_submit' AND session_id IS NOT NULL THEN session_id END)
-                    + COUNT(*) FILTER (WHERE name = 'form_submit' AND session_id IS NULL) > 0
             )
             SELECT
                 country,
@@ -538,6 +533,7 @@ export default async function handler(req, res) {
                      THEN LEAST(100, ROUND(submissions::numeric / starters * 100, 1))
                      ELSE NULL END AS completion_rate
             FROM gc
+            WHERE starters + submissions > 0
             ORDER BY starters DESC, submissions DESC
             LIMIT 50
         `, [siteId, fromDate, toDate]),
