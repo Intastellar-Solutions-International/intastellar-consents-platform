@@ -10,6 +10,7 @@ import {
     analyticsPath, analyticsAudiencePath, analyticsAcquisitionPath,
     analyticsConsentPath, analyticsAdSpendPath, analyticsAttributionPath,
     analyticsConversionsPath, analyticsHeatmapPath, analyticsFormsPath,
+    analyticsPerformancePath,
 } from "../../Functions/domainPathSegments.js";
 
 export function authHeaders() {
@@ -401,7 +402,8 @@ export function AnalyticsSubNav({ domain }) {
         { label: "Ad Spend",    path: analyticsAdSpendPath(domain) },
         { label: "Attribution", path: analyticsAttributionPath(domain) },
         { label: "Conversions", path: analyticsConversionsPath(domain) },
-        { label: "Forms",       path: analyticsFormsPath(domain) },
+        { label: "Forms",        path: analyticsFormsPath(domain) },
+        { label: "Performance", path: analyticsPerformancePath(domain) },
         { label: "Heatmap",     path: analyticsHeatmapPath(domain) },
     ];
 

@@ -177,6 +177,12 @@ export function analyticsFormsPath(domainUnicode) {
     return `/analytics/${seg}/forms`;
 }
 
+export function analyticsPerformancePath(domainUnicode) {
+    const seg = encodeDomainPathSegment(domainUnicode);
+    if (!seg) return "/analytics/performance";
+    return `/analytics/${seg}/performance`;
+}
+
 export function analyticsSettingsPath(domainUnicode) {
     const seg = encodeDomainPathSegment(domainUnicode);
     if (!seg) return "/analytics/settings";
@@ -237,7 +243,7 @@ export function analyticsReportViewPath(domainUnicode, reportId) {
 /** First arg is React Router v5 `useHistory()` (object with `.push(path)`). */
 export function navigateWithDomain(history, platformId, domainUnicode, pathname) {
     if (String(pathname || "").indexOf("/analytics") === 0) {
-        const leaf = ["/marketing", "/audience", "/acquisition", "/consent", "/heatmap", "/recordings", "/bots", "/user-flow", "/conversions", "/ad-spend", "/attribution", "/settings", "/google-analytics", "/search-console", "/page-experiments", "/cohorts", "/alerts", "/forms"].find(s => pathname.includes(s));
+        const leaf = ["/marketing", "/audience", "/acquisition", "/consent", "/heatmap", "/recordings", "/bots", "/user-flow", "/conversions", "/ad-spend", "/attribution", "/settings", "/google-analytics", "/search-console", "/page-experiments", "/cohorts", "/alerts", "/forms", "/performance"].find(s => pathname.includes(s));
         if (leaf === "/marketing")        history.push(analyticsMarketingPath(domainUnicode));
         else if (leaf === "/audience")    history.push(analyticsAudiencePath(domainUnicode));
         else if (leaf === "/acquisition") history.push(analyticsAcquisitionPath(domainUnicode));
@@ -256,6 +262,7 @@ export function navigateWithDomain(history, platformId, domainUnicode, pathname)
         else if (leaf === "/cohorts")     history.push(analyticsCohortPath(domainUnicode));
         else if (leaf === "/alerts")      history.push(analyticsAlertsPath(domainUnicode));
         else if (leaf === "/forms")       history.push(analyticsFormsPath(domainUnicode));
+        else if (leaf === "/performance") history.push(analyticsPerformancePath(domainUnicode));
         else                              history.push(analyticsPath(domainUnicode));
         return;
     }
