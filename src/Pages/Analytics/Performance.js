@@ -537,6 +537,50 @@ function LcpElemTable({ rows, domain }) {
     );
 }
 
+// ── CLS culprit elements table ─────────────────────────────────────────────
+function ClsSourcesTable({ rows, domain }) {
+    const [page, setPage] = useState(0);
+    if (!rows?.length) return null;
+    const pageRows = rows.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
+    return (
+        <div className="sa-table-wrap">
+        <table className="sa-table">
+            <thead>
+                <tr>
+                    <th style={{ width: "96px" }}>Page</th>
+                    <th>Element</th>
+                    <th className="sa-num">Avg shift</th>
+                    <th className="sa-num">Total shift</th>
+                    <th className="sa-num">Seen</th>
+                </tr>
+            </thead>
+            <tbody>
+                {pageRows.map((r, i) => {
+                    const desc = [r.tag, r.elId ? `#${r.elId}` : null, r.cls ? `.${r.cls}` : null].filter(Boolean).join("");
+                    const warn = r.avgVal >= 0.25;
+                    const color = warn ? RATING_COLOR["poor"] : r.avgVal >= 0.1 ? RATING_COLOR["needs-improvement"] : null;
+                    return (
+                        <tr key={page * PAGE_SIZE + i}>
+                            <td>
+                                <LazyScreenshot domain={domain} path={r.pathname || "/"} />
+                            </td>
+                            <td>
+                                <code>{desc || r.tag || "—"}</code>
+                                <span className="sa-muted" style={{ display: "block", fontSize: "11px", marginTop: "2px" }}>{r.pathname || "—"}</span>
+                            </td>
+                            <td className="sa-num" style={color ? { color, fontWeight: 700 } : {}}>{fmtCls(r.avgVal)}</td>
+                            <td className="sa-num sa-muted">{fmtCls(r.totalVal)}</td>
+                            <td className="sa-num">{r.occurrences}</td>
+                        </tr>
+                    );
+                })}
+            </tbody>
+        </table>
+        <TablePager page={page} setPage={setPage} total={rows.length} />
+        </div>
+    );
+}
+
 const RES_TYPE_LABEL = { script: "Script", img: "Image", link: "CSS", css: "BG image", font: "Font", fetch: "Fetch", xmlhttprequest: "XHR", iframe: "iframe", source: "Image", video: "Video", audio: "Audio" };
 
 // ── Slow resources table ───────────────────────────────────────────────────
@@ -1577,16 +1621,28 @@ export default function AnalyticsPerformance() {
                                 <BrowserTable rows={data.byBrowser} />
                             </div>
 
-                            {/* CLS culprit attribution — data collection gap */}
+                            {/* CLS culprit attribution */}
                             {data.totals.clsP75 != null && data.totals.clsP75 >= 0.1 && (
-                                <div className="sa-panel sa-perf-gap-panel">
-                                    <h3 className="sa-panel__title">
-                                        <IconAlertTriangle className="sa-icon" /> CLS culprit elements — data not yet available
-                                    </h3>
-                                    <p className="sa-panel__desc">
-                                        CLS P75 is <strong>{fmtCls(data.totals.clsP75)}</strong> — above the "Good" threshold of 0.1. To identify which elements are causing layout shifts, the embed script needs to be updated to record <code>PerformanceObserver layout-shift</code> entry sources. This is a follow-up data-collection task.
-                                    </p>
-                                </div>
+                                data.clsSources?.length > 0 ? (
+                                    <div className="sa-panel">
+                                        <h3 className="sa-panel__title">
+                                            <IconAlertTriangle className="sa-icon" /> CLS culprit elements
+                                        </h3>
+                                        <p className="sa-panel__desc">
+                                            CLS P75 is <strong>{fmtCls(data.totals.clsP75)}</strong> — above the "Good" threshold of 0.1. Elements below shifted layout the most across page loads (largest-impact source per shift, summed per visit). Fix the top rows first — reserve space with width/height or CSS aspect-ratio, avoid injecting content above existing content, and preload web fonts.
+                                        </p>
+                                        <ClsSourcesTable rows={data.clsSources} domain={domain} />
+                                    </div>
+                                ) : (
+                                    <div className="sa-panel sa-perf-gap-panel">
+                                        <h3 className="sa-panel__title">
+                                            <IconAlertTriangle className="sa-icon" /> CLS culprit elements — collecting data
+                                        </h3>
+                                        <p className="sa-panel__desc">
+                                            CLS P75 is <strong>{fmtCls(data.totals.clsP75)}</strong> — above the "Good" threshold of 0.1. The embed script now records layout-shift culprit elements, but no page_perf events in this date range were captured after the update shipped — this fills in as new visits land, or try a more recent date range.
+                                        </p>
+                                    </div>
+                                )
                             )}
 
                             {/* Business impact */}

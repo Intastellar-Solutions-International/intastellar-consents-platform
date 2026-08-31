@@ -282,7 +282,7 @@ export default async function handler(req, res) {
     // Business impact: always pass country as $4 (null when unfiltered) and qualifying events as $5
     const biParams = [siteId, fromDate, toDate, country || null, qualifyingEvents];
 
-    const [lcpElemRes, slowResRes, longTaskRes, histogramRes, byNetworkRes, byBrowserRes, clsHistRes, inpHistRes, biRes] = await Promise.all([
+    const [lcpElemRes, clsSourceRes, slowResRes, longTaskRes, histogramRes, byNetworkRes, byBrowserRes, clsHistRes, inpHistRes, biRes] = await Promise.all([
 
         // Which element was the LCP candidate on each page?
         db.query(`
@@ -300,6 +300,32 @@ export default async function handler(req, res) {
               AND extra_data->'lcpEl'->>'tag' IS NOT NULL
             GROUP BY 1, 2, 3, 4, 5
             ORDER BY occurrences DESC
+            LIMIT 20
+        `, params),
+
+        // Which elements are causing layout shifts? Each page_perf event carries
+        // up to 5 culprit elements (embed script picks the largest-impact source
+        // per shift and sums its score across the page load) — aggregate those
+        // across events so the worst offenders surface site-wide, not per-visit.
+        db.query(`
+            SELECT
+                pathname,
+                src->>'tag'  AS tag,
+                src->>'id'   AS el_id,
+                src->>'cls'  AS cls,
+                COUNT(*)                                  AS occurrences,
+                ROUND(AVG((src->>'val')::numeric), 3)     AS avg_val,
+                ROUND(SUM((src->>'val')::numeric), 3)     AS total_val
+            FROM analytics_custom_events,
+              LATERAL jsonb_array_elements(
+                CASE WHEN jsonb_typeof(extra_data->'clsSources') = 'array'
+                     THEN extra_data->'clsSources'
+                     ELSE '[]'::jsonb END
+              ) AS src
+            WHERE ${ATTR_WHERE}
+              AND src->>'tag' IS NOT NULL
+            GROUP BY 1, 2, 3, 4
+            ORDER BY total_val DESC
             LIMIT 20
         `, params),
 
@@ -468,7 +494,7 @@ export default async function handler(req, res) {
 
     ]).catch(e => {
         console.error("analytics-performance attribution query error:", e.message);
-        return Array.from({ length: 9 }, () => ({ rows: [] }));
+        return Array.from({ length: 10 }, () => ({ rows: [] }));
     });
 
     return res.status(200).json({
@@ -517,6 +543,15 @@ export default async function handler(req, res) {
             elId:        r.el_id || null,
             occurrences: parseInt(r.occurrences, 10) || 0,
             lcpP75:      fnum(r.lcp_p75),
+        })),
+        clsSources: clsSourceRes.rows.map(r => ({
+            pathname:    r.pathname,
+            tag:         r.tag || null,
+            elId:        r.el_id || null,
+            cls:         r.cls  || null,
+            occurrences: parseInt(r.occurrences, 10) || 0,
+            avgVal:      fcls(r.avg_val),
+            totalVal:    fcls(r.total_val),
         })),
         slowResources: slowResRes.rows.map(r => ({
             url:          r.url,
