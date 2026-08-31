@@ -1762,16 +1762,7 @@ function _formId(form){
     var downlink = connection ? connection.downlink : null;
     var saveData = connection ? connection.saveData : null;
     var type = connection ? connection.type : null;
-    var onchange = connection ? connection.onchange : null;
-    var onqualitychange = connection ? connection.onqualitychange : null;
-    var onicecandidate = connection ? connection.onicecandidate : null;
-    var oniceconnectionstatechange = connection ? connection.oniceconnectionstatechange : null;
-    var onicegatheringstatechange = connection ? connection.onicegatheringstatechange : null;
-    var onicecandidateerror = connection ? connection.onicecandidateerror : null;
-    var onicecandidatepairchange = connection ? connection.onicecandidatepairchange : null;
-    var onicecandidatepairchange = connection ? connection.onicecandidatepairchange : null;
-    /* Send network connection type */
-    track('network_connection',{data:{effectiveType:effectiveType,rtt:rtt,downlink:downlink,saveData:saveData,type:type,onchange:onchange,onqualitychange:onqualitychange,onicecandidate:onicecandidate,oniceconnectionstatechange:oniceconnectionstatechange,onicegatheringstatechange:onicegatheringstatechange,onicecandidateerror:onicecandidateerror,onicecandidatepairchange:onicecandidatepairchange}});
+    track('network_connection',{data:{effectiveType:effectiveType,rtt:rtt,downlink:downlink,saveData:saveData,type:type}});
     function _fire(){
       if(_fired)return;_fired=true;
       try{

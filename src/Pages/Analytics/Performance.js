@@ -725,7 +725,7 @@ function NetworkTable({ rows }) {
     return (
         <>
         <p className="sa-perf-scope-note">
-            Sourced from <code>network_connection</code> events. RTT and downlink are only available in Chromium-based browsers (Chrome, Edge); Safari and Firefox report these as 0 or null.
+            Sourced from <code>network_connection</code> events. Connection type is only reported by Chromium-based browsers (Chrome, Edge) via the Network Information API — Safari and Firefox sessions are absent from this table entirely, so share percentages reflect Chromium traffic only. RTT and downlink are additionally Chromium-only within that subset.
         </p>
         <div className="sa-table-scroll">
         <table className="sa-table">
@@ -778,6 +778,9 @@ function NetworkCountryTable({ rows }) {
     const pageRows = sorted.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
     return (
         <div className="sa-table-wrap">
+        <p className="sa-perf-scope-note">
+            Connection type is sourced from <code>page_perf</code> events and only reported by Chromium-based browsers — Safari and Firefox sessions are absent. Rows with fewer than 3 samples are excluded.
+        </p>
         <table className="sa-table">
             <thead>
                 <tr>

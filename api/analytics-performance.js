@@ -47,9 +47,17 @@ function validateJwt(authHeader) {
     } catch { return null; }
 }
 
-// Percentile helper — generates a PERCENTILE_CONT expression for any metric + quantile
-const Pn = (col, p) =>
-    `PERCENTILE_CONT(${p}) WITHIN GROUP (ORDER BY (extra_data->>'${col}')::numeric) FILTER (WHERE extra_data->>'${col}' IS NOT NULL AND (extra_data->>'${col}')::numeric > 0)`;
+// Percentile helper — generates a PERCENTILE_CONT expression for any metric + quantile.
+// CLS = 0 is a valid measurement (no layout shifts) and must not be excluded from the
+// distribution — omitting it inflates every CLS percentile and breaks CrUX parity.
+// All other metrics use > 0 to guard against spurious zero values (TTFB and Load are
+// already stored as NULL when zero by the embed, so the guard is mostly redundant there).
+const Pn = (col, p) => {
+    const zeroGuard = col === "cls"
+        ? ""
+        : ` AND (extra_data->>'${col}')::numeric > 0`;
+    return `PERCENTILE_CONT(${p}) WITHIN GROUP (ORDER BY (extra_data->>'${col}')::numeric) FILTER (WHERE extra_data->>'${col}' IS NOT NULL${zeroGuard})`;
+};
 const P75 = (col) => Pn(col, 0.75);
 
 export default async function handler(req, res) {
@@ -176,6 +184,7 @@ export default async function handler(req, res) {
             FROM analytics_custom_events
             WHERE ${BASE_WHERE}
             GROUP BY 1
+            HAVING COUNT(*) >= 3
             ORDER BY samples DESC
         `, params),
 
@@ -363,7 +372,7 @@ export default async function handler(req, res) {
                 res->>'url'   AS url,
                 res->>'type'  AS resource_type,
                 COUNT(*)      AS occurrences,
-                ROUND(AVG((res->>'dur')::numeric))          AS avg_dur,
+                ROUND(PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY (res->>'dur')::numeric)) AS avg_dur,
                 ROUND(AVG((res->>'size')::numeric) / 1024)  AS avg_kb
             FROM analytics_custom_events,
               LATERAL jsonb_array_elements(
@@ -373,7 +382,7 @@ export default async function handler(req, res) {
               ) AS res
             WHERE ${ATTR_WHERE}
             GROUP BY 1, 2
-            HAVING COUNT(*) >= 1
+            HAVING COUNT(*) >= 3
             ORDER BY avg_dur DESC
             LIMIT 25
         `, params),
@@ -486,7 +495,8 @@ export default async function handler(req, res) {
         // $4 = country filter (null = all), $5 = qualifying event names array
         qualifyingEvents.length > 0 ? db.query(`
             WITH perf_sessions AS (
-                SELECT session_id, extra_data->>'rating' AS rating
+                SELECT DISTINCT ON (session_id)
+                    session_id, extra_data->>'rating' AS rating
                 FROM analytics_custom_events
                 WHERE site_id = $1
                   AND received_at >= $2::date
@@ -494,6 +504,7 @@ export default async function handler(req, res) {
                   AND name = 'page_perf'
                   AND session_id IS NOT NULL
                   AND ($4::char(2) IS NULL OR country_code = $4)
+                ORDER BY session_id, received_at ASC
             ),
             converted_sessions AS (
                 SELECT DISTINCT session_id
