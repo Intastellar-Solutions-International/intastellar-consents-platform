@@ -920,10 +920,11 @@ function fmtDur(sec) {
 }
 
 // Returns the index of the "winning" variant for a given engagement metric.
-// For bounce/non-engagement metrics lower = better; for time/scroll higher = better.
+// Requires at least two variants with non-null values — a solo reading
+// isn't a win, it's just the only data point.
 function winnerIndex(variants, key, lowerBetter) {
     const vals = variants.map(v => v.engagement?.[key] ?? null);
-    if (vals.every(v => v == null)) return -1;
+    if (vals.filter(v => v != null).length < 2) return -1;
     let best = null, bestIdx = -1;
     vals.forEach((v, i) => {
         if (v == null) return;
@@ -932,10 +933,10 @@ function winnerIndex(variants, key, lowerBetter) {
     return bestIdx;
 }
 
-// All CWV metrics are lower-is-better, so winner is always the minimum.
+// All CWV metrics are lower-is-better. Same "need 2+ readings" rule.
 function cwvWinnerIdx(variants, key) {
     const vals = variants.map(v => v.cwv?.[key] ?? null);
-    if (vals.every(v => v == null)) return -1;
+    if (vals.filter(v => v != null).length < 2) return -1;
     let best = null, bestIdx = -1;
     vals.forEach((v, i) => {
         if (v == null) return;
