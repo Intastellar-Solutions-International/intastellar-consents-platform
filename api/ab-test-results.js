@@ -303,7 +303,10 @@ export default async function handler(req, res) {
                         FROM assigned a
                         LEFT JOIN analytics_events ae
                           ON ae.session_id = a.session_id AND ae.site_id = $3
-                          AND ae.received_at >= a.first_assigned_at
+                          -- 2-minute grace: analytics beacon fires before the assignment
+                          -- XHR completes, so received_at lands slightly before assigned_at
+                          -- for the control's own first pageview. Same fix as variant-detail.
+                          AND ae.received_at >= a.first_assigned_at - INTERVAL '2 minutes'
                           AND ae.received_at < a.first_assigned_at + INTERVAL '30 minutes'
                           AND ($4::text IS NULL OR ae.page_host = $4)
                         GROUP BY a.session_id, a.first_assigned_at
@@ -318,7 +321,7 @@ export default async function handler(req, res) {
                                  OR EXISTS (
                                      SELECT 1 FROM analytics_clicks c
                                      WHERE c.session_id = ss.session_id AND c.site_id = $3
-                                       AND c.received_at >= ss.first_assigned_at
+                                       AND c.received_at >= ss.first_assigned_at - INTERVAL '2 minutes'
                                        AND c.received_at < ss.first_assigned_at + INTERVAL '30 minutes'
                                        AND ($4::text IS NULL OR c.page_host = $4)
                                  )
