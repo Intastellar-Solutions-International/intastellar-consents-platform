@@ -1771,7 +1771,13 @@ function _formId(form){
             var ru=re.name;
             try{var pu=new URL(re.name);ru=(pu.host!==location.host?pu.host:'')+pu.pathname.slice(0,100);}catch(x){}
             var rt=re.initiatorType;
-            if(rt==='link'){if(/\\.(jpe?g|png|gif|webp|avif|svg|ico)(\\?|#|$)/i.test(re.name))rt='img';else if(/\\.(woff2?|ttf|otf|eot)(\\?|#|$)/i.test(re.name))rt='font';}
+            // 'css'-initiated entries aren't only background-images — an
+            // @font-face src also reports initiatorType 'css' in every major
+            // engine, not 'font', so without this it fell through to the
+            // 'css' fallback label ("BG image") for every font loaded via
+            // @font-face instead of a <link rel=preload as=font>. Same
+            // extension check as the 'link' branch, just applied to both.
+            if(rt==='link'||rt==='css'){if(/\\.(jpe?g|png|gif|webp|avif|svg|ico)(\\?|#|$)/i.test(re.name))rt='img';else if(/\\.(woff2?|ttf|otf|eot)(\\?|#|$)/i.test(re.name))rt='font';}
             var sz=re.transferSize||0;
             // transferSize is 0 for opaque cross-origin responses without
             // Timing-Allow-Origin — real bytes were transferred, we just can't
