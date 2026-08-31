@@ -1856,7 +1856,13 @@ function _formId(form){
           }
           if(nt){netInfo={type:nt,rtt:rtt!=null?Math.round(rtt):null,dl:downlink,save:saveData||false};}
         }
-        track('page_perf',{data:{lcp:lcp,cls:cls,inp:inp,fcp:fcp,ttfb:ttfb,load:load,tbt:tbt>0?Math.round(tbt):null,rating:r,lcpEl:_lcpEl||undefined,slowRes:slowRes.length?slowRes:undefined,longTasks:lt.length?lt:undefined,net:netInfo||undefined,pageWeight:pageWeight>0?pageWeight:undefined,byType:byType||undefined,topRes:topRes.length?topRes:undefined,clsSources:clsSources.length?clsSources:undefined}});
+        // net is wrapped in a single-element array, not sent as a bare object —
+        // the track() sanitizer only preserves arrays (and arrays of objects)
+        // as real nested JSON; a bare object falls through to its
+        // JSON.stringify(...) fallback and lands in Postgres as an
+        // unqueryable string, same trap byType avoided above (see comment
+        // there) and clsSources/slowRes/longTasks are already clear of.
+        track('page_perf',{data:{lcp:lcp,cls:cls,inp:inp,fcp:fcp,ttfb:ttfb,load:load,tbt:tbt>0?Math.round(tbt):null,rating:r,lcpEl:_lcpEl||undefined,slowRes:slowRes.length?slowRes:undefined,longTasks:lt.length?lt:undefined,net:netInfo?[netInfo]:undefined,pageWeight:pageWeight>0?pageWeight:undefined,byType:byType||undefined,topRes:topRes.length?topRes:undefined,clsSources:clsSources.length?clsSources:undefined}});
       }catch(e){}
     }
     var _op=history.pushState,_or=history.replaceState;

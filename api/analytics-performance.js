@@ -282,7 +282,7 @@ export default async function handler(req, res) {
     // Business impact: always pass country as $4 (null when unfiltered) and qualifying events as $5
     const biParams = [siteId, fromDate, toDate, country || null, qualifyingEvents];
 
-    const [lcpElemRes, clsSourceRes, slowResRes, longTaskRes, histogramRes, byNetworkRes, byBrowserRes, clsHistRes, inpHistRes, biRes] = await Promise.all([
+    const [lcpElemRes, clsSourceRes, netCountryRes, slowResRes, longTaskRes, histogramRes, byNetworkRes, byBrowserRes, clsHistRes, inpHistRes, biRes] = await Promise.all([
 
         // Which element was the LCP candidate on each page?
         db.query(`
@@ -327,6 +327,34 @@ export default async function handler(req, res) {
             GROUP BY 1, 2, 3, 4
             ORDER BY total_val DESC
             LIMIT 20
+        `, params),
+
+        // Connection type × country cross-tab, with real CWV metrics attached.
+        // Sourced from page_perf (not network_connection) so effectiveType,
+        // country_code, load and tbt all come off the same row — no join
+        // needed, same reasoning as byBrowser using browser_family. This
+        // relies on `net` being wrapped as a single-element array by the
+        // embed script (net[0]) so it survives the extra_data sanitizer as
+        // real nested JSON instead of a stringified blob.
+        db.query(`
+            SELECT
+                extra_data->'net'->0->>'type'              AS net_type,
+                COALESCE(NULLIF(country_code, ''), '??')    AS country,
+                COUNT(*)                                    AS samples,
+                ROUND(${P75("load")})                       AS load_p75,
+                ROUND(${P75("tbt")})                        AS tbt_p75,
+                ROUND(${P75("lcp")})                        AS lcp_p75,
+                ${P75("cls")}                                AS cls_p75,
+                ROUND(${P75("inp")})                        AS inp_p75,
+                ROUND(AVG(NULLIF((extra_data->'net'->0->>'rtt')::numeric, 0)))       AS avg_rtt,
+                ROUND(AVG((extra_data->'net'->0->>'dl')::numeric)::numeric, 2)       AS avg_downlink
+            FROM analytics_custom_events
+            WHERE ${ATTR_WHERE}
+              AND extra_data->'net'->0->>'type' IS NOT NULL
+            GROUP BY 1, 2
+            HAVING COUNT(*) >= 3
+            ORDER BY 1, samples DESC
+            LIMIT 100
         `, params),
 
         // Slowest resources (>200 ms) aggregated by URL across all page_perf events
@@ -494,7 +522,7 @@ export default async function handler(req, res) {
 
     ]).catch(e => {
         console.error("analytics-performance attribution query error:", e.message);
-        return Array.from({ length: 10 }, () => ({ rows: [] }));
+        return Array.from({ length: 11 }, () => ({ rows: [] }));
     });
 
     return res.status(200).json({
@@ -543,6 +571,18 @@ export default async function handler(req, res) {
             elId:        r.el_id || null,
             occurrences: parseInt(r.occurrences, 10) || 0,
             lcpP75:      fnum(r.lcp_p75),
+        })),
+        networkByCountry: netCountryRes.rows.map(r => ({
+            netType:     r.net_type,
+            country:     r.country,
+            samples:     parseInt(r.samples, 10) || 0,
+            loadP75:     fnum(r.load_p75),
+            tbtP75:      fnum(r.tbt_p75),
+            lcpP75:      fnum(r.lcp_p75),
+            clsP75:      fcls(r.cls_p75),
+            inpP75:      fnum(r.inp_p75),
+            avgRtt:      r.avg_rtt      != null ? Number(r.avg_rtt)      : null,
+            avgDownlink: r.avg_downlink != null ? Number(r.avg_downlink) : null,
         })),
         clsSources: clsSourceRes.rows.map(r => ({
             pathname:    r.pathname,
