@@ -1,3 +1,5 @@
+import { siGooglechrome, siFirefoxbrowser, siSafari, siOpera } from "simple-icons";
+
 const svgProps = {
     viewBox: "0 0 24 24",
     fill: "none",
@@ -272,4 +274,39 @@ export function IconPrint(props) {
             <rect x="6" y="14" width="12" height="8" />
         </svg>
     );
+}
+
+// ── Official browser logos (simple-icons) ──────────────────────────────────
+// Unlike the outline icons above, these render each brand's real mark in its
+// official color — that's the point (a monochrome stroke icon isn't
+// recognizable as "Chrome" the way the colored logo is). Microsoft withdrew
+// Edge's logo from simple-icons over trademark use, so there's no official
+// mark to render for it here; callers fall back to something else for Edge.
+function BrandIcon({ icon, size = 16, ...props }) {
+    return (
+        <svg
+            viewBox="0 0 24 24"
+            width={size}
+            height={size}
+            role="img"
+            aria-label={icon.title}
+            focusable="false"
+            {...props}
+        >
+            <path fill={`#${icon.hex}`} d={icon.path} />
+        </svg>
+    );
+}
+
+export function IconBrowserChrome(props) {
+    return <BrandIcon icon={siGooglechrome} {...props} />;
+}
+export function IconBrowserFirefox(props) {
+    return <BrandIcon icon={siFirefoxbrowser} {...props} />;
+}
+export function IconBrowserSafari(props) {
+    return <BrandIcon icon={siSafari} {...props} />;
+}
+export function IconBrowserOpera(props) {
+    return <BrandIcon icon={siOpera} {...props} />;
 }

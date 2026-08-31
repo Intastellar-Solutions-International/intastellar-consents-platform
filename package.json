@@ -39,6 +39,7 @@
     "react-chartjs-2": "^5.2.0",
     "rrweb": "^2.1.1",
     "rrweb-player": "^2.1.1",
+    "simple-icons": "^16.29.0",
     "web-push": "^3.6.7",
     "webpack-node-externals": "^3.0.0"
   },

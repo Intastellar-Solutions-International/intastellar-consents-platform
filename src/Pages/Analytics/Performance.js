@@ -5,7 +5,7 @@ import { ScannerHost } from "../../API/host.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import { useAnalyticsPageChrome, authHeaders, MiniBar, formatPercent } from "./_shared.js";
 import { analyticsPerformancePath, analyticsPerformanceCountryPath } from "../../Functions/domainPathSegments.js";
-import { IconBarChart, IconTarget, IconScrollDepth, IconGlobe, IconClock, IconAlertTriangle } from "./Icons.js";
+import { IconBarChart, IconTarget, IconScrollDepth, IconGlobe, IconClock, IconAlertTriangle, IconBrowserChrome, IconBrowserFirefox, IconBrowserSafari, IconBrowserOpera } from "./Icons.js";
 import "./Analytics.css";
 
 // ── CWV thresholds ────────────────────────────────────────────────────────
@@ -768,7 +768,17 @@ function NetworkTable({ rows }) {
 }
 
 // ── Browser breakdown table ───────────────────────────────────────────────
-const BROWSER_ICON = { Chrome: "🌐", Firefox: "🦊", Safari: "🧭", Edge: "🌀", Opera: "🔴", other: "•" };
+// Official brand marks, where available — simple-icons has no Microsoft Edge
+// logo (withdrawn over trademark use), so "Edge" and the "other" bucket fall
+// back to a plain bullet rather than an inaccurate substitute.
+const BROWSER_ICON = { Chrome: IconBrowserChrome, Firefox: IconBrowserFirefox, Safari: IconBrowserSafari, Opera: IconBrowserOpera };
+
+function BrowserIcon({ browser }) {
+    const Icon = BROWSER_ICON[browser];
+    return Icon
+        ? <Icon style={{ marginRight: 6, verticalAlign: "-3px" }} />
+        : <span className="sa-muted" style={{ marginRight: 6 }}>•</span>;
+}
 
 function BrowserTable({ rows }) {
     if (!rows?.length) return (
@@ -794,7 +804,7 @@ function BrowserTable({ rows }) {
                 {rows.map((r, i) => (
                     <tr key={i}>
                         <td style={{ fontWeight: 600 }}>
-                            <span style={{ marginRight: 6 }}>{BROWSER_ICON[r.browser] || "•"}</span>
+                            <BrowserIcon browser={r.browser} />
                             {r.browser}
                             {r.browser === "Safari" && (
                                 <span className="sa-muted" style={{ fontSize: 10, marginLeft: 6 }}>
