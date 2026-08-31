@@ -661,46 +661,59 @@ function LongTaskTable({ rows }) {
 
 // ── Network connection type table ─────────────────────────────────────────
 const NET_TYPE_LABEL = {
-    "4g":     "4G / WiFi",
-    "3g":     "3G",
-    "2g":     "2G",
-    "slow-2g":"Slow 2G",
-    "wifi":   "WiFi",
+    "4g":      "4G / WiFi",
+    "3g":      "3G",
+    "2g":      "2G",
+    "slow-2g": "Slow 2G",
+    "wifi":    "WiFi",
     "ethernet":"Ethernet",
     "cellular":"Cellular",
-    "unknown":"Unknown",
+    "unknown": "Unknown",
 };
+const NET_TYPE_ORDER = ["4g","wifi","ethernet","cellular","3g","2g","slow-2g","unknown"];
 
 function NetworkTable({ rows }) {
     if (!rows?.length) return null;
+    const sorted = [...rows].sort((a, b) =>
+        (NET_TYPE_ORDER.indexOf(a.netType) + 1 || 99) - (NET_TYPE_ORDER.indexOf(b.netType) + 1 || 99)
+    );
+    const totalSamples = sorted.reduce((s, r) => s + r.samples, 0);
     return (
         <>
         <p className="sa-perf-scope-note">
-            Connection data is only available for Chromium-based browsers (Chrome, Edge, Android WebView). Safari and Firefox do not implement the Network Information API.
+            Sourced from <code>network_connection</code> events. RTT and downlink are only available in Chromium-based browsers (Chrome, Edge); Safari and Firefox report these as 0 or null.
         </p>
         <div className="sa-table-scroll">
         <table className="sa-table">
             <thead>
                 <tr>
-                    <th>Connection</th>
-                    <th className="sa-table__num">Samples</th>
-                    <th className="sa-table__num">LCP P75</th>
-                    <th className="sa-table__num">CLS P75</th>
-                    <th className="sa-table__num">INP P75</th>
-                    <th className="sa-table__num">TTFB P75</th>
-                    <th className="sa-table__num">Load P75</th>
+                    <th>Connection type</th>
+                    <th className="sa-table__num">Sessions</th>
+                    <th className="sa-table__num">Share</th>
+                    <th className="sa-table__num">Avg RTT</th>
+                    <th className="sa-table__num">Avg downlink</th>
+                    <th className="sa-table__num">Data saver</th>
                 </tr>
             </thead>
             <tbody>
-                {rows.map((r, i) => (
+                {sorted.map((r, i) => (
                     <tr key={i}>
                         <td style={{ fontWeight: 600 }}>{NET_TYPE_LABEL[r.netType] || r.netType}</td>
                         <td className="sa-table__num">{r.samples.toLocaleString("de-DE")}</td>
-                        <td className="sa-table__num"><MetricValue metric="lcp"  value={r.lcpP75}  /></td>
-                        <td className="sa-table__num"><MetricValue metric="cls"  value={r.clsP75}  /></td>
-                        <td className="sa-table__num"><MetricValue metric="inp"  value={r.inpP75}  /></td>
-                        <td className="sa-table__num"><MetricValue metric="ttfb" value={r.ttfbP75} /></td>
-                        <td className="sa-table__num"><MetricValue metric="load" value={r.loadP75} /></td>
+                        <td className="sa-table__num">
+                            {totalSamples > 0 ? Math.round(r.samples / totalSamples * 100) + "%" : "—"}
+                        </td>
+                        <td className="sa-table__num">
+                            {r.avgRtt != null && r.avgRtt > 0 ? r.avgRtt + " ms" : "—"}
+                        </td>
+                        <td className="sa-table__num">
+                            {r.avgDownlink != null && r.avgDownlink > 0 ? r.avgDownlink + " Mb/s" : "—"}
+                        </td>
+                        <td className="sa-table__num">
+                            {r.saveDataCount > 0
+                                ? r.saveDataCount.toLocaleString("de-DE")
+                                : <span style={{ opacity: 0.35 }}>—</span>}
+                        </td>
                     </tr>
                 ))}
             </tbody>
