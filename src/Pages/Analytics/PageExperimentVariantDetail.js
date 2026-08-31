@@ -15,6 +15,94 @@ function fmtDuration(seconds) {
     return `${Math.floor(s / 60)}m ${s % 60}s`;
 }
 
+function fmtLcp(ms) {
+    if (ms == null) return "—";
+    return ms >= 1000 ? (ms / 1000).toFixed(2) + " s" : ms + " ms";
+}
+
+function cwvRating(metric, value) {
+    if (value == null) return null;
+    if (metric === "lcp") return value <= 2500 ? "good" : value <= 4000 ? "ni" : "poor";
+    if (metric === "cls") return value <= 0.1  ? "good" : value <= 0.25  ? "ni" : "poor";
+    if (metric === "inp") return value <= 200  ? "good" : value <= 500   ? "ni" : "poor";
+    return null;
+}
+
+function CwvSection({ cwv }) {
+    if (!cwv) {
+        return (
+            <p className="sa-panel__sub">
+                No performance data yet — Core Web Vitals are only recorded from sessions with full analytics consent.
+            </p>
+        );
+    }
+
+    const { lcp, cls, inp, fcp, ttfb, ratingDist, sampleCount } = cwv;
+    const metrics = [
+        {
+            metric: "lcp", label: "LCP P75",
+            value: lcp.p75, fmt: fmtLcp,
+            sub: lcp.p50 != null || lcp.p90 != null
+                ? `P50 ${fmtLcp(lcp.p50)} · P90 ${fmtLcp(lcp.p90)}`
+                : null,
+        },
+        {
+            metric: "cls", label: "CLS P75",
+            value: cls.p75, fmt: v => v != null ? v.toFixed(3) : "—",
+            sub: cls.p90 != null ? `P90 ${cls.p90.toFixed(3)}` : null,
+        },
+        {
+            metric: "inp", label: "INP P75",
+            value: inp.p75, fmt: v => v != null ? v + " ms" : "—",
+            sub: inp.p90 != null ? `P90 ${inp.p90} ms` : null,
+        },
+    ];
+
+    return (
+        <>
+            <div className="pxp-cwv-detail-grid">
+                {metrics.map(m => {
+                    const rating = cwvRating(m.metric, m.value);
+                    return (
+                        <div key={m.metric} className="pxp-cwv-detail-metric">
+                            <span className={`pxp-cwv-detail-metric__val pxp-cwv-val--${rating || "none"}`}>
+                                {m.fmt(m.value)}
+                            </span>
+                            <span className="pxp-cwv-detail-metric__label">{m.label}</span>
+                            {m.sub && <div className="pxp-cwv-detail-metric__range">{m.sub}</div>}
+                        </div>
+                    );
+                })}
+            </div>
+
+            <div className="pxp-cwv-dist-row">
+                <div
+                    className="pxp-cwv-dist"
+                    title={`Good ${ratingDist.goodPct}% · NI ${ratingDist.niPct}% · Poor ${ratingDist.poorPct}%`}
+                >
+                    <div className="pxp-cwv-dist__seg pxp-cwv-dist__seg--good" style={{ width: `${ratingDist.goodPct}%` }} />
+                    <div className="pxp-cwv-dist__seg pxp-cwv-dist__seg--ni"   style={{ width: `${ratingDist.niPct}%` }} />
+                    <div className="pxp-cwv-dist__seg pxp-cwv-dist__seg--poor" style={{ width: `${ratingDist.poorPct}%` }} />
+                </div>
+                <span className="sa-muted" style={{ fontSize: 11, whiteSpace: "nowrap" }}>
+                    {ratingDist.goodPct}% good · {ratingDist.niPct}% NI · {ratingDist.poorPct}% poor
+                </span>
+            </div>
+
+            {(fcp?.p75 != null || ttfb?.p75 != null) && (
+                <div className="pxp-cwv-supporting">
+                    {fcp?.p75 != null && <span>FCP P75 <strong>{fmtLcp(fcp.p75)}</strong></span>}
+                    {ttfb?.p75 != null && <span>TTFB P75 <strong>{fmtLcp(ttfb.p75)}</strong></span>}
+                </div>
+            )}
+
+            <p className="sa-muted" style={{ fontSize: 11, marginTop: 6 }}>
+                Based on {sampleCount.toLocaleString("de-DE")} full-consent session{sampleCount !== 1 ? "s" : ""}.
+            </p>
+        </>
+    );
+}
+
 function pagePosition(yPct) {
     if (yPct == null) return null;
     if (yPct <= 25) return { label: "Above fold", color: "#7dd590" };
@@ -135,6 +223,12 @@ export default function PageExperimentVariantDetail() {
                                                 </span>
                                             </div>
                                         </div>
+
+                                        <h4 className="pxp-detail__section-title">
+                                            Core Web Vitals
+                                            <InfoTip text="Performance data from sessions exposed to this variant, measured after first exposure. Requires full analytics consent — only sessions with a session ID contribute." />
+                                        </h4>
+                                        <CwvSection cwv={detail.cwv} />
 
                                         <h4 className="pxp-detail__section-title">
                                             Conversions

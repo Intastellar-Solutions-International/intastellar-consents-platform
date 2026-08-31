@@ -932,6 +932,32 @@ function winnerIndex(variants, key, lowerBetter) {
     return bestIdx;
 }
 
+// All CWV metrics are lower-is-better, so winner is always the minimum.
+function cwvWinnerIdx(variants, key) {
+    const vals = variants.map(v => v.cwv?.[key] ?? null);
+    if (vals.every(v => v == null)) return -1;
+    let best = null, bestIdx = -1;
+    vals.forEach((v, i) => {
+        if (v == null) return;
+        if (best == null || v < best) { best = v; bestIdx = i; }
+    });
+    return bestIdx;
+}
+
+// "lcp" | "cls" | "inp" — shared between editor and variant-detail views.
+function cwvRating(metric, value) {
+    if (value == null) return null;
+    if (metric === "lcp") return value <= 2500 ? "good" : value <= 4000 ? "ni" : "poor";
+    if (metric === "cls") return value <= 0.1  ? "good" : value <= 0.25  ? "ni" : "poor";
+    if (metric === "inp") return value <= 200  ? "good" : value <= 500   ? "ni" : "poor";
+    return null;
+}
+
+function fmtLcp(ms) {
+    if (ms == null) return "—";
+    return ms >= 1000 ? (ms / 1000).toFixed(2) + " s" : ms + " ms";
+}
+
 function ResultsPanel({ results, loading, history, domain, testId, testMeta, onSaveTargets }) {
     const [graphTab, setGraphTab] = useState("date");
     const [editingTargets, setEditingTargets] = useState(false);
@@ -1266,6 +1292,81 @@ function ResultsPanel({ results, loading, history, domain, testId, testMeta, onS
                             </div>
                         </div>
                     </>
+                );
+            })()}
+
+            {/* ── Core Web Vitals comparison ───────────────────────────────── */}
+            {variants.some(v => v.cwv) && (() => {
+                const CWV_METRICS = [
+                    { key: "lcpP75", metric: "lcp", label: "LCP P75", fmt: fmtLcp },
+                    { key: "clsP75", metric: "cls", label: "CLS P75", fmt: v => v != null ? v.toFixed(3) : "—" },
+                    { key: "inpP75", metric: "inp", label: "INP P75", fmt: v => v != null ? v + " ms" : "—" },
+                ];
+                const maxSample = Math.max(...variants.map(v => v.cwv?.sampleCount || 0));
+                return (
+                    <div className="pxp-report__card">
+                        <div className="pxp-report__card-head">
+                            <h3 className="pxp-report__metric-title">
+                                Core Web Vitals
+                                <InfoTip text="P75 values from page performance events. Only full-consent sessions carry a session ID, so the sample count shown per variant may be lower than total traffic." />
+                            </h3>
+                        </div>
+                        {maxSample === 0 ? (
+                            <p className="sa-panel__sub">No performance data yet — Core Web Vitals are only recorded from sessions with full analytics consent.</p>
+                        ) : (
+                            <div className="pxp-report__table-scroll">
+                                <table className="sa-table pxp-report__table pxp-engagement-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Metric</th>
+                                            {variants.map((v, i) => (
+                                                <th key={v.variantId} className="sa-table__num">
+                                                    <span className="pxp-report__variant-dot" style={{ background: variantColor(i) }} />
+                                                    {v.label || v.variantKey}
+                                                    {v.cwv?.sampleCount > 0 && (
+                                                        <span className="pxp-cwv-sample"> n={v.cwv.sampleCount.toLocaleString("de-DE")}</span>
+                                                    )}
+                                                </th>
+                                            ))}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {CWV_METRICS.map(m => {
+                                            const bestIdx = cwvWinnerIdx(variants, m.key);
+                                            return (
+                                                <tr key={m.key}>
+                                                    <td className="pxp-engagement-table__metric">{m.label}</td>
+                                                    {variants.map((v, i) => {
+                                                        const val = v.cwv?.[m.key] ?? null;
+                                                        const rating = cwvRating(m.metric, val);
+                                                        const isWinner = bestIdx === i && variants.length > 1 && val != null;
+                                                        return (
+                                                            <td key={v.variantId} className="sa-table__num pxp-engagement-table__cell">
+                                                                <span className={`pxp-cwv-val${rating ? ` pxp-cwv-val--${rating}` : ""}`}>
+                                                                    {m.fmt(val)}
+                                                                </span>
+                                                                {isWinner && <span className="pxp-engagement-table__best-chip">best</span>}
+                                                                {v.cwv?.sampleCount > 0 && (
+                                                                    <div
+                                                                        className="pxp-cwv-dist"
+                                                                        title={`Good ${v.cwv.goodPct}% · NI ${v.cwv.niPct}% · Poor ${v.cwv.poorPct}%`}
+                                                                    >
+                                                                        <div className="pxp-cwv-dist__seg pxp-cwv-dist__seg--good" style={{ width: `${v.cwv.goodPct || 0}%` }} />
+                                                                        <div className="pxp-cwv-dist__seg pxp-cwv-dist__seg--ni"   style={{ width: `${v.cwv.niPct   || 0}%` }} />
+                                                                        <div className="pxp-cwv-dist__seg pxp-cwv-dist__seg--poor" style={{ width: `${v.cwv.poorPct || 0}%` }} />
+                                                                    </div>
+                                                                )}
+                                                            </td>
+                                                        );
+                                                    })}
+                                                </tr>
+                                            );
+                                        })}
+                                    </tbody>
+                                </table>
+                            </div>
+                        )}
+                    </div>
                 );
             })()}
 
