@@ -24,6 +24,7 @@ const AUTO_EVENTS = [
     { name: "scroll_depth",    label: "Scroll depth",       Icon: IconScrollDepth,  color: "#10b981" },
     { name: "form_submit",     label: "Form submissions",   Icon: IconFormFill,     color: "#f59e0b" },
     { name: "form_started",    label: "Form starts",        Icon: IconFormFill,     color: "#f59e0b" },
+    { name: "form_step",       label: "Form steps",         Icon: IconFormFill,     color: "#f59e0b" },
     { name: "file_download",   label: "File downloads",     Icon: IconDownload,     color: "#3b82f6" },
     { name: "video_play",      label: "Video plays",        Icon: IconVideo,        color: "#8b5cf6" },
     { name: "video_complete",  label: "Video completions",  Icon: IconVideo,        color: "#8b5cf6" },
