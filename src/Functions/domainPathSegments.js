@@ -190,6 +190,12 @@ export function analyticsPerformanceCountryPath(domainUnicode, countryCode) {
     return `/analytics/${seg}/performance/country/${cc}`;
 }
 
+export function analyticsPageWeightPath(domainUnicode) {
+    const seg = encodeDomainPathSegment(domainUnicode);
+    if (!seg) return "/analytics/page-weight";
+    return `/analytics/${seg}/page-weight`;
+}
+
 export function analyticsSettingsPath(domainUnicode) {
     const seg = encodeDomainPathSegment(domainUnicode);
     if (!seg) return "/analytics/settings";
@@ -250,7 +256,7 @@ export function analyticsReportViewPath(domainUnicode, reportId) {
 /** First arg is React Router v5 `useHistory()` (object with `.push(path)`). */
 export function navigateWithDomain(history, platformId, domainUnicode, pathname) {
     if (String(pathname || "").indexOf("/analytics") === 0) {
-        const leaf = ["/marketing", "/audience", "/acquisition", "/consent", "/heatmap", "/recordings", "/bots", "/user-flow", "/conversions", "/ad-spend", "/attribution", "/settings", "/google-analytics", "/search-console", "/page-experiments", "/cohorts", "/alerts", "/forms", "/performance"].find(s => pathname.includes(s));
+        const leaf = ["/marketing", "/audience", "/acquisition", "/consent", "/heatmap", "/recordings", "/bots", "/user-flow", "/conversions", "/ad-spend", "/attribution", "/settings", "/google-analytics", "/search-console", "/page-experiments", "/cohorts", "/alerts", "/forms", "/performance", "/page-weight"].find(s => pathname.includes(s));
         if (leaf === "/marketing")        history.push(analyticsMarketingPath(domainUnicode));
         else if (leaf === "/audience")    history.push(analyticsAudiencePath(domainUnicode));
         else if (leaf === "/acquisition") history.push(analyticsAcquisitionPath(domainUnicode));
@@ -270,6 +276,7 @@ export function navigateWithDomain(history, platformId, domainUnicode, pathname)
         else if (leaf === "/alerts")      history.push(analyticsAlertsPath(domainUnicode));
         else if (leaf === "/forms")       history.push(analyticsFormsPath(domainUnicode));
         else if (leaf === "/performance") history.push(analyticsPerformancePath(domainUnicode));
+        else if (leaf === "/page-weight") history.push(analyticsPageWeightPath(domainUnicode));
         else                              history.push(analyticsPath(domainUnicode));
         return;
     }
@@ -286,7 +293,7 @@ export function detectDashboardMode(pathname) {
     return String(pathname || "").indexOf("/analytics") === 0 ? "analytics" : "cmp";
 }
 
-const ANALYTICS_SUBPATHS = ["/audience", "/acquisition", "/consent", "/marketing", "/heatmap", "/recordings", "/bots", "/user-flow", "/conversions", "/ad-spend", "/attribution", "/settings", "/google-analytics", "/search-console", "/page-experiments", "/cohorts", "/alerts", "/reports", "/forms", "/performance"];
+const ANALYTICS_SUBPATHS = ["/audience", "/acquisition", "/consent", "/marketing", "/heatmap", "/recordings", "/bots", "/user-flow", "/conversions", "/ad-spend", "/attribution", "/settings", "/google-analytics", "/search-console", "/page-experiments", "/cohorts", "/alerts", "/reports", "/forms", "/performance", "/page-weight"];
 
 /** True for the Analytics overview ("Reports snapshot") page itself, false for any sub-report under it. */
 export function isAnalyticsOverviewPath(pathname) {
@@ -305,7 +312,7 @@ export function analyticsRailSection(pathname) {
     if (isAnalyticsOverviewPath(path)) return "overview";
     if (path.includes("/audience") || path.includes("/consent")) return "audience";
     if (path.includes("/acquisition") || path.includes("/marketing") || path.includes("/ad-spend") || path.includes("/google-analytics") || path.includes("/search-console")) return "acquisition";
-    if (path.includes("/heatmap") || path.includes("/recordings") || path.includes("/bots") || path.includes("/user-flow") || path.includes("/performance")) return "behavior";
+    if (path.includes("/heatmap") || path.includes("/recordings") || path.includes("/bots") || path.includes("/user-flow") || path.includes("/performance") || path.includes("/page-weight")) return "behavior";
     if (path.includes("/conversions") || path.includes("/page-experiments")) return "conversions";
     if (path.includes("/cohorts") || path.includes("/alerts")) return "insights";
     if (path.includes("/reports")) return "reports";

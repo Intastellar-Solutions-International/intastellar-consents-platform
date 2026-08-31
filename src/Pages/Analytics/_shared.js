@@ -10,7 +10,7 @@ import {
     analyticsPath, analyticsAudiencePath, analyticsAcquisitionPath,
     analyticsConsentPath, analyticsAdSpendPath, analyticsAttributionPath,
     analyticsConversionsPath, analyticsHeatmapPath, analyticsFormsPath,
-    analyticsPerformancePath,
+    analyticsPerformancePath, analyticsPageWeightPath,
 } from "../../Functions/domainPathSegments.js";
 import { ymdLocal } from "../../Components/Filter/filterDatePresets.js";
 
@@ -410,6 +410,7 @@ export function AnalyticsSubNav({ domain }) {
         { label: "Conversions", path: analyticsConversionsPath(domain) },
         { label: "Forms",        path: analyticsFormsPath(domain) },
         { label: "Performance", path: analyticsPerformancePath(domain) },
+        { label: "Page Weight", path: analyticsPageWeightPath(domain) },
         { label: "Heatmap",     path: analyticsHeatmapPath(domain) },
     ];
 

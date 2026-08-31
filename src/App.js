@@ -70,6 +70,7 @@ import AnalyticsCohorts from "./Pages/Analytics/Cohorts.js";
 import AnalyticsAlerts from "./Pages/Analytics/AlertConfigs.js";
 import AnalyticsForms from "./Pages/Analytics/Forms.js";
 import AnalyticsPerformance from "./Pages/Analytics/Performance.js";
+import AnalyticsPageWeight from "./Pages/Analytics/PageWeight.js";
 import AnalyticsSavedReports from "./Pages/Analytics/SavedReports.js";
 import AnalyticsReportBuilder from "./Pages/Analytics/ReportBuilder.js";
 import AnalyticsReportView from "./Pages/Analytics/ReportView.js";
@@ -412,6 +413,16 @@ export default function App() {
                                         <Route path="/analytics/performance" exact>
                                             {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('growth') ? <TierGate minTier="growth" featureName="Performance Analytics" fullPage /> : <ErrorBoundary>
                                                 <AnalyticsPerformance />
+                                            </ErrorBoundary>}
+                                        </Route>
+                                        <Route path="/analytics/:handle/page-weight" exact>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('growth') ? <TierGate minTier="growth" featureName="Page Weight" fullPage /> : <ErrorBoundary>
+                                                <AnalyticsPageWeight />
+                                            </ErrorBoundary>}
+                                        </Route>
+                                        <Route path="/analytics/page-weight" exact>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('growth') ? <TierGate minTier="growth" featureName="Page Weight" fullPage /> : <ErrorBoundary>
+                                                <AnalyticsPageWeight />
                                             </ErrorBoundary>}
                                         </Route>
                                         <Route path="/analytics/:handle/attribution" exact>
