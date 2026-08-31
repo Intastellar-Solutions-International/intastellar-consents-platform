@@ -362,20 +362,25 @@ export default async function handler(req, res) {
             ORDER BY 1
         `, params),
 
-        // Per-connection-type P75 breakdown (Network Information API effectiveType)
+        // Per-connection-type breakdown from network_connection events.
+        // These fire unconditionally (no session_id required), so sample counts
+        // are larger than page_perf-based approaches. CWV per connection type
+        // is not available here (network_connection carries no CWV payload);
+        // RTT, downlink, and save-data share the useful signal instead.
         db.query(`
             SELECT
-                extra_data->'net'->>'type'   AS net_type,
-                COUNT(*)       AS samples,
-                ${P75("lcp")}  AS lcp_p75,
-                ${P75("cls")}  AS cls_p75,
-                ${P75("inp")}  AS inp_p75,
-                ${P75("fcp")}  AS fcp_p75,
-                ${P75("ttfb")} AS ttfb_p75,
-                ${P75("load")} AS load_p75
+                extra_data->>'effectiveType'                                   AS net_type,
+                COUNT(*)                                                        AS samples,
+                ROUND(AVG(NULLIF((extra_data->>'rtt')::numeric, 0)))            AS avg_rtt,
+                ROUND(AVG((extra_data->>'downlink')::numeric)::numeric, 2)      AS avg_downlink,
+                COUNT(*) FILTER (WHERE extra_data->>'saveData' = 'true')        AS save_data_count
             FROM analytics_custom_events
-            WHERE ${ATTR_WHERE}
-              AND extra_data->'net'->>'type' IS NOT NULL
+            WHERE site_id = $1
+              AND received_at >= $2::date
+              AND received_at <  $3::date + interval '1 day'
+              AND name = 'network_connection'
+              AND extra_data->>'effectiveType' IS NOT NULL
+              ${country ? "AND country_code = $4" : ""}
             GROUP BY 1
             ORDER BY samples DESC
         `, params),
@@ -548,14 +553,11 @@ export default async function handler(req, res) {
             poorCount:  parseInt(r.poor_count, 10) || 0,
         })),
         byNetwork: byNetworkRes.rows.map(r => ({
-            netType: r.net_type,
-            samples: parseInt(r.samples, 10) || 0,
-            lcpP75:  fnum(r.lcp_p75),
-            clsP75:  fcls(r.cls_p75),
-            inpP75:  fnum(r.inp_p75),
-            fcpP75:  fnum(r.fcp_p75),
-            ttfbP75: fnum(r.ttfb_p75),
-            loadP75: fnum(r.load_p75),
+            netType:       r.net_type,
+            samples:       parseInt(r.samples, 10) || 0,
+            avgRtt:        r.avg_rtt      != null ? Number(r.avg_rtt)      : null,
+            avgDownlink:   r.avg_downlink != null ? Number(r.avg_downlink) : null,
+            saveDataCount: parseInt(r.save_data_count, 10) || 0,
         })),
         byBrowser: byBrowserRes.rows.map(r => ({
             browser: r.browser,
