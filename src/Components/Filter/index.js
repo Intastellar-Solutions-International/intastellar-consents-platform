@@ -60,8 +60,8 @@ export default function Filter({
                     : "Previous period"
     );
     const [dateRange, setDateRange] = useState({
-        start: new Date(date.start)?.toISOString()?.split("T")[0],
-        end: new Date(date.end)?.toISOString()?.split("T")[0],
+        start: ymdLocal(date.start),
+        end: ymdLocal(date.end),
     });
 
     const compareStart = date?.previousStart;
@@ -100,8 +100,8 @@ export default function Filter({
 
     useEffect(() => {
         setDateRange({
-            start: new Date(date.start)?.toISOString()?.split("T")[0],
-            end: new Date(date.end)?.toISOString()?.split("T")[0],
+            start: ymdLocal(date.start),
+            end: ymdLocal(date.end),
         });
     }, [date?.start, date?.end]);
 
@@ -266,7 +266,7 @@ export default function Filter({
                                     e.preventDefault();
                                     const y = addDays(new Date(), -1);
                                     const end = new Date(y.getFullYear(), y.getMonth(), y.getDate());
-                                    const start = addDays(end, -2);
+                                    const start = end;
                                     applyLocalRange(start, end, "Yesterday", () => {
                                         if (selectedComparison === "Previous period") return setSelectedCompareRange(4);
                                         if (selectedComparison === "Preceding period") return setSelectedCompareRange(8);

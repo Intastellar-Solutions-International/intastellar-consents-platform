@@ -906,7 +906,7 @@ function MetricSparklines({ daily }) {
                             </span>
                         </div>
                         <BandLineChart daily={daily} p50Key={s.p50Key} p75Key={s.p75Key}
-                                       p90Key={s.p90Key} metric={s.metric} isCls={s.isCls} height={80} />
+                                       p90Key={s.p90Key} metric={s.metric} isCls={s.isCls} height={160} />
                     </div>
                 );
             })}

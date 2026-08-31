@@ -12,6 +12,7 @@ import {
     analyticsConversionsPath, analyticsHeatmapPath, analyticsFormsPath,
     analyticsPerformancePath,
 } from "../../Functions/domainPathSegments.js";
+import { ymdLocal } from "../../Components/Filter/filterDatePresets.js";
 
 export function authHeaders() {
     return {
@@ -21,8 +22,13 @@ export function authHeaders() {
     };
 }
 
+// Local calendar date, not UTC — `d` is always a local-midnight Date (from
+// the date picker or a `new Date()` default), so converting via
+// `.toISOString()` shifts it a day in either direction depending on the
+// viewer's UTC offset (e.g. a CEST/UTC+2 user's local midnight is still
+// "yesterday" in UTC). ymdLocal() reads the local getters instead.
 export function toIsoDate(d) {
-    return d.toISOString().slice(0, 10);
+    return ymdLocal(d);
 }
 
 // Every Analytics sub-page (Overview, Audience, Acquisition, Conversions, ...)
