@@ -158,6 +158,7 @@ export function buildAnalyticsLinks(domain) {
         {
             name: "Page Weight",
             path: analyticsPageWeightPath(domain),
+            indent: true,
         },
         {
             divider: true,
