@@ -767,6 +767,53 @@ function NetworkTable({ rows }) {
     );
 }
 
+// ── Connection type × country cross-tab ────────────────────────────────────
+function NetworkCountryTable({ rows }) {
+    const [page, setPage] = useState(0);
+    if (!rows?.length) return null;
+    const sorted = [...rows].sort((a, b) =>
+        ((NET_TYPE_ORDER.indexOf(a.netType) + 1 || 99) - (NET_TYPE_ORDER.indexOf(b.netType) + 1 || 99))
+        || (b.samples - a.samples)
+    );
+    const pageRows = sorted.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
+    return (
+        <div className="sa-table-wrap">
+        <table className="sa-table">
+            <thead>
+                <tr>
+                    <th>Connection type</th>
+                    <th>Country</th>
+                    <th className="sa-num">Samples</th>
+                    <th className="sa-num">Load P75</th>
+                    <th className="sa-num">TBT P75</th>
+                    <th className="sa-num">LCP P75</th>
+                    <th className="sa-num">CLS P75</th>
+                    <th className="sa-num">INP P75</th>
+                </tr>
+            </thead>
+            <tbody>
+                {pageRows.map((r, i) => (
+                    <tr key={page * PAGE_SIZE + i}>
+                        <td style={{ fontWeight: 600 }}>{NET_TYPE_LABEL[r.netType] || r.netType}</td>
+                        <td>
+                            <span style={{ marginRight: 6 }}>{countryFlag(r.country)}</span>
+                            {countryName(r.country)}
+                        </td>
+                        <td className="sa-num">{r.samples.toLocaleString("de-DE")}</td>
+                        <td className="sa-num"><MetricValue metric="load" value={r.loadP75} /></td>
+                        <td className="sa-num"><MetricValue metric="tbt"  value={r.tbtP75}  /></td>
+                        <td className="sa-num"><MetricValue metric="lcp"  value={r.lcpP75}  /></td>
+                        <td className="sa-num"><MetricValue metric="cls"  value={r.clsP75}  /></td>
+                        <td className="sa-num"><MetricValue metric="inp"  value={r.inpP75}  /></td>
+                    </tr>
+                ))}
+            </tbody>
+        </table>
+        <TablePager page={page} setPage={setPage} total={sorted.length} />
+        </div>
+    );
+}
+
 // ── Browser breakdown table ───────────────────────────────────────────────
 // Official brand marks, where available — simple-icons has no Microsoft Edge
 // logo (withdrawn over trademark use), so "Edge" and the "other" bucket fall
@@ -1480,6 +1527,19 @@ export default function AnalyticsPerformance() {
                                     </div>
                                 )}
                             </div>
+
+                            {/* Connection type × country — full width, own panel (many rows) */}
+                            {data.networkByCountry?.length > 0 && (
+                                <div className="sa-panel">
+                                    <h3 className="sa-panel__title">
+                                        <IconClock className="sa-icon" /> Connection type by country
+                                    </h3>
+                                    <p className="sa-panel__desc">
+                                        Load time, TBT, and Core Web Vitals broken down by connection quality within each country — a slow rating on 4G in one country versus 3G in another points to a network-quality gap rather than a site problem. Rows with fewer than 3 samples are excluded.
+                                    </p>
+                                    <NetworkCountryTable rows={data.networkByCountry} />
+                                </div>
+                            )}
 
                             {/* Trends over time — full width so sparklines have room */}
                             {data.daily?.length > 1 && (
