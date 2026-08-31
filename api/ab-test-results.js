@@ -351,7 +351,7 @@ export default async function handler(req, res) {
                        ON ce.session_id = a.session_id
                        AND ce.site_id = $3
                        AND ce.name = 'page_perf'
-                       AND ce.received_at >= a.first_assigned_at
+                       AND ce.received_at >= a.first_assigned_at - INTERVAL '2 minutes'
                        AND ($4::text IS NULL OR ce.page_host = $4)`,
                     [testId, v.id, variantSiteId, pageHostFilter]
                 ).catch(() => ({ rows: [] })),
