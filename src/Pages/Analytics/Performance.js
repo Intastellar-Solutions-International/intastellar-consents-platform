@@ -1548,7 +1548,7 @@ export default function AnalyticsPerformance() {
                             )}
 
                             {/* Country breakdown — main view only */}
-                            {!isCountryView && data.byCountry?.length > 0 && (
+                            {!isCountryView && (
                                 <div className="sa-panel">
                                     <h3 className="sa-panel__title">
                                         <IconGlobe className="sa-icon" /> By country
@@ -1556,7 +1556,13 @@ export default function AnalyticsPerformance() {
                                     <p className="sa-panel__desc">
                                         LCP, CLS, INP, and TTFB P75 per country. Click a row to open the full country breakdown. Countries with fewer than 5 samples are excluded.
                                     </p>
-                                    <CountryTable rows={data.byCountry} domain={domain} />
+                                    {data.byCountry?.length > 0 ? (
+                                        <CountryTable rows={data.byCountry} domain={domain} />
+                                    ) : (
+                                        <p className="sa-perf-scope-note">
+                                            No country has reached 5 page-load samples yet in this range — low-traffic sites need more visits before a per-country breakdown is statistically meaningful. This fills in as traffic accumulates.
+                                        </p>
+                                    )}
                                 </div>
                             )}
 
