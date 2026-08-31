@@ -1758,21 +1758,50 @@ function _formId(form){
         var r='good';
         if((lcp!=null&&lcp>=4000)||(cls>=0.25)||(inp!=null&&inp>=500))r='poor';
         else if((lcp!=null&&lcp>=2500)||(cls>=0.1)||(inp!=null&&inp>=200))r='needs-improvement';
-        var slowRes=[];
+        var slowRes=[],pageWeight=0,byType=null,topRes=[];
         try{
-          var res=performance.getEntriesByType('resource'),slow=[];
+          var res=performance.getEntriesByType('resource'),slow=[],bySize=[],types={};
+          // Main HTML document itself isn't in getEntriesByType('resource') —
+          // fold its transfer size into the total + 'doc' bucket separately so
+          // page weight isn't silently missing the (often largest) first byte.
+          var docSize=nav.transferSize||nav.encodedBodySize||0;
+          if(docSize>0){pageWeight+=docSize;types.doc=(types.doc||0)+docSize;}
           for(var i=0;i<res.length;i++){
             var re=res[i];
-            if(re.duration>200){
-              var ru=re.name;
-              try{var pu=new URL(re.name);ru=(pu.host!==location.host?pu.host:'')+pu.pathname.slice(0,100);}catch(x){}
-              var rt=re.initiatorType;
-              if(rt==='link'){if(/\\.(jpe?g|png|gif|webp|avif|svg|ico)(\\?|#|$)/i.test(re.name))rt='img';else if(/\\.(woff2?|ttf|otf|eot)(\\?|#|$)/i.test(re.name))rt='font';}
-              slow.push({url:ru,dur:Math.round(re.duration),size:re.transferSize||0,type:rt});
+            var ru=re.name;
+            try{var pu=new URL(re.name);ru=(pu.host!==location.host?pu.host:'')+pu.pathname.slice(0,100);}catch(x){}
+            var rt=re.initiatorType;
+            if(rt==='link'){if(/\\.(jpe?g|png|gif|webp|avif|svg|ico)(\\?|#|$)/i.test(re.name))rt='img';else if(/\\.(woff2?|ttf|otf|eot)(\\?|#|$)/i.test(re.name))rt='font';}
+            var sz=re.transferSize||0;
+            // transferSize is 0 for opaque cross-origin responses without
+            // Timing-Allow-Origin — real bytes were transferred, we just can't
+            // see how many, so they'd silently vanish from both the total and
+            // the treemap rather than skew either one with a wrong number.
+            if(sz>0){
+              pageWeight+=sz;
+              // Small fixed taxonomy (not raw initiatorType) so the rollup
+              // stays a short, bounded list regardless of how many distinct
+              // resource kinds a page happens to load.
+              var bk=rt==='script'?'script':(rt==='css'||rt==='link')?'css':(rt==='img'||rt==='source')?'img':rt==='font'?'font':(rt==='fetch'||rt==='xmlhttprequest'||rt==='beacon')?'xhr':(rt==='video'||rt==='audio')?'media':'other';
+              types[bk]=(types[bk]||0)+sz;
+              bySize.push({url:ru,dur:Math.round(re.duration),size:sz,type:rt});
             }
+            if(re.duration>200){slow.push({url:ru,dur:Math.round(re.duration),size:sz,type:rt});}
           }
           slow.sort(function(a,b){return b.dur-a.dur;});
           slowRes=slow.slice(0,8);
+          bySize.sort(function(a,b){return b.size-a.size;});
+          topRes=bySize.slice(0,20);
+          // Sent as an array of [type,bytes] pairs, not a plain object — the
+          // track() sanitizer below only preserves arrays (and arrays of
+          // objects, like slowRes/topRes) as real nested JSON. A bare object
+          // value falls through to its JSON.stringify(...).slice(0,500)
+          // fallback and lands in Postgres as a truncated *string*, not a
+          // queryable object — same trap lcpEl/net are already in, which is
+          // why nothing queries into those by sub-key today.
+          var bt=[];
+          for(var bkey in types){if(types[bkey]>0)bt.push([bkey,types[bkey]]);}
+          if(bt.length)byType=bt;
         }catch(e){}
         var lt=_longTasks.slice(0,10);
         var tbt=0,_tbtSeen={};
@@ -1785,7 +1814,7 @@ function _formId(form){
           }
           if(nt){netInfo={type:nt,rtt:rtt!=null?Math.round(rtt):null,dl:downlink,save:saveData||false};}
         }
-        track('page_perf',{data:{lcp:lcp,cls:cls,inp:inp,fcp:fcp,ttfb:ttfb,load:load,tbt:tbt>0?Math.round(tbt):null,rating:r,lcpEl:_lcpEl||undefined,slowRes:slowRes.length?slowRes:undefined,longTasks:lt.length?lt:undefined,net:netInfo||undefined}});
+        track('page_perf',{data:{lcp:lcp,cls:cls,inp:inp,fcp:fcp,ttfb:ttfb,load:load,tbt:tbt>0?Math.round(tbt):null,rating:r,lcpEl:_lcpEl||undefined,slowRes:slowRes.length?slowRes:undefined,longTasks:lt.length?lt:undefined,net:netInfo||undefined,pageWeight:pageWeight>0?pageWeight:undefined,byType:byType||undefined,topRes:topRes.length?topRes:undefined}});
       }catch(e){}
     }
     var _op=history.pushState,_or=history.replaceState;
