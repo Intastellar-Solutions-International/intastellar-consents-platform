@@ -554,7 +554,7 @@ var TWO_LABEL_TLDS=['co.uk','org.uk','me.uk','gov.uk','ac.uk','co.nz','org.nz','
 function rootDomain(){
   try{
     var h=(location.hostname||'').toLowerCase();
-    if(!h||h==='localhost'||/^(\d{1,3}\.){3}\d{1,3}$/.test(h))return null; // IP/localhost — no cross-subdomain concept, no Domain attribute
+    if(!h||h==='localhost'||/^(\\d{1,3}\\.){3}\\d{1,3}$/.test(h))return null; // IP/localhost — no cross-subdomain concept, no Domain attribute
     var parts=h.split('.');
     // A single-label host (no dot — an internal hostname with no real TLD)
     // has no "domain" to scope to; a bare two-label host (e.g.
@@ -697,7 +697,7 @@ function onClick(e){
     var id=(t.id||'').slice(0,150);
     var cls=(typeof t.className==='string'?t.className:'').slice(0,300);
     var txt='';
-    try{txt=(t.innerText||t.textContent||'').replace(/\s+/g,' ').trim().slice(0,80);}catch(e2){}
+    try{txt=(t.innerText||t.textContent||'').replace(/\\s+/g,' ').trim().slice(0,80);}catch(e2){}
     clickBuf.push([Math.round(x*100)/100,Math.round(y*100)/100,w,tag,id,cls,txt]);
     if(clickBuf.length>=25)sendClicks();
   }catch(err){}
@@ -1222,7 +1222,7 @@ var _spaLastPath=location.pathname+location.search;
 function _formId(form){
   var f=(form.getAttribute('data-analytics-id')||form.id||form.name||'').slice(0,64);
   if(f)return f;
-  var cls=(form.className||'').trim().split(/\s+/)[0].slice(0,63);
+  var cls=(form.className||'').trim().split(/\\s+/)[0].slice(0,63);
   if(cls)return '.'+cls;
   var a=(form.action||'').replace(/^https?:\\/\\/[^\\/]+/,'').split('?')[0].slice(0,100);
   return a||'form';
@@ -1672,7 +1672,7 @@ function _formId(form){
         var t=e.target;
         var tTag=(t.tagName||'').toLowerCase().slice(0,20);
         var tId=(t.id||'').slice(0,80);
-        var tCls=(typeof t.className==='string'?t.className:'').replace(/\s+/g,' ').trim().slice(0,150);
+        var tCls=(typeof t.className==='string'?t.className:'').replace(/\\s+/g,' ').trim().slice(0,150);
         var sel=(tId?'#'+tId:tTag).slice(0,80);
         track('rage_click',{data:{selector:sel,page:location.pathname,id:tId||undefined,cls:tCls||undefined,tag:tTag||undefined}});
       }
@@ -1767,7 +1767,7 @@ function _formId(form){
               var ru=re.name;
               try{var pu=new URL(re.name);ru=(pu.host!==location.host?pu.host:'')+pu.pathname.slice(0,100);}catch(x){}
               var rt=re.initiatorType;
-              if(rt==='link'){if(/\.(jpe?g|png|gif|webp|avif|svg|ico)(\?|#|$)/i.test(re.name))rt='img';else if(/\.(woff2?|ttf|otf|eot)(\?|#|$)/i.test(re.name))rt='font';}
+              if(rt==='link'){if(/\\.(jpe?g|png|gif|webp|avif|svg|ico)(\\?|#|$)/i.test(re.name))rt='img';else if(/\\.(woff2?|ttf|otf|eot)(\\?|#|$)/i.test(re.name))rt='font';}
               slow.push({url:ru,dur:Math.round(re.duration),size:re.transferSize||0,type:rt});
             }
           }
