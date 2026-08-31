@@ -168,49 +168,82 @@ export default async function handler(req, res) {
         });
     }
 
-    // ── Exposures + engagement ──────────────────────────────────────────────
-    const { rows: engagementRows } = await db.query(
-        `WITH assigned AS (
-            SELECT session_id, MIN(assigned_at) AS first_assigned_at, COUNT(*) AS exposure_count
-            FROM ab_test_assignments
-            WHERE test_id = $1 AND variant_id = $2
-            GROUP BY session_id
-         ),
-         session_stats AS (
-            SELECT a.session_id, a.first_assigned_at,
-                   MAX(ae.duration_sec) AS max_duration,
-                   MAX(ae.scroll_depth) AS max_scroll,
-                   COUNT(ae.id) AS pageviews
-            FROM assigned a
-            LEFT JOIN analytics_events ae
-              ON ae.session_id = a.session_id AND ae.site_id = $3
-              -- 2-minute grace: the analytics entry beacon fires on page load
-              -- before the exposure XHR round-trip completes, so received_at
-              -- is reliably a few hundred ms earlier than assigned_at for the
-              -- same pageview. Without this slack the control's own pageview
-              -- rows are always excluded, producing 0s duration / no scroll.
-              AND ae.received_at >= a.first_assigned_at - INTERVAL '2 minutes'
-              AND ($4::text IS NULL OR ae.page_host = $4)
-            GROUP BY a.session_id, a.first_assigned_at
-         )
-         SELECT
-             (SELECT COALESCE(SUM(exposure_count), 0) FROM assigned)  AS exposures,
-             (SELECT COUNT(*) FROM assigned)                          AS unique_sessions,
-             COUNT(*) FILTER (WHERE pageviews > 0)                    AS sessions_with_pageview,
-             AVG(max_duration) FILTER (WHERE pageviews > 0)           AS avg_duration_sec,
-             AVG(max_scroll) FILTER (WHERE pageviews > 0)             AS avg_scroll_depth,
-             AVG(pageviews) FILTER (WHERE pageviews > 0)              AS avg_pageviews,
-             COUNT(*) FILTER (
-                 WHERE max_duration >= 10 OR pageviews > 1 OR EXISTS (
-                     SELECT 1 FROM analytics_clicks c
-                     WHERE c.site_id = $3 AND c.session_id = session_stats.session_id
-                       AND c.received_at >= session_stats.first_assigned_at - INTERVAL '2 minutes'
-                       AND ($4::text IS NULL OR c.page_host = $4)
-                 )
-             ) AS engaged_sessions
-         FROM session_stats`,
-        [v.test_id, v.id, siteId, pageHostFilter]
-    ).catch(() => ({ rows: [] }));
+    // ── Exposures + engagement + CWV (parallel) ────────────────────────────
+    const [{ rows: engagementRows }, { rows: cwvRows }] = await Promise.all([
+        db.query(
+            `WITH assigned AS (
+                SELECT session_id, MIN(assigned_at) AS first_assigned_at, COUNT(*) AS exposure_count
+                FROM ab_test_assignments
+                WHERE test_id = $1 AND variant_id = $2
+                GROUP BY session_id
+             ),
+             session_stats AS (
+                SELECT a.session_id, a.first_assigned_at,
+                       MAX(ae.duration_sec) AS max_duration,
+                       MAX(ae.scroll_depth) AS max_scroll,
+                       COUNT(ae.id) AS pageviews
+                FROM assigned a
+                LEFT JOIN analytics_events ae
+                  ON ae.session_id = a.session_id AND ae.site_id = $3
+                  -- 2-minute grace: the analytics entry beacon fires on page load
+                  -- before the exposure XHR round-trip completes, so received_at
+                  -- is reliably a few hundred ms earlier than assigned_at for the
+                  -- same pageview. Without this slack the control's own pageview
+                  -- rows are always excluded, producing 0s duration / no scroll.
+                  AND ae.received_at >= a.first_assigned_at - INTERVAL '2 minutes'
+                  AND ($4::text IS NULL OR ae.page_host = $4)
+                GROUP BY a.session_id, a.first_assigned_at
+             )
+             SELECT
+                 (SELECT COALESCE(SUM(exposure_count), 0) FROM assigned)  AS exposures,
+                 (SELECT COUNT(*) FROM assigned)                          AS unique_sessions,
+                 COUNT(*) FILTER (WHERE pageviews > 0)                    AS sessions_with_pageview,
+                 AVG(max_duration) FILTER (WHERE pageviews > 0)           AS avg_duration_sec,
+                 AVG(max_scroll) FILTER (WHERE pageviews > 0)             AS avg_scroll_depth,
+                 AVG(pageviews) FILTER (WHERE pageviews > 0)              AS avg_pageviews,
+                 COUNT(*) FILTER (
+                     WHERE max_duration >= 10 OR pageviews > 1 OR EXISTS (
+                         SELECT 1 FROM analytics_clicks c
+                         WHERE c.site_id = $3 AND c.session_id = session_stats.session_id
+                           AND c.received_at >= session_stats.first_assigned_at - INTERVAL '2 minutes'
+                           AND ($4::text IS NULL OR c.page_host = $4)
+                     )
+                 ) AS engaged_sessions
+             FROM session_stats`,
+            [v.test_id, v.id, siteId, pageHostFilter]
+        ).catch(() => ({ rows: [] })),
+
+        db.query(
+            `WITH assigned AS (
+                SELECT session_id, MIN(assigned_at) AS first_assigned_at
+                FROM ab_test_assignments
+                WHERE test_id = $1 AND variant_id = $2
+                GROUP BY session_id
+             )
+             SELECT
+                 PERCENTILE_CONT(0.50) WITHIN GROUP (ORDER BY (ce.extra_data->>'lcp')::numeric) AS lcp_p50,
+                 PERCENTILE_CONT(0.75) WITHIN GROUP (ORDER BY (ce.extra_data->>'lcp')::numeric) AS lcp_p75,
+                 PERCENTILE_CONT(0.90) WITHIN GROUP (ORDER BY (ce.extra_data->>'lcp')::numeric) AS lcp_p90,
+                 PERCENTILE_CONT(0.75) WITHIN GROUP (ORDER BY (ce.extra_data->>'cls')::numeric) AS cls_p75,
+                 PERCENTILE_CONT(0.90) WITHIN GROUP (ORDER BY (ce.extra_data->>'cls')::numeric) AS cls_p90,
+                 PERCENTILE_CONT(0.75) WITHIN GROUP (ORDER BY (ce.extra_data->>'inp')::numeric) AS inp_p75,
+                 PERCENTILE_CONT(0.90) WITHIN GROUP (ORDER BY (ce.extra_data->>'inp')::numeric) AS inp_p90,
+                 PERCENTILE_CONT(0.75) WITHIN GROUP (ORDER BY (ce.extra_data->>'fcp')::numeric) AS fcp_p75,
+                 PERCENTILE_CONT(0.75) WITHIN GROUP (ORDER BY (ce.extra_data->>'ttfb')::numeric) AS ttfb_p75,
+                 COUNT(*) AS sample_count,
+                 COUNT(*) FILTER (WHERE ce.extra_data->>'rating' = 'good') AS good_count,
+                 COUNT(*) FILTER (WHERE ce.extra_data->>'rating' = 'needs-improvement') AS ni_count,
+                 COUNT(*) FILTER (WHERE ce.extra_data->>'rating' = 'poor') AS poor_count
+             FROM assigned a
+             JOIN analytics_custom_events ce
+               ON ce.session_id = a.session_id
+               AND ce.site_id = $3
+               AND ce.name = 'page_perf'
+               AND ce.received_at >= a.first_assigned_at
+               AND ($4::text IS NULL OR ce.page_host = $4)`,
+            [v.test_id, v.id, siteId, pageHostFilter]
+        ).catch(() => ({ rows: [] })),
+    ]);
 
     const e = engagementRows[0] || {};
     const exposures = Number(e.exposures || 0);
@@ -223,6 +256,36 @@ export default async function handler(req, res) {
         avgPageviews: num(e.avg_pageviews),
         engagedSessions,
         engagedRate: uniqueSessions > 0 ? engagedSessions / uniqueSessions : null,
+    };
+
+    const cr = cwvRows[0] || {};
+    const cwvSample = Number(cr.sample_count || 0);
+    const cwvGood = Number(cr.good_count || 0);
+    const cwvNi   = Number(cr.ni_count   || 0);
+    const cwvPoor = Number(cr.poor_count || 0);
+    const cwv = cwvSample === 0 ? null : {
+        sampleCount: cwvSample,
+        lcp: {
+            p50: cr.lcp_p50 != null ? Math.round(Number(cr.lcp_p50)) : null,
+            p75: cr.lcp_p75 != null ? Math.round(Number(cr.lcp_p75)) : null,
+            p90: cr.lcp_p90 != null ? Math.round(Number(cr.lcp_p90)) : null,
+        },
+        cls: {
+            p75: cr.cls_p75 != null ? Math.round(Number(cr.cls_p75) * 1000) / 1000 : null,
+            p90: cr.cls_p90 != null ? Math.round(Number(cr.cls_p90) * 1000) / 1000 : null,
+        },
+        inp: {
+            p75: cr.inp_p75 != null ? Math.round(Number(cr.inp_p75)) : null,
+            p90: cr.inp_p90 != null ? Math.round(Number(cr.inp_p90)) : null,
+        },
+        fcp:  { p75: cr.fcp_p75  != null ? Math.round(Number(cr.fcp_p75))  : null },
+        ttfb: { p75: cr.ttfb_p75 != null ? Math.round(Number(cr.ttfb_p75)) : null },
+        ratingDist: {
+            good: cwvGood, ni: cwvNi, poor: cwvPoor,
+            goodPct: Math.round(cwvGood / cwvSample * 100),
+            niPct:   Math.round(cwvNi   / cwvSample * 100),
+            poorPct: Math.round(cwvPoor / cwvSample * 100),
+        },
     };
 
     // ── Every conversion event that fired (not just the test's goal event) ────
@@ -349,6 +412,6 @@ export default async function handler(req, res) {
 
     return res.status(200).json({
         ...base, hasSite: true,
-        exposures, uniqueSessions, engagement, conversions, clicks, topPages,
+        exposures, uniqueSessions, engagement, cwv, conversions, clicks, topPages,
     });
 }

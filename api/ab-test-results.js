@@ -283,48 +283,77 @@ export default async function handler(req, res) {
         const conversions = hasGoal ? Number(stats.converted_sessions || 0) : null;
         const conversionRate = !hasGoal || uniqueSessions === 0 ? null : conversions / uniqueSessions;
 
-        // ── Per-variant engagement (bounce rate, avg time, scroll, engaged rate) ─
+        // ── Per-variant engagement + CWV (parallel) ─────────────────────────
         let engagement = null;
+        let cwv = null;
         if (variantSiteId) {
-            const { rows: engRows } = await db.query(
-                `WITH assigned AS (
-                    SELECT session_id, MIN(assigned_at) AS first_assigned_at
-                    FROM ab_test_assignments
-                    WHERE test_id = $1 AND variant_id = $2
-                    GROUP BY session_id
-                 ),
-                 ss AS (
-                    SELECT a.session_id, a.first_assigned_at,
-                           COUNT(ae.id) AS pageviews,
-                           MAX(ae.duration_sec) AS max_duration,
-                           MAX(ae.scroll_depth) AS max_scroll
-                    FROM assigned a
-                    LEFT JOIN analytics_events ae
-                      ON ae.session_id = a.session_id AND ae.site_id = $3
-                      AND ae.received_at >= a.first_assigned_at
-                      AND ae.received_at < a.first_assigned_at + INTERVAL '30 minutes'
-                      AND ($4::text IS NULL OR ae.page_host = $4)
-                    GROUP BY a.session_id, a.first_assigned_at
-                 )
-                 SELECT
-                     COUNT(*) FILTER (WHERE pageviews > 0) AS sessions_with_pv,
-                     AVG(max_duration) FILTER (WHERE pageviews > 0) AS avg_duration_sec,
-                     AVG(max_scroll) FILTER (WHERE pageviews > 0) AS avg_scroll_depth,
-                     COUNT(*) FILTER (
-                         WHERE pageviews > 0 AND (
-                             max_duration >= 10 OR pageviews > 1
-                             OR EXISTS (
-                                 SELECT 1 FROM analytics_clicks c
-                                 WHERE c.session_id = ss.session_id AND c.site_id = $3
-                                   AND c.received_at >= ss.first_assigned_at
-                                   AND c.received_at < ss.first_assigned_at + INTERVAL '30 minutes'
-                                   AND ($4::text IS NULL OR c.page_host = $4)
+            const [{ rows: engRows }, { rows: cwvRows }] = await Promise.all([
+                db.query(
+                    `WITH assigned AS (
+                        SELECT session_id, MIN(assigned_at) AS first_assigned_at
+                        FROM ab_test_assignments
+                        WHERE test_id = $1 AND variant_id = $2
+                        GROUP BY session_id
+                     ),
+                     ss AS (
+                        SELECT a.session_id, a.first_assigned_at,
+                               COUNT(ae.id) AS pageviews,
+                               MAX(ae.duration_sec) AS max_duration,
+                               MAX(ae.scroll_depth) AS max_scroll
+                        FROM assigned a
+                        LEFT JOIN analytics_events ae
+                          ON ae.session_id = a.session_id AND ae.site_id = $3
+                          AND ae.received_at >= a.first_assigned_at
+                          AND ae.received_at < a.first_assigned_at + INTERVAL '30 minutes'
+                          AND ($4::text IS NULL OR ae.page_host = $4)
+                        GROUP BY a.session_id, a.first_assigned_at
+                     )
+                     SELECT
+                         COUNT(*) FILTER (WHERE pageviews > 0) AS sessions_with_pv,
+                         AVG(max_duration) FILTER (WHERE pageviews > 0) AS avg_duration_sec,
+                         AVG(max_scroll) FILTER (WHERE pageviews > 0) AS avg_scroll_depth,
+                         COUNT(*) FILTER (
+                             WHERE pageviews > 0 AND (
+                                 max_duration >= 10 OR pageviews > 1
+                                 OR EXISTS (
+                                     SELECT 1 FROM analytics_clicks c
+                                     WHERE c.session_id = ss.session_id AND c.site_id = $3
+                                       AND c.received_at >= ss.first_assigned_at
+                                       AND c.received_at < ss.first_assigned_at + INTERVAL '30 minutes'
+                                       AND ($4::text IS NULL OR c.page_host = $4)
+                                 )
                              )
-                         )
-                     ) AS engaged_with_pv
-                 FROM ss`,
-                [testId, v.id, variantSiteId, pageHostFilter]
-            ).catch(() => ({ rows: [] }));
+                         ) AS engaged_with_pv
+                     FROM ss`,
+                    [testId, v.id, variantSiteId, pageHostFilter]
+                ).catch(() => ({ rows: [] })),
+
+                db.query(
+                    `WITH assigned AS (
+                        SELECT session_id, MIN(assigned_at) AS first_assigned_at
+                        FROM ab_test_assignments
+                        WHERE test_id = $1 AND variant_id = $2
+                        GROUP BY session_id
+                     )
+                     SELECT
+                         PERCENTILE_CONT(0.75) WITHIN GROUP (ORDER BY (ce.extra_data->>'lcp')::numeric) AS lcp_p75,
+                         PERCENTILE_CONT(0.75) WITHIN GROUP (ORDER BY (ce.extra_data->>'cls')::numeric) AS cls_p75,
+                         PERCENTILE_CONT(0.75) WITHIN GROUP (ORDER BY (ce.extra_data->>'inp')::numeric) AS inp_p75,
+                         COUNT(*) AS sample_count,
+                         COUNT(*) FILTER (WHERE ce.extra_data->>'rating' = 'good') AS good_count,
+                         COUNT(*) FILTER (WHERE ce.extra_data->>'rating' = 'needs-improvement') AS ni_count,
+                         COUNT(*) FILTER (WHERE ce.extra_data->>'rating' = 'poor') AS poor_count
+                     FROM assigned a
+                     JOIN analytics_custom_events ce
+                       ON ce.session_id = a.session_id
+                       AND ce.site_id = $3
+                       AND ce.name = 'page_perf'
+                       AND ce.received_at >= a.first_assigned_at
+                       AND ($4::text IS NULL OR ce.page_host = $4)`,
+                    [testId, v.id, variantSiteId, pageHostFilter]
+                ).catch(() => ({ rows: [] })),
+            ]);
+
             const er = engRows[0] || {};
             const sessionsPv = Number(er.sessions_with_pv || 0);
             const engagedPv = Math.min(Number(er.engaged_with_pv || 0), sessionsPv);
@@ -335,6 +364,21 @@ export default async function handler(req, res) {
                 avgDurationSec: er.avg_duration_sec != null ? Number(er.avg_duration_sec) : null,
                 avgScrollDepth: er.avg_scroll_depth != null ? Number(er.avg_scroll_depth) : null,
             };
+
+            const cr = cwvRows[0] || {};
+            const cwvSample = Number(cr.sample_count || 0);
+            const good = Number(cr.good_count || 0);
+            const ni   = Number(cr.ni_count   || 0);
+            const poor = Number(cr.poor_count || 0);
+            cwv = {
+                sampleCount: cwvSample,
+                lcpP75: cr.lcp_p75 != null ? Math.round(Number(cr.lcp_p75)) : null,
+                clsP75: cr.cls_p75 != null ? Math.round(Number(cr.cls_p75) * 1000) / 1000 : null,
+                inpP75: cr.inp_p75 != null ? Math.round(Number(cr.inp_p75)) : null,
+                goodPct: cwvSample > 0 ? Math.round(good / cwvSample * 100) : null,
+                niPct:   cwvSample > 0 ? Math.round(ni   / cwvSample * 100) : null,
+                poorPct: cwvSample > 0 ? Math.round(poor / cwvSample * 100) : null,
+            };
         }
 
         variants.push({
@@ -342,7 +386,7 @@ export default async function handler(req, res) {
             domain: variantDomain, redirectUrl: v.redirect_url || null, hasSite: !!variantSiteId,
             exposures: Number(stats.exposures || 0), uniqueSessions, conversions, conversionRate,
             expectedConversionRate: null, expectedImprovement: null, probabilityToBeBetter: null,
-            engagement,
+            engagement, cwv,
         });
     }
 
