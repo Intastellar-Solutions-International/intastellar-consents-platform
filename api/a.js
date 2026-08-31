@@ -1683,10 +1683,11 @@ function _formId(form){
 // ── Web Vitals / performance metrics ─────────────────────────────────────
 // Fires a single page_perf event when the page is unloaded, hidden, or just
 // before a SPA navigation. Captures LCP, CLS, INP, FCP, TTFB, load time,
-// the LCP element descriptor, top slow resources (>200 ms), and long tasks.
+// the LCP element descriptor, the top layout-shift culprit elements, top
+// slow resources (>200 ms), and long tasks.
 (function(){
   try{
-    var _lcp=null,_lcpEl=null,_cls=0,_inp=0,_fired=false,_longTasks=[];
+    var _lcp=null,_lcpEl=null,_cls=0,_inp=0,_fired=false,_longTasks=[],_clsSrc={};
     try{new PerformanceObserver(function(l){
       var e=l.getEntries();if(e.length){
         var last=e[e.length-1];_lcp=last.startTime;
@@ -1698,7 +1699,35 @@ function _formId(form){
         }
       }
     }).observe({type:'largest-contentful-paint',buffered:true});}catch(e){}
-    try{new PerformanceObserver(function(l){l.getEntries().forEach(function(e){if(!e.hadRecentInput)_cls+=e.value;});}).observe({type:'layout-shift',buffered:true});}catch(e){}
+    // Attributes each shift's score to its largest-impact source element (the
+    // sources[] item with the bigger before/after rect) rather than splitting
+    // credit across every source — matches how field tools like web-vitals'
+    // attribution build report a single "culprit" per shift.
+    try{new PerformanceObserver(function(l){
+      l.getEntries().forEach(function(e){
+        if(e.hadRecentInput)return;
+        _cls+=e.value;
+        try{
+          var srcs=e.sources||[],best=null,bestArea=-1;
+          for(var si=0;si<srcs.length;si++){
+            var node=srcs[si].node;
+            if(!node||node.nodeType!==1)continue;
+            var pr=srcs[si].previousRect||{},cr=srcs[si].currentRect||{};
+            var area=Math.max((pr.width||0)*(pr.height||0),(cr.width||0)*(cr.height||0));
+            if(area>bestArea){bestArea=area;best=node;}
+          }
+          if(best){
+            var tag=best.tagName.toLowerCase();
+            var id=best.id||null;
+            var cls0=(best.className&&typeof best.className==='string'?best.className:'').trim().split(' ')[0]||null;
+            var key=tag+'#'+(id||'')+'.'+(cls0||'');
+            var b=_clsSrc[key];
+            if(!b)b=_clsSrc[key]={tag:tag,id:id,cls:cls0,val:0,n:0};
+            b.val+=e.value;b.n++;
+          }
+        }catch(x){}
+      });
+    }).observe({type:'layout-shift',buffered:true});}catch(e){}
     try{new PerformanceObserver(function(l){l.getEntries().forEach(function(e){if(e.duration>_inp)_inp=e.duration;});}).observe({type:'event',durationThreshold:16,buffered:true});}catch(e){}
     var _usedLoaf=false;
     try{new PerformanceObserver(function(l){
@@ -1809,6 +1838,13 @@ function _formId(form){
           for(var bkey in types){if(types[bkey]>0)bt.push([bkey,types[bkey]]);}
           if(bt.length)byType=bt;
         }catch(e){}
+        var clsSources=[];
+        try{
+          var csKeys=Object.keys(_clsSrc),csArr=[];
+          for(var ck=0;ck<csKeys.length;ck++)csArr.push(_clsSrc[csKeys[ck]]);
+          csArr.sort(function(a,b){return b.val-a.val;});
+          clsSources=csArr.slice(0,5).map(function(x){return {tag:x.tag,id:x.id,cls:x.cls,val:Math.round(x.val*1000)/1000,n:x.n};});
+        }catch(e){}
         var lt=_longTasks.slice(0,10);
         var tbt=0,_tbtSeen={};
         for(var j=0;j<_longTasks.length;j++){var lt_j=_longTasks[j];if(lt_j.dur>50&&lt_j.st!=null&&!_tbtSeen[lt_j.st]&&(fcp==null||lt_j.st>=fcp)&&(load==null||lt_j.st<=load)){tbt+=lt_j.dur-50;_tbtSeen[lt_j.st]=1;}}
@@ -1820,7 +1856,7 @@ function _formId(form){
           }
           if(nt){netInfo={type:nt,rtt:rtt!=null?Math.round(rtt):null,dl:downlink,save:saveData||false};}
         }
-        track('page_perf',{data:{lcp:lcp,cls:cls,inp:inp,fcp:fcp,ttfb:ttfb,load:load,tbt:tbt>0?Math.round(tbt):null,rating:r,lcpEl:_lcpEl||undefined,slowRes:slowRes.length?slowRes:undefined,longTasks:lt.length?lt:undefined,net:netInfo||undefined,pageWeight:pageWeight>0?pageWeight:undefined,byType:byType||undefined,topRes:topRes.length?topRes:undefined}});
+        track('page_perf',{data:{lcp:lcp,cls:cls,inp:inp,fcp:fcp,ttfb:ttfb,load:load,tbt:tbt>0?Math.round(tbt):null,rating:r,lcpEl:_lcpEl||undefined,slowRes:slowRes.length?slowRes:undefined,longTasks:lt.length?lt:undefined,net:netInfo||undefined,pageWeight:pageWeight>0?pageWeight:undefined,byType:byType||undefined,topRes:topRes.length?topRes:undefined,clsSources:clsSources.length?clsSources:undefined}});
       }catch(e){}
     }
     var _op=history.pushState,_or=history.replaceState;
