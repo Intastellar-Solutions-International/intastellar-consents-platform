@@ -55,7 +55,8 @@ export async function buildReportData(db, siteId, periodDays) {
 
     const conversionsTotalQuery = (from, to) => db.query(`
         SELECT COUNT(*) AS total FROM analytics_custom_events
-        WHERE site_id = $1 AND received_at >= $2 AND received_at < $3`,
+        WHERE site_id = $1 AND received_at >= $2 AND received_at < $3
+          AND name IN (SELECT name FROM analytics_event_defs WHERE site_id = $1)`,
         [siteId, from, to]
     ).catch(() => ({ rows: [] }));
 
@@ -101,6 +102,7 @@ export async function buildReportData(db, siteId, periodDays) {
             SELECT name, COUNT(*) AS count
             FROM analytics_custom_events
             WHERE site_id = $1 AND received_at >= $2 AND received_at < $3
+              AND name IN (SELECT name FROM analytics_event_defs WHERE site_id = $1)
             GROUP BY name ORDER BY count DESC LIMIT 1`,
             [siteId, fromDate, toDateExclusive]
         ).catch(() => ({ rows: [] })),
@@ -212,6 +214,12 @@ export function buildReportEmailHtml({ domain, frequency, label, data }) {
 <body style="margin:0;padding:0;background:#0f1117;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif">
   <div style="max-width:600px;margin:0 auto;padding:32px 24px">
     <div style="background:#1a1d27;border:1px solid #2a2d3a;border-radius:12px;overflow:hidden">
+      <div style="padding:14px 20px;background:#161921;border-bottom:1px solid #2a2d3a">
+        <img src="https://www.intastellar-consents.com/assets/icons/intastellar-logo-black.svg"
+             alt="Intastellar Consents"
+             height="22"
+             style="display:block;filter:brightness(0) invert(1);max-width:220px" />
+      </div>
       <div style="padding:4px 20px;background:#c09f5322;border-bottom:2px solid #c09f53">
         <p style="margin:8px 0;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#c09f53">
           ${domain} · ${periodLabel}
