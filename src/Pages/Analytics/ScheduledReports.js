@@ -70,6 +70,54 @@ function scheduleLabel(cfg) {
 function ReportRow({ cfg, domain, onToggle, onDelete }) {
     const [busy, setBusy] = useState(false);
     const [testMsg, setTestMsg] = useState(null);
+    const [editing, setEditing] = useState(false);
+    const [editForm, setEditForm] = useState(null);
+    const [editError, setEditError] = useState(null);
+
+    function openEdit() {
+        setEditForm({
+            label:        cfg.label || "",
+            frequency:    cfg.frequency,
+            day_of_week:  cfg.day_of_week ?? 1,
+            day_of_month: cfg.day_of_month ?? 1,
+            recipients:   (cfg.recipients || []).join(", "),
+        });
+        setEditError(null);
+        setEditing(true);
+    }
+
+    function setEditField(k, v) {
+        setEditForm(f => ({ ...f, [k]: v }));
+    }
+
+    async function saveEdit(e) {
+        e.preventDefault();
+        setEditError(null);
+        const recipients = parseRecipients(editForm.recipients);
+        if (!recipients.length) { setEditError("Add at least one recipient email address."); return; }
+        if (recipients.length > 10) { setEditError("Maximum 10 recipients."); return; }
+        const invalid = recipients.find(r => !isValidEmail(r));
+        if (invalid) { setEditError(`"${invalid}" is not a valid email address.`); return; }
+
+        setBusy(true);
+        const qs = new URLSearchParams({ domain, id: cfg.id }).toString();
+        const body = {
+            label:        editForm.label,
+            frequency:    editForm.frequency,
+            day_of_week:  editForm.frequency === "weekly"  ? Number(editForm.day_of_week)  : undefined,
+            day_of_month: editForm.frequency === "monthly" ? Number(editForm.day_of_month) : undefined,
+            recipients,
+        };
+        const r = await fetch(`${REPORTS_URL}?${qs}`, {
+            method: "PUT",
+            headers: authHeaders(),
+            body: JSON.stringify(body),
+        }).catch(() => null);
+        setBusy(false);
+        if (!r || !r.ok) { setEditError("Failed to save changes."); return; }
+        setEditing(false);
+        onToggle();
+    }
 
     async function toggle() {
         setBusy(true);
@@ -116,6 +164,9 @@ function ReportRow({ cfg, domain, onToggle, onDelete }) {
                 <button className="sa-btn sa-btn--sm" onClick={sendTest} disabled={busy}>
                     Send test now
                 </button>
+                <button className="sa-btn sa-btn--sm" onClick={openEdit} disabled={busy}>
+                    Edit
+                </button>
                 <button className="sa-btn sa-btn--sm" onClick={toggle} disabled={busy}>
                     {cfg.enabled ? "Disable" : "Enable"}
                 </button>
@@ -123,6 +174,76 @@ function ReportRow({ cfg, domain, onToggle, onDelete }) {
                     Delete
                 </button>
             </div>
+
+            {editing && editForm && (
+                <form className="sa-alert-edit-form" onSubmit={saveEdit}>
+                    <div className="sa-alert-edit-form__grid">
+                        <label className="sa-form-label">
+                            Label
+                            <input
+                                type="text" maxLength={120}
+                                className="sa-form-input"
+                                placeholder="e.g. Weekly marketing digest"
+                                value={editForm.label}
+                                onChange={e => setEditField("label", e.target.value)}
+                            />
+                        </label>
+
+                        <label className="sa-form-label">
+                            Frequency
+                            <select value={editForm.frequency} onChange={e => setEditField("frequency", e.target.value)} className="sa-form-select">
+                                <option value="weekly">Weekly</option>
+                                <option value="monthly">Monthly</option>
+                            </select>
+                        </label>
+
+                        {editForm.frequency === "weekly" ? (
+                            <label className="sa-form-label">
+                                Day of week
+                                <select value={editForm.day_of_week} onChange={e => setEditField("day_of_week", e.target.value)} className="sa-form-select">
+                                    {DAY_OF_WEEK_LABELS.map((d, i) => (
+                                        <option key={i} value={i}>{d}</option>
+                                    ))}
+                                </select>
+                            </label>
+                        ) : (
+                            <label className="sa-form-label">
+                                Day of month
+                                <input
+                                    type="number" min="1" max="28"
+                                    className="sa-form-input"
+                                    value={editForm.day_of_month}
+                                    onChange={e => setEditField("day_of_month", e.target.value)}
+                                    style={{ width: 90 }}
+                                />
+                            </label>
+                        )}
+
+                        <label className="sa-form-label" style={{ gridColumn: "1 / -1" }}>
+                            Recipients
+                            <textarea
+                                className="sa-form-input"
+                                rows={2}
+                                placeholder="jane@company.com, marketing@agency.com"
+                                value={editForm.recipients}
+                                onChange={e => setEditField("recipients", e.target.value)}
+                                style={{ width: "100%", resize: "vertical", fontFamily: "inherit" }}
+                            />
+                        </label>
+                    </div>
+
+                    {editError && <p className="sa-notice sa-notice--error" style={{ margin: "8px 0 0" }}>{editError}</p>}
+
+                    <div className="sa-alert-edit-form__actions">
+                        <button type="submit" className="sa-btn sa-btn--sm" disabled={busy}>
+                            {busy ? "Saving…" : "Save changes"}
+                        </button>
+                        <button type="button" className="sa-btn sa-btn--sm" onClick={() => setEditing(false)} disabled={busy}>
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            )}
         </div>
     );
 }
