@@ -252,7 +252,7 @@ export async function sendReportEmail({ recipients, subject, html }) {
     const key = process.env.RESEND_API_KEY;
     if (!key) return { ok: false, reason: "RESEND_API_KEY not configured" };
     if (!recipients?.length) return { ok: false, reason: "no recipients" };
-    const from = process.env.RESEND_FROM || "alerts@intastellarconsents.com";
+    const from = process.env.RESEND_FROM || "alerts@intastellar.com";
     try {
         const resp = await fetch("https://api.resend.com/emails", {
             method: "POST",
