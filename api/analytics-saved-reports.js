@@ -41,7 +41,7 @@ function validateJwt(authHeader) {
 }
 
 const VALID_CHART_TYPES = new Set(["line", "bar", "table", "kpi", "donut"]);
-const VALID_BREAKDOWNS   = new Set(["date", "country", "device", "utmSource", "browser", "channel", "none", "adPlatform"]);
+const VALID_BREAKDOWNS   = new Set(["date", "country", "device", "utmSource", "browser", "channel", "none", "adPlatform", "event"]);
 const VALID_METRICS      = new Set(["sessions", "pageViews", "conversions", "conversionRate", "consentRate", "newUsers", "adSpend", "adClicks", "adImpressions", "blendedCac"]);
 
 async function ensureTable(db) {
