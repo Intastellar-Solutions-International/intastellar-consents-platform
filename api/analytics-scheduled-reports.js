@@ -143,12 +143,12 @@ async function _handler(req, res) {
         const periodDays = cfg.frequency === "monthly" ? 30 : 7;
         const data = await buildReportData(db, cfg.site_id, periodDays);
         const html = buildReportEmailHtml({ domain: reportDomain, frequency: cfg.frequency, label: cfg.label, data });
-        const sent = await sendReportEmail({
+        const result = await sendReportEmail({
             recipients: cfg.recipients,
             subject: `[Test] ${cfg.label || "Performance report"} — ${reportDomain}`,
             html,
         });
-        if (!sent) return res.status(502).json({ error: "Failed to send test email" });
+        if (!result.ok) return res.status(502).json({ error: "Failed to send test email", reason: result.reason });
         return res.status(200).json({ sent: true });
     }
 

@@ -39,13 +39,13 @@ export default async function handler(req, res) {
         if (!data) continue;
 
         const html = buildReportEmailHtml({ domain: cfg.domain, frequency: cfg.frequency, label: cfg.label, data });
-        const ok = await sendReportEmail({
+        const result = await sendReportEmail({
             recipients: cfg.recipients,
             subject: `${cfg.label || "Performance report"} — ${cfg.domain}`,
             html,
         });
 
-        if (ok) {
+        if (result.ok) {
             await db.query(
                 `UPDATE analytics_scheduled_reports SET last_sent_at = NOW() WHERE id = $1`,
                 [cfg.id]

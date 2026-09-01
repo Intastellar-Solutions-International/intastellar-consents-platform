@@ -250,7 +250,8 @@ export function buildReportEmailHtml({ domain, frequency, label, data }) {
 
 export async function sendReportEmail({ recipients, subject, html }) {
     const key = process.env.RESEND_API_KEY;
-    if (!key || !recipients?.length) return false;
+    if (!key) return { ok: false, reason: "RESEND_API_KEY not configured" };
+    if (!recipients?.length) return { ok: false, reason: "no recipients" };
     const from = process.env.RESEND_FROM || "alerts@intastellarconsents.com";
     try {
         const resp = await fetch("https://api.resend.com/emails", {
@@ -258,9 +259,12 @@ export async function sendReportEmail({ recipients, subject, html }) {
             headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
             body: JSON.stringify({ from, to: recipients, subject, html }),
         });
-        return resp.ok;
+        if (resp.ok) return { ok: true };
+        const body = await resp.json().catch(() => ({}));
+        console.error("[scheduled-report] Resend error:", resp.status, JSON.stringify(body));
+        return { ok: false, reason: body?.message || body?.name || `Resend ${resp.status}` };
     } catch (err) {
         console.error("[scheduled-report] email error:", err.message);
-        return false;
+        return { ok: false, reason: err.message };
     }
 }
