@@ -5,11 +5,9 @@ import { LPFooter } from "../Components/Footer";
 import API from "../API/api.js";
 import { useIntastellar } from "@intastellar/signin-sdk-react";
 import appStorage from '../Functions/storage.js';
-const { useState, useEffect, useRef, createContext } = React;
 
 function handleLogin(account) {
     if (!account) return;
-    setLoginIn(true);
     fetch(API.OrganisationData.url, {
             withCredentials: false,
             method: "POST",
@@ -27,7 +25,6 @@ function handleLogin(account) {
                     console.error("Login failed: organisation lookup rejected");
                     return;
                 }
-                setLoginIn(false);
                 localStorage.setItem("platform", "gdpr");
                 appStorage.setItem("organisation", JSON.stringify(response[0]));
 
@@ -68,8 +65,6 @@ export default function Login() {
         type: "signin",
     });
 
-    const [logginIn, setLoginIn] = useState(false);
-
     return (
         <>
             <div className="int-login">
@@ -101,12 +96,12 @@ export default function Login() {
                                     type="button"
                                     className="int-login__signin-btn"
                                     onClick={() => signin()}
-                                    disabled={isLoading || logginIn}
+                                    disabled={isLoading}
                                 >
-                                    {logginIn ? (
+                                    {isLoading ? (
                                         <span className="int-login__signin-btn-inner">
                                             <span className="int-login__signin-spinner" aria-hidden="true" />
-                                            Signing in…
+                                            Checking user...
                                         </span>
                                     ) : users.length == 1 ? (
                                         <span className="int-login__signin-btn-inner">
