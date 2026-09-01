@@ -5,7 +5,7 @@ import {
     analyticsHeatmapPath, analyticsRecordingsPath, analyticsBotsPath,
     analyticsUserFlowPath,
     analyticsConversionsPath, analyticsPageExperimentsPath, analyticsFormsPath,
-    analyticsCohortPath, analyticsAlertsPath,
+    analyticsCohortPath, analyticsAlertsPath, analyticsScheduledReportsPath,
     analyticsReportsPath, analyticsReportBuilderPath,
     analyticsPerformancePath, analyticsPageWeightPath,
 } from "../../../Functions/domainPathSegments.js";
@@ -212,6 +212,11 @@ export function buildAnalyticsLinks(domain) {
         {
             name: "New Report",
             path: analyticsReportBuilderPath(domain),
+            indent: true,
+        },
+        {
+            name: "Scheduled Reports",
+            path: analyticsScheduledReportsPath(domain),
             indent: true,
         },
         {

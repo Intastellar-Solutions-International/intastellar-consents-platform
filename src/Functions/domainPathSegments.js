@@ -232,6 +232,12 @@ export function analyticsAlertsPath(domainUnicode) {
     return `/analytics/${seg}/alerts`;
 }
 
+export function analyticsScheduledReportsPath(domainUnicode) {
+    const seg = encodeDomainPathSegment(domainUnicode);
+    if (!seg) return "/analytics/scheduled-reports";
+    return `/analytics/${seg}/scheduled-reports`;
+}
+
 export function analyticsReportsPath(domainUnicode) {
     const seg = encodeDomainPathSegment(domainUnicode);
     if (!seg) return "/analytics/reports";
@@ -256,7 +262,7 @@ export function analyticsReportViewPath(domainUnicode, reportId) {
 /** First arg is React Router v5 `useHistory()` (object with `.push(path)`). */
 export function navigateWithDomain(history, platformId, domainUnicode, pathname) {
     if (String(pathname || "").indexOf("/analytics") === 0) {
-        const leaf = ["/marketing", "/audience", "/acquisition", "/consent", "/heatmap", "/recordings", "/bots", "/user-flow", "/conversions", "/ad-spend", "/attribution", "/settings", "/google-analytics", "/search-console", "/page-experiments", "/cohorts", "/alerts", "/forms", "/performance", "/page-weight"].find(s => pathname.includes(s));
+        const leaf = ["/marketing", "/audience", "/acquisition", "/consent", "/heatmap", "/recordings", "/bots", "/user-flow", "/conversions", "/ad-spend", "/attribution", "/settings", "/google-analytics", "/search-console", "/page-experiments", "/cohorts", "/alerts", "/scheduled-reports", "/forms", "/performance", "/page-weight"].find(s => pathname.includes(s));
         if (leaf === "/marketing")        history.push(analyticsMarketingPath(domainUnicode));
         else if (leaf === "/audience")    history.push(analyticsAudiencePath(domainUnicode));
         else if (leaf === "/acquisition") history.push(analyticsAcquisitionPath(domainUnicode));
@@ -293,7 +299,7 @@ export function detectDashboardMode(pathname) {
     return String(pathname || "").indexOf("/analytics") === 0 ? "analytics" : "cmp";
 }
 
-const ANALYTICS_SUBPATHS = ["/audience", "/acquisition", "/consent", "/marketing", "/heatmap", "/recordings", "/bots", "/user-flow", "/conversions", "/ad-spend", "/attribution", "/settings", "/google-analytics", "/search-console", "/page-experiments", "/cohorts", "/alerts", "/reports", "/forms", "/performance", "/page-weight"];
+const ANALYTICS_SUBPATHS = ["/audience", "/acquisition", "/consent", "/marketing", "/heatmap", "/recordings", "/bots", "/user-flow", "/conversions", "/ad-spend", "/attribution", "/settings", "/google-analytics", "/search-console", "/page-experiments", "/cohorts", "/alerts", "/scheduled-reports", "/reports", "/forms", "/performance", "/page-weight"];
 
 /** True for the Analytics overview ("Reports snapshot") page itself, false for any sub-report under it. */
 export function isAnalyticsOverviewPath(pathname) {

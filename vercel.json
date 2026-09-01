@@ -27,6 +27,10 @@
       "schedule": "0 7 * * *"
     },
     {
+      "path": "/api/cron-analytics-scheduled-reports",
+      "schedule": "0 8 * * *"
+    },
+    {
       "path": "/api/cron-scan-domains",
       "schedule": "0 3 * * *"
     },
@@ -177,6 +181,14 @@
       "maxDuration": 10
     },
     "api/cron-analytics-alerts.js": {
+      "memory": 256,
+      "maxDuration": 60
+    },
+    "api/analytics-scheduled-reports.js": {
+      "memory": 256,
+      "maxDuration": 10
+    },
+    "api/cron-analytics-scheduled-reports.js": {
       "memory": 256,
       "maxDuration": 60
     },

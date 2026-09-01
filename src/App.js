@@ -68,6 +68,7 @@ import AnalyticsGoogleAnalytics from "./Pages/Analytics/GoogleAnalytics.js";
 import AnalyticsSearchConsole from "./Pages/Analytics/SearchConsole.js";
 import AnalyticsCohorts from "./Pages/Analytics/Cohorts.js";
 import AnalyticsAlerts from "./Pages/Analytics/AlertConfigs.js";
+import AnalyticsScheduledReports from "./Pages/Analytics/ScheduledReports.js";
 import AnalyticsForms from "./Pages/Analytics/Forms.js";
 import AnalyticsPerformance from "./Pages/Analytics/Performance.js";
 import AnalyticsPageWeight from "./Pages/Analytics/PageWeight.js";
@@ -473,6 +474,16 @@ export default function App() {
                                         <Route path="/analytics/alerts" exact>
                                             {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Analytics Alerts" fullPage /> : <ErrorBoundary>
                                                 <AnalyticsAlerts />
+                                            </ErrorBoundary>}
+                                        </Route>
+                                        <Route path="/analytics/:handle/scheduled-reports" exact>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Scheduled Reports" fullPage /> : <ErrorBoundary>
+                                                <AnalyticsScheduledReports />
+                                            </ErrorBoundary>}
+                                        </Route>
+                                        <Route path="/analytics/scheduled-reports" exact>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Scheduled Reports" fullPage /> : <ErrorBoundary>
+                                                <AnalyticsScheduledReports />
                                             </ErrorBoundary>}
                                         </Route>
                                         <Route path="/analytics/:handle/reports/:reportId/view" exact>
