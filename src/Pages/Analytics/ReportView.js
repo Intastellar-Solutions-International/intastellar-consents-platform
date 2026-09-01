@@ -31,13 +31,17 @@ function adFieldForMetric(m) { return m === "adClicks" ? "clicks" : m === "adImp
 const BREAKDOWN_DIM_LABELS = {
     date: "Date only (trend)", country: "Country", device: "Device",
     browser: "Browser", utmSource: "UTM source", channel: "Channel",
-    adPlatform: "Ad platform", none: "None",
+    adPlatform: "Ad platform", event: "Conversion event", none: "None",
 };
 
 const METRIC_DEFS = {
     sessions:       { isRate: false, isMoney: false, getTotal: (d) => d?.totals?.unique_sessions || 0 },
     pageViews:      { isRate: false, isMoney: false, getTotal: (d) => (d?.daily||[]).reduce((s,r) => s+(r.full_count||0)+(r.minimal||0), 0) },
-    conversions:    { isRate: false, isMoney: false, getTotal: (d) => (d?.conversions||[]).reduce((s,c) => s+(c.count||0), 0) },
+    conversions:    { isRate: false, isMoney: false, getTotal: (d, _ad, eventFilter) => {
+        const rows = d?.conversions || [];
+        const filtered = eventFilter ? rows.filter(c => c.name === eventFilter) : rows;
+        return filtered.reduce((s,c) => s+(c.count||0), 0);
+    } },
     conversionRate: { isRate: true,  isMoney: false, getTotal: (d) => d?.totals?.conversionRate || 0 },
     consentRate:    { isRate: true,  isMoney: false, getTotal: (d) => { const t=d?.totals?.total||0; return t>0?((d?.totals?.full_count||0)/t)*100:0; } },
     newUsers:       { isRate: false, isMoney: false, getTotal: (d) => { const arr=Array.isArray(d?.newVsReturning)?d.newVsReturning:[]; const r=arr.find(r=>r.is_returning===false||r.is_returning==="false"); return r?.sessions||0; } },
@@ -74,6 +78,7 @@ function getBreakdownSeries(breakdown, data, adData, primaryMetric) {
         utmSource: d => (d?.utmSources||[]).slice(0,10).map(r => ({ label: r.source||"(none)", value: r.events })),
         browser:   d => (d?.browsers||[]).slice(0,8).map(r => ({ label: r.name||"Unknown", value: r.events })),
         channel:   d => (d?.conversionsByChannel||[]).map(r => ({ label: r.channel, value: r.sessions||r.count })),
+        event:     d => (d?.conversions||[]).map(r => ({ label: r.label||r.name, value: r.count })).sort((a,b) => b.value-a.value),
     };
     return defs[breakdown] ? defs[breakdown](data) : [];
 }
@@ -208,6 +213,11 @@ export default function ReportView() {
         return (seg.device || seg.country || seg.channel || seg.consent) ? seg : null;
     }, [report?.filters]);
 
+    const eventFilter = useMemo(
+        () => (report?.filters || []).find(f => f.dimension === "conversionEvent" && f.value)?.value || null,
+        [report?.filters]
+    );
+
     const metrics       = report?.metrics    || ["sessions"];
     const breakdown     = report?.breakdown  || "date";
     // Normalise legacy "line" chart type saved in DB to "bar"
@@ -234,8 +244,17 @@ export default function ReportView() {
         [breakdown, data, adData, primaryMetric]); // eslint-disable-line react-hooks/exhaustive-deps
 
     const kpiValues = useMemo(() => {
-        return Object.fromEntries(metrics.map(m => [m, (METRIC_DEFS[m]||METRIC_DEFS.sessions).getTotal(data, adData)]));
-    }, [data, adData, metrics]); // eslint-disable-line react-hooks/exhaustive-deps
+        return Object.fromEntries(metrics.map(m => [m, (METRIC_DEFS[m]||METRIC_DEFS.sessions).getTotal(data, adData, eventFilter)]));
+    }, [data, adData, metrics, eventFilter]); // eslint-disable-line react-hooks/exhaustive-deps
+
+    // "Conversions" filtered to one event reads better as that event's own
+    // name (e.g. "Booking confirmed") than the generic metric label.
+    const eventLabelFor = useMemo(() => {
+        if (!eventFilter) return null;
+        const hit = (data?.conversions || []).find(c => c.name === eventFilter);
+        return hit?.label || eventFilter;
+    }, [data, eventFilter]);
+    const metricLabel = (m) => (m === "conversions" && eventLabelFor) ? eventLabelFor : (METRIC_LABELS[m] || m);
 
     function exportCsv() {
         if (!report) return;
@@ -257,7 +276,7 @@ export default function ReportView() {
             const fmt = def.isMoney ? formatMoney(val, currency)
                       : def.isRate  ? `${val.toFixed(2)}%`
                       : String(val);
-            rows.push([esc(METRIC_LABELS[m]||m), esc(fmt)]);
+            rows.push([esc(metricLabel(m)), esc(fmt)]);
         });
         rows.push([]);
 
@@ -339,7 +358,9 @@ export default function ReportView() {
                                         <span className="sa-rv-chip sa-rv-chip--dim">{BREAKDOWN_DIM_LABELS[breakdown]||breakdown}</span>
                                         <span className="sa-rv-chip sa-rv-chip--dim">Last {report.date_range_days}d</span>
                                         {(report.filters||[]).filter(f=>f.value).map((f,i) => (
-                                            <span key={i} className="sa-rv-chip sa-rv-chip--filter">{f.dimension}: {f.value}</span>
+                                            <span key={i} className="sa-rv-chip sa-rv-chip--filter">
+                                                {f.dimension === "conversionEvent" ? "event" : f.dimension}: {f.dimension === "conversionEvent" ? (eventLabelFor || f.value) : f.value}
+                                            </span>
                                         ))}
                                     </div>
                                     <div className="sa-rv-meta__updated">Updated {fmtDate(report.updated_at)}</div>
@@ -374,7 +395,7 @@ export default function ReportView() {
                                     const fmt = def.isMoney ? moneyFmt(val) : def.isRate ? formatPercent(val) : val.toLocaleString("de-DE");
                                     return (
                                         <div key={m} className="sa-rv-kpi">
-                                            <div className="sa-rv-kpi__label">{(METRIC_LABELS[m]||m).toUpperCase()}</div>
+                                            <div className="sa-rv-kpi__label">{metricLabel(m).toUpperCase()}</div>
                                             <div className="sa-rv-kpi__value">{isLoading ? "—" : fmt}</div>
                                         </div>
                                     );
@@ -402,7 +423,7 @@ export default function ReportView() {
                                                     const def = METRIC_DEFS[m] || METRIC_DEFS.sessions;
                                                     const val = kpiValues[m] ?? 0;
                                                     const fmt = def.isMoney ? moneyFmt(val) : def.isRate ? formatPercent(val) : val.toLocaleString("de-DE");
-                                                    return <KpiCard key={m} icon={<IconTarget />} label={METRIC_LABELS[m]||m} value={fmt} />;
+                                                    return <KpiCard key={m} icon={<IconTarget />} label={metricLabel(m)} value={fmt} />;
                                                 })}
                                             </div>
                                         )}

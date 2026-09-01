@@ -5,7 +5,7 @@ import { LPFooter } from "../Components/Footer";
 import API from "../API/api.js";
 import { useIntastellar } from "@intastellar/signin-sdk-react";
 import appStorage from '../Functions/storage.js';
-import { useState} from react;
+const { useState, useEffect, useRef, createContext } = React;
 
 function handleLogin(account) {
     if (!account) return;

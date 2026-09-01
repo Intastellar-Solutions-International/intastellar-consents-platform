@@ -38,7 +38,11 @@ const METRIC_DEFS = {
     pageViews:      { label: "Page views",     group: "analytics", isRate: false, isMoney: false,
         getTotal: (d) => (d?.daily||[]).reduce((s,r) => s+(r.full_count||0)+(r.minimal||0), 0) },
     conversions:    { label: "Conversions",    group: "analytics", isRate: false, isMoney: false,
-        getTotal: (d) => (d?.conversions||[]).reduce((s,c) => s+(c.count||0), 0) },
+        getTotal: (d, _ad, eventFilter) => {
+            const rows = d?.conversions || [];
+            const filtered = eventFilter ? rows.filter(c => c.name === eventFilter) : rows;
+            return filtered.reduce((s,c) => s+(c.count||0), 0);
+        } },
     conversionRate: { label: "Conversion rate",group: "analytics", isRate: true,  isMoney: false,
         getTotal: (d) => d?.totals?.conversionRate || 0 },
     consentRate:    { label: "Consent rate",   group: "analytics", isRate: true,  isMoney: false,
@@ -89,6 +93,7 @@ const BREAKDOWN_DIMS = [
     { key: "browser",    label: "Browser",                 adOnly: false },
     { key: "utmSource",  label: "UTM source",              adOnly: false },
     { key: "channel",    label: "Channel",                 adOnly: false },
+    { key: "event",      label: "Conversion event",        adOnly: false },
     { key: "adPlatform", label: "Ad platform",             adOnly: true  },
 ];
 
@@ -110,6 +115,7 @@ function getBreakdownSeries(breakdown, data, adData, primaryMetric) {
         utmSource: d => (d?.utmSources||[]).slice(0,10).map(r => ({ label: r.source||"(none)", value: r.events })),
         browser:   d => (d?.browsers||[]).slice(0,8).map(r => ({ label: r.name||"Unknown", value: r.events })),
         channel:   d => (d?.conversionsByChannel||[]).map(r => ({ label: r.channel, value: r.sessions||r.count })),
+        event:     d => (d?.conversions||[]).map(r => ({ label: r.label||r.name, value: r.count })).sort((a,b) => b.value-a.value),
     };
     return defs[breakdown] ? defs[breakdown](data) : [];
 }
@@ -207,20 +213,24 @@ function DonutViz({ series, formatVal }) {
 // ── Filter row ────────────────────────────────────────────────────────────────
 
 const FILTER_DIMENSIONS = [
-    { value: "channel", label: "Channel" },
-    { value: "device",  label: "Device" },
-    { value: "consent", label: "Consent level" },
-    { value: "country", label: "Country (2-letter code)" },
+    { value: "channel",        label: "Channel" },
+    { value: "device",         label: "Device" },
+    { value: "consent",        label: "Consent level" },
+    { value: "country",        label: "Country (2-letter code)" },
+    { value: "conversionEvent", label: "Conversion event" },
 ];
 const FILTER_CHANNEL_OPTS = ["organic", "paid", "paid_social", "referral", "direct"];
 const FILTER_DEVICE_OPTS  = ["desktop", "mobile", "tablet"];
 const FILTER_CONSENT_OPTS = ["full", "minimal"];
 
-function FilterRow({ filter, onChange, onRemove }) {
+function FilterRow({ filter, onChange, onRemove, eventOptions }) {
     const opts = filter.dimension === "channel" ? FILTER_CHANNEL_OPTS
                : filter.dimension === "device"  ? FILTER_DEVICE_OPTS
                : filter.dimension === "consent" ? FILTER_CONSENT_OPTS
+               : filter.dimension === "conversionEvent" ? (eventOptions || [])
                : null;
+    const optValue = o => (typeof o === "string" ? o : o.value);
+    const optLabel = o => (typeof o === "string" ? o : o.label);
     return (
         <div className="sa-rb-filter-row">
             <select className="sa-form-select" style={{ flex: 1 }}
@@ -231,8 +241,8 @@ function FilterRow({ filter, onChange, onRemove }) {
             {opts ? (
                 <select className="sa-form-select" style={{ flex: 1 }} value={filter.value}
                     onChange={e => onChange({ ...filter, value: e.target.value })}>
-                    <option value="">Select…</option>
-                    {opts.map(o => <option key={o} value={o}>{o}</option>)}
+                    <option value="">{opts.length ? "Select…" : "No conversion events tracked yet"}</option>
+                    {opts.map(o => <option key={optValue(o)} value={optValue(o)}>{optLabel(o)}</option>)}
                 </select>
             ) : (
                 <input className="sa-form-input" type="text" maxLength={2} placeholder="e.g. DE" style={{ flex: 1 }}
@@ -302,6 +312,14 @@ export default function ReportBuilder() {
         return (seg.device || seg.country || seg.channel || seg.consent) ? seg : null;
     }, [config.filters]);
 
+    // Conversion-event filter is resolved client-side against the already-fetched
+    // per-event conversions list — analytics-report.js doesn't take an event-name
+    // segment param, so this never reaches the backend query.
+    const eventFilter = useMemo(
+        () => (config.filters || []).find(f => f.dimension === "conversionEvent" && f.value)?.value || null,
+        [config.filters]
+    );
+
     const hasAdMetrics = config.metrics.some(m => AD_METRICS.has(m));
 
     const { data, loading: dataLoading }              = useAnalyticsReport(domain, reportFrom, reportTo, 0, segment);
@@ -357,6 +375,11 @@ export default function ReportBuilder() {
 
     const primaryMetric = config.metrics[0] || "sessions";
     const primaryDef    = METRIC_DEFS[primaryMetric] || METRIC_DEFS.sessions;
+    // "Conversions" filtered to one event reads better as that event's name
+    // (e.g. "Booking confirmed") than the generic metric label.
+    const metricLabel = (m, def) => (m === "conversions" && eventFilter)
+        ? (eventOptions.find(o => o.value === eventFilter)?.label || eventFilter)
+        : def.label;
     const isAdPrimary   = AD_METRICS.has(primaryMetric);
     const currency      = adCurrency(adData);
     const moneyFmt      = v => formatMoney(v, currency);
@@ -372,9 +395,15 @@ export default function ReportBuilder() {
         [config.breakdown, data, adData, primaryMetric] // eslint-disable-line react-hooks/exhaustive-deps
     );
 
+    const eventOptions = useMemo(() => {
+        const seen = new Map();
+        (data?.conversions || []).forEach(c => { if (!seen.has(c.name)) seen.set(c.name, c.label || c.name); });
+        return Array.from(seen, ([value, label]) => ({ value, label }));
+    }, [data]);
+
     const kpiValues = useMemo(() => Object.fromEntries(
-        config.metrics.map(m => [m, (METRIC_DEFS[m]||METRIC_DEFS.sessions).getTotal(data, adData)])
-    ), [data, adData, config.metrics]); // eslint-disable-line react-hooks/exhaustive-deps
+        config.metrics.map(m => [m, (METRIC_DEFS[m]||METRIC_DEFS.sessions).getTotal(data, adData, eventFilter)])
+    ), [data, adData, config.metrics, eventFilter]); // eslint-disable-line react-hooks/exhaustive-deps
 
     const showBreakdown = !isKpiMode && config.breakdown !== "date" && config.breakdown !== "none";
 
@@ -485,7 +514,7 @@ export default function ReportBuilder() {
                                 <h3 className="sa-panel__title">Filters</h3>
                                 <div className="sa-rb-filter-rows">
                                     {config.filters.map((f, i) => (
-                                        <FilterRow key={i} filter={f}
+                                        <FilterRow key={i} filter={f} eventOptions={eventOptions}
                                             onChange={u => setConfig(c => { const fl=[...c.filters]; fl[i]=u; return {...c,filters:fl}; })}
                                             onRemove={() => setConfig(c => ({...c, filters: c.filters.filter((_,fi)=>fi!==i)}))} />
                                     ))}
@@ -533,7 +562,7 @@ export default function ReportBuilder() {
                                     const fmt = def.isMoney ? moneyFmt(val) : def.isRate ? formatPercent(val) : val.toLocaleString("de-DE");
                                     return (
                                         <div key={m} className="sa-rb-kpi">
-                                            <div className="sa-rb-kpi__label">{def.label.toUpperCase()}</div>
+                                            <div className="sa-rb-kpi__label">{metricLabel(m, def).toUpperCase()}</div>
                                             <div className="sa-rb-kpi__value">{isLoading ? "—" : fmt}</div>
                                         </div>
                                     );
@@ -561,7 +590,7 @@ export default function ReportBuilder() {
                                                     const def = METRIC_DEFS[m] || METRIC_DEFS.sessions;
                                                     const val = kpiValues[m] ?? 0;
                                                     const fmt = def.isMoney ? moneyFmt(val) : def.isRate ? formatPercent(val) : val.toLocaleString("de-DE");
-                                                    return <KpiCard key={m} icon={<IconTarget />} label={def.label} value={fmt} />;
+                                                    return <KpiCard key={m} icon={<IconTarget />} label={metricLabel(m, def)} value={fmt} />;
                                                 })}
                                             </div>
                                         )}

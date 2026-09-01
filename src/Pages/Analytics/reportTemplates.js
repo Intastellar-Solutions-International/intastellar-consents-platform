@@ -83,6 +83,17 @@ export const REPORT_TEMPLATES = [
         category: "Conversions",
     },
     {
+        key: "conversion_by_event",
+        name: "Conversions by Event",
+        description: "Compare volume across your tracked conversion events — e.g. bookings vs sign-ups vs purchases. Add a \"Conversion event\" filter to isolate just one.",
+        chartType: "table",
+        metrics: ["conversions"],
+        breakdown: "event",
+        filters: [],
+        dateRangeDays: 30,
+        category: "Conversions",
+    },
+    {
         key: "consent_health",
         name: "Consent Rate Trend",
         description: "Tracks the percentage of visitors granting full consent. Drop here = data quality issue.",
