@@ -239,6 +239,10 @@
     "api/cron-ab-test-lifecycle.js": {
       "memory": 128,
       "maxDuration": 10
+    },
+    "api/stripe-webhook.js": {
+      "memory": 256,
+      "maxDuration": 15
     }
   }
 }
