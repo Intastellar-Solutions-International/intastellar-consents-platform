@@ -3,6 +3,7 @@ import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import AnalyticsWorldMap from "./AnalyticsWorldMap.js";
 import { useAnalyticsPage, MiniBar, KpiCard, useAnalyticsReport, toIsoDate, pctChange } from "./_shared.js";
 import { IconGlobe, IconUsers, IconRadio } from "./Icons.js";
+import ErrorBoundary from "../../Components/Error/ErrorBoundary.js";
 import "./Analytics.css";
 
 export default function AnalyticsAudience() {
@@ -39,13 +40,14 @@ export default function AnalyticsAudience() {
         };
     }, [data]);
 
-    const maxCountry = useMemo(() => Math.max(...(data?.countries  || []).map(c => c.events), 1), [data]);
-    const maxBrowser = useMemo(() => Math.max(...(data?.browsers   || []).map(b => b.events), 1), [data]);
-    const maxOs      = useMemo(() => Math.max(...(data?.os         || []).map(o => o.events), 1), [data]);
-    const maxScreens = useMemo(() => Math.max(...(data?.screens    || []).map(s => s.events), 1), [data]);
-    const maxLang    = useMemo(() => Math.max(...(data?.languages  || []).map(l => l.events), 1), [data]);
-    const maxTz      = useMemo(() => Math.max(...(data?.timezones  || []).map(t => t.events), 1), [data]);
-    const deviceTotal = useMemo(() => (data?.devices || []).reduce((s, d) => s + d.events, 0), [data]);
+    const maxCountry   = useMemo(() => Math.max(...(data?.countries  || []).map(c => c.events), 1), [data]);
+    const maxBrowser   = useMemo(() => Math.max(...(data?.browsers   || []).map(b => b.events), 1), [data]);
+    const maxOs        = useMemo(() => Math.max(...(data?.os         || []).map(o => o.events), 1), [data]);
+    const maxScreens   = useMemo(() => Math.max(...(data?.screens    || []).map(s => s.events), 1), [data]);
+    const maxLang      = useMemo(() => Math.max(...(data?.languages  || []).map(l => l.events), 1), [data]);
+    const maxTz        = useMemo(() => Math.max(...(data?.timezones  || []).map(t => t.events), 1), [data]);
+    const deviceTotal  = useMemo(() => (data?.devices || []).reduce((s, d) => s + d.events, 0), [data]);
+    const maxInterests = useMemo(() => Math.max(...(data?.interests  || []).map(i => i.sessions || i.events), 1), [data]);
 
     return (
         <div style={{ flex: "1", minWidth: 0 }}>
@@ -76,271 +78,342 @@ export default function AnalyticsAudience() {
                         <div className="sa-audience-grid">
 
                             {/* Top-line numbers */}
-                            <div className="sa-aud-kpis">
-                                <KpiCard
-                                    icon={<IconUsers />}
-                                    label="Unique sessions"
-                                    value={data.totals.uniqueSessions.toLocaleString("de-DE")}
-                                    sub="consent-gated sessions only"
-                                    variant="purple"
-                                    trend={trendSessions}
-                                />
-                                <KpiCard
-                                    icon={<IconRadio />}
-                                    label="Active users"
-                                    value={data.totals.engagedUsers.toLocaleString("de-DE")}
-                                    sub="engaged: 10s+, clicked, or 2+ pages"
-                                    variant="live"
-                                    trend={trendEngaged}
-                                />
-                                <KpiCard
-                                    icon={<IconGlobe />}
-                                    label="Countries reached"
-                                    value={data.countries.length.toLocaleString("de-DE")}
-                                    variant="teal"
-                                    trend={trendCountries}
-                                />
-                            </div>
+                            <ErrorBoundary>
+                                <div className="sa-aud-kpis">
+                                    <KpiCard
+                                        icon={<IconUsers />}
+                                        label="Unique sessions"
+                                        value={data.totals.uniqueSessions.toLocaleString("de-DE")}
+                                        sub="consent-gated sessions only"
+                                        variant="purple"
+                                        trend={trendSessions}
+                                    />
+                                    <KpiCard
+                                        icon={<IconRadio />}
+                                        label="Active users"
+                                        value={data.totals.engagedUsers.toLocaleString("de-DE")}
+                                        sub="engaged: 10s+, clicked, or 2+ pages"
+                                        variant="live"
+                                        trend={trendEngaged}
+                                    />
+                                    <KpiCard
+                                        icon={<IconGlobe />}
+                                        label="Countries reached"
+                                        value={data.countries.length.toLocaleString("de-DE")}
+                                        variant="teal"
+                                        trend={trendCountries}
+                                    />
+                                </div>
+                            </ErrorBoundary>
 
                             {/* New vs Returning */}
-                            <div className="sa-panel sa-aud-nvr">
-                                <h3 className="sa-panel__title">
-                                    <IconUsers className="sa-icon" /> New vs Returning visitors
-                                    <span className="sa-panel__consent-note">full events only · based on persistent visitor cookie</span>
-                                </h3>
-                                {nvrData ? (
-                                    <div className="sa-aud-nvr-bars">
-                                        <div>
-                                            <div className="sa-consent-row">
-                                                <span className="sa-consent-row__label">New visitors</span>
-                                                <div className="sa-bar">
-                                                    <div className="sa-bar__seg"
-                                                        style={{ width: nvrData.newPct + "%", background: "rgba(74,222,128,0.5)" }}
-                                                        title={nvrData.newSessions.toLocaleString("de-DE") + " sessions"} />
+                            <ErrorBoundary>
+                                <div className="sa-panel sa-aud-nvr">
+                                    <h3 className="sa-panel__title">
+                                        <IconUsers className="sa-icon" /> New vs Returning visitors
+                                        <span className="sa-panel__consent-note">full events only · based on persistent visitor cookie</span>
+                                    </h3>
+                                    {nvrData ? (
+                                        <div className="sa-aud-nvr-bars">
+                                            <div>
+                                                <div className="sa-consent-row">
+                                                    <span className="sa-consent-row__label">New visitors</span>
+                                                    <div className="sa-bar">
+                                                        <div className="sa-bar__seg"
+                                                            style={{ width: nvrData.newPct + "%", background: "rgba(74,222,128,0.5)" }}
+                                                            title={nvrData.newSessions.toLocaleString("de-DE") + " sessions"} />
+                                                    </div>
+                                                    <span className="sa-consent-row__pct">{nvrData.newPct}%</span>
                                                 </div>
-                                                <span className="sa-consent-row__pct">{nvrData.newPct}%</span>
+                                                <div className="sa-consent-row">
+                                                    <span className="sa-consent-row__label">Returning visitors</span>
+                                                    <div className="sa-bar">
+                                                        <div className="sa-bar__seg"
+                                                            style={{ width: nvrData.returningPct + "%", background: "rgba(192,159,83,0.55)" }}
+                                                            title={nvrData.returningSessions.toLocaleString("de-DE") + " sessions"} />
+                                                    </div>
+                                                    <span className="sa-consent-row__pct">{nvrData.returningPct}%</span>
+                                                </div>
                                             </div>
-                                            <div className="sa-consent-row">
-                                                <span className="sa-consent-row__label">Returning visitors</span>
-                                                <div className="sa-bar">
-                                                    <div className="sa-bar__seg"
-                                                        style={{ width: nvrData.returningPct + "%", background: "rgba(192,159,83,0.55)" }}
-                                                        title={nvrData.returningSessions.toLocaleString("de-DE") + " sessions"} />
+                                            <div style={{ display: "flex", gap: "16px", alignItems: "center", paddingLeft: "8px", borderLeft: "1px solid rgba(255,255,255,0.08)" }}>
+                                                <div style={{ textAlign: "center" }}>
+                                                    <div style={{ fontSize: "22px", fontWeight: 600, color: "rgba(74,222,128,0.9)" }}>{nvrData.newSessions.toLocaleString("de-DE")}</div>
+                                                    <div style={{ fontSize: "11px", color: "rgba(240,235,225,0.5)", marginTop: "2px" }}>new</div>
                                                 </div>
-                                                <span className="sa-consent-row__pct">{nvrData.returningPct}%</span>
+                                                <div style={{ textAlign: "center" }}>
+                                                    <div style={{ fontSize: "22px", fontWeight: 600, color: "rgba(192,159,83,0.9)" }}>{nvrData.returningSessions.toLocaleString("de-DE")}</div>
+                                                    <div style={{ fontSize: "11px", color: "rgba(240,235,225,0.5)", marginTop: "2px" }}>returning</div>
+                                                </div>
                                             </div>
                                         </div>
-                                        <div style={{ display: "flex", gap: "16px", alignItems: "center", paddingLeft: "8px", borderLeft: "1px solid rgba(255,255,255,0.08)" }}>
-                                            <div style={{ textAlign: "center" }}>
-                                                <div style={{ fontSize: "22px", fontWeight: 600, color: "rgba(74,222,128,0.9)" }}>{nvrData.newSessions.toLocaleString("de-DE")}</div>
-                                                <div style={{ fontSize: "11px", color: "rgba(240,235,225,0.5)", marginTop: "2px" }}>new</div>
-                                            </div>
-                                            <div style={{ textAlign: "center" }}>
-                                                <div style={{ fontSize: "22px", fontWeight: 600, color: "rgba(192,159,83,0.9)" }}>{nvrData.returningSessions.toLocaleString("de-DE")}</div>
-                                                <div style={{ fontSize: "11px", color: "rgba(240,235,225,0.5)", marginTop: "2px" }}>returning</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                ) : (
-                                    <p className="sa-notice" style={{ margin: 0, padding: "8px 0" }}>
-                                        No visitor tracking data yet — appears once visitors with the new analytics embed are recorded.
-                                    </p>
-                                )}
-                            </div>
+                                    ) : (
+                                        <p className="sa-notice" style={{ margin: 0, padding: "8px 0" }}>
+                                            No visitor tracking data yet — appears once visitors with the new analytics embed are recorded.
+                                        </p>
+                                    )}
+                                </div>
+                            </ErrorBoundary>
+
+                            {/* Users by Interests */}
+                            <ErrorBoundary>
+                                <div className="sa-panel sa-aud-interests">
+                                    <h3 className="sa-panel__title">
+                                        <IconRadio className="sa-icon" /> Users by Interests
+                                        <span className="sa-panel__consent-note">based on page path rules</span>
+                                    </h3>
+                                    {data.interests?.length > 0 ? (
+                                        <table className="sa-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Interest</th>
+                                                    <th className="sa-table__num">Sessions</th>
+                                                    <th className="sa-table__bar" />
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {data.interests.map(i => (
+                                                    <tr key={i.id}>
+                                                        <td>
+                                                            {i.color && (
+                                                                <span style={{
+                                                                    display: "inline-block", width: 8, height: 8,
+                                                                    borderRadius: "50%", background: i.color,
+                                                                    marginRight: 7, verticalAlign: "middle",
+                                                                }} />
+                                                            )}
+                                                            {i.label}
+                                                        </td>
+                                                        <td className="sa-table__num">
+                                                            {(i.sessions || i.events).toLocaleString("de-DE")}
+                                                        </td>
+                                                        <td className="sa-table__bar">
+                                                            <MiniBar
+                                                                value={i.sessions || i.events}
+                                                                max={maxInterests}
+                                                                color={i.color || "rgba(139,92,246,0.6)"}
+                                                            />
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    ) : (
+                                        <p className="sa-notice" style={{ margin: 0, padding: "8px 0" }}>
+                                            No interest rules configured yet. Add URL-pattern rules in{" "}
+                                            <a href="settings" style={{ color: "rgba(139,92,246,0.9)" }}>Analytics Settings</a>{" "}
+                                            to classify visitors by interest.
+                                        </p>
+                                    )}
+                                </div>
+                            </ErrorBoundary>
 
                             {/* Countries */}
-                            <div className="sa-panel sa-aud-countries">
-                                <h3 className="sa-panel__title"><IconGlobe className="sa-icon" /> Countries</h3>
-                                <div className="sa-aud-countries-grid">
-                                    {data.countries.length > 0 && <AnalyticsWorldMap countries={data.countries} />}
-                                    <table className="sa-table">
-                                        <thead>
-                                            <tr>
-                                                <th>Country</th>
-                                                <th className="sa-table__num">Events</th>
-                                                <th className="sa-table__bar" />
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {data.countries.map(c => (
-                                                <tr key={c.code}>
-                                                    <td>{c.code}</td>
-                                                    <td className="sa-table__num">{c.events.toLocaleString("de-DE")}</td>
-                                                    <td className="sa-table__bar">
-                                                        <MiniBar value={c.events} max={maxCountry} color="rgba(99,179,237,0.55)" />
-                                                    </td>
+                            <ErrorBoundary>
+                                <div className="sa-panel sa-aud-countries">
+                                    <h3 className="sa-panel__title"><IconGlobe className="sa-icon" /> Countries</h3>
+                                    <div className="sa-aud-countries-grid">
+                                        {data.countries.length > 0 && <AnalyticsWorldMap countries={data.countries} />}
+                                        <table className="sa-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Country</th>
+                                                    <th className="sa-table__num">Events</th>
+                                                    <th className="sa-table__bar" />
                                                 </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
+                                            </thead>
+                                            <tbody>
+                                                {data.countries.map(c => (
+                                                    <tr key={c.code}>
+                                                        <td>{c.code}</td>
+                                                        <td className="sa-table__num">{c.events.toLocaleString("de-DE")}</td>
+                                                        <td className="sa-table__bar">
+                                                            <MiniBar value={c.events} max={maxCountry} color="rgba(99,179,237,0.55)" />
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
-                            </div>
+                            </ErrorBoundary>
 
                             {/* Devices */}
-                            <div className="sa-panel sa-aud-devices">
-                                <h3 className="sa-panel__title"><IconUsers className="sa-icon" /> Devices</h3>
-                                <div className="sa-consent-list">
-                                    {data.devices.map(d => {
-                                        const pct = deviceTotal > 0 ? Math.round((d.events / deviceTotal) * 100) : 0;
-                                        return (
-                                            <div key={d.type} className="sa-consent-row">
-                                                <span className="sa-consent-row__label" style={{ textTransform: "capitalize" }}>{d.type}</span>
-                                                <div className="sa-bar">
-                                                    <div className="sa-bar__seg"
-                                                        style={{ width: pct + "%", background: "rgba(192,159,83,0.55)" }}
-                                                        title={d.events + " events"} />
+                            <ErrorBoundary>
+                                <div className="sa-panel sa-aud-devices">
+                                    <h3 className="sa-panel__title"><IconUsers className="sa-icon" /> Devices</h3>
+                                    <div className="sa-consent-list">
+                                        {data.devices.map(d => {
+                                            const pct = deviceTotal > 0 ? Math.round((d.events / deviceTotal) * 100) : 0;
+                                            return (
+                                                <div key={d.type} className="sa-consent-row">
+                                                    <span className="sa-consent-row__label" style={{ textTransform: "capitalize" }}>{d.type}</span>
+                                                    <div className="sa-bar">
+                                                        <div className="sa-bar__seg"
+                                                            style={{ width: pct + "%", background: "rgba(192,159,83,0.55)" }}
+                                                            title={d.events + " events"} />
+                                                    </div>
+                                                    <span className="sa-consent-row__pct">{pct}%</span>
                                                 </div>
-                                                <span className="sa-consent-row__pct">{pct}%</span>
-                                            </div>
-                                        );
-                                    })}
+                                            );
+                                        })}
+                                    </div>
                                 </div>
-                            </div>
+                            </ErrorBoundary>
 
                             {/* Browsers */}
-                            <div className="sa-panel sa-aud-browsers">
-                                <h3 className="sa-panel__title">
-                                    <IconGlobe className="sa-icon" /> Browsers
-                                    <span className="sa-panel__consent-note">full events only</span>
-                                </h3>
-                                <table className="sa-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Browser</th>
-                                            <th className="sa-table__num">Events</th>
-                                            <th className="sa-table__bar" />
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {data.browsers.map(b => (
-                                            <tr key={b.name}>
-                                                <td>{b.name}</td>
-                                                <td className="sa-table__num">{b.events.toLocaleString("de-DE")}</td>
-                                                <td className="sa-table__bar">
-                                                    <MiniBar value={b.events} max={maxBrowser} color="rgba(167,139,250,0.6)" />
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
-
-                            {/* Operating systems */}
-                            <div className="sa-panel sa-aud-os">
-                                <h3 className="sa-panel__title">
-                                    <IconRadio className="sa-icon" /> Operating systems
-                                    <span className="sa-panel__consent-note">full events only</span>
-                                </h3>
-                                <table className="sa-table">
-                                    <thead>
-                                        <tr>
-                                            <th>OS</th>
-                                            <th className="sa-table__num">Events</th>
-                                            <th className="sa-table__bar" />
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {(data.os || []).map(o => (
-                                            <tr key={o.name}>
-                                                <td>{o.name}</td>
-                                                <td className="sa-table__num">{o.events.toLocaleString("de-DE")}</td>
-                                                <td className="sa-table__bar">
-                                                    <MiniBar value={o.events} max={maxOs} color="rgba(129,140,248,0.6)" />
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
-
-                            {/* Screen resolutions */}
-                            {data.screens?.length > 0 && (
-                                <div className="sa-panel sa-aud-screens">
+                            <ErrorBoundary>
+                                <div className="sa-panel sa-aud-browsers">
                                     <h3 className="sa-panel__title">
-                                        <IconRadio className="sa-icon" /> Screen resolutions
+                                        <IconGlobe className="sa-icon" /> Browsers
                                         <span className="sa-panel__consent-note">full events only</span>
                                     </h3>
                                     <table className="sa-table">
                                         <thead>
                                             <tr>
-                                                <th>Resolution</th>
+                                                <th>Browser</th>
                                                 <th className="sa-table__num">Events</th>
                                                 <th className="sa-table__bar" />
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {data.screens.map((s, i) => (
-                                                <tr key={i}>
-                                                    <td>{s.width}&thinsp;&times;&thinsp;{s.height}</td>
-                                                    <td className="sa-table__num">{s.events.toLocaleString("de-DE")}</td>
+                                            {data.browsers.map(b => (
+                                                <tr key={b.name}>
+                                                    <td>{b.name}</td>
+                                                    <td className="sa-table__num">{b.events.toLocaleString("de-DE")}</td>
                                                     <td className="sa-table__bar">
-                                                        <MiniBar value={s.events} max={maxScreens} color="rgba(52,211,153,0.6)" />
+                                                        <MiniBar value={b.events} max={maxBrowser} color="rgba(167,139,250,0.6)" />
                                                     </td>
                                                 </tr>
                                             ))}
                                         </tbody>
                                     </table>
                                 </div>
+                            </ErrorBoundary>
+
+                            {/* Operating systems */}
+                            <ErrorBoundary>
+                                <div className="sa-panel sa-aud-os">
+                                    <h3 className="sa-panel__title">
+                                        <IconRadio className="sa-icon" /> Operating systems
+                                        <span className="sa-panel__consent-note">full events only</span>
+                                    </h3>
+                                    <table className="sa-table">
+                                        <thead>
+                                            <tr>
+                                                <th>OS</th>
+                                                <th className="sa-table__num">Events</th>
+                                                <th className="sa-table__bar" />
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {(data.os || []).map(o => (
+                                                <tr key={o.name}>
+                                                    <td>{o.name}</td>
+                                                    <td className="sa-table__num">{o.events.toLocaleString("de-DE")}</td>
+                                                    <td className="sa-table__bar">
+                                                        <MiniBar value={o.events} max={maxOs} color="rgba(129,140,248,0.6)" />
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </ErrorBoundary>
+
+                            {/* Screen resolutions */}
+                            {data.screens?.length > 0 && (
+                                <ErrorBoundary>
+                                    <div className="sa-panel sa-aud-screens">
+                                        <h3 className="sa-panel__title">
+                                            <IconRadio className="sa-icon" /> Screen resolutions
+                                            <span className="sa-panel__consent-note">full events only</span>
+                                        </h3>
+                                        <table className="sa-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Resolution</th>
+                                                    <th className="sa-table__num">Events</th>
+                                                    <th className="sa-table__bar" />
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {data.screens.map((s, i) => (
+                                                    <tr key={i}>
+                                                        <td>{s.width}&thinsp;&times;&thinsp;{s.height}</td>
+                                                        <td className="sa-table__num">{s.events.toLocaleString("de-DE")}</td>
+                                                        <td className="sa-table__bar">
+                                                            <MiniBar value={s.events} max={maxScreens} color="rgba(52,211,153,0.6)" />
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </ErrorBoundary>
                             )}
 
                             {/* Languages */}
                             {data.languages?.length > 0 && (
-                                <div className="sa-panel sa-aud-lang">
-                                    <h3 className="sa-panel__title">
-                                        <IconGlobe className="sa-icon" /> Languages
-                                        <span className="sa-panel__consent-note">full events only</span>
-                                    </h3>
-                                    <table className="sa-table">
-                                        <thead>
-                                            <tr>
-                                                <th>Language</th>
-                                                <th className="sa-table__num">Events</th>
-                                                <th className="sa-table__bar" />
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {data.languages.map(l => (
-                                                <tr key={l.lang}>
-                                                    <td>{l.lang}</td>
-                                                    <td className="sa-table__num">{l.events.toLocaleString("de-DE")}</td>
-                                                    <td className="sa-table__bar">
-                                                        <MiniBar value={l.events} max={maxLang} color="rgba(251,146,60,0.55)" />
-                                                    </td>
+                                <ErrorBoundary>
+                                    <div className="sa-panel sa-aud-lang">
+                                        <h3 className="sa-panel__title">
+                                            <IconGlobe className="sa-icon" /> Languages
+                                            <span className="sa-panel__consent-note">full events only</span>
+                                        </h3>
+                                        <table className="sa-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Language</th>
+                                                    <th className="sa-table__num">Events</th>
+                                                    <th className="sa-table__bar" />
                                                 </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
+                                            </thead>
+                                            <tbody>
+                                                {data.languages.map(l => (
+                                                    <tr key={l.lang}>
+                                                        <td>{l.lang}</td>
+                                                        <td className="sa-table__num">{l.events.toLocaleString("de-DE")}</td>
+                                                        <td className="sa-table__bar">
+                                                            <MiniBar value={l.events} max={maxLang} color="rgba(251,146,60,0.55)" />
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </ErrorBoundary>
                             )}
 
                             {/* Timezones */}
                             {data.timezones?.length > 0 && (
-                                <div className="sa-panel sa-aud-tz">
-                                    <h3 className="sa-panel__title">
-                                        <IconGlobe className="sa-icon" /> Timezones
-                                        <span className="sa-panel__consent-note">full events only</span>
-                                    </h3>
-                                    <table className="sa-table">
-                                        <thead>
-                                            <tr>
-                                                <th>Timezone</th>
-                                                <th className="sa-table__num">Events</th>
-                                                <th className="sa-table__bar" />
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {data.timezones.map(t => (
-                                                <tr key={t.tz}>
-                                                    <td>{t.tz}</td>
-                                                    <td className="sa-table__num">{t.events.toLocaleString("de-DE")}</td>
-                                                    <td className="sa-table__bar">
-                                                        <MiniBar value={t.events} max={maxTz} color="rgba(248,113,113,0.5)" />
-                                                    </td>
+                                <ErrorBoundary>
+                                    <div className="sa-panel sa-aud-tz">
+                                        <h3 className="sa-panel__title">
+                                            <IconGlobe className="sa-icon" /> Timezones
+                                            <span className="sa-panel__consent-note">full events only</span>
+                                        </h3>
+                                        <table className="sa-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Timezone</th>
+                                                    <th className="sa-table__num">Events</th>
+                                                    <th className="sa-table__bar" />
                                                 </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
+                                            </thead>
+                                            <tbody>
+                                                {data.timezones.map(t => (
+                                                    <tr key={t.tz}>
+                                                        <td>{t.tz}</td>
+                                                        <td className="sa-table__num">{t.events.toLocaleString("de-DE")}</td>
+                                                        <td className="sa-table__bar">
+                                                            <MiniBar value={t.events} max={maxTz} color="rgba(248,113,113,0.5)" />
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </ErrorBoundary>
                             )}
 
                         </div>

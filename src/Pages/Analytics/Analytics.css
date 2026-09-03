@@ -1530,6 +1530,7 @@
     grid-template-areas:
         "kpis       kpis"
         "nvr        nvr"
+        "interests  interests"
         "countries  countries"
         "browsers   os"
         "screens    devices"
@@ -1539,6 +1540,7 @@
 .sa-aud-kpis      { grid-area: kpis; display: flex; gap: 12px; flex-wrap: wrap; }
 .sa-aud-kpis .sa-kpi { flex: 1 1 200px; }
 .sa-aud-nvr       { grid-area: nvr; }
+.sa-aud-interests { grid-area: interests; }
 .sa-aud-countries { grid-area: countries; }
 .sa-aud-browsers  { grid-area: browsers;  }
 .sa-aud-os        { grid-area: os;        }
@@ -1547,6 +1549,31 @@
 .sa-aud-lang      { grid-area: lang;      }
 .sa-aud-tz        { grid-area: tz;        }
 
+.sa-boundary-error {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border-radius: 6px;
+    background: rgba(239,68,68,0.08);
+    border: 1px solid rgba(239,68,68,0.2);
+    color: rgba(252,165,165,0.85);
+    font-size: 13px;
+}
+.sa-boundary-error__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: rgba(239,68,68,0.25);
+    color: rgba(252,165,165,0.9);
+    font-size: 11px;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
 .sa-aud-nvr-bars { display: flex; gap: 8px; }
 .sa-aud-nvr-bars > div { flex: 1; }
 
@@ -1554,7 +1581,7 @@
     .sa-audience-grid {
         grid-template-columns: 1fr;
         grid-template-areas:
-            "kpis" "nvr" "countries" "browsers" "os"
+            "kpis" "nvr" "interests" "countries" "browsers" "os"
             "devices" "screens" "lang" "tz";
     }
     .sa-aud-nvr-bars { flex-direction: column; }

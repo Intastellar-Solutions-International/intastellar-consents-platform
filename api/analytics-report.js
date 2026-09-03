@@ -157,7 +157,7 @@ async function _handler(req, res) {
            revenueRes, topProductsRes,
            outboundTotalsRes, topOutboundRes,
            rageClickStatsRes, topRageSelectorsRes, topRagePagesRes,
-           formFunnelRes] = await Promise.all([
+           formFunnelRes, interestsRes] = await Promise.all([
 
         db.query(`
             SELECT
@@ -874,12 +874,36 @@ async function _handler(req, res) {
             [siteId, fromDate, toDateExclusive]
         ).catch(() => ({ rows: [] })),
 
+        // Users by Interests — count sessions and events per interest rule (URL-pattern → label mapping)
+        // Uses a CTE so segment filters (which reference bare column names) apply cleanly to events
+        // before the LEFT JOIN against analytics_interest_rules.
+        db.query(`
+            WITH filtered_events AS (
+                SELECT session_id, pathname
+                FROM analytics_events
+                WHERE site_id = $1 AND received_at >= $2 AND received_at < $3 ${segAnd}
+            )
+            SELECT
+                r.id,
+                r.interest_label                                                          AS label,
+                r.color,
+                r.pattern,
+                COUNT(DISTINCT e.session_id) FILTER (WHERE e.session_id IS NOT NULL)      AS sessions,
+                COUNT(e.session_id)                                                        AS events
+            FROM analytics_interest_rules r
+            LEFT JOIN filtered_events e ON e.pathname ILIKE REPLACE(r.pattern, '*', '%')
+            WHERE r.site_id = $1
+            GROUP BY r.id, r.interest_label, r.color, r.pattern, r.sort_order
+            ORDER BY r.sort_order ASC, sessions DESC, events DESC`,
+            [siteId, fromDate, toDateExclusive]
+        ).catch(() => ({ rows: [] })),
+
     ]).catch((err) => {
         // Schema not yet migrated, connection limit hit, or other transient DB
         // error — return empty rows for every query so the response stays a
         // valid (if empty) 200 instead of crashing with a 500.
         console.error("[analytics-report] batch error:", err?.message);
-        return Array(37).fill({ rows: [] });
+        return Array(38).fill({ rows: [] });
     });
 
     const t = totalsRes.rows[0] || {};
@@ -1150,6 +1174,14 @@ async function _handler(req, res) {
             started:        Number(r.started   || 0),
             submitted:      Number(r.submitted || 0),
             completionRate: r.completion_rate != null ? Number(r.completion_rate) : null,
+        })),
+        interests: interestsRes.rows.map(r => ({
+            id:       Number(r.id),
+            label:    r.label,
+            pattern:  r.pattern,
+            color:    r.color || null,
+            sessions: Number(r.sessions || 0),
+            events:   Number(r.events   || 0),
         })),
     });
 }

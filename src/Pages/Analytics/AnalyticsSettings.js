@@ -7,6 +7,7 @@ import "./Analytics.css";
 const AD_CONNECTIONS_URL      = `${ScannerHost}/api/ad-connections`;
 const AD_CONV_ACTIONS_URL     = `${ScannerHost}/api/ad-conversion-actions`;
 const SITE_URL                = `${ScannerHost}/api/analytics-site`;
+const INTEREST_RULES_URL      = `${ScannerHost}/api/analytics-interest-rules`;
 const DISPLAY_CURRENCIES  = ["EUR", "USD", "GBP", "DKK", "SEK", "NOK", "CHF"];
 const CURRENCY_PREFS_KEY  = "ia_ad_display_currency";
 
@@ -687,6 +688,158 @@ function AttributionGuide() {
     );
 }
 
+// ── Interest Rules ────────────────────────────────────────────────────────────
+
+const INTEREST_COLORS = [
+    "#8b5cf6", "#3b82f6", "#10b981", "#f59e0b",
+    "#ef4444", "#06b6d4", "#ec4899", "#84cc16",
+];
+
+function InterestRulesSection({ domain }) {
+    const [rules,   setRules]   = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [error,   setError]   = useState(null);
+    const [label,   setLabel]   = useState("");
+    const [pattern, setPattern] = useState("");
+    const [color,   setColor]   = useState(INTEREST_COLORS[0]);
+    const [saving,  setSaving]  = useState(false);
+    const [saveErr, setSaveErr] = useState(null);
+
+    const load = useCallback(() => {
+        if (!domain) return;
+        setLoading(true);
+        fetch(`${INTEREST_RULES_URL}?domain=${encodeURIComponent(domain)}`, { headers: authHeaders() })
+            .then(r => r.json())
+            .then(d => { setRules(d.rules || []); setError(null); })
+            .catch(() => setError("Failed to load interest rules."))
+            .finally(() => setLoading(false));
+    }, [domain]);
+
+    useEffect(() => { load(); }, [load]);
+
+    async function handleAdd(e) {
+        e.preventDefault();
+        if (!label.trim() || !pattern.trim()) return;
+        setSaving(true);
+        setSaveErr(null);
+        try {
+            const res = await fetch(`${INTEREST_RULES_URL}?domain=${encodeURIComponent(domain)}`, {
+                method: "POST",
+                headers: { ...authHeaders(), "Content-Type": "application/json" },
+                body: JSON.stringify({ label: label.trim(), pattern: pattern.trim(), color }),
+            });
+            const data = await res.json();
+            if (!res.ok) { setSaveErr(data.error || "Failed to save."); return; }
+            setLabel(""); setPattern(""); setColor(INTEREST_COLORS[0]);
+            load();
+        } catch { setSaveErr("Network error — please try again."); }
+        finally { setSaving(false); }
+    }
+
+    async function handleDelete(id) {
+        await fetch(`${INTEREST_RULES_URL}?domain=${encodeURIComponent(domain)}&id=${id}`, {
+            method: "DELETE",
+            headers: authHeaders(),
+        });
+        load();
+    }
+
+    if (!domain) return <p style={{ fontSize: 13, color: "rgba(180,180,180,0.55)" }}>Select a domain above to manage interest rules.</p>;
+
+    return (
+        <div>
+            <p style={{ fontSize: 13, color: "rgba(180,180,180,0.65)", marginBottom: 16, lineHeight: 1.6 }}>
+                Map URL path patterns to interest labels. Visitors whose page paths match a pattern are counted
+                under that interest in the Audience report. Use <code style={{ background: "rgba(255,255,255,0.06)", padding: "1px 5px", borderRadius: 3 }}>*</code> as a wildcard,
+                e.g. <code style={{ background: "rgba(255,255,255,0.06)", padding: "1px 5px", borderRadius: 3 }}>/blog/marketing*</code>.
+            </p>
+
+            {loading && <p style={{ fontSize: 13, color: "rgba(180,180,180,0.5)" }}>Loading&hellip;</p>}
+            {error   && <p style={{ fontSize: 13, color: "rgba(248,113,113,0.8)" }}>{error}</p>}
+
+            {rules?.length > 0 && (
+                <table className="sa-table" style={{ marginBottom: 20 }}>
+                    <thead>
+                        <tr>
+                            <th>Label</th>
+                            <th>Pattern</th>
+                            <th style={{ width: 40 }} />
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {rules.map(r => (
+                            <tr key={r.id}>
+                                <td>
+                                    <span style={{
+                                        display: "inline-block", width: 9, height: 9, borderRadius: "50%",
+                                        background: r.color || "#8b5cf6", marginRight: 8, verticalAlign: "middle",
+                                    }} />
+                                    {r.label}
+                                </td>
+                                <td style={{ fontFamily: "monospace", fontSize: 12, color: "rgba(180,180,180,0.7)" }}>{r.pattern}</td>
+                                <td>
+                                    <button
+                                        onClick={() => handleDelete(r.id)}
+                                        style={{
+                                            background: "none", border: "none", cursor: "pointer",
+                                            color: "rgba(248,113,113,0.6)", fontSize: 16, padding: "0 4px",
+                                        }}
+                                        title="Delete rule"
+                                    >×</button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            )}
+
+            <form onSubmit={handleAdd} style={{ display: "grid", gridTemplateColumns: "1fr 1fr auto auto", gap: 8, alignItems: "end" }}>
+                <Field label="Interest label">
+                    <input
+                        className="ia-input"
+                        value={label}
+                        onChange={e => setLabel(e.target.value)}
+                        placeholder="e.g. Marketing"
+                        maxLength={80}
+                        required
+                    />
+                </Field>
+                <Field label="URL pattern">
+                    <input
+                        className="ia-input"
+                        value={pattern}
+                        onChange={e => setPattern(e.target.value)}
+                        placeholder="e.g. /blog/marketing*"
+                        maxLength={255}
+                        required
+                    />
+                </Field>
+                <Field label="Color">
+                    <div style={{ display: "flex", gap: 5, flexWrap: "wrap", paddingTop: 2 }}>
+                        {INTEREST_COLORS.map(c => (
+                            <button
+                                key={c} type="button"
+                                onClick={() => setColor(c)}
+                                style={{
+                                    width: 20, height: 20, borderRadius: "50%", background: c, border: "none",
+                                    cursor: "pointer", outline: color === c ? "2px solid rgba(255,255,255,0.7)" : "none",
+                                    outlineOffset: 1,
+                                }}
+                            />
+                        ))}
+                    </div>
+                </Field>
+                <div style={{ paddingBottom: 1 }}>
+                    <button type="submit" className="ia-btn ia-btn--primary" disabled={saving || !label.trim() || !pattern.trim()}>
+                        {saving ? "Adding…" : "Add rule"}
+                    </button>
+                </div>
+            </form>
+            {saveErr && <p style={{ fontSize: 12, color: "rgba(248,113,113,0.8)", marginTop: 6 }}>{saveErr}</p>}
+        </div>
+    );
+}
+
 // ── Page ──────────────────────────────────────────────────────────────────────
 
 export default function AnalyticsSettings() {
@@ -728,6 +881,10 @@ export default function AnalyticsSettings() {
                             right goal.
                         </p>
                         <ConversionActionsSection domain={domain} />
+                    </Section>
+
+                    <Section title="Users by Interests">
+                        <InterestRulesSection domain={domain} />
                     </Section>
 
                     <Section title="How Attribution Works">
