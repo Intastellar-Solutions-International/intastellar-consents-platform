@@ -280,7 +280,7 @@ function AreaChart({ daily }) {
     const fmtN = v => v >= 10000 ? (v / 1000).toFixed(0) + 'k' : v >= 1000 ? (v / 1000).toFixed(1) + 'k' : String(v);
     const labelIdxs = n <= 1 ? [0] :
         [0, Math.round(n / 4), Math.round(n / 2), Math.round((n * 3) / 4), n - 1]
-        .filter((v, idx, a) => a.indexOf(v) === idx);
+        .filter((v, idx, a) => a.indexOf(v) === idx && v < n);
 
     return (
         <div className="sa-area-chart">
