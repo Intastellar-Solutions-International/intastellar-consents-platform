@@ -157,7 +157,8 @@ async function _handler(req, res) {
            revenueRes, topProductsRes,
            outboundTotalsRes, topOutboundRes,
            rageClickStatsRes, topRageSelectorsRes, topRagePagesRes,
-           formFunnelRes, interestsRes] = await Promise.all([
+           formFunnelRes, interestsRes,
+           autoInterestsRes, topicInterestsRes] = await Promise.all([
 
         db.query(`
             SELECT
@@ -898,12 +899,45 @@ async function _handler(req, res) {
             [siteId, fromDate, toDateExclusive]
         ).catch(() => ({ rows: [] })),
 
+        // Auto-interests from page content (JSON-LD, OG tags, meta keywords)
+        db.query(`
+            SELECT
+                tag,
+                COUNT(DISTINCT session_id) FILTER (WHERE session_id IS NOT NULL) AS sessions,
+                COUNT(*)                                                           AS events
+            FROM analytics_events, unnest(page_interests) AS tag
+            WHERE site_id = $1 AND received_at >= $2 AND received_at < $3 ${segAnd}
+              AND cardinality(page_interests) > 0
+            GROUP BY tag
+            ORDER BY sessions DESC, events DESC
+            LIMIT 20`,
+            [siteId, fromDate, toDateExclusive]
+        ).catch(() => ({ rows: [] })),
+
+        // Browser topics from Chrome Topics API (consent_func only, numeric IAB topic IDs)
+        db.query(`
+            SELECT
+                topic_id::int,
+                COUNT(DISTINCT session_id) FILTER (WHERE session_id IS NOT NULL) AS sessions,
+                COUNT(*)                                                           AS events
+            FROM analytics_events,
+                 jsonb_array_elements_text(browser_topics) AS topic_id
+            WHERE site_id = $1 AND received_at >= $2 AND received_at < $3 ${segAnd}
+              AND browser_topics IS NOT NULL
+              AND jsonb_array_length(browser_topics) > 0
+              AND consent_func = true
+            GROUP BY topic_id
+            ORDER BY sessions DESC, events DESC
+            LIMIT 20`,
+            [siteId, fromDate, toDateExclusive]
+        ).catch(() => ({ rows: [] })),
+
     ]).catch((err) => {
         // Schema not yet migrated, connection limit hit, or other transient DB
         // error — return empty rows for every query so the response stays a
         // valid (if empty) 200 instead of crashing with a 500.
         console.error("[analytics-report] batch error:", err?.message);
-        return Array(38).fill({ rows: [] });
+        return Array(40).fill({ rows: [] });
     });
 
     const t = totalsRes.rows[0] || {};
@@ -1180,6 +1214,16 @@ async function _handler(req, res) {
             label:    r.label,
             pattern:  r.pattern,
             color:    r.color || null,
+            sessions: Number(r.sessions || 0),
+            events:   Number(r.events   || 0),
+        })),
+        autoInterests: autoInterestsRes.rows.map(r => ({
+            label:    r.tag,
+            sessions: Number(r.sessions || 0),
+            events:   Number(r.events   || 0),
+        })),
+        topicInterests: topicInterestsRes.rows.map(r => ({
+            topicId:  Number(r.topic_id),
             sessions: Number(r.sessions || 0),
             events:   Number(r.events   || 0),
         })),
