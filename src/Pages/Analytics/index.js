@@ -889,7 +889,6 @@ export default function SiteAnalytics() {
                                 <div className="sa-panel">
                                     <h3 className="sa-panel__title">
                                         <IconMegaphone className="sa-icon" /> Traffic sources
-                                        <span className="sa-panel__consent-note">full events only</span>
                                     </h3>
                                     <table className="sa-table">
                                         <thead>

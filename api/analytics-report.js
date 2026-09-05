@@ -257,7 +257,7 @@ async function _handler(req, res) {
                    COUNT(*)                                                          AS events,
                    COUNT(DISTINCT session_id) FILTER (WHERE session_id IS NOT NULL)  AS sessions
             FROM analytics_events
-            WHERE site_id = $1 AND consent_level = 'full'
+            WHERE site_id = $1
               AND received_at >= $2 AND received_at < $3
             GROUP BY referrer ORDER BY events DESC LIMIT 20`,
             [siteId, fromDate, toDateExclusive]
@@ -459,7 +459,7 @@ async function _handler(req, res) {
                        COUNT(*) OVER (PARTITION BY session_id)                                    AS session_pageview_count,
                        ROW_NUMBER() OVER (PARTITION BY session_id ORDER BY received_at DESC)      AS rn_from_end
                 FROM analytics_events
-                WHERE site_id = $1 AND consent_level = 'full' AND session_id IS NOT NULL
+                WHERE site_id = $1 AND session_id IS NOT NULL
                   AND received_at >= $2 AND received_at < $3
                   AND pathname !~* '^/api/'
                   AND pathname !~* '\\.(js|css|json|xml|txt|map|png|jpe?g|gif|svg|webp|ico|woff2?|ttf|eot|pdf)$'

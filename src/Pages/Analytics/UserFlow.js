@@ -50,11 +50,11 @@ function useEventDefs(domain) {
 }
 
 function flowHeaderNote(data) {
-    if (!data.goal) return `acquisition channel → next ${data.flowDepth} pages · full events only`;
+    if (!data.goal) return `acquisition channel → next ${data.flowDepth} pages · session-linked events`;
     if (data.direction === "from") {
-        return `acquisition channel → next ${data.flowDepth} pages, filtered to sessions that converted to “${data.goal}” · full events only`;
+        return `acquisition channel → next ${data.flowDepth} pages, filtered to sessions that converted to “${data.goal}” · session-linked events`;
     }
-    return `last ${data.flowDepth} pages before converting to “${data.goal}” · full events only`;
+    return `last ${data.flowDepth} pages before converting to “${data.goal}” · session-linked events`;
 }
 
 export default function AnalyticsUserFlow() {

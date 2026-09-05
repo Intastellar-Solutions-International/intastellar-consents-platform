@@ -145,7 +145,7 @@ export default function AnalyticsAcquisition() {
                             <div className="sa-panel sa-acq-pages">
                                 <h3 className="sa-panel__title">
                                     <IconTrendingUp className="sa-icon" /> Top pages
-                                    <span className="sa-panel__consent-note">bounce/exit/time: full events only</span>
+                                    <span className="sa-panel__consent-note">bounce/exit/time: session-linked events</span>
                                 </h3>
                                 <table className="sa-table">
                                     <thead>
@@ -240,7 +240,6 @@ export default function AnalyticsAcquisition() {
                             <div className="sa-panel sa-acq-referrers">
                                 <h3 className="sa-panel__title">
                                     <IconGlobe className="sa-icon" /> Referrers
-                                    <span className="sa-panel__consent-note">full events only</span>
                                 </h3>
                                 <table className="sa-table">
                                     <thead>

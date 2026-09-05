@@ -1014,7 +1014,7 @@ function fetchBrowserTopics(c){
 }
 
 function sendMinimal(c){
-  var pl={s:SITE,cl:'minimal',u:location.pathname,h:getHost(),dt:devType(),cs:hasStat(c)?1:0,cf:hasFun(c)?1:0,ca:hasAdv(c)?1:0};
+  var pl={s:SITE,cl:'minimal',sid:getSid(),u:location.pathname,r:document.referrer||'',h:getHost(),dt:devType(),cs:hasStat(c)?1:0,cf:hasFun(c)?1:0,ca:hasAdv(c)?1:0};
   send(JSON.stringify(pl));
 }
 
@@ -2217,17 +2217,19 @@ export default async function handler(req, res) {
     }
 
     if (isMinimal) {
-        // Minimal: no session, no UTMs, no referrer, no screen/browser — just path + consent state
+        const minSessionId = sid ? String(sid).slice(0, 64) : null;
+        let minReferrerHost = null;
+        try { if (referrer) minReferrerHost = new URL(referrer).hostname.slice(0, 255); } catch {}
         await db.query(
             `INSERT INTO analytics_events
-             (site_id, organisation_id, consent_level, consent_stat, consent_func, consent_adv,
-              url, pathname, page_host, country_code, region, device_type)
-             VALUES ($1,$2,'minimal',$3,$4,$5,$6,$7,$8,$9,$10,$11)`,
+             (site_id, organisation_id, session_id, consent_level, consent_stat, consent_func, consent_adv,
+              url, pathname, page_host, country_code, region, device_type, referrer_host)
+             VALUES ($1,$2,$3,'minimal',$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)`,
             [
-                siteId, orgId,
+                siteId, orgId, minSessionId,
                 cs === 1 || cs === true, cf === 1 || cf === true, ca === 1 || ca === true,
                 urlColumn, pathname, pageHostSanitized,
-                country, region, deviceType,
+                country, region, deviceType, minReferrerHost,
             ]
         ).catch(() => {});
     } else {
