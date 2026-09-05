@@ -875,27 +875,77 @@ async function _handler(req, res) {
             [siteId, fromDate, toDateExclusive]
         ).catch(() => ({ rows: [] })),
 
-        // Users by Interests — count sessions and events per interest rule (URL-pattern → label mapping)
-        // Uses a CTE so segment filters (which reference bare column names) apply cleanly to events
-        // before the LEFT JOIN against analytics_interest_rules.
+        // Users by Interests — per rule: session count + engagement score split.
+        // Each full-consent session that visited a matching page is scored across
+        // scroll depth (0-25), time on page (0-25), page depth (0-25), and
+        // conversions (0-25). Score >= 50 = "on-topic" (genuinely interested);
+        // score < 50 = "off-topic" (passing through, wrong audience, bounce).
         db.query(`
-            WITH filtered_events AS (
-                SELECT session_id, pathname
+            WITH full_events AS (
+                SELECT session_id, pathname, scroll_depth, duration_sec
                 FROM analytics_events
-                WHERE site_id = $1 AND received_at >= $2 AND received_at < $3 ${segAnd}
+                WHERE site_id = $1
+                  AND consent_level = 'full'
+                  AND received_at >= $2
+                  AND received_at < $3 ${segAnd}
+                  AND session_id IS NOT NULL
+            ),
+            session_stats AS (
+                SELECT
+                    session_id,
+                    MAX(scroll_depth)        AS max_scroll,
+                    MAX(duration_sec)        AS max_duration,
+                    COUNT(DISTINCT pathname) AS page_depth
+                FROM full_events
+                GROUP BY session_id
+            ),
+            session_conversions AS (
+                SELECT ce.session_id, COUNT(*) AS conv_count
+                FROM analytics_custom_events ce
+                JOIN analytics_event_defs d
+                  ON d.site_id = ce.site_id AND d.name = ce.name
+                WHERE ce.site_id = $1
+                  AND ce.received_at >= $2
+                  AND ce.received_at < $3
+                  AND ce.session_id IS NOT NULL
+                GROUP BY ce.session_id
+            ),
+            session_scored AS (
+                SELECT
+                    ss.session_id,
+                    (ROUND(LEAST(COALESCE(ss.max_scroll,   0), 100) * 0.25) +
+                     ROUND(LEAST(COALESCE(ss.max_duration, 0), 300) / 300.0 * 25) +
+                     LEAST(ss.page_depth * 5, 25) +
+                     LEAST(COALESCE(sc.conv_count, 0) * 25, 25))::int AS score
+                FROM session_stats ss
+                LEFT JOIN session_conversions sc ON sc.session_id = ss.session_id
+            ),
+            rule_sessions AS (
+                SELECT DISTINCT
+                    r.id           AS rule_id,
+                    r.interest_label AS label,
+                    r.color,
+                    r.sort_order,
+                    fe.session_id,
+                    ss.score
+                FROM analytics_interest_rules r
+                JOIN full_events fe
+                  ON fe.pathname ILIKE REPLACE(r.pattern, '*', '%')
+                JOIN session_scored ss
+                  ON ss.session_id = fe.session_id
+                WHERE r.site_id = $1
             )
             SELECT
-                r.id,
-                r.interest_label                                                          AS label,
-                r.color,
-                r.pattern,
-                COUNT(DISTINCT e.session_id) FILTER (WHERE e.session_id IS NOT NULL)      AS sessions,
-                COUNT(e.session_id)                                                        AS events
-            FROM analytics_interest_rules r
-            LEFT JOIN filtered_events e ON e.pathname ILIKE REPLACE(r.pattern, '*', '%')
-            WHERE r.site_id = $1
-            GROUP BY r.id, r.interest_label, r.color, r.pattern, r.sort_order
-            ORDER BY r.sort_order ASC, sessions DESC, events DESC`,
+                rule_id AS id,
+                label,
+                color,
+                COUNT(DISTINCT session_id)                                     AS sessions,
+                ROUND(AVG(score))                                              AS avg_score,
+                COUNT(DISTINCT session_id) FILTER (WHERE score >= 50)          AS on_topic,
+                COUNT(DISTINCT session_id) FILTER (WHERE score <  50)          AS off_topic
+            FROM rule_sessions
+            GROUP BY rule_id, label, color, sort_order
+            ORDER BY sort_order ASC, sessions DESC`,
             [siteId, fromDate, toDateExclusive]
         ).catch(() => ({ rows: [] })),
 
@@ -922,7 +972,7 @@ async function _handler(req, res) {
         // error — return empty rows for every query so the response stays a
         // valid (if empty) 200 instead of crashing with a 500.
         console.error("[analytics-report] batch error:", err?.message);
-        return Array(40).fill({ rows: [] });
+        return Array(39).fill({ rows: [] });
     });
 
     const t = totalsRes.rows[0] || {};
@@ -1197,10 +1247,11 @@ async function _handler(req, res) {
         interests: interestsRes.rows.map(r => ({
             id:       Number(r.id),
             label:    r.label,
-            pattern:  r.pattern,
             color:    r.color || null,
-            sessions: Number(r.sessions || 0),
-            events:   Number(r.events   || 0),
+            sessions: Number(r.sessions  || 0),
+            avgScore: Number(r.avg_score || 0),
+            onTopic:  Number(r.on_topic  || 0),
+            offTopic: Number(r.off_topic || 0),
         })),
         topicInterests: topicInterestsRes.rows.map(r => ({
             topicId:  Number(r.topic_id),
