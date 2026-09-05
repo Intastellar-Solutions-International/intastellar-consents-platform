@@ -57,14 +57,15 @@ function segCacheKey(domain, fromIso, toIso, segment) {
 }
 
 export function useAnalyticsReport(domain, fromIso, toIso, tick = 0, segment = null) {
-    const [data,    setData]    = useState(() => {
+    const [data,          setData]          = useState(() => {
         const key = segCacheKey(domain, fromIso, toIso, segment);
         if (!domain || tick !== 0) return null;
         const hit = reportCache.get(key);
         return hit && (Date.now() - hit.ts < REPORT_CACHE_TTL_MS) ? hit.data : null;
     });
-    const [loading, setLoading] = useState(false);
-    const [error,   setError]   = useState(null);
+    const [loading,       setLoading]       = useState(false);
+    const [detailLoading, setDetailLoading] = useState(false);
+    const [error,         setError]         = useState(null);
 
     useEffect(() => {
         if (!domain) { setData(null); return; }
@@ -80,25 +81,51 @@ export function useAnalyticsReport(domain, fromIso, toIso, tick = 0, segment = n
         }
 
         setLoading(true);
+        setDetailLoading(true);
         setError(null);
+
         const params = { domain, from: fromIso, to: toIso };
         if (segment?.device)  params.seg_device  = segment.device;
         if (segment?.country) params.seg_country = segment.country;
         if (segment?.channel) params.seg_channel = segment.channel;
         if (segment?.consent) params.seg_consent = segment.consent;
         const qs = new URLSearchParams(params).toString();
-        fetch(`${ScannerHost}/api/analytics-report?${qs}`, { headers: authHeaders() })
-            .then(async r => {
-                if (!r.ok) throw new Error(r.status);
-                const json = await r.json();
-                reportCache.set(key, { data: json, ts: Date.now() });
-                setData(json);
-            })
-            .catch(() => setError("Could not load analytics data."))
-            .finally(() => setLoading(false));
+        const headers = authHeaders();
+
+        let ignore = false;
+
+        // Fast call — shows KPIs, pages, acquisition, consent immediately
+        const fastP = fetch(`${ScannerHost}/api/analytics-report?${qs}`, { headers })
+            .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); });
+
+        // Slow call — CTE-heavy: interests, conversions funnels, rage clicks, forms
+        const slowP = fetch(`${ScannerHost}/api/analytics-report-detail?${qs}`, { headers })
+            .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+            .catch(() => null); // soft failure — UI degrades gracefully
+
+        // Show fast data the moment it arrives
+        fastP
+            .then(fast => { if (!ignore) { setData(fast); setLoading(false); } })
+            .catch(() => {
+                if (!ignore) { setError("Could not load analytics data."); setLoading(false); setDetailLoading(false); }
+            });
+
+        // Merge both when settled — write to cache only when complete
+        Promise.allSettled([fastP, slowP]).then(([fastResult, slowResult]) => {
+            if (ignore) return;
+            if (fastResult.status !== "fulfilled") { setDetailLoading(false); return; }
+            const fast = fastResult.value;
+            const slow = slowResult.status === "fulfilled" ? slowResult.value : null;
+            const merged = slow ? { ...fast, ...slow } : fast;
+            reportCache.set(key, { data: merged, ts: Date.now() });
+            setData(merged);
+            setDetailLoading(false);
+        });
+
+        return () => { ignore = true; };
     }, [domain, fromIso, toIso, tick, segment?.device, segment?.country, segment?.channel, segment?.consent]); // eslint-disable-line react-hooks/exhaustive-deps
 
-    return { data, loading, error };
+    return { data, loading, detailLoading, error };
 }
 
 /**
@@ -176,12 +203,12 @@ export function useAnalyticsPage() {
         const hasAny = s.device || s.country || s.channel || s.consent;
         return hasAny ? s : null;
     }, [chrome.segment]);
-    const { data, loading, error } = useAnalyticsReport(chrome.domain, chrome.fromIso, chrome.toIso, tick, segParam);
+    const { data, loading, detailLoading, error } = useAnalyticsReport(chrome.domain, chrome.fromIso, chrome.toIso, tick, segParam);
 
     const showSetup = !loading && data && (data.noSiteKey || data.noData);
     const showData  = !loading && data && !data.noSiteKey && !data.noData;
 
-    return { ...chrome, tick, setTick, data, loading, error, showSetup, showData };
+    return { ...chrome, tick, setTick, data, loading, detailLoading, error, showSetup, showData };
 }
 
 // % change of `current` vs `previous` — null when there's no previous-period
@@ -288,6 +315,21 @@ export function IndustryBenchmarkNote({ benchmark, actualPct }) {
                 {up ? "▲" : "▼"} {Math.abs(diff).toLocaleString("de-DE", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}pts {up ? "above" : "below"} average
             </span>
             <InfoTip text="Reference estimate, not a live average computed from other customers' traffic. Set the industry in Settings → Analytics Script." />
+        </div>
+    );
+}
+
+// Shimmer placeholder shown while the slow analytics-report-detail call loads.
+// `rows` controls how many skeleton lines to render inside the panel.
+export function PanelSkeleton({ rows = 4 }) {
+    return (
+        <div className="sa-skeleton-rows">
+            {Array.from({ length: rows }, (_, i) => (
+                <div key={i} className="sa-skeleton-row">
+                    <div className="sa-skeleton" style={{ width: (38 + (i * 19) % 38) + "%", height: 10 }} />
+                    <div className="sa-skeleton" style={{ flex: 1, height: 8 }} />
+                </div>
+            ))}
         </div>
     );
 }

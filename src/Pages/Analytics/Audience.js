@@ -25,7 +25,7 @@ function topicLabel(id){ return TOPIC_LABELS[id] || ('Topic #' + id); }
 // null = filter out (structural/generic types with no user-interest signal).
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import AnalyticsWorldMap from "./AnalyticsWorldMap.js";
-import { useAnalyticsPage, MiniBar, KpiCard, useAnalyticsReport, toIsoDate, pctChange } from "./_shared.js";
+import { useAnalyticsPage, MiniBar, KpiCard, useAnalyticsReport, toIsoDate, pctChange, PanelSkeleton } from "./_shared.js";
 import { IconGlobe, IconUsers, IconRadio } from "./Icons.js";
 import ErrorBoundary from "../../Components/Error/ErrorBoundary.js";
 import "./Analytics.css";
@@ -90,7 +90,7 @@ function RuleInterestRow({ interest }) {
     );
 }
 
-function InterestsPanel({ ruleInterests, topicInterests, maxTopics }) {
+function InterestsPanel({ ruleInterests, topicInterests, maxTopics, detailLoading }) {
     const [tab, setTab] = useState("rules");
 
     const hasRules  = ruleInterests.length  > 0;
@@ -116,14 +116,18 @@ function InterestsPanel({ ruleInterests, topicInterests, maxTopics }) {
                 )}
             </h3>
 
-            {!hasAny ? (
+            {detailLoading && !hasAny ? (
+                <PanelSkeleton rows={4} />
+            ) : !hasAny ? (
                 <p className="sa-notice" style={{ margin:0,padding:"8px 0" }}>
                     No interest data yet. Define{" "}
                     <a href="settings" style={{ color:"rgba(139,92,246,0.9)" }}>URL-pattern rules</a>{" "}
                     to classify visitors by intent — each matched session is scored on scroll depth, time on page, pages visited, and conversions to determine whether they are genuinely on-topic or just passing through.
                 </p>
             ) : tab === "rules" ? (
-                !hasRules ? (
+                detailLoading && !hasRules ? (
+                    <PanelSkeleton rows={4} />
+                ) : !hasRules ? (
                     <p className="sa-notice" style={{ margin:0,padding:"6px 0",fontSize:12 }}>
                         No rules configured yet. Add URL-pattern → label rules in{" "}
                         <a href="settings" style={{ color:"rgba(139,92,246,0.9)" }}>Analytics Settings</a>.
@@ -161,7 +165,7 @@ export default function AnalyticsAudience() {
 
     const {
         domain, getLastDays, setLastDays, fromDate, setFromDate, toDate, setToDate,
-        tick, data, loading, error, showData,
+        tick, data, loading, detailLoading, error, showData,
     } = useAnalyticsPage();
 
     // Previous period of the same length — same "vs previous period" pattern
@@ -310,6 +314,7 @@ export default function AnalyticsAudience() {
                                     ruleInterests={data.interests || []}
                                     topicInterests={data.topicInterests || []}
                                     maxTopics={maxTopicInterests}
+                                    detailLoading={detailLoading}
                                 />
                             </ErrorBoundary>
 

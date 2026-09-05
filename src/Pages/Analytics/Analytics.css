@@ -1616,6 +1616,35 @@
 .sa-int-rule-row__on  { color: rgba(16,185,129,0.75); }
 .sa-int-rule-row__off { color: rgba(180,180,200,0.38); }
 
+/* ── Skeleton / shimmer loader ─────────────────────────────────────────────── */
+@keyframes sa-shimmer {
+    0%   { background-position: -200% 0; }
+    100% { background-position:  200% 0; }
+}
+.sa-skeleton {
+    border-radius: 4px;
+    background: linear-gradient(
+        90deg,
+        rgba(255,255,255,0.04) 25%,
+        rgba(255,255,255,0.09) 50%,
+        rgba(255,255,255,0.04) 75%
+    );
+    background-size: 200% 100%;
+    animation: sa-shimmer 1.5s ease-in-out infinite;
+    flex-shrink: 0;
+}
+.sa-skeleton-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 4px 0;
+}
+.sa-skeleton-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
 /* ── Shared dark-theme form primitives (interest rules, etc.) ──────────────── */
 
 .ia-input {
