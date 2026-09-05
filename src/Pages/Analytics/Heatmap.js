@@ -1,21 +1,22 @@
-const { useState, useEffect, useMemo, useRef, useLayoutEffect } = React;
+const { useState, useEffect, useMemo } = React;
 import { ScannerHost } from "../../API/host.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import { authHeaders, useAnalyticsPageChrome } from "./_shared.js";
 import { IconCursorClick, IconTarget, IconTrendingUp } from "./Icons.js";
 import "./Analytics.css";
 
-const HEATMAP_URL = `${ScannerHost}/api/analytics-heatmap`;
+const HEATMAP_URL      = `${ScannerHost}/api/analytics-heatmap`;
+const SCREENSHOT_URL   = `${ScannerHost}/api/analytics-screenshot`;
+
 const DEVICES = [
-    { value: "",        label: "All devices" },
+    { value: "",         label: "All devices" },
     { value: "desktop",  label: "Desktop" },
     { value: "tablet",   label: "Tablet" },
     { value: "mobile",   label: "Mobile" },
 ];
 
-// Sequential single-hue intensity ramp (light -> dark) — same amber accent used
-// elsewhere in this dashboard (e.g. DailyChart's "full" bars) rather than a
-// rainbow scale, so density reads as magnitude, not identity.
+// Sequential single-hue intensity ramp — same amber accent used elsewhere in
+// the dashboard so density reads as magnitude, not identity.
 function intensityColor(t) {
     const alpha = 0.08 + Math.min(1, Math.max(0, t)) * 0.72;
     return `rgba(192,159,83,${alpha.toFixed(2)})`;
@@ -54,7 +55,7 @@ function useHeatmapDetail(domain, pathname, host, device, fromIso, toIso) {
         setError(null);
         const qs = new URLSearchParams({
             domain, pathname, from: fromIso, to: toIso,
-            ...(host ? { host } : {}),
+            ...(host   ? { host }   : {}),
             ...(device ? { device } : {}),
         }).toString();
         fetch(`${HEATMAP_URL}?${qs}`, { headers: authHeaders() })
@@ -69,65 +70,62 @@ function useHeatmapDetail(domain, pathname, host, device, fromIso, toIso) {
     return { data, loading, error };
 }
 
-// Representative viewport sizes so the preview actually triggers the target
-// site's responsive breakpoints — the device tabs only filtered click/scroll
-// *data* before; the <iframe> itself always rendered at the panel's own
-// width, so a "desktop" and "mobile" preview looked identical regardless of
-// which tab was selected. Rendered at true pixel size, then CSS-scaled down
-// to fit the panel (same trick browser devtools device emulation uses).
-const DEVICE_DIMENSIONS = {
-    desktop: { width: 1440, height: 900 },
-    tablet:  { width: 820,  height: 1180 },
-    mobile:  { width: 390,  height: 844 },
-};
+// Fetch a full-page screenshot from the analytics-screenshot API as a blob
+// and expose it as an object URL. Auth headers are required — the endpoint
+// validates domain ownership via Bearer + Organisation. The blob URL is
+// revoked when the domain/pathname changes or the component unmounts.
+function usePageScreenshot(domain, pathname) {
+    const [screenshotUrl,     setScreenshotUrl]     = useState(null);
+    const [screenshotLoading, setScreenshotLoading] = useState(false);
 
-function ClickOverlay({ host, pathname, clicks, device }) {
+    useEffect(() => {
+        if (!domain || !pathname) { setScreenshotUrl(null); return; }
+        let objectUrl = null;
+        setScreenshotLoading(true);
+        const qs = new URLSearchParams({ domain, path: pathname, fullPage: "1" }).toString();
+        fetch(`${SCREENSHOT_URL}?${qs}`, { headers: authHeaders() })
+            .then(r => r.ok ? r.blob() : null)
+            .then(blob => {
+                if (!blob) return;
+                objectUrl = URL.createObjectURL(blob);
+                setScreenshotUrl(objectUrl);
+            })
+            .catch(() => {})
+            .finally(() => setScreenshotLoading(false));
+
+        return () => {
+            if (objectUrl) URL.revokeObjectURL(objectUrl);
+            setScreenshotUrl(null);
+        };
+    }, [domain, pathname]);
+
+    return { screenshotUrl, screenshotLoading };
+}
+
+function ClickOverlay({ domain, pathname, clicks }) {
     const maxN = useMemo(() => Math.max(...clicks.map(c => c.n), 1), [clicks]);
-    const src  = pathname && host ? `https://${host}${pathname}` : null;
-    const [frameFailed, setFrameFailed] = useState(false);
-    const outerRef = useRef(null);
-    const [scale, setScale] = useState(1);
-
-    // "All devices" has no single representative width — default to desktop.
-    const dims = DEVICE_DIMENSIONS[device] || DEVICE_DIMENSIONS.desktop;
-
-    useEffect(() => setFrameFailed(false), [src]);
-
-    useLayoutEffect(() => {
-        function updateScale() {
-            const availableWidth = outerRef.current?.clientWidth || dims.width;
-            setScale(Math.min(1, availableWidth / dims.width));
-        }
-        updateScale();
-        window.addEventListener("resize", updateScale);
-        return () => window.removeEventListener("resize", updateScale);
-    }, [dims.width]);
+    const { screenshotUrl, screenshotLoading } = usePageScreenshot(domain, pathname);
 
     return (
-        <div ref={outerRef} className="sa-heatmap__frame-outer" style={{ height: Math.round(dims.height * scale) }}>
-            <div
-                className="sa-heatmap__frame-wrap"
-                style={{ width: dims.width, height: dims.height, transform: `scale(${scale})` }}
-            >
-                {src && !frameFailed && (
-                    <iframe
-                        className="sa-heatmap__frame"
-                        src={src}
-                        width={dims.width}
-                        height={dims.height}
-                        title="Page preview"
-                        loading="lazy"
-                        referrerPolicy="no-referrer"
-                        sandbox="allow-same-origin"
-                        onError={() => setFrameFailed(true)}
+        <div className="sa-heatmap__frame-outer">
+            <div className="sa-heatmap__frame-wrap">
+                {screenshotLoading ? (
+                    <div className="sa-heatmap__frame-fallback">Loading page preview&hellip;</div>
+                ) : screenshotUrl ? (
+                    <img
+                        className="sa-heatmap__frame-img"
+                        src={screenshotUrl}
+                        alt="Page preview"
+                        draggable={false}
                     />
+                ) : (
+                    <div className="sa-heatmap__frame-fallback">Page preview unavailable.</div>
                 )}
-                {(!src || frameFailed) && (
-                    <div className="sa-heatmap__frame-fallback">
-                        Preview unavailable — the page may block embedding, or hasn't loaded yet.
-                    </div>
-                )}
-                <svg className="sa-heatmap__overlay" viewBox="0 0 100 100" preserveAspectRatio="none">
+                <svg
+                    className="sa-heatmap__overlay"
+                    viewBox="0 0 100 100"
+                    preserveAspectRatio="none"
+                >
                     {clicks.map((c, i) => (
                         <circle
                             key={i}
@@ -149,7 +147,6 @@ function ScrollFunnel({ scrollDepth }) {
     const total = scrollDepth.reduce((s, b) => s + b.n, 0);
     if (!total) return <p className="sa-notice">No scroll data for this page yet.</p>;
 
-    // Convert per-bucket counts into "reached at least this depth" (cumulative from the bottom).
     const buckets = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90];
     const byBucket = new Map(scrollDepth.map(b => [b.bucket, b.n]));
     let cumulative = 0;
@@ -184,13 +181,10 @@ export default function AnalyticsHeatmap() {
     } = useAnalyticsPageChrome();
 
     const { paths, loading: pathsLoading, noSiteKey } = usePaths(domain, fromIso, toIso);
-    // A path is keyed by (host, pathname), not pathname alone — the same
-    // pathname can exist on multiple subdomains (page_host) with different
-    // layouts, so picking a path also has to pin down which host it's on.
     const [selected, setSelected] = useState(null); // { pathname, host }
-    const [device, setDevice] = useState("");
+    const [device,   setDevice]   = useState("");
 
-    const pathKey = p => `${p.host} ${p.pathname}`;
+    const pathKey   = p => `${p.host} ${p.pathname}`;
     const multiHost = useMemo(() => new Set(paths.map(p => p.host)).size > 1, [paths]);
 
     useEffect(() => {
@@ -265,7 +259,11 @@ export default function AnalyticsHeatmap() {
                                         {data.noData ? (
                                             <p className="sa-notice">No click data for this page/device combination.</p>
                                         ) : (
-                                            <ClickOverlay host={data.host} pathname={data.pathname} clicks={data.clicks} device={device} />
+                                            <ClickOverlay
+                                                domain={domain}
+                                                pathname={data.pathname}
+                                                clicks={data.clicks}
+                                            />
                                         )}
                                     </div>
 

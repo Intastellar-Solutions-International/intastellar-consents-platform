@@ -1,4 +1,17 @@
 {
     "svn.ignoreMissingSvnWarning": true,
-    "postman.settings.dotenv-detection-notification-visibility": false
+    "postman.settings.dotenv-detection-notification-visibility": false,
+    "workbench.colorCustomizations": {
+        "activityBar.background": "#551913",
+        "titleBar.activeBackground": "#77231B",
+        "titleBar.activeForeground": "#FEFCFC",
+        "titleBar.inactiveBackground": "#551913",
+        "titleBar.inactiveForeground": "#FEFCFC",
+        "statusBar.background": "#551913",
+        "statusBar.foreground": "#FEFCFC",
+        "statusBar.debuggingBackground": "#551913",
+        "statusBar.debuggingForeground": "#FEFCFC",
+        "statusBar.noFolderBackground": "#551913",
+        "statusBar.noFolderForeground": "#FEFCFC"
+    }
 }
