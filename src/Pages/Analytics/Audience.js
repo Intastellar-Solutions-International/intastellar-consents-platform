@@ -1,10 +1,126 @@
-const { useMemo } = React;
+const { useMemo, useState } = React;
+
+// Subset of Chrome Topics API v1 taxonomy (IAB Content Taxonomy)
+const TOPIC_LABELS = {
+    1:"Arts & Entertainment",2:"Humor",3:"Movies",4:"Music & Audio",5:"Television",
+    6:"Books & Literature",7:"Comics & Animation",8:"Concerts & Music Events",
+    57:"Automotive",58:"Boats & Watercraft",65:"Beauty & Fitness",66:"Books & Literature",
+    71:"Business & Industrial",83:"Business",84:"Advertising & Marketing",
+    100:"Computers & Electronics",101:"Computer Hardware",102:"Computer Security",
+    105:"Finance",106:"Banking",107:"Food & Drink",108:"Cooking & Recipes",
+    109:"Food",136:"Games",137:"Card Games",138:"Computer & Video Games",
+    140:"Health",141:"Fitness & Exercise",142:"Nutrition",148:"Hobbies & Leisure",
+    155:"Home & Garden",161:"Internet & Telecom",165:"Jobs & Education",
+    166:"Education",167:"Jobs",179:"Law & Government",182:"News",
+    183:"Business News",184:"Politics",185:"Online Communities",
+    187:"People & Society",199:"Pets & Animals",208:"Real Estate",
+    213:"Reference",216:"Science",219:"Shopping",225:"Sports",
+    226:"American Football",227:"Baseball",228:"Basketball",229:"Soccer",
+    237:"Travel",238:"Air Travel",239:"Hotels & Accommodations",
+    240:"Tourist Destinations",271:"TV & Video",272:"Movies",273:"TV Shows",
+};
+function topicLabel(id){ return TOPIC_LABELS[id] || ('Topic #' + id); }
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import AnalyticsWorldMap from "./AnalyticsWorldMap.js";
 import { useAnalyticsPage, MiniBar, KpiCard, useAnalyticsReport, toIsoDate, pctChange } from "./_shared.js";
 import { IconGlobe, IconUsers, IconRadio } from "./Icons.js";
 import ErrorBoundary from "../../Components/Error/ErrorBoundary.js";
 import "./Analytics.css";
+
+function InterestRow({ label, sessions, events, max, color, badge }) {
+    const val = sessions || events;
+    return (
+        <tr>
+            <td>
+                {color && <span style={{ display:"inline-block",width:8,height:8,borderRadius:"50%",background:color,marginRight:7,verticalAlign:"middle" }} />}
+                {label}
+                {badge && <span style={{ marginLeft:8,fontSize:10,padding:"1px 5px",borderRadius:3,background:"rgba(255,255,255,0.07)",color:"rgba(200,200,200,0.6)",verticalAlign:"middle" }}>{badge}</span>}
+            </td>
+            <td className="sa-table__num">{val.toLocaleString("de-DE")}</td>
+            <td className="sa-table__bar"><MiniBar value={val} max={max} color={color || "rgba(139,92,246,0.6)"} /></td>
+        </tr>
+    );
+}
+
+function InterestsTable({ rows, max, emptyText }) {
+    if (!rows.length) return <p className="sa-notice" style={{ margin:0,padding:"6px 0",fontSize:12 }}>{emptyText}</p>;
+    return (
+        <table className="sa-table">
+            <thead><tr><th>Interest</th><th className="sa-table__num">Sessions</th><th className="sa-table__bar" /></tr></thead>
+            <tbody>{rows}</tbody>
+        </table>
+    );
+}
+
+function InterestsPanel({ ruleInterests, autoInterests, topicInterests, maxRules, maxAuto, maxTopics }) {
+    const [tab, setTab] = useState("auto");
+
+    const hasRules   = ruleInterests.length  > 0;
+    const hasAuto    = autoInterests.length   > 0;
+    const hasTopics  = topicInterests.length  > 0;
+    const hasAny     = hasRules || hasAuto || hasTopics;
+
+    const tabStyle = (t) => ({
+        background: "none", border: "none", cursor: "pointer", padding: "4px 10px",
+        fontSize: 12, borderRadius: 4, fontWeight: tab === t ? 600 : 400,
+        color: tab === t ? "rgba(240,235,225,0.9)" : "rgba(180,180,180,0.55)",
+        background: tab === t ? "rgba(255,255,255,0.07)" : "none",
+    });
+
+    return (
+        <div className="sa-panel sa-aud-interests">
+            <h3 className="sa-panel__title" style={{ display:"flex",alignItems:"center",gap:8,flexWrap:"wrap" }}>
+                <IconRadio className="sa-icon" /> Users by Interests
+                {hasAny && (
+                    <span style={{ display:"flex",gap:3,marginLeft:"auto" }}>
+                        <button style={tabStyle("auto")}    onClick={() => setTab("auto")}>Page content</button>
+                        <button style={tabStyle("rules")}   onClick={() => setTab("rules")}>Rules</button>
+                        <button style={tabStyle("topics")}  onClick={() => setTab("topics")}>Chrome Topics</button>
+                    </span>
+                )}
+            </h3>
+
+            {!hasAny ? (
+                <p className="sa-notice" style={{ margin:0,padding:"8px 0" }}>
+                    No interest data yet. Add{" "}
+                    <a href="settings" style={{ color:"rgba(139,92,246,0.9)" }}>interest rules</a>{" "}
+                    or wait for page content signals to accumulate.
+                </p>
+            ) : tab === "auto" ? (
+                <InterestsTable
+                    max={maxAuto}
+                    emptyText="No page-content signals yet — appears once visitors land on pages with JSON-LD, Open Graph tags, or meta keywords."
+                    rows={autoInterests.map(i => (
+                        <InterestRow key={i.label} label={i.label} sessions={i.sessions} events={i.events} max={maxAuto} color="rgba(52,211,153,0.7)" />
+                    ))}
+                />
+            ) : tab === "rules" ? (
+                <InterestsTable
+                    max={maxRules}
+                    emptyText={<>No rules configured. Add URL-pattern → label rules in <a href="settings" style={{ color:"rgba(139,92,246,0.9)" }}>Analytics Settings</a>.</>}
+                    rows={ruleInterests.map(i => (
+                        <InterestRow key={i.id} label={i.label} sessions={i.sessions} events={i.events} max={maxRules} color={i.color || "rgba(139,92,246,0.6)"} />
+                    ))}
+                />
+            ) : (
+                <>
+                    <InterestsTable
+                        max={maxTopics}
+                        emptyText="No Chrome Topics data yet — appears for Chrome 115+ visitors who granted functional consent."
+                        rows={topicInterests.map(i => (
+                            <InterestRow key={i.topicId} label={topicLabel(i.topicId)} sessions={i.sessions} events={i.events} max={maxTopics} color="rgba(96,165,250,0.7)" badge="IAB" />
+                        ))}
+                    />
+                    {hasTopics && (
+                        <p style={{ fontSize:11,color:"rgba(150,150,175,0.45)",marginTop:8,lineHeight:1.5 }}>
+                            Chrome Topics API · IAB Content Taxonomy · Chrome 115+ only · functional consent required
+                        </p>
+                    )}
+                </>
+            )}
+        </div>
+    );
+}
 
 export default function AnalyticsAudience() {
     document.title = "Audience | Site Analytics";
@@ -47,7 +163,9 @@ export default function AnalyticsAudience() {
     const maxLang      = useMemo(() => Math.max(...(data?.languages  || []).map(l => l.events), 1), [data]);
     const maxTz        = useMemo(() => Math.max(...(data?.timezones  || []).map(t => t.events), 1), [data]);
     const deviceTotal  = useMemo(() => (data?.devices || []).reduce((s, d) => s + d.events, 0), [data]);
-    const maxInterests = useMemo(() => Math.max(...(data?.interests  || []).map(i => i.sessions || i.events), 1), [data]);
+    const maxInterests     = useMemo(() => Math.max(...(data?.interests     || []).map(i => i.sessions || i.events), 1), [data]);
+    const maxAutoInterests = useMemo(() => Math.max(...(data?.autoInterests  || []).map(i => i.sessions || i.events), 1), [data]);
+    const maxTopicInterests= useMemo(() => Math.max(...(data?.topicInterests || []).map(i => i.sessions || i.events), 1), [data]);
 
     return (
         <div style={{ flex: "1", minWidth: 0 }}>
@@ -154,57 +272,16 @@ export default function AnalyticsAudience() {
                                 </div>
                             </ErrorBoundary>
 
-                            {/* Users by Interests */}
+                            {/* Users by Interests — three complementary sources */}
                             <ErrorBoundary>
-                                <div className="sa-panel sa-aud-interests">
-                                    <h3 className="sa-panel__title">
-                                        <IconRadio className="sa-icon" /> Users by Interests
-                                        <span className="sa-panel__consent-note">based on page path rules</span>
-                                    </h3>
-                                    {data.interests?.length > 0 ? (
-                                        <table className="sa-table">
-                                            <thead>
-                                                <tr>
-                                                    <th>Interest</th>
-                                                    <th className="sa-table__num">Sessions</th>
-                                                    <th className="sa-table__bar" />
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {data.interests.map(i => (
-                                                    <tr key={i.id}>
-                                                        <td>
-                                                            {i.color && (
-                                                                <span style={{
-                                                                    display: "inline-block", width: 8, height: 8,
-                                                                    borderRadius: "50%", background: i.color,
-                                                                    marginRight: 7, verticalAlign: "middle",
-                                                                }} />
-                                                            )}
-                                                            {i.label}
-                                                        </td>
-                                                        <td className="sa-table__num">
-                                                            {(i.sessions || i.events).toLocaleString("de-DE")}
-                                                        </td>
-                                                        <td className="sa-table__bar">
-                                                            <MiniBar
-                                                                value={i.sessions || i.events}
-                                                                max={maxInterests}
-                                                                color={i.color || "rgba(139,92,246,0.6)"}
-                                                            />
-                                                        </td>
-                                                    </tr>
-                                                ))}
-                                            </tbody>
-                                        </table>
-                                    ) : (
-                                        <p className="sa-notice" style={{ margin: 0, padding: "8px 0" }}>
-                                            No interest rules configured yet. Add URL-pattern rules in{" "}
-                                            <a href="settings" style={{ color: "rgba(139,92,246,0.9)" }}>Analytics Settings</a>{" "}
-                                            to classify visitors by interest.
-                                        </p>
-                                    )}
-                                </div>
+                                <InterestsPanel
+                                    ruleInterests={data.interests || []}
+                                    autoInterests={data.autoInterests || []}
+                                    topicInterests={data.topicInterests || []}
+                                    maxRules={maxInterests}
+                                    maxAuto={maxAutoInterests}
+                                    maxTopics={maxTopicInterests}
+                                />
                             </ErrorBoundary>
 
                             {/* Countries */}

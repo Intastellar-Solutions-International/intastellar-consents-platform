@@ -793,7 +793,7 @@ function InterestRulesSection({ domain }) {
                 </table>
             )}
 
-            <form onSubmit={handleAdd} style={{ display: "grid", gridTemplateColumns: "1fr 1fr auto auto", gap: 8, alignItems: "end" }}>
+            <form onSubmit={handleAdd} className="sa-interest-form">
                 <Field label="Interest label">
                     <input
                         className="ia-input"
@@ -815,21 +815,22 @@ function InterestRulesSection({ domain }) {
                     />
                 </Field>
                 <Field label="Color">
-                    <div style={{ display: "flex", gap: 5, flexWrap: "wrap", paddingTop: 2 }}>
+                    <div style={{ display: "flex", gap: 6, alignItems: "center", paddingTop: 3 }}>
                         {INTEREST_COLORS.map(c => (
                             <button
                                 key={c} type="button"
                                 onClick={() => setColor(c)}
                                 style={{
-                                    width: 20, height: 20, borderRadius: "50%", background: c, border: "none",
-                                    cursor: "pointer", outline: color === c ? "2px solid rgba(255,255,255,0.7)" : "none",
-                                    outlineOffset: 1,
+                                    width: 22, height: 22, borderRadius: "50%", background: c, border: "none",
+                                    cursor: "pointer", flexShrink: 0,
+                                    outline: color === c ? "2px solid rgba(255,255,255,0.75)" : "2px solid transparent",
+                                    outlineOffset: 2, transition: "outline-color 0.1s",
                                 }}
                             />
                         ))}
                     </div>
                 </Field>
-                <div style={{ paddingBottom: 1 }}>
+                <div>
                     <button type="submit" className="ia-btn ia-btn--primary" disabled={saving || !label.trim() || !pattern.trim()}>
                         {saving ? "Adding…" : "Add rule"}
                     </button>

@@ -1549,6 +1549,68 @@
 .sa-aud-lang      { grid-area: lang;      }
 .sa-aud-tz        { grid-area: tz;        }
 
+/* ── Shared dark-theme form primitives (interest rules, etc.) ──────────────── */
+
+.ia-input {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 6px;
+    color: rgba(220,230,245,0.9);
+    font-size: 0.83rem;
+    padding: 7px 10px;
+    width: 100%;
+    outline: none;
+    box-sizing: border-box;
+    transition: border-color 0.15s;
+}
+.ia-input::placeholder {
+    color: rgba(180,180,200,0.35);
+}
+.ia-input:focus {
+    border-color: rgba(192,159,83,0.5);
+}
+
+.ia-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    padding: 7px 14px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: opacity 0.15s;
+}
+.ia-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+.ia-btn--primary {
+    background: rgba(192,159,83,0.7);
+    color: #111118;
+}
+.ia-btn--primary:not(:disabled):hover {
+    background: rgba(192,159,83,0.9);
+}
+
+.sa-interest-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto auto;
+    gap: 10px;
+    align-items: end;
+    margin-top: 4px;
+}
+
+@media (max-width: 700px) {
+    .sa-interest-form {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+/* ── Error boundary inline card ──────────────────────────────────────────── */
+
 .sa-boundary-error {
     display: flex;
     align-items: center;
