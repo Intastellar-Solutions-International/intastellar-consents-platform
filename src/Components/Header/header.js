@@ -1,6 +1,7 @@
 import { OrganisationContext, DomainContext, WorkspaceContext } from "../../App";
 import "./header.css";
 import logo from "./logo.svg";
+import logoAnalytics from "./logo-analytics.svg";
 import Fetch from "../../Functions/fetch";
 import API from "../../API/api";
 import Authentication from "../../Authentication/Auth";
@@ -505,7 +506,7 @@ export default function Header(props) {
                                 <div className="menu-bar"></div>
                                 <div className="menu-bar"></div>
                             </button>
-                            <img className="dashboard-logo" src={logo} alt="Intastellar Solutions Logo" />
+                            <img className="dashboard-logo" src={dashboardMode === "analytics" ? logoAnalytics : logo} alt={dashboardMode === "analytics" ? "Intastellar Analytics" : "Intastellar Solutions Logo"} />
                         </section>
                         <section className="company_container">
                             {(domains && currentDomain && allOrganisations && Organisation) ? (
