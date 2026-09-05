@@ -20,6 +20,9 @@ const TOPIC_LABELS = {
     240:"Tourist Destinations",271:"TV & Video",272:"Movies",273:"TV Shows",
 };
 function topicLabel(id){ return TOPIC_LABELS[id] || ('Topic #' + id); }
+
+// Maps raw schema.org @type values and OG types → readable interest labels.
+// null = filter out (structural/generic types with no user-interest signal).
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import AnalyticsWorldMap from "./AnalyticsWorldMap.js";
 import { useAnalyticsPage, MiniBar, KpiCard, useAnalyticsReport, toIsoDate, pctChange } from "./_shared.js";
@@ -52,19 +55,53 @@ function InterestsTable({ rows, max, emptyText }) {
     );
 }
 
-function InterestsPanel({ ruleInterests, autoInterests, topicInterests, maxRules, maxAuto, maxTopics }) {
-    const [tab, setTab] = useState("auto");
+function scoreToTier(score) {
+    if (score > 75) return { label: "High Intent", color: "rgba(16,185,129,0.9)"  };
+    if (score > 50) return { label: "Engaged",     color: "rgba(249,115,22,0.9)"  };
+    if (score > 25) return { label: "Warm",        color: "rgba(234,179,8,0.9)"   };
+    return             { label: "Cold",         color: "rgba(150,150,180,0.75)" };
+}
 
-    const hasRules   = ruleInterests.length  > 0;
-    const hasAuto    = autoInterests.length   > 0;
-    const hasTopics  = topicInterests.length  > 0;
-    const hasAny     = hasRules || hasAuto || hasTopics;
+function RuleInterestRow({ interest }) {
+    const { label, color, sessions, avgScore, onTopic, offTopic } = interest;
+    const total  = sessions || 1;
+    const onPct  = Math.round((onTopic  / total) * 100);
+    const offPct = 100 - onPct;
+    const { label: tierLabel, color: tierColor } = scoreToTier(avgScore);
+    return (
+        <div className="sa-int-rule-row">
+            <div className="sa-int-rule-row__header">
+                <span style={{ width:8,height:8,borderRadius:"50%",background:color||"rgba(139,92,246,0.6)",display:"inline-block",flexShrink:0 }} />
+                <span className="sa-int-rule-row__label">{label}</span>
+                <span className="sa-int-rule-row__stats">
+                    {sessions.toLocaleString("de-DE")} sessions
+                    <span className="sa-int-rule-row__score" style={{ color: tierColor }}>{avgScore}/100</span>
+                    <span style={{ color: tierColor, fontSize:"0.72rem" }}>{tierLabel}</span>
+                </span>
+            </div>
+            <div className="sa-int-rule-row__bar">
+                <div className="sa-int-rule-row__bar-on" style={{ width: onPct + "%" }} />
+            </div>
+            <div className="sa-int-rule-row__legend">
+                <span className="sa-int-rule-row__on">{onPct}% on-topic · {onTopic.toLocaleString("de-DE")}</span>
+                <span className="sa-int-rule-row__off">{offPct}% off-topic · {offTopic.toLocaleString("de-DE")}</span>
+            </div>
+        </div>
+    );
+}
+
+function InterestsPanel({ ruleInterests, topicInterests, maxTopics }) {
+    const [tab, setTab] = useState("rules");
+
+    const hasRules  = ruleInterests.length  > 0;
+    const hasTopics = topicInterests.length > 0;
+    const hasAny    = hasRules || hasTopics;
 
     const tabStyle = (t) => ({
-        background: "none", border: "none", cursor: "pointer", padding: "4px 10px",
+        background: tab === t ? "rgba(255,255,255,0.07)" : "none",
+        border: "none", cursor: "pointer", padding: "4px 10px",
         fontSize: 12, borderRadius: 4, fontWeight: tab === t ? 600 : 400,
         color: tab === t ? "rgba(240,235,225,0.9)" : "rgba(180,180,180,0.55)",
-        background: tab === t ? "rgba(255,255,255,0.07)" : "none",
     });
 
     return (
@@ -73,35 +110,32 @@ function InterestsPanel({ ruleInterests, autoInterests, topicInterests, maxRules
                 <IconRadio className="sa-icon" /> Users by Interests
                 {hasAny && (
                     <span style={{ display:"flex",gap:3,marginLeft:"auto" }}>
-                        <button style={tabStyle("auto")}    onClick={() => setTab("auto")}>Page content</button>
-                        <button style={tabStyle("rules")}   onClick={() => setTab("rules")}>Rules</button>
-                        <button style={tabStyle("topics")}  onClick={() => setTab("topics")}>Chrome Topics</button>
+                        <button style={tabStyle("rules")}  onClick={() => setTab("rules")}>Rules</button>
+                        <button style={tabStyle("topics")} onClick={() => setTab("topics")}>Chrome Topics</button>
                     </span>
                 )}
             </h3>
 
             {!hasAny ? (
                 <p className="sa-notice" style={{ margin:0,padding:"8px 0" }}>
-                    No interest data yet. Add{" "}
-                    <a href="settings" style={{ color:"rgba(139,92,246,0.9)" }}>interest rules</a>{" "}
-                    or wait for page content signals to accumulate.
+                    No interest data yet. Define{" "}
+                    <a href="settings" style={{ color:"rgba(139,92,246,0.9)" }}>URL-pattern rules</a>{" "}
+                    to classify visitors by intent — each matched session is scored on scroll depth, time on page, pages visited, and conversions to determine whether they are genuinely on-topic or just passing through.
                 </p>
-            ) : tab === "auto" ? (
-                <InterestsTable
-                    max={maxAuto}
-                    emptyText="No page-content signals yet — appears once visitors land on pages with JSON-LD, Open Graph tags, or meta keywords."
-                    rows={autoInterests.map(i => (
-                        <InterestRow key={i.label} label={i.label} sessions={i.sessions} events={i.events} max={maxAuto} color="rgba(52,211,153,0.7)" />
-                    ))}
-                />
             ) : tab === "rules" ? (
-                <InterestsTable
-                    max={maxRules}
-                    emptyText={<>No rules configured. Add URL-pattern → label rules in <a href="settings" style={{ color:"rgba(139,92,246,0.9)" }}>Analytics Settings</a>.</>}
-                    rows={ruleInterests.map(i => (
-                        <InterestRow key={i.id} label={i.label} sessions={i.sessions} events={i.events} max={maxRules} color={i.color || "rgba(139,92,246,0.6)"} />
-                    ))}
-                />
+                !hasRules ? (
+                    <p className="sa-notice" style={{ margin:0,padding:"6px 0",fontSize:12 }}>
+                        No rules configured yet. Add URL-pattern → label rules in{" "}
+                        <a href="settings" style={{ color:"rgba(139,92,246,0.9)" }}>Analytics Settings</a>.
+                    </p>
+                ) : (
+                    <div className="sa-int-rules-list">
+                        {ruleInterests.map(i => <RuleInterestRow key={i.id} interest={i} />)}
+                        <p style={{ fontSize:11,color:"rgba(150,150,175,0.4)",marginTop:10,lineHeight:1.5 }}>
+                            On-topic = engagement score ≥ 50 · off-topic = score &lt; 50 · scored from full-consent sessions only
+                        </p>
+                    </div>
+                )
             ) : (
                 <>
                     <InterestsTable
@@ -163,8 +197,6 @@ export default function AnalyticsAudience() {
     const maxLang      = useMemo(() => Math.max(...(data?.languages  || []).map(l => l.events), 1), [data]);
     const maxTz        = useMemo(() => Math.max(...(data?.timezones  || []).map(t => t.events), 1), [data]);
     const deviceTotal  = useMemo(() => (data?.devices || []).reduce((s, d) => s + d.events, 0), [data]);
-    const maxInterests     = useMemo(() => Math.max(...(data?.interests     || []).map(i => i.sessions || i.events), 1), [data]);
-    const maxAutoInterests = useMemo(() => Math.max(...(data?.autoInterests  || []).map(i => i.sessions || i.events), 1), [data]);
     const maxTopicInterests= useMemo(() => Math.max(...(data?.topicInterests || []).map(i => i.sessions || i.events), 1), [data]);
 
     return (
@@ -276,10 +308,7 @@ export default function AnalyticsAudience() {
                             <ErrorBoundary>
                                 <InterestsPanel
                                     ruleInterests={data.interests || []}
-                                    autoInterests={data.autoInterests || []}
                                     topicInterests={data.topicInterests || []}
-                                    maxRules={maxInterests}
-                                    maxAuto={maxAutoInterests}
                                     maxTopics={maxTopicInterests}
                                 />
                             </ErrorBoundary>
