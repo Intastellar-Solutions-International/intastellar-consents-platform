@@ -659,7 +659,7 @@ function ConsentImpactPanel({ impact }) {
 
 // ── Main overview page ────────────────────────────────────────────────────────
 export default function SiteAnalytics() {
-    document.title = "Site Analytics | Intastellar Consents";
+    document.title = "Overview, Analytics | Intastellar Consents";
 
     const {
         domain, getLastDays, setLastDays, fromDate, setFromDate, toDate, setToDate,
@@ -721,7 +721,7 @@ export default function SiteAnalytics() {
     return (
         <div style={{ flex: "1", minWidth: 0 }}>
             <StickyPageTitle
-                title="Site Analytics"
+                title="Overview"
                 numberofDays={setLastDays}
                 getLastDays={getLastDays}
                 fromDate={fromDate}
