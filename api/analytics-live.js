@@ -142,17 +142,20 @@ export default async function handler(req, res) {
             [siteId]
         ).catch(() => ({ rows: [] })),
 
-        // Recent activity: pageviews + custom events merged, newest first
+        // Recent activity: pageviews + user-configured custom events merged, newest first.
+        // Auto-collected events (network_connection, page_perf, scroll_depth, rage_click, etc.)
+        // are excluded by requiring a matching row in analytics_event_defs.
         db.query(`
             SELECT received_at, pathname, page_host, country_code, device_type, consent_level,
                    NULL::text AS event_name
             FROM analytics_events
             WHERE site_id = $1 AND received_at >= NOW() - INTERVAL '30 minutes'
             UNION ALL
-            SELECT received_at, pathname, page_host, country_code, device_type, consent_level,
-                   name AS event_name
-            FROM analytics_custom_events
-            WHERE site_id = $1 AND received_at >= NOW() - INTERVAL '30 minutes'
+            SELECT ce.received_at, ce.pathname, ce.page_host, ce.country_code, ce.device_type, ce.consent_level,
+                   ce.name AS event_name
+            FROM analytics_custom_events ce
+            JOIN analytics_event_defs d ON d.site_id = ce.site_id AND d.name = ce.name
+            WHERE ce.site_id = $1 AND ce.received_at >= NOW() - INTERVAL '30 minutes'
             ORDER BY received_at DESC
             LIMIT 20`,
             [siteId]
@@ -167,8 +170,8 @@ export default async function handler(req, res) {
                 MAX(ce.currency)                     AS currency,
                 MAX(ce.received_at)                  AS last_at
             FROM analytics_custom_events ce
-            LEFT JOIN analytics_event_defs d
-                   ON d.site_id = ce.site_id AND d.name = ce.name
+            JOIN analytics_event_defs d
+              ON d.site_id = ce.site_id AND d.name = ce.name
             WHERE ce.site_id = $1
               AND ce.received_at >= NOW() - INTERVAL '30 minutes'
             GROUP BY ce.name, d.label
