@@ -158,7 +158,7 @@ async function _handler(req, res) {
            outboundTotalsRes, topOutboundRes,
            rageClickStatsRes, topRageSelectorsRes, topRagePagesRes,
            formFunnelRes, interestsRes,
-           autoInterestsRes, topicInterestsRes] = await Promise.all([
+           topicInterestsRes] = await Promise.all([
 
         db.query(`
             SELECT
@@ -899,21 +899,6 @@ async function _handler(req, res) {
             [siteId, fromDate, toDateExclusive]
         ).catch(() => ({ rows: [] })),
 
-        // Auto-interests from page content (JSON-LD, OG tags, meta keywords)
-        db.query(`
-            SELECT
-                tag,
-                COUNT(DISTINCT session_id) FILTER (WHERE session_id IS NOT NULL) AS sessions,
-                COUNT(*)                                                           AS events
-            FROM analytics_events, unnest(page_interests) AS tag
-            WHERE site_id = $1 AND received_at >= $2 AND received_at < $3 ${segAnd}
-              AND cardinality(page_interests) > 0
-            GROUP BY tag
-            ORDER BY sessions DESC, events DESC
-            LIMIT 20`,
-            [siteId, fromDate, toDateExclusive]
-        ).catch(() => ({ rows: [] })),
-
         // Browser topics from Chrome Topics API (consent_func only, numeric IAB topic IDs)
         db.query(`
             SELECT
@@ -1214,11 +1199,6 @@ async function _handler(req, res) {
             label:    r.label,
             pattern:  r.pattern,
             color:    r.color || null,
-            sessions: Number(r.sessions || 0),
-            events:   Number(r.events   || 0),
-        })),
-        autoInterests: autoInterestsRes.rows.map(r => ({
-            label:    r.tag,
             sessions: Number(r.sessions || 0),
             events:   Number(r.events   || 0),
         })),

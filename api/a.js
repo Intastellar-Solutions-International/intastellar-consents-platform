@@ -999,49 +999,7 @@ function send(payload){
   }catch(e){}
 }
 
-var _pi=[],_bt=[],_btFetched=false;
-
-function extractPageInterests(){
-  var out=[];
-  try{
-    var lds=document.querySelectorAll('script[type="application\\/ld+json"]');
-    for(var i=0;i<lds.length;i++){
-      try{
-        var d=JSON.parse(lds[i].textContent||'');
-        var items=Array.isArray(d)?d:[d];
-        for(var j=0;j<items.length;j++){
-          var it=items[j];
-          [].concat(it.articleSection||[]).forEach(function(v){if(v&&typeof v==='string')out.push(v.trim());});
-          [].concat(it.genre||[]).forEach(function(v){if(v&&typeof v==='string')out.push(v.trim());});
-          [].concat(it.keywords?String(it.keywords).split(','):[]).forEach(function(k){var t=k.trim();if(t&&t.length<60)out.push(t);});
-          [].concat(it.about||[]).forEach(function(a){var v=typeof a==='string'?a:(a&&a.name)||'';if(v)out.push(v.trim());});
-          var tp=it['@type'];
-          if(tp&&typeof tp==='string'&&tp!=='WebPage'&&tp!=='WebSite'&&tp!=='Organization'&&tp!=='BreadcrumbList')out.push(tp);
-        }
-      }catch(ex){}
-    }
-  }catch(ex){}
-  try{
-    var ogType=document.querySelector('meta[property="og:type"]');
-    if(ogType&&ogType.content&&ogType.content!=='website')out.push(ogType.content);
-    var ogSec=document.querySelector('meta[property="article:section"]');
-    if(ogSec&&ogSec.content)out.push(ogSec.content);
-    var ogTags=document.querySelectorAll('meta[property="article:tag"]');
-    for(var i=0;i<Math.min(ogTags.length,5);i++){if(ogTags[i].content)out.push(ogTags[i].content);}
-  }catch(ex){}
-  try{
-    var mk=document.querySelector('meta[name="keywords"]');
-    if(mk&&mk.content)mk.content.split(',').slice(0,5).forEach(function(k){var t=k.trim();if(t&&t.length<60)out.push(t);});
-    var mc=document.querySelector('meta[name="category"]');
-    if(mc&&mc.content&&mc.content.length<60)out.push(mc.content.trim());
-  }catch(ex){}
-  var seen={},result=[];
-  for(var i=0;i<out.length&&result.length<10;i++){
-    var norm=String(out[i]).slice(0,50).toLowerCase().trim();
-    if(norm&&!seen[norm]){seen[norm]=1;result.push(String(out[i]).slice(0,50).trim());}
-  }
-  return result;
-}
+var _bt=[],_btFetched=false;
 
 function fetchBrowserTopics(c){
   if(_btFetched||!hasFun(c))return;
@@ -1057,7 +1015,6 @@ function fetchBrowserTopics(c){
 
 function sendMinimal(c){
   var pl={s:SITE,cl:'minimal',u:location.pathname,h:getHost(),dt:devType(),cs:hasStat(c)?1:0,cf:hasFun(c)?1:0,ca:hasAdv(c)?1:0};
-  if(_pi.length)pl.pi=_pi;
   send(JSON.stringify(pl));
 }
 
@@ -1086,7 +1043,6 @@ function sendFull(c,final){
     nv:_iaNew,
     gc:_iaCid.g||undefined,mc:_iaCid.ms||undefined,fc:_iaCid.fb||undefined
   };
-  if(_pi.length)pl.pi=_pi;
   if(_bt.length&&hasFun(c))pl.bt=_bt;
   send(JSON.stringify(pl));
 }
@@ -1152,14 +1108,6 @@ function tryHooks(){
   hookConsentTrigger('IntaSaveSettings'); // banner's actual Save Settings function
 }
 
-// Fire on load
-// Collect page interests from DOM metadata synchronously if ready,
-// otherwise defer to DOMContentLoaded (embed can load before parser finishes).
-if(document.readyState==='loading'){
-  document.addEventListener('DOMContentLoaded',function(){_pi=extractPageInterests();});
-}else{
-  _pi=extractPageInterests();
-}
 var c=getConsents();
 tryHooks();
 applyPageExperiment(); // Runs (and reports exposure) regardless of consent tier — see its own doc comment above.
@@ -1962,15 +1910,7 @@ export default async function handler(req, res) {
             dur, cs, cf, ca, n: eventName, v: eventValue, cur: eventCurrency,
             txn: eventTransactionId, pr: rawProducts, ed: rawExtraData, src: eventSource, tid: abTestId, vid: abVariantId, nv,
             gc: gclid, mc: msclkid, fc: fbclid,
-            pi: rawPageInterests, bt: rawBrowserTopics } = body;
-
-    // Page interests — sanitized array of strings extracted from page DOM metadata.
-    // First-party classification so stored regardless of consent level.
-    const pageInterests = (() => {
-        if (!Array.isArray(rawPageInterests) || !rawPageInterests.length) return null;
-        const tags = rawPageInterests.slice(0, 10).map(s => String(s).trim().slice(0, 50)).filter(Boolean);
-        return tags.length ? tags : null;
-    })();
+            bt: rawBrowserTopics } = body;
 
     // Browser topics — Chrome Topics API integers. Cross-site signal, so only
     // stored when functional consent is present (hasFun check mirrors embed script).
@@ -2281,14 +2221,13 @@ export default async function handler(req, res) {
         await db.query(
             `INSERT INTO analytics_events
              (site_id, organisation_id, consent_level, consent_stat, consent_func, consent_adv,
-              url, pathname, page_host, country_code, region, device_type, page_interests)
-             VALUES ($1,$2,'minimal',$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)`,
+              url, pathname, page_host, country_code, region, device_type)
+             VALUES ($1,$2,'minimal',$3,$4,$5,$6,$7,$8,$9,$10,$11)`,
             [
                 siteId, orgId,
                 cs === 1 || cs === true, cf === 1 || cf === true, ca === 1 || ca === true,
                 urlColumn, pathname, pageHostSanitized,
                 country, region, deviceType,
-                pageInterests,
             ]
         ).catch(() => {});
     } else {
@@ -2318,12 +2257,11 @@ export default async function handler(req, res) {
               browser_family, os_family, language, timezone,
               duration_sec, scroll_depth, pageview_id, is_new_visitor,
               gclid, msclkid, fbclid,
-              page_interests, browser_topics)
-             VALUES ($1,$2,$3,'full',$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28,$29,$30,$31,$32,$33,$34,$35)
+              browser_topics)
+             VALUES ($1,$2,$3,'full',$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28,$29,$30,$31,$32,$33,$34)
              ON CONFLICT (pageview_id) DO UPDATE SET
                duration_sec   = EXCLUDED.duration_sec,
                scroll_depth   = COALESCE(EXCLUDED.scroll_depth,   analytics_events.scroll_depth),
-               page_interests = COALESCE(EXCLUDED.page_interests, analytics_events.page_interests),
                browser_topics = COALESCE(EXCLUDED.browser_topics, analytics_events.browser_topics)`,
             [
                 siteId, orgId, String(sid).slice(0, 64),           // $1 $2 $3
@@ -2349,8 +2287,7 @@ export default async function handler(req, res) {
                 gclid   ? String(gclid).slice(0, 512)   : null,           // $31 gclid
                 msclkid ? String(msclkid).slice(0, 512) : null,           // $32 msclkid
                 fbclid  ? String(fbclid).slice(0, 512)  : null,           // $33 fbclid
-                pageInterests,                                             // $34 page_interests TEXT[]
-                browserTopics,                                             // $35 browser_topics JSONB
+                browserTopics,                                             // $34 browser_topics JSONB
             ]
         ).catch(() => {});
     }
