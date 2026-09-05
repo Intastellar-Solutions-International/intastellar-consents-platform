@@ -61,7 +61,8 @@ export default async function handler(req, res) {
 
     if (req.method !== "GET") return res.status(405).end();
 
-    const { domain, path: rawPath } = req.query;
+    const { domain, path: rawPath, fullPage: fullPageParam } = req.query;
+    const fullPage = fullPageParam === "1" || fullPageParam === "true";
     if (!domain || typeof domain !== "string") return res.status(400).json({ error: "domain required" });
 
     // Sanitise path: must be a root-relative pathname, no protocol or host.
@@ -122,7 +123,7 @@ export default async function handler(req, res) {
         const screenshot = await page.screenshot({
             type: "jpeg",
             quality: 82,
-            clip: { x: 0, y: 0, width: 1280, height: 720 },
+            ...(fullPage ? { fullPage: true } : { clip: { x: 0, y: 0, width: 1280, height: 720 } }),
         });
 
         await browser.close();
