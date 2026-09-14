@@ -144,6 +144,7 @@ export const TRACKERS = [
     { domains: ["w.org", "wordpress.org", "wordpress.com"],       service: "WordPress (Automattic)", category: "functional"    },
     { domains: ["server.arcgisonline.com", "arcgisonline.com", "arcgis.com"], service: "ArcGIS Online (Esri)", category: "functional" },
     { domains: ["cdn.shopify.com", "shopify.com", "shopifycdn.com", "myshopify.com"], service: "Shopify",  category: "functional" },
+    { domains: ["wix.com", "wixstatic.com", "parastorage.com", "wixapps.net", "wix-code.com"], service: "Wix", category: "functional" },
     { domains: ["help.helpscout.net", "beacon-v2.helpscout.net", "helpscout.net", "helpscout.com"], service: "Help Scout", category: "functional" },
     { domains: ["config.gorgias.io", "gorgias.io", "gorgias.com"], service: "Gorgias",             category: "functional"     },
     { domains: ["widget.surveymonkey.com", "surveymonkey.com"],   service: "SurveyMonkey",         category: "functional"     },
@@ -237,7 +238,7 @@ export const DATA_COUNTRIES = {
     "Gravatar (Automattic)": "US", "WordPress (Automattic)": "US",
     "Weglot SAS": "FR", "ArcGIS Online (Esri)": "US",
     "Philips Hue (Signify)": "NL",
-    "Shopify": "CA", "Help Scout": "US", "Gorgias": "US",
+    "Shopify": "CA", "Wix": "IL", "Help Scout": "US", "Gorgias": "US",
     "SurveyMonkey": "US", "Delighted": "US", "Sumo": "US",
     "Privy": "US", "Wisepops": "FR", "Google Static Assets": "US",
     // CDN / fonts
@@ -317,7 +318,7 @@ export const DATA_REGIONS = {
     "Gravatar (Automattic)":  "non-eu", "WordPress (Automattic)":  "non-eu",
     "Weglot SAS":             "eu",     "ArcGIS Online (Esri)":    "non-eu",
     "Philips Hue (Signify)":  "eu",
-    "Shopify":         "non-eu", "Help Scout":     "non-eu", "Gorgias":    "non-eu",
+    "Shopify":         "non-eu", "Wix":            "non-eu", "Help Scout":     "non-eu", "Gorgias":    "non-eu",
     "SurveyMonkey":    "non-eu", "Delighted":      "non-eu", "Sumo":       "non-eu",
     "Privy":           "non-eu", "Wisepops":       "eu",     "Google Static Assets": "non-eu",
     // CDN / fonts
@@ -457,6 +458,7 @@ export const VENDOR_META = {
     "Gravatar (Automattic)": { description: "Globally recognised avatar service linked to email addresses", privacyUrl: "https://automattic.com/privacy/", legalBasis: "legitimate_interest", transferMechanism: "EU-US Data Privacy Framework" },
     "WordPress (Automattic)": { description: "Content management system assets and APIs by Automattic", privacyUrl: "https://automattic.com/privacy/", legalBasis: "legitimate_interest", transferMechanism: "EU-US Data Privacy Framework" },
     "Shopify":            { description: "E-commerce platform hosting storefront and checkout scripts", privacyUrl: "https://www.shopify.com/legal/privacy", legalBasis: "contract", transferMechanism: "Adequacy Decision" },
+    "Wix":                { description: "Cloud website builder platform; serves static assets, scripts, and internal analytics for Wix-hosted sites", privacyUrl: "https://www.wix.com/about/privacy", legalBasis: "legitimate_interest", transferMechanism: "Standard Contractual Clauses" },
     "Help Scout":         { description: "Customer support and help desk platform", privacyUrl: "https://www.helpscout.com/company/legal/privacy/", legalBasis: "legitimate_interest", transferMechanism: "EU-US Data Privacy Framework" },
     "Gorgias":            { description: "E-commerce helpdesk and customer support platform", privacyUrl: "https://www.gorgias.com/privacy-policy", legalBasis: "legitimate_interest", transferMechanism: "Standard Contractual Clauses" },
     "SurveyMonkey":       { description: "Online survey and questionnaire platform", privacyUrl: "https://www.surveymonkey.com/mp/legal/privacy/", legalBasis: "consent", transferMechanism: "EU-US Data Privacy Framework" },
