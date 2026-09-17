@@ -24,6 +24,45 @@ function timeAgo(isoString) {
     return Math.floor(diff / 3600) + "h";
 }
 
+const TABLE_PAGE_SIZE = 10;
+
+// Client-side pager for a table's data array — the bot API already caps each
+// list at a sane size (top 15-30), so paging in the browser avoids adding
+// page/limit params to every query on the backend for what's a UI-only need.
+function usePager(items, resetA, resetB, resetC) {
+    const [page, setPage] = useState(0);
+    useEffect(() => { setPage(0); }, [resetA, resetB, resetC]);
+    const pageCount = Math.max(1, Math.ceil((items?.length || 0) / TABLE_PAGE_SIZE));
+    const paged = useMemo(
+        () => (items || []).slice(page * TABLE_PAGE_SIZE, page * TABLE_PAGE_SIZE + TABLE_PAGE_SIZE),
+        [items, page]
+    );
+    return { page, setPage, pageCount, paged };
+}
+
+function Pager({ page, pageCount, onChange }) {
+    if (pageCount <= 1) return null;
+    return (
+        <div className="sa-pager">
+            <button
+                className="sa-btn sa-btn--sm sa-btn--ghost"
+                onClick={() => onChange(Math.max(0, page - 1))}
+                disabled={page === 0}
+            >
+                Prev
+            </button>
+            <span className="sa-pager__label">Page {page + 1} of {pageCount}</span>
+            <button
+                className="sa-btn sa-btn--sm sa-btn--ghost"
+                onClick={() => onChange(Math.min(pageCount - 1, page + 1))}
+                disabled={page >= pageCount - 1}
+            >
+                Next
+            </button>
+        </div>
+    );
+}
+
 function useBotReport(domain, fromIso, toIso) {
     const [data,    setData]    = useState(null);
     const [loading, setLoading] = useState(false);
@@ -54,6 +93,11 @@ export default function AnalyticsBots() {
     } = useAnalyticsPageChrome();
 
     const { data, loading, error } = useBotReport(domain, fromIso, toIso);
+
+    const bots       = usePager(data?.topBots,             domain, fromIso, toIso);
+    const asns       = usePager(data?.topAsns,              domain, fromIso, toIso);
+    const suspicious = usePager(data?.suspicious?.byOrg,    domain, fromIso, toIso);
+    const pages      = usePager(data?.topPages,             domain, fromIso, toIso);
 
     const maxCategory = useMemo(() => Math.max(...(data?.byCategory || []).map(c => c.n), 1), [data]);
     const maxBot       = useMemo(() => Math.max(...(data?.topBots    || []).map(b => b.n), 1), [data]);
@@ -134,7 +178,7 @@ export default function AnalyticsBots() {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {data.topBots.map(b => (
+                                        {bots.paged.map(b => (
                                             <tr key={b.name}>
                                                 <td>{b.name}</td>
                                                 <td style={{ color: "rgba(150,150,150,0.7)", fontSize: "0.78rem" }}>
@@ -156,6 +200,7 @@ export default function AnalyticsBots() {
                                         )}
                                     </tbody>
                                 </table>
+                                <Pager page={bots.page} pageCount={bots.pageCount} onChange={bots.setPage} />
                             </div>
 
                             <div className="sa-panel sa-bots-asns">
@@ -170,7 +215,7 @@ export default function AnalyticsBots() {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {data.topAsns.map(a => (
+                                        {asns.paged.map(a => (
                                             <tr key={a.org}>
                                                 <td>{a.org}</td>
                                                 <td className="sa-table__num">{a.uniqueBots}</td>
@@ -185,6 +230,7 @@ export default function AnalyticsBots() {
                                         )}
                                     </tbody>
                                 </table>
+                                <Pager page={asns.page} pageCount={asns.pageCount} onChange={asns.setPage} />
                             </div>
 
                             <div className="sa-panel sa-bots-suspicious">
@@ -202,7 +248,7 @@ export default function AnalyticsBots() {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {data.suspicious.byOrg.map(o => (
+                                        {suspicious.paged.map(o => (
                                             <tr key={o.org + o.asn}>
                                                 <td>{o.org}{o.asn ? <span style={{ color: "rgba(130,130,130,0.55)", fontSize: "0.74rem" }}> &middot; AS{o.asn}</span> : null}</td>
                                                 <td className="sa-table__num">{o.n.toLocaleString("de-DE")}</td>
@@ -216,6 +262,7 @@ export default function AnalyticsBots() {
                                         )}
                                     </tbody>
                                 </table>
+                                <Pager page={suspicious.page} pageCount={suspicious.pageCount} onChange={suspicious.setPage} />
                             </div>
 
                             <div className="sa-panel sa-bots-pages">
@@ -229,7 +276,7 @@ export default function AnalyticsBots() {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {data.topPages.map(p => (
+                                        {pages.paged.map(p => (
                                             <tr key={p.pathname}>
                                                 <td className="sa-table__path" title={p.pathname}>{p.pathname}</td>
                                                 <td className="sa-table__num">{p.n.toLocaleString("de-DE")}</td>
@@ -240,6 +287,7 @@ export default function AnalyticsBots() {
                                         ))}
                                     </tbody>
                                 </table>
+                                <Pager page={pages.page} pageCount={pages.pageCount} onChange={pages.setPage} />
                             </div>
 
                             <div className="sa-panel sa-bots-recent">

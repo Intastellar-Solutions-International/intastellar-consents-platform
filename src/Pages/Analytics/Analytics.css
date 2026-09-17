@@ -1100,6 +1100,22 @@
     padding-left: 10px !important;
 }
 
+/* ── Table pager ─────────────────────────────────────────────────────────────── */
+
+.sa-pager {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.sa-pager__label {
+    font-size: 0.78rem;
+    color: rgba(150,150,150,0.75);
+    white-space: nowrap;
+}
+
 /* ── Mini bar ────────────────────────────────────────────────────────────────── */
 
 .sa-mini-bar {
