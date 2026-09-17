@@ -2270,27 +2270,31 @@
     align-items: start;
     grid-template-columns: repeat(4, 1fr);
     grid-template-areas:
-        "kpi1  kpi2  category category"
-        "list  list  list     list"
-        "pages pages recent   recent";
+        "kpi1  kpi2  category   category"
+        "list  list  list       list"
+        "asns  asns  suspicious suspicious"
+        "pages pages recent     recent";
 }
 
-.sa-bots-kpi1     { grid-area: kpi1;     }
-.sa-bots-kpi2     { grid-area: kpi2;     }
-.sa-bots-category { grid-area: category; }
-.sa-bots-list     { grid-area: list;     }
-.sa-bots-pages    { grid-area: pages;    }
-.sa-bots-recent   { grid-area: recent;   }
+.sa-bots-kpi1       { grid-area: kpi1;       }
+.sa-bots-kpi2       { grid-area: kpi2;       }
+.sa-bots-category   { grid-area: category;   }
+.sa-bots-list       { grid-area: list;       }
+.sa-bots-asns       { grid-area: asns;       }
+.sa-bots-suspicious { grid-area: suspicious; }
+.sa-bots-pages      { grid-area: pages;      }
+.sa-bots-recent     { grid-area: recent;     }
 
 @media (max-width: 1100px) {
     .sa-bots-grid {
         grid-template-columns: repeat(2, 1fr);
         grid-template-areas:
-            "kpi1     kpi2"
-            "category category"
-            "list     list"
-            "pages    pages"
-            "recent   recent";
+            "kpi1       kpi2"
+            "category   category"
+            "list       list"
+            "asns       suspicious"
+            "pages      pages"
+            "recent     recent";
     }
 }
 
@@ -2298,7 +2302,7 @@
     .sa-bots-grid {
         grid-template-columns: 1fr;
         grid-template-areas:
-            "kpi1" "kpi2" "category" "list" "pages" "recent";
+            "kpi1" "kpi2" "category" "list" "asns" "suspicious" "pages" "recent";
     }
 }
 

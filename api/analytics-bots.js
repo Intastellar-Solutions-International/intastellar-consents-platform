@@ -74,7 +74,7 @@ export default async function handler(req, res) {
     if (!siteRows.length) return res.status(200).json({ noSiteKey: true });
     const siteId = siteRows[0].id;
 
-    const [totalsRes, categoryRes, botsRes, pagesRes, recentRes, hostRes] = await Promise.all([
+    const [totalsRes, categoryRes, botsRes, pagesRes, recentRes, hostRes, asnRes, suspiciousTotalRes, suspiciousOrgRes, suspiciousRecentRes] = await Promise.all([
 
         db.query(
             `SELECT COUNT(*) AS total, COUNT(DISTINCT bot_name) AS unique_bots
@@ -127,16 +127,55 @@ export default async function handler(req, res) {
             [siteId, fromDate, toDateExclusive]
         ).catch(() => ({ rows: [] })),
 
+        // Hosting-provider/ASN breakdown of self-identified bot traffic —
+        // e.g. "which cloud is GPTBot actually crawling from".
+        db.query(
+            `SELECT as_org, COUNT(*) AS n, COUNT(DISTINCT bot_name) AS unique_bots
+             FROM analytics_bot_visits
+             WHERE site_id = $1 AND received_at >= $2 AND received_at < $3 AND as_org IS NOT NULL
+             GROUP BY as_org ORDER BY n DESC LIMIT 15`,
+            [siteId, fromDate, toDateExclusive]
+        ).catch(() => ({ rows: [] })),
+
+        // Suspicious traffic: real pageviews (not caught by UA-based bot
+        // detection, so still counted as "real visitors" everywhere else)
+        // that nonetheless came from a hosting/datacenter network rather than
+        // a residential or mobile one — worth a human look, not diverted out
+        // of any existing report.
+        db.query(
+            `SELECT COUNT(*) AS total, COUNT(DISTINCT as_org) AS unique_orgs
+             FROM analytics_events
+             WHERE site_id = $1 AND received_at >= $2 AND received_at < $3 AND is_hosting_ip = true`,
+            [siteId, fromDate, toDateExclusive]
+        ).catch(() => ({ rows: [] })),
+
+        db.query(
+            `SELECT as_org, asn, COUNT(*) AS n
+             FROM analytics_events
+             WHERE site_id = $1 AND received_at >= $2 AND received_at < $3 AND is_hosting_ip = true
+             GROUP BY as_org, asn ORDER BY n DESC LIMIT 15`,
+            [siteId, fromDate, toDateExclusive]
+        ).catch(() => ({ rows: [] })),
+
+        db.query(
+            `SELECT received_at, pathname, as_org, country_code
+             FROM analytics_events
+             WHERE site_id = $1 AND received_at >= $2 AND received_at < $3 AND is_hosting_ip = true
+             ORDER BY received_at DESC LIMIT 20`,
+            [siteId, fromDate, toDateExclusive]
+        ).catch(() => ({ rows: [] })),
+
     ]);
 
     const totals = totalsRes.rows[0] || {};
+    const suspiciousTotal = Number(suspiciousTotalRes.rows[0]?.total || 0);
 
     return res.status(200).json({
         siteId,
         domain,
         from: fromDate,
         to: toDate,
-        noData: !Number(totals.total || 0),
+        noData: !Number(totals.total || 0) && !suspiciousTotal,
         totals: {
             total:      Number(totals.total       || 0),
             uniqueBots: Number(totals.unique_bots  || 0),
@@ -159,5 +198,18 @@ export default async function handler(req, res) {
         byHost: hostRes.rows.map(r => ({
             host: r.page_host, bot: r.bot_name, n: Number(r.n || 0),
         })),
+        topAsns: asnRes.rows.map(r => ({
+            org: r.as_org, n: Number(r.n || 0), uniqueBots: Number(r.unique_bots || 0),
+        })),
+        suspicious: {
+            total: suspiciousTotal,
+            uniqueOrgs: Number(suspiciousTotalRes.rows[0]?.unique_orgs || 0),
+            byOrg: suspiciousOrgRes.rows.map(r => ({
+                org: r.as_org, asn: r.asn, n: Number(r.n || 0),
+            })),
+            recent: suspiciousRecentRes.rows.map(r => ({
+                at: r.received_at, pathname: r.pathname, org: r.as_org, country: r.country_code,
+            })),
+        },
     });
 }

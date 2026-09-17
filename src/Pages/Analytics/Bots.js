@@ -2,7 +2,7 @@ const { useState, useEffect, useMemo } = React;
 import { ScannerHost } from "../../API/host.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import { authHeaders, useAnalyticsPageChrome, KpiCard, MiniBar } from "./_shared.js";
-import { IconBot, IconGlobe, IconDocument, IconRadio } from "./Icons.js";
+import { IconBot, IconGlobe, IconDocument, IconRadio, IconAlertTriangle } from "./Icons.js";
 import "./Analytics.css";
 
 const BOTS_URL = `${ScannerHost}/api/analytics-bots`;
@@ -58,6 +58,8 @@ export default function AnalyticsBots() {
     const maxCategory = useMemo(() => Math.max(...(data?.byCategory || []).map(c => c.n), 1), [data]);
     const maxBot       = useMemo(() => Math.max(...(data?.topBots    || []).map(b => b.n), 1), [data]);
     const maxPage      = useMemo(() => Math.max(...(data?.topPages   || []).map(p => p.n), 1), [data]);
+    const maxAsn        = useMemo(() => Math.max(...(data?.topAsns         || []).map(a => a.n), 1), [data]);
+    const maxSuspicious = useMemo(() => Math.max(...(data?.suspicious?.byOrg || []).map(o => o.n), 1), [data]);
 
     const showData = !loading && data && !data.noSiteKey && !data.noData;
 
@@ -83,7 +85,7 @@ export default function AnalyticsBots() {
                         <p className="sa-notice">No analytics set up for this domain yet.</p>
                     )}
                     {domain && !loading && data?.noData && !data?.noSiteKey && (
-                        <p className="sa-notice">No known bot/crawler traffic detected in this period — real visitor numbers elsewhere are unaffected either way.</p>
+                        <p className="sa-notice">No known bot/crawler or suspicious hosting-IP traffic detected in this period — real visitor numbers elsewhere are unaffected either way.</p>
                     )}
 
                     {showData && (
@@ -151,6 +153,66 @@ export default function AnalyticsBots() {
                                         ))}
                                         {!data.topBots.length && (
                                             <tr><td colSpan={5} style={{ color: "rgba(130,130,130,0.55)", fontSize: "0.8rem" }}>No bot hits recorded</td></tr>
+                                        )}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div className="sa-panel sa-bots-asns">
+                                <h3 className="sa-panel__title"><IconGlobe className="sa-icon" /> Top hosting providers (bots)</h3>
+                                <table className="sa-table">
+                                    <thead>
+                                        <tr>
+                                            <th>ASN organisation</th>
+                                            <th className="sa-table__num">Bots</th>
+                                            <th className="sa-table__num">Hits</th>
+                                            <th className="sa-table__bar" />
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {data.topAsns.map(a => (
+                                            <tr key={a.org}>
+                                                <td>{a.org}</td>
+                                                <td className="sa-table__num">{a.uniqueBots}</td>
+                                                <td className="sa-table__num">{a.n.toLocaleString("de-DE")}</td>
+                                                <td className="sa-table__bar">
+                                                    <MiniBar value={a.n} max={maxAsn} color="rgba(103,178,255,0.6)" />
+                                                </td>
+                                            </tr>
+                                        ))}
+                                        {!data.topAsns.length && (
+                                            <tr><td colSpan={4} style={{ color: "rgba(130,130,130,0.55)", fontSize: "0.8rem" }}>No hosting-provider data yet</td></tr>
+                                        )}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div className="sa-panel sa-bots-suspicious">
+                                <h3 className="sa-panel__title"><IconAlertTriangle className="sa-icon" /> Suspicious traffic</h3>
+                                <p style={{ color: "rgba(150,150,150,0.75)", fontSize: "0.78rem", margin: "0 0 10px" }}>
+                                    {data.suspicious.total.toLocaleString("de-DE")} hit{data.suspicious.total === 1 ? "" : "s"} from a hosting/datacenter
+                                    network with a normal browser UA — not diverted from your visitor counts, just worth a look.
+                                </p>
+                                <table className="sa-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Hosting provider</th>
+                                            <th className="sa-table__num">Hits</th>
+                                            <th className="sa-table__bar" />
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {data.suspicious.byOrg.map(o => (
+                                            <tr key={o.org + o.asn}>
+                                                <td>{o.org}{o.asn ? <span style={{ color: "rgba(130,130,130,0.55)", fontSize: "0.74rem" }}> &middot; AS{o.asn}</span> : null}</td>
+                                                <td className="sa-table__num">{o.n.toLocaleString("de-DE")}</td>
+                                                <td className="sa-table__bar">
+                                                    <MiniBar value={o.n} max={maxSuspicious} color="rgba(240,138,93,0.6)" />
+                                                </td>
+                                            </tr>
+                                        ))}
+                                        {!data.suspicious.byOrg.length && (
+                                            <tr><td colSpan={3} style={{ color: "rgba(130,130,130,0.55)", fontSize: "0.8rem" }}>No suspicious hosting-IP traffic detected</td></tr>
                                         )}
                                     </tbody>
                                 </table>

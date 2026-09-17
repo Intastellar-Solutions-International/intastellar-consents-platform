@@ -1,11 +1,14 @@
 import { getPool } from "./_db.js";
+import { lookupNetwork } from "./_geoip.js";
 /**
  * GET  /api/a  → serves the Intastellar First-Party Analytics embed script
  * POST /api/a  → ingest endpoint receiving pageview events from embedded sites
  *
  * This single endpoint is embedded on customer websites. It must:
  *  - Use CORS wildcard (third-party origin)
- *  - Never store IP addresses (country derived from Vercel headers, raw IP discarded)
+ *  - Never store IP addresses (country derived from Vercel headers, raw IP discarded;
+ *    ASN/hosting-provider derived from a local GeoLite2-ASN lookup, see api/_geoip.js —
+ *    same "derive, don't store" treatment applies to the IP used for that lookup)
  *  - Only accept events whose site_id is registered and active
  */
 // ── GDPR-safe UA parsing ──────────────────────────────────────────────────────
@@ -338,6 +341,20 @@ async function ensureTables(db) {
         ALTER TABLE analytics_conversion_pushes ADD COLUMN IF NOT EXISTS utm_content  VARCHAR(512);
         ALTER TABLE analytics_events ADD COLUMN IF NOT EXISTS page_interests TEXT[];
         ALTER TABLE analytics_events ADD COLUMN IF NOT EXISTS browser_topics JSONB;
+        -- ASN / hosting-provider info, derived per-request from a local GeoLite2-ASN
+        -- lookup (see api/_geoip.js) — never from a stored IP address. Lets the
+        -- dashboard surface hosting/datacenter-origin traffic (a common signal for
+        -- scrapers/bots that spoof a normal browser UA) without touching how any
+        -- existing report counts "real visitors".
+        ALTER TABLE analytics_events      ADD COLUMN IF NOT EXISTS asn            INTEGER;
+        ALTER TABLE analytics_events      ADD COLUMN IF NOT EXISTS as_org         VARCHAR(255);
+        ALTER TABLE analytics_events      ADD COLUMN IF NOT EXISTS is_hosting_ip  BOOLEAN;
+        ALTER TABLE analytics_bot_visits  ADD COLUMN IF NOT EXISTS asn            INTEGER;
+        ALTER TABLE analytics_bot_visits  ADD COLUMN IF NOT EXISTS as_org         VARCHAR(255);
+        ALTER TABLE analytics_bot_visits  ADD COLUMN IF NOT EXISTS is_hosting_ip  BOOLEAN;
+    `).catch(() => {});
+    await db.query(`
+        CREATE INDEX IF NOT EXISTS idx_ae_hosting  ON analytics_events (site_id, is_hosting_ip) WHERE is_hosting_ip;
     `).catch(() => {});
     await db.query(`
         CREATE UNIQUE INDEX IF NOT EXISTS idx_ae_pageview_id ON analytics_events (pageview_id);
@@ -2021,6 +2038,13 @@ export default async function handler(req, res) {
         if (!fdRows[0]?.approved) return res.status(202).end();
     }
 
+    // ASN/hosting-provider — resolved via a local GeoLite2-ASN lookup (see
+    // api/_geoip.js), same "derive, don't store" treatment as country above.
+    // Computed here (after the dev/local and foreign-domain gates, which both
+    // discard the request outright) so it's never spent on traffic that won't
+    // be recorded anywhere.
+    const network = await lookupNetwork(req);
+
     // ── Bot / crawler traffic — logged separately, never counted as a real
     // visit. Checked before any of the branches below (minimal pageviews fire
     // unconditionally pre-consent, so this has to run before that path too,
@@ -2029,13 +2053,15 @@ export default async function handler(req, res) {
     if (bot) {
         await db.query(
             `INSERT INTO analytics_bot_visits
-             (site_id, organisation_id, bot_name, bot_category, pathname, country_code, user_agent, page_host)
-             VALUES ($1,$2,$3,$4,$5,$6,$7,$8)`,
+             (site_id, organisation_id, bot_name, bot_category, pathname, country_code, user_agent, page_host,
+              asn, as_org, is_hosting_ip)
+             VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)`,
             [
                 siteId, orgId, bot.name, bot.category,
                 extractPathnameLoose(rawUrl), country,
                 String(req.headers["user-agent"] || "").slice(0, 500),
                 pageHostSanitized,
+                network.asn, network.asOrg, network.isHosting,
             ]
         ).catch(() => {});
         return res.status(202).end();
@@ -2258,13 +2284,15 @@ export default async function handler(req, res) {
         await db.query(
             `INSERT INTO analytics_events
              (site_id, organisation_id, session_id, consent_level, consent_stat, consent_func, consent_adv,
-              url, pathname, page_host, country_code, region, device_type, referrer_host)
-             VALUES ($1,$2,$3,'minimal',$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)`,
+              url, pathname, page_host, country_code, region, device_type, referrer_host,
+              asn, as_org, is_hosting_ip)
+             VALUES ($1,$2,$3,'minimal',$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16)`,
             [
                 siteId, orgId, minSessionId,
                 cs === 1 || cs === true, cf === 1 || cf === true, ca === 1 || ca === true,
                 urlColumn, pathname, pageHostSanitized,
                 country, region, deviceType, minReferrerHost,
+                network.asn, network.asOrg, network.isHosting,
             ]
         ).catch(() => {});
     } else {
@@ -2294,8 +2322,8 @@ export default async function handler(req, res) {
               browser_family, os_family, language, timezone,
               duration_sec, scroll_depth, pageview_id, is_new_visitor,
               gclid, msclkid, fbclid,
-              browser_topics)
-             VALUES ($1,$2,$3,'full',$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28,$29,$30,$31,$32,$33,$34)
+              browser_topics, asn, as_org, is_hosting_ip)
+             VALUES ($1,$2,$3,'full',$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28,$29,$30,$31,$32,$33,$34,$35,$36,$37)
              ON CONFLICT (pageview_id) DO UPDATE SET
                duration_sec   = EXCLUDED.duration_sec,
                scroll_depth   = COALESCE(EXCLUDED.scroll_depth,   analytics_events.scroll_depth),
@@ -2325,6 +2353,7 @@ export default async function handler(req, res) {
                 msclkid ? String(msclkid).slice(0, 512) : null,           // $32 msclkid
                 fbclid  ? String(fbclid).slice(0, 512)  : null,           // $33 fbclid
                 browserTopics,                                             // $34 browser_topics JSONB
+                network.asn, network.asOrg, network.isHosting,             // $35 $36 $37
             ]
         ).catch(() => {});
     }
