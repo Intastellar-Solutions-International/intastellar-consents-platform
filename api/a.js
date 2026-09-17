@@ -98,6 +98,7 @@ const BOT_PATTERNS = [
     // Social-share link preview fetchers
     { re: /meta-webindexer/i,     name: "Meta-Webindexer",   category: "social_preview" },
     { re: /facebookexternalhit/i, name: "Facebook",          category: "social_preview" },
+    { re: /meta-externalfetcher/i, name: "Meta-ExternalFetcher", category: "social_preview" },
     { re: /Twitterbot/i,          name: "Twitterbot",        category: "social_preview" },
     { re: /LinkedInBot/i,         name: "LinkedInBot",       category: "social_preview" },
     { re: /WhatsApp/i,            name: "WhatsApp",          category: "social_preview" },
