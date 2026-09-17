@@ -43,6 +43,12 @@ async function ensureTable(db) {
         CREATE INDEX IF NOT EXISTS idx_ar_started  ON analytics_recordings (started_at);
         CREATE INDEX IF NOT EXISTS idx_ar_status   ON analytics_recordings (status);
         ALTER TABLE analytics_recordings ADD COLUMN IF NOT EXISTS has_snapshot BOOLEAN;
+        -- Epoch-ms span of the rrweb events actually recorded, used to derive
+        -- duration_sec — NOW() - started_at measures wall-clock tab-open time
+        -- (inflated when a visitor backgrounds the tab for a while before
+        -- actually closing it), not the length of the recorded content.
+        ALTER TABLE analytics_recordings ADD COLUMN IF NOT EXISTS first_event_ts BIGINT;
+        ALTER TABLE analytics_recordings ADD COLUMN IF NOT EXISTS last_event_ts  BIGINT;
     `);
 }
 
@@ -105,6 +111,11 @@ export default async function handler(req, res) {
     const seqNum      = Number.isInteger(seq) ? seq : 0;
 
     const chunkHasSnapshot = events.some(e => e && e.type === 2);
+    const eventTimestamps = events
+        .map(e => e && typeof e.timestamp === "number" ? e.timestamp : null)
+        .filter(t => t !== null);
+    const chunkMinTs = eventTimestamps.length ? Math.min(...eventTimestamps) : null;
+    const chunkMaxTs = eventTimestamps.length ? Math.max(...eventTimestamps) : null;
     const eventsJson = JSON.stringify(events);
     const blobPath = `recordings/${siteId}/${recordingId}/${seqNum}.json`;
 
@@ -131,22 +142,28 @@ export default async function handler(req, res) {
         `INSERT INTO analytics_recordings
            (id, site_id, organisation_id, session_id, started_at, pathnames, entry_pathname,
             chunk_count, chunk_urls, byte_size, device_type, browser_family, os_family, country_code,
-            status, ended_at, duration_sec, has_snapshot)
+            status, ended_at, duration_sec, has_snapshot, first_event_ts, last_event_ts)
          VALUES
            ($1,$2,$3,$4,NOW(),$5,$6,1,ARRAY[$7]::text[],$8,$9,$10,$11,$12,
             CASE WHEN $13 THEN 'complete' ELSE 'active' END,
             CASE WHEN $13 THEN NOW() ELSE NULL END,
-            CASE WHEN $13 THEN 0 ELSE NULL END,
-            $14)
+            CASE WHEN $13 THEN GREATEST(0, (COALESCE($16::bigint,$15::bigint,0) - COALESCE($15::bigint,0)) / 1000)::int ELSE NULL END,
+            $14, $15::bigint, $16::bigint)
          ON CONFLICT (id) DO UPDATE SET
-           pathnames    = EXCLUDED.pathnames,
-           chunk_count  = analytics_recordings.chunk_count + 1,
-           chunk_urls   = array_append(analytics_recordings.chunk_urls, $7),
-           byte_size    = analytics_recordings.byte_size + $8,
-           status       = CASE WHEN $13 THEN 'complete' ELSE analytics_recordings.status END,
-           ended_at     = CASE WHEN $13 THEN NOW() ELSE analytics_recordings.ended_at END,
-           duration_sec = CASE WHEN $13 THEN EXTRACT(EPOCH FROM (NOW() - analytics_recordings.started_at))::int ELSE analytics_recordings.duration_sec END,
-           has_snapshot = COALESCE(analytics_recordings.has_snapshot, FALSE) OR $14`,
+           pathnames      = EXCLUDED.pathnames,
+           chunk_count    = analytics_recordings.chunk_count + 1,
+           chunk_urls     = array_append(analytics_recordings.chunk_urls, $7),
+           byte_size      = analytics_recordings.byte_size + $8,
+           status         = CASE WHEN $13 THEN 'complete' ELSE analytics_recordings.status END,
+           ended_at       = CASE WHEN $13 THEN NOW() ELSE analytics_recordings.ended_at END,
+           first_event_ts = COALESCE(analytics_recordings.first_event_ts, $15::bigint),
+           last_event_ts  = GREATEST(COALESCE(analytics_recordings.last_event_ts, 0), COALESCE($16::bigint, 0)),
+           duration_sec   = CASE WHEN $13 THEN GREATEST(0, (
+                                GREATEST(COALESCE(analytics_recordings.last_event_ts, 0), COALESCE($16::bigint, 0))
+                                - COALESCE(analytics_recordings.first_event_ts, $15::bigint, 0)
+                              ) / 1000)::int
+                            ELSE analytics_recordings.duration_sec END,
+           has_snapshot   = COALESCE(analytics_recordings.has_snapshot, FALSE) OR $14`,
         [
             recordingId, siteId, orgId, sessionId,
             pathList, pathList[0],
@@ -154,6 +171,7 @@ export default async function handler(req, res) {
             browser, os, country,
             !!final,
             chunkHasSnapshot,
+            chunkMinTs, chunkMaxTs,
         ]
     ).catch(() => {});
 
