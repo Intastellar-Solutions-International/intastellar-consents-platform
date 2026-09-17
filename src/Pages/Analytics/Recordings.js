@@ -5,6 +5,7 @@ import { DomainContext } from "../../App.js";
 import { useSyncDomainFromRoute, isCombinedOrClearDomain, analyticsRecordingsPath } from "../../Functions/domainPathSegments.js";
 import { ScannerHost } from "../../API/host.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
+import recordingsLogo from "../../Components/Header/icons/recordings.svg";
 import { authHeaders, useAnalyticsPageChrome } from "./_shared.js";
 import { IconVideo } from "./Icons.js";
 import RecordingPlayer from "./RecordingPlayer.js";
@@ -112,6 +113,7 @@ export default function AnalyticsRecordings() {
         <div style={{ flex: "1", minWidth: 0 }}>
             <StickyPageTitle
                 title="Recordings"
+                titleLogo={recordingsLogo}
                 numberofDays={setLastDays}
                 getLastDays={getLastDays}
                 fromDate={fromDate}

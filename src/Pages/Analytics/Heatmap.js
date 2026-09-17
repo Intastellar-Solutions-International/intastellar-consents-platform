@@ -1,6 +1,7 @@
 const { useState, useEffect, useMemo, useRef } = React;
 import { ScannerHost } from "../../API/host.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
+import heatmapLogo from "../../Components/Header/icons/heatmap.svg";
 import { authHeaders, useAnalyticsPageChrome } from "./_shared.js";
 import { IconCursorClick, IconTarget, IconTrendingUp } from "./Icons.js";
 import "./Analytics.css";
@@ -221,6 +222,7 @@ export default function AnalyticsHeatmap() {
         <div style={{ flex: "1", minWidth: 0 }}>
             <StickyPageTitle
                 title="Heatmap"
+                titleLogo={heatmapLogo}
                 numberofDays={setLastDays}
                 getLastDays={getLastDays}
                 fromDate={fromDate}

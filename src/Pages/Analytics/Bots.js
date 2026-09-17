@@ -1,6 +1,7 @@
 const { useState, useEffect, useMemo } = React;
 import { ScannerHost } from "../../API/host.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
+import botsLogo from "../../Components/Header/icons/bots.svg";
 import { authHeaders, useAnalyticsPageChrome, KpiCard, MiniBar } from "./_shared.js";
 import { IconBot, IconGlobe, IconDocument, IconRadio, IconAlertTriangle } from "./Icons.js";
 import "./Analytics.css";
@@ -111,6 +112,7 @@ export default function AnalyticsBots() {
         <div style={{ flex: "1", minWidth: 0 }}>
             <StickyPageTitle
                 title="Bots"
+                titleLogo={botsLogo}
                 numberofDays={setLastDays}
                 getLastDays={getLastDays}
                 fromDate={fromDate}

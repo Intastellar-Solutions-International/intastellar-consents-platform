@@ -1,5 +1,8 @@
 import googleAnalyticsLogo from "../icons/google-analytics.svg";
 import searchConsoleLogo from "../icons/search-console.svg";
+import botsLogo from "../icons/bots.svg";
+import heatmapLogo from "../icons/heatmap.svg";
+import recordingsLogo from "../icons/recordings.svg";
 
 import {
     analyticsAudiencePath, analyticsAcquisitionPath, analyticsConsentPath,
@@ -143,14 +146,17 @@ export function buildAnalyticsLinks(domain) {
         {
             name: "Heatmap",
             path: analyticsHeatmapPath(domain),
+            logoSrc: heatmapLogo,
         },
         {
             name: "Recordings",
             path: analyticsRecordingsPath(domain),
+            logoSrc: recordingsLogo,
         },
         {
             name: "Bots",
             path: analyticsBotsPath(domain),
+            logoSrc: botsLogo,
         },
         {
             name: "User Flow",
