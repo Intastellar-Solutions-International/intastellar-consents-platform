@@ -66,6 +66,7 @@ const BOT_PATTERNS = [
     { re: /ev-crawler/i,         name: "ev-crawler (Headline)", category: "ai_crawler" },
     { re: /DuckAssistBot/i,      name: "DuckAssistBot",      category: "ai_crawler" },
     { re: /quillbot/i,           name: "QuillBot",           category: "ai_crawler" },
+    { re: /Lightpanda/i,         name: "Lightpanda",         category: "ai_crawler" },
 
     // Search engines
     // Google runs several distinct crawlers beyond the main web crawler — most
