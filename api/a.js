@@ -118,6 +118,7 @@ const BOT_PATTERNS = [
     { re: /DotBot/i,             name: "DotBot",             category: "seo_tool" },
     { re: /BLEXBot/i,            name: "BLEXBot",            category: "seo_tool" },
     { re: /DataForSeoBot/i,      name: "DataForSeoBot",      category: "seo_tool" },
+    { re: /Morningscore/i,       name: "Morningscore",       category: "seo_tool" },
 
     // Data aggregators / company registries — crawlers that harvest business
     // sites to power a company-data API (analytics/developer use cases),
