@@ -68,6 +68,11 @@ export default function Widget(props) {
 
     const activeUsers = (props?.activeUsers) ? props.activeUsers : null;
     const compareOn = Boolean(props.compareOn);
+    // For most KPIs a rising value is good (e.g. consent acceptance), but for
+    // some the opposite holds (e.g. essential-only rate — a drop means more
+    // visitors are giving full consent, which is the desired direction).
+    // invertSentiment flips the up=good/down=bad mapping for those.
+    const invertSentiment = Boolean(props?.invertSentiment);
 
     if (props?.styleType == "small"){
         let displayValue = "";
@@ -76,14 +81,11 @@ export default function Widget(props) {
         } else if (typeof props.totalNumber !== "object" && props.totalNumber !== undefined && props.totalNumber !== null) {
             displayValue = props.totalNumber;
         }
+        const risingSentiment = relativeDrop?.relativeDrop > 20 ? "up" : relativeDrop?.relativeDrop < -20 ? "down" : "flat";
         const sentiment =
-            relativeDrop?.relativeDrop > 20
-                ? "negative"
-                : relativeDrop?.relativeDrop <= 20 && relativeDrop?.relativeDrop >= -20
-                  ? "neutral"
-                  : relativeDrop?.relativeDrop < -20
-                    ? "positive"
-                    : "";
+            risingSentiment === "flat" ? "neutral"
+            : (risingSentiment === "up") !== invertSentiment ? "negative"
+            : "positive";
         const uniqueVisitors = activeUsers > 3 ?
             activeUsers.slice(0, -2) + "k" :
             activeUsers > 6 ?

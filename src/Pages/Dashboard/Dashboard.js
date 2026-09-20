@@ -406,6 +406,7 @@ export default function Dashboard(props) {
                                 change={{ change: activeData?.changeRate?.declined }}
                                 relativeDrop={{ relativeDrop: activeData?.relativeDrop?.declined }}
                                 explainer={{ exist: true, title: "Essential-only rate", content: "Share of users who declined analytics and marketing cookies, allowing only required cookies." }}
+                                invertSentiment={true}
                                 totalNumber={(activeData?.Declined != null ? activeData.Declined.toLocaleString("de-DE") : "—") + "%"}
                                 type="Essential-only rate"
                                 fromDate={fromDate}

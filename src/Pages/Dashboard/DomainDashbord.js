@@ -163,7 +163,7 @@ export default function DomainDashbord(props) {
                                     exist: true,
                                     title: "Essential-only rate",
                                     content: "Share of users who declined analytics and marketing cookies, allowing only required cookies..",
-                                }} styleType="small" totalNumber={(activeData?.Declined != null ? activeData.Declined.toLocaleString("de-DE") : "—") + "%"} type="Essential-only rate" fromDate={fromDate} toDate={toDate} />
+                                }} invertSentiment={true} styleType="small" totalNumber={(activeData?.Declined != null ? activeData.Declined.toLocaleString("de-DE") : "—") + "%"} type="Essential-only rate" fromDate={fromDate} toDate={toDate} />
                                 <Widget explainer={{
                                     exist: true,
                                     title: "EU based users",
