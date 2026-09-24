@@ -13,6 +13,8 @@
  *
  * Query params:
  *   domain  string  required  e.g. "example.com" or "www.example.com"
+ *                             (a leading "www." is stripped so both resolve
+ *                             to the root-domain scan)
  *
  * Caching: responses are publicly cacheable for 1 hour (CDN edge), with a
  * 24-hour stale-while-revalidate window so banners never block on cold cache.
@@ -267,7 +269,8 @@ export default async function handler(req, res) {
     }
 
     let domain = ((req.query.domain || "")).trim().toLowerCase()
-        .replace(/^https?:\/\//, "").split("/")[0];
+        .replace(/^https?:\/\//, "").split("/")[0]
+        .replace(/^www\./, "");
     if (!domain) {
         return res.status(400).json({ error: "domain query parameter is required" });
     }

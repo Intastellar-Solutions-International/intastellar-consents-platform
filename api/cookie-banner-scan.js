@@ -1,6 +1,9 @@
 /**
  * GET /api/cookie-banner-scan?domain=example.com
  *
+ * A leading "www." on the domain param is stripped so it resolves to the
+ * same root-domain scan/cache row as /api/cookie-banner.
+ *
  * Public endpoint for cookie banners on sites with no existing scan data.
  * Runs a live Puppeteer scan the first time a banner loads on a new domain,
  * then serves cached results for subsequent calls within SCAN_MAX_AGE_DAYS.
@@ -73,7 +76,8 @@ export default async function handler(req, res) {
 
     // Parse and normalise domain
     let domain = ((req.query.domain || "")).trim().toLowerCase()
-        .replace(/^https?:\/\//, "").split("/")[0];
+        .replace(/^https?:\/\//, "").split("/")[0]
+        .replace(/^www\./, "");
     if (!domain) {
         return res.status(400).json({ error: "domain query parameter is required" });
     }
