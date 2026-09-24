@@ -167,13 +167,17 @@ function buildCategories(domain, transfers, rawCookies, overrides = {}, definiti
     });
 
     const categories = Object.fromEntries(
-        BANNER_CATEGORIES.map(cat => [
-            cat,
-            {
-                cookies: cookies.filter(c => c.bannerCategory === cat),
-                vendors: vendors.filter(v => v.bannerCategory === cat),
-            },
-        ])
+        BANNER_CATEGORIES.map(cat => {
+            const catCookies = cookies.filter(c => c.bannerCategory === cat);
+            return [
+                cat,
+                {
+                    count:   catCookies.length,
+                    cookies: catCookies,
+                    vendors: vendors.filter(v => v.bannerCategory === cat),
+                },
+            ];
+        })
     );
 
     return categories;
