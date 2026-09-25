@@ -33,6 +33,7 @@
             analytics:  'Analytics',
             marketing:  'Marketing',
             functional: 'Functional',
+            unclassified: 'Unclassified',
             colName:        'Cookie name',
             colDomain:      'Domain',
             colProvider:    'Provider',
@@ -74,6 +75,7 @@
                 analytics:  'These cookies help us understand how visitors interact with our website by collecting and reporting information anonymously. They allow us to measure traffic, identify popular content, and improve the overall user experience.',
                 marketing:  'These cookies track your browsing activity across websites to deliver personalised and relevant advertising. They are typically set by our advertising partners and allow those partners to build a profile of your interests.',
                 functional: 'These cookies enable enhanced features and personalisation such as live chat widgets, embedded videos, and social media integrations. Disabling them may reduce the functionality of certain parts of the website.',
+                unclassified: 'These cookies were detected but could not be automatically classified into one of the categories above. We are reviewing them to determine their purpose.',
             },
         },
         de: {
@@ -82,6 +84,7 @@
             analytics:  'Analyse',
             marketing:  'Marketing',
             functional: 'Funktional',
+            unclassified: 'Nicht klassifiziert',
             colName:        'Cookie-Name',
             colDomain:      'Domain',
             colProvider:    'Anbieter',
@@ -123,6 +126,7 @@
                 analytics:  'Diese Cookies helfen uns zu verstehen, wie Besucher mit unserer Website interagieren, indem sie Informationen anonym erfassen und auswerten. Sie ermöglichen es uns, den Datenverkehr zu messen, beliebte Inhalte zu identifizieren und die allgemeine Nutzererfahrung zu verbessern.',
                 marketing:  'Diese Cookies verfolgen Ihre Surfaktivitäten auf verschiedenen Websites, um Ihnen personalisierte und relevante Werbung anzuzeigen. Sie werden in der Regel von unseren Werbepartnern gesetzt und ermöglichen diesen, ein Profil Ihrer Interessen aufzubauen.',
                 functional: 'Diese Cookies ermöglichen erweiterte Funktionen und Personalisierung, wie z. B. Live-Chat-Widgets, eingebettete Videos und Social-Media-Integrationen. Das Deaktivieren dieser Cookies kann die Funktionalität bestimmter Teile der Website einschränken.',
+                unclassified: 'Diese Cookies wurden erkannt, konnten aber nicht automatisch einer der oben genannten Kategorien zugeordnet werden. Wir prüfen sie, um ihren Zweck zu bestimmen.',
             },
             cookieDesc: [
                 { e: '_ga',                        d: 'Google Analytics Client-ID – identifiziert einen eindeutigen Besucher sitzungsübergreifend. Läuft nach 2 Jahren ab.' },
@@ -179,6 +183,7 @@
             analytics:  'Analyse',
             marketing:  'Marketing',
             functional: 'Funktionelle',
+            unclassified: 'Uklassificeret',
             colName:        'Cookie-navn',
             colDomain:      'Domæne',
             colProvider:    'Udbyder',
@@ -220,6 +225,7 @@
                 analytics:  'Disse cookies hjælper os med at forstå, hvordan besøgende interagerer med vores websted ved at indsamle og rapportere oplysninger anonymt. De giver os mulighed for at måle trafik, identificere populært indhold og forbedre den overordnede brugeroplevelse.',
                 marketing:  'Disse cookies sporer din browsingaktivitet på tværs af websteder for at levere personaliseret og relevant reklame. De sættes typisk af vores reklamepartnere og giver disse partnere mulighed for at opbygge en profil af dine interesser.',
                 functional: 'Disse cookies muliggør forbedrede funktioner og personalisering, såsom live chat-widgets, indlejrede videoer og integration af sociale medier. Deaktivering af dem kan reducere funktionaliteten af visse dele af webstedet.',
+                unclassified: 'Disse cookies blev registreret, men kunne ikke automatisk klassificeres i en af kategorierne ovenfor. Vi undersøger dem for at fastslå deres formål.',
             },
             cookieDesc: [
                 { e: '_ga',                        d: 'Google Analytics klient-ID – identificerer en unik besøgende på tværs af sessioner. Udløber efter 2 år.' },
@@ -276,6 +282,7 @@
             analytics:  'Analyse',
             marketing:  'Markedsføring',
             functional: 'Funksjonelle',
+            unclassified: 'Uklassifisert',
             colName:        'Cookie-navn',
             colDomain:      'Domene',
             colProvider:    'Leverandør',
@@ -317,6 +324,7 @@
                 analytics:  'Disse informasjonskapslene hjelper oss med å forstå hvordan besøkende samhandler med nettstedet vårt ved å samle inn og rapportere informasjon anonymt. De lar oss måle trafikk, identifisere populært innhold og forbedre den generelle brukeropplevelsen.',
                 marketing:  'Disse informasjonskapslene sporer nettleseraktiviteten din på tvers av nettsteder for å levere personalisert og relevant annonsering. De settes vanligvis av annonsepartnerne våre og gir disse partnerne mulighet til å bygge en profil av interessene dine.',
                 functional: 'Disse informasjonskapslene muliggjør forbedrede funksjoner og personalisering, som live chat-widgets, innebygde videoer og integrasjoner med sosiale medier. Deaktivering av dem kan redusere funksjonaliteten til visse deler av nettstedet.',
+                unclassified: 'Disse informasjonskapslene ble oppdaget, men kunne ikke automatisk klassifiseres i en av kategoriene ovenfor. Vi undersøker dem for å fastslå formålet.',
             },
             cookieDesc: [
                 { e: '_ga',                        d: 'Google Analytics klient-ID – identifiserer en unik besøkende på tvers av økter. Utløper etter 2 år.' },
@@ -373,6 +381,7 @@
             analytics:  'Analys',
             marketing:  'Marknadsföring',
             functional: 'Funktionella',
+            unclassified: 'Ej klassificerad',
             colName:        'Cookie-namn',
             colDomain:      'Domän',
             colProvider:    'Leverantör',
@@ -414,6 +423,7 @@
                 analytics:  'Dessa kakor hjälper oss att förstå hur besökare interagerar med vår webbplats genom att samla in och rapportera information anonymt. De gör det möjligt för oss att mäta trafik, identifiera populärt innehåll och förbättra den övergripande användarupplevelsen.',
                 marketing:  'Dessa kakor spårar din surfaktivitet på webbplatser för att leverera personaliserad och relevant annonsering. De sätts vanligtvis av våra reklampartners och gör det möjligt för dessa partners att bygga en profil av dina intressen.',
                 functional: 'Dessa kakor möjliggör förbättrade funktioner och personalisering, som live chat-widgets, inbäddade videor och integrationer med sociala medier. Att inaktivera dem kan minska funktionaliteten i vissa delar av webbplatsen.',
+                unclassified: 'Dessa kakor upptäcktes men kunde inte automatiskt klassificeras i någon av kategorierna ovan. Vi granskar dem för att fastställa deras syfte.',
             },
             cookieDesc: [
                 { e: '_ga',                        d: 'Google Analytics klient-ID – identifierar en unik besökare mellan sessioner. Löper ut efter 2 år.' },
@@ -470,6 +480,7 @@
             analytics:  'Analityczne',
             marketing:  'Marketingowe',
             functional: 'Funkcjonalne',
+            unclassified: 'Niesklasyfikowane',
             colName:        'Nazwa pliku cookie',
             colDomain:      'Domena',
             colProvider:    'Dostawca',
@@ -511,6 +522,7 @@
                 analytics:  'Te pliki cookie pomagają nam zrozumieć, w jaki sposób odwiedzający wchodzą w interakcje z naszą stroną, zbierając i raportując informacje anonimowo. Pozwalają nam mierzyć ruch, identyfikować popularne treści i poprawiać ogólne wrażenia użytkownika.',
                 marketing:  'Te pliki cookie śledzą Twoją aktywność przeglądania na różnych stronach internetowych, aby dostarczać spersonalizowane i trafne reklamy. Są zazwyczaj ustawiane przez naszych partnerów reklamowych i umożliwiają im budowanie profilu Twoich zainteresowań.',
                 functional: 'Te pliki cookie umożliwiają zaawansowane funkcje i personalizację, takie jak widgety czatu na żywo, osadzone filmy i integracje z mediami społecznościowymi. Ich wyłączenie może zmniejszyć funkcjonalność niektórych części strony.',
+                unclassified: 'Te pliki cookie zostały wykryte, ale nie można ich automatycznie przypisać do żadnej z powyższych kategorii. Sprawdzamy je, aby określić ich cel.',
             },
             cookieDesc: [
                 { e: '_ga',                        d: 'Identyfikator klienta Google Analytics – identyfikuje unikalnego odwiedzającego w różnych sesjach. Wygaśa po 2 latach.' },
@@ -567,6 +579,7 @@
             analytics:  'Analyse',
             marketing:  'Marketing',
             functional: 'Functioneel',
+            unclassified: 'Niet-geclassificeerd',
             colName:        'Cookienaam',
             colDomain:      'Domein',
             colProvider:    'Aanbieder',
@@ -608,6 +621,7 @@
                 analytics:  'Deze cookies helpen ons te begrijpen hoe bezoekers met onze website omgaan door informatie anoniem te verzamelen en te rapporteren. Ze stellen ons in staat om verkeer te meten, populaire inhoud te identificeren en de algehele gebruikerservaring te verbeteren.',
                 marketing:  'Deze cookies volgen uw browseactiviteit op websites om gepersonaliseerde en relevante advertenties te leveren. Ze worden doorgaans ingesteld door onze advertentiepartners en stellen deze partners in staat een profiel van uw interesses op te bouwen.',
                 functional: 'Deze cookies maken verbeterde functies en personalisering mogelijk, zoals live chat-widgets, ingesloten video\'s en integraties met sociale media. Het uitschakelen ervan kan de functionaliteit van bepaalde delen van de website verminderen.',
+                unclassified: 'Deze cookies zijn gedetecteerd, maar konden niet automatisch worden ingedeeld in een van de bovenstaande categorieën. We onderzoeken ze om hun doel te bepalen.',
             },
             cookieDesc: [
                 { e: '_ga',                        d: 'Google Analytics client-ID – identificeert een unieke bezoeker over sessies heen. Verloopt na 2 jaar.' },
@@ -664,6 +678,7 @@
             analytics:  'Analitiek',
             marketing:  'Bemarking',
             functional: 'Funksioneel',
+            unclassified: 'Ongeklassifiseer',
             colName:        'Koeknaam',
             colDomain:      'Domein',
             colProvider:    'Verskaffer',
@@ -705,6 +720,7 @@
                 analytics:  'Hierdie koekies help ons verstaan hoe besoekers met ons webwerf omgaan deur inligting anoniem te versamel en te rapporteer. Dit stel ons in staat om verkeer te meet, gewilde inhoud te identifiseer en die algehele gebruikerservaring te verbeter.',
                 marketing:  "Hierdie koekies naspoor u blaai-aktiwiteit oor webwerwe om gepersonaliseerde en relevante advertensies te lewer. Dit word tipies deur ons advertensieskennisse gestel en laat hulle toe om 'n profiel van u belangstellings te bou.",
                 functional: "Hierdie koekies stel verbeterde funksies en personalisering in staat, soos kitsklets-wysers, ingeslote video's en sosialemedia-integrasies. Die deaktivering daarvan kan die funksionaliteit van sekere dele van die webwerf verminder.",
+                unclassified: 'Hierdie koekies is opgespoor, maar kon nie outomaties in een van die kategorieë hierbo geklassifiseer word nie. Ons ondersoek dit om die doel daarvan te bepaal.',
             },
             cookieDesc: [
                 { e: '_ga',                        d: "Google Analytics-kliënt-ID – identifiseer 'n unieke besoeker oor sessies. Verval na 2 jaar." },
@@ -761,6 +777,7 @@
             analytics:  'Analytiques',
             marketing:  'Marketing',
             functional: 'Fonctionnels',
+            unclassified: 'Non classés',
             colName:        'Nom du cookie',
             colDomain:      'Domaine',
             colProvider:    'Fournisseur',
@@ -802,6 +819,7 @@
                 analytics:  'Ces cookies nous aident à comprendre comment les visiteurs interagissent avec notre site web en collectant et en rapportant des informations de manière anonyme. Ils nous permettent de mesurer le trafic, d’identifier les contenus populaires et d’améliorer l’expérience utilisateur globale.',
                 marketing:  'Ces cookies suivent votre activité de navigation sur les sites web afin de diffuser des publicités personnalisées et pertinentes. Ils sont généralement définis par nos partenaires publicitaires et leur permettent de constituer un profil de vos centres d’intérêt.',
                 functional: 'Ces cookies permettent des fonctionnalités améliorées et une personnalisation, tels que les widgets de chat en direct, les vidéos intégrées et les intégrations avec les réseaux sociaux. Les désactiver peut réduire les fonctionnalités de certaines parties du site web.',
+                unclassified: "Ces cookies ont été détectés mais n'ont pas pu être automatiquement classés dans l'une des catégories ci-dessus. Nous les examinons afin de déterminer leur finalité.",
             },
             cookieDesc: [
                 { e: '_ga',                        d: 'Identifiant client Google Analytics – identifie un visiteur unique entre les sessions. Expire après 2 ans.' },
@@ -858,6 +876,7 @@
             analytics:  'Analíticas',
             marketing:  'Marketing',
             functional: 'Funcionales',
+            unclassified: 'Sin clasificar',
             colName:        'Nombre de la cookie',
             colDomain:      'Dominio',
             colProvider:    'Proveedor',
@@ -899,6 +918,7 @@
                 analytics:  'Estas cookies nos ayudan a entender cómo los visitantes interactúan con nuestro sitio web recopilando e informando sobre información de forma anónima. Nos permiten medir el tráfico, identificar el contenido popular y mejorar la experiencia general del usuario.',
                 marketing:  'Estas cookies rastrean su actividad de navegación en los sitios web para ofrecer publicidad personalizada y relevante. Generalmente son establecidas por nuestros socios publicitarios y les permiten crear un perfil de sus intereses.',
                 functional: 'Estas cookies permiten funciones mejoradas y personalización, como widgets de chat en vivo, vídeos incrustados e integraciones con redes sociales. Desactivarlas puede reducir la funcionalidad de ciertas partes del sitio web.',
+                unclassified: 'Estas cookies se detectaron, pero no se pudieron clasificar automáticamente en ninguna de las categorías anteriores. Las estamos revisando para determinar su finalidad.',
             },
             cookieDesc: [
                 { e: '_ga',                        d: 'ID de cliente de Google Analytics – identifica a un visitante único entre sesiones. Caduca después de 2 años.' },
@@ -955,6 +975,7 @@
             analytics:  'Analíticos',
             marketing:  'Marketing',
             functional: 'Funcionais',
+            unclassified: 'Não classificados',
             colName:        'Nome do cookie',
             colDomain:      'Domínio',
             colProvider:    'Fornecedor',
@@ -996,6 +1017,7 @@
                 analytics:  'Estes cookies ajudam-nos a compreender como os visitantes interagem com o nosso website, recolhendo e reportando informações de forma anónima. Permitem-nos medir o tráfego, identificar conteúdos populares e melhorar a experiência geral do utilizador.',
                 marketing:  'Estes cookies rastreiam a sua atividade de navegação em websites para fornecer publicidade personalizada e relevante. São normalmente definidos pelos nossos parceiros publicitários e permitem-lhes construir um perfil dos seus interesses.',
                 functional: 'Estes cookies permitem funcionalidades melhoradas e personalização, como widgets de chat ao vivo, vídeos incorporados e integrações com redes sociais. Desativá-los pode reduzir a funcionalidade de certas partes do website.',
+                unclassified: 'Estes cookies foram detetados, mas não puderam ser automaticamente classificados numa das categorias acima. Estamos a analisá-los para determinar a sua finalidade.',
             },
             cookieDesc: [
                 { e: '_ga',                        d: 'ID de cliente do Google Analytics – identifica um visitante único entre sessões. Expira após 2 anos.' },
@@ -1048,7 +1070,7 @@
         },
     };
 
-    var CAT_ORDER = ['necessary', 'security', 'analytics', 'marketing', 'functional'];
+    var CAT_ORDER = ['necessary', 'security', 'analytics', 'marketing', 'functional', 'unclassified'];
 
     function formatCookieDuration(expiresUnixSec, scannedAtIso) {
         var baseSec = scannedAtIso

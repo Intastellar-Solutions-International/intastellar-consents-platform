@@ -83,6 +83,7 @@ function ics_render_table( $data ) {
         'marketing'  => [ 'label' => __( 'Marketing',  'ics' ), 'desc' => __( 'Used to track visitors across websites to display relevant advertisements.',                  'ics' ) ],
         'functional' => [ 'label' => __( 'Functional', 'ics' ), 'desc' => __( 'Enable enhanced functionality and personalisation, such as embedded content.',                'ics' ) ],
         'security'   => [ 'label' => __( 'Security',   'ics' ), 'desc' => __( 'Protect the website and its users against fraudulent activities and security breaches.',      'ics' ) ],
+        'unclassified' => [ 'label' => __( 'Unclassified', 'ics' ), 'desc' => __( 'Detected but not yet automatically classified into a category.',                          'ics' ) ],
     ];
 
     ob_start();
@@ -187,6 +188,7 @@ function ics_inline_css() {
 .ics-category__badge--marketing  { background: #f8d7da; color: #721c24; }
 .ics-category__badge--functional { background: #fff3cd; color: #856404; }
 .ics-category__badge--security   { background: #e2d9f3; color: #4a235a; }
+.ics-category__badge--unclassified { background: #e5e7eb; color: #374151; }
 .ics-category__desc { margin: 0; font-size: 0.875rem; color: #666; }
 .ics-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
 .ics-table th {
