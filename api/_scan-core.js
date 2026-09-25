@@ -1396,6 +1396,8 @@ export const COOKIE_META = [
     { prefix: "_shopify_essential_",   description: "Shopify essential cookie — stores data required for core Shopify storefront and checkout functionality including cart contents and session state." },
     // Montonio
     { exact:  "mto_pvs",               description: "Montonio page visit session cookie — tracks page views within a session for Montonio's embedded payment and checkout analytics." },
+    // OpenAI
+    { exact:  "__oaiq_consent",        description: "OpenAI consent preference cookie — stores the visitor's consent choice for OpenAI's advertising pixel integration." },
     // Consent management
     { exact:  "IntastellarConsentSolution", description: "Intastellar Consents record — stores the visitor's consent choices for this website. Expires after 3 months." },
     { prefix: "OptanonConsent",        description: "OneTrust consent record — stores the visitor's cookie category consent choices." },
