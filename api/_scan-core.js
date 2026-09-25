@@ -1703,12 +1703,11 @@ export async function scanDomain(domain) {
 
         const cookies = rawCookies.map(c => {
             const cookieRoot    = (c.domain || "").replace(/^\./, "").split(".").slice(-2).join(".");
-            const isFirstParty  = cookieRoot === targetRoot;
             const matchedVendor = transfers.find(t => t.host.split(".").slice(-2).join(".") === cookieRoot);
             const bannerCategory = matchedVendor
                 ? matchedVendor.bannerCategory
                 : categoryFromCookieName(c.name)
-                ?? (isFirstParty ? "necessary" : "functional");
+                ?? "unclassified";
             return {
                 name:        c.name,
                 domain:      c.domain,

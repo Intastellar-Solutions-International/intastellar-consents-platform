@@ -75,7 +75,7 @@ const BANNER_CATEGORY = {
     "third-party":  "functional",
 };
 
-const BANNER_CATEGORIES = ["necessary", "security", "analytics", "marketing", "functional"];
+const BANNER_CATEGORIES = ["necessary", "security", "analytics", "marketing", "functional", "unclassified"];
 
 // Shared data-processing: turns raw transfers + cookies arrays into the
 // grouped categories object the banner consumes.
@@ -118,7 +118,6 @@ function buildCategories(domain, transfers, rawCookies, overrides = {}, definiti
     const cookies = (rawCookies || []).map(c => {
         const ov            = overrides[c.name] || {};
         const cookieRoot    = (c.domain || "").replace(/^\./, "").split(".").slice(-2).join(".");
-        const isFirstParty  = cookieRoot === domainRoot;
         const domainVendor  = vendorByRoot.get(cookieRoot);
         const nameCategory  = categoryFromCookieName(c.name);
 
@@ -127,13 +126,14 @@ function buildCategories(domain, transfers, rawCookies, overrides = {}, definiti
             d.is_prefix ? c.name.startsWith(d.name) : c.name === d.name
         );
 
-        // User override wins for unknown cookies; well-known pattern matches always take priority
+        // User override wins for unknown cookies; well-known pattern matches always take priority.
+        // No match at all → "unclassified" rather than guessing, so genuinely unclassified
+        // cookies surface distinctly instead of being silently bucketed as necessary/functional.
         const bannerCategory = nameCategory
             || (ov.bannerCategory || null)
             || defMatch?.category
             || (domainVendor ? domainVendor.bannerCategory : null)
-            || c.bannerCategory
-            || (isFirstParty ? "necessary" : "functional");
+            || "unclassified";
 
         const cookieService = vendorFromCookieName(c.name);
         const enriched = {

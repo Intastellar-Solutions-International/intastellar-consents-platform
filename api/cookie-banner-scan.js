@@ -59,7 +59,7 @@ async function ensureTable(db) {
 }
 
 const SCAN_MAX_AGE_DAYS = 7;
-const BANNER_CATEGORIES = ["necessary", "security", "analytics", "marketing", "functional"];
+const BANNER_CATEGORIES = ["necessary", "security", "analytics", "marketing", "functional", "unclassified"];
 
 export default async function handler(req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*");
@@ -211,13 +211,13 @@ function buildResponse(row, domain) {
 
     const cookies = (row.cookies || []).map(c => {
         const cookieRoot    = (c.domain || "").replace(/^\./, "").split(".").slice(-2).join(".");
-        const isFirstParty  = cookieRoot === domainRoot;
         const matchedVendor = vendors.find(v => v.host.split(".").slice(-2).join(".") === cookieRoot);
         const nameCategory  = categoryFromCookieName(c.name);
+        // No match at all → "unclassified" rather than guessing, so genuinely unclassified
+        // cookies surface distinctly instead of being silently bucketed as necessary/functional.
         const bannerCategory = nameCategory
             || (matchedVendor ? matchedVendor.bannerCategory : null)
-            || c.bannerCategory
-            || (isFirstParty ? "necessary" : "functional");
+            || "unclassified";
         const provider = vendorFromCookieName(c.name) || null;
         return {
             name:           c.name,
