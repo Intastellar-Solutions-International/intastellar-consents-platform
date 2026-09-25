@@ -824,6 +824,8 @@ export const COOKIE_NAME_PATTERNS = [
     { exact:  "IntastellarConsentSolution", bannerCategory: "necessary" }, // Intastellar Consents record
     { exact:  "_ia_v",            bannerCategory: "analytics"  }, // Intastellar Analytics visitor ID
     { exact:  "_ia_s",            bannerCategory: "analytics"  }, // Intastellar Analytics session ID
+    { exact:  "_ia_cid",          bannerCategory: "analytics"  }, // Intastellar Analytics click-ID/UTM attribution
+    { prefix: "_ia_abv_",         bannerCategory: "analytics"  }, // Intastellar Analytics A/B test variant decision
     // ASP.NET Core framework cookies
     { prefix: ".AspNetCore.",              bannerCategory: "necessary"  },
 ];
@@ -1065,6 +1067,8 @@ export const COOKIE_VENDOR_HINTS = [
     // Intastellar Analytics
     { exact:  "_ia_v",              service: "Intastellar Analytics"  },
     { exact:  "_ia_s",              service: "Intastellar Analytics"  },
+    { exact:  "_ia_cid",            service: "Intastellar Analytics"  },
+    { prefix: "_ia_abv_",           service: "Intastellar Analytics"  },
 ];
 
 export function vendorFromCookieName(name) {
@@ -1410,6 +1414,8 @@ export const COOKIE_META = [
     // Intastellar Analytics
     { exact:  "_ia_v",                 description: "Intastellar Analytics visitor ID — a persistent unique identifier used to recognise returning visitors across sessions. Expires after 2 years." },
     { exact:  "_ia_s",                 description: "Intastellar Analytics session ID — identifies a visitor's current session for event and pageview tracking. Session cookie." },
+    { exact:  "_ia_cid",               description: "Intastellar Analytics click-ID cookie — stores ad click IDs (gclid, msclkid, fbclid) and UTM campaign parameters captured on landing for later conversion attribution. Expires after 90 days." },
+    { prefix: "_ia_abv_",              description: "Intastellar Analytics A/B test cookie — persists the visitor's assigned variant for a specific page experiment so it stays consistent across pageviews." },
     // Consent management
     { exact:  "IntastellarConsentSolution", description: "Intastellar Consents record — stores the visitor's consent choices for this website. Expires after 3 months." },
     { prefix: "OptanonConsent",        description: "OneTrust consent record — stores the visitor's cookie category consent choices." },
