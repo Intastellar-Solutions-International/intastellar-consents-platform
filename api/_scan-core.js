@@ -822,6 +822,8 @@ export const COOKIE_NAME_PATTERNS = [
     { exact:  "didomi_token",     bannerCategory: "necessary"  }, // Didomi consent
     { prefix: "didomi_",          bannerCategory: "necessary"  }, // Didomi (other)
     { exact:  "IntastellarConsentSolution", bannerCategory: "necessary" }, // Intastellar Consents record
+    { exact:  "_ia_v",            bannerCategory: "analytics"  }, // Intastellar Analytics visitor ID
+    { exact:  "_ia_s",            bannerCategory: "analytics"  }, // Intastellar Analytics session ID
     // ASP.NET Core framework cookies
     { prefix: ".AspNetCore.",              bannerCategory: "necessary"  },
 ];
@@ -1060,6 +1062,9 @@ export const COOKIE_VENDOR_HINTS = [
     // OpenAI
     { exact:  "__oaiq_consent",     service: "OpenAI"                 },
     { exact:  "__obref",            service: "OpenAI"                 },
+    // Intastellar Analytics
+    { exact:  "_ia_v",              service: "Intastellar Analytics"  },
+    { exact:  "_ia_s",              service: "Intastellar Analytics"  },
 ];
 
 export function vendorFromCookieName(name) {
@@ -1402,6 +1407,9 @@ export const COOKIE_META = [
     // OpenAI
     { exact:  "__oaiq_consent",        description: "OpenAI consent preference cookie — stores the visitor's consent choice for OpenAI's advertising pixel integration." },
     { exact:  "__obref",               description: "OpenAI hybrid Pixel/CAPI identity cookie — stores a first-party identifier used for conversion attribution across OpenAI's advertising integration." },
+    // Intastellar Analytics
+    { exact:  "_ia_v",                 description: "Intastellar Analytics visitor ID — a persistent unique identifier used to recognise returning visitors across sessions. Expires after 2 years." },
+    { exact:  "_ia_s",                 description: "Intastellar Analytics session ID — identifies a visitor's current session for event and pageview tracking. Session cookie." },
     // Consent management
     { exact:  "IntastellarConsentSolution", description: "Intastellar Consents record — stores the visitor's consent choices for this website. Expires after 3 months." },
     { prefix: "OptanonConsent",        description: "OneTrust consent record — stores the visitor's cookie category consent choices." },
