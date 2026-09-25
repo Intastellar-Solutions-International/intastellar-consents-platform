@@ -1057,6 +1057,9 @@ export const COOKIE_VENDOR_HINTS = [
     { prefix: "_iub_cs-",           service: "iubenda"                },
     { exact:  "didomi_token",        service: "Didomi"                 },
     { prefix: "didomi_",            service: "Didomi"                 },
+    // OpenAI
+    { exact:  "__oaiq_consent",     service: "OpenAI"                 },
+    { exact:  "__obref",            service: "OpenAI"                 },
 ];
 
 export function vendorFromCookieName(name) {
