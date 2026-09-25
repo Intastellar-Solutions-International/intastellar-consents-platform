@@ -145,7 +145,7 @@ function buildCategories(domain, transfers, rawCookies, overrides = {}, definiti
             secure:         c.secure,
             sameSite:       c.sameSite,
             bannerCategory,
-            description:    ov.description || c.description || describeCookie(c.name) || defMatch?.description || null,
+            description:    ov.description || describeCookie(c.name) || c.description || defMatch?.description || null,
             provider:       ov.vendor || cookieService || defMatch?.vendor || null,
         };
 

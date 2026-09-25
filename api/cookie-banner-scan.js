@@ -228,7 +228,7 @@ function buildResponse(row, domain) {
             secure:         c.secure,
             sameSite:       c.sameSite,
             bannerCategory,
-            description:    c.description || describeCookie(c.name) || null,
+            description:    describeCookie(c.name) || c.description || null,
             provider,
         };
     });
