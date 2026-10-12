@@ -99,7 +99,7 @@ export function LPFooter() {
                     <nav className="lp-footer__nav-col">
                         <h3 className="lp-footer__nav-title">Legal</h3>
                         <a
-                            href="https://www.intastellarsolutions.com/about/legal/privacy"
+                            href="https://intastellar.eu/legal/privacy"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="lp-footer__link"
@@ -107,7 +107,7 @@ export function LPFooter() {
                             Privacy Policy
                         </a>
                         <a
-                            href="https://www.intastellarsolutions.com/about/legal/terms"
+                            href="https://intastellar.eu/legal/terms"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="lp-footer__link"
@@ -115,7 +115,7 @@ export function LPFooter() {
                             Terms of Service
                         </a>
                         <a
-                            href="https://www.intastellarsolutions.com/about/legal/imprint"
+                            href="https://intastellar.eu/legal/imprint"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="lp-footer__link"
