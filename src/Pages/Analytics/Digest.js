@@ -18,7 +18,6 @@ import { buildInvisibleTrafficSuggestions } from "../Reports/MarketingReport/mar
 import { PrimaryHost } from "../../API/host.js";
 import Authentication from "../../Authentication/Auth.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
-import { AnalyticsSubNav } from "./_shared.js";
 import "./Analytics.css";
 
 // ── CMP marketing attribution fetch ──────────────────────────────────────────
@@ -317,8 +316,6 @@ export default function AnalyticsDigest() {
             <StickyPageTitle title="Channel Digest" />
             <div className="dashboard-content">
                 <div className="sa-page">
-
-                    <AnalyticsSubNav domain={null} />
 
                     <div className="sa-digest-meta">
                         {loading ? (
