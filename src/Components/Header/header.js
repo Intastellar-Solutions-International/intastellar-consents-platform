@@ -13,6 +13,7 @@ import {
     navigateWithDomain,
     detectDashboardMode,
     modePath,
+    isCombinedOrClearDomain,
 } from "../../Functions/domainPathSegments.js";
 import { pushRecentDomain } from "../../Functions/domainFavourites.js";
 import { canAccess } from "../../Functions/tier.js";
@@ -309,6 +310,35 @@ function getCurrentOrgId() {
     return null;
 }
 
+// Switching CMP -> Analytics with no domain selected used to always land on
+// the combined/rollup view, even when the org has a domain with analytics
+// already set up — picking a real domain first is a much more useful
+// landing spot. `domains` is the header's own domain list (first entry is
+// the synthetic "combined view" row, see the `data.unshift` above), kept in
+// whatever order the API returned so this just defers to that ordering.
+async function resolveFirstAnalyticsDomain(orgId, domains) {
+    if (!orgId) return null;
+    try {
+        const r = await fetch(`${ScannerHost}/api/analytics-site?list=1`, {
+            headers: {
+                Authorization: Authentication.getToken(),
+                Organisation: String(orgId),
+                "Content-Type": "application/json",
+            },
+        });
+        if (!r.ok) return null;
+        const d = await r.json();
+        const active = new Set((d?.sites || []).filter((s) => s.active).map((s) => s.domain));
+        for (const entry of domains || []) {
+            const name = punycode.toUnicode(entry.domain);
+            if (active.has(name)) return name;
+        }
+    } catch {
+        /* ignore — caller falls back to the current domain */
+    }
+    return null;
+}
+
 /*
  * Resolve the platform key whose `getDomains` we should call. Routes
  * like /experiments or /settings aren't platform namespaces in the
@@ -489,7 +519,14 @@ export default function Header(props) {
         navigateWithDomain(history, platformId, action.name, location.pathname);
     }
 
-    function handleModeChange(mode) {
+    async function handleModeChange(mode) {
+        if (mode === "analytics" && isCombinedOrClearDomain(currentDomain)) {
+            const firstAnalyticsDomain = await resolveFirstAnalyticsDomain(orgId, domains);
+            if (firstAnalyticsDomain) {
+                history.push(modePath(mode, platformId, firstAnalyticsDomain));
+                return;
+            }
+        }
         history.push(modePath(mode, platformId, currentDomain));
     }
 

@@ -305,20 +305,17 @@ export default function GoogleAnalytics() {
                                         icon={<IconBarChart />}
                                         label="Sessions"
                                         value={fmtInt(summary.sessions)}
-                                        variant="blue"
                                     />
                                     <KpiCard
                                         icon={<IconUsers />}
                                         label="Users"
                                         value={fmtInt(summary.totalUsers)}
                                         sub={`${fmtInt(summary.newUsers)} new`}
-                                        variant="teal"
                                     />
                                     <KpiCard
                                         icon={<IconCursorClick />}
                                         label="Page views"
                                         value={fmtInt(summary.pageViews)}
-                                        variant="purple"
                                     />
                                     <KpiCard
                                         label="Engagement"

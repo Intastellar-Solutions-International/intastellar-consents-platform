@@ -455,7 +455,6 @@ function KpiStrip({ data, siteConfig, trendEngaged, trendEvents, trendSessions, 
                 label={bt === "media" ? "Page views" : "Total events"}
                 value={data.totals.total.toLocaleString("de-DE")}
                 sub={`${data.totals.minimal.toLocaleString("de-DE")} minimal · ${data.totals.full.toLocaleString("de-DE")} full`}
-                variant="blue"
                 trend={trendEvents}
             />
         ),
@@ -465,7 +464,6 @@ function KpiStrip({ data, siteConfig, trendEngaged, trendEvents, trendSessions, 
                 label="Unique sessions"
                 value={data.totals.uniqueSessions.toLocaleString("de-DE")}
                 sub="consent-gated sessions only"
-                variant="purple"
                 trend={trendSessions}
             />
         ),
@@ -487,7 +485,6 @@ function KpiStrip({ data, siteConfig, trendEngaged, trendEvents, trendSessions, 
                 label="Countries"
                 value={data.countries.length}
                 sub={data.countries[0] ? `Top: ${data.countries[0].code}` : null}
-                variant="teal"
             />
         ),
         leads: (

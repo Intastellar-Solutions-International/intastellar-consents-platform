@@ -439,7 +439,7 @@ export function SegmentFilter({ segment, setSegment }) {
                 className="sa-seg-filter__country"
                 type="text"
                 maxLength={2}
-                placeholder="Country (e.g. DE)"
+                placeholder="Country"
                 value={segment.country || ""}
                 onChange={e => setSegment(s => ({ ...s, country: e.target.value.toUpperCase().slice(0, 2) }))}
             />

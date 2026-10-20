@@ -40,7 +40,7 @@ function InterestRow({ label, sessions, events, max, color, badge }) {
                 {badge && <span style={{ marginLeft:8,fontSize:10,padding:"1px 5px",borderRadius:3,background:"rgba(255,255,255,0.07)",color:"rgba(200,200,200,0.6)",verticalAlign:"middle" }}>{badge}</span>}
             </td>
             <td className="sa-table__num">{val.toLocaleString("de-DE")}</td>
-            <td className="sa-table__bar"><MiniBar value={val} max={max} color={color || "rgba(139,92,246,0.6)"} /></td>
+            <td className="sa-table__bar"><MiniBar value={val} max={max} color={color || "rgba(var(--sa-accent),0.6)"} /></td>
         </tr>
     );
 }
@@ -71,7 +71,7 @@ function RuleInterestRow({ interest }) {
     return (
         <div className="sa-int-rule-row">
             <div className="sa-int-rule-row__header">
-                <span style={{ width:8,height:8,borderRadius:"50%",background:color||"rgba(139,92,246,0.6)",display:"inline-block",flexShrink:0 }} />
+                <span style={{ width:8,height:8,borderRadius:"50%",background:color||"rgba(var(--sa-accent),0.6)",display:"inline-block",flexShrink:0 }} />
                 <span className="sa-int-rule-row__label">{label}</span>
                 <span className="sa-int-rule-row__stats">
                     {sessions.toLocaleString("de-DE")} sessions
@@ -121,7 +121,7 @@ function InterestsPanel({ ruleInterests, topicInterests, maxTopics, detailLoadin
             ) : !hasAny ? (
                 <p className="sa-notice" style={{ margin:0,padding:"8px 0" }}>
                     No interest data yet. Define{" "}
-                    <a href="settings" style={{ color:"rgba(139,92,246,0.9)" }}>URL-pattern rules</a>{" "}
+                    <a href="settings" style={{ color:"rgba(var(--sa-accent),0.9)" }}>URL-pattern rules</a>{" "}
                     to classify visitors by intent — each matched session is scored on scroll depth, time on page, pages visited, and conversions to determine whether they are genuinely on-topic or just passing through.
                 </p>
             ) : tab === "rules" ? (
@@ -130,7 +130,7 @@ function InterestsPanel({ ruleInterests, topicInterests, maxTopics, detailLoadin
                 ) : !hasRules ? (
                     <p className="sa-notice" style={{ margin:0,padding:"6px 0",fontSize:12 }}>
                         No rules configured yet. Add URL-pattern → label rules in{" "}
-                        <a href="settings" style={{ color:"rgba(139,92,246,0.9)" }}>Analytics Settings</a>.
+                        <a href="settings" style={{ color:"rgba(var(--sa-accent),0.9)" }}>Analytics Settings</a>.
                     </p>
                 ) : (
                     <div className="sa-int-rules-list">
@@ -239,7 +239,6 @@ export default function AnalyticsAudience() {
                                         label="Unique sessions"
                                         value={data.totals.uniqueSessions.toLocaleString("de-DE")}
                                         sub="consent-gated sessions only"
-                                        variant="purple"
                                         trend={trendSessions}
                                     />
                                     <KpiCard
@@ -254,7 +253,6 @@ export default function AnalyticsAudience() {
                                         icon={<IconGlobe />}
                                         label="Countries reached"
                                         value={data.countries.length.toLocaleString("de-DE")}
-                                        variant="teal"
                                         trend={trendCountries}
                                     />
                                 </div>

@@ -59,10 +59,12 @@ function analyticsBadge(hasAnalytics) {
 // the setup card elsewhere in the app).
 function useAnalyticsEnabledDomains(orgId, shouldFetch) {
     const [domains, setDomains] = useState(() => new Set());
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         if (!orgId || !shouldFetch) return;
         let cancelled = false;
+        setLoading(true);
         fetch(`${ScannerHost}/api/analytics-site?list=1`, {
             headers: {
                 Authorization: Authentication.getToken(),
@@ -72,14 +74,15 @@ function useAnalyticsEnabledDomains(orgId, shouldFetch) {
         })
             .then(async (r) => (r.ok ? r.json() : null))
             .then((d) => {
-                if (cancelled || !d?.sites) return;
-                setDomains(new Set(d.sites.filter((s) => s.active).map((s) => s.domain)));
+                if (cancelled) return;
+                if (d?.sites) setDomains(new Set(d.sites.filter((s) => s.active).map((s) => s.domain)));
+                setLoading(false);
             })
-            .catch(() => {});
+            .catch(() => { if (!cancelled) setLoading(false); });
         return () => { cancelled = true; };
     }, [orgId, shouldFetch]);
 
-    return domains;
+    return { domains, loading };
 }
 
 export default function PropertySelector(props) {
@@ -102,7 +105,7 @@ export default function PropertySelector(props) {
     const [orgMenuOpen, setOrgMenuOpen] = useState(false);
     const [favourites, setFavourites] = useState(() => getFavouriteDomains());
     const containerRef = useRef(null);
-    const analyticsDomains = useAnalyticsEnabledDomains(orgId, mode === "analytics" && isOpen);
+    const { domains: analyticsDomains, loading: analyticsDomainsLoading } = useAnalyticsEnabledDomains(orgId, mode === "analytics" && isOpen);
 
     useEffect(() => {
         function onClickOutside(e) {
@@ -118,10 +121,13 @@ export default function PropertySelector(props) {
     useEffect(() => {
         if (!isOpen) return;
         setQuery("");
-        setActiveTab("all");
+        // Analytics mode: default to domains that actually have analytics
+        // configured — seeing the org's full (often much longer) domain
+        // list first isn't useful when most of it has nothing to show.
+        setActiveTab(mode === "analytics" ? "with-analytics" : "all");
         setOrgMenuOpen(false);
         setFavourites(getFavouriteDomains());
-    }, [isOpen]);
+    }, [isOpen, mode]);
 
     const orgLabel = useMemo(() => {
         try {
@@ -456,7 +462,13 @@ export default function PropertySelector(props) {
                                     );
                                 })}
                                 {filteredDomains.length === 0 && (
-                                    <li className="property-selector__empty">No matches</li>
+                                    <li className="property-selector__empty">
+                                        {activeTab === "with-analytics" && analyticsDomainsLoading
+                                            ? "Loading…"
+                                            : activeTab === "with-analytics"
+                                                ? "No domains have analytics set up yet"
+                                                : "No matches"}
+                                    </li>
                                 )}
                             </ul>
                         </div>

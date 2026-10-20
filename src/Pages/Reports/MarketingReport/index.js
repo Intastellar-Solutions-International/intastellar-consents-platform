@@ -2518,16 +2518,16 @@ export default function MarketingReport() {
                     {/* ── Compact page header ─────────────────────────────── */}
                     <div className="ca-page-header">
                         <div className="ca-page-header__left">
-                            <h1 className="ca-page-header__title">
-                                {selectedChannel ? (
-                                    <>
-                                        <button className="ca-back-btn" onClick={() => setSelectedChannel(null)}>
-                                            ← Channels
-                                        </button>
-                                        <span className="ca-page-header__channel">{selectedChannel}</span>
-                                    </>
-                                ) : "Channel Analytics"}
-                            </h1>
+                            {/* "Channel Analytics" itself is already shown by StickyPageTitle above —
+                                this row only needs a heading once drilled into a specific channel. */}
+                            {selectedChannel && (
+                                <h1 className="ca-page-header__title">
+                                    <button className="ca-back-btn" onClick={() => setSelectedChannel(null)}>
+                                        ← Channels
+                                    </button>
+                                    <span className="ca-page-header__channel">{selectedChannel}</span>
+                                </h1>
+                            )}
                             {compareOn && (
                                 <span className="ca-compare-pill">
                                     {formatPeriodRange(fromDate, toDate)} vs {formatPeriodRange(previousPeriod, previousPeriod2)}
