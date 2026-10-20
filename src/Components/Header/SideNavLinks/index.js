@@ -67,6 +67,11 @@ export const reportsLinks = [
         requiresTier: 'starter',
     },
     {
+        name: "Organisation Privacy",
+        path: "/settings/privacy",
+        view: ["admin", "super-admin"],
+    },
+    {
         name: "Blacklist IP",
         path: "/settings/blacklist-ip",
         view: ["admin", "super-admin", "manager"]

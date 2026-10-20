@@ -1,0 +1,134 @@
+.org-privacy__category {
+    margin-bottom: 28px;
+}
+
+.org-privacy__category-title {
+    margin: 0 0 10px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: rgba(192, 159, 83, 0.85);
+}
+
+.org-privacy__row {
+    padding: 16px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.org-privacy__row:last-child {
+    border-bottom: none;
+}
+
+.org-privacy__row-main {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.org-privacy__row-text {
+    flex: 1 1 320px;
+    min-width: 0;
+}
+
+.org-privacy__row-label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #e8e8e8;
+}
+
+.org-privacy__row-desc {
+    margin: 4px 0 0;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    color: rgba(180, 180, 180, 0.85);
+}
+
+.org-privacy__row-products {
+    display: inline-block;
+    margin-top: 6px;
+    font-size: 0.68rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: rgba(150, 150, 165, 0.6);
+}
+
+.org-privacy__row-control {
+    flex: 0 0 auto;
+}
+
+.org-privacy__lock {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.78rem;
+    color: rgba(170, 170, 170, 0.8);
+    cursor: pointer;
+}
+
+.org-privacy__lock input {
+    accent-color: rgba(192, 159, 83, 0.85);
+    cursor: pointer;
+}
+
+.org-privacy__lock--fixed {
+    color: rgba(140, 140, 140, 0.6);
+    font-style: italic;
+    cursor: default;
+}
+
+.org-privacy__toggle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+.org-privacy__toggle:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.org-privacy__toggle-track {
+    flex-shrink: 0;
+    width: 40px;
+    height: 22px;
+    border-radius: 11px;
+    background: rgba(100, 100, 100, 0.4);
+    position: relative;
+    transition: background 0.2s;
+}
+
+.org-privacy__toggle-track--on {
+    background: rgba(192, 159, 83, 0.75);
+}
+
+.org-privacy__toggle-thumb {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #fff;
+    transition: left 0.2s;
+}
+
+.org-privacy__toggle-track--on .org-privacy__toggle-thumb {
+    left: 21px;
+}
+
+.org-privacy__toggle-label {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: #f2f2f2;
+}

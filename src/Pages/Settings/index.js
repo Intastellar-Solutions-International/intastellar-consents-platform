@@ -21,6 +21,7 @@ const SETTINGS_HUB_COPY = {
     "/settings/ropa": "Maintain your Article 30 Record of Processing Activities. Auto-populate from pre-consent scan data.",
     "/settings/ad-connections": "Connect Google Ads, Meta, LinkedIn, and Microsoft Ads to auto-import clicks and spend for each domain.",
     "/settings/analytics-script": "Embed a consent-gated first-party analytics script on your website to collect privacy-safe pageview data.",
+    "/settings/privacy": "Set organisation-wide privacy defaults — marketing, telemetry, data sharing, and visibility — and lock what members can't override themselves.",
     "/settings/blacklist-ip": "Exclude specific IP addresses from analytics and reporting.",
     "/settings/workspaces": "Manage client workspaces for your agency. Create and organize client domains.",
 };
