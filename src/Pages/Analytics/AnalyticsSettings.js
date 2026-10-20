@@ -334,6 +334,54 @@ const BUSINESS_TYPES = [
         tagline: "Local traffic, contact actions & mobile",
         highlights: ["Local visitors", "Contact clicks", "Mobile ratio"],
     },
+    {
+        value: "aviation",
+        label: "Aviation",
+        tagline: "Bookings, route reach & international traffic",
+        highlights: ["Bookings", "Countries reached", "Consent rate"],
+    },
+    {
+        value: "tourism",
+        label: "Tourism & Travel",
+        tagline: "Bookings, international visitors & engagement",
+        highlights: ["Bookings", "International visitors", "Engaged users"],
+    },
+    {
+        value: "hospitality",
+        label: "Hospitality",
+        tagline: "Reservations, direct bookings & guest engagement",
+        highlights: ["Reservations", "Direct bookings", "Engaged users"],
+    },
+    {
+        value: "finance",
+        label: "Finance & Insurance",
+        tagline: "Qualified leads, form completions & consent compliance",
+        highlights: ["Qualified leads", "Form fills", "Consent rate"],
+    },
+    {
+        value: "healthcare",
+        label: "Healthcare",
+        tagline: "Appointment requests & consent-compliant engagement",
+        highlights: ["Appointment requests", "Consent rate", "Engaged users"],
+    },
+    {
+        value: "education",
+        label: "Education",
+        tagline: "Enrollment inquiries, content engagement & reach",
+        highlights: ["Enrollment inquiries", "Content engagement", "Countries reached"],
+    },
+    {
+        value: "real_estate",
+        label: "Real Estate",
+        tagline: "Viewing requests, listing views & local reach",
+        highlights: ["Viewing requests", "Listing views", "Local visitors"],
+    },
+    {
+        value: "automotive",
+        label: "Automotive",
+        tagline: "Quote & test-drive requests from local traffic",
+        highlights: ["Quote requests", "Local visitors", "Engaged users"],
+    },
 ];
 
 const INDUSTRIES = [

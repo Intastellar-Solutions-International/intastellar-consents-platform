@@ -9,7 +9,7 @@ import AnalyticsWorldMap from "./AnalyticsWorldMap.js";
 import {
     authHeaders, KpiCard, MiniBar, useAnalyticsPage, useAnalyticsReport, useSiteConfig,
     toIsoDate, pctChange, IndustryBenchmarkNote, formatPercent, SegmentFilter, AnalyticsSubNav,
-    useForeignDomains,
+    useForeignDomains, PanelSkeleton,
 } from "./_shared.js";
 import {
     IconBarChart, IconUsers, IconShieldCheck, IconGlobe, IconTrendingUp,
@@ -333,10 +333,18 @@ function AreaChart({ daily }) {
 }
 
 const BT_LABELS = {
-    ecommerce: "E-commerce",
-    b2b:       "B2B / SaaS",
-    media:     "Media & Content",
-    local:     "Local Business",
+    ecommerce:   "E-commerce",
+    b2b:         "B2B / SaaS",
+    media:       "Media & Content",
+    local:       "Local Business",
+    aviation:    "Aviation",
+    tourism:     "Tourism & Travel",
+    hospitality: "Hospitality",
+    finance:     "Finance & Insurance",
+    healthcare:  "Healthcare",
+    education:   "Education",
+    real_estate: "Real Estate",
+    automotive:  "Automotive",
 };
 
 function fmtRevenue(amount, currency = "EUR") {
@@ -511,6 +519,50 @@ function KpiStrip({ data, siteConfig, trendEngaged, trendEvents, trendSessions, 
         case "local":
             defaultOrder = ["sessions", "users", "countries", "consent", "events"];
             break;
+        case "aviation":
+            defaultOrder = hasRevenue
+                ? ["revenue", "countries", "users", "sessions", "consent"]
+                : ["countries", "users", "sessions", "consent", "events"];
+            break;
+        case "tourism":
+            defaultOrder = hasRevenue
+                ? ["revenue", "users", "countries", "sessions", "consent"]
+                : hasLeads
+                    ? ["leads", "countries", "users", "sessions", "consent"]
+                    : ["users", "countries", "sessions", "consent", "events"];
+            break;
+        case "hospitality":
+            defaultOrder = hasRevenue
+                ? ["revenue", "leads", "users", "sessions", "consent"]
+                : hasLeads
+                    ? ["leads", "users", "sessions", "consent", "countries"]
+                    : ["users", "sessions", "consent", "countries", "events"];
+            break;
+        case "finance":
+            defaultOrder = hasLeads
+                ? ["leads", "consent", "users", "sessions", "events"]
+                : ["consent", "users", "sessions", "events", "countries"];
+            break;
+        case "healthcare":
+            defaultOrder = hasLeads
+                ? ["leads", "consent", "users", "sessions", "bounce"]
+                : ["consent", "users", "sessions", "bounce", "events"];
+            break;
+        case "education":
+            defaultOrder = hasLeads
+                ? ["leads", "events", "users", "countries", "consent"]
+                : ["events", "users", "countries", "consent", "sessions"];
+            break;
+        case "real_estate":
+            defaultOrder = hasLeads
+                ? ["leads", "events", "users", "sessions", "consent"]
+                : ["events", "users", "sessions", "consent", "countries"];
+            break;
+        case "automotive":
+            defaultOrder = hasLeads
+                ? ["leads", "users", "sessions", "consent", "countries"]
+                : ["users", "sessions", "consent", "countries", "events"];
+            break;
         default:
             defaultOrder = ["users", "events", "sessions", "consent", "countries"];
             if (hasLeads)   defaultOrder.push("leads");
@@ -657,13 +709,72 @@ function ConsentImpactPanel({ impact }) {
     );
 }
 
+// ── Loading skeletons ──────────────────────────────────────────────────────────
+// Shown while the fast /api/analytics-report call is in flight, shaped to match
+// the real layout below (KPI strip, chart + live feed, geo row) so the page
+// doesn't flash from blank to fully populated.
+
+function KpiCardSkeleton() {
+    return (
+        <div className="sa-kpi">
+            <div className="sa-kpi__head">
+                <span className="sa-skeleton" style={{ width: 70, height: 10 }} />
+            </div>
+            <span className="sa-kpi__value">
+                <span className="sa-skeleton" style={{ width: 56, height: 20, display: "inline-block" }} />
+            </span>
+            <span className="sa-kpi__sub">
+                <span className="sa-skeleton" style={{ width: 90, height: 8, display: "inline-block" }} />
+            </span>
+        </div>
+    );
+}
+
+function PanelSkeletonShell({ rows = 4 }) {
+    return (
+        <div className="sa-panel">
+            <h3 className="sa-panel__title">
+                <span className="sa-skeleton" style={{ width: 120, height: 11 }} />
+            </h3>
+            <PanelSkeleton rows={rows} />
+        </div>
+    );
+}
+
+function OverviewSkeleton() {
+    return (
+        <div className="sa-overview">
+            <div className="sa-kpi-strip">
+                {Array.from({ length: 5 }, (_, i) => <KpiCardSkeleton key={i} />)}
+            </div>
+
+            <div className="sa-overview-main">
+                <div className="sa-chart-section">
+                    <div className="sa-chart-section__hd">
+                        <span className="sa-skeleton" style={{ width: 140, height: 12 }} />
+                        <span className="sa-skeleton" style={{ width: 70, height: 10 }} />
+                    </div>
+                    <span className="sa-skeleton" style={{ width: "100%", height: 220, display: "block" }} />
+                </div>
+                <PanelSkeletonShell rows={5} />
+            </div>
+
+            <div className="sa-overview-geo">
+                <PanelSkeletonShell rows={5} />
+                <PanelSkeletonShell rows={5} />
+                <PanelSkeletonShell rows={3} />
+            </div>
+        </div>
+    );
+}
+
 // ── Main overview page ────────────────────────────────────────────────────────
 export default function SiteAnalytics() {
     document.title = "Overview, Analytics | Intastellar Consents";
 
     const {
         domain, hasDomain, getLastDays, setLastDays, fromDate, setFromDate, toDate, setToDate,
-        tick, setTick, data, loading, error, showSetup, showData, segment, setSegment,
+        tick, setTick, data, loading, detailLoading, error, showSetup, showData, segment, setSegment,
     } = useAnalyticsPage();
 
     // Previous period of the same length, immediately preceding the current
@@ -752,9 +863,7 @@ export default function SiteAnalytics() {
                     {!hasDomain && (
                         <p className="sa-notice">Select a specific domain in the header to view analytics.</p>
                     )}
-                    {hasDomain && loading && (
-                        <p className="sa-notice">Loading&hellip;</p>
-                    )}
+                    {hasDomain && loading && <OverviewSkeleton />}
                     {hasDomain && error && (
                         <p className="sa-notice sa-notice--error">{error}</p>
                     )}
@@ -948,7 +1057,17 @@ export default function SiteAnalytics() {
                                     </table>
                                 </div>
 
-                                {(data.topOutbound || []).length > 0 && (
+                                {/* Outbound/forms/rage panels depend on the slower detail
+                                    call — show placeholders instead of letting them pop in
+                                    unannounced once detailLoading settles. */}
+                                {detailLoading && (
+                                    <>
+                                        <PanelSkeletonShell rows={4} />
+                                        <PanelSkeletonShell rows={3} />
+                                    </>
+                                )}
+
+                                {!detailLoading && (data.topOutbound || []).length > 0 && (
                                     <div className="sa-panel">
                                         <h3 className="sa-panel__title">
                                             <IconExternalLink className="sa-icon" /> Outbound clicks
@@ -977,7 +1096,7 @@ export default function SiteAnalytics() {
                                     </div>
                                 )}
 
-                                {(data.formFunnel || []).length > 0 && (
+                                {!detailLoading && (data.formFunnel || []).length > 0 && (
                                     <div className="sa-panel">
                                         <h3 className="sa-panel__title">
                                             <IconScrollDepth className="sa-icon" /> Form performance
@@ -1021,7 +1140,7 @@ export default function SiteAnalytics() {
                                     </div>
                                 )}
 
-                                {((data.topRageSelectors || []).length > 0 || (data.topRagePages || []).length > 0) && (
+                                {!detailLoading && ((data.topRageSelectors || []).length > 0 || (data.topRagePages || []).length > 0) && (
                                     <div className="sa-panel">
                                         <h3 className="sa-panel__title">
                                             <IconCursorClick className="sa-icon" /> Frustration signals

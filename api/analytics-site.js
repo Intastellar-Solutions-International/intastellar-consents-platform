@@ -191,7 +191,11 @@ export default async function handler(req, res) {
             sets.push(`industry = $${i++}`);
             params.push(body.industry);
         }
-        const VALID_BUSINESS_TYPES = ["ecommerce", "b2b", "media", "local"];
+        const VALID_BUSINESS_TYPES = [
+            "ecommerce", "b2b", "media", "local",
+            "aviation", "tourism", "hospitality", "finance",
+            "healthcare", "education", "real_estate", "automotive",
+        ];
         if (body.businessType === null) {
             sets.push(`business_type = NULL`);
         } else if (typeof body.businessType === "string" && VALID_BUSINESS_TYPES.includes(body.businessType)) {

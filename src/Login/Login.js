@@ -7,6 +7,11 @@ import { useIntastellar } from "@intastellar/signin-sdk-react";
 import appStorage from '../Functions/storage.js';
 
 function handleLogin(account) {
+
+    console.log("Receiving the user");
+
+    console.log("User account:", account);
+
     if (!account) return;
     fetch(API.OrganisationData.url, {
             withCredentials: false,
@@ -19,40 +24,40 @@ function handleLogin(account) {
                 organisationMember: account?.user?.email,
             }),
         })
-            .then((response) => response.json())
-            .then((response) => {
-                if (response === "Err_Logon_Fail") {
-                    console.error("Login failed: organisation lookup rejected");
-                    return;
-                }
-                localStorage.setItem("platform", "gdpr");
-                appStorage.setItem("organisation", JSON.stringify(response[0]));
+    .then((response) => response.json())
+    .then((response) => {
+        if (response === "Err_Logon_Fail") {
+            console.error("Login failed: organisation lookup rejected");
+            return;
+        }
+        localStorage.setItem("platform", "gdpr");
+        appStorage.setItem("organisation", JSON.stringify(response[0]));
 
-                localStorage.setItem(
-                    "globals",
-                    JSON.stringify({
-                        ...account,
-                        organisation_access:
-                            response.map((organisation) => ({
-                                organisation_id: organisation.id,
-                                organisation_name: organisation.name,
-                                organisation_access: organisation.users.find(
-                                    (user) => user.email === account?.user?.email
-                                )?.role,
-                            })) || [],
-                    })
-                );
-
-                const platform = localStorage.getItem("platform");
-                if (platform == null || platform === undefined) {
-                    window.location.href = "/dashboard";
-                } else {
-                    window.location.href = `/${platform}/dashboard`;
-                }
+        localStorage.setItem(
+            "globals",
+            JSON.stringify({
+                ...account,
+                organisation_access:
+                    response.map((organisation) => ({
+                        organisation_id: organisation.id,
+                        organisation_name: organisation.name,
+                        organisation_access: organisation.users.find(
+                            (user) => user.email === account?.user?.email
+                        )?.role,
+                    })) || [],
             })
-            .catch((error) => {
-                console.error("Error during login:", error);
-            });
+        );
+
+        const platform = localStorage.getItem("platform");
+        if (platform == null || platform === undefined) {
+            window.location.href = "/dashboard";
+        } else {
+            window.location.href = `/${platform}/dashboard`;
+        }
+    })
+    .catch((error) => {
+        console.error("Error during login:", error);
+    });
 }
 
 export default function Login() {
