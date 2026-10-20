@@ -49,7 +49,6 @@ import DSR from "./Pages/DSR";
 import DSRDetail from "./Pages/DSR/DSRDetail";
 import AdConnectionsSettings from "./Pages/Settings/AdConnections";
 import AnalyticsScriptSettings from "./Pages/Settings/AnalyticsScript";
-import OrganisationPrivacySettings from "./Pages/Settings/OrganisationPrivacy";
 import SiteAnalytics from "./Pages/Analytics";
 import AnalyticsAudience from "./Pages/Analytics/Audience.js";
 import AnalyticsAcquisition from "./Pages/Analytics/Acquisition.js";
@@ -736,11 +735,6 @@ export default function App() {
                                         <Route path="/settings/analytics-script" exact>
                                             <ErrorBoundary>
                                                 {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Analytics Script" fullPage /> : <AnalyticsScriptSettings />}
-                                            </ErrorBoundary>
-                                        </Route>
-                                        <Route path="/settings/privacy" exact>
-                                            <ErrorBoundary>
-                                                <OrganisationPrivacySettings />
                                             </ErrorBoundary>
                                         </Route>
                                         <Route path="/settings/plans" exact>

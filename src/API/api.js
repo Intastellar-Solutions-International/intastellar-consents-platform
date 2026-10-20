@@ -507,22 +507,6 @@ const API = {
             headers: { "Authorization": Authentication.getToken(), "Organisation": Authentication.getOrganisation(), "Content-Type": "application/json" }
         },
     },
-    // Lives on IntastellarAccounts.com (LoginHost), not this app's own API —
-    // see the Privacy Settings Schema design doc. Endpoints don't exist on
-    // the real server yet; this UI is being built ahead of that backend work,
-    // so these paths are a placeholder shape to confirm once it's built.
-    orgPrivacySettings: {
-        get: {
-            url: `${LoginHost}/privacy/org-defaults`,
-            method: "GET",
-            headers: { "Authorization": Authentication.getToken(), "Organisation": Authentication.getOrganisation(), "Content-Type": "application/json" }
-        },
-        save: {
-            url: `${LoginHost}/privacy/org-defaults`,
-            method: "POST",
-            headers: { "Authorization": Authentication.getToken(), "Organisation": Authentication.getOrganisation(), "Content-Type": "application/json" }
-        },
-    },
     dsr: {
         list: {
             url: `${PrimaryHost}/cmp/dsr`,

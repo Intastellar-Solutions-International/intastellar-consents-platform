@@ -11,6 +11,7 @@ const { useMemo } = React;
 
 const SETTINGS_HUB_COPY = {
     "/settings/preferences": "Profile, notifications, and personal defaults for your account.",
+    "https://intastellaraccounts.com/settings/privacy": "Your own marketing, telemetry, data sharing, and visibility preferences — plus requesting an export or deletion of your data. Managed on IntastellarAccounts.com.",
     "/settings/add-user": "Invite teammates to this organisation and assign a role.",
     "/settings/view-users": "See who has access, edit members, or create new platform users from here.",
     "/settings/view-organisations": "Browse organisations, edit them, or create a new one from here.",
@@ -21,7 +22,7 @@ const SETTINGS_HUB_COPY = {
     "/settings/ropa": "Maintain your Article 30 Record of Processing Activities. Auto-populate from pre-consent scan data.",
     "/settings/ad-connections": "Connect Google Ads, Meta, LinkedIn, and Microsoft Ads to auto-import clicks and spend for each domain.",
     "/settings/analytics-script": "Embed a consent-gated first-party analytics script on your website to collect privacy-safe pageview data.",
-    "/settings/privacy": "Set organisation-wide privacy defaults — marketing, telemetry, data sharing, and visibility — and lock what members can't override themselves.",
+    "https://intastellaraccounts.com/settings/org-privacy": "Set organisation-wide privacy defaults — marketing, telemetry, data sharing, and visibility — and lock what members can't override themselves. Managed on IntastellarAccounts.com.",
     "/settings/blacklist-ip": "Exclude specific IP addresses from analytics and reporting.",
     "/settings/workspaces": "Manage client workspaces for your agency. Create and organize client domains.",
 };
@@ -80,18 +81,24 @@ export default function Settings() {
                         <p className="settings-hub__empty">No settings sections are available for your current role.</p>
                     ) : (
                         <div className="settings-hub__grid">
-                            {visibleItems.map((link) => (
-                                <Link key={link.path} className="settings-hub__card" to={link.path}>
-                                    <span className="settings-hub__card-title">
-                                        {link.name}
-                                        <span className="settings-hub__card-arrow" aria-hidden="true" />
-                                    </span>
-                                    <p className="settings-hub__card-desc">
-                                        {SETTINGS_HUB_COPY[link.path] ||
-                                            "Open this section to manage related options."}
-                                    </p>
-                                </Link>
-                            ))}
+                            {visibleItems.map((link) => {
+                                const CardTag = link.external ? "a" : Link;
+                                const cardProps = link.external
+                                    ? { href: link.path, target: "_blank", rel: "noopener noreferrer" }
+                                    : { to: link.path };
+                                return (
+                                    <CardTag key={link.path} className="settings-hub__card" {...cardProps}>
+                                        <span className="settings-hub__card-title">
+                                            {link.name}{link.external ? " ↗" : ""}
+                                            <span className="settings-hub__card-arrow" aria-hidden="true" />
+                                        </span>
+                                        <p className="settings-hub__card-desc">
+                                            {SETTINGS_HUB_COPY[link.path] ||
+                                                "Open this section to manage related options."}
+                                        </p>
+                                    </CardTag>
+                                );
+                            })}
                         </div>
                     )}
                 </div>

@@ -23,6 +23,11 @@ export const reportsLinks = [
         view: ["admin", "super-admin", "manager"]
     },
     {
+        name: "My Privacy",
+        path: "https://intastellaraccounts.com/settings/privacy",
+        external: true,
+    },
+    {
         name: "View Users",
         path: "/settings/view-users",
         view: ["admin", "super-admin", "manager"]
@@ -68,8 +73,9 @@ export const reportsLinks = [
     },
     {
         name: "Organisation Privacy",
-        path: "/settings/privacy",
+        path: "https://intastellaraccounts.com/settings/org-privacy",
         view: ["admin", "super-admin"],
+        external: true,
     },
     {
         name: "Blacklist IP",

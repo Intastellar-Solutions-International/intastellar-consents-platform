@@ -101,6 +101,22 @@ export default function SideNav(props) {
                             return null;
                         }
 
+                        if (link.external) {
+                            return (
+                                <li key={key} className="sidebar__item">
+                                    <a
+                                        className="navItems sidebar__link"
+                                        href={link.path}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        onClick={closeMobile}
+                                    >
+                                        <span className="hiddenCollapsed">{link?.name} ↗</span>
+                                    </a>
+                                </li>
+                            );
+                        }
+
                         const url = (() => {
                             if (link.path.indexOf("/analytics") === 0) {
                                 if (!handle) return link.path;
