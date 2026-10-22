@@ -100,6 +100,8 @@ export default function AnalyticsBots() {
     const suspicious = usePager(data?.suspicious?.byOrg,    domain, fromIso, toIso);
     const pages      = usePager(data?.topPages,             domain, fromIso, toIso);
 
+    console.log(data);
+
     const maxCategory = useMemo(() => Math.max(...(data?.byCategory || []).map(c => c.n), 1), [data]);
     const maxBot       = useMemo(() => Math.max(...(data?.topBots    || []).map(b => b.n), 1), [data]);
     const maxPage      = useMemo(() => Math.max(...(data?.topPages   || []).map(p => p.n), 1), [data]);

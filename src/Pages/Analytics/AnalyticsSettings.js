@@ -119,8 +119,16 @@ function ConversionActionPicker({ domain, platform, draft, onChange }) {
                 /* Expanded picker — list of conversion destinations as radio-style rows */
                 <div style={{ border: "1px solid rgba(255,255,255,0.1)", borderRadius: 8, overflow: "hidden" }}>
                     {(actions || []).length === 0 ? (
-                        <div style={{ padding: "12px 14px", fontSize: 13, color: "rgba(130,130,130,0.5)" }}>
-                            No {noun}s found in this account.
+                        <div style={{ padding: "12px 14px", fontSize: 13, color: "rgba(130,130,130,0.5)", lineHeight: 1.5 }}>
+                            {platform === "google_ads" ? (
+                                <>
+                                    No "Import clicks" conversion action found in this account. The usual
+                                    tag-tracked website conversions aren't valid for this — create one in
+                                    Google Ads: <strong>Tools &amp; Settings → Conversions → New conversion action → Import → Clicks</strong>.
+                                </>
+                            ) : (
+                                `No ${noun}s found in this account.`
+                            )}
                         </div>
                     ) : (actions || []).map(a => {
                         const isSelected = draft === a.resourceName;

@@ -190,6 +190,14 @@ function collectUtmSourcesFrom(resource, into) {
     }
 }
 
+// Only UPLOAD_CLICKS conversion actions ("Import → Clicks" in the Google Ads
+// UI) are valid destinations for the Data Manager API's click-conversion
+// (gclid-based) import — ad-conversion-push.js's pushGoogleAds sends exactly
+// this kind of event. Every other type (WEBPAGE tag-tracked conversions,
+// call tracking, GA4-linked, etc. — the far more common default when someone
+// first sets up conversion tracking) is rejected with "The conversion action
+// type is not valid." Filtering here, rather than just in the picker UI,
+// means a user can never select an incompatible one in the first place.
 export async function fetchGoogleAdsConversionActions(conn) {
     if (!conn.account_id) throw new Error("No Google Ads customer ID linked.");
     const customerId = conn.account_id.replace(/\D/g, "");
@@ -214,6 +222,7 @@ export async function fetchGoogleAdsConversionActions(conn) {
                            conversion_action.type
                     FROM conversion_action
                     WHERE conversion_action.status != 'REMOVED'
+                      AND conversion_action.type = 'UPLOAD_CLICKS'
                     ORDER BY conversion_action.name ASC
                 `,
             }),
