@@ -348,6 +348,42 @@ export default function ConversionAttribution() {
 
                     {domain && !loading && data && (
                         <>
+                            {/* ── Setup guide ──────────────────────── */}
+                            {/* First thing on the page, not the last — buried at the bottom
+                                it was easy to miss entirely. */}
+                            <div className="sa-panel" style={{ marginBottom: 16 }}>
+                                <h3 className="sa-panel__title">Setup Guide</h3>
+                                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 12, marginTop: 12 }}>
+                                    {[
+                                        {
+                                            title: "1. Connect ad platforms",
+                                            desc: "Go to Settings → Ad Connections to connect Google Ads, Meta, or Microsoft Ads via OAuth.",
+                                        },
+                                        {
+                                            title: "2. Set conversion action",
+                                            desc: "Go to Settings → Analytics Settings → Conversion actions. For Google Ads, choose from the dropdown. For Microsoft Ads, enter your conversion goal name.",
+                                        },
+                                        {
+                                            title: "3. Fire conversion events",
+                                            desc: "Call window.intaAnalytics.track('purchase', { value: 49.99, currency: 'EUR' }) on your thank-you or confirmation page.",
+                                        },
+                                        {
+                                            title: "4. Push to platforms",
+                                            desc: "Click 'Push pending' above to send queued conversions, or automate via a cron call to POST /api/ad-conversion-push.",
+                                        },
+                                    ].map(s => (
+                                        <div key={s.title} style={{
+                                            padding: "12px 14px", borderRadius: 6,
+                                            background: "rgba(255,255,255,0.03)",
+                                            border: "1px solid rgba(255,255,255,0.06)",
+                                        }}>
+                                            <div style={{ fontWeight: 600, fontSize: 13, marginBottom: 6 }}>{s.title}</div>
+                                            <div style={{ fontSize: 12, color: "rgba(180,180,180,0.65)", lineHeight: 1.5 }}>{s.desc}</div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
                             {/* ── KPI summary ──────────────────────── */}
                             <div className="sa-panel" style={{ marginBottom: 16 }}>
                                 <h3 className="sa-panel__title">Attribution Summary</h3>
@@ -406,40 +442,6 @@ export default function ConversionAttribution() {
                                     </div>
                                 </div>
                             )}
-
-                            {/* ── Setup guide ──────────────────────── */}
-                            <div className="sa-panel" style={{ marginTop: 16 }}>
-                                <h3 className="sa-panel__title">Setup Guide</h3>
-                                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 12, marginTop: 12 }}>
-                                    {[
-                                        {
-                                            title: "1. Connect ad platforms",
-                                            desc: "Go to Settings → Ad Connections to connect Google Ads, Meta, or Microsoft Ads via OAuth.",
-                                        },
-                                        {
-                                            title: "2. Set conversion action",
-                                            desc: "Go to Settings → Analytics Settings → Conversion actions. For Google Ads, choose from the dropdown. For Microsoft Ads, enter your conversion goal name.",
-                                        },
-                                        {
-                                            title: "3. Fire conversion events",
-                                            desc: "Call window.intaAnalytics.track('purchase', { value: 49.99, currency: 'EUR' }) on your thank-you or confirmation page.",
-                                        },
-                                        {
-                                            title: "4. Push to platforms",
-                                            desc: "Click 'Push pending' above to send queued conversions, or automate via a cron call to POST /api/ad-conversion-push.",
-                                        },
-                                    ].map(s => (
-                                        <div key={s.title} style={{
-                                            padding: "12px 14px", borderRadius: 6,
-                                            background: "rgba(255,255,255,0.03)",
-                                            border: "1px solid rgba(255,255,255,0.06)",
-                                        }}>
-                                            <div style={{ fontWeight: 600, fontSize: 13, marginBottom: 6 }}>{s.title}</div>
-                                            <div style={{ fontSize: 12, color: "rgba(180,180,180,0.65)", lineHeight: 1.5 }}>{s.desc}</div>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
                         </>
                     )}
                 </div>

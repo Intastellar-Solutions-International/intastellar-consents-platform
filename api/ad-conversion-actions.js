@@ -1,16 +1,17 @@
 /**
- * GET /api/ad-conversion-actions?domain=<domain>&platform=google_ads
+ * GET /api/ad-conversion-actions?domain=<domain>&platform=google_ads|meta_ads
  *
- * Fetches conversion actions live from the connected ad platform account.
- * Currently only Google Ads is supported (Microsoft Ads has no equivalent
- * programmatic list endpoint; Meta doesn't use named conversion actions).
+ * Fetches conversion destinations live from the connected ad platform account
+ * — named conversion actions for Google Ads, Pixels for Meta. Microsoft Ads
+ * has no equivalent programmatic list endpoint (conversion goal name is
+ * entered as free text instead — see AnalyticsSettings.js).
  *
  * Returns: { actions: [{ resourceName, name, type }] }
  *
  * Required headers: Authorization: Bearer <token>, Organisation: <org_id>
  */
 
-import { tryRefreshToken, fetchGoogleAdsConversionActions } from "./_ad-platform-fetch.js";
+import { tryRefreshToken, fetchGoogleAdsConversionActions, fetchMetaAdsPixels } from "./_ad-platform-fetch.js";
 import { getPool } from "./_db.js";
 function validateJwt(authHeader) {
     const match = (authHeader || "").match(/^Bearer\s+(.+)$/i);
@@ -58,7 +59,7 @@ export default async function handler(req, res) {
     const platform = String(req.query.platform || "google_ads").trim();
 
     if (!domain)  return res.status(400).json({ error: "domain query param required" });
-    if (platform !== "google_ads") {
+    if (platform !== "google_ads" && platform !== "meta_ads") {
         return res.status(200).json({ actions: [], note: `${platform} does not support listing conversion actions via API` });
     }
 
@@ -71,7 +72,9 @@ export default async function handler(req, res) {
          LIMIT 1`,
         [orgId, domain, platform]
     );
-    if (!rows.length) return res.status(404).json({ error: "No connected Google Ads account found for this domain" });
+    if (!rows.length) {
+        return res.status(404).json({ error: `No connected ${platform === "meta_ads" ? "Meta" : "Google"} Ads account found for this domain` });
+    }
 
     let conn = { ...rows[0], platform, organisation_id: orgId, domain };
     try {
@@ -79,7 +82,9 @@ export default async function handler(req, res) {
     } catch { /* use existing token */ }
 
     try {
-        const actions = await fetchGoogleAdsConversionActions(conn);
+        const actions = platform === "meta_ads"
+            ? await fetchMetaAdsPixels(conn)
+            : await fetchGoogleAdsConversionActions(conn);
         return res.status(200).json({ actions });
     } catch (err) {
         return res.status(502).json({ error: err.message });

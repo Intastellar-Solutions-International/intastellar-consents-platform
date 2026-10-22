@@ -9,6 +9,9 @@
  *                                            Google Ads account's tracking templates/custom params
  * fetchGoogleAdsCampaigns(conn, from, to)   → [{id, name, status, channelType, clicks, impressions,
  *                                            spend, currency}] per-campaign, live (not cached)
+ * fetchMetaAdsPixels(conn)                  → [{resourceName, name, type}] Pixels on the connection's
+ *                                            ad account — for the conversion-destination picker,
+ *                                            same shape as fetchGoogleAdsConversionActions
  * fetchMetaAdsCampaigns(conn, from, to)     → [{id, name, status, channelType, clicks, impressions,
  *                                            spend, currency}] per-campaign, live (not cached);
  *                                            status/channelType are always null (no Meta equivalent
@@ -233,6 +236,30 @@ export async function fetchGoogleAdsConversionActions(conn) {
             };
         })
         .filter(a => a.resourceName && a.name);
+}
+
+// Meta Pixels live under the ad account, not the user — distinct from
+// account_id (the act_... ad account used for reading spend) which is what
+// pushMetaAds in ad-conversion-push.js was incorrectly reusing as a pixel ID
+// before this existed. conn.account_id is the ad account here deliberately;
+// the pixel the user picks from this list is stored in conversion_action,
+// the same generic "where to send conversions" slot Google Ads already uses.
+export async function fetchMetaAdsPixels(conn) {
+    const accountId = String(conn.account_id || "").replace(/^act_/, "");
+    if (!accountId) throw new Error("No Meta Ad Account linked.");
+
+    const resp = await fetch(
+        `https://graph.facebook.com/v26.0/act_${accountId}/adspixels?fields=id,name&limit=100`,
+        { headers: { Authorization: `Bearer ${conn.access_token}` } }
+    );
+    if (!resp.ok) {
+        const err = await resp.json().catch(() => ({}));
+        throw new Error(err?.error?.message || `Meta API error (${resp.status})`);
+    }
+    const data = await resp.json();
+    return (data.data || [])
+        .map(p => ({ resourceName: p.id, name: p.name || p.id, type: "PIXEL" }))
+        .filter(p => p.resourceName);
 }
 
 export async function fetchGoogleAdsUtmSources(conn) {

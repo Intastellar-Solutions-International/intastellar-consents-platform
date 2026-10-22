@@ -78,7 +78,10 @@ async function ensureTable(db) {
     // conversion_action stores the platform-specific conversion identifier needed to push:
     // Google Ads → resource name like "customers/123/conversionActions/456"
     // Microsoft Ads → conversion goal name (string)
-    // Meta Ads → not needed (uses account_id as pixel_id + standard event names)
+    // Meta Ads → Pixel ID — distinct from account_id, which is the ad account
+    // (act_...) used for reading spend reports, not a valid Conversions API
+    // destination. Picked via the same live picker Google Ads uses (see
+    // api/ad-conversion-actions.js / AnalyticsSettings.js).
     await db.query(`ALTER TABLE ad_platform_connections ADD COLUMN IF NOT EXISTS conversion_action TEXT`).catch(() => {});
     tableReady = true;
 }

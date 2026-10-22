@@ -20,9 +20,14 @@ const PLATFORM_LABELS = {
 
 const PLATFORM_HINTS = {
     microsoft_ads: "Goal name from Microsoft Advertising → Tools → Conversion goals, e.g. Purchase",
-    meta_ads:      "Not required — Meta uses the event name (purchase, lead, etc.) mapped to standard events automatically.",
     linkedin_ads:  "Conversion ID from LinkedIn Campaign Manager → Analyze → Conversion tracking.",
 };
+
+// Platforms with a live-fetchable list of conversion destinations (Google
+// Ads conversion actions, Meta Pixels) use ConversionActionPicker below.
+// Everything else (Microsoft Ads, LinkedIn) falls back to a plain text input.
+const LIVE_PICKER_PLATFORMS = new Set(["google_ads", "meta_ads"]);
+const PICKER_NOUN = { google_ads: "conversion action", meta_ads: "Pixel" };
 
 // ── Reusable field wrapper ────────────────────────────────────────────────────
 
@@ -53,18 +58,19 @@ function Section({ title, children }) {
 
 // ── Conversion actions section ────────────────────────────────────────────────
 
-function GoogleConversionActionPicker({ domain, draft, onChange }) {
+function ConversionActionPicker({ domain, platform, draft, onChange }) {
     const [actions,  setActions]  = useState(null);  // null = not loaded yet
     const [loading,  setLoading]  = useState(false);
     const [error,    setError]    = useState(null);
     const [expanded, setExpanded] = useState(false);
+    const noun = PICKER_NOUN[platform] || "conversion action";
 
     const load = useCallback(() => {
         if (!domain || actions !== null) return;
         setLoading(true);
         setError(null);
         fetch(
-            `${AD_CONV_ACTIONS_URL}?domain=${encodeURIComponent(domain)}&platform=google_ads`,
+            `${AD_CONV_ACTIONS_URL}?domain=${encodeURIComponent(domain)}&platform=${encodeURIComponent(platform)}`,
             { headers: authHeaders() }
         )
             .then(r => r.json())
@@ -75,7 +81,7 @@ function GoogleConversionActionPicker({ domain, draft, onChange }) {
             })
             .catch(e => { setError(e.message); setActions([]); })
             .finally(() => setLoading(false));
-    }, [domain, actions]);
+    }, [domain, platform, actions]);
 
     // Currently-saved value is a full resource name — extract the human name
     // by matching against the fetched list, or fall back to showing the raw
@@ -88,7 +94,7 @@ function GoogleConversionActionPicker({ domain, draft, onChange }) {
     }, [draft, actions]);
 
     return (
-        <Field label="Conversion action">
+        <Field label={platform === "meta_ads" ? "Pixel" : "Conversion action"}>
             {/* Collapsed state — shows currently saved value + a button to pick */}
             {!expanded ? (
                 <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
@@ -110,11 +116,11 @@ function GoogleConversionActionPicker({ domain, draft, onChange }) {
                     </button>
                 </div>
             ) : (
-                /* Expanded picker — list of conversion actions as radio-style rows */
+                /* Expanded picker — list of conversion destinations as radio-style rows */
                 <div style={{ border: "1px solid rgba(255,255,255,0.1)", borderRadius: 8, overflow: "hidden" }}>
                     {(actions || []).length === 0 ? (
                         <div style={{ padding: "12px 14px", fontSize: 13, color: "rgba(130,130,130,0.5)" }}>
-                            No conversion actions found in this account.
+                            No {noun}s found in this account.
                         </div>
                     ) : (actions || []).map(a => {
                         const isSelected = draft === a.resourceName;
@@ -153,11 +159,11 @@ function GoogleConversionActionPicker({ domain, draft, onChange }) {
             )}
             {error && (
                 <p style={{ fontSize: 11, color: "rgba(239,68,68,0.75)", marginTop: 6 }}>
-                    Could not load conversion actions: {error}
+                    Could not load {noun}s: {error}
                 </p>
             )}
             <p style={{ fontSize: 11, color: "rgba(130,130,130,0.45)", marginTop: 6, lineHeight: 1.5 }}>
-                Pulled live from your Google Ads account. The full resource name is stored and used when pushing conversions.
+                Pulled live from your {PLATFORM_LABELS[platform] || platform} account. The ID is stored and used when pushing conversions.
             </p>
         </Field>
     );
@@ -227,8 +233,7 @@ function ConversionActionsSection({ domain }) {
         <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
             {connections.map(conn => {
                 const platform = conn.platform;
-                const isMetaLike = platform === "meta_ads";
-                const isGoogle   = platform === "google_ads";
+                const hasLivePicker = LIVE_PICKER_PLATFORMS.has(platform);
                 return (
                     <div key={platform} style={{
                         padding: "14px 16px", borderRadius: 8,
@@ -248,15 +253,12 @@ function ConversionActionsSection({ domain }) {
                             }}>Connected</span>
                         </div>
 
-                        {isMetaLike ? (
-                            <p style={{ fontSize: 12, color: "rgba(130,130,130,0.55)", lineHeight: 1.5, margin: 0 }}>
-                                {PLATFORM_HINTS[platform]}
-                            </p>
-                        ) : isGoogle ? (
-                            /* Google Ads: live picker fetched from the API */
+                        {hasLivePicker ? (
+                            /* Google Ads + Meta: live picker fetched from the API */
                             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                                <GoogleConversionActionPicker
+                                <ConversionActionPicker
                                     domain={domain}
+                                    platform={platform}
                                     draft={drafts[platform] || ""}
                                     onChange={val => setDrafts(d => ({ ...d, [platform]: val }))}
                                 />

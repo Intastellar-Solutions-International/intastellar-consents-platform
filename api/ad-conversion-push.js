@@ -1,4 +1,5 @@
 import { getPool } from "./_db.js";
+import { tryRefreshToken } from "./_ad-platform-fetch.js";
 /**
  * GET  /api/ad-conversion-push?domain=  — list recent push records for the org
  * POST /api/ad-conversion-push          — process pending conversions and push to ad platforms
@@ -11,9 +12,18 @@ import { getPool } from "./_db.js";
  *   limit   — max rows to process in one call (default 50)
  *   ids     — array of specific push record IDs to retry
  *
+ * Token refresh for every platform (Google, Meta, Microsoft) goes through the
+ * shared tryRefreshToken() in _ad-platform-fetch.js — the same helper
+ * cron-ad-sync.js and ad-conversion-actions.js already use. Meta's case there
+ * does the fb_exchange_token long-lived-token exchange; this file used to
+ * reimplement its own narrower refresh (Google + Microsoft only, no Meta
+ * case at all) which is why expired Meta connections used to fail forever
+ * instead of refreshing.
+ *
  * Required env vars (platform-specific):
- *   GOOGLE_CLIENT_ID             — OAuth2 client_id for token refresh
- *   GOOGLE_CLIENT_SECRET         — OAuth2 client_secret for token refresh
+ *   GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET         — Google Ads token refresh
+ *   META_ADS_CLIENT_ID / META_ADS_CLIENT_SECRET     — Meta long-lived token exchange
+ *   MICROSOFT_ADS_CLIENT_ID / MICROSOFT_ADS_CLIENT_SECRET — Microsoft Ads token refresh
  *   (Google Ads uses the Data Manager API — no developer token needed)
  */
 function validateJwt(authHeader) {
@@ -48,77 +58,14 @@ function setCors(req, res) {
 }
 
 // ── Token refresh ─────────────────────────────────────────────────────────────
-
-async function refreshGoogleToken(db, connection) {
-    const clientId     = process.env.GOOGLE_CLIENT_ID;
-    const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
-    if (!clientId || !clientSecret || !connection.refresh_token) return null;
-
-    const resp = await fetch("https://oauth2.googleapis.com/token", {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams({
-            grant_type:    "refresh_token",
-            client_id:     clientId,
-            client_secret: clientSecret,
-            refresh_token: connection.refresh_token,
-        }),
-    });
-    if (!resp.ok) return null;
-    const data = await resp.json();
-    if (!data.access_token) return null;
-
-    const expiresAt = new Date(Date.now() + (data.expires_in || 3600) * 1000);
-    await db.query(
-        `UPDATE ad_platform_connections SET access_token=$1, token_expires_at=$2, updated_at=NOW()
-         WHERE id=$3`,
-        [data.access_token, expiresAt, connection.id]
-    ).catch(() => {});
-
-    return data.access_token;
-}
-
-async function refreshMicrosoftToken(db, connection) {
-    const clientId     = process.env.MICROSOFT_ADS_CLIENT_ID;
-    const clientSecret = process.env.MICROSOFT_ADS_CLIENT_SECRET;
-    if (!clientId || !clientSecret || !connection.refresh_token) return null;
-
-    const resp = await fetch("https://login.microsoftonline.com/common/oauth2/v2.0/token", {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams({
-            grant_type:    "refresh_token",
-            client_id:     clientId,
-            client_secret: clientSecret,
-            refresh_token: connection.refresh_token,
-            scope:         "https://ads.microsoft.com/msads.manage offline_access",
-        }),
-    });
-    if (!resp.ok) return null;
-    const data = await resp.json();
-    if (!data.access_token) return null;
-
-    const expiresAt = new Date(Date.now() + (data.expires_in || 3600) * 1000);
-    await db.query(
-        `UPDATE ad_platform_connections SET access_token=$1, token_expires_at=$2, updated_at=NOW()
-         WHERE id=$3`,
-        [data.access_token, expiresAt, connection.id]
-    ).catch(() => {});
-
-    return data.access_token;
-}
+// Delegates to the shared tryRefreshToken (_ad-platform-fetch.js), which
+// handles Google/Microsoft's standard refresh_token grant AND Meta's
+// fb_exchange_token long-lived-token exchange — the single source of truth
+// also used by cron-ad-sync.js and ad-conversion-actions.js.
 
 async function getValidToken(db, connection) {
-    const expiresAt = connection.token_expires_at ? new Date(connection.token_expires_at) : null;
-    const isExpired = !expiresAt || expiresAt.getTime() - Date.now() < 120_000; // refresh if < 2 min left
-
-    if (!isExpired && connection.access_token) return connection.access_token;
-
-    switch (connection.platform) {
-        case "google_ads":    return await refreshGoogleToken(db, connection);
-        case "microsoft_ads": return await refreshMicrosoftToken(db, connection);
-        default:              return connection.access_token || null;
-    }
+    const refreshed = await tryRefreshToken(db, connection).catch(() => connection);
+    return refreshed.access_token || null;
 }
 
 // ── Platform push functions ───────────────────────────────────────────────────
@@ -172,8 +119,14 @@ async function pushGoogleAds(connection, token, push) {
 }
 
 async function pushMetaAds(connection, token, push) {
-    const pixelId = connection.account_id;
-    if (!pixelId) throw new Error("No account_id (pixel ID) on connection");
+    // conversion_action holds the Pixel ID here (picked in Settings → the same
+    // generic "where to send conversions" slot Google Ads' conversion action
+    // uses) — NOT connection.account_id, which is the ad account (act_...)
+    // used for reading spend reports. A Pixel and an ad account are different
+    // Meta objects with different ID namespaces; sending events to an ad
+    // account ID fails with "Object with ID 'act_...' does not exist...".
+    const pixelId = connection.conversion_action;
+    if (!pixelId) throw new Error("No Meta Pixel configured for this connection — select one in Settings → Analytics Settings → Conversion actions");
 
     // Map internal event names to Meta standard events
     const META_EVENT_MAP = {
