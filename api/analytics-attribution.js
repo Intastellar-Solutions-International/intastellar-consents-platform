@@ -57,17 +57,19 @@ export default async function handler(req, res) {
 
     const db = getPool();
 
-    // Auto-collected event names (mirrors AUTO_EVENTS in src/Pages/Analytics/
-    // Conversions.js, minus page_load and scroll_depth) — excluded so this page
-    // shows actual conversions, not every interaction event that happened to
-    // fire with a click ID attached (rage clicks, content copies, video
-    // pauses, etc. aren't conversions). api/ and src/ aren't cross-imported in
-    // this project, so this list is kept in sync by hand with Conversions.js.
+    // Full auto-collected event list (mirrors AUTO_EVENT_NAMES in
+    // src/Pages/Analytics/Conversions.js exactly — no exceptions) — excluded
+    // so this page shows only actual user-defined conversions (purchase,
+    // lead, and the e-commerce kinds registered via the Events & Tracking
+    // "Add event" form), not interaction/engagement events like scroll_depth
+    // or page_load that happened to fire with a click ID attached. api/ and
+    // src/ aren't cross-imported in this project, so this list is kept in
+    // sync by hand with Conversions.js.
     const NON_CONVERSION_AUTO_EVENTS = [
-        "outbound_click", "form_submit", "form_started", "form_step",
+        "outbound_click", "scroll_depth", "form_submit", "form_started", "form_step",
         "file_download", "video_play", "video_complete", "video_50pct",
         "phone_click", "email_click", "content_copy", "page_print",
-        "rage_click", "video_pause", "page_perf", "form_error",
+        "rage_click", "video_pause", "page_perf", "page_load", "form_error",
         "form_success", "form_field_focus", "network_connection",
     ];
 

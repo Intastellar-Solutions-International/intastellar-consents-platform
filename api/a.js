@@ -565,17 +565,19 @@ function hasFun(c) {return !!(c&&ok(c.functionalCookies));}
 function hasAdv(c) {return !!(c&&ok(c.advertisementCookies));}
 
 // Auto-collected event names that are NOT real conversions — mirrors
-// NON_CONVERSION_AUTO_EVENTS in api/analytics-attribution.js and AUTO_EVENTS
-// in src/Pages/Analytics/Conversions.js (minus page_load/scroll_depth, kept
-// as exceptions there too). Kept in sync by hand since api/ and src/ aren't
-// cross-imported in this project. Used to keep ad-platform conversion pushes
+// Matches NON_CONVERSION_AUTO_EVENTS in api/analytics-attribution.js exactly
+// (the full AUTO_EVENT_NAMES list from src/Pages/Analytics/Conversions.js, no
+// exceptions) — kept in sync by hand since api/ and src/ aren't cross-imported
+// in this project. Used to keep ad-platform conversion pushes
 // (analytics_conversion_pushes) limited to events that are actually
-// conversions, not every interaction that happened to fire with a gclid.
+// conversions, not every interaction that happened to fire with a gclid —
+// scroll_depth/page_load included, since an engagement signal isn't a
+// conversion just because it has a click ID attached.
 const NON_CONVERSION_AUTO_EVENTS = new Set([
-    "outbound_click", "form_submit", "form_started", "form_step",
+    "outbound_click", "scroll_depth", "form_submit", "form_started", "form_step",
     "file_download", "video_play", "video_complete", "video_50pct",
     "phone_click", "email_click", "content_copy", "page_print",
-    "rage_click", "video_pause", "page_perf", "form_error",
+    "rage_click", "video_pause", "page_perf", "page_load", "form_error",
     "form_success", "form_field_focus", "network_connection",
 ]);
 
