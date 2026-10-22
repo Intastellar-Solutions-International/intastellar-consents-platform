@@ -2381,6 +2381,16 @@
     background: rgba(var(--sa-accent),0.2);
 }
 
+.sa-add-event-btn--sm {
+    padding: 5px 10px;
+    font-size: 0.74rem;
+}
+
+.sa-event-form--inline {
+    margin-bottom: 10px;
+    padding: 10px 12px;
+}
+
 .sa-event-form {
     display: flex;
     flex-wrap: wrap;
@@ -2758,9 +2768,10 @@
 .sa-conv-grid--overview {
     grid-template-columns: 1fr 1fr;
     grid-template-areas:
-        "kpi1  kpi2"
-        "trend trend"
-        "map   map";
+        "kpi1   kpi2"
+        "trend  trend"
+        "map    map"
+        "events events";
 }
 
 .sa-conv-grid--deepdive {
@@ -2775,6 +2786,7 @@
 .sa-conv-kpi2          { grid-area: kpi2;      }
 .sa-conv-trend         { grid-area: trend;     }
 .sa-conv-map           { grid-area: map;       }
+.sa-conv-events-glance { grid-area: events;    }
 .sa-conv-ttc           { grid-area: ttc;       }
 .sa-conv-channels      { grid-area: channels;  }
 .sa-conv-funnel-panel  { grid-area: funnel;    }
@@ -2783,7 +2795,7 @@
 @media (max-width: 900px) {
     .sa-conv-grid--overview {
         grid-template-columns: 1fr;
-        grid-template-areas: "kpi1" "kpi2" "trend" "map";
+        grid-template-areas: "kpi1" "kpi2" "trend" "map" "events";
     }
     .sa-conv-grid--deepdive {
         grid-template-columns: 1fr;

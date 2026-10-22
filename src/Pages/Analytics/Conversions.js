@@ -1,6 +1,9 @@
 const { useState, useEffect, useCallback, useMemo } = React;
+const useHistory = window.ReactRouterDOM.useHistory;
 import { ScannerHost } from "../../API/host.js";
 import Authentication from "../../Authentication/Auth.js";
+import { analyticsConversionsPath } from "../../Functions/domainPathSegments.js";
+import { MiniBar } from "./_shared.js";
 import {
     IconCash, IconCursorClick, IconTarget, IconPlus, IconTrash, IconFunnel,
     IconExternalLink, IconPhone, IconMail, IconDownload, IconFormFill,
@@ -48,6 +51,7 @@ const AUTO_EVENTS = [
 const INTERNAL_EVENT_NAMES = new Set(["network_connection"]);
 
 export const AUTO_EVENT_NAMES = new Set([...AUTO_EVENTS.map(e => e.name), ...INTERNAL_EVENT_NAMES]);
+export { AUTO_EVENTS };
 
 const KIND_ICON = {
     purchase: IconCash, click: IconCursorClick, custom: IconTarget,
@@ -444,6 +448,138 @@ export default function ConversionsPanel({ domain, conversions, onDefsChanged })
                     })}
                 </div>
             )}
+        </div>
+    );
+}
+
+// ── Compact "all events at a glance" panel — for the Overview tab ──────────
+// Full management (snippets, payload inspection, delete) stays on the Setup
+// tab's ConversionsPanel above; this is deliberately just enough to see
+// what's firing and register a new event without leaving Overview.
+export function EventsGlancePanel({ domain, conversions, onDefsChanged, maxRows = 8 }) {
+    const history = useHistory();
+    const [defs, setDefs] = useState([]);
+    const [showForm, setShowForm] = useState(false);
+    const [name, setName] = useState("");
+    const [kind, setKind] = useState("custom");
+    const [saving, setSaving] = useState(false);
+    const [error, setError] = useState(null);
+
+    const fetchDefs = useCallback(() => {
+        if (!domain) { setDefs([]); return; }
+        fetch(`${ScannerHost}/api/analytics-events?domain=${encodeURIComponent(domain)}`, { headers: authHeaders() })
+            .then(r => r.ok ? r.json() : { events: [] })
+            .then(d => setDefs(d.events || []))
+            .catch(() => setDefs([]));
+    }, [domain]);
+
+    useEffect(() => { fetchDefs(); }, [fetchDefs]);
+
+    // Same merge ConversionsPanel does (registered defs + live counts +
+    // unregistered-but-firing custom events) plus auto-collected events, so
+    // this reads as one ranked "everything that happened" list rather than
+    // splitting custom vs. auto into separate sections like Setup does.
+    const rows = useMemo(() => {
+        const byName = new Map((conversions || []).map(c => [c.name, c]));
+        const definedNames = new Set(defs.map(d => d.name));
+        const out = [];
+
+        for (const d of defs) {
+            out.push({ name: d.name, label: d.label || d.name, count: byName.get(d.name)?.count || 0, tag: "Custom" });
+        }
+        for (const e of AUTO_EVENTS) {
+            out.push({ name: e.name, label: e.label, count: byName.get(e.name)?.count || 0, tag: "Auto" });
+        }
+        (conversions || []).forEach(c => {
+            if (!definedNames.has(c.name) && !AUTO_EVENT_NAMES.has(c.name)) {
+                out.push({ name: c.name, label: c.label || c.name, count: c.count || 0, tag: "Custom" });
+            }
+        });
+
+        return out.sort((a, b) => b.count - a.count);
+    }, [defs, conversions]);
+
+    const visible = rows.slice(0, maxRows);
+    const maxCount = Math.max(1, ...visible.map(r => r.count));
+    const hiddenCount = rows.length - visible.length;
+
+    async function createDef(e) {
+        e.preventDefault();
+        if (!name.trim() || !domain) return;
+        setSaving(true);
+        setError(null);
+        const r = await fetch(`${ScannerHost}/api/analytics-events`, {
+            method: "POST",
+            headers: authHeaders(),
+            body: JSON.stringify({ domain, name: name.trim(), kind }),
+        }).catch(() => null);
+        setSaving(false);
+        if (!r?.ok) { setError("Could not create event — check the domain has a site key yet."); return; }
+        setName(""); setKind("custom"); setShowForm(false);
+        fetchDefs();
+        onDefsChanged?.();
+    }
+
+    return (
+        <div className="sa-panel sa-conv-events-glance">
+            <div className="sa-panel__head">
+                <h3 className="sa-panel__title"><IconTarget className="sa-icon" /> All events</h3>
+                <button type="button" className="sa-add-event-btn sa-add-event-btn--sm" onClick={() => setShowForm(s => !s)}>
+                    <IconPlus className="sa-icon" /> Add event
+                </button>
+            </div>
+
+            {showForm && (
+                <form className="sa-event-form sa-event-form--inline" onSubmit={createDef}>
+                    <input
+                        type="text"
+                        className="sa-event-form__input"
+                        placeholder="event name, e.g. purchase"
+                        value={name}
+                        onChange={e => setName(e.target.value.toLowerCase().replace(/[^a-z0-9_-]/g, ""))}
+                        maxLength={64}
+                        required
+                    />
+                    <select className="sa-event-form__select" value={kind} onChange={e => setKind(e.target.value)}>
+                        <option value="custom">Custom</option>
+                        <option value="click">Click</option>
+                        <option value="purchase">Purchase</option>
+                    </select>
+                    <button type="submit" className="sa-event-form__submit" disabled={saving}>
+                        {saving ? "Saving…" : "Create"}
+                    </button>
+                </form>
+            )}
+            {error && <p className="sa-notice sa-notice--error">{error}</p>}
+
+            {rows.length === 0 ? (
+                <p className="sa-panel__sub">No events tracked yet for this period.</p>
+            ) : (
+                <table className="sa-table">
+                    <thead>
+                        <tr><th>Event</th><th className="sa-table__num">Count</th><th className="sa-table__bar" /></tr>
+                    </thead>
+                    <tbody>
+                        {visible.map(r => (
+                            <tr key={r.name}>
+                                <td>
+                                    {r.label}
+                                    <span className="sa-event-row__kind" style={{ marginLeft: 6 }}>{r.tag}</span>
+                                </td>
+                                <td className="sa-table__num">{r.count.toLocaleString("de-DE")}</td>
+                                <td className="sa-table__bar"><MiniBar value={r.count} max={maxCount} /></td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            )}
+
+            <p className="sa-panel__sub" style={{ marginTop: 10 }}>
+                {hiddenCount > 0 && `+${hiddenCount} more event${hiddenCount > 1 ? "s" : ""} — `}
+                <a href="#" onClick={e => { e.preventDefault(); history.push(analyticsConversionsPath(domain, "setup")); }}>
+                    manage all events &amp; tracking →
+                </a>
+            </p>
         </div>
     );
 }

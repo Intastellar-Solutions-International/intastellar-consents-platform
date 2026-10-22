@@ -7,7 +7,7 @@ import { ScannerHost } from "../../API/host.js";
 import { useAnalyticsPage, KpiCard, authHeaders, useAnalyticsReport, toIsoDate, pctChange, formatPercent } from "./_shared.js";
 import { IconTarget, IconTrendingUp, IconGlobe } from "./Icons.js";
 import AnalyticsWorldMap from "./AnalyticsWorldMap.js";
-import ConversionsPanel, { AUTO_EVENT_NAMES } from "./Conversions.js";
+import ConversionsPanel, { AUTO_EVENT_NAMES, EventsGlancePanel } from "./Conversions.js";
 import TimeToConvert from "./TimeToConvert.js";
 import ConversionChannels from "./ConversionChannels.js";
 import ConversionCampaigns from "./ConversionCampaigns.js";
@@ -320,6 +320,12 @@ export default function AnalyticsConversionsOverview() {
                                             formatValue={mapMode === "rate" ? formatPercent : undefined}
                                         />
                                     </div>
+
+                                    <EventsGlancePanel
+                                        domain={domain}
+                                        conversions={data.conversions}
+                                        onDefsChanged={() => setTick(t => t + 1)}
+                                    />
                                 </div>
                             )}
 

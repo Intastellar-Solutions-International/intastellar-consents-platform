@@ -410,8 +410,10 @@ export default async function handler(req, res) {
     }
 
     // For Search Console: top queries + top pages, live (see fetchGSCDimension's doc comment)
+    // topPages is declared once above (shared with the GA4 branch) — platform
+    // is always exactly one of "google_analytics" / "google_search_console",
+    // so only one of the two branches ever actually assigns it.
     let topQueries = null;
-    let topPages = null;
     if (gscConn) {
         [topQueries, topPages] = await Promise.all([
             fetchGSCDimension(gscConn.access_token, gscConn.account_id, fromDate, toDate, "query").catch(() => []),

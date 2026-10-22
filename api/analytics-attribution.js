@@ -57,6 +57,20 @@ export default async function handler(req, res) {
 
     const db = getPool();
 
+    // Auto-collected event names (mirrors AUTO_EVENTS in src/Pages/Analytics/
+    // Conversions.js, minus page_load and scroll_depth) — excluded so this page
+    // shows actual conversions, not every interaction event that happened to
+    // fire with a click ID attached (rage clicks, content copies, video
+    // pauses, etc. aren't conversions). api/ and src/ aren't cross-imported in
+    // this project, so this list is kept in sync by hand with Conversions.js.
+    const NON_CONVERSION_AUTO_EVENTS = [
+        "outbound_click", "form_submit", "form_started", "form_step",
+        "file_download", "video_play", "video_complete", "video_50pct",
+        "phone_click", "email_click", "content_copy", "page_print",
+        "rage_click", "video_pause", "page_perf", "form_error",
+        "form_success", "form_field_focus", "network_connection",
+    ];
+
     // Attributed conversions (custom events with click IDs)
     const { rows: attributed } = await db.query(
         `SELECT
@@ -80,9 +94,10 @@ export default async function handler(req, res) {
            AND ace.received_at >= $3::date
            AND ace.received_at <  $4::date + INTERVAL '1 day'
            AND (ace.gclid IS NOT NULL OR ace.msclkid IS NOT NULL OR ace.fbclid IS NOT NULL)
+           AND NOT (ace.name = ANY($5::text[]))
          ORDER BY ace.received_at DESC
          LIMIT 500`,
-        [orgId, domain, fromDate, toDate]
+        [orgId, domain, fromDate, toDate, NON_CONVERSION_AUTO_EVENTS]
     ).catch(() => ({ rows: [] }));
 
     // Push status for these events
