@@ -75,8 +75,12 @@ export default async function handler(req, res) {
     }
 
     try {
+        // This project's Blob store is private (see analytics-recording-ingest.js
+        // for the same access:"private" pattern) — "public" here always failed
+        // with "Cannot use public access on a private store," which is why this
+        // cron never once succeeded since the feature shipped.
         const blob = await put(BLOB_PATHNAME, mmdbBuffer, {
-            access: "public",
+            access: "private",
             addRandomSuffix: false,
             allowOverwrite: true,
             contentType: "application/octet-stream",

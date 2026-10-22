@@ -1,4 +1,4 @@
-import { head } from "@vercel/blob";
+import { get } from "@vercel/blob";
 import { Reader } from "maxmind";
 
 // ASN / hosting-provider lookup for a request's IP, used to help classify
@@ -11,21 +11,13 @@ import { Reader } from "maxmind";
 // The .mmdb file lives in Vercel Blob storage, refreshed periodically by
 // /api/cron-refresh-geoip-db (MaxMind's GeoLite2 license forbids using data
 // older than 30 days, hence the periodic refresh rather than a one-time
-// bundle).
+// bundle). This project's Blob store is private, so reads go through
+// get(path, {access:"private"}) — same pattern analytics-recordings.js
+// already uses — rather than head()+a bare fetch() of the returned URL,
+// which only ever works against a public store.
 const BLOB_PATHNAME = "geoip/GeoLite2-ASN.mmdb";
-const FETCH_TIMEOUT_MS = 4000;
 
 let readerPromise = null;
-
-async function fetchWithTimeout(url, ms) {
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), ms);
-    try {
-        return await fetch(url, { signal: controller.signal });
-    } finally {
-        clearTimeout(timer);
-    }
-}
 
 // Cached per warm lambda instance — the mmdb file (a few MB) is fetched and
 // parsed at most once per instance rather than on every request.
@@ -33,16 +25,15 @@ function loadReader() {
     if (!readerPromise) {
         readerPromise = (async () => {
             try {
-                const meta = await head(BLOB_PATHNAME);
-                const res = await fetchWithTimeout(meta.url, FETCH_TIMEOUT_MS);
-                if (!res.ok) throw new Error(`geoip blob fetch ${res.status}`);
-                const buf = Buffer.from(await res.arrayBuffer());
+                const { stream } = await get(BLOB_PATHNAME, { access: "private" });
+                const buf = Buffer.from(await new Response(stream).arrayBuffer());
                 return new Reader(buf);
             } catch (err) {
                 // Logged, not silently swallowed — this exact spot going quiet
-                // for two months (no connected Blob store / no successful
-                // cron-refresh-geoip-db run) is why every ASN lookup since this
-                // feature shipped returned null with zero error signal anywhere.
+                // for two months (private-store/public-access mismatch on the
+                // upload side, see cron-refresh-geoip-db.js) is why every ASN
+                // lookup since this feature shipped returned null with zero
+                // error signal anywhere.
                 console.error("[_geoip] loadReader failed — ASN/hosting-provider lookups will return null until this is fixed:", err?.message || err);
                 readerPromise = null; // let a later invocation retry (e.g. blob not uploaded yet)
                 return null;
