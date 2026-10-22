@@ -564,6 +564,21 @@ function hasStat(c){return !!(c&&(ok(c.staticsticCookies)||ok(c.statisticCookies
 function hasFun(c) {return !!(c&&ok(c.functionalCookies));}
 function hasAdv(c) {return !!(c&&ok(c.advertisementCookies));}
 
+// Auto-collected event names that are NOT real conversions — mirrors
+// NON_CONVERSION_AUTO_EVENTS in api/analytics-attribution.js and AUTO_EVENTS
+// in src/Pages/Analytics/Conversions.js (minus page_load/scroll_depth, kept
+// as exceptions there too). Kept in sync by hand since api/ and src/ aren't
+// cross-imported in this project. Used to keep ad-platform conversion pushes
+// (analytics_conversion_pushes) limited to events that are actually
+// conversions, not every interaction that happened to fire with a gclid.
+const NON_CONVERSION_AUTO_EVENTS = new Set([
+    "outbound_click", "form_submit", "form_started", "form_step",
+    "file_download", "video_play", "video_complete", "video_50pct",
+    "phone_click", "email_click", "content_copy", "page_print",
+    "rage_click", "video_pause", "page_perf", "form_error",
+    "form_success", "form_field_focus", "network_connection",
+]);
+
 // Registrable parent domain for the current host, so the session cookie can
 // be scoped with Domain=<root> and shared across subdomains (e.g. a booking
 // portal on book.example.com and the main site on www.example.com, or a
@@ -2163,9 +2178,18 @@ export default async function handler(req, res) {
         // click-ids in first-party analytics, but sending a conversion back to Google/
         // Meta/Microsoft for ad optimization is sharing data with a third-party ad
         // platform, which is what the Advertisement consent category is actually for.
+        //
+        // Also excludes auto-collected interaction events (scroll_depth, page_perf,
+        // rage_click, etc.) — mirrors NON_CONVERSION_AUTO_EVENTS in
+        // api/analytics-attribution.js (same list, kept in sync by hand — api/ files
+        // don't share modules). Without this, any auto-collected event that happens
+        // to fire with a gclid in the session (which is most of them, since they're
+        // tied to normal browsing, not an intentional conversion) gets queued and
+        // pushed to the ad platform as if it were a real conversion.
         const hasAdvConsent = ca === 1 || ca === true;
         const evId = evRows[0]?.id ?? null;
-        if (!isMinimal && hasAdvConsent && evId && (cleanGclid || cleanMsclkid || cleanFbclid)) {
+        const isConversionWorthy = !NON_CONVERSION_AUTO_EVENTS.has(String(eventName));
+        if (!isMinimal && hasAdvConsent && isConversionWorthy && evId && (cleanGclid || cleanMsclkid || cleanFbclid)) {
             const valueUsd = valueCents != null
                 ? (valueCents / 100).toFixed(4)
                 : null;

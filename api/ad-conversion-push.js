@@ -70,6 +70,30 @@ async function getValidToken(db, connection) {
 
 // ── Platform push functions ───────────────────────────────────────────────────
 
+// Google's standard API error shape wraps the useful part behind a generic
+// top-level message ("There was a problem with the request.") — the actual
+// reason (e.g. a specific field violation) lives in error.details, which the
+// previous version of this code never looked at. This unwraps it, and always
+// attaches the full raw body as err.response so the caller can persist it
+// (previously only the message string was ever kept — the raw response
+// was discarded on every failure, which is why past failures here were
+// undiagnosable without re-running with better logging).
+function apiError(resp, json, fallbackMsg) {
+    const topMsg = json?.error?.message || json?.message || fallbackMsg || `HTTP ${resp.status}`;
+    const details = json?.error?.details;
+    const detailMsg = Array.isArray(details) && details.length
+        ? details.map(d => {
+            if (Array.isArray(d.fieldViolations)) {
+                return d.fieldViolations.map(v => `${v.field || "?"}: ${v.description || v.reason || ""}`).join("; ");
+            }
+            return d.reason || d.message || JSON.stringify(d).slice(0, 200);
+        }).join(" | ")
+        : null;
+    const err = new Error(detailMsg ? `${topMsg} — ${detailMsg}` : topMsg);
+    err.response = json;
+    return err;
+}
+
 async function pushGoogleAds(connection, token, push) {
     if (!connection.conversion_action) throw new Error("No conversion_action configured for this Google Ads connection");
 
@@ -113,7 +137,7 @@ async function pushGoogleAds(connection, token, push) {
     );
     const json = await resp.json().catch(() => ({}));
 
-    if (!resp.ok) throw new Error(json?.error?.message || `HTTP ${resp.status}`);
+    if (!resp.ok) throw apiError(resp, json);
 
     return json;
 }
@@ -166,8 +190,8 @@ async function pushMetaAds(connection, token, push) {
         }
     );
     const json = await resp.json().catch(() => ({}));
-    if (!resp.ok) throw new Error(json?.error?.message || `HTTP ${resp.status}`);
-    if (json.error) throw new Error(json.error.message || "Meta API error");
+    if (!resp.ok) throw apiError(resp, json);
+    if (json.error) throw apiError(resp, json, "Meta API error");
 
     return json;
 }
@@ -203,7 +227,7 @@ async function pushMicrosoftAds(connection, token, push) {
         }
     );
     const json = await resp.json().catch(() => ({}));
-    if (!resp.ok) throw new Error(json?.message || `HTTP ${resp.status}`);
+    if (!resp.ok) throw apiError(resp, json);
     return json;
 }
 
@@ -367,10 +391,14 @@ export async function processPendingPushes(db, { orgId = null, domain = null, li
             results.push({ id: push.id, platform: push.platform, status: "sent" });
         } catch (err) {
             const msg = (err.message || "Unknown error").slice(0, 500);
+            // err.response (set by apiError() in the push functions above) is the
+            // full raw API error body — kept here so a failure can actually be
+            // diagnosed afterwards instead of only having the truncated message
+            // string, which is all this used to store.
             await db.query(
                 `UPDATE analytics_conversion_pushes
-                 SET status='failed', error_message=$1, pushed_at=NOW() WHERE id=$2`,
-                [msg, push.id]
+                 SET status='failed', error_message=$1, platform_response=$2, pushed_at=NOW() WHERE id=$3`,
+                [msg, err.response ? JSON.stringify(err.response) : null, push.id]
             ).catch(() => {});
             results.push({ id: push.id, platform: push.platform, status: "failed", error: msg });
         }
