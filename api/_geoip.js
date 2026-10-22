@@ -38,7 +38,12 @@ function loadReader() {
                 if (!res.ok) throw new Error(`geoip blob fetch ${res.status}`);
                 const buf = Buffer.from(await res.arrayBuffer());
                 return new Reader(buf);
-            } catch {
+            } catch (err) {
+                // Logged, not silently swallowed — this exact spot going quiet
+                // for two months (no connected Blob store / no successful
+                // cron-refresh-geoip-db run) is why every ASN lookup since this
+                // feature shipped returned null with zero error signal anywhere.
+                console.error("[_geoip] loadReader failed — ASN/hosting-provider lookups will return null until this is fixed:", err?.message || err);
                 readerPromise = null; // let a later invocation retry (e.g. blob not uploaded yet)
                 return null;
             }
@@ -96,7 +101,13 @@ export async function lookupNetwork(req) {
             asOrg,
             isHosting: isHostingOrg(asOrg),
         };
-    } catch {
+    } catch (err) {
+        // Distinct from the "no reader" early-return above (which is the
+        // common case and already logged once in loadReader) — this is a
+        // rarer per-lookup failure (malformed IP, mmdb parse error on this
+        // specific record, etc.), worth its own log line rather than
+        // vanishing silently like the whole pipeline did for two months.
+        console.error("[_geoip] lookupNetwork failed:", err?.message || err);
         return { asn: null, asOrg: null, isHosting: false };
     }
 }

@@ -65,10 +65,12 @@ export default async function handler(req, res) {
         const tarBuf = zlib.gunzipSync(gz);
         mmdbBuffer = await extractMmdb(tarBuf);
     } catch (err) {
+        console.error("[cron-refresh-geoip-db] Failed to fetch/extract GeoLite2-ASN database:", err?.message || err);
         return res.status(502).json({ error: "Failed to fetch/extract GeoLite2-ASN database", detail: String(err) });
     }
 
     if (!mmdbBuffer) {
+        console.error("[cron-refresh-geoip-db] No .mmdb file found in the downloaded archive");
         return res.status(502).json({ error: "No .mmdb file found in the downloaded archive" });
     }
 
@@ -81,6 +83,10 @@ export default async function handler(req, res) {
         });
         return res.status(200).json({ ok: true, url: blob.url, bytes: mmdbBuffer.length });
     } catch (err) {
+        // Most likely cause if this fires: no Vercel Blob store connected to
+        // this project (or no BLOB_READ_WRITE_TOKEN in its env vars) — check
+        // Vercel → Project → Storage before assuming anything else is wrong.
+        console.error("[cron-refresh-geoip-db] Failed to upload to Blob storage — is a Blob store connected to this project? (Vercel → Project → Storage):", err?.message || err);
         return res.status(502).json({ error: "Failed to upload to Blob storage", detail: String(err) });
     }
 }
