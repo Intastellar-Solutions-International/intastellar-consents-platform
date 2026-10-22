@@ -47,6 +47,10 @@
       "schedule": "0 2 * * *"
     },
     {
+      "path": "/api/cron-ad-conversion-push",
+      "schedule": "0 * * * *"
+    },
+    {
       "path": "/api/cron-cleanup-recordings",
       "schedule": "0 5 * * *"
     },
@@ -152,6 +156,10 @@
       "maxDuration": 15
     },
     "api/cron-ad-sync.js": {
+      "memory": 256,
+      "maxDuration": 90
+    },
+    "api/cron-ad-conversion-push.js": {
       "memory": 256,
       "maxDuration": 90
     },

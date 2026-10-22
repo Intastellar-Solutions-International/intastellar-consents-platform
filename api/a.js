@@ -2158,9 +2158,14 @@ export default async function handler(req, res) {
         ).catch(() => ({ rows: [] }));
 
         // Queue push records for any ad platform whose click ID arrived with this event.
-        // Processed asynchronously by /api/ad-conversion-push.
+        // Processed asynchronously by /api/ad-conversion-push. Gated on Advertisement
+        // consent specifically — Statistics consent (isMinimal check) is enough to see
+        // click-ids in first-party analytics, but sending a conversion back to Google/
+        // Meta/Microsoft for ad optimization is sharing data with a third-party ad
+        // platform, which is what the Advertisement consent category is actually for.
+        const hasAdvConsent = ca === 1 || ca === true;
         const evId = evRows[0]?.id ?? null;
-        if (!isMinimal && evId && (cleanGclid || cleanMsclkid || cleanFbclid)) {
+        if (!isMinimal && hasAdvConsent && evId && (cleanGclid || cleanMsclkid || cleanFbclid)) {
             const valueUsd = valueCents != null
                 ? (valueCents / 100).toFixed(4)
                 : null;

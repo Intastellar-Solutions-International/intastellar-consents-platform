@@ -327,61 +327,71 @@ export default async function handler(req, res) {
     const limit  = Math.min(parseInt(body.limit || "50", 10), 100);
     const ids    = Array.isArray(body.ids) ? body.ids.map(Number).filter(Boolean) : null;
 
+    const result = await processPendingPushes(db, { orgId, domain, limit, ids });
+    return res.status(200).json(result);
+}
+
+// ── Core processing — org-scoped for the manual/JWT caller above, org-agnostic
+// (orgId omitted) for the cron job in cron-ad-conversion-push.js ─────────────
+export async function processPendingPushes(db, { orgId = null, domain = null, limit = 50, ids = null } = {}) {
     // Fetch pending push records
     let pushes;
     if (ids?.length) {
+        const params = [ids];
+        let where = `p.id = ANY($1)`;
+        if (orgId) { params.push(orgId); where += ` AND p.organisation_id=$${params.length}`; }
         pushes = await db.query(
             `SELECT p.*, s.domain AS site_domain
              FROM analytics_conversion_pushes p
              JOIN analytics_sites s ON s.id = p.site_id
-             WHERE p.organisation_id=$1 AND p.id = ANY($2)`,
-            [orgId, ids]
-        ).then(r => r.rows);
-    } else if (domain) {
-        pushes = await db.query(
-            `SELECT p.*, s.domain AS site_domain
-             FROM analytics_conversion_pushes p
-             JOIN analytics_sites s ON s.id = p.site_id
-             WHERE p.organisation_id=$1 AND s.domain=$2 AND p.status='pending'
-             ORDER BY p.created_at LIMIT $3`,
-            [orgId, domain, limit]
+             WHERE ${where}`,
+            params
         ).then(r => r.rows);
     } else {
+        const params = [];
+        const conditions = [`p.status='pending'`];
+        if (orgId)  { params.push(orgId);  conditions.push(`p.organisation_id=$${params.length}`); }
+        if (domain) { params.push(domain); conditions.push(`s.domain=$${params.length}`); }
+        params.push(limit);
         pushes = await db.query(
             `SELECT p.*, s.domain AS site_domain
              FROM analytics_conversion_pushes p
              JOIN analytics_sites s ON s.id = p.site_id
-             WHERE p.organisation_id=$1 AND p.status='pending'
-             ORDER BY p.created_at LIMIT $2`,
-            [orgId, limit]
+             WHERE ${conditions.join(" AND ")}
+             ORDER BY p.created_at LIMIT $${params.length}`,
+            params
         ).then(r => r.rows);
     }
 
-    if (!pushes.length) return res.status(200).json({ processed: 0, results: [] });
+    if (!pushes.length) return { processed: 0, sent: 0, failed: 0, results: [] };
 
-    // Load ad platform connections for this org (one query, reuse across pushes)
+    // Load ad platform connections (scoped to org when given, across all orgs
+    // for the cron sweep otherwise) — one query, reused across every push below.
     const platforms = [...new Set(pushes.map(p => p.platform))];
+    const connParams = [platforms];
+    let connWhere = `platform = ANY($1)`;
+    if (orgId) { connParams.push(orgId); connWhere += ` AND organisation_id=$${connParams.length}`; }
     const { rows: connections } = await db.query(
-        `SELECT * FROM ad_platform_connections
-         WHERE organisation_id=$1 AND platform = ANY($2)`,
-        [orgId, platforms]
+        `SELECT * FROM ad_platform_connections WHERE ${connWhere}`,
+        connParams
     ).catch(() => ({ rows: [] }));
 
-    // Index connections by platform + domain for fast lookup
-    const connByPlatformDomain = {};
+    // Index by org + platform + domain — including organisation_id keeps this
+    // safe even when connections span multiple orgs (cron sweep), in case two
+    // orgs ever end up with same-named domains.
+    const connByKey = {};
     for (const c of connections) {
-        connByPlatformDomain[`${c.platform}:${c.domain}`] = c;
-        // Also index without domain as fallback
-        if (!connByPlatformDomain[`${c.platform}:`]) {
-            connByPlatformDomain[`${c.platform}:`] = c;
+        connByKey[`${c.organisation_id}:${c.platform}:${c.domain}`] = c;
+        if (!connByKey[`${c.organisation_id}:${c.platform}:`]) {
+            connByKey[`${c.organisation_id}:${c.platform}:`] = c;
         }
     }
 
     const results = [];
 
     for (const push of pushes) {
-        const conn = connByPlatformDomain[`${push.platform}:${push.site_domain}`]
-                  || connByPlatformDomain[`${push.platform}:`];
+        const conn = connByKey[`${push.organisation_id}:${push.platform}:${push.site_domain}`]
+                  || connByKey[`${push.organisation_id}:${push.platform}:`];
 
         if (!conn) {
             await db.query(
@@ -416,5 +426,5 @@ export default async function handler(req, res) {
     const sent   = results.filter(r => r.status === "sent").length;
     const failed = results.filter(r => r.status === "failed").length;
 
-    return res.status(200).json({ processed: results.length, sent, failed, results });
+    return { processed: results.length, sent, failed, results };
 }
