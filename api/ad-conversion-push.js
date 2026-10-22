@@ -119,6 +119,9 @@ async function pushGoogleAds(connection, token, push) {
 
     const event = {
         destinationReferences: ["ga-conv"],
+        eventSource: "WEB", // required (proto field event_source) — every conversion
+                            // tracked here comes from intaAnalytics.track() on a page,
+                            // so this is always "WEB", never a value we need per-push.
         adIdentifiers: { gclid: push.click_id },
         eventTimestamp: new Date(push.conversion_time).toISOString(),
         ...(push.value_usd != null && {
