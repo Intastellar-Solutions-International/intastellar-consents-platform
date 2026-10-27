@@ -16,5 +16,6 @@ import "./ad-conversion-push.test.mjs";
 import "./performance.test.mjs";
 import "./heatmap.test.mjs";
 import "./consistency.test.mjs";
+import "./overview-kpi.test.mjs";
 
 await run();

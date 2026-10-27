@@ -1260,6 +1260,43 @@ balanced parameter list first. Full suite: 90/90 passing (76 previous + 14 new).
 
 ---
 
+## Phase 2, item 1: "Executive KPI Summary" → Overview KPI cards
+
+**Investigation.** The `kpi_summary` saved-report template (`reportTemplates.js:118-128`) promises
+4 metrics: `sessions`, `conversions`, `conversionRate`, `consentRate`. All 4 already exist in the
+data Overview (`index.js`) already fetches — `sessions`/`consentRate` are already shown as KPI
+cards; `conversionRate`/`convertedSessions` are already computed server-side in both
+`api/analytics-report.js` and `api/analytics-property-report.js` (the combined-view rollup) but
+never surfaced; the per-event `conversions` list is already fetched for other parts of the page.
+No new query or endpoint needed — this was a front-end gap, not a data gap.
+
+What Overview shows *instead* of a canonical conversions number is an optional "Quality leads"
+card — a different, separately-configured heuristic (engaged session + matching a
+site-configured page/event rule, see Settings > Analytics Script > Lead quality), not the
+conversions definition item 5 unified across the Conversions tab, ReportBuilder, and Attribution.
+A user on Overview had no visibility into that number at all unless they switched tabs.
+
+**Fix — additive only, no default-order changes.** Added two new selectable cards to the existing
+customizable KPI strip (`ALL_CARD_DEFS`/`CARDS` in `index.js`): "Conversions" (sum of per-event
+counts from `data.conversions`, same definition as the Conversions tab — extracted into
+`totalConversions()` for testability) and "Conversion rate" (`data.totals.conversionRate`,
+already-computed, session-deduped). Both appear in the Customize panel like any other card;
+"Quality leads" and all 12 business-type default orderings are untouched — this is opt-in, not a
+default-order change (confirmed with you before implementing).
+
+**Real numbers, asasoftware.aero, last 30 days:** 77 total registered conversion events across 5
+event types (`clicked_book_demo` 28, `clicked_start_free_trial` 24, `verification_code_sent` 17,
+`verification_code_send_failed` 5, `booked` 3) against 607 unique full-consent sessions, 26 of
+which converted at least once — a 4.3% conversion rate. Before this fix, none of these numbers
+were visible anywhere on Overview; a user had to switch to the Conversions tab to see them.
+
+**Tests:** 4 new tests in `test/overview-kpi.test.mjs` for `totalConversions()` (sums per-event
+counts, treats a missing count as 0, empty/null list returns 0, not deduped by session). Extracted
+from `index.js` via the same brace-counting technique as `test/consistency.test.mjs`. Full suite:
+94/94 passing (90 previous + 4 new).
+
+---
+
 ## Open questions before Phase 1 starts writing code
 
 1. ~~Database access~~ — **resolved.** `.env.local`'s `POSTGRES_URL` already works for read-only

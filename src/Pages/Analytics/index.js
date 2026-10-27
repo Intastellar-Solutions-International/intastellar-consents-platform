@@ -15,7 +15,7 @@ import {
 import {
     IconBarChart, IconUsers, IconShieldCheck, IconGlobe, IconTrendingUp,
     IconDocument, IconRadio, IconTarget, IconMegaphone, IconCash, IconExternalLink, IconCursorClick,
-    IconScrollDepth,
+    IconScrollDepth, IconFunnel,
 } from "./Icons.js";
 import "./Analytics.css";
 
@@ -347,6 +347,16 @@ const BT_LABELS = {
     automotive:  "Automotive",
 };
 
+// Same definition as the Conversions tab and ReportBuilder/ReportView's
+// "Conversions" metric (sum of per-event counts, not deduped by session —
+// see data.totals.convertedSessions/conversionRate for the session-level
+// view) — the canonical conversions count unified in
+// docs/analytics-audit-plan.md item 5, now also surfaced here as an
+// optional Overview KPI card (Phase 2).
+export function totalConversions(conversions) {
+    return (conversions || []).reduce((s, c) => s + (c.count || 0), 0);
+}
+
 function fmtRevenue(amount, currency = "EUR") {
     const sym = CURRENCY_SYMBOLS[currency] ?? (currency + " ");
     if (amount >= 1_000_000) return sym + (amount / 1_000_000).toFixed(2) + "M";
@@ -363,6 +373,8 @@ const ALL_CARD_DEFS = [
     { id: "countries",label: "Countries",       desc: "Distinct visitor countries" },
     { id: "leads",    label: "Quality leads",   desc: "Engaged sessions matching lead rules" },
     { id: "revenue",  label: "Revenue",         desc: "Ecommerce revenue events" },
+    { id: "conversions",     label: "Conversions",      desc: "Registered conversion events (same definition as the Conversions tab)" },
+    { id: "conversionRate",  label: "Conversion rate",  desc: "Sessions with at least one conversion" },
 ];
 
 function CustomizePanel({ currentCards, defaultCards, onSave, onClose }) {
@@ -493,6 +505,23 @@ function KpiStrip({ data, siteConfig, trendEngaged, trendEvents, trendSessions, 
                 value={(data.totals.qualityLeads ?? 0).toLocaleString("de-DE")}
                 sub="engaged + page/event match"
                 variant="live"
+            />
+        ),
+        conversions: (
+            <KpiCard key="conversions"
+                icon={<IconFunnel />}
+                label="Conversions"
+                value={totalConversions(data.conversions).toLocaleString("de-DE")}
+                sub="purchase, lead, and other registered events"
+                variant="live"
+            />
+        ),
+        conversionRate: (
+            <KpiCard key="conversionRate"
+                icon={<IconTrendingUp />}
+                label="Conversion rate"
+                value={formatPercent(data.totals.conversionRate ?? 0)}
+                sub="sessions with at least one conversion"
             />
         ),
     };
