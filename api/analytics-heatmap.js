@@ -77,6 +77,15 @@ export default async function handler(req, res) {
     const host     = (req.query.host || "").trim().toLowerCase() || null;
     const device   = DEVICE_TYPES.has(req.query.device) ? req.query.device : null;
     const grid     = Math.min(20, Math.max(2, parseInt(req.query.grid, 10) || 5));
+    // Excludes clicks/scroll-depth from a preloaded widget iframe (item 1) by
+    // default — a visitor never saw or scrolled that iframe, so its clicks
+    // and 0%-scroll-depth pageviews would otherwise dominate the heatmap for
+    // whatever page it's embedded on. No bind parameter needed (not
+    // user-controlled text), so this can splice directly into each query's
+    // WHERE clause without disturbing existing positional placeholders. See
+    // docs/analytics-audit-plan.md item 11.
+    const includeEmbedded = req.query.includeEmbedded === "1";
+    const EMBED_FILTER = includeEmbedded ? "" : "AND is_embedded = false";
 
     const today     = new Date().toISOString().slice(0, 10);
     const thirtyAgo = new Date(Date.now() - 30 * 86400000).toISOString().slice(0, 10);
@@ -103,7 +112,7 @@ export default async function handler(req, res) {
         const { rows: pathRows } = await db.query(
             `SELECT pathname, COALESCE(page_host, $4) AS host, COUNT(*) AS clicks
              FROM analytics_clicks
-             WHERE site_id = $1 AND received_at >= $2 AND received_at < $3
+             WHERE site_id = $1 AND received_at >= $2 AND received_at < $3 ${EMBED_FILTER}
              GROUP BY pathname, COALESCE(page_host, $4) ORDER BY clicks DESC LIMIT 50`,
             [siteId, fromDate, toDateExclusive, domain]
         ).catch(() => ({ rows: [] }));
@@ -139,7 +148,7 @@ export default async function handler(req, res) {
              FROM analytics_clicks
              WHERE site_id = $1 AND pathname = $${clickParams.length + 2}
                AND received_at >= $2 AND received_at < $3
-               AND x_pct IS NOT NULL AND y_pct IS NOT NULL ${deviceClause} ${hostClause}
+               AND x_pct IS NOT NULL AND y_pct IS NOT NULL ${deviceClause} ${hostClause} ${EMBED_FILTER}
              GROUP BY 1, 2 ORDER BY n DESC LIMIT 5000`,
             [...clickParams, grid, pathname]
         ).catch(() => ({ rows: [] })),
@@ -148,7 +157,7 @@ export default async function handler(req, res) {
             `SELECT target_tag, target_id, target_class, target_text, COUNT(*) AS n
              FROM analytics_clicks
              WHERE site_id = $1 AND pathname = $${clickParams.length + 1}
-               AND received_at >= $2 AND received_at < $3 ${deviceClause} ${hostClause}
+               AND received_at >= $2 AND received_at < $3 ${deviceClause} ${hostClause} ${EMBED_FILTER}
              GROUP BY target_tag, target_id, target_class, target_text
              ORDER BY n DESC LIMIT 30`,
             [...clickParams, pathname]
@@ -171,7 +180,7 @@ export default async function handler(req, res) {
                  FROM analytics_events
                  WHERE site_id = $1 AND pathname = $2
                    AND received_at >= $3 AND received_at < $4
-                   AND scroll_depth IS NOT NULL ${scrollDeviceClause} ${scrollHostClause}
+                   AND scroll_depth IS NOT NULL ${scrollDeviceClause} ${scrollHostClause} ${EMBED_FILTER}
                  GROUP BY 1 ORDER BY 1`,
                 scrollParams
             ).catch(() => ({ rows: [] }));
@@ -181,7 +190,7 @@ export default async function handler(req, res) {
             `SELECT COUNT(*) AS clicks, COUNT(DISTINCT session_id) AS sessions
              FROM analytics_clicks
              WHERE site_id = $1 AND pathname = $${clickParams.length + 1}
-               AND received_at >= $2 AND received_at < $3 ${deviceClause} ${hostClause}`,
+               AND received_at >= $2 AND received_at < $3 ${deviceClause} ${hostClause} ${EMBED_FILTER}`,
             [...clickParams, pathname]
         ).catch(() => ({ rows: [{}] })),
     ]);

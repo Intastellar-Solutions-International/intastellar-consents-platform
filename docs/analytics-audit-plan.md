@@ -1064,6 +1064,52 @@ embedded pageviews; once a concrete screenshot bug is found, a regression test f
 
 ---
 
+### Status: scroll-depth/click fix implemented and live; screenshot bug still unconfirmed
+
+**Scroll-depth/click fix — implemented, and the item-1 theory is now overwhelmingly confirmed with
+real data.** Added `is_embedded` to `analytics_clicks` (mirroring `analytics_events`/
+`analytics_custom_events` from item 1) — the click-batch payload now carries `emb`, the schema has
+the column, and `api/analytics-heatmap.js`'s pathname picker, click-grid, top-elements, scroll-depth
+histogram, and totals queries all exclude `is_embedded = true` by default (`?includeEmbedded=1`
+opts back in, same convention as item 1).
+
+Pulled the real per-host scroll-depth breakdown to check the theory before writing this up:
+
+| `page_host` | events at scroll_depth=0 | events anywhere else |
+|---|---|---|
+| `book.asasoftware.aero` (the widget) | **1,702** | 6 |
+| `www.asasoftware.aero` (the real site) | 170 | ~1,400, smoothly spread across 1%-100% |
+| `asasoftware.aero` | 30 | ~30, smoothly spread |
+
+**99.6% of the widget's pageviews report scroll_depth=0** (nobody scrolls an invisible preloaded
+iframe), while the real site's traffic shows a completely normal, smoothly-distributed scroll
+pattern across the full 0-100% range — there was never anything wrong with scroll tracking itself.
+1,702 of roughly 1,900 total zero-scroll-depth events in this window come from this one host alone.
+This is as close to a smoking gun as Phase 0's hypothesis could get.
+
+**Before/after honesty note, same as items 1 and 6:** `analytics_clicks.is_embedded` is additive
+and never backfilled, and only the *updated* tracker ever sets it — so there's no retroactive
+"after" number for existing rows. Once this deploys and new traffic flows through the updated
+embed script, re-running the query above should show the book.asasoftware.aero pile mostly
+disappear from the default (non-`includeEmbedded`) heatmap view. I'll record the real post-deploy
+split here once that data exists.
+
+**Screenshot preview — still unconfirmed, re-checked, not re-guessed.** Re-read
+`api/analytics-screenshot.js` end to end looking for anything Phase 0 might have missed (including
+checking a known pitfall from this project's own history — this project's Vercel Blob store is
+private and requires `access:"private"` — in case the screenshot were cached there). It isn't: this
+file generates the screenshot fresh on every request via headless Chromium
+(`@sparticuz/chromium` + `puppeteer-core`) and returns the JPEG bytes directly — no Blob storage,
+no caching layer, nothing for that pitfall to apply to. Confirms Phase 0's conclusion: there's no
+static-code bug here to find. The remaining candidates (capture timeout on a heavy page, the
+target site's WAF blocking the headless UA/IP, a third-party overlay not honoring `__ICS_SCAN__`)
+all need a live repro — a failed request's actual error, or the Vercel function logs for a slow/
+failed `analytics-screenshot` call — which I don't have access to from here. Not guessing a fix
+without that.
+
+1 new test (76/76 overall) — mechanism-only (synthetic data), since `analytics_clicks.is_embedded`
+doesn't exist in production until this deploys.
+
 ## 12. Cross-tab consistency — ✅ confirmed on all three sub-points
 
 **Currency.** `CURRENCY_SYMBOLS` is independently redefined in at least seven files (`AdSpend.js`,

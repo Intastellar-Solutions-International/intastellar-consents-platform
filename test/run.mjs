@@ -14,5 +14,6 @@ import "./forms-dedup-sql.test.mjs";
 import "./alerts.test.mjs";
 import "./ad-conversion-push.test.mjs";
 import "./performance.test.mjs";
+import "./heatmap.test.mjs";
 
 await run();

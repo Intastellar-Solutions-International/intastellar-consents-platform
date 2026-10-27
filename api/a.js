@@ -388,6 +388,11 @@ async function ensureTables(db) {
         -- aggregates unless explicitly requested (see api/analytics-report.js).
         ALTER TABLE analytics_events        ADD COLUMN IF NOT EXISTS is_embedded    BOOLEAN NOT NULL DEFAULT false;
         ALTER TABLE analytics_custom_events ADD COLUMN IF NOT EXISTS is_embedded    BOOLEAN NOT NULL DEFAULT false;
+        -- Same is_embedded flag, for heatmap clicks — see item 11. Without
+        -- this, clicks inside a preloaded widget iframe (item 1) mix into
+        -- the same per-page heatmap as real clicks on the actual page, with
+        -- no way to tell them apart.
+        ALTER TABLE analytics_clicks        ADD COLUMN IF NOT EXISTS is_embedded    BOOLEAN NOT NULL DEFAULT false;
         -- Whether the visitor's consent came from a granular per-category
         -- save (the banner's IntaSaveSettings) rather than Accept All
         -- (IntaAcceptAll). NULL = unknown (consent was already decided
@@ -785,7 +790,7 @@ function pageHeight(){
 function sendClicks(){
   if(!clickBuf.length)return;
   var batch=clickBuf.splice(0,clickBuf.length);
-  send(JSON.stringify({s:SITE,t:'ck',sid:getSid(),u:location.pathname,h:getHost(),dt:devType(),ph:pageHeight(),ck:batch}));
+  send(JSON.stringify({s:SITE,t:'ck',sid:getSid(),u:location.pathname,h:getHost(),dt:devType(),ph:pageHeight(),ck:batch,emb:EMB?1:0}));
 }
 
 function onClick(e){
@@ -2300,7 +2305,7 @@ export default async function handler(req, res) {
         for (const row of ck.slice(0, 25)) {
             if (!Array.isArray(row) || row.length < 6) continue;
             const [x, y, w, tag, tId, cls, text] = row;
-            values.push(`($${i++},$${i++},$${i++},$${i++},$${i++},$${i++},$${i++},$${i++},$${i++},$${i++},$${i++},$${i++},$${i++},$${i++})`);
+            values.push(`($${i++},$${i++},$${i++},$${i++},$${i++},$${i++},$${i++},$${i++},$${i++},$${i++},$${i++},$${i++},$${i++},$${i++},$${i++})`);
             params.push(
                 siteId, orgId, sessionId,
                 ckPathname, pageHostSanitized, deviceType,
@@ -2311,6 +2316,7 @@ export default async function handler(req, res) {
                 String(tId || "").slice(0, 150) || null,
                 String(cls || "").slice(0, 300) || null,
                 String(text || "").slice(0, 80) || null,
+                isEmbeddedEvent,
             );
         }
 
@@ -2318,7 +2324,8 @@ export default async function handler(req, res) {
             await db.query(
                 `INSERT INTO analytics_clicks
                  (site_id, organisation_id, session_id, pathname, page_host, device_type,
-                  viewport_width, page_height, x_pct, y_pct, target_tag, target_id, target_class, target_text)
+                  viewport_width, page_height, x_pct, y_pct, target_tag, target_id, target_class, target_text,
+                  is_embedded)
                  VALUES ${values.join(",")}`,
                 params
             ).catch(() => {});
