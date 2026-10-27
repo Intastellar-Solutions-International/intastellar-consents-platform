@@ -65,7 +65,7 @@ function buildEmailHtml({ domain, metric, label, value, threshold, period_days }
 
 // ── Metric computation ────────────────────────────────────────────────────────
 
-async function computeMetric(db, siteId, metric, periodDays) {
+export async function computeMetric(db, siteId, metric, periodDays) {
     const now = new Date();
     const periodEnd = now.toISOString().slice(0, 10);
     const periodStart = new Date(now - periodDays * 86400000).toISOString().slice(0, 10);
@@ -133,7 +133,7 @@ async function computeMetric(db, siteId, metric, periodDays) {
     }
 }
 
-function isBreached(metric, operator, value, threshold) {
+export function isBreached(metric, operator, value, threshold) {
     if (value === null || value === undefined) return false;
     // For "zero_conversions" with operator "lt": fire when count < threshold (e.g. < 1)
     // For "traffic_drop" with operator "gt": fire when drop% > threshold (e.g. > 30)
@@ -148,17 +148,27 @@ export default async function handler(req, res) {
 
     const db = getPool();
 
-    // Fetch all enabled configs plus their owner's org email
+    // Fetch all enabled configs. Previously joined a `users` table that
+    // doesn't exist in this database at all (user/org identity for this
+    // platform lives in a separate system — see docs/analytics-audit-plan.md
+    // item 8) — that join errored on every single run, and the error was
+    // silently swallowed by the .catch() below, so `configs` was always []
+    // and no alert had ever been evaluated, let alone fired, in the 7+ weeks
+    // since this cron was added. Recipients are now stored directly on the
+    // config (see api/analytics-alert-configs.js, same convention as
+    // analytics_scheduled_reports.recipients) instead of resolved via a join
+    // that was never going to work. The catch here now logs instead of
+    // silently swallowing, so a future schema drift is visible within a day.
     const { rows: configs } = await db.query(`
-        SELECT aac.*, aos.domain,
-               u.email AS owner_email
+        SELECT aac.*, aos.domain
         FROM analytics_alert_configs aac
         JOIN analytics_sites aos ON aos.id = aac.site_id
-        LEFT JOIN users u ON u.organisation_id = aac.organisation_id
-            AND u.role IN ('admin','super-admin','manager')
         WHERE aac.enabled = true
         ORDER BY aac.id
-    `).catch(() => ({ rows: [] }));
+    `).catch(e => {
+        console.error("[cron-analytics-alerts] config fetch failed — no alerts will be evaluated this run:", e.message);
+        return { rows: [] };
+    });
 
     let fired = 0;
 
@@ -182,10 +192,12 @@ export default async function handler(req, res) {
             [cfg.id, value, message]
         ).catch(() => {});
 
-        // Notify via email
-        if (cfg.notify_email && cfg.owner_email) {
+        // Notify via email — recipients is a JSON array of addresses stored
+        // directly on the config (see note above the config-fetch query).
+        const recipients = Array.isArray(cfg.recipients) ? cfg.recipients : [];
+        if (cfg.notify_email && recipients.length) {
             await sendEmail({
-                to: cfg.owner_email,
+                to: recipients,
                 subject: `[Alert] ${cfg.label || cfg.metric} — ${cfg.domain}`,
                 html: buildEmailHtml({
                     domain: cfg.domain,

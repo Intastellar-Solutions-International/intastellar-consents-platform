@@ -748,6 +748,51 @@ and `isBreached` with known inputs (currently zero coverage).
 
 ---
 
+### Status: implemented, live (2026-10-27)
+
+Removed the `JOIN users` entirely rather than fixing it in place — found the actual working
+precedent already in this codebase: `analytics_scheduled_reports.recipients` (a `JSONB` column
+storing email addresses directly on the config row, collected from the UI at creation time, no
+cross-system lookup). Added the identical `recipients JSONB NOT NULL DEFAULT '[]'` column to
+`analytics_alert_configs`, a `normalizeRecipients()` validator (same rules as the scheduled-reports
+one — dedup, lowercase, cap at 10, email-shape check), required recipients in
+`api/analytics-alert-configs.js`'s POST/PUT when `notify_email` is true, and updated
+`api/cron-analytics-alerts.js` to read `cfg.recipients` directly. The config-fetch query's
+`.catch()` now logs instead of silently swallowing, so a future schema drift surfaces within a day
+instead of 7+ weeks. Added a recipients input to the New Alert form
+(`src/Pages/Analytics/AlertConfigs.js`) and a visible `→ email@x.com` line (or a warning if
+email-notify is on with zero recipients) on each existing alert row.
+
+**Not done — flagging rather than quietly expanding scope:** a "test fire" / dry-run action (from
+the original fix approach) and actual Web Push sending — `cron-analytics-alerts.js`'s own doc
+comment claims push notifications work "via Web Push… same infra as ad-alerts," but there is no
+push-sending code anywhere in the file; `notify_push` is stored and exposed as a toggle but never
+acted on. That's a separate, pre-existing gap from what this item was diagnosing (a config-fetch
+query erroring, not a missing notification channel) — flagging it since I found it, not fixing it
+here.
+
+12/12 new tests pass (58/58 overall), including a live-Postgres check that the fixed query runs
+without error — confirmed the old one still throws `relation "users" does not exist` on this exact
+production database, re-verified at the moment of this fix.
+
+**Before/after — asasoftware.aero, live-checked 2026-10-27:**
+
+| | Before | After |
+|---|---|---|
+| Config-fetch query | Throws `relation "users" does not exist`, caught silently | Succeeds — returns 1 config |
+| Alerts evaluated, ever (platform-wide) | **0** (confirmed: `analytics_alert_history` has never had a row, for any config, since this cron was added ~7 weeks ago) | Will evaluate starting the next cron run (daily, 07:00 UTC) |
+| Real-time 7-day consent rate right now | 28.1% (below the 30% threshold — the alert *should* have been firing all along) | Same 28.1% — now actually gets checked and will write to `analytics_alert_history` for the first time ever on the next run |
+
+**One thing you need to do, not something I can fix from here:** the existing "Low consent rate"
+alert for asasoftware.aero (created 2026-09-05, before this fix) will get `recipients = []` by
+default once this migration runs — additive, never backfilled, same as every other new column in
+this schema, and there's no way to know who should have received it retroactively. It **will**
+now correctly evaluate and log to history on the next cron run, but it will not send an email until
+someone sets a recipient. There's no edit-recipients UI yet (only enable/disable/delete) — easiest
+path today is deleting and recreating this one alert with a recipient email filled in.
+
+---
+
 ## 9. Ad conversion push — ✅ exact root cause found for the contradictory counts, plus a dead button
 
 **Where:** `api/analytics-attribution.js:76-138` (date-scoped `pushStats`); `api/ad-conversion-push.js:263-291` (unscoped `stats`, separate endpoint); `src/Pages/Analytics/ConversionAttribution.js:276-320` (bulk retry button and its label).

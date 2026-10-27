@@ -32,7 +32,7 @@ const DEFAULT_OPERATORS = {
 const EMPTY_FORM = {
     metric: "traffic_drop", operator: "gt", threshold: 30,
     period_days: 7, notify_email: true, notify_push: false,
-    label: "", enabled: true,
+    recipients: "", label: "", enabled: true,
 };
 
 function useAlerts(domain) {
@@ -101,6 +101,13 @@ function AlertRow({ cfg, domain, onToggle, onDelete }) {
                     {metricLabel} {opLabel} {cfg.threshold}{suffix} — past {cfg.period_days}d
                 </span>
                 <span className="sa-alert-row__last">Last fired: {fmtDate(cfg.last_triggered)}</span>
+                {cfg.notify_email && (
+                    <span className="sa-alert-row__recipients">
+                        {Array.isArray(cfg.recipients) && cfg.recipients.length
+                            ? `→ ${cfg.recipients.join(", ")}`
+                            : "⚠ Email notification is on but no recipients are set — this alert will never send an email."}
+                    </span>
+                )}
             </div>
             <div className="sa-alert-row__actions">
                 <button className="sa-btn sa-btn--sm" onClick={toggle} disabled={busy}>
@@ -131,11 +138,18 @@ function NewAlertForm({ domain, onCreated }) {
         e.preventDefault();
         setBusy(true);
         setFormError(null);
+        const recipients = form.recipients.split(",").map(s => s.trim()).filter(Boolean);
+        if (form.notify_email && !recipients.length) {
+            setBusy(false);
+            setFormError("At least one recipient email is required for email notifications.");
+            return;
+        }
         const qs = new URLSearchParams({ domain }).toString();
         const body = {
             ...form,
             threshold: Number(form.threshold),
             period_days: Number(form.period_days),
+            recipients,
         };
         const r = await fetch(`${ALERTS_URL}?${qs}`, {
             method: "POST",
@@ -143,7 +157,11 @@ function NewAlertForm({ domain, onCreated }) {
             body: JSON.stringify(body),
         }).catch(() => null);
         setBusy(false);
-        if (!r || !r.ok) { setFormError("Failed to create alert."); return; }
+        if (!r || !r.ok) {
+            const msg = await r?.json().catch(() => null);
+            setFormError(msg?.error || "Failed to create alert.");
+            return;
+        }
         setForm({ ...EMPTY_FORM });
         onCreated();
     }
@@ -208,6 +226,19 @@ function NewAlertForm({ domain, onCreated }) {
                     <input type="checkbox" checked={form.notify_email} onChange={e => setField("notify_email", e.target.checked)} />
                     Email notification
                 </label>
+
+                {form.notify_email && (
+                    <label className="sa-form-label">
+                        Recipient email(s)
+                        <input
+                            type="text"
+                            className="sa-form-input"
+                            placeholder="you@company.com, teammate@company.com"
+                            value={form.recipients}
+                            onChange={e => setField("recipients", e.target.value)}
+                        />
+                    </label>
+                )}
 
                 {formError && <p className="sa-notice sa-notice--error" style={{ marginTop: 8 }}>{formError}</p>}
 

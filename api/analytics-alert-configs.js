@@ -67,10 +67,34 @@ async function ensureTables(db) {
         );
         CREATE INDEX IF NOT EXISTS idx_aah_config ON analytics_alert_history (config_id, triggered_at DESC);
     `).catch(() => {});
+    // Explicit recipient addresses, same shape/convention as
+    // analytics_scheduled_reports.recipients — see
+    // docs/analytics-audit-plan.md item 8. The cron used to resolve a
+    // notification address by joining a `users` table that doesn't exist in
+    // this database at all, so every run silently evaluated zero configs
+    // (the query errored, and the error was swallowed). Storing the address
+    // directly at creation time, the same way scheduled reports already do,
+    // removes the need for that cross-database join entirely.
+    await db.query(`
+        ALTER TABLE analytics_alert_configs ADD COLUMN IF NOT EXISTS recipients JSONB NOT NULL DEFAULT '[]';
+    `).catch(() => {});
 }
 
 const VALID_METRICS   = new Set(["traffic_drop", "consent_rate_below", "zero_conversions", "conversion_drop", "engaged_drop"]);
 const VALID_OPERATORS = new Set(["lt", "gt"]);
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+// Same validation as api/analytics-scheduled-reports.js's normalizeRecipients
+// — kept as a separate copy (api/ files aren't cross-imported in this
+// project) rather than a shared import, consistent with this codebase's
+// existing convention for small, identical validation helpers.
+export function normalizeRecipients(raw) {
+    if (!Array.isArray(raw)) return null;
+    const cleaned = [...new Set(raw.map(r => String(r || "").trim().toLowerCase()).filter(Boolean))];
+    if (cleaned.length > 10) return null;
+    if (!cleaned.every(r => EMAIL_RE.test(r))) return null;
+    return cleaned;
+}
 
 export default async function handler(req, res) {
     setCors(req, res);
@@ -116,18 +140,26 @@ export default async function handler(req, res) {
     // ── CREATE ────────────────────────────────────────────────────────────────
     if (req.method === "POST") {
         if (!siteId) return res.status(400).json({ error: "domain required" });
-        const { metric, operator, threshold, period_days, notify_email, notify_push, label, enabled } = req.body || {};
+        const { metric, operator, threshold, period_days, notify_email, notify_push, recipients, label, enabled } = req.body || {};
         if (!VALID_METRICS.has(metric))   return res.status(400).json({ error: "Invalid metric" });
         if (!VALID_OPERATORS.has(operator)) return res.status(400).json({ error: "Invalid operator" });
         if (typeof threshold !== "number") return res.status(400).json({ error: "threshold must be a number" });
 
+        const wantsEmail = notify_email !== false;
+        const cleanRecipients = normalizeRecipients(recipients ?? []);
+        if (cleanRecipients === null) return res.status(400).json({ error: "recipients must be an array of up to 10 valid email addresses" });
+        if (wantsEmail && !cleanRecipients.length) {
+            return res.status(400).json({ error: "At least one recipient email is required when email notifications are enabled" });
+        }
+
         const { rows } = await db.query(
             `INSERT INTO analytics_alert_configs
-             (site_id, organisation_id, metric, operator, threshold, period_days, notify_email, notify_push, label, enabled)
-             VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) RETURNING *`,
+             (site_id, organisation_id, metric, operator, threshold, period_days, notify_email, notify_push, recipients, label, enabled)
+             VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11) RETURNING *`,
             [siteId, orgId, metric, operator, threshold,
              Math.min(90, Math.max(1, parseInt(period_days) || 7)),
-             notify_email !== false, notify_push === true,
+             wantsEmail, notify_push === true,
+             JSON.stringify(cleanRecipients),
              (label || "").slice(0, 120) || null,
              enabled !== false]
         );
@@ -138,9 +170,18 @@ export default async function handler(req, res) {
     if (req.method === "PUT") {
         const id = parseInt(req.query.id, 10);
         if (!id) return res.status(400).json({ error: "id required" });
-        const { metric, operator, threshold, period_days, notify_email, notify_push, label, enabled } = req.body || {};
+        const { metric, operator, threshold, period_days, notify_email, notify_push, recipients, label, enabled } = req.body || {};
         if (metric && !VALID_METRICS.has(metric))     return res.status(400).json({ error: "Invalid metric" });
         if (operator && !VALID_OPERATORS.has(operator)) return res.status(400).json({ error: "Invalid operator" });
+
+        let cleanRecipients = null;
+        if (recipients !== undefined) {
+            cleanRecipients = normalizeRecipients(recipients);
+            if (cleanRecipients === null) return res.status(400).json({ error: "recipients must be an array of up to 10 valid email addresses" });
+        }
+        if (notify_email === true && cleanRecipients !== null && !cleanRecipients.length) {
+            return res.status(400).json({ error: "At least one recipient email is required when email notifications are enabled" });
+        }
 
         const { rows } = await db.query(
             `UPDATE analytics_alert_configs
@@ -150,8 +191,9 @@ export default async function handler(req, res) {
                  period_days  = COALESCE($6, period_days),
                  notify_email = COALESCE($7, notify_email),
                  notify_push  = COALESCE($8, notify_push),
-                 label        = COALESCE($9, label),
-                 enabled      = COALESCE($10, enabled),
+                 recipients   = COALESCE($9, recipients),
+                 label        = COALESCE($10, label),
+                 enabled      = COALESCE($11, enabled),
                  updated_at   = NOW()
              WHERE id = $1 AND organisation_id = $2
              RETURNING *`,
@@ -160,6 +202,7 @@ export default async function handler(req, res) {
              period_days ? Math.min(90, Math.max(1, parseInt(period_days))) : null,
              notify_email != null ? notify_email : null,
              notify_push  != null ? notify_push  : null,
+             cleanRecipients !== null ? JSON.stringify(cleanRecipients) : null,
              label != null ? (label || "").slice(0, 120) : null,
              enabled != null ? enabled : null]
         );

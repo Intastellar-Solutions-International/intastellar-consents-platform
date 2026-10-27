@@ -11,5 +11,6 @@ import "./consent-granular.test.mjs";
 import "./consent-impact.test.mjs";
 import "./forms.test.mjs";
 import "./forms-dedup-sql.test.mjs";
+import "./alerts.test.mjs";
 
 await run();
