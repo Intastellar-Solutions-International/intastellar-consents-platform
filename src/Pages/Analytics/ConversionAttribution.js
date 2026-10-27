@@ -2,6 +2,7 @@ const { useState, useEffect, useCallback, useRef } = React;
 import { ScannerHost } from "../../API/host.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import { authHeaders, useAnalyticsPageChrome, toIsoDate, formatCurrency } from "./_shared.js";
+import { PanelSkeleton } from "./components/Skeleton.js";
 import "./Analytics.css";
 
 const ATTRIBUTION_URL = `${ScannerHost}/api/analytics-attribution`;
@@ -375,7 +376,7 @@ export default function ConversionAttribution() {
                     {!domain && (
                         <p className="sa-notice">Select a domain in the header to view attribution data.</p>
                     )}
-                    {domain && loading && <p className="sa-notice">Loading…</p>}
+                    {domain && loading && <PanelSkeleton rows={5} />}
                     {domain && error   && <p className="sa-notice sa-notice--error">{error}</p>}
 
                     {domain && !loading && data && (

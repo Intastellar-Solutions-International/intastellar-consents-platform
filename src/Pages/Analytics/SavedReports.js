@@ -3,6 +3,7 @@ const useHistory = window.ReactRouterDOM.useHistory;
 import { ScannerHost } from "../../API/host.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import { authHeaders, useAnalyticsPageChrome } from "./_shared.js";
+import { SkeletonRows } from "./components/Skeleton.js";
 import { analyticsReportBuilderPath, analyticsReportViewPath } from "../../Functions/domainPathSegments.js";
 import { REPORT_TEMPLATES, CATEGORY_ORDER, CT_SVG, METRIC_LABELS, CATEGORY_COLOR } from "./reportTemplates.js";
 import "./Analytics.css";
@@ -279,7 +280,7 @@ export default function SavedReports() {
                         </div>
 
                         {!domain  && <p className="sa-notice">Select a domain in the header to view saved reports.</p>}
-                        {domain && loading && <p className="sa-notice">Loading…</p>}
+                        {domain && loading && <SkeletonRows rows={4} />}
                         {domain && error   && <p className="sa-notice sa-notice--error">{error}</p>}
 
                         {domain && !loading && !error && reports.length === 0 && (

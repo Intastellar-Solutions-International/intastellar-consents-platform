@@ -884,3 +884,33 @@ passing (100 previous + 7 new).
 the actual formatting correctness), but the two pages it's wired into (Heatmap, Overview) still get
 screenshots once the browser connection is live, per the ground rules — same pending status as
 items 1-3.
+
+### 5. Replace bare "Loading…" with skeletons — done, screenshots pending
+
+Repo-wide grep (the exact check my two failed Phase 0 sub-agents were supposed to run) found 7
+matches across `src/Pages/Analytics/*.js`; 2 were correctly out of scope and left alone —
+`AnalyticsSettings.js:115`/`Digest.js:337` are a *button's own label* while a submit/refresh action
+is in flight ("Loading…" → "Choose"/"Refresh"), a different UX pattern from a page's content
+loading state, and swapping a button's label for a skeleton block would be the wrong fix. The
+remaining 5 were genuine bare-text content-loading states, replaced:
+
+| File | Context | Replacement |
+|---|---|---|
+| `AnalyticsSettings.js:456` | small inline sub-panel | `SkeletonRows rows={2}` |
+| `AnalyticsSettings.js:597` | small inline sub-panel | `SkeletonRows rows={3}` |
+| `ConversionAttribution.js:378` | full-page initial load | `PanelSkeleton rows={5}` |
+| `GoogleAnalytics.js:282` | full-page initial load | `PanelSkeleton rows={4}` |
+| `SavedReports.js:282` | list under an existing title | `SkeletonRows rows={4}` |
+
+`PanelSkeleton` (title bar + rows) used where no panel title is already rendered above the loading
+check; `SkeletonRows` (rows only) used where one already is, to avoid a duplicate title skeleton.
+
+Verified via babel transform on all 4 touched files + the full test suite (unchanged, no new logic
+to test — this is purely swapping which component renders during an existing `loading` boolean, not
+a new calculation). Re-ran the grep after editing to confirm no bare "Loading…" content-state
+remains.
+
+Screenshots pending — these are loading-FLASH states by nature, visible only for the fraction of a
+second a real fetch takes, so a static screenshot may be hard to catch in the act; will attempt it
+anyway once the browser connection is live (e.g. by throttling network in devtools) rather than
+skip verification outright.

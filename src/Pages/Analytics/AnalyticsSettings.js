@@ -2,6 +2,7 @@ const { useState, useEffect, useCallback, useMemo } = React;
 import { ScannerHost } from "../../API/host.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import { authHeaders, useAnalyticsPageChrome } from "./_shared.js";
+import { SkeletonRows } from "./components/Skeleton.js";
 import "./Analytics.css";
 
 const AD_CONNECTIONS_URL      = `${ScannerHost}/api/ad-connections`;
@@ -453,7 +454,7 @@ function SiteConfigSection({ domain }) {
     }
 
     if (!domain) return <p style={{ color: "rgba(130,130,130,0.5)", fontSize: 13 }}>Select a domain.</p>;
-    if (loading) return <p style={{ color: "rgba(130,130,130,0.5)", fontSize: 13 }}>Loading…</p>;
+    if (loading) return <SkeletonRows rows={2} />;
     if (!site)   return <p style={{ color: "rgba(130,130,130,0.5)", fontSize: 13 }}>No site key found for {domain}. Generate one in Settings → Analytics Script.</p>;
 
     const snippet = `<script src="https://analytics.consentsmanagement.com/api/a" data-site="${site.id}" async defer></script>`;
@@ -594,7 +595,7 @@ function CrossSiteSection({ domain }) {
     const pending  = domains.filter(d => !d.approved);
     const approved = domains.filter(d =>  d.approved);
 
-    if (loading) return <p className="sa-notice" style={{ margin: 0 }}>Loading…</p>;
+    if (loading) return <SkeletonRows rows={3} />;
 
     return (
         <div>
