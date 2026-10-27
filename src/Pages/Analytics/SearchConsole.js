@@ -188,7 +188,7 @@ export default function SearchConsole() {
 
                                     <div className="sa-panel">
                                         <h3 className="sa-panel__title"><IconTrendingUp className="sa-icon" /> Clicks over time</h3>
-                                        <TrendLineChart data={trendData} title="Clicks" height={220} />
+                                        <TrendLineChart data={trendData} fromDate={fromDate} toDate={toDate} title="Clicks" height={220} />
                                     </div>
 
                                     <DimensionTable icon={<IconTarget className="sa-icon" />} title="Top queries" rows={gsc.topQueries} keyLabel="Query" />

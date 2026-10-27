@@ -939,3 +939,52 @@ quick win. Noting it here so it isn't lost.
 
 Verified via babel transform + the full test suite (unchanged — a color-literal swap, nothing
 computed). Screenshots pending.
+
+### 7. Fix chart ticks and the Avg/day label — done, screenshots pending
+
+Confirmed root cause from Phase 0: `TrendLineChart.js` is the shared component behind 5 pages
+(`ConversionsOverview.js`, `Forms.js`, `ReportView.js`, `ReportBuilder.js`, `SearchConsole.js`), and
+both bugs trace to the same mechanism — the backing SQL only produces a row for days that actually
+had events, so a sparse period's `series.length` undercounts the real date range. Fixing the backend
+query is out of scope (no metric/query changes); fixed it entirely client-side instead:
+
+- **`zeroFillSeries(series, fromDate, toDate)`** reindexes the already-fetched series against the
+  full requested range, inserting explicit `{date, num: 0}` for missing days. This is a no-op when
+  `fromDate`/`toDate` aren't passed (backward compatible), but all 5 call sites already have both
+  from `useAnalyticsPageChrome()` (or local state, for `SearchConsole.js` specifically — it doesn't
+  use the shared hook), so all 5 were wired up in this same commit. Fixes Avg/day directly:
+  `series.length` is now the full range, not just active days — the brief's own "9/3=3 should be
+  9/30=0.3" example is one of the new test cases.
+- **`niceTicks(maxVal, targetCount)`** replaces the old `[0,.25,.5,.75,1].map(f=>Math.round(maxVal*f))`
+  (independently-rounded fractions, which skip/duplicate values for small ranges — the brief's own
+  "5,4,3,1,0" example) with a standard pick-a-round-step-first algorithm. The chart's Y-scale now
+  derives from the highest *tick* (not the raw data max), so gridlines and the plotted line share
+  one coordinate system.
+- Y-axis tick labels now go through `formatCount()` (de-DE locale) instead of a raw number —
+  noticed this inconsistency while already touching this exact code, in scope as a small additional
+  fix rather than a separate item.
+
+**A real bug the test suite caught before it shipped:** my first `niceTicks` draft could stop short
+of covering `maxVal` for some inputs (e.g. `niceTicks(413)` produced `[0,100,200,300,400]` — last
+tick 400 < 413, which would have clipped the plotted line above the topmost gridline). The "covers
+the full data range" test failed immediately, not from a realm/comparison artifact like the others
+below, but a genuine logic bug — fixed by walking one step past `maxVal` instead of stopping at/
+before it.
+
+**A second, unrelated gotcha, same session as the `KpiCard` one:** `Array.prototype.map` called on a
+vm-realm array (same text-extraction technique as every test here) produces *another* vm-realm
+array — one level deeper than the plain-object case `test/kpi-card.test.mjs` hit, since `.map()`'s
+output inherits the receiver's realm. `assert.deepStrictEqual` failed on 5 of the 11 new tests for
+that reason alone, independent of the real tick-coverage bug above. Fixed both failure classes the
+same way: a `JSON.parse(JSON.stringify(x))` round-trip strips the foreign prototype before
+comparing.
+
+**Tests:** 11 new tests in `test/trend-chart.test.mjs` (5 for `niceTicks`: the exact brief example,
+even-spacing, full-range coverage across 7 magnitudes, the zero/negative fallback, always-starts-
+at-0; 6 for `zeroFillSeries`: no-op without a range, gap-filling, the exact Avg/day example from the
+brief, empty-series handling, single-day range, backward-compat pass-through). Full suite: 117/117
+passing (107 previous + 11 new, after fixing the real bug the suite caught and the 5 realm-related
+false failures).
+
+Screenshots pending — especially important here to confirm the chart still renders correctly (axis
+alignment, line path) with the rescaled Y-domain, not just that the numbers are right.

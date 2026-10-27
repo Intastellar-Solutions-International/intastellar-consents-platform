@@ -294,6 +294,8 @@ export default function AnalyticsConversionsOverview() {
                                         <h3 className="sa-panel__title"><IconTrendingUp className="sa-icon" /> Conversion trend</h3>
                                         <TrendLineChart
                                             data={trendData}
+                                            fromDate={fromDate}
+                                            toDate={toDate}
                                             title="Conversions"
                                             showInsights
                                             height={260}

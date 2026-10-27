@@ -794,6 +794,8 @@ export default function AnalyticsForms() {
                                     </h3>
                                     <TrendLineChart
                                         data={trendData}
+                                        fromDate={fromDate}
+                                        toDate={toDate}
                                         title="Form submissions"
                                     />
                                 </div>

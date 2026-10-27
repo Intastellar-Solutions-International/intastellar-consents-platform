@@ -599,7 +599,7 @@ export default function ReportBuilder() {
                                         {isLoading && <p className="sa-notice" style={{ margin: 0 }}>Loading data…</p>}
                                         {!isLoading && !hasData && <p className="sa-notice" style={{ margin: 0 }}>Select a domain to preview.</p>}
                                         {!isLoading && hasData && trendData.length > 0 && (
-                                            <TrendLineChart data={trendData} title={primaryDef.label} showInsights height={220} />
+                                            <TrendLineChart data={trendData} fromDate={fromDate} toDate={toDate} title={primaryDef.label} showInsights height={220} />
                                         )}
                                         {!isLoading && hasData && trendData.length === 0 && (
                                             <p className="sa-notice" style={{ margin: 0 }}>No daily data for the selected period.</p>

@@ -19,5 +19,6 @@ import "./consistency.test.mjs";
 import "./overview-kpi.test.mjs";
 import "./kpi-card.test.mjs";
 import "./element-label.test.mjs";
+import "./trend-chart.test.mjs";
 
 await run();
