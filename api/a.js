@@ -355,6 +355,15 @@ async function ensureTables(db) {
         ALTER TABLE analytics_bot_visits  ADD COLUMN IF NOT EXISTS asn            INTEGER;
         ALTER TABLE analytics_bot_visits  ADD COLUMN IF NOT EXISTS as_org         VARCHAR(255);
         ALTER TABLE analytics_bot_visits  ADD COLUMN IF NOT EXISTS is_hosting_ip  BOOLEAN;
+        -- True when the embed script detected window.top !== window.self, i.e. it
+        -- ran inside a nested browsing context (typically a booking widget or
+        -- similar iframe preloaded on every page of the parent site) rather than
+        -- on a page the visitor actually navigated to themselves. Defaults false
+        -- and is never backfilled on existing rows — we can't know retroactively.
+        -- Query-time default: excluded from pageview/session/bounce/time-on-page
+        -- aggregates unless explicitly requested (see api/analytics-report.js).
+        ALTER TABLE analytics_events        ADD COLUMN IF NOT EXISTS is_embedded    BOOLEAN NOT NULL DEFAULT false;
+        ALTER TABLE analytics_custom_events ADD COLUMN IF NOT EXISTS is_embedded    BOOLEAN NOT NULL DEFAULT false;
     `).catch(() => {});
     await db.query(`
         CREATE INDEX IF NOT EXISTS idx_ae_hosting  ON analytics_events (site_id, is_hosting_ip) WHERE is_hosting_ip;
@@ -503,7 +512,9 @@ async function ensureTables(db) {
 // ── The embed script (served as application/javascript on GET) ────────────────
 // Site key is read from the data-site attribute at runtime.
 // Snippet format: <script src=".../api/a" data-site="SITEKEY" async defer></script>
-const EMBED_SCRIPT = `(function(){
+// Exported (in addition to the default handler) so test/tracker-embedded.test.js
+// can extract and exercise individual functions from the real shipped source.
+export const EMBED_SCRIPT = `(function(){
 'use strict';
 // Our own cookie-compliance scanner runs headless Chrome with a normal
 // desktop UA (see api/_scan-core.js) so target sites see it like a real
@@ -529,6 +540,18 @@ if(!SITE){
   return;
 }
 var EP=(el&&el.getAttribute('data-endpoint'))||'https://analytics.consentsmanagement.com/api/a';
+
+// True when this script is running inside a nested browsing context (an
+// iframe/widget embed) rather than on the top-level page a visitor actually
+// navigated to — e.g. a booking widget preloaded as an iframe on every page
+// of the parent site, firing its own pageviews under the same site key. A
+// cross-origin iframe can't read window.top's properties, but CAN still
+// compare window.top !== window.self without throwing — the try/catch here
+// is defensive for stricter browser sandboxes, not because this comparison
+// itself is expected to throw. Computed once per pageload/script execution;
+// an iframe always gets its own separate execution of this script.
+function isEmbedded(){try{return window.top!==window.self;}catch(e){return true;}}
+var EMB=isEmbedded();
 
 function gc(n){var m=document.cookie.match(new RegExp('(?:^|;\\\\s*)'+n+'=([^;]*)'));return m?decodeURIComponent(m[1]):null;}
 
@@ -1076,7 +1099,7 @@ function fetchBrowserTopics(c){
 }
 
 function sendMinimal(c){
-  var pl={s:SITE,cl:'minimal',sid:getSid(),u:location.pathname,r:document.referrer||'',h:getHost(),dt:devType(),cs:hasStat(c)?1:0,cf:hasFun(c)?1:0,ca:hasAdv(c)?1:0};
+  var pl={s:SITE,cl:'minimal',sid:getSid(),u:location.pathname,r:document.referrer||'',h:getHost(),dt:devType(),cs:hasStat(c)?1:0,cf:hasFun(c)?1:0,ca:hasAdv(c)?1:0,emb:EMB?1:0};
   send(JSON.stringify(pl));
 }
 
@@ -1101,6 +1124,7 @@ function sendFull(c,final){
     cs:hasStat(c)?1:0,
     cf:hasFun(c)?1:0,
     ca:hasAdv(c)?1:0,
+    emb:EMB?1:0,
     final:final?1:0,
     nv:_iaNew,
     gc:_iaCid.g||undefined,mc:_iaCid.ms||undefined,fc:_iaCid.fb||undefined
@@ -1242,6 +1266,7 @@ function track(name,opts){
     cs:full?1:0,
     cf:hasFun(c)?1:0,
     ca:hasAdv(c)?1:0,
+    emb:EMB?1:0,
     gc:full?(_iaCid.g||undefined):undefined,
     mc:full?(_iaCid.ms||undefined):undefined,
     fc:full?(_iaCid.fb||undefined):undefined,
@@ -1976,10 +2001,14 @@ export default async function handler(req, res) {
 
     const { s: siteId, t: eventType, cl: consentLevel, sid, pv: pageviewId, u: rawUrl, r: referrer, h: pageHost, ti: title,
             us, um, uc, uk, dt, sw, sh, vw, vh, lang, tz, sd, ph, ck,
-            dur, cs, cf, ca, n: eventName, v: eventValue, cur: eventCurrency,
+            dur, cs, cf, ca, emb, n: eventName, v: eventValue, cur: eventCurrency,
             txn: eventTransactionId, pr: rawProducts, ed: rawExtraData, src: eventSource, tid: abTestId, vid: abVariantId, nv,
             gc: gclid, mc: msclkid, fc: fbclid,
             bt: rawBrowserTopics } = body;
+
+    // See is_embedded column comment in ensureTables() — true when the embed
+    // script detected it was running inside a nested browsing context.
+    const isEmbeddedEvent = emb === 1 || emb === true;
 
     // Browser topics — Chrome Topics API integers. Cross-site signal, so only
     // stored when functional consent is present (hasFun check mirrors embed script).
@@ -2155,8 +2184,8 @@ export default async function handler(req, res) {
              (site_id, organisation_id, session_id, consent_level, consent_stat, consent_func, consent_adv,
               name, value_cents, currency, transaction_id, pathname, page_host, country_code, device_type, source,
               gclid, msclkid, fbclid, utm_campaign, utm_content, utm_source, utm_medium, products, extra_data,
-              browser_family)
-             VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26)
+              browser_family, is_embedded)
+             VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27)
              RETURNING id`,
             [
                 siteId, orgId, isMinimal ? null : (sid ? String(sid).slice(0, 64) : null),
@@ -2171,6 +2200,7 @@ export default async function handler(req, res) {
                 cleanUtmCampaign, cleanUtmContent, cleanUtmSource, cleanUtmMedium,
                 products, extraData,
                 eventBrowserFamily || null,
+                isEmbeddedEvent,
             ]
         ).catch(() => ({ rows: [] }));
 
@@ -2319,14 +2349,15 @@ export default async function handler(req, res) {
             `INSERT INTO analytics_events
              (site_id, organisation_id, session_id, consent_level, consent_stat, consent_func, consent_adv,
               url, pathname, page_host, country_code, region, device_type, referrer_host,
-              asn, as_org, is_hosting_ip)
-             VALUES ($1,$2,$3,'minimal',$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16)`,
+              asn, as_org, is_hosting_ip, is_embedded)
+             VALUES ($1,$2,$3,'minimal',$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17)`,
             [
                 siteId, orgId, minSessionId,
                 cs === 1 || cs === true, cf === 1 || cf === true, ca === 1 || ca === true,
                 urlColumn, pathname, pageHostSanitized,
                 country, region, deviceType, minReferrerHost,
                 network.asn, network.asOrg, network.isHosting,
+                isEmbeddedEvent,
             ]
         ).catch(() => {});
     } else {
@@ -2356,8 +2387,8 @@ export default async function handler(req, res) {
               browser_family, os_family, language, timezone,
               duration_sec, scroll_depth, pageview_id, is_new_visitor,
               gclid, msclkid, fbclid,
-              browser_topics, asn, as_org, is_hosting_ip)
-             VALUES ($1,$2,$3,'full',$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28,$29,$30,$31,$32,$33,$34,$35,$36,$37)
+              browser_topics, asn, as_org, is_hosting_ip, is_embedded)
+             VALUES ($1,$2,$3,'full',$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28,$29,$30,$31,$32,$33,$34,$35,$36,$37,$38)
              ON CONFLICT (pageview_id) DO UPDATE SET
                duration_sec   = EXCLUDED.duration_sec,
                scroll_depth   = COALESCE(EXCLUDED.scroll_depth,   analytics_events.scroll_depth),
@@ -2388,6 +2419,7 @@ export default async function handler(req, res) {
                 fbclid  ? String(fbclid).slice(0, 512)  : null,           // $33 fbclid
                 browserTopics,                                             // $34 browser_topics JSONB
                 network.asn, network.asOrg, network.isHosting,             // $35 $36 $37
+                isEmbeddedEvent,                                           // $38 is_embedded
             ]
         ).catch(() => {});
     }

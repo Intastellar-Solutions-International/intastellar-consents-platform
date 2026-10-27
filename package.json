@@ -4,7 +4,7 @@
   "description": "",
   "main": "webpack.config.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\"",
+    "test": "node test/run.mjs",
     "start": "webpack serve --open --mode development --hot",
     "dev:api": "vercel dev --listen 3000",
     "startNodeServer": "nodemon index.js",

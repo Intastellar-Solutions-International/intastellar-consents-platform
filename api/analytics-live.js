@@ -92,7 +92,7 @@ export default async function handler(req, res) {
                 COUNT(DISTINCT session_id) FILTER (WHERE session_id IS NOT NULL)     AS sessions
             FROM (
                 SELECT consent_level, session_id FROM analytics_events
-                WHERE site_id = $1 AND received_at >= NOW() - INTERVAL '30 minutes'
+                WHERE site_id = $1 AND received_at >= NOW() - INTERVAL '30 minutes' AND is_embedded = false
                 UNION ALL
                 SELECT consent_level, session_id FROM analytics_custom_events
                 WHERE site_id = $1 AND received_at >= NOW() - INTERVAL '30 minutes'
@@ -107,7 +107,7 @@ export default async function handler(req, res) {
                 COUNT(*) AS events
             FROM (
                 SELECT received_at FROM analytics_events
-                WHERE site_id = $1 AND received_at >= NOW() - INTERVAL '30 minutes'
+                WHERE site_id = $1 AND received_at >= NOW() - INTERVAL '30 minutes' AND is_embedded = false
                 UNION ALL
                 SELECT received_at FROM analytics_custom_events
                 WHERE site_id = $1 AND received_at >= NOW() - INTERVAL '30 minutes'
@@ -121,7 +121,7 @@ export default async function handler(req, res) {
             SELECT pathname, COUNT(*) AS views
             FROM analytics_events
             WHERE site_id = $1
-              AND received_at >= NOW() - INTERVAL '30 minutes'
+              AND received_at >= NOW() - INTERVAL '30 minutes' AND is_embedded = false
               AND pathname !~* '^/api/'
               AND pathname !~* '\\.(js|css|json|xml|txt|map|png|jpe?g|gif|svg|webp|ico|woff2?|ttf|eot|pdf)$'
             GROUP BY pathname
@@ -149,7 +149,7 @@ export default async function handler(req, res) {
             SELECT received_at, pathname, page_host, country_code, device_type, consent_level,
                    NULL::text AS event_name
             FROM analytics_events
-            WHERE site_id = $1 AND received_at >= NOW() - INTERVAL '30 minutes'
+            WHERE site_id = $1 AND received_at >= NOW() - INTERVAL '30 minutes' AND is_embedded = false
             UNION ALL
             SELECT ce.received_at, ce.pathname, ce.page_host, ce.country_code, ce.device_type, ce.consent_level,
                    ce.name AS event_name

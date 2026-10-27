@@ -44,6 +44,14 @@ function safeDate(str, fallback) {
     return isNaN(d.getTime()) ? fallback : d.toISOString().slice(0, 10);
 }
 
+// Bare SQL clause (no "AND" prefix) excluding embedded-context pageviews by
+// default — see docs/analytics-audit-plan.md item 1. Exported so the one
+// rule behind both the EMBED_FILTER string and the segClauses entry below
+// can be tested directly instead of duplicated as two magic strings.
+export function embeddedClause(includeEmbedded) {
+    return includeEmbedded ? null : "is_embedded = false";
+}
+
 // utm_campaign is whatever literal text was in the visitor's landing URL —
 // we only capture it, never generate or template it ourselves. Two common
 // garbage-in cases from misconfigured ad platforms: (1) an unsubstituted
@@ -137,12 +145,22 @@ async function _handler(req, res) {
         direct:      `(COALESCE(referrer_host,'')='' AND COALESCE(utm_source,'')='' AND COALESCE(utm_medium,'')='')`,
     };
 
+    // Embedded-context pageviews (a booking widget or similar preloaded as an
+    // iframe on every page, firing its own pageviews under the same site key)
+    // are excluded from pageview/session/bounce/time-on-page by default — see
+    // docs/analytics-audit-plan.md item 1. ?includeEmbedded=1 opts back in for
+    // before/after comparison; the row itself is never dropped from the DB.
+    const includeEmbedded = req.query.includeEmbedded === "1";
+    const embedClause = embeddedClause(includeEmbedded);
+    const EMBED_FILTER = embedClause ? `AND ${embedClause}` : "";
+
     // Extra WHERE clauses injected into analytics_events queries.
     const segClauses = [
         segDevice  ? `device_type = '${segDevice}'`   : null,
         segCountry ? `country_code = '${segCountry}'` : null,
         segConsent ? `consent_level = '${segConsent}'` : null,
         segChannel ? CHANNEL_SQL[segChannel]           : null,
+        embedClause,
     ].filter(Boolean);
     const segAnd = segClauses.length ? "AND " + segClauses.join(" AND ") : "";
 
@@ -233,7 +251,7 @@ async function _handler(req, res) {
                 COUNT(*) FILTER (WHERE consent_adv  = true)  AS adv_yes,
                 COUNT(*) FILTER (WHERE consent_adv  = false) AS adv_no
             FROM analytics_events
-            WHERE site_id = $1 AND received_at >= $2 AND received_at < $3`,
+            WHERE site_id = $1 AND received_at >= $2 AND received_at < $3 ${EMBED_FILTER}`,
             [siteId, fromDate, toDateExclusive]
         ),
 
@@ -241,7 +259,7 @@ async function _handler(req, res) {
             SELECT utm_source, utm_medium, utm_campaign, COUNT(*) AS events
             FROM analytics_events
             WHERE site_id = $1 AND consent_level = 'full'
-              AND received_at >= $2 AND received_at < $3
+              AND received_at >= $2 AND received_at < $3 ${EMBED_FILTER}
               AND utm_source IS NOT NULL AND utm_source != ''
             GROUP BY utm_source, utm_medium, utm_campaign ORDER BY events DESC LIMIT 20`,
             [siteId, fromDate, toDateExclusive]
@@ -258,7 +276,7 @@ async function _handler(req, res) {
                    COUNT(DISTINCT session_id) FILTER (WHERE session_id IS NOT NULL)  AS sessions
             FROM analytics_events
             WHERE site_id = $1
-              AND received_at >= $2 AND received_at < $3
+              AND received_at >= $2 AND received_at < $3 ${EMBED_FILTER}
             GROUP BY referrer ORDER BY events DESC LIMIT 20`,
             [siteId, fromDate, toDateExclusive]
         ).catch((err) => {
@@ -340,7 +358,7 @@ async function _handler(req, res) {
             SELECT os_family, COUNT(*) AS events
             FROM analytics_events
             WHERE site_id = $1 AND consent_level = 'full'
-              AND received_at >= $2 AND received_at < $3
+              AND received_at >= $2 AND received_at < $3 ${EMBED_FILTER}
               AND os_family IS NOT NULL AND os_family != 'other'
             GROUP BY os_family ORDER BY events DESC LIMIT 8`,
             [siteId, fromDate, toDateExclusive]
@@ -350,7 +368,7 @@ async function _handler(req, res) {
             SELECT screen_width, screen_height, COUNT(*) AS events
             FROM analytics_events
             WHERE site_id = $1 AND consent_level = 'full'
-              AND received_at >= $2 AND received_at < $3
+              AND received_at >= $2 AND received_at < $3 ${EMBED_FILTER}
               AND screen_width IS NOT NULL
             GROUP BY screen_width, screen_height ORDER BY events DESC LIMIT 10`,
             [siteId, fromDate, toDateExclusive]
@@ -360,7 +378,7 @@ async function _handler(req, res) {
             SELECT language, COUNT(*) AS events
             FROM analytics_events
             WHERE site_id = $1 AND consent_level = 'full'
-              AND received_at >= $2 AND received_at < $3
+              AND received_at >= $2 AND received_at < $3 ${EMBED_FILTER}
               AND language IS NOT NULL AND language != ''
             GROUP BY language ORDER BY events DESC LIMIT 15`,
             [siteId, fromDate, toDateExclusive]
@@ -370,7 +388,7 @@ async function _handler(req, res) {
             SELECT timezone, COUNT(*) AS events
             FROM analytics_events
             WHERE site_id = $1 AND consent_level = 'full'
-              AND received_at >= $2 AND received_at < $3
+              AND received_at >= $2 AND received_at < $3 ${EMBED_FILTER}
               AND timezone IS NOT NULL AND timezone != ''
             GROUP BY timezone ORDER BY events DESC LIMIT 15`,
             [siteId, fromDate, toDateExclusive]
@@ -385,7 +403,7 @@ async function _handler(req, res) {
                 SELECT session_id, MAX(duration_sec) AS max_duration, COUNT(*) AS pageviews
                 FROM analytics_events
                 WHERE site_id = $1 AND consent_level = 'full'
-                  AND received_at >= $2 AND received_at < $3
+                  AND received_at >= $2 AND received_at < $3 ${EMBED_FILTER}
                   AND session_id IS NOT NULL
                 GROUP BY session_id
             )
@@ -417,7 +435,7 @@ async function _handler(req, res) {
                     SELECT session_id, MAX(duration_sec) AS max_duration, COUNT(*) AS pageviews
                     FROM analytics_events
                     WHERE site_id = $1 AND consent_level = 'full'
-                      AND received_at >= $2 AND received_at < $3
+                      AND received_at >= $2 AND received_at < $3 ${EMBED_FILTER}
                       AND session_id IS NOT NULL
                     GROUP BY session_id
                 )
@@ -433,7 +451,7 @@ async function _handler(req, res) {
                     (cardinality($5::text[]) > 0 AND EXISTS (
                         SELECT 1 FROM analytics_events pe
                         WHERE pe.site_id = $1 AND pe.session_id = s.session_id
-                          AND pe.pathname = ANY($5) AND pe.received_at >= $2 AND pe.received_at < $3))
+                          AND pe.pathname = ANY($5) AND pe.received_at >= $2 AND pe.received_at < $3 ${EMBED_FILTER}))
                     OR
                     (cardinality($6::text[]) > 0 AND EXISTS (
                         SELECT 1 FROM analytics_custom_events ce
@@ -460,7 +478,7 @@ async function _handler(req, res) {
                        ROW_NUMBER() OVER (PARTITION BY session_id ORDER BY received_at DESC)      AS rn_from_end
                 FROM analytics_events
                 WHERE site_id = $1 AND session_id IS NOT NULL
-                  AND received_at >= $2 AND received_at < $3
+                  AND received_at >= $2 AND received_at < $3 ${EMBED_FILTER}
                   AND pathname !~* '^/api/'
                   AND pathname !~* '\\.(js|css|json|xml|txt|map|png|jpe?g|gif|svg|webp|ico|woff2?|ttf|eot|pdf)$'
             )
@@ -490,7 +508,7 @@ async function _handler(req, res) {
                 SELECT BOOL_OR(is_new_visitor) AS is_new
                 FROM analytics_events
                 WHERE site_id = $1 AND consent_level = 'full'
-                  AND received_at >= $2 AND received_at < $3
+                  AND received_at >= $2 AND received_at < $3 ${EMBED_FILTER}
                   AND session_id IS NOT NULL
                   AND is_new_visitor IS NOT NULL
                 GROUP BY session_id
