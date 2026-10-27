@@ -988,3 +988,101 @@ false failures).
 
 Screenshots pending — especially important here to confirm the chart still renders correctly (axis
 alignment, line path) with the rescaled Y-domain, not just that the numbers are right.
+
+### Regression found and fixed: a real bug shipped in the Phase 1 item 3 commit, already live
+
+Chrome connected (see below) and, while investigating item 9 on the real Overview page, found a
+genuine `ReferenceError` waiting to happen: `index.js` still called `<PanelSkeletonShell rows={4} />`
+twice (the detail-loading placeholder for Outbound clicks/Form performance) — the exact local
+function name the Phase 1 Skeleton-promotion commit renamed to `PanelSkeleton` and removed the
+definition for, two call sites I missed during that refactor. Babel's transform only checks syntax,
+not whether an identifier resolves, and the test suite doesn't render React components — neither
+caught this; it surfaced only once I could watch a live render and reason about the
+`detailLoading` branch. **This shipped in the already-pushed Phase 1 item 3 commit** (items 1-4 were
+pushed; this bug has been live since then). Fixed immediately, as its own commit, separate from the
+Phase 2 items in progress — grepped the whole repo for any other stale `PanelSkeletonShell`/
+`KpiCardSkeleton` references first to confirm this was the only one.
+
+**Process note for future phases:** babel/postcss validation catches syntax errors but not
+undefined-identifier bugs in JSX. Worth rendering a changed page at least once, even briefly, before
+calling a component-renaming refactor done — static analysis alone wasn't enough here.
+
+## Phase 2, continued — Chrome connected, live verification underway
+
+Your Chrome instance connected successfully (`puppeteer-core` via CDP on `--remote-debugging-port=
+9222`, a separate profile from your real one, per your direction). One real navigation constraint
+discovered: this dev server's `historyApiFallback` doesn't serve nested paths on a hard
+navigation/reload (`page.goto()`/`page.reload()` to e.g. `/analytics/asasoftware.aero` returns
+"Cannot GET") — pre-existing dev-server behavior, not something this pass touched. Worked around it
+by navigating via client-side link clicks instead (`page.goto('/')` then `.click()` on in-app nav
+elements), which exercises the same React Router path a real user's navigation does.
+
+### 8. Map legend/scale — done, verified live, one hypothesis corrected by what I actually saw
+
+Phase 0 could only read code, not see the map rendered, and flagged "verify live before deciding
+the fix" for the color-scale direction. Now actually verified:
+
+- **The scale direction was never inverted** — Phase 0's hypothesis, reasonable before rendering,
+  turned out wrong. Confirmed via the live DOM: asasoftware.aero's real data has DK (946 events,
+  this period's max) rendering at `fill="rgba(192,159,83,0.900)"` and US (93 events) at
+  `rgba(192,159,83,0.233)` — exactly matching `colorForShare()`'s formula. "Darker = higher" was
+  always accurate.
+- **What live rendering did surface:** a linear share-of-max scale visually compresses every
+  country except the single dominant one into a narrow, hard-to-tell-apart low-opacity band
+  whenever one country's count is far ahead of the rest — exactly this site's real distribution (DK
+  946 vs. the next-highest at 93, a >10x gap). Switched `colorForShare()` to `sqrt(share)` instead
+  of `share` — a standard choropleth technique for skewed distributions, not an arbitrary tweak: it
+  lifts smaller shares up without changing either endpoint (0 stays 0, max stays 1). Screenshotted
+  before and after on real data — the sqrt version shows real visual separation between the US/
+  China/India-area/Brazil/Europe cluster instead of one flat dark-olive mass.
+- **No-data land fill ("near-white," Phase 0's finding) — confirmed and fixed.** Inspected the live
+  DOM directly: svgMap's own JS sets a literal `fill="#E2E2E2"` attribute per `<path>` for every
+  country with no data — the library's light-page default, not something this codebase's CSS was
+  already setting. Targeted the *exact* attribute value with `.svgMap-country[fill="#E2E2E2"] {
+  fill: #2a2a35 !important; }` in `WorldMap/Style.css`, rather than a blanket `.svgMap-country {
+  fill }` override — data countries use the identical `fill` attribute mechanism with their own
+  dynamic `rgba(...)` values, so a blanket rule would have clobbered real data along with the
+  no-data default.
+- **Zoom buttons re-themed** (drafted earlier while Chrome was still connecting, confirmed correct
+  once rendered): dark background + light icon instead of the library's default white button/dark
+  icon.
+- **Legend added** — didn't exist at all before. A labeled gradient bar ("Fewer [gradient] More"),
+  not discrete swatches, since the underlying scale is continuous, not bucketed.
+- Also fixed `.sa-map__caption`'s font-size (0.72rem/11.5px, below the 13px floor — a Phase 0
+  finding) while already touching this exact element.
+
+Verified via `postcss.parse()`, babel transform, the full test suite, and live screenshots on real
+asasoftware.aero data (before: flat, hard-to-read map with near-white no-data countries and no
+legend; after: clear differentiation, dark-themed no-data land, working legend) — screenshots to be
+saved to `/docs/design-screenshots/` in the next step.
+
+### 9. Fix card clipping/overflow at ~1100px — done, root cause confirmed and measured, not guessed
+
+Measured directly rather than inspecting by eye: `document.body.scrollWidth` (1071px) vs.
+`window.innerWidth` (1024px) on the real Overview page confirmed genuine horizontal overflow, then
+traced it programmatically (comparing `scrollWidth`/`clientWidth` on every element) rather than
+guessing which panel was responsible.
+
+**One red herring, ruled out by the same measurement:** `.sa-rage__cls` (the Frustration signals
+panel's raw selector text) showed the single largest `scrollWidth` overflow (893px) — but it already
+has `overflow: hidden; max-width: 200px`, so its own rendered box doesn't exceed 200px regardless of
+its unclipped content's natural width; it wasn't pushing its container wider. `scrollWidth` alone,
+without also checking whether the element's own rendered box exceeds its container, over-reports
+elements whose content is already being clipped.
+
+**The real cause:** `.sa-overview-bottom` itself measured 986px of content inside a 917px box — the
+Top Pages table (long pathnames in `.sa-table__path`) has no `table-layout: fixed`, so the browser's
+auto table layout can still size the table wider than its CSS Grid column intends, and a Grid item's
+default `min-width: auto` refuses to shrink below its content's intrinsic size regardless of the
+table's own `overflow: hidden` cell styling. Fixed both pieces, since neither alone is sufficient:
+wrapped both the Traffic sources and Top pages tables in the existing `.sa-table-scroll` class
+(already used once in `Forms.js` — reused, not reinvented) for `overflow-x: auto`, and added
+`.sa-overview-bottom > .sa-panel { min-width: 0; }` so the grid item can actually shrink past its
+content's intrinsic width in the first place. Scoped to this one grid context, not globally on
+`.sa-panel` (which backs many unrelated layouts elsewhere).
+
+**Verified by re-measuring, not just eyeballing:** `document.body.scrollWidth` vs. `window.
+innerWidth` re-checked at all three required widths post-fix — 1024px (1022 vs. 1024, -2px),
+1280px (1278 vs. 1280, -2px), 1440px (1438 vs. 1440, -2px). No overflow at any of the three.
+Screenshotted the Top Pages table to confirm it truncates cleanly with an ellipsis instead of
+looking broken.
