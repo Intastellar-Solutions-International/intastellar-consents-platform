@@ -1774,10 +1774,43 @@
     border: 1px solid rgba(255,255,255,0.05);
 }
 
+.sa-map__footer {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--sa-space-3, 12px);
+    flex-wrap: wrap;
+    margin-top: 6px;
+}
+
 .sa-map__caption {
-    margin: 6px 2px 0;
-    font-size: 0.72rem;
+    margin: 0 2px;
+    /* Was 0.72rem (11.5px) — below the 13px accessibility floor, a Phase 0
+       finding. Fixed while already touching this exact element. */
+    font-size: var(--sa-font-xs, 0.82rem);
     color: rgba(var(--sa-text-muted),0.65);
+}
+
+/* No legend existed at all before this — Phase 0 finding. A gradient bar,
+   not discrete swatches, since colorForShare() (AnalyticsWorldMap.js) is
+   a continuous scale, not bucketed. */
+.sa-map__legend {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+.sa-map__legend-label {
+    font-size: var(--sa-font-xs, 0.7rem);
+    color: rgba(var(--sa-text-dim),0.6);
+}
+.sa-map__legend-gradient {
+    display: inline-block;
+    width: 64px;
+    height: 8px;
+    border-radius: 4px;
+    background: linear-gradient(to right, rgba(192,159,83,0.16), rgba(192,159,83,0.9));
+    border: 1px solid rgba(255,255,255,0.08);
 }
 
 .sa-map--empty {

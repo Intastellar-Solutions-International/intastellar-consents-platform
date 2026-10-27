@@ -45,6 +45,55 @@
     height: 100%;
 }
 
+/* docs/design-audit-plan.md Phase 2 item 8: svgMap's own default CSS
+   (loaded from the CDN, see index.html) styles its zoom controls for a
+   light page — white button background (#fff) with a dark plus/minus
+   icon (#666) — exactly Phase 0's "bright white zoom buttons" finding,
+   confirmed by reading the library's actual stylesheet (it isn't vendored
+   into this repo, fetched and inspected directly). Re-themed to match
+   this dashboard's dark surfaces instead of guessing. The
+   .svgMap-map-wrapper "ocean" background was already overridden to
+   transparent above (predates this pass) — this map's actual
+   per-country land fill (colorForShare() in AnalyticsWorldMap.js, for
+   countries with data) and the library's own default fill for
+   no-data countries are NOT touched here — the no-data default isn't set
+   via this stylesheet at all (likely an inline SVG attribute from the
+   library's own JS), and needs a live render to even locate before
+   deciding what, if anything, to override — not guessed at blind. */
+.svgMap-control-button.svgMap-zoom-button {
+    background: rgba(255,255,255,0.08) !important;
+    border: 1px solid rgba(255,255,255,0.12);
+}
+.svgMap-control-button.svgMap-zoom-button:before,
+.svgMap-control-button.svgMap-zoom-button:after {
+    background: rgba(220,220,230,0.8) !important;
+}
+.svgMap-control-button.svgMap-zoom-button:hover,
+.svgMap-control-button.svgMap-zoom-button:active {
+    background: rgba(255,255,255,0.16) !important;
+}
+.svgMap-control-button.svgMap-zoom-button.svgMap-disabled {
+    background: rgba(255,255,255,0.04) !important;
+}
+.svgMap-map-controls-move, .svgMap-map-controls-zoom {
+    background: rgba(20,20,28,0.9) !important;
+}
+
+/* No-data countries' land fill — svgMap's own JS sets this as a literal
+   fill="#E2E2E2" attribute per <path> (confirmed live via devtools, not
+   guessed), the library's light-page default — exactly Phase 0's
+   "near-white land on a dark card" finding. Targeting the exact default
+   value rather than a blanket `.svgMap-country { fill }` override: every
+   country WITH data gets its own dynamic `fill="rgba(192,159,83,X)"`
+   attribute instead (see colorForShare() in AnalyticsWorldMap.js) — a
+   blanket override would have clobbered those too, since both use the
+   same `fill` attribute mechanism, not separate CSS classes. CSS
+   (including this rule) takes precedence over an SVG presentation
+   attribute, so this only repaints the no-data default. */
+.svgMap-country[fill="#E2E2E2"] {
+    fill: #2a2a35 !important;
+}
+
 /* Let tooltip newlines (\n) create line breaks */
 .svgMap-tooltip,
 .svgMap-tooltip-content,

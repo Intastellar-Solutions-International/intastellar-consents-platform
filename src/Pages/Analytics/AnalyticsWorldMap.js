@@ -13,8 +13,24 @@ function buildCodeToName() {
 }
 const CODE_TO_NAME = buildCodeToName();
 
+// docs/design-audit-plan.md Phase 2 item 8. The caption's "darker =
+// higher" claim is accurate — verified live, not just read in code: DK
+// (946 events, this period's max) renders at opacity 0.9, US (93 events)
+// at 0.233, exactly matching this formula. The scale direction was never
+// actually inverted (Phase 0's hypothesis, before it could be rendered).
+// What live rendering DID surface: a linear share-of-max scale visually
+// compresses every country except the single dominant one into a narrow,
+// hard-to-tell-apart low-opacity band whenever one country's count is far
+// ahead of the rest — exactly asasoftware.aero's own real distribution
+// (946 vs. the next-highest at 93, a >10x gap). sqrt() lifts smaller
+// shares up without changing the two endpoints (0 stays 0, max stays 1) —
+// a standard choropleth-map technique for skewed distributions, not an
+// arbitrary tweak: pct=0.1 (10% of max) now maps to sqrt(0.1)≈0.316
+// instead of a flat 0.1, giving real visual separation to every country
+// below the dominant one instead of flattening them together.
 function colorForShare(pct) {
-    const opacity = 0.16 + Math.min(1, Math.max(0, pct)) * 0.74;
+    const clamped = Math.min(1, Math.max(0, pct));
+    const opacity = 0.16 + Math.sqrt(clamped) * 0.74;
     return `rgba(192, 159, 83, ${opacity.toFixed(3)})`;
 }
 
@@ -98,11 +114,22 @@ export default function AnalyticsWorldMap({ countries, metricLabel = "Events", f
     return (
         <div className="sa-map">
             <div id={MAP_ID} className="sa-map__inner" />
-            <p className="sa-map__caption">
-                {selectedRow
-                    ? `${CODE_TO_NAME[selectedRow.code] || selectedRow.code}: ${fmt(selectedRow.events)} ${metricLower}`
-                    : `Darker regions had higher ${metricLower} in this period. Click a country for its value.`}
-            </p>
+            <div className="sa-map__footer">
+                <p className="sa-map__caption">
+                    {selectedRow
+                        ? `${CODE_TO_NAME[selectedRow.code] || selectedRow.code}: ${fmt(selectedRow.events)} ${metricLower}`
+                        : `Darker regions had higher ${metricLower} in this period. Click a country for its value.`}
+                </p>
+                {/* No legend previously existed at all — Phase 0 finding.
+                    A labeled gradient bar, not discrete buckets, since the
+                    underlying scale (colorForShare above) is continuous,
+                    not bucketed. */}
+                <div className="sa-map__legend" aria-hidden="true">
+                    <span className="sa-map__legend-label">Fewer</span>
+                    <span className="sa-map__legend-gradient" />
+                    <span className="sa-map__legend-label">More</span>
+                </div>
+            </div>
         </div>
     );
 }
