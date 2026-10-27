@@ -1029,6 +1029,7 @@ export default function SiteAnalytics() {
                                     <h3 className="sa-panel__title">
                                         <IconMegaphone className="sa-icon" /> Traffic sources
                                     </h3>
+                                    <div className="sa-table-scroll">
                                     <table className="sa-table">
                                         <thead>
                                             <tr>
@@ -1054,11 +1055,13 @@ export default function SiteAnalytics() {
                                             )}
                                         </tbody>
                                     </table>
+                                    </div>
                                     <Link className="sa-panel__footer-link" to={analyticsAcquisitionPath(domain)}>View traffic acquisition →</Link>
                                 </div>
 
                                 <div className="sa-panel">
                                     <h3 className="sa-panel__title"><IconDocument className="sa-icon" /> Top pages</h3>
+                                    <div className="sa-table-scroll">
                                     <table className="sa-table">
                                         <thead>
                                             <tr>
@@ -1079,6 +1082,7 @@ export default function SiteAnalytics() {
                                             ))}
                                         </tbody>
                                     </table>
+                                    </div>
                                 </div>
 
                                 {/* Outbound/forms/rage panels depend on the slower detail

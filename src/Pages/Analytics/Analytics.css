@@ -2147,6 +2147,23 @@
     align-items: stretch;
 }
 
+/* docs/design-audit-plan.md Phase 2 item 9: confirmed live at 1024px
+   (document.body.scrollWidth 1071 vs window.innerWidth 1024) that this
+   row was the page's real horizontal-overflow source — a long pathname in
+   .sa-table__path (Top pages) forces the table wider than its grid
+   column, and a CSS Grid item's default min-width:auto refuses to shrink
+   below its content's intrinsic size regardless of the table's own
+   overflow handling. The .sa-table-scroll wrapper now added around both
+   tables (index.js) only takes effect once the grid ITEM itself can
+   shrink past content size — that's what this min-width:0 does; the
+   wrapper's own overflow-x:auto (existing class, already used once in
+   Forms.js) then contains the actual scrolling. Scoped to this one grid
+   context rather than globally on .sa-panel, which backs many other
+   unrelated layouts. */
+.sa-overview-bottom > .sa-panel {
+    min-width: 0;
+}
+
 @media (max-width: 1200px) {
     .sa-kpi-strip    { grid-template-columns: repeat(3, 1fr); }
     .sa-kpi-strip--4 { grid-template-columns: repeat(2, 1fr); }
