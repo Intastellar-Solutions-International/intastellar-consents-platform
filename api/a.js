@@ -168,6 +168,30 @@ function isDevOrLocalHost(host) {
     return false;
 }
 
+// Auto-collected event names that are NOT real conversions — mirrors
+// NON_CONVERSION_AUTO_EVENTS in api/analytics-attribution.js exactly (the
+// full AUTO_EVENT_NAMES list from src/Pages/Analytics/Conversions.js, no
+// exceptions) — kept in sync by hand since api/ and src/ aren't
+// cross-imported in this project. Used to keep ad-platform conversion
+// pushes (analytics_conversion_pushes) limited to events that are actually
+// conversions, not every interaction that happened to fire with a gclid —
+// scroll_depth/page_load included, since an engagement signal isn't a
+// conversion just because it has a click ID attached.
+//
+// This was previously declared inside the EMBED_SCRIPT template literal
+// below (shipped to every visitor's browser, never referenced there) rather
+// than here in real server-side module scope — the one real usage, in the
+// POST handler's push-queueing gate further down this file, was throwing
+// `ReferenceError: NON_CONVERSION_AUTO_EVENTS is not defined` on every
+// ad-attributed conversion event as a result.
+const NON_CONVERSION_AUTO_EVENTS = new Set([
+    "outbound_click", "scroll_depth", "form_submit", "form_started", "form_step",
+    "file_download", "video_play", "video_complete", "video_50pct",
+    "phone_click", "email_click", "content_copy", "page_print",
+    "rage_click", "video_pause", "page_perf", "page_load", "form_error",
+    "form_success", "form_field_focus", "network_connection",
+]);
+
 // Full href or bare pathname, depending on event type — bot-checking happens
 // before we know which branch a request will take, so this needs to handle both.
 function extractPathnameLoose(rawUrl) {
@@ -586,23 +610,6 @@ function ok(v){return v===true||v==='checked';}
 function hasStat(c){return !!(c&&(ok(c.staticsticCookies)||ok(c.statisticCookies)));}
 function hasFun(c) {return !!(c&&ok(c.functionalCookies));}
 function hasAdv(c) {return !!(c&&ok(c.advertisementCookies));}
-
-// Auto-collected event names that are NOT real conversions — mirrors
-// Matches NON_CONVERSION_AUTO_EVENTS in api/analytics-attribution.js exactly
-// (the full AUTO_EVENT_NAMES list from src/Pages/Analytics/Conversions.js, no
-// exceptions) — kept in sync by hand since api/ and src/ aren't cross-imported
-// in this project. Used to keep ad-platform conversion pushes
-// (analytics_conversion_pushes) limited to events that are actually
-// conversions, not every interaction that happened to fire with a gclid —
-// scroll_depth/page_load included, since an engagement signal isn't a
-// conversion just because it has a click ID attached.
-const NON_CONVERSION_AUTO_EVENTS = new Set([
-    "outbound_click", "scroll_depth", "form_submit", "form_started", "form_step",
-    "file_download", "video_play", "video_complete", "video_50pct",
-    "phone_click", "email_click", "content_copy", "page_print",
-    "rage_click", "video_pause", "page_perf", "page_load", "form_error",
-    "form_success", "form_field_focus", "network_connection",
-]);
 
 // Registrable parent domain for the current host, so the session cookie can
 // be scoped with Domain=<root> and shared across subdomains (e.g. a booking
