@@ -1086,8 +1086,8 @@ export default function SiteAnalytics() {
                                     unannounced once detailLoading settles. */}
                                 {detailLoading && (
                                     <>
-                                        <PanelSkeletonShell rows={4} />
-                                        <PanelSkeletonShell rows={3} />
+                                        <PanelSkeleton rows={4} />
+                                        <PanelSkeleton rows={3} />
                                     </>
                                 )}
 
