@@ -395,6 +395,81 @@ the *same* total for the same tier + date range — the thing that's currently i
 
 ---
 
+### Status: partially implemented, live (2026-10-27) — scoped to the 3 highest-leverage fixes
+
+**Tier model, finalized after your correction:** four tiers, not three — purchase/e-commerce
+events are **Sale** (a sale or near-sale), not Lead. Lead is form submit/booking only, matching
+the original brief exactly:
+- **Sale** — `kind` is purchase or an e-commerce-funnel step (view_item, add_to_cart, checkout, …).
+- **Lead** — `kind = 'lead'` (a site owner explicitly tags their booking-confirmation/demo-request
+  event this way) **or** the event is named `form_submit` (auto-collected, promoted to Lead
+  regardless of registration — a real visitor submitting any form is a lead by definition).
+- **Intent** — `kind = 'click'` (a registered CTA click). Never folded into Sale/Lead.
+- **Micro** — everything else (unregistered custom events, and the rest of the auto-collected
+  telemetry list — scroll_depth, rage_click, page_perf, etc.).
+
+Added `kind: 'lead'` to the Add Event picker (`src/Pages/Analytics/Conversions.js`, both forms) and
+to the two server-side kind whitelists (`api/analytics-events.js`, `api/analytics-datalayer-rules.js`
+— the latter so a GTM-dataLayer-sourced lead event can be tagged the same way). Built
+`api/_conversions.js` (`classifyTier`, `tierCaseSql`, `isHeadlineConversionSql`) as the one shared
+definition, covered by 10 unit tests plus a live-Postgres integration test (same pattern as items
+2/3's SQL tests). 35/35 tests pass overall.
+
+**Fixed in this commit** (the 3 clearest, highest-leverage bugs — see "Deliberately not yet done"
+below for what's left):
+1. **The headline conversion-rate KPI** (`api/analytics-report.js`'s `convertedSessionsRes`) — had
+   zero filtering at all, counting a session as "converted" for firing literally any custom event,
+   including pure telemetry. Now requires tier lead/sale.
+2. **The mislabeled "conversion trend" chart** (`api/analytics-report-detail.js`'s
+   `dailyConversionsRes`, feeding `ConversionsOverview.js`'s `trendData`) — was summing every
+   `analytics_custom_events` row with no filter, literally plotting total event volume under a
+   "conversion trend" title. Now scoped to tier lead/sale, same definition as the KPI.
+3. **Attribution's conversion definition** (`api/analytics-attribution.js`) — replace the
+   hand-maintained `NON_CONVERSION_AUTO_EVENTS` name-exclusion list (which, being name-based,
+   was *also* excluding `form_submit` — exactly backwards, since a form submission with a click ID
+   is precisely the kind of ad-attributed lead this page exists to surface) with the shared tier
+   check. The click-ID requirement (this page's own narrower scope) is unchanged.
+4. **ConversionsOverview.js's "Total conversions" KPI** — replaced the
+   `!AUTO_EVENT_NAMES.has(name)` filter (which counted a registered CTA click, kind='click', as a
+   "conversion") with `tier IN ('lead','sale')`. `tier` is now computed server-side per event
+   (`api/analytics-report.js`) and returned alongside `kind`, so this file doesn't need its own
+   copy of the classification rule.
+
+**Deliberately not yet done — flagging rather than silently expanding scope:**
+- **`api/a.js`'s ad-conversion-push queueing gate** (the `NON_CONVERSION_AUTO_EVENTS` this repo's
+  Phase 0 fork found there, item 9's territory) still excludes `form_submit` by name, unchanged.
+  Switching it to the new tier definition would mean a real production behavior change — form
+  submissions with a click ID would start actually being pushed to Google/Meta/Microsoft as
+  conversions, affecting ad-platform bidding optimization for every customer site, not just this
+  dashboard's numbers. That's a materially bigger decision than "fix what the dashboard shows," so
+  I left it as-is pending your explicit go-ahead.
+- **Conversions tab's own "76"/"576" figures, `ConversionFunnel.js`, `ConversionCampaigns.js`,
+  `ConversionChannels.js`, `api/ad-spend-report.js`'s lead-qualifying-events, and User Flow's
+  "Booked Appointment" goal** are not yet migrated to the shared tier. I did pin down where "76"
+  comes from (see below) but ran out of scope budget to migrate every remaining consumer in one
+  commit — happy to continue through these next if you want full coverage.
+
+**Before/after — asasoftware.aero, 2026-09-27 to 2026-10-27 (live query):**
+
+| Metric | Before | After |
+|---|---|---|
+| Headline conversion-rate KPI numerator (converted sessions) | 578 | **3** |
+| Conversion rate (÷ 3,544 unique sessions) | 16.3% | **0.08%** |
+| "Conversion trend" chart total (sum of all custom events) | 20,160 | **9** (tier lead/sale only) |
+| Conversions tab total (`!AUTO_EVENT_NAMES` filter — solved the mystery "76") | **76** (28 clicked_book_demo + 23 clicked_start_free_trial + 17 verification_code_sent + 5 verification_code_send_failed + 3 booked) | **9** (`form_submit` only) |
+| Attribution's click-ID-gated conversions | 3 | **0** |
+
+**Why Attribution drops to 0, and what to do about it:** the 3 previously-counted "attributed
+conversions" were `clicked_book_demo`/`clicked_start_free_trial` (kind='click') events that
+happened to carry a click ID — CTA clicks, correctly reclassified as Intent now, not a real
+conversion. The real gap: asasoftware.aero's actual booking-confirmation event, `booked` (3
+occurrences in this window), is currently registered with `kind='custom'`, so it lands in Micro,
+not Lead. **Action for whoever manages this site's Events & Tracking settings:** re-tag `booked`
+(and any other "a lead/booking actually happened" event) as `kind='lead'` — once that's done,
+these numbers will reflect real leads instead of 0. I did not do this myself; it's a
+business-meaning decision about what "booked" represents, not something inferable from the event
+name alone (see open question 5 below, now narrowed to this one remaining question).
+
 ## 6. One consent-rate definition — ✅ exact bug found for 27.3%/0.3%; 🟡 53.2% is a different system
 
 **Where:** `api/analytics-report.js:584-586` (KPI) vs `:629-638` (estimator) vs
@@ -834,11 +909,20 @@ simulated tab switch; `formatCount` tests for both modes.
    replace that specific external field. Do you want this side's work limited to
    labeling/sourcing clarity (my recommendation), or do you have access to (or want me to also
    look at) that other codebase for those two specifically?
-5. **Item 5's tier naming + the unconfirmed 76/576 figures.** Confirm the Lead/Intent/Micro
-   naming and default-mapping rule (purchase & e-commerce kinds & form submit/booking → Lead;
-   click → Intent; everything else → Micro) before I touch `analytics_event_defs`. Separately, I'd
-   like to pin down exactly which two numbers on the Conversions tab are showing 76 and 576 — happy
-   to do that as the very first step of Phase 1 rather than guess here.
+5. ~~Item 5's tier naming~~ — **resolved.** Four tiers: Sale (purchase/e-commerce — a sale or
+   near-sale, not a Lead), Lead (`kind='lead'` or the auto-collected `form_submit` event), Intent
+   (`kind='click'`), Micro (everything else). "76" is confirmed (28 clicked_book_demo + 23
+   clicked_start_free_trial + 17 verification_code_sent + 5 verification_code_send_failed + 3
+   booked — the old `!AUTO_EVENT_NAMES` filter). "576" is still unconfirmed — ran out of scope in
+   this item's commit before locating it; will pin down if/when I continue migrating the remaining
+   Conversions-tab consumers (ConversionFunnel.js, ConversionCampaigns.js, ConversionChannels.js).
+   **New, concrete action needed from you (or whoever manages asasoftware.aero's Events &
+   Tracking):** re-tag the `booked` event as `kind='lead'` in Settings — it's currently
+   `kind='custom'`, so it's landing in Micro instead of Lead until that's changed. Also pending:
+   should `api/a.js`'s ad-conversion-push gate also switch to the new tier definition (this would
+   start pushing `form_submit`-with-click-ID events to ad platforms as real conversions — a
+   production behavior change with ad-spend implications, not just a dashboard-numbers fix, so I
+   left it untouched pending your explicit go-ahead)?
 6. **Testing.** No test runner exists in this repo. My default recommendation is Node's built-in
    `node:test` + `assert` (zero new dependencies, works fine for testing pure SQL-string-building
    and aggregation helper functions once they're extracted into shared modules per items 2/3/5/9/12

@@ -1,4 +1,5 @@
 import { getPool } from "./_db.js";
+import { isHeadlineConversionSql } from "./_conversions.js";
 /**
  * GET /api/analytics-attribution?domain=example.com&from=2024-01-01&to=2024-01-31
  *
@@ -57,23 +58,16 @@ export default async function handler(req, res) {
 
     const db = getPool();
 
-    // Full auto-collected event list (mirrors AUTO_EVENT_NAMES in
-    // src/Pages/Analytics/Conversions.js exactly — no exceptions) — excluded
-    // so this page shows only actual user-defined conversions (purchase,
-    // lead, and the e-commerce kinds registered via the Events & Tracking
-    // "Add event" form), not interaction/engagement events like scroll_depth
-    // or page_load that happened to fire with a click ID attached. api/ and
-    // src/ aren't cross-imported in this project, so this list is kept in
-    // sync by hand with Conversions.js.
-    const NON_CONVERSION_AUTO_EVENTS = [
-        "outbound_click", "scroll_depth", "form_submit", "form_started", "form_step",
-        "file_download", "video_play", "video_complete", "video_50pct",
-        "phone_click", "email_click", "content_copy", "page_print",
-        "rage_click", "video_pause", "page_perf", "page_load", "form_error",
-        "form_success", "form_field_focus", "network_connection",
-    ];
-
-    // Attributed conversions (custom events with click IDs)
+    // Attributed conversions (custom events with click IDs). "Conversion"
+    // here means tier 'lead' or 'sale' — the same shared definition
+    // api/analytics-report.js's headline conversion-rate KPI uses (see
+    // api/_conversions.js, docs/analytics-audit-plan.md item 5) — rather
+    // than this file's own hand-maintained auto-event-name exclusion list,
+    // which (being name-based, not tier-based) was also excluding
+    // form_submit here even though a real form submission with a click ID
+    // attached is exactly the kind of ad-attributed lead this page exists
+    // to show. Attribution's own narrower scope (must carry a click ID) is
+    // layered on top via the WHERE clause below, same as before.
     const { rows: attributed } = await db.query(
         `SELECT
            ace.id,
@@ -91,15 +85,16 @@ export default async function handler(req, res) {
            ace.utm_content
          FROM analytics_custom_events ace
          JOIN analytics_sites s ON s.id = ace.site_id
+         LEFT JOIN analytics_event_defs d ON d.site_id = ace.site_id AND d.name = ace.name
          WHERE ace.organisation_id = $1
            AND s.domain = $2
            AND ace.received_at >= $3::date
            AND ace.received_at <  $4::date + INTERVAL '1 day'
            AND (ace.gclid IS NOT NULL OR ace.msclkid IS NOT NULL OR ace.fbclid IS NOT NULL)
-           AND NOT (ace.name = ANY($5::text[]))
+           AND ${isHeadlineConversionSql("ace", "d")}
          ORDER BY ace.received_at DESC
          LIMIT 500`,
-        [orgId, domain, fromDate, toDate, NON_CONVERSION_AUTO_EVENTS]
+        [orgId, domain, fromDate, toDate]
     ).catch(() => ({ rows: [] }));
 
     // Push status for these events

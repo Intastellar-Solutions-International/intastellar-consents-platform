@@ -7,7 +7,7 @@ import { ScannerHost } from "../../API/host.js";
 import { useAnalyticsPage, KpiCard, authHeaders, useAnalyticsReport, toIsoDate, pctChange, formatPercent } from "./_shared.js";
 import { IconTarget, IconTrendingUp, IconGlobe } from "./Icons.js";
 import AnalyticsWorldMap from "./AnalyticsWorldMap.js";
-import ConversionsPanel, { AUTO_EVENT_NAMES, EventsGlancePanel } from "./Conversions.js";
+import ConversionsPanel, { EventsGlancePanel } from "./Conversions.js";
 import TimeToConvert from "./TimeToConvert.js";
 import ConversionChannels from "./ConversionChannels.js";
 import ConversionCampaigns from "./ConversionCampaigns.js";
@@ -168,8 +168,14 @@ export default function AnalyticsConversionsOverview() {
 
     const section = SECTIONS.some(s => s.key === sectionParam) ? sectionParam : "overview";
 
+    // "Conversions" = tier 'lead' or 'sale' only — a registered CTA click
+    // (tier 'intent') or an unregistered/auto-collected event (tier
+    // 'micro') must not count toward this headline total. See
+    // docs/analytics-audit-plan.md item 5. `tier` is computed server-side
+    // (api/analytics-report.js, api/_conversions.js) so this file doesn't
+    // need its own copy of the classification rule.
     const manualConversions = useMemo(
-        () => (data?.conversions || []).filter(c => !AUTO_EVENT_NAMES.has(c.name)),
+        () => (data?.conversions || []).filter(c => c.tier === "lead" || c.tier === "sale"),
         [data]
     );
 
@@ -179,7 +185,7 @@ export default function AnalyticsConversionsOverview() {
     );
 
     const prevTotalConversions = useMemo(
-        () => (prevData?.conversions || []).filter(c => !AUTO_EVENT_NAMES.has(c.name)).reduce((s, c) => s + (c.count || 0), 0),
+        () => (prevData?.conversions || []).filter(c => c.tier === "lead" || c.tier === "sale").reduce((s, c) => s + (c.count || 0), 0),
         [prevData]
     );
 

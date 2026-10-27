@@ -54,13 +54,13 @@ export const AUTO_EVENT_NAMES = new Set([...AUTO_EVENTS.map(e => e.name), ...INT
 export { AUTO_EVENTS };
 
 const KIND_ICON = {
-    purchase: IconCash, click: IconCursorClick, custom: IconTarget,
+    purchase: IconCash, click: IconCursorClick, custom: IconTarget, lead: IconFormFill,
     view_item: IconFunnel, add_to_cart: IconFunnel, remove_from_cart: IconFunnel,
     wishlist_add: IconTarget, view_basket: IconFunnel, begin_checkout: IconFunnel,
     checkout: IconFunnel, payment_info: IconFunnel, refund: IconCash, apply_coupon: IconCash,
 };
 const KIND_LABEL = {
-    purchase: "Purchase", click: "Click", custom: "Custom",
+    purchase: "Purchase", click: "Click", custom: "Custom", lead: "Lead",
     view_item: "Viewed product", add_to_cart: "Added to cart", remove_from_cart: "Removed from cart",
     wishlist_add: "Added to wishlist", view_basket: "Viewed basket", begin_checkout: "Began checkout",
     checkout: "Checkout", payment_info: "Payment info", refund: "Refund", apply_coupon: "Coupon applied",
@@ -117,6 +117,12 @@ function snippetFor(name, kind) {
   currency: 'EUR',
   data: { paymentMethod: 'credit_card' },
 });`;
+    }
+    if (kind === "lead") {
+        return `intaAnalytics.track('${name}');
+// Fire this when the lead is actually confirmed (e.g. a booking/demo
+// request succeeds) — not on every click toward it. A "Book a demo"
+// button click is Intent (kind: 'click'), not a Lead on its own.`;
     }
     return `intaAnalytics.track('${name}');`;
 }
@@ -317,6 +323,7 @@ export default function ConversionsPanel({ domain, conversions, onDefsChanged })
                     />
                     <select className="sa-event-form__select" value={kind} onChange={e => setKind(e.target.value)}>
                         <option value="custom">Custom</option>
+                        <option value="lead">Lead (form submit / booking / demo request)</option>
                         <option value="click">Click</option>
                         <option value="purchase">Purchase</option>
                         <optgroup label="Checkout funnel">
@@ -542,6 +549,7 @@ export function EventsGlancePanel({ domain, conversions, onDefsChanged, maxRows 
                     />
                     <select className="sa-event-form__select" value={kind} onChange={e => setKind(e.target.value)}>
                         <option value="custom">Custom</option>
+                        <option value="lead">Lead</option>
                         <option value="click">Click</option>
                         <option value="purchase">Purchase</option>
                     </select>

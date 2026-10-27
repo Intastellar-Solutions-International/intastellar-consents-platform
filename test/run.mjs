@@ -5,5 +5,7 @@ import "./push-gate-scope.test.mjs";
 import "./self-referral.test.mjs";
 import "./noise-referral-sql.test.mjs";
 import "./foreign-domains-banner.test.mjs";
+import "./conversions.test.mjs";
+import "./conversions-sql.test.mjs";
 
 await run();

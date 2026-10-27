@@ -26,7 +26,7 @@ const ALLOWED_ORIGINS = [
 // checkout) with the same kind a manually-registered event can, otherwise
 // dataLayer-sourced funnel events silently fall back to "custom" and never
 // qualify for the funnel view on the conversions dashboard.
-const ALLOWED_KINDS = new Set(["purchase", "click", "custom", "view_basket", "begin_checkout", "checkout"]);
+const ALLOWED_KINDS = new Set(["purchase", "click", "custom", "lead", "view_basket", "begin_checkout", "checkout"]);
 const NAME_RE = /^[a-z0-9_-]{1,64}$/i;
 // Dot-path into the pushed object — letters/numbers/underscore per segment,
 // at most 4 segments deep (also re-enforced client-side at extraction time).

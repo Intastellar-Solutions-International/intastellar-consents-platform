@@ -8,6 +8,7 @@
 import { INDUSTRY_BENCHMARKS } from "./_industry-benchmarks.js";
 import { getPool } from "./_db.js";
 import { selfReferralClause, noiseReferralClause, getApprovedDomains } from "./_self-referral.js";
+import { isHeadlineConversionSql, classifyTier } from "./_conversions.js";
 const ALLOWED_ORIGINS = [
     "https://www.intastellarconsents.com",
     "https://www.consentsmanagement.com",
@@ -353,13 +354,19 @@ async function _handler(req, res) {
             throw err;
         }),
 
-        // Distinct sessions that fired at least one conversion event — the
-        // numerator for conversion rate (denominator is unique_sessions above).
+        // Distinct sessions that fired at least one headline conversion
+        // (tier 'lead' or 'sale') — the numerator for conversion rate
+        // (denominator is unique_sessions above). Previously counted a
+        // session as "converted" for firing ANY custom event at all,
+        // including auto-collected telemetry like scroll_depth/page_load —
+        // see docs/analytics-audit-plan.md item 5.
         db.query(`
-            SELECT COUNT(DISTINCT session_id) AS converted
-            FROM analytics_custom_events
-            WHERE site_id = $1 AND session_id IS NOT NULL
-              AND received_at >= $2 AND received_at < $3`,
+            SELECT COUNT(DISTINCT ace.session_id) AS converted
+            FROM analytics_custom_events ace
+            LEFT JOIN analytics_event_defs d ON d.site_id = ace.site_id AND d.name = ace.name
+            WHERE ace.site_id = $1 AND ace.session_id IS NOT NULL
+              AND ace.received_at >= $2 AND ace.received_at < $3
+              AND ${isHeadlineConversionSql("ace", "d")}`,
             [siteId, fromDate, toDateExclusive]
         ).catch((err) => {
             if (err?.message?.includes("does not exist")) return { rows: [] };
@@ -746,10 +753,12 @@ async function _handler(req, res) {
             const rows = conversionsRes.rows.map(r => {
                 seen.add(r.name);
                 const def = defsByName.get(r.name);
+                const kind = def?.kind || "custom";
                 return {
                     name:        r.name,
                     label:       def?.label || r.name,
-                    kind:        def?.kind || "custom",
+                    kind,
+                    tier:        classifyTier(r.name, kind),
                     count:       Number(r.count || 0),
                     linkedCount: Number(r.linked_count || 0),
                     value:       Number(r.value_cents || 0) / 100,
@@ -761,6 +770,7 @@ async function _handler(req, res) {
                 .filter(d => !seen.has(d.name))
                 .forEach(d => rows.push({
                     name: d.name, label: d.label || d.name, kind: d.kind,
+                    tier: classifyTier(d.name, d.kind),
                     count: 0, linkedCount: 0, value: 0, currency: null,
                 }));
             return rows;

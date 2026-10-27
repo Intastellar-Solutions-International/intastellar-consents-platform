@@ -12,6 +12,7 @@
 
 import { getPool } from "./_db.js";
 import { selfReferralClause, noiseReferralClause, getApprovedDomains } from "./_self-referral.js";
+import { isHeadlineConversionSql } from "./_conversions.js";
 
 const ALLOWED_ORIGINS = [
     "https://www.intastellarconsents.com",
@@ -152,13 +153,21 @@ async function _handler(req, res) {
         ).catch(() => ({ rows: [] })),
 
         // Daily conversion volume — trend line for the conversions dashboard.
+        // Previously summed every analytics_custom_events row with no filter
+        // at all (auto-collected telemetry like page_perf/network_connection
+        // included) — a "conversion trend" chart that was actually plotting
+        // total event volume. Now scoped to tier 'lead'/'sale' only, same
+        // definition the headline conversion-rate KPI uses — see
+        // docs/analytics-audit-plan.md item 5.
         db.query(`
             SELECT
-                TO_CHAR(DATE_TRUNC('day', received_at AT TIME ZONE 'UTC'), 'YYYY-MM-DD') AS date,
-                COUNT(*)                                        AS count,
-                COUNT(*) FILTER (WHERE consent_level = 'full')  AS linked_count
-            FROM analytics_custom_events
-            WHERE site_id = $1 AND received_at >= $2 AND received_at < $3
+                TO_CHAR(DATE_TRUNC('day', ace.received_at AT TIME ZONE 'UTC'), 'YYYY-MM-DD') AS date,
+                COUNT(*)                                            AS count,
+                COUNT(*) FILTER (WHERE ace.consent_level = 'full')  AS linked_count
+            FROM analytics_custom_events ace
+            LEFT JOIN analytics_event_defs d ON d.site_id = ace.site_id AND d.name = ace.name
+            WHERE ace.site_id = $1 AND ace.received_at >= $2 AND ace.received_at < $3
+              AND ${isHeadlineConversionSql("ace", "d")}
             GROUP BY 1 ORDER BY 1`,
             [siteId, fromDate, toDateExclusive]
         ).catch((err) => {

@@ -21,7 +21,7 @@ const ALLOWED_ORIGINS = [
     "http://localhost:3000",
 ];
 
-const ALLOWED_KINDS = new Set(["purchase", "click", "custom", "view_item", "add_to_cart", "remove_from_cart", "wishlist_add", "view_basket", "begin_checkout", "checkout", "payment_info", "refund", "apply_coupon"]);
+const ALLOWED_KINDS = new Set(["purchase", "click", "custom", "lead", "view_item", "add_to_cart", "remove_from_cart", "wishlist_add", "view_basket", "begin_checkout", "checkout", "payment_info", "refund", "apply_coupon"]);
 const NAME_RE = /^[a-z0-9_-]{1,64}$/i;
 
 function setCors(req, res) {
