@@ -592,4 +592,23 @@ and every status but `neutral` gets a default icon too. Added 3 small new icons 
 
 **No before/after screenshots** — not wired into any page yet.
 
+### 5. DataTable — done
+
+New `src/Pages/Analytics/components/DataTable.js`. Config-driven (`columns`/`rows`/`getRowKey`),
+with built-in loading (via the Phase 1 `SkeletonRows`) and empty (via `EmptyState`) states, so
+callers don't hand-roll the "loading vs. empty vs. data" branch every time the way the ~20 existing
+`.sa-table` call sites currently do. `scope="col"` on headers (a baseline a11y improvement the
+hand-rolled tables generally lack). New `.sa-data-table` CSS class rather than extending the
+existing `.sa-table` (used at 20+ call sites at font sizes already below the 13px floor — see Phase
+0) — this component gets the type scale right from day one; retrofitting `.sa-table` itself is
+Phase 6 rollout work.
+
+**Directly implements a Phase 0 fix:** the scroll wrapper (`min-width: 0` + `overflow-x: auto`,
+matching the existing `.sa-table-scroll` pattern already used once in `Forms.js`) is the exact fix
+Phase 0 proposed for the "Top pages/Form performance overflow at ~1100px" finding — a wide table
+dropped into a CSS Grid cell can't force its column track wider than the grid intends once the cell
+itself can shrink and the table scrolls internally instead.
+
+**No before/after screenshots** — not wired into any page yet.
+
 Not yet committed — see commit message for exact diff once pushed.

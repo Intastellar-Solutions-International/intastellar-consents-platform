@@ -1306,6 +1306,61 @@
     padding-left: 10px !important;
 }
 
+/* ── DataTable (Phase 1 shared component) ──────────────────────────────────────
+   Same structural shape as .sa-table above (border-collapse, row borders,
+   hover, tabular-nums), but its own class so the ~20 existing .sa-table call
+   sites aren't affected — their font-size retrofit to the new type scale is
+   Phase 6 rollout work, not this commit. */
+
+.sa-data-table-scroll {
+    min-width: 0;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.sa-data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--sa-font-sm, 0.85rem);
+}
+
+.sa-data-table caption {
+    text-align: left;
+    font-size: var(--sa-font-xs, 0.78rem);
+    color: rgba(var(--sa-text-muted),0.7);
+    margin-bottom: 8px;
+}
+
+.sa-data-table th {
+    text-align: left;
+    font-size: var(--sa-font-xs, 0.78rem);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: rgba(var(--sa-text-dim),0.75);
+    padding: 0 8px 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.sa-data-table td {
+    padding: 8px 8px 8px 0;
+    font-size: var(--sa-font-sm, 0.85rem);
+    color: rgba(var(--sa-text),0.88);
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    vertical-align: middle;
+}
+
+.sa-data-table tbody tr:last-child td { border-bottom: none; }
+.sa-data-table tbody tr { transition: background 0.1s ease; }
+.sa-data-table tbody tr:hover td { background: rgba(255,255,255,0.025); }
+
+.sa-data-table__num {
+    text-align: right !important;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    color: rgba(var(--sa-text),0.75);
+}
+
 /* ── Table pager ─────────────────────────────────────────────────────────────── */
 
 .sa-pager {
