@@ -486,6 +486,94 @@
     color: #f5aeae;
 }
 
+/* ── EmptyState / ErrorState (Phase 1 shared components) ──────────────────────
+   Same card shape as .sa-notice above (padding/radius/border), extended with
+   an icon, optional title, and optional action — replaces the 31 bare
+   <p className="sa-notice">No data...</p> one-liners found in Phase 0. */
+
+.sa-empty-state,
+.sa-error-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 6px;
+    padding: 28px 22px;
+    border-radius: var(--sa-radius);
+    background: rgba(0,0,0,0.15);
+    border: 1px solid rgba(255,255,255,0.07);
+}
+
+.sa-empty-state__icon,
+.sa-error-state__icon {
+    display: flex;
+    width: 28px;
+    height: 28px;
+    margin-bottom: 4px;
+    color: rgba(var(--sa-neutral),0.6);
+}
+.sa-empty-state__icon svg,
+.sa-error-state__icon svg { width: 100%; height: 100%; }
+
+.sa-empty-state__title {
+    margin: 0;
+    font-size: var(--sa-font-md, 0.9rem);
+    font-weight: 600;
+    color: rgba(var(--sa-text),0.9);
+}
+
+.sa-empty-state__message,
+.sa-error-state__message {
+    margin: 0;
+    font-size: var(--sa-font-sm, 0.85rem);
+    color: rgba(var(--sa-text-secondary),0.85);
+    max-width: 420px;
+}
+
+.sa-empty-state__dependency {
+    margin: 2px 0 0;
+    font-size: var(--sa-font-xs, 0.8rem);
+    color: rgba(var(--sa-neutral),0.8);
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+}
+
+.sa-empty-state__action,
+.sa-error-state__retry {
+    margin-top: 10px;
+    padding: 7px 16px;
+    border-radius: var(--sa-radius-sm, 8px);
+    border: 1px solid rgba(var(--sa-accent),0.4);
+    background: rgba(var(--sa-accent),0.1);
+    color: rgb(var(--sa-accent));
+    font-size: var(--sa-font-sm, 0.85rem);
+    font-weight: 600;
+    cursor: pointer;
+}
+.sa-empty-state__action:hover,
+.sa-error-state__retry:hover { background: rgba(var(--sa-accent),0.18); }
+
+/* ErrorState reuses --sa-bad instead of .sa-notice--error's own one-off red
+   (rgba(220,80,80,X) / #f5aeae — a fourth distinct "error red" found live
+   in this pass, on top of the three already reconciled in the design-tokens
+   commit). */
+.sa-error-state {
+    background: rgba(var(--sa-bad),0.06);
+    border-color: rgba(var(--sa-bad),0.22);
+}
+.sa-error-state__icon { color: rgba(var(--sa-bad),0.85); }
+.sa-error-state__message { color: rgba(var(--sa-bad),0.9); }
+.sa-error-state__detail {
+    margin: 0;
+    font-size: var(--sa-font-xs, 0.8rem);
+    color: rgba(var(--sa-text-muted),0.75);
+}
+.sa-error-state__retry {
+    border-color: rgba(var(--sa-bad),0.35);
+    background: rgba(var(--sa-bad),0.1);
+    color: rgb(var(--sa-bad));
+}
+.sa-error-state__retry:hover { background: rgba(var(--sa-bad),0.18); }
+
 /* ── Analytics section nav — underline tab strip (Vercel/Mixpanel style) ──────── */
 
 .sa-subnav {

@@ -521,4 +521,27 @@ consumes these new variables yet, so no page's rendered output changes. **No bef
 screenshots for this commit** — there is nothing to diff visually; screenshots resume once a
 component or page actually consumes these tokens.
 
+### 2. EmptyState + ErrorState — done
+
+New `src/Pages/Analytics/components/EmptyState.js` and `ErrorState.js`. Visually based on the
+existing `.sa-notice`/`.sa-notice--error` pattern (14.4px text, same padding/radius/border — already
+used at 31 call sites across the section) rather than inventing a new look, extended with an icon,
+optional title, and an optional action/retry button. `EmptyState` has a dedicated `dependency` prop
+for the ground rules' "needs: `<dependency>`" case — Phase 4's visitor-estimation gap renders
+through this. `role="status"` (EmptyState, polite) vs. `role="alert"` (ErrorState, assertive) per
+the accessibility ask.
+
+**Reconciled a 4th stray red found while building this:** `.sa-notice--error` hardcoded its own
+one-off error color (`rgba(220,80,80,X)` / `#f5aeae`) that matched none of the three reds already
+reconciled in the tokens commit. `ErrorState` uses `--sa-bad` instead — `.sa-notice--error` itself
+is untouched (still used at its existing call sites; retiring those in favor of `ErrorState` is
+Phase 6 rollout work).
+
+**No test added, deliberately** — both components are pure conditional JSX with no calculation or
+branching logic worth pinning (unlike, e.g., `formatCurrency`/`formatCount` from the metrics audit,
+which had real edge cases). Verified via babel syntax check only.
+
+**No before/after screenshots** — neither component is wired into any page yet, so nothing renders
+differently. Screenshots start once a real page adopts one of these (Phase 2/6).
+
 Not yet committed — see commit message for exact diff once pushed.
