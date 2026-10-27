@@ -574,6 +574,49 @@
 }
 .sa-error-state__retry:hover { background: rgba(var(--sa-bad),0.18); }
 
+/* ── StatusBadge (Phase 1 shared component) ────────────────────────────────── */
+
+.sa-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 2px 10px 2px 7px;
+    border-radius: var(--sa-radius-full, 999px);
+    font-size: var(--sa-font-xs, 0.78rem);
+    font-weight: 600;
+    line-height: 1.6;
+    white-space: nowrap;
+}
+
+.sa-status-badge__icon { width: 13px; height: 13px; flex-shrink: 0; }
+.sa-status-badge__icon svg { width: 100%; height: 100%; }
+
+.sa-status-badge--good {
+    background: rgba(var(--sa-good),0.12);
+    border: 1px solid rgba(var(--sa-good),0.3);
+    color: rgb(var(--sa-good));
+}
+.sa-status-badge--warn {
+    background: rgba(var(--sa-warn),0.12);
+    border: 1px solid rgba(var(--sa-warn),0.3);
+    color: rgb(var(--sa-warn));
+}
+.sa-status-badge--bad {
+    background: rgba(var(--sa-bad),0.12);
+    border: 1px solid rgba(var(--sa-bad),0.3);
+    color: rgb(var(--sa-bad));
+}
+.sa-status-badge--info {
+    background: rgba(var(--sa-info),0.12);
+    border: 1px solid rgba(var(--sa-info),0.3);
+    color: rgb(var(--sa-info));
+}
+.sa-status-badge--neutral {
+    background: rgba(var(--sa-neutral),0.1);
+    border: 1px solid rgba(var(--sa-neutral),0.25);
+    color: rgba(var(--sa-neutral),0.95);
+}
+
 /* ── Analytics section nav — underline tab strip (Vercel/Mixpanel style) ──────── */
 
 .sa-subnav {

@@ -580,4 +580,16 @@ screenshot diff here would show nothing, or at best mislead by implying nothing 
 animation nuance genuinely did. Verified via babel syntax check + the full `npm test` suite (94/94,
 unchanged) instead.
 
+### 4. StatusBadge — done
+
+New `src/Pages/Analytics/components/StatusBadge.js`. Exists specifically to satisfy the "never use
+color alone for status" accessibility rule: a text label is always rendered (falls back to the
+status word itself if none is passed, so a careless call site can't end up color-only by accident),
+and every status but `neutral` gets a default icon too. Added 3 small new icons to `Icons.js`
+(`IconCheckCircle`, `IconXCircle`, `IconInfoCircle`, matching the existing icon set's exact style —
+`IconAlertTriangle` already existed and covers `warn`). Styled with the Phase 1 semantic tokens
+(`--sa-good/warn/bad/info/neutral`) and the new pill radius (`--sa-radius-full`).
+
+**No before/after screenshots** — not wired into any page yet.
+
 Not yet committed — see commit message for exact diff once pushed.

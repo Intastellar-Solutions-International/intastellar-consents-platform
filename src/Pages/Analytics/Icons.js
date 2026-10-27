@@ -182,6 +182,34 @@ export function IconAlertTriangle(props) {
     );
 }
 
+export function IconCheckCircle(props) {
+    return (
+        <svg {...svgProps} {...props}>
+            <circle cx="12" cy="12" r="9" />
+            <path d="m8.5 12.3 2.2 2.2 4.8-4.8" />
+        </svg>
+    );
+}
+
+export function IconXCircle(props) {
+    return (
+        <svg {...svgProps} {...props}>
+            <circle cx="12" cy="12" r="9" />
+            <path d="m9 9 6 6M15 9l-6 6" />
+        </svg>
+    );
+}
+
+export function IconInfoCircle(props) {
+    return (
+        <svg {...svgProps} {...props}>
+            <circle cx="12" cy="12" r="9" />
+            <path d="M12 11v5" />
+            <circle cx="12" cy="8" r="0.6" fill="currentColor" stroke="none" />
+        </svg>
+    );
+}
+
 export function IconFunnel(props) {
     return (
         <svg {...svgProps} {...props}>
