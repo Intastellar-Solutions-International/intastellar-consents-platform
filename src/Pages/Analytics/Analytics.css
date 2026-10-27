@@ -108,6 +108,77 @@
     --sa-radius-full: 999px;
 }
 
+/* ── PageHeader (Phase 1 shared component) ─────────────────────────────────────
+   Compact single-row header for Phase 3's "title, date range, compare
+   toggle, view switch in one row" requirement — see
+   components/PageHeader.js for why this is separate from the app-wide
+   StickyPageTitle rather than a replacement of it. */
+
+.sa-page-header {
+    position: relative;
+    padding: var(--sa-space-3, 12px) 0;
+}
+
+.sa-page-header__loading-bar {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    overflow: hidden;
+    background: rgba(var(--sa-accent),0.12);
+}
+.sa-page-header__loading-bar::after {
+    content: "";
+    position: absolute;
+    top: 0; bottom: 0; left: -30%;
+    width: 30%;
+    background: rgb(var(--sa-accent));
+    animation: sa-shimmer 1.2s ease-in-out infinite;
+}
+
+.sa-page-header__row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--sa-space-3, 12px);
+}
+
+.sa-page-header__title-group {
+    display: flex;
+    align-items: baseline;
+    gap: var(--sa-space-2, 8px);
+    margin-right: auto;
+    min-width: 0;
+}
+
+.sa-page-header__title {
+    margin: 0;
+    font-size: var(--sa-font-xl, 1.3rem);
+    font-weight: 700;
+    color: rgba(var(--sa-text),0.95);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sa-page-header__subtitle {
+    font-size: var(--sa-font-sm, 0.85rem);
+    color: rgba(var(--sa-text-muted),0.75);
+    white-space: nowrap;
+}
+
+.sa-page-header__view-switch,
+.sa-page-header__controls {
+    display: flex;
+    align-items: center;
+    gap: var(--sa-space-2, 8px);
+    flex-shrink: 0;
+}
+
+@media (max-width: 680px) {
+    .sa-page-header__row { flex-direction: column; align-items: stretch; }
+    .sa-page-header__title-group { margin-right: 0; }
+}
+
 /* ── Site Analytics report page ─────────────────────────────────────────────── */
 
 .sa-page {

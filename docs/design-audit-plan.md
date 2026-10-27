@@ -611,4 +611,25 @@ itself can shrink and the table scrolls internally instead.
 
 **No before/after screenshots** — not wired into any page yet.
 
+### 6. PageHeader — done, deliberately scoped narrower than it could be
+
+New `src/Pages/Analytics/components/PageHeader.js`. Built for Phase 3's "compact the sticky header
+(single row: title, date range, compare toggle, view switch)" requirement — a single flex row with
+slots for title/subtitle, an optional view switch (the Phase 4 Executive/Marketing/Analyst
+selector), and a `dateRange`/`actions` controls group.
+
+**Scope decision worth flagging:** this is *not* a replacement for `src/Components/Header/Sticky/
+index.js` (`StickyPageTitle`) — discovered while building this that `StickyPageTitle` is shared
+across the whole app (CMP pages too, not just Analytics), has scroll-driven sticky behavior wired
+via a raw `window.addEventListener("scroll", ...)` call **registered on every render with no
+cleanup** (a real bug, not touched here — fixing app-wide shared chrome is outside an Analytics
+visual redesign's blast radius), and owns the actual date-range picker UI
+(`src/Components/Filter/index.js`). Redesigning that component is a bigger, cross-cutting change
+than this audit's scope. `PageHeader` is a parallel, Analytics-only layout shell instead — it
+accepts an already-built date-range control as a prop rather than reimplementing picker logic.
+Wiring real Analytics pages onto `PageHeader` in place of `StickyPageTitle` is Phase 3/6 rollout
+work, not this commit.
+
+**No before/after screenshots** — not wired into any page yet.
+
 Not yet committed — see commit message for exact diff once pushed.
