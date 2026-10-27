@@ -1,4 +1,60 @@
 import { getPool } from "./_db.js";
+
+// Dedup key for form_started/form_submit rows — see docs/analytics-audit-plan.md
+// item 7. A real visitor can generate more than one row for the same form
+// fill-out: a full-consent session retrying after a flaky network response
+// or double-clicking Submit, or (for minimal-consent/anonymous traffic,
+// which has no session_id to dedupe by at all) the same, bucketed by a
+// short time window instead. Full-consent rows dedupe by session_id;
+// minimal-consent rows dedupe by pathname + the raw formId + a 2-second
+// time bucket — long enough to absorb a double-click/retry, short enough
+// not to collapse two genuinely separate fill-outs of the same form by the
+// same anonymous visitor. One shared expression so submits/starters (and
+// the top-line totals) can't drift into different dedup rules the way
+// starters' and submits' form_id derivation once did.
+export const FORM_DEDUP_KEY = `
+    CASE WHEN session_id IS NOT NULL THEN session_id::text
+         ELSE pathname || ':' || COALESCE(extra_data->>'formId', '') || ':' ||
+              FLOOR(EXTRACT(EPOCH FROM received_at) / 2)::text
+    END`;
+
+// Normalizes a raw formId the same way on both sides of the submits/starters
+// join below — previously only `starters` remapped the placeholder values
+// ('form'/'unknown'/empty) to the submit action path; `submits` didn't,
+// risking a join-key mismatch for any form whose id happens to be a
+// placeholder on one side and not the other.
+export const FORM_ID_CASE = `
+    CASE
+        WHEN extra_data->>'formId' IN ('form','unknown') OR extra_data->>'formId' IS NULL OR extra_data->>'formId' = ''
+        THEN COALESCE(NULLIF(extra_data->>'action', ''), 'form')
+        ELSE extra_data->>'formId'
+    END`;
+
+// Known embedded-widget providers whose formId is a GUID-like value the
+// widget generated (e.g. "hs-85f3a603-46b0-4e64-8338-1e4dae0aecf8") — not
+// meaningful to a human, and unlike a real HTML form, these never have a
+// usable `action` path to fall back to either (the widget intercepts
+// submission entirely; see api/a.js's postMessage handlers). Mirrors the
+// provider tags api/a.js's embedded-form listeners set.
+const PROVIDER_LABELS = { hubspot: "HubSpot", typeform: "Typeform", calendly: "Calendly", tally: "Tally" };
+
+// Human-readable form label — see docs/analytics-audit-plan.md item 7.
+// cleanFormId() in src/Pages/Analytics/Forms.js used to be a literal no-op,
+// showing whatever raw id the client resolved (often a GUID for widget
+// forms). Resolved here instead of client-side since `provider` only
+// exists in this query's result, not in the plain formId string the old
+// function received.
+export function humanizeFormLabel(formId, provider) {
+    if (provider && PROVIDER_LABELS[provider]) return `${PROVIDER_LABELS[provider]} form`;
+    if (!formId || formId === "unknown" || formId === "form") return "Unnamed form";
+    return formId
+        .replace(/[-_]+/g, " ")
+        .trim()
+        .split(" ")
+        .filter(Boolean)
+        .map(w => w[0].toUpperCase() + w.slice(1))
+        .join(" ");
+}
 /**
  * GET /api/analytics-forms?domain=<domain>&from=<YYYY-MM-DD>&to=<YYYY-MM-DD>
  *
@@ -80,10 +136,10 @@ export default async function handler(req, res) {
         //   the response so the frontend can surface it to the user.
         db.query(`
             SELECT
-                COUNT(*) FILTER (WHERE name = 'form_submit')                               AS submissions,
-                COUNT(*) FILTER (WHERE name = 'form_started')                              AS starters,
-                COUNT(*) FILTER (WHERE name = 'form_submit'  AND session_id IS NOT NULL)   AS session_submissions,
-                COUNT(*) FILTER (WHERE name = 'form_started' AND session_id IS NOT NULL)   AS session_starters
+                COUNT(DISTINCT CASE WHEN name = 'form_submit'  THEN ${FORM_DEDUP_KEY} END) AS submissions,
+                COUNT(DISTINCT CASE WHEN name = 'form_started' THEN ${FORM_DEDUP_KEY} END) AS starters,
+                COUNT(DISTINCT CASE WHEN name = 'form_submit'  AND session_id IS NOT NULL THEN session_id::text END) AS session_submissions,
+                COUNT(DISTINCT CASE WHEN name = 'form_started' AND session_id IS NOT NULL THEN session_id::text END) AS session_starters
             FROM analytics_custom_events
             WHERE site_id = $1
               AND received_at >= $2::date
@@ -109,25 +165,22 @@ export default async function handler(req, res) {
         db.query(`
             WITH submits AS (
                 SELECT
-                    COALESCE(NULLIF(extra_data->>'formId', ''), 'unknown') AS form_id,
+                    ${FORM_ID_CASE} AS form_id,
                     extra_data->>'action'                                   AS form_action,
+                    extra_data->>'provider'                                 AS provider,
                     pathname,
-                    COUNT(*)                                                AS submissions
+                    COUNT(DISTINCT ${FORM_DEDUP_KEY})                        AS submissions
                 FROM analytics_custom_events
                 WHERE site_id = $1
                   AND received_at >= $2::date
                   AND received_at <  $3::date + interval '1 day'
                   AND name = 'form_submit'
-                GROUP BY 1, 2, 3
+                GROUP BY 1, 2, 3, 4
             ),
             starters AS (
                 SELECT
-                    CASE
-                        WHEN extra_data->>'formId' IN ('form','unknown') OR extra_data->>'formId' IS NULL OR extra_data->>'formId' = ''
-                        THEN COALESCE(NULLIF(extra_data->>'action', ''), 'form')
-                        ELSE extra_data->>'formId'
-                    END AS form_id,
-                    COUNT(*) AS starters
+                    ${FORM_ID_CASE} AS form_id,
+                    COUNT(DISTINCT ${FORM_DEDUP_KEY}) AS starters
                 FROM analytics_custom_events
                 WHERE site_id = $1
                   AND received_at >= $2::date
@@ -139,6 +192,7 @@ export default async function handler(req, res) {
                 SELECT
                     s.form_id,
                     MAX(s.form_action)                                         AS form_action,
+                    MAX(s.provider)                                            AS provider,
                     SUM(s.submissions)                                          AS submissions,
                     MAX(st.starters)                                            AS starters,
                     COUNT(DISTINCT s.pathname)                                  AS page_count,
@@ -150,6 +204,7 @@ export default async function handler(req, res) {
             SELECT
                 form_id,
                 form_action,
+                provider,
                 submissions,
                 COALESCE(starters, 0) AS starters,
                 page_count,
@@ -179,16 +234,16 @@ export default async function handler(req, res) {
         `, [siteId, fromDate, toDate]),
 
         // Device type breakdown: started vs submitted vs errors per device.
-        // Deduplicates by session_id so that retries (multiple form_submit events
-        // in one session) don't inflate submitted above started.
+        // Deduplicates the same way the per-form breakdown above does — see
+        // FORM_DEDUP_KEY — so retries don't inflate submitted above started
+        // for minimal-consent/anonymous traffic either, not just full-consent
+        // sessions.
         db.query(`
             WITH dc AS (
                 SELECT
                     COALESCE(device_type, 'unknown') AS device,
-                    COUNT(DISTINCT CASE WHEN name = 'form_started' AND session_id IS NOT NULL THEN session_id END)
-                        + COUNT(*) FILTER (WHERE name = 'form_started' AND session_id IS NULL) AS started,
-                    COUNT(DISTINCT CASE WHEN name = 'form_submit'  AND session_id IS NOT NULL THEN session_id END)
-                        + COUNT(*) FILTER (WHERE name = 'form_submit'  AND session_id IS NULL) AS submitted,
+                    COUNT(DISTINCT CASE WHEN name = 'form_started' THEN ${FORM_DEDUP_KEY} END) AS started,
+                    COUNT(DISTINCT CASE WHEN name = 'form_submit'  THEN ${FORM_DEDUP_KEY} END) AS submitted,
                     COUNT(*) FILTER (WHERE name = 'form_error') AS errors
                 FROM analytics_custom_events
                 WHERE site_id = $1
@@ -507,15 +562,14 @@ export default async function handler(req, res) {
         // Geographic breakdown: submissions, starters, errors and completion rate
         // per country. country_code is set by the ingest endpoint from the
         // request's IP — present only when geolocation is enabled.
-        // Deduplicates by session_id so retries don't inflate submitted above started.
+        // Deduplicates the same way as the per-form breakdown — see
+        // FORM_DEDUP_KEY — so retries don't inflate submitted above started.
         db.query(`
             WITH gc AS (
                 SELECT
                     COALESCE(NULLIF(country_code, ''), '??') AS country,
-                    COUNT(DISTINCT CASE WHEN name = 'form_started' AND session_id IS NOT NULL THEN session_id END)
-                        + COUNT(*) FILTER (WHERE name = 'form_started' AND session_id IS NULL) AS starters,
-                    COUNT(DISTINCT CASE WHEN name = 'form_submit'  AND session_id IS NOT NULL THEN session_id END)
-                        + COUNT(*) FILTER (WHERE name = 'form_submit'  AND session_id IS NULL) AS submissions,
+                    COUNT(DISTINCT CASE WHEN name = 'form_started' THEN ${FORM_DEDUP_KEY} END) AS starters,
+                    COUNT(DISTINCT CASE WHEN name = 'form_submit'  THEN ${FORM_DEDUP_KEY} END) AS submissions,
                     COUNT(*) FILTER (WHERE name = 'form_error') AS errors
                 FROM analytics_custom_events
                 WHERE site_id = $1
@@ -539,18 +593,17 @@ export default async function handler(req, res) {
         `, [siteId, fromDate, toDate]),
 
         // Acquisition channels: UTM source / medium / campaign → form funnel.
-        // Deduplicates form_submit by session so retries don't inflate submitted.
-        // Events without any UTM params appear as (direct) / (none) / (none).
+        // Deduplicates the same way as the per-form breakdown — see
+        // FORM_DEDUP_KEY. Events without any UTM params appear as (direct) /
+        // (none) / (none).
         db.query(`
             WITH ch AS (
                 SELECT
                     COALESCE(NULLIF(utm_source,   ''), '(direct)') AS source,
                     COALESCE(NULLIF(utm_medium,   ''), '(none)')   AS medium,
                     COALESCE(NULLIF(utm_campaign, ''), '(none)')   AS campaign,
-                    COUNT(DISTINCT CASE WHEN name = 'form_started' AND session_id IS NOT NULL THEN session_id END)
-                        + COUNT(*) FILTER (WHERE name = 'form_started' AND session_id IS NULL) AS starters,
-                    COUNT(DISTINCT CASE WHEN name = 'form_submit'  AND session_id IS NOT NULL THEN session_id END)
-                        + COUNT(*) FILTER (WHERE name = 'form_submit'  AND session_id IS NULL) AS submissions,
+                    COUNT(DISTINCT CASE WHEN name = 'form_started' THEN ${FORM_DEDUP_KEY} END) AS starters,
+                    COUNT(DISTINCT CASE WHEN name = 'form_submit'  THEN ${FORM_DEDUP_KEY} END) AS submissions,
                     COUNT(*) FILTER (WHERE name = 'form_error') AS errors
                 FROM analytics_custom_events
                 WHERE site_id = $1
@@ -614,15 +667,14 @@ export default async function handler(req, res) {
 
         // Form engagement by page: starts + submissions + completion rate per pathname.
         // More useful than submission-only top pages because it surfaces pages where
-        // users start but don't finish.
+        // users start but don't finish. Deduplicates the same way as the
+        // per-form breakdown — see FORM_DEDUP_KEY.
         db.query(`
             WITH pg AS (
                 SELECT
                     pathname,
-                    COUNT(DISTINCT CASE WHEN name = 'form_started' AND session_id IS NOT NULL THEN session_id END)
-                        + COUNT(*) FILTER (WHERE name = 'form_started' AND session_id IS NULL) AS starters,
-                    COUNT(DISTINCT CASE WHEN name = 'form_submit'  AND session_id IS NOT NULL THEN session_id END)
-                        + COUNT(*) FILTER (WHERE name = 'form_submit'  AND session_id IS NULL) AS submissions,
+                    COUNT(DISTINCT CASE WHEN name = 'form_started' THEN ${FORM_DEDUP_KEY} END) AS starters,
+                    COUNT(DISTINCT CASE WHEN name = 'form_submit'  THEN ${FORM_DEDUP_KEY} END) AS submissions,
                     COUNT(*) FILTER (WHERE name = 'form_error') AS errors
                 FROM analytics_custom_events
                 WHERE site_id = $1
@@ -670,6 +722,7 @@ export default async function handler(req, res) {
         })),
         forms: formsRes.rows.map(r => ({
             formId:         r.form_id,
+            label:          humanizeFormLabel(r.form_id, r.provider),
             formAction:     r.form_action || null,
             submissions:    parseInt(r.submissions, 10) || 0,
             starters:       parseInt(r.starters, 10) || 0,

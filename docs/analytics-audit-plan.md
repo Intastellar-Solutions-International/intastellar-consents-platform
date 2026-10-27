@@ -644,6 +644,55 @@ label-lookup test for `cleanFormId`.
 
 ---
 
+### Status: implemented, live (2026-10-27)
+
+**Dedup.** Added shared `FORM_DEDUP_KEY` (session_id for full-consent rows; `pathname + raw
+formId + 2-second time bucket` for minimal-consent/anonymous rows, which have no session_id at
+all) and `FORM_ID_CASE` (the placeholder-remap, now applied identically on both sides of every
+submits/starters join — closing the join-key-mismatch risk I'd flagged but ruled out for this
+specific case) in `api/analytics-forms.js`. Applied to **all 6** starts-vs-submits comparisons in
+that file, not just the main per-form table: the top-line totals KPI, per-form breakdown, device
+breakdown, geographic breakdown, acquisition-channel breakdown, and per-page engagement — the
+device breakdown already had a *partial* version of this (session_id dedup only, no time-bucket
+for anonymous traffic) which I upgraded to match; the other four had no dedup at all. 5 new unit
+tests plus 3 live-Postgres integration tests (collapses a same-session double-submit; does *not*
+collapse two different anonymous visitors on different pages; collapses two anonymous submits on
+the same page within the 2s bucket). 51/51 tests pass overall.
+
+**Human-readable names.** Did not build the `analytics_form_labels` table / Settings UI from the
+original fix approach — went with a cheaper, no-new-table fix that handles the actual evidenced
+case: added `humanizeFormLabel(formId, provider)` (server-side, since `provider` is only available
+there) — Title-Cases a slug-style id (`book-demo-request-form` → "Book Demo Request Form"), and for
+a GUID-like **widget-provided** id (HubSpot/Typeform/Calendly/Tally — `hs-85f3a603-...` has no
+usable fallback at all, since the widget intercepts submission before any real form action exists)
+shows "HubSpot form" instead. The per-form API response now includes `label`;
+`src/Pages/Analytics/Forms.js` renders it in the main table, and `cleanFormId()` (previously a
+literal no-op returning the raw id unchanged) now does the same Title-Case fallback for the other
+tables on that page that don't carry the richer provider-aware label. A true custom-rename-any-form
+feature (the `analytics_form_labels` table + Settings UI) is still open if you want it — flagging
+as a deliberately-deferred, bigger-scope follow-up rather than building it into this commit.
+
+**Before/after — asasoftware.aero, 2026-09-27 to 2026-10-27 (live query):**
+
+| Form | Submissions (before → after) | Starters (before → after) |
+|---|---|---|
+| `free-trial-request-form` | 3 → 3 | **8 → 7** (one duplicate start within 2s collapsed) |
+| `book-demo-request-form` | 6 → 6 | 5 → 5 (unchanged — see below) |
+
+**Important, honest finding: the dedup fix does *not* close the book-demo-request-form gap from
+the original brief ("5 started / 6 submitted / 100%"), and I want to be upfront about why rather
+than imply this item fully resolved it.** I pulled the raw rows: 4 of the 6 submits are
+minimal-consent, timestamped 2026-10-02 at 12:53:05, 12:53:51, 12:54:21, and 12:55:00 — **38-50
+seconds apart**, each one outside the 2-second collapse window by a wide margin, against only a
+single matching "start" at 12:53:41 in that same cluster. This isn't duplicate-event noise a dedup
+window should hide — it reads as the same visitor retrying a failing form roughly every 40 seconds
+for two minutes straight, which lines up with the demo-form technical errors already flagged for
+the site owner in `docs/asa-site-findings.md` (13 network failures, 2× 502, 1× 410). Collapsing
+these into one would hide a real reliability signal, not fix a tracking bug, so I left them
+uncollapsed. The honest fix here isn't in this repo at all — it's the ASA site's form backend.
+
+---
+
 ## 8. Alerts — ✅ root cause found; it is a real bug, not a windowing mismatch
 
 **Where:** `api/cron-analytics-alerts.js:160-168` (config fetch); `analytics_alert_configs`;

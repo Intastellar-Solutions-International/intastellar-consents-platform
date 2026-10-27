@@ -28,9 +28,20 @@ function useFormsReport(domain, fromIso, toIso) {
     return { data, loading };
 }
 
+// Was a literal no-op — see docs/analytics-audit-plan.md item 7. Mirrors
+// api/analytics-forms.js's humanizeFormLabel() for the tables on this page
+// that don't carry a server-computed `label` (only the main per-form
+// breakdown does, via `f.label` — see its render below, where that richer,
+// provider-aware label is preferred over calling this directly).
 function cleanFormId(id) {
-    if (!id || id === "unknown") return "unknown";
-    return id;
+    if (!id || id === "unknown" || id === "form") return "Unnamed form";
+    return id
+        .replace(/[-_]+/g, " ")
+        .trim()
+        .split(" ")
+        .filter(Boolean)
+        .map(w => w[0].toUpperCase() + w.slice(1))
+        .join(" ");
 }
 
 // Reads extra_data.formClass and returns the first meaningful class token as
@@ -107,7 +118,7 @@ function FormsTable({ forms, abandonMap }) {
                     return (
                         <tr key={f.formId}>
                             <td>
-                                <span className="sa-form-id" title={f.formId}>{cleanFormId(f.formId)}</span>
+                                <span className="sa-form-id" title={f.formId}>{f.label || cleanFormId(f.formId)}</span>
                                 {f.formAction && f.formAction !== cleanFormId(f.formId) && (
                                     <span className="sa-form-action" title={f.formAction}>
                                         {f.formAction.length > 40 ? f.formAction.slice(0, 40) + "…" : f.formAction}

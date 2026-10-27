@@ -9,5 +9,7 @@ import "./conversions.test.mjs";
 import "./conversions-sql.test.mjs";
 import "./consent-granular.test.mjs";
 import "./consent-impact.test.mjs";
+import "./forms.test.mjs";
+import "./forms-dedup-sql.test.mjs";
 
 await run();
