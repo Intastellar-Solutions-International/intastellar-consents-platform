@@ -914,3 +914,28 @@ Screenshots pending — these are loading-FLASH states by nature, visible only f
 second a real fetch takes, so a static screenshot may be hard to catch in the act; will attempt it
 anyway once the browser connection is live (e.g. by throttling network in devtools) rather than
 skip verification outright.
+
+### 6. Unify bar colors — done for the brief's named examples, screenshots pending
+
+Found and fixed all 4 instances matching the brief's own examples, all on Overview (`index.js`):
+Countries (blue `rgba(96,165,250,0.55)`), Traffic sources/referrers (same blue — already consistent
+with Countries, converted anyway for one source of truth), Outbound clicks (indigo
+`rgba(99,102,241,0.5)` — the brief's "outbound purple"), and Devices (**brand gold**
+`rgba(192,159,83,0.55)` — a direct violation of the design brief's own "accent for buttons/links
+only" rule, not just an inconsistency). All 4 converted to `rgba(var(--sa-chart-primary),alpha)`,
+the Phase 1 token built for exactly this.
+
+**Reconciled, not unified, one more:** the rage-click selector bar (`rgba(239,68,68,0.45)`) is a
+genuine semantic signal (rage clicks = bad), not an arbitrary color choice like the other 4 — kept
+it visually distinct but converted the literal to `rgba(var(--sa-bad),0.45)`, the proper token,
+instead of folding it into the neutral chart-primary color.
+
+**Deliberately out of scope, flagged rather than silently expanded into:** `MiniBar`'s own default
+color (`_shared.js`, `color = "rgba(192,159,83,0.7)"`) is *also* brand gold, meaning every `MiniBar`
+call site that doesn't explicitly override `color` already uses gold as a chart series color by
+default. Changing the component's own default would affect every `MiniBar` usage across the whole
+Analytics section, not just the 4 named examples — a Phase 6-scale systemic sweep, not a Phase 2
+quick win. Noting it here so it isn't lost.
+
+Verified via babel transform + the full test suite (unchanged — a color-literal swap, nothing
+computed). Screenshots pending.

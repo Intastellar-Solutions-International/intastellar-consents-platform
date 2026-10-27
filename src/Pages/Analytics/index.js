@@ -986,7 +986,7 @@ export default function SiteAnalytics() {
                                                     <td>{c.code}</td>
                                                     <td className="sa-table__num">{c.events.toLocaleString("de-DE")}</td>
                                                     <td className="sa-table__bar">
-                                                        <MiniBar value={c.events} max={maxCountry} color="rgba(96,165,250,0.55)" />
+                                                        <MiniBar value={c.events} max={maxCountry} color="rgba(var(--sa-chart-primary),0.55)" />
                                                     </td>
                                                 </tr>
                                             ))}
@@ -1008,7 +1008,7 @@ export default function SiteAnalytics() {
                                                     <span className="sa-consent-row__label" style={{ textTransform: "capitalize" }}>{d.type}</span>
                                                     <div className="sa-bar">
                                                         <div className="sa-bar__seg"
-                                                            style={{ width: pct + "%", background: "rgba(192,159,83,0.55)" }}
+                                                            style={{ width: pct + "%", background: "rgba(var(--sa-chart-primary),0.55)" }}
                                                             title={d.events + " events"} />
                                                     </div>
                                                     <span className="sa-consent-row__pct">{pct}%</span>
@@ -1045,7 +1045,7 @@ export default function SiteAnalytics() {
                                                     <td className="sa-table__num">{r.events.toLocaleString("de-DE")}</td>
                                                     <td className="sa-table__num">{r.sessions.toLocaleString("de-DE")}</td>
                                                     <td className="sa-table__bar">
-                                                        <MiniBar value={r.events} max={maxReferrer} color="rgba(96,165,250,0.55)" />
+                                                        <MiniBar value={r.events} max={maxReferrer} color="rgba(var(--sa-chart-primary),0.55)" />
                                                     </td>
                                                 </tr>
                                             ))}
@@ -1111,7 +1111,7 @@ export default function SiteAnalytics() {
                                                         <td className="sa-table__path">{o.host}</td>
                                                         <td className="sa-table__num">{o.clicks.toLocaleString("de-DE")}</td>
                                                         <td className="sa-table__bar">
-                                                            <MiniBar value={o.clicks} max={maxOutbound} color="rgba(99,102,241,0.5)" />
+                                                            <MiniBar value={o.clicks} max={maxOutbound} color="rgba(var(--sa-chart-primary),0.5)" />
                                                         </td>
                                                     </tr>
                                                 ))}
@@ -1195,7 +1195,7 @@ export default function SiteAnalytics() {
                                                             </td>
                                                             <td className="sa-table__num">{s.clicks.toLocaleString("de-DE")}</td>
                                                             <td className="sa-table__bar">
-                                                                <MiniBar value={s.clicks} max={maxRageSelector} color="rgba(239,68,68,0.45)" />
+                                                                <MiniBar value={s.clicks} max={maxRageSelector} color="rgba(var(--sa-bad),0.45)" />
                                                             </td>
                                                         </tr>
                                                     ))}
