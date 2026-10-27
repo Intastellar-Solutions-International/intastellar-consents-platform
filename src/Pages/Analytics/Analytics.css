@@ -2080,28 +2080,38 @@
 }
 .sa-customize-panel__apply:hover { background: rgba(96,165,250,1); }
 
-/* Row 1: main chart (60 %) + live feed (40 %) */
+/* Row 1: main chart (60 %) + live feed (40 %). align-items: stretch
+   (the grid default) — docs/design-audit-plan.md Phase 2 item 1. Was
+   `start`, which left each card at its own content height instead of
+   filling the row, producing ~300px of visible dead space under the
+   shorter card whenever its sibling had more content (e.g. the events
+   chart next to a longer Live feed list). Cards are .sa-panel/
+   .sa-chart-section, both block-level with no explicit height of their
+   own, so they now fill the stretched grid cell and their background/
+   border extends to match the row — any leftover whitespace is inside a
+   correctly-sized, consistent-height card instead of a visible gap in the
+   grid track. */
 .sa-overview-main {
     display: grid;
     grid-template-columns: 3fr 2fr;
     gap: 12px;
-    align-items: start;
+    align-items: stretch;
 }
 
-/* Row 2: world-map (wide) | top countries | devices */
+/* Row 2: world-map (wide) | top countries | devices — same fix. */
 .sa-overview-geo {
     display: grid;
     grid-template-columns: 2.2fr 2fr 1.5fr;
     gap: 12px;
-    align-items: start;
+    align-items: stretch;
 }
 
-/* Row 3: traffic sources | top pages */
+/* Row 3: traffic sources | top pages — same fix. */
 .sa-overview-bottom {
     display: grid;
     grid-template-columns: 5fr 4fr;
     gap: 12px;
-    align-items: start;
+    align-items: stretch;
 }
 
 @media (max-width: 1200px) {

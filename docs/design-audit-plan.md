@@ -768,3 +768,27 @@ yet, by design, since nothing consumes these new pieces until later phases.
 
 Ready for Phase 2 whenever you want to continue — that's where these components actually get wired
 into real pages and the first real before/after screenshots happen.
+
+---
+
+## Phase 2 progress
+
+**Screenshot capture status:** blocked on live login. No Playwright in this project;
+`puppeteer-core` is available (already a dependency, used by `api/analytics-screenshot.js`) and a
+dev server is running locally, but the dashboard requires authentication and I have no credentials
+for an automated session. Per your direction, I'm connecting `puppeteer-core` to a Chrome instance
+you start yourself with `--remote-debugging-port=9222` and a separate, isolated `--user-data-dir`
+(not your real profile) — you log in once in that window, I drive it via CDP for screenshots only.
+That Chrome instance isn't up yet as of this item. **Every item below is fully implemented and
+verified at the code level (tests, `postcss.parse()`, babel) but screenshots are pending, not
+skipped** — I'll capture and add them in a follow-up once the browser connection is live, and will
+say so explicitly rather than silently closing out the screenshot requirement.
+
+### 1. Dead-space fix (`align-items: stretch`) — done, screenshots pending
+
+Exactly the Phase 0 root-cause fix: `.sa-overview-main`/`.sa-overview-geo`/`.sa-overview-bottom` in
+`Analytics.css` changed from `align-items: start` to `stretch` (the grid default). Scoped precisely
+to these 3 rules — a repo-wide grep found **14** total `align-items: start` rules in the stylesheet;
+the other 11 are elsewhere and weren't touched (no evidence they cause the same dead-space problem,
+and Phase 0 only flagged these 3 specifically). Verified via `postcss.parse()`; this is a pure CSS
+property change with no JS involved, so no test applies. Visually affects Overview only.
