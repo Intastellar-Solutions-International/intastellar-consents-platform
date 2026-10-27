@@ -2,7 +2,7 @@ const { useState, useEffect, useMemo, useRef } = React;
 import { ScannerHost } from "../../API/host.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import heatmapLogo from "../../Components/Header/icons/heatmap.svg";
-import { authHeaders, useAnalyticsPageChrome } from "./_shared.js";
+import { authHeaders, useAnalyticsPageChrome, elementLabel } from "./_shared.js";
 import { IconCursorClick, IconTarget, IconTrendingUp } from "./Icons.js";
 import "./Analytics.css";
 
@@ -308,24 +308,23 @@ export default function AnalyticsHeatmap() {
                                         <thead>
                                             <tr>
                                                 <th>Element</th>
-                                                <th>Text</th>
+                                                <th>Selector</th>
                                                 <th className="sa-table__num">Clicks</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {(data?.topElements || []).map((el, i) => (
-                                                <tr key={i}>
-                                                    <td>
-                                                        <code>
-                                                            {el.tag || "?"}
-                                                            {el.id ? `#${el.id}` : ""}
-                                                            {el.className ? `.${String(el.className).split(/\s+/).join(".")}` : ""}
-                                                        </code>
-                                                    </td>
-                                                    <td className="sa-table__path" title={el.text || ""}>{el.text || "—"}</td>
-                                                    <td className="sa-table__num">{el.n.toLocaleString("de-DE")}</td>
-                                                </tr>
-                                            ))}
+                                            {(data?.topElements || []).map((el, i) => {
+                                                const rawSelector = (el.tag || "?")
+                                                    + (el.id ? `#${el.id}` : "")
+                                                    + (el.className ? `.${String(el.className).split(/\s+/).join(".")}` : "");
+                                                return (
+                                                    <tr key={i}>
+                                                        <td title={el.text || ""}>{elementLabel(el)}</td>
+                                                        <td className="sa-heatmap__raw-selector"><code>{rawSelector}</code></td>
+                                                        <td className="sa-table__num">{el.n.toLocaleString("de-DE")}</td>
+                                                    </tr>
+                                                );
+                                            })}
                                             {!data?.topElements?.length && (
                                                 <tr><td colSpan={3} style={{ color: "rgba(130,130,130,0.55)", fontSize: "0.8rem" }}>No clicks recorded</td></tr>
                                             )}

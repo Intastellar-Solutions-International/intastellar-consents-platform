@@ -838,3 +838,49 @@ section label, not a page-title mismatch.
 
 Verified via babel transform on all 3 files + the full test suite (unchanged). No test applies —
 this is a string literal change, nothing computed.
+
+### 4. Readable element names — done where the data supports it, honest where it doesn't
+
+The brief's example format ("Button: 'Continue' on /request-free-trial") assumes both element text
+and a per-element page path exist. Checked both data sources before implementing anything, per the
+ground rules — never fabricate:
+
+- **Heatmap's "Top clicked elements"** (`api/analytics-heatmap.js`'s `topElements`): genuinely has
+  `tag`/`id`/`className`/`text`, confirmed by reading the query. The "page" part of the brief's
+  example is implicit here — this view is already scoped to one pathname (the heatmap being
+  viewed), so no per-row page field is needed. New `elementLabel()` helper (`_shared.js`) renders
+  `Button: "Continue"` as the primary label; the raw selector (`tag#id.class`) moved to a
+  de-emphasized secondary column (`.sa-heatmap__raw-selector`, still there for a developer who
+  needs it, just not the primary visual weight anymore).
+- **Overview's "Frustration signals" rage-click table** (`api/analytics-report-detail.js`'s
+  `topRageSelectors`): only has `tag`/`id`/`class` — confirmed by reading both the query (`api/
+  analytics-report-detail.js:380-393`, selects `selector`/`id`/`cls`/`tag`, no `text`) *and* the
+  tracker itself (`api/a.js:1816`, the `rage_click` track() call never sends element text at all).
+  This is a real data-collection gap, not a frontend bug — `elementLabel()` falls back to just the
+  humanized tag ("Button") rather than fabricating quoted text that was never captured. The raw
+  selector string is kept as the cell's `title` tooltip instead of its visible text.
+
+**A related, separate finding — flagged, not fixed, because fixing it means a query change:**
+re-investigated the originally-reported "Unique forms: 2 vs. table shows 4" bug (Phase 0 had closed
+this as "❓ unresolved, needs live data"). Traced a *real* latent inconsistency: the Forms page's own
+query (`api/analytics-forms.js`'s `FORM_ID_CASE`) falls back a placeholder `formId` ('form'/
+'unknown'/empty) to the form's `action` URL, correctly splitting two different forms that share a
+generic formId; Overview's separate form-funnel query (`api/analytics-report-detail.js:431`, a
+plain `COALESCE(...,'(unknown)')`) has no such fallback and would silently merge them. **Verified
+against real asasoftware.aero data — this mechanism does not reproduce for this site**: both
+queries return identical results (4 distinct forms, same counts each) because none of this site's
+forms actually use a generic/placeholder `formId`. So this confirmed, real bug does not explain the
+originally-reported 2-vs-4 observation, which remains genuinely unreproduced. Not fixing the
+query-level inconsistency in this pass regardless — per the ground rules, this design audit does
+not change metric calculations or queries; flagging it here for your explicit go-ahead if you want
+it fixed separately.
+
+**Tests:** 7 new tests for `elementLabel()` in `test/element-label.test.mjs` (tag+text combination,
+tag-only fallback, whitespace-only text treated as missing, known-tag humanization, unknown-tag
+capitalization, missing-tag fallback to "Element", long-text truncation). Full suite: 107/107
+passing (100 previous + 7 new).
+
+**No live screenshots needed for this item's verification logic** (the `elementLabel()` tests cover
+the actual formatting correctness), but the two pages it's wired into (Heatmap, Overview) still get
+screenshots once the browser connection is live, per the ground rules — same pending status as
+items 1-3.

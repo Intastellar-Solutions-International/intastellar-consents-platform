@@ -10,7 +10,7 @@ import {
     authHeaders, KpiCard, MiniBar, useAnalyticsPage, useAnalyticsReport, useSiteConfig,
     toIsoDate, pctChange, IndustryBenchmarkNote, formatPercent, SegmentFilter, AnalyticsSubNav,
     useForeignDomains, splitForeignDomainsByRecency,
-    formatCurrency, CURRENCY_SYMBOLS,
+    formatCurrency, CURRENCY_SYMBOLS, elementLabel,
 } from "./_shared.js";
 import { SkeletonBlock, KpiCardSkeleton, PanelSkeleton } from "./components/Skeleton.js";
 import {
@@ -1187,7 +1187,7 @@ export default function SiteAnalytics() {
                                                 <tbody>
                                                     {data.topRageSelectors.map(s => (
                                                         <tr key={s.selector}>
-                                                            <td className="sa-form-id">{s.selector}</td>
+                                                            <td className="sa-form-id" title={s.selector}>{elementLabel({ tag: s.elementTag })}</td>
                                                             <td className="sa-rage__detail">
                                                                 {s.elementId    && <span className="sa-rage__id">#{s.elementId}</span>}
                                                                 {s.elementClass && <span className="sa-rage__cls">.{s.elementClass.split(" ").filter(Boolean).join(" .")}</span>}

@@ -469,6 +469,34 @@ export function formatDuration(seconds) {
     return `${(seconds / 86400).toLocaleString("de-DE", oneDecimal)}d`;
 }
 
+// docs/design-audit-plan.md Phase 2 item 5: element names shown as raw
+// selector/class strings instead of something readable. Honest about what
+// each data source actually tracks rather than fabricating anything —
+// api/analytics-heatmap.js's topElements has real element text (tag/id/
+// className/text all genuinely captured); api/analytics-report-detail.js's
+// rage-click rows only ever have tag/id/class (api/a.js:1816's rage_click
+// tracker call never sends element text — a real tracking gap, not a
+// frontend bug, so `text` here is simply absent and this function falls
+// back to the tag alone rather than showing "Button: undefined").
+const HUMAN_TAG = {
+    a: "Link", button: "Button", input: "Input", select: "Dropdown",
+    textarea: "Text field", img: "Image", label: "Label",
+    h1: "Heading", h2: "Heading", h3: "Heading", h4: "Heading",
+};
+function humanizeTag(tag) {
+    if (!tag) return "Element";
+    const t = String(tag).toLowerCase();
+    return HUMAN_TAG[t] || (t.charAt(0).toUpperCase() + t.slice(1));
+}
+export function elementLabel({ tag, text } = {}) {
+    const humanTag = humanizeTag(tag);
+    if (!text) return humanTag;
+    const trimmed = String(text).trim();
+    if (!trimmed) return humanTag;
+    const clipped = trimmed.length > 40 ? trimmed.slice(0, 40) + "…" : trimmed;
+    return `${humanTag}: "${clipped}"`;
+}
+
 // Small "ⓘ" hint icon carrying its explanation in the native `title`
 // attribute — same lightweight hover-tooltip convention used everywhere
 // else in this Analytics directory (plain `title=` on the element itself),

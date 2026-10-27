@@ -2836,6 +2836,18 @@
     user-select: none;
 }
 
+/* De-emphasized raw selector detail next to the human-readable Element
+   label — docs/design-audit-plan.md Phase 2 item 5. Kept, not deleted:
+   still useful for a developer who needs the exact selector, just no
+   longer the primary visual weight. */
+.sa-heatmap__raw-selector {
+    font-size: var(--sa-font-xs, 0.74rem);
+    color: rgba(var(--sa-text-dim),0.55);
+}
+.sa-heatmap__raw-selector code {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+}
+
 .sa-heatmap__frame-fallback {
     flex: 1;
     min-height: 0;
