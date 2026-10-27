@@ -218,6 +218,52 @@ row.
 
 ---
 
+### Status: implemented, live (2026-10-27)
+
+Went with "direct" (not a separate "excluded" bucket) to resolve open question 2 from above —
+same bucket self-referral (item 2) folds into, since both are "not a real third-party referral,"
+and it keeps every tab's direct/referral math simple instead of introducing a fourth channel
+category everywhere. Added `noiseReferralClause()` + `SPAM_REFERRER_DOMAINS` to the same
+`api/_self-referral.js` from item 2, applied at the identical 5 call sites (OR'd alongside
+`SELF_REFERRAL` everywhere it already appears) — no new files needed. Confirmed host/referrer-based
+filtering only, no IP storage (open question 2's other half) — IP remains never stored.
+
+The dev/local patterns mirror `isDevOrLocalHost()` in `api/a.js` exactly (localhost/0.0.0.0/::1,
+`.local`, and the three private-LAN ranges) but as a second, parallel implementation rather than a
+shared import — that function operates on a JS string at ingestion time (`page_host`), this one
+needs to produce valid Postgres regex syntax spliced into query text (`referrer_host`), and trying
+to make one implementation serve both shapes seemed more likely to introduce a bug than writing it
+twice carefully. Verified identical behavior for every case with a live-Postgres integration test
+(`test/noise-referral-sql.test.mjs`, runs the real SQL against a literal `VALUES` list — not a
+real table — so it catches a Postgres-regex mistake a pure JS-string-content test wouldn't).
+`SPAM_REFERRER_DOMAINS` is seeded with only the one domain actually observed in this audit's data
+(`everydaydealsnow.com`) — deliberately not padded with guessed-at additional spam domains. 20/20
+tests pass (16 unit + 1 live-SQL integration test with 15 sub-cases, plus the pre-existing 4 from
+items 1/2 kept green).
+
+**Before/after — asasoftware.aero, 2026-09-27 to 2026-10-27 (query-time only, no deploy needed):**
+
+| Noise referrer | Events (currently misclassified as "referral") |
+|---|---|
+| `0.0.0.0` | 94 |
+| `localhost` | 57 |
+| `www.everydaydealsnow.com` | 19 |
+| `127.0.0.1` | 7 (not called out in the original brief — caught by the same loopback pattern) |
+
+| Channel split (untagged traffic) | Item 2 only | Item 2 + item 3 |
+|---|---|---|
+| "referral" | 1,166 | **995** |
+| "direct" | 8,519 | **8,690** |
+
+**Observation, not acted on:** two other referrer domains surfaced in the post-fix top-10 —
+`search.blomblor.com` (11 events) and `search.superdealdiscovery.com` (10 events) — with the same
+"search.something-generic.com" shape as common ghost-referrer spam. Not added to
+`SPAM_REFERRER_DOMAINS` since neither was named in the original brief and I didn't want to guess;
+flagging here in case you want them added (or flagging to the ASA site owner that this looks like
+bot/spam traffic, separate from this repo's own fix).
+
+---
+
 ## 4. Unrecognized domains — ✅ confirmed: logic is already correct, banner wording is the bug
 
 **Where:** ingestion gate `api/a.js:2035-2059`; approve/revoke API

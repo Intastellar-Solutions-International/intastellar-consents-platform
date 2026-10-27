@@ -8,7 +8,7 @@
  *           sendReportEmail({ recipients, subject, html })
  */
 
-import { selfReferralClause, getApprovedDomains } from "./_self-referral.js";
+import { selfReferralClause, noiseReferralClause, getApprovedDomains } from "./_self-referral.js";
 
 function pctChange(cur, prev) {
     if (prev == null || prev === 0 || cur == null) return null;
@@ -33,6 +33,7 @@ export async function buildReportData(db, siteId, periodDays) {
         getApprovedDomains(db, siteId),
     ]);
     const SELF_REFERRAL = selfReferralClause(siteDomainRows[0]?.domain, approvedDomains);
+    const NOISE_REFERRAL = noiseReferralClause();
 
     const totalsQuery = (from, to) => db.query(`
         SELECT
@@ -102,7 +103,7 @@ export async function buildReportData(db, siteId, periodDays) {
         ).catch(() => ({ rows: [] })),
 
         db.query(`
-            SELECT CASE WHEN COALESCE(referrer_host, '') = '' OR ${SELF_REFERRAL}
+            SELECT CASE WHEN COALESCE(referrer_host, '') = '' OR ${SELF_REFERRAL} OR ${NOISE_REFERRAL}
                         THEN '(direct)' ELSE referrer_host END AS referrer,
                    COUNT(*) AS events
             FROM analytics_events

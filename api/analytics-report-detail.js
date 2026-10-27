@@ -11,7 +11,7 @@
  */
 
 import { getPool } from "./_db.js";
-import { selfReferralClause, getApprovedDomains } from "./_self-referral.js";
+import { selfReferralClause, noiseReferralClause, getApprovedDomains } from "./_self-referral.js";
 
 const ALLOWED_ORIGINS = [
     "https://www.intastellarconsents.com",
@@ -116,15 +116,16 @@ async function _handler(req, res) {
     const segConsent = VALID_CONSENTS.has(req.query.seg_consent) ? req.query.seg_consent : null;
 
     const META_SOURCE_PATTERN = `'^(fb|facebook|ig|instagram|msg|messenger|an)$'`;
-    // See docs/analytics-audit-plan.md item 2 — kept in sync with the
+    // See docs/analytics-audit-plan.md items 2 and 3 — kept in sync with the
     // identical fix in api/analytics-report.js.
     const SELF_REFERRAL = selfReferralClause(domain, approvedDomains);
+    const NOISE_REFERRAL = noiseReferralClause();
     const CHANNEL_SQL = {
         organic:     `(utm_medium = 'organic' OR (COALESCE(utm_medium,'')='' AND COALESCE(utm_source,'')='' AND referrer_host ~* '(google|bing|duckduckgo|yahoo|baidu|yandex|ecosia)\\.'))`,
         paid:        `(utm_medium ~* '^(cpc|ppc|paid|cpm|display)' OR (COALESCE(utm_source,'')!='' AND COALESCE(utm_medium,'') NOT IN ('organic','') AND utm_source !~* ${META_SOURCE_PATTERN}))`,
         paid_social: `(utm_source ~* ${META_SOURCE_PATTERN})`,
-        referral:    `(COALESCE(referrer_host,'')!='' AND COALESCE(utm_source,'')='' AND COALESCE(utm_medium,'')='' AND NOT ${SELF_REFERRAL})`,
-        direct:      `((COALESCE(referrer_host,'')='' OR ${SELF_REFERRAL}) AND COALESCE(utm_source,'')='' AND COALESCE(utm_medium,'')='')`,
+        referral:    `(COALESCE(referrer_host,'')!='' AND COALESCE(utm_source,'')='' AND COALESCE(utm_medium,'')='' AND NOT ${SELF_REFERRAL} AND NOT ${NOISE_REFERRAL})`,
+        direct:      `((COALESCE(referrer_host,'')='' OR ${SELF_REFERRAL} OR ${NOISE_REFERRAL}) AND COALESCE(utm_source,'')='' AND COALESCE(utm_medium,'')='')`,
     };
 
     const segClauses = [
@@ -230,7 +231,9 @@ async function _handler(req, res) {
                     WHEN ft.utm_medium = 'organic'
                          OR (COALESCE(ft.utm_source, '') = ''
                              AND ft.referrer_host ~* '(google|bing|duckduckgo|yahoo|baidu|yandex|ecosia)\.') THEN 'organic'
-                    WHEN COALESCE(ft.referrer_host, '') != '' AND NOT ${selfReferralClause(domain, approvedDomains, "ft.referrer_host")} THEN 'referral'
+                    WHEN COALESCE(ft.referrer_host, '') != ''
+                         AND NOT ${selfReferralClause(domain, approvedDomains, "ft.referrer_host")}
+                         AND NOT ${noiseReferralClause("ft.referrer_host")}                     THEN 'referral'
                     WHEN COALESCE(ft.utm_source, '') != ''                                       THEN 'paid'
                     ELSE 'direct'
                 END AS channel,

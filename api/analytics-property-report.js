@@ -9,7 +9,7 @@
  */
 
 import { getPool } from "./_db.js";
-import { selfReferralClause, getApprovedDomainsForSites } from "./_self-referral.js";
+import { selfReferralClause, noiseReferralClause, getApprovedDomainsForSites } from "./_self-referral.js";
 
 const ALLOWED_ORIGINS = [
     "https://www.intastellarconsents.com",
@@ -110,6 +110,7 @@ async function _handler(req, res) {
     // that's an acceptable simplification here.
     const approvedDomains = await getApprovedDomainsForSites(db, siteIds);
     const SELF_REFERRAL = selfReferralClause(requestedDomains, approvedDomains);
+    const NOISE_REFERRAL = noiseReferralClause();
 
     const [
         totalsRes, dailyRes, pagesRes, countriesRes, devicesRes,
@@ -208,7 +209,7 @@ async function _handler(req, res) {
         ),
 
         db.query(`
-            SELECT CASE WHEN COALESCE(referrer_host, '') = '' OR ${SELF_REFERRAL}
+            SELECT CASE WHEN COALESCE(referrer_host, '') = '' OR ${SELF_REFERRAL} OR ${NOISE_REFERRAL}
                         THEN '(direct)' ELSE referrer_host END AS referrer,
                    COUNT(*)                                                         AS events,
                    COUNT(DISTINCT session_id) FILTER (WHERE session_id IS NOT NULL) AS sessions
@@ -317,7 +318,7 @@ async function _handler(req, res) {
                     WHEN utm_medium = 'organic'
                          OR (COALESCE(utm_medium,'')='' AND COALESCE(utm_source,'')=''
                              AND referrer_host ~* '(google|bing|duckduckgo|yahoo|baidu|yandex|ecosia)\\.') THEN 'organic'
-                    WHEN COALESCE(referrer_host,'') != '' AND NOT ${SELF_REFERRAL}                      THEN 'referral'
+                    WHEN COALESCE(referrer_host,'') != '' AND NOT ${SELF_REFERRAL} AND NOT ${NOISE_REFERRAL} THEN 'referral'
                     WHEN COALESCE(utm_source,'') != ''                                                 THEN 'paid'
                     ELSE 'direct'
                 END AS channel,

@@ -2,7 +2,7 @@
 // by every referrer/channel query (docs/analytics-audit-plan.md item 2).
 import assert from "node:assert/strict";
 import { test } from "./_harness.mjs";
-import { isValidHostname, selfReferralClause } from "../api/_self-referral.js";
+import { isValidHostname, selfReferralClause, noiseReferralClause, SPAM_REFERRER_DOMAINS } from "../api/_self-referral.js";
 
 test("isValidHostname accepts ordinary hostnames", () => {
     assert.ok(isValidHostname("asasoftware.aero"));
@@ -49,4 +49,23 @@ test("selfReferralClause accepts an array of site domains (portfolio rollup case
 test("selfReferralClause uses a custom column name when given one", () => {
     const clause = selfReferralClause("asasoftware.aero", [], "ft.referrer_host");
     assert.match(clause, /coalesce\(ft\.referrer_host,''\)/);
+});
+
+test("noiseReferralClause includes the evidenced spam domain from the live audit", () => {
+    assert.ok(SPAM_REFERRER_DOMAINS.includes("everydaydealsnow.com"));
+    const clause = noiseReferralClause();
+    assert.match(clause, /everydaydealsnow\.com/);
+});
+
+test("noiseReferralClause covers the dev/local patterns mirrored from isDevOrLocalHost in api/a.js", () => {
+    const clause = noiseReferralClause();
+    assert.match(clause, /'localhost'/);
+    assert.match(clause, /'0\.0\.0\.0'/);
+    assert.match(clause, /%\.local/);
+    assert.match(clause, /\^127\\\./);
+});
+
+test("noiseReferralClause uses a custom column name when given one", () => {
+    const clause = noiseReferralClause("ae.referrer_host");
+    assert.match(clause, /coalesce\(ae\.referrer_host,''\)/);
 });
