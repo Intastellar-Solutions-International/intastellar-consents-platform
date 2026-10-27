@@ -814,3 +814,27 @@ positioned independently (`top:50%; left:50%`) and wasn't touched.
 can't catch without rendering it. Flagging this explicitly rather than assuming it's correct; will
 verify and iterate the moment the browser connection is live, before considering this item truly
 done.
+
+### 3. Page titles renamed to match nav labels — done, screenshots pending
+
+Exact match, not a compromise ("Marketing — Channel Analytics" or similar) — the bug report's literal
+complaint was "titles don't match nav labels," and `StickyPageTitle` has no subtitle slot to preserve
+the more-descriptive alternate text without a bigger change (building that is Phase 3/6 `PageHeader`
+rollout work, not this one). Updated both the in-page `<h1>` (`StickyPageTitle`'s `title=` prop) and
+the browser tab title (`document.title`) for full consistency, in all 3 files:
+
+| Page | Old title | New title |
+|---|---|---|
+| Marketing (`MarketingReport/index.js`) | "Channel Analytics" | "Marketing" |
+| Performance (`Performance.js`) | "Core Web Vitals" | "Performance" |
+| Attribution (`ConversionAttribution.js`) | "Conversion Attribution" | "Attribution" |
+
+Also updated two secondary references that would otherwise read inconsistently against the new
+title: `Performance.js`'s country-drilldown back-link ("← Core Web Vitals overview" → "← Performance
+overview") and a stale code comment in `MarketingReport/index.js` that still named the old title.
+Deliberately left every *other* "Core Web Vitals" reference in `Performance.js` untouched — those
+are the metric's own name (LCP/CLS/INP collectively), used correctly in explanatory text and a
+section label, not a page-title mismatch.
+
+Verified via babel transform on all 3 files + the full test suite (unchanged). No test applies —
+this is a string literal change, nothing computed.

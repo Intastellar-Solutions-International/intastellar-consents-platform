@@ -2498,7 +2498,7 @@ export default function MarketingReport() {
                 <StickyPageTitle
                     loadingUpdated={loading}
                     finalLoaded={loading}
-                    title="Channel Analytics"
+                    title="Marketing"
                     numberofDays={setLastDays}
                     getLastDays={getLastDays}
                     setActiveData={setActiveData}
@@ -2518,8 +2518,10 @@ export default function MarketingReport() {
                     {/* ── Compact page header ─────────────────────────────── */}
                     <div className="ca-page-header">
                         <div className="ca-page-header__left">
-                            {/* "Channel Analytics" itself is already shown by StickyPageTitle above —
-                                this row only needs a heading once drilled into a specific channel. */}
+                            {/* "Marketing" itself is already shown by StickyPageTitle above (renamed
+                                from "Channel Analytics" to match the nav label — docs/design-audit-
+                                plan.md Phase 2 item 3) — this row only needs a heading once drilled
+                                into a specific channel. */}
                             {selectedChannel && (
                                 <h1 className="ca-page-header__title">
                                     <button className="ca-back-btn" onClick={() => setSelectedChannel(null)}>

@@ -1403,8 +1403,8 @@ export default function AnalyticsPerformance() {
     const cName         = isCountryView ? countryName(country) : null;
 
     document.title = isCountryView
-        ? `${cName} — Core Web Vitals | Site Analytics`
-        : "Core Web Vitals | Site Analytics";
+        ? `${cName} — Performance | Site Analytics`
+        : "Performance | Site Analytics";
 
     const {
         domain,
@@ -1421,7 +1421,7 @@ export default function AnalyticsPerformance() {
     return (
         <div style={{ flex: "1", minWidth: 0 }}>
             <StickyPageTitle
-                title={isCountryView ? `${flag} ${cName}` : "Core Web Vitals"}
+                title={isCountryView ? `${flag} ${cName}` : "Performance"}
                 numberofDays={setLastDays}
                 getLastDays={getLastDays}
                 fromDate={fromDate}
@@ -1438,7 +1438,7 @@ export default function AnalyticsPerformance() {
                                 className="sa-perf-back__btn"
                                 onClick={() => history.push(analyticsPerformancePath(domain))}
                             >
-                                ← Core Web Vitals overview
+                                ← Performance overview
                             </button>
                             <span className="sa-perf-back__title">
                                 <span style={{ fontSize: 22, marginRight: 8 }}>{flag}</span>

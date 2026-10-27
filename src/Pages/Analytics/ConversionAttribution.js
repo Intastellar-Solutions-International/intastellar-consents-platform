@@ -192,7 +192,7 @@ function ConversionRow({ ev, onPush, resolvedIds }) {
 }
 
 export default function ConversionAttribution() {
-    document.title = "Conversion Attribution | Site Analytics";
+    document.title = "Attribution | Site Analytics";
 
     const { domain, getLastDays, setLastDays, fromDate, setFromDate, toDate, setToDate }
         = useAnalyticsPageChrome();
@@ -311,7 +311,7 @@ export default function ConversionAttribution() {
     return (
         <div style={{ flex: "1", minWidth: 0 }}>
             <StickyPageTitle
-                title="Conversion Attribution"
+                title="Attribution"
                 numberofDays={setLastDays}
                 getLastDays={getLastDays}
                 fromDate={fromDate}
