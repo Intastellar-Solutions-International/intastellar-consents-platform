@@ -3,7 +3,7 @@ const useParams  = window.ReactRouterDOM.useParams;
 const useHistory = window.ReactRouterDOM.useHistory;
 import { ScannerHost } from "../../API/host.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
-import { useAnalyticsPageChrome, authHeaders, MiniBar, formatPercent } from "./_shared.js";
+import { useAnalyticsPageChrome, authHeaders, MiniBar, formatPercent, formatCount } from "./_shared.js";
 import { analyticsPerformancePath, analyticsPerformanceCountryPath } from "../../Functions/domainPathSegments.js";
 import { IconBarChart, IconTarget, IconScrollDepth, IconGlobe, IconClock, IconAlertTriangle, IconBrowserChrome, IconBrowserFirefox, IconBrowserSafari, IconBrowserOpera } from "./Icons.js";
 import "./Analytics.css";
@@ -904,7 +904,7 @@ function BandLineChart({ daily, p50Key, p75Key, p90Key, metric, isCls, height = 
     function xOf(i) {
         return PAD.l + (daily.length > 1 ? (i / (daily.length - 1)) * cW : cW / 2);
     }
-    function fmtY(v) { return isCls ? v.toFixed(2) : v >= 1000 ? (v / 1000).toFixed(1) + "k" : Math.round(v) + ""; }
+    function fmtY(v) { return isCls ? v.toFixed(2) : formatCount(v, { abbreviate: true }); }
 
     // Build SVG path strings
     const pts75 = daily.map((d, i) => ({ x: xOf(i), y: yOf(d[p75Key]) })).filter(p => p.y != null);

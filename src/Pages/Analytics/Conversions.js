@@ -3,7 +3,7 @@ const useHistory = window.ReactRouterDOM.useHistory;
 import { ScannerHost } from "../../API/host.js";
 import Authentication from "../../Authentication/Auth.js";
 import { analyticsConversionsPath } from "../../Functions/domainPathSegments.js";
-import { MiniBar } from "./_shared.js";
+import { MiniBar, formatCurrency } from "./_shared.js";
 import {
     IconCash, IconCursorClick, IconTarget, IconPlus, IconTrash, IconFunnel,
     IconExternalLink, IconPhone, IconMail, IconDownload, IconFormFill,
@@ -388,7 +388,7 @@ export default function ConversionsPanel({ domain, conversions, onDefsChanged })
                                         <span>{r.count.toLocaleString("de-DE")} events</span>
                                         {r.value > 0 && (
                                             <span>
-                                                {r.value.toLocaleString("de-DE", { style: "currency", currency: r.currency || "EUR" })}
+                                                {formatCurrency(r.value, r.currency || "EUR")}
                                             </span>
                                         )}
                                         <span className="sa-event-row__consent-note">

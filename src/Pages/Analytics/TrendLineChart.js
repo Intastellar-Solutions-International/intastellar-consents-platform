@@ -1,4 +1,5 @@
 const { useMemo } = React;
+import { formatCount } from "./_shared.js";
 
 // Hand-rolled SVG line chart — kept consistent with DailyChart (index.js)
 // and the rest of the dashboard's inline-SVG charts, rather than pulling in
@@ -65,7 +66,7 @@ export default function TrendLineChart({ data, title, showInsights = false, heig
 
                 {points.map((p, i) => (
                     <circle key={i} cx={p.x} cy={p.y} r="2.5" fill="rgba(192,159,83,0.95)">
-                        <title>{p.d.date}: {(Number(p.d.num) || 0).toLocaleString("de-DE")}</title>
+                        <title>{p.d.date}: {formatCount(Number(p.d.num) || 0)}</title>
                     </circle>
                 ))}
 
@@ -80,13 +81,13 @@ export default function TrendLineChart({ data, title, showInsights = false, heig
             {insights && (
                 <div className="sa-trend-insights" aria-label="Displayed line chart summary">
                     <span className="sa-trend-insights__chip">
-                        Total: <b>{insights.total.toLocaleString("de-DE")}</b>
+                        Total: <b>{formatCount(insights.total)}</b>
                     </span>
                     <span className="sa-trend-insights__chip">
-                        Avg/day: <b>{Math.round(insights.avg).toLocaleString("de-DE")}</b>
+                        Avg/day: <b>{formatCount(insights.avg)}</b>
                     </span>
                     <span className="sa-trend-insights__chip">
-                        Peak: <b>{(Number(insights.peak.num) || 0).toLocaleString("de-DE")} ({(insights.peak.date || "").slice(5)})</b>
+                        Peak: <b>{formatCount(Number(insights.peak.num) || 0)} ({(insights.peak.date || "").slice(5)})</b>
                     </span>
                 </div>
             )}

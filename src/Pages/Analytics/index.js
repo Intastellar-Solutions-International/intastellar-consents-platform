@@ -10,6 +10,7 @@ import {
     authHeaders, KpiCard, MiniBar, useAnalyticsPage, useAnalyticsReport, useSiteConfig,
     toIsoDate, pctChange, IndustryBenchmarkNote, formatPercent, SegmentFilter, AnalyticsSubNav,
     useForeignDomains, splitForeignDomainsByRecency, PanelSkeleton,
+    formatCurrency, CURRENCY_SYMBOLS,
 } from "./_shared.js";
 import {
     IconBarChart, IconUsers, IconShieldCheck, IconGlobe, IconTrendingUp,
@@ -182,8 +183,7 @@ function LivePanel({ domain, siteKey, engagedUsers }) {
                                         <div className="sa-live__conv-right">
                                             {c.valueCents != null && (
                                                 <span className="sa-live__conv-value">
-                                                    {c.currency === "DKK" || c.currency === "SEK" || c.currency === "NOK" ? "kr " : c.currency === "USD" ? "$" : c.currency === "GBP" ? "£" : "€"}
-                                                    {(c.valueCents / 100).toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                                    {formatCurrency(c.valueCents, c.currency || "EUR", { cents: true })}
                                                 </span>
                                             )}
                                             <span className="sa-live__conv-count">{c.count}×</span>
@@ -348,11 +348,10 @@ const BT_LABELS = {
 };
 
 function fmtRevenue(amount, currency = "EUR") {
-    const SYM = { EUR: "€", USD: "$", GBP: "£", CHF: "CHF ", DKK: "kr ", SEK: "kr ", NOK: "kr " };
-    const sym = SYM[currency] ?? (currency + " ");
+    const sym = CURRENCY_SYMBOLS[currency] ?? (currency + " ");
     if (amount >= 1_000_000) return sym + (amount / 1_000_000).toFixed(2) + "M";
     if (amount >= 1_000)     return sym + (amount / 1_000).toFixed(1) + "k";
-    return sym + Number(amount).toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    return formatCurrency(amount, currency);
 }
 
 const ALL_CARD_DEFS = [

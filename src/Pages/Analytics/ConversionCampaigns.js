@@ -1,14 +1,7 @@
 const { useState, useEffect, useMemo } = React;
 import { ScannerHost } from "../../API/host.js";
-import { authHeaders } from "./_shared.js";
+import { authHeaders, formatCurrency } from "./_shared.js";
 import { IconMegaphone, IconChevronDown } from "./Icons.js";
-
-const CURRENCY_SYMBOLS = { EUR: "€", USD: "$", GBP: "£", CHF: "CHF", DKK: "kr", SEK: "kr", NOK: "kr", PLN: "zł" };
-
-function formatMoney(n, currency) {
-    const symbol = CURRENCY_SYMBOLS[currency] || (currency ? currency + " " : "");
-    return `${symbol} ${Number(n || 0).toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-}
 
 const PLATFORM_LABEL = { meta_ads: "Meta", google_ads: "Google Ads", microsoft_ads: "Microsoft Ads" };
 
@@ -124,10 +117,10 @@ export default function ConversionCampaigns({ domain, fromIso, toIso, byCampaign
                                     <td>{[r.source, r.medium].filter(Boolean).join(" / ") || "—"}</td>
                                     <td className="sa-table__num">{r.count.toLocaleString("de-DE")}</td>
                                     <td className="sa-table__num">
-                                        {r.ad ? formatMoney(r.ad.spend, r.ad.currency) : "—"}
+                                        {r.ad ? formatCurrency(r.ad.spend, r.ad.currency) : "—"}
                                     </td>
                                     <td className="sa-table__num">
-                                        {r.costPerConversion != null ? formatMoney(r.costPerConversion, r.ad.currency) : "—"}
+                                        {r.costPerConversion != null ? formatCurrency(r.costPerConversion, r.ad.currency) : "—"}
                                     </td>
                                 </tr>
                                 {isOpen && (

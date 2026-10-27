@@ -1,7 +1,7 @@
 const { useState, useEffect, useCallback, useRef } = React;
 import { ScannerHost } from "../../API/host.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
-import { authHeaders, useAnalyticsPageChrome, toIsoDate } from "./_shared.js";
+import { authHeaders, useAnalyticsPageChrome, toIsoDate, formatCurrency } from "./_shared.js";
 import "./Analytics.css";
 
 const ATTRIBUTION_URL = `${ScannerHost}/api/analytics-attribution`;
@@ -77,9 +77,7 @@ function fmtDate(iso) {
 
 function fmtValue(cents, currency) {
     if (!cents) return "—";
-    return new Intl.NumberFormat("en-GB", {
-        style: "currency", currency: currency || "EUR", minimumFractionDigits: 0,
-    }).format(cents / 100);
+    return formatCurrency(cents, currency || "EUR", { cents: true });
 }
 
 function KpiStrip({ summary }) {

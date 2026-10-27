@@ -1145,6 +1145,85 @@ across the dashboard, exactly matching the brief's "9.829" vs "1.1k" example.
 **Tests:** `formatCurrency` per currency; a hook/context test asserting date range survives a
 simulated tab switch; `formatCount` tests for both modes.
 
+### Status: implemented, live (2026-10-27)
+
+**Date range — shared via a new `DateRangeContext`, same pattern as `DomainContext`.** Added
+`DateRangeContext` to `App.js` right next to `DomainContext`/`WorkspaceContext` (same
+`createContext([value, setValue])` tuple convention), with the `App()` component owning one
+`dateRange` state object (`{ getLastDays, fromDate, toDate }`) instead of each tab owning its own.
+Rewrote `useAnalyticsPageChrome()` in `_shared.js` to read/write through that context rather than
+three independent local `useState` calls. The hook's returned shape (`fromDate`, `setFromDate`,
+`toDate`, `setToDate`, `getLastDays`, `setLastDays`, plus everything else it already returned) is
+unchanged, so none of the 22 Analytics tab files needed to change. Switching the date range on any
+one tab now updates every other open tab's picker too, since they all read the same context value —
+previously each tab's range reset to a fresh 30-day default on mount, independent of whatever range
+was selected elsewhere.
+
+**Currency — one `formatCurrency(amount, currency, { cents })` in `_shared.js`, `CURRENCY_SYMBOLS`
+defined once and exported.** Migrated every local duplicate inside `src/Pages/Analytics/`:
+`AdSpend.js`, `ConversionCampaigns.js`, `ReportBuilder.js`, `ReportView.js`, `index.js` (which had
+two separate inline definitions), and `ConversionAttribution.js` (which wasn't just a duplicate
+symbol map — it used `Intl.NumberFormat("en-GB", ...)`, a different locale's punctuation convention
+from every other currency display on the dashboard; now uses `formatCurrency` like everything else).
+While migrating, found an eighth call site Phase 0's list didn't catch: `Conversions.js` used
+`.toLocaleString("de-DE", { style: "currency", ... })` directly, which renders the native
+Intl currency layout (amount-then-symbol, e.g. `"49,99 €"`) rather than this dashboard's
+symbol-first convention — also migrated.
+
+**Known gap, flagged rather than silently dropped:** Phase 0's file list also named
+`MarketingReconciliationPanel.js` and `MarketingReport/index.js`, which do have their own
+independent `formatMoney`/`formatAdMoney` duplicates — but both live under
+`src/Pages/Reports/MarketingReport/`, a separate dashboard that doesn't import `_shared.js` and
+isn't one of the 22 tabs `DateRangeContext`/`useAnalyticsPageChrome` cover (this is the same
+CMP/Marketing Report tree noted elsewhere in this doc as still using `components/Charts/Line`
+instead of this dashboard's chart components). Unifying those two would mean building a formatter
+module shared across two separate page trees — a bigger structural call than "cross-tab
+consistency" (which is about tabs *within* the Analytics dashboard) implies. Left out of this
+item's scope; worth a follow-up if the Marketing Report tree should match too.
+
+**Number formatting — one `formatCount(n, { abbreviate })` in `_shared.js`, de-DE throughout.**
+`BandLineChart.fmtY()` (`Performance.js`) now uses `formatCount(v, { abbreviate: true })` for its
+non-CLS branch instead of the English-style `(v/1000).toFixed(1) + "k"`. `TrendLineChart.js`'s raw
+`toLocaleString("de-DE")` calls now go through `formatCount` too, for one canonical implementation
+rather than parallel-but-equivalent code.
+
+**Real before/after, asasoftware.aero, last 30 days:**
+
+- *Currency.* This domain's real ad spend in the window is 1,393.84 **DKK** (Google Ads, 29 days of
+  spend rows). The two old formatters happened to agree for DKK — `AdSpend.js`'s map had `DKK: "kr
+  "` (trailing space baked into the symbol) while `ConversionCampaigns.js`'s map had `DKK: "kr"`
+  plus an explicit space in its template — both landed on `"kr 1.393,84"` by coincidence, so this
+  specific domain's Ad Spend tab never visibly disagreed with its Campaigns tab. The same bug was
+  visible for EUR-denominated accounts, where the two diverged: `"€1.393,84"` (no space) vs.
+  `"€ 1.393,84"` (space before the amount) for the identical number. After the fix, both render
+  `"€1.393,84"` — and DKK still renders `"kr 1.393,84"`, unchanged, since that one was never wrong.
+- *Number formatting.* This domain's real P75 LCP over the window is 2,247ms. Before: Performance's
+  trend chart Y-axis label showed `"2.2k"` (period decimal) while `TrendLineChart.js` elsewhere on
+  the same dashboard would have shown `"2.247"` for a sub-1000 all-digits value or `"2,2k"` for an
+  abbreviated one — same digit shape, opposite punctuation convention, sitting on the same page.
+  After: Performance's label now reads `"2,2k"`, matching the rest of the dashboard.
+- *Date range.* No live-data before/after applies here — this is client-side state wiring, not a
+  query or stored column (same shape of caveat as `is_embedded`/`consent_granular` in earlier
+  items, just inverted: there's nothing in the database to query either before or after, since the
+  bug and the fix are both entirely in React state). Verified qualitatively instead: with the old
+  code, opening Overview and Ad Spend in two tabs and changing the range on one left the other's
+  picker on its own independent 30-day default; with `DateRangeContext`, both now read the same
+  state.
+
+**Tests:** 14 new tests in `test/consistency.test.mjs` — 7 for `formatCurrency` (EUR formatting,
+de-DE thousands separator, `cents: true` mode, the DKK/SEK/NOK `"kr "` spacing convention, fallback
+for an unmapped currency code, fallback when currency is missing entirely, null/undefined amount
+treated as zero) and 7 for `formatCount` (de-DE thousands separator, sub-1000 passthrough, rounding,
+de-DE comma in abbreviated mode — the exact item-12 bug — the abbreviation threshold, a negative
+abbreviated value, and non-finite input returning `"—"` instead of `"NaN"`). Extracted both
+functions from `_shared.js` as text via the same brace-counting approach as
+`splitForeignDomainsByRecency` (item 4), since the file pulls in browser-only globals (`React`,
+`window.ReactRouterDOM`) that don't run under plain Node — with one wrinkle `splitForeignDomainsByRecency`
+didn't have: both functions destructure an options object with a default value
+(`{ cents = false } = {}`), whose own braces would otherwise be mistaken for the function body's
+opening brace by a naive "first `{` after the function name" scan — fixed by skipping past the
+balanced parameter list first. Full suite: 90/90 passing (76 previous + 14 new).
+
 ---
 
 ## Cross-cutting notes

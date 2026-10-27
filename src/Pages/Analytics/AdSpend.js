@@ -8,7 +8,7 @@ import {
 } from "../../Functions/domainPathSegments.js";
 import { ScannerHost } from "../../API/host.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
-import { authHeaders, toIsoDate, KpiCard, MiniBar } from "./_shared.js";
+import { authHeaders, toIsoDate, KpiCard, MiniBar, formatCurrency } from "./_shared.js";
 import { IconCash, IconTarget, IconGlobe, IconTrendingUp } from "./Icons.js";
 import "./Analytics.css";
 
@@ -21,14 +21,8 @@ const PLATFORM_LABELS = {
     microsoft_ads: "Microsoft Ads",
 };
 
-const CURRENCY_SYMBOLS = { EUR: "€", USD: "$", GBP: "£", CHF: "CHF", DKK: "kr", SEK: "kr", NOK: "kr", PLN: "zł", AUD: "A$", CAD: "C$", SGD: "S$" };
 const DISPLAY_CURRENCIES = ["EUR", "USD", "GBP", "DKK", "SEK", "NOK", "CHF"];
 const CURRENCY_PREFS_KEY = "ia_ad_display_currency";
-
-function formatMoney(n, currency) {
-    const symbol = CURRENCY_SYMBOLS[currency] || (currency ? currency + " " : "");
-    return `${symbol}${Number(n || 0).toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-}
 
 function readStoredCurrency() {
     try { return localStorage.getItem(CURRENCY_PREFS_KEY) || "EUR"; } catch { return "EUR"; }
@@ -117,7 +111,7 @@ function ChannelMetricCard({ platform, currency, totals, daily }) {
     const cpc = totals.clicks > 0 ? totals.spend / totals.clicks : null;
 
     const formatTile = (key, v) => {
-        if (key === "spend") return formatMoney(v, currency);
+        if (key === "spend") return formatCurrency(v, currency);
         return Math.round(v).toLocaleString("de-DE");
     };
 
@@ -148,7 +142,7 @@ function ChannelMetricCard({ platform, currency, totals, daily }) {
                 ))}
                 <div className="sa-channel-tile sa-channel-tile--static">
                     <span className="sa-channel-tile__label">Cost / click</span>
-                    <span className="sa-channel-tile__value">{cpc != null ? formatMoney(cpc, currency) : "—"}</span>
+                    <span className="sa-channel-tile__value">{cpc != null ? formatCurrency(cpc, currency) : "—"}</span>
                 </div>
             </div>
             {series.length ? (
@@ -281,7 +275,7 @@ export default function AdSpend() {
                                 icon={<IconCash />}
                                 label="Total spend"
                                 value={data.spendByCurrency.length
-                                    ? data.spendByCurrency.map(c => formatMoney(c.amount, c.currency)).join(" · ")
+                                    ? data.spendByCurrency.map(c => formatCurrency(c.amount, c.currency)).join(" · ")
                                     : "—"}
                                 sub={isCombined ? "across all domains" : domainLabel}
                             />
@@ -295,7 +289,7 @@ export default function AdSpend() {
                                 icon={<IconTarget />}
                                 label="Blended CAC"
                                 value={data.blendedCac?.length
-                                    ? data.blendedCac.map(c => c.cac != null ? formatMoney(c.cac, c.currency) : "—").join(" · ")
+                                    ? data.blendedCac.map(c => c.cac != null ? formatCurrency(c.cac, c.currency) : "—").join(" · ")
                                     : "—"}
                                 sub={data.conversions?.totalQualityLeads
                                     ? `spend ÷ ${data.conversions.totalQualityLeads.toLocaleString("de-DE")} ${data.conversions.source === "lead_quality" ? "quality leads" : "conversion events"}`
@@ -337,7 +331,7 @@ export default function AdSpend() {
                                         {data.platforms.map((p, i) => (
                                             <tr key={i}>
                                                 <td>{platformLabel(p.platform)}</td>
-                                                <td className="sa-table__num">{formatMoney(p.amount, p.currency)}</td>
+                                                <td className="sa-table__num">{formatCurrency(p.amount, p.currency)}</td>
                                                 <td className="sa-table__num">{p.clicks.toLocaleString("de-DE")}</td>
                                                 <td className="sa-table__bar">
                                                     <MiniBar value={p.amount} max={maxPlatform} color="rgba(192,159,83,0.6)" />
@@ -366,7 +360,7 @@ export default function AdSpend() {
                                             {(data.byDomain || []).map((d, i) => (
                                                 <tr key={i}>
                                                     <td className="sa-table__path" title={d.domain}>{d.domain}</td>
-                                                    <td className="sa-table__num">{formatMoney(d.amount, d.currency)}</td>
+                                                    <td className="sa-table__num">{formatCurrency(d.amount, d.currency)}</td>
                                                     <td className="sa-table__bar">
                                                         <MiniBar value={d.amount} max={maxDomain} color="rgba(99,179,237,0.55)" />
                                                     </td>

@@ -4,7 +4,7 @@ const useHistory  = window.ReactRouterDOM.useHistory;
 const useLocation = window.ReactRouterDOM.useLocation;
 import { ScannerHost } from "../../API/host.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
-import { authHeaders, useAnalyticsPageChrome, useAnalyticsReport, useAdSpendReport, KpiCard, formatPercent } from "./_shared.js";
+import { authHeaders, useAnalyticsPageChrome, useAnalyticsReport, useAdSpendReport, KpiCard, formatPercent, formatCurrency } from "./_shared.js";
 import { analyticsReportsPath } from "../../Functions/domainPathSegments.js";
 import { REPORT_TEMPLATES, AD_METRICS } from "./reportTemplates.js";
 import TrendLineChart from "./TrendLineChart.js";
@@ -19,13 +19,6 @@ const PLATFORM_LABELS = {
     linkedin_ads:  "LinkedIn Ads",
     microsoft_ads: "Microsoft Ads",
 };
-
-const CURRENCY_SYMBOLS = { EUR: "€", USD: "$", GBP: "£", CHF: "CHF ", DKK: "kr ", SEK: "kr ", NOK: "kr ", PLN: "zł " };
-
-function formatMoney(n, currency) {
-    const sym = CURRENCY_SYMBOLS[currency] || (currency ? currency + " " : "");
-    return `${sym}${Number(n || 0).toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-}
 
 function adCurrency(adData)   { return adData?.spendByCurrency?.[0]?.currency || "EUR"; }
 function adFieldForMetric(m)  { return m === "adClicks" ? "clicks" : m === "adImpressions" ? "impressions" : "spend"; }
@@ -382,7 +375,7 @@ export default function ReportBuilder() {
         : def.label;
     const isAdPrimary   = AD_METRICS.has(primaryMetric);
     const currency      = adCurrency(adData);
-    const moneyFmt      = v => formatMoney(v, currency);
+    const moneyFmt      = v => formatCurrency(v, currency);
     const isKpiMode     = config.chartType === "kpi";
     const isLoading     = dataLoading || adLoading;
     const hasData       = isAdPrimary ? !!adData : !!data;

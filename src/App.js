@@ -94,6 +94,15 @@ export const OrganisationContext = createContext(appStorage.getItem("organisatio
 export const AllOrg = createContext(null);
 export const DomainContext = createContext(null);
 export const WorkspaceContext = createContext([null, () => {}]);
+// Analytics date range (getLastDays/fromDate/toDate), shared the same way
+// DomainContext/WorkspaceContext are — see docs/analytics-audit-plan.md
+// item 12. Previously each analytics page's own useAnalyticsPageChrome()
+// call (src/Pages/Analytics/_shared.js) held this in local useState, so it
+// silently reset to the hardcoded 30-day default every time you switched
+// tabs. Default value here is only a fallback for a consumer rendered
+// outside the real Provider below (e.g. in isolation/tests) — the Provider
+// always supplies a fresh value for the actual app.
+export const DateRangeContext = createContext([null, () => {}]);
 
 export default function App() {
     const [dashboardView, setDashboardView] = useState((localStorage.getItem("platform")) ? localStorage.getItem("platform") : null);
@@ -105,6 +114,12 @@ export default function App() {
         } catch { return null; }
     });
     const [currentDomain, setCurrentDomain] = useState("combined view");
+    // See DateRangeContext comment above.
+    const [dateRange, setDateRange] = useState(() => {
+        const d = new Date();
+        d.setDate(d.getDate() - 30);
+        return { getLastDays: 30, fromDate: d, toDate: new Date() };
+    });
     const [organisations, setOrganisations] = useState(null);
     const [domains, setDomains] = useState(null);
     const [domainError, setDomainError] = useState(false);
@@ -234,6 +249,7 @@ export default function App() {
                         <OrganisationContext.Provider value={[organisation, setOrganisation]}>
                             <WorkspaceContext.Provider value={[activeWorkspace, setActiveWorkspace]}>
                             <DomainContext.Provider value={[currentDomain, setCurrentDomain]}>
+                            <DateRangeContext.Provider value={[dateRange, setDateRange]}>
                                 <ErrorBoundary>
                                     {id && window.location.pathname != "/" || window.location.pathname != "/login" ? <>
                                         <Header id={id} />
@@ -779,6 +795,7 @@ export default function App() {
                                 <ErrorBoundary>
                                     <Footer />
                                 </ErrorBoundary>
+                            </DateRangeContext.Provider>
                             </DomainContext.Provider>
                             </WorkspaceContext.Provider>
                         </OrganisationContext.Provider>

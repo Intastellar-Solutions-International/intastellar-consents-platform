@@ -3,7 +3,7 @@ const useParams  = window.ReactRouterDOM.useParams;
 const useHistory = window.ReactRouterDOM.useHistory;
 import { ScannerHost } from "../../API/host.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
-import { authHeaders, useAnalyticsPageChrome, useAnalyticsReport, useAdSpendReport, KpiCard, formatPercent } from "./_shared.js";
+import { authHeaders, useAnalyticsPageChrome, useAnalyticsReport, useAdSpendReport, KpiCard, formatPercent, formatCurrency } from "./_shared.js";
 import { analyticsReportsPath, analyticsReportBuilderPath } from "../../Functions/domainPathSegments.js";
 import { METRIC_LABELS, AD_METRICS } from "./reportTemplates.js";
 import TrendLineChart from "./TrendLineChart.js";
@@ -18,13 +18,6 @@ const PLATFORM_LABELS = {
     linkedin_ads:  "LinkedIn Ads",
     microsoft_ads: "Microsoft Ads",
 };
-
-const CURRENCY_SYMBOLS = { EUR: "€", USD: "$", GBP: "£", CHF: "CHF ", DKK: "kr ", SEK: "kr ", NOK: "kr ", PLN: "zł " };
-
-function formatMoney(n, currency) {
-    const sym = CURRENCY_SYMBOLS[currency] || (currency ? currency + " " : "");
-    return `${sym}${Number(n || 0).toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-}
 
 function adFieldForMetric(m) { return m === "adClicks" ? "clicks" : m === "adImpressions" ? "impressions" : "spend"; }
 
@@ -233,7 +226,7 @@ export default function ReportView() {
     const { data: adData, loading: adLoading }     = useAdSpendReport(domain, reportFrom, reportTo, hasAdMetrics);
 
     const currency = adData?.spendByCurrency?.[0]?.currency || "EUR";
-    const moneyFmt = v => formatMoney(v, currency);
+    const moneyFmt = v => formatCurrency(v, currency);
     const isLoading = dataLoading || adLoading;
     const hasData   = isAdPrimary ? !!adData : !!data;
 
@@ -273,7 +266,7 @@ export default function ReportView() {
         metrics.forEach(m => {
             const def = METRIC_DEFS[m] || METRIC_DEFS.sessions;
             const val = kpiValues[m] ?? 0;
-            const fmt = def.isMoney ? formatMoney(val, currency)
+            const fmt = def.isMoney ? formatCurrency(val, currency)
                       : def.isRate  ? `${val.toFixed(2)}%`
                       : String(val);
             rows.push([esc(metricLabel(m)), esc(fmt)]);
@@ -292,7 +285,7 @@ export default function ReportView() {
             rows.push([esc(BREAKDOWN_DIM_LABELS[breakdown]||breakdown), esc(METRIC_LABELS[primaryMetric]||primaryMetric)]);
             breakdownSeries.forEach(s => {
                 const def = METRIC_DEFS[primaryMetric] || METRIC_DEFS.sessions;
-                const fmt = def.isMoney ? formatMoney(s.value, currency) : String(s.value);
+                const fmt = def.isMoney ? formatCurrency(s.value, currency) : String(s.value);
                 rows.push([esc(s.label), esc(fmt)]);
             });
         }

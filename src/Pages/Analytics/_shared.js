@@ -1,10 +1,10 @@
-const { useState, useEffect, useContext, useMemo } = React;
+const { useState, useEffect, useContext, useMemo, useCallback } = React;
 const useParams  = window.ReactRouterDOM.useParams;
 const Link       = window.ReactRouterDOM.Link;
 const useLocation = window.ReactRouterDOM.useLocation;
 import { ScannerHost } from "../../API/host.js";
 import Authentication from "../../Authentication/Auth.js";
-import { DomainContext, WorkspaceContext } from "../../App.js";
+import { DomainContext, WorkspaceContext, DateRangeContext } from "../../App.js";
 import {
     useSyncDomainFromRoute, isCombinedOrClearDomain,
     analyticsPath, analyticsAudiencePath, analyticsAcquisitionPath,
@@ -163,6 +163,14 @@ export function useAdSpendReport(domain, fromIso, toIso, enabled = true) {
     return { data, loading };
 }
 
+// Fallback only, for a consumer rendered without the real DateRangeContext
+// Provider (App.js) above it — e.g. in isolation/tests. The real app always
+// has the Provider, so these module-load-time values are never what an
+// actual user sees; computed once rather than per-render since that's all
+// a fallback needs.
+const DEFAULT_FROM_DATE = (() => { const d = new Date(); d.setDate(d.getDate() - 30); return d; })();
+const DEFAULT_TO_DATE = new Date();
+
 // Domain resolution + date-range state that's identical across every
 // Analytics page — split out from useAnalyticsPage() below so pages with
 // their own bespoke data-fetching (Heatmap, Recordings, Bots, ...) can still
@@ -177,13 +185,29 @@ export function useAnalyticsPageChrome() {
         return String(globalDomain || "").trim().toLowerCase();
     }, [globalDomain]);
 
-    const [getLastDays, setLastDays] = useState(30);
-    const [fromDate, setFromDate] = useState(() => {
-        const d = new Date();
-        d.setDate(d.getDate() - 30);
-        return d;
-    });
-    const [toDate, setToDate] = useState(() => new Date());
+    // Shared across every analytics tab via DateRangeContext (App.js) — see
+    // docs/analytics-audit-plan.md item 12. Previously each page's own call
+    // to this hook held getLastDays/fromDate/toDate in local useState, so
+    // switching tabs silently reset the range to the hardcoded 30-day
+    // default every time. Same three independent values/setters as before
+    // (Filter/the date picker already calls each one separately), just
+    // lifted to one shared place instead of duplicated per page.
+    const [dateRange, setDateRange] = useContext(DateRangeContext);
+    const getLastDays = dateRange?.getLastDays ?? 30;
+    const fromDate = dateRange?.fromDate ?? DEFAULT_FROM_DATE;
+    const toDate   = dateRange?.toDate   ?? DEFAULT_TO_DATE;
+    const setLastDays = useCallback(
+        (days) => setDateRange(dr => ({ ...(dr || {}), getLastDays: days })),
+        [setDateRange]
+    );
+    const setFromDate = useCallback(
+        (d) => setDateRange(dr => ({ ...(dr || {}), fromDate: d })),
+        [setDateRange]
+    );
+    const setToDate = useCallback(
+        (d) => setDateRange(dr => ({ ...(dr || {}), toDate: d })),
+        [setDateRange]
+    );
 
     const fromIso = useMemo(() => toIsoDate(fromDate), [fromDate]);
     const toIso   = useMemo(() => toIsoDate(toDate),   [toDate]);
@@ -328,6 +352,43 @@ export function ConsentBar({ label, yes, no }) {
 export function formatPercent(value, digits = 1) {
     if (value == null || !Number.isFinite(value)) return "—";
     return value.toLocaleString("de-DE", { minimumFractionDigits: digits, maximumFractionDigits: digits }) + "%";
+}
+
+// One canonical symbol map + locale (de-DE, matching formatPercent/every
+// count on the dashboard) instead of the ~7 near-duplicate, subtly
+// different copies this used to be spread across (AdSpend.js,
+// ConversionCampaigns.js, ReportBuilder.js, ReportView.js, index.js each
+// had their own CURRENCY_SYMBOLS map, and ConversionAttribution.js used
+// Intl.NumberFormat("en-GB", ...) entirely — a different locale's
+// thousands/decimal punctuation from everything else on the page). See
+// docs/analytics-audit-plan.md item 12. Pass `cents: true` for a
+// value_cents-style integer amount.
+export const CURRENCY_SYMBOLS = {
+    EUR: "€", USD: "$", GBP: "£", CHF: "CHF ",
+    DKK: "kr ", SEK: "kr ", NOK: "kr ", PLN: "zł ",
+    AUD: "A$", CAD: "C$", SGD: "S$",
+};
+
+export function formatCurrency(amount, currency, { cents = false } = {}) {
+    const value = cents ? Number(amount || 0) / 100 : Number(amount || 0);
+    const symbol = CURRENCY_SYMBOLS[currency] ?? (currency ? currency + " " : "");
+    return `${symbol}${value.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+}
+
+// One shared number formatter, de-DE locale throughout (same reasoning as
+// formatPercent/formatCurrency above) — BandLineChart's y-axis labels
+// (Performance.js) used to abbreviate with an English-style "1.1k" (period
+// decimal) right next to other dashboard numbers formatted "9.829" (de-DE,
+// period thousands-separator) — same digit shape, opposite punctuation
+// meaning. `abbreviate: true` now abbreviates in the same de-DE convention
+// ("1,1k") instead of switching locale conventions entirely. See
+// docs/analytics-audit-plan.md item 12.
+export function formatCount(n, { abbreviate = false } = {}) {
+    if (n == null || !Number.isFinite(n)) return "—";
+    if (abbreviate && Math.abs(n) >= 1000) {
+        return (n / 1000).toLocaleString("de-DE", { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + "k";
+    }
+    return Math.round(n).toLocaleString("de-DE");
 }
 
 export function formatDuration(seconds) {
