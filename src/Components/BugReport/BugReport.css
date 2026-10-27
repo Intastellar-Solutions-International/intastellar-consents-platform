@@ -327,36 +327,50 @@
 }
 
 /* ── Trigger ─────────────────────────────────────────────── */
+/* Docked edge tab, not a floating pill — docs/design-audit-plan.md Phase 2
+   item 2. Was position:fixed bottom:20px right:80px, a comment claiming
+   "bottom-left, clear of DevTierSwitcher (bottom-right)" that didn't match
+   its own CSS (it was bottom-RIGHT), at z-index 9989 with no dev-only
+   gate — sitting directly on top of whatever table/KPI happened to render
+   in that corner on a short viewport (Phase 0: "covers data, DK count,
+   table column headers"). A vertical-center, edge-docked tab is
+   predictable regardless of page content/scroll position instead of
+   floating over whatever's underneath it. */
 .br-root {
     position: fixed;
-    bottom: 20px;
-    right: 80px;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
     z-index: 9989;
     font-family: inherit;
 }
 
 .br-trigger {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 7px;
-    padding: 9px 16px;
+    gap: 6px;
+    padding: 12px 8px;
     background: rgba(14, 14, 18, 0.92);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 22px;
+    border-right: none;
+    border-radius: 10px 0 0 10px;
     cursor: pointer;
     font-family: inherit;
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     font-weight: 500;
     color: #909090;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
     backdrop-filter: blur(12px);
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4), 0 1px 0 rgba(255,255,255,0.04) inset;
+    box-shadow: -4px 0 24px rgba(0, 0, 0, 0.3), 1px 0 0 rgba(255,255,255,0.04) inset;
     transition: border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .br-trigger:hover {
     border-color: rgba(255, 255, 255, 0.18);
     color: #c8c8c8;
-    box-shadow: 0 6px 28px rgba(0, 0, 0, 0.5), 0 1px 0 rgba(255,255,255,0.05) inset;
+    box-shadow: -6px 0 28px rgba(0, 0, 0, 0.4), 1px 0 0 rgba(255,255,255,0.05) inset;
 }
 
 .br-trigger--active {
@@ -368,6 +382,7 @@
     width: 15px;
     height: 15px;
     flex-shrink: 0;
+    writing-mode: horizontal-tb;
     color: currentColor;
     opacity: 0.8;
 }

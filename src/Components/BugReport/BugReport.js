@@ -263,7 +263,9 @@ export default function BugReport() {
                 </div>
             )}
 
-            {/* Floating trigger — bottom-left, clear of DevTierSwitcher (bottom-right) */}
+            {/* Docked edge tab — right edge, vertically centered. See
+                BugReport.css for why this replaced the old floating pill
+                (docs/design-audit-plan.md Phase 2 item 2). */}
             <div className="br-root">
                 <button
                     className={`br-trigger${open ? " br-trigger--active" : ""}`}

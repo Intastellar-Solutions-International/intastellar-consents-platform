@@ -792,3 +792,25 @@ to these 3 rules — a repo-wide grep found **14** total `align-items: start` ru
 the other 11 are elsewhere and weren't touched (no evidence they cause the same dead-space problem,
 and Phase 0 only flagged these 3 specifically). Verified via `postcss.parse()`; this is a pure CSS
 property change with no JS involved, so no test applies. Visually affects Overview only.
+
+### 2. Feedback button — docked edge tab, not the avatar menu — done, screenshots pending
+
+The brief offered two options ("avatar menu or a docked tab"); went with the docked tab. The avatar
+menu (`IntastellarAccounts.js`) is shared app-wide (CMP pages too, not just Analytics) — same scope
+concern as Phase 1's `StickyPageTitle` decision. The docked tab keeps the change entirely contained
+to `BugReport.js`/`BugReport.css`.
+
+`.br-root` changed from `position:fixed; bottom:20px; right:80px` (a floating pill whose own code
+comment claimed "bottom-left" while the CSS said bottom-right — Phase 0 caught this contradiction)
+to a vertical, edge-docked tab: `top:50%; right:0; transform:translateY(-50%)`, rounded only on the
+left edge (the one facing content), `writing-mode: vertical-rl` for the label text. Vertically
+centered and edge-anchored regardless of scroll position or page content — directly fixes "covers
+data (DK count, table column headers)" by making the footprint predictable instead of floating over
+whatever happens to render in that corner. The centered modal form itself (`.br-panel`) is
+positioned independently (`top:50%; left:50%`) and wasn't touched.
+
+**This one most needs a live screenshot to confirm it actually looks right** — reasoning about a
+`writing-mode: vertical-rl` + icon layout from CSS alone has real risk of a subtle visual bug I
+can't catch without rendering it. Flagging this explicitly rather than assuming it's correct; will
+verify and iterate the moment the browser connection is live, before considering this item truly
+done.
