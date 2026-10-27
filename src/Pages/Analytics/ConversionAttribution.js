@@ -273,10 +273,18 @@ export default function ConversionAttribution() {
         });
     }, [data, domain]);
 
+    // `ids` omitted (bulk mode, the header button below) retries everything
+    // not yet sent — see docs/analytics-audit-plan.md item 9. Previously
+    // this sent {domain} alone, which the backend's default (used by the
+    // unattended cron sweep) interprets as "pending only" — so the button,
+    // despite being labeled "Push {pendingCount + failedCount} pending",
+    // silently never touched a single failed row no matter how many there
+    // were. `statuses` makes that explicit instead of relying on a default
+    // that's deliberately conservative for the cron's sake.
     async function pushPending(ids) {
         setPushing(true); setPushResult(null);
         try {
-            const body = ids?.length ? { domain, ids } : { domain };
+            const body = ids?.length ? { domain, ids } : { domain, statuses: ["pending", "failed"] };
             const r = await fetch(PUSH_URL, {
                 method: "POST",
                 headers: authHeaders(),
@@ -294,6 +302,13 @@ export default function ConversionAttribution() {
 
     const pendingCount = data?.summary?.pushStats?.pending ?? 0;
     const failedCount  = data?.summary?.pushStats?.failed  ?? 0;
+    // The backend processes at most 100 rows per call (sequential external
+    // API calls to each ad platform — a much higher cap risks the function
+    // timing out). When the backlog is bigger than that, say so rather than
+    // implying one click clears everything; the button stays visible (and
+    // pendingCount/failedCount shrink) after each click; see item 9.
+    const unsentCount = pendingCount + failedCount;
+    const unsentCountThisClick = Math.min(unsentCount, 100);
 
     return (
         <div style={{ flex: "1", minWidth: 0 }}>
@@ -317,12 +332,31 @@ export default function ConversionAttribution() {
                                 Pending records are sent to the respective ad platform to improve campaign optimisation.
                             </p>
                             <div style={{ display: "flex", gap: 8 }}>
-                                {(pendingCount > 0 || failedCount > 0) && (
-                                    <button className="sa-btn sa-btn--primary" onClick={() => pushPending()} disabled={pushing}>
-                                        {pushing ? "Pushing…" : `Push ${pendingCount + failedCount} pending`}
+                                {unsentCount > 0 && (
+                                    <button className="sa-btn sa-btn--primary" onClick={() => pushPending()} disabled={pushing}
+                                        title={`${pendingCount} pending, ${failedCount} failed`}>
+                                        {pushing ? "Pushing…" : unsentCount > unsentCountThisClick
+                                            ? `Retry ${unsentCountThisClick} of ${unsentCount} unsent`
+                                            : `Retry ${unsentCount} unsent`}
                                     </button>
                                 )}
                             </div>
+                        </div>
+                    )}
+
+                    {/* Top failure reasons — see item 9. Each row's error_message is
+                        also shown on hover, but that's effectively invisible once the
+                        backlog is more than a handful of rows. */}
+                    {data?.summary?.topFailureReasons?.length > 0 && (
+                        <div className="sa-panel" style={{ marginBottom: 16, padding: "12px 16px" }}>
+                            <p style={{ margin: "0 0 6px", fontSize: 12, fontWeight: 600, color: "rgba(239,68,68,0.9)" }}>
+                                Why pushes are failing
+                            </p>
+                            {data.summary.topFailureReasons.map(r => (
+                                <p key={r.message} style={{ margin: "2px 0", fontSize: 12.5, color: "rgba(200,200,200,0.85)" }}>
+                                    <strong>{r.count}×</strong> {r.message}
+                                </p>
+                            ))}
                         </div>
                     )}
 

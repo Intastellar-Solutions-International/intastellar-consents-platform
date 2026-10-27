@@ -12,5 +12,6 @@ import "./consent-impact.test.mjs";
 import "./forms.test.mjs";
 import "./forms-dedup-sql.test.mjs";
 import "./alerts.test.mjs";
+import "./ad-conversion-push.test.mjs";
 
 await run();

@@ -306,14 +306,37 @@ export default async function handler(req, res) {
     const domain = body.domain || null;
     const limit  = Math.min(parseInt(body.limit || "50", 10), 100);
     const ids    = Array.isArray(body.ids) ? body.ids.map(Number).filter(Boolean) : null;
+    // See docs/analytics-audit-plan.md item 9 — explicit, so a caller that
+    // wants to retry failed rows (not just pending ones) can ask for that
+    // without processPendingPushes's default (used by the unattended cron
+    // sweep in cron-ad-conversion-push.js) silently changing to also retry
+    // every permanently-failed row on every single run.
+    const statuses = Array.isArray(body.statuses) ? body.statuses : null;
 
-    const result = await processPendingPushes(db, { orgId, domain, limit, ids });
+    const result = await processPendingPushes(db, { orgId, domain, limit, ids, statuses });
     return res.status(200).json(result);
+}
+
+// Only these two are ever safe to (re)send — "sent" must never be retried.
+const STATUSES_RETRIABLE = new Set(["pending", "failed"]);
+
+// Normalizes a caller-supplied status list down to the subset that's ever
+// safe to retry, deduped, defaulting to ["pending"] when empty/invalid/
+// omitted — the single rule both the manual endpoint and
+// processPendingPushes' own default rely on, rather than two copies that
+// could silently drift (see docs/analytics-audit-plan.md item 9 — the bug
+// this item fixes was exactly this kind of mismatch between what a caller
+// asked for and what the query actually filtered on).
+export function resolveRetryStatuses(rawStatuses) {
+    const cleaned = Array.isArray(rawStatuses)
+        ? [...new Set(rawStatuses)].filter(s => STATUSES_RETRIABLE.has(s))
+        : [];
+    return cleaned.length ? cleaned : ["pending"];
 }
 
 // ── Core processing — org-scoped for the manual/JWT caller above, org-agnostic
 // (orgId omitted) for the cron job in cron-ad-conversion-push.js ─────────────
-export async function processPendingPushes(db, { orgId = null, domain = null, limit = 50, ids = null } = {}) {
+export async function processPendingPushes(db, { orgId = null, domain = null, limit = 50, ids = null, statuses = null } = {}) {
     // Fetch pending push records
     let pushes;
     if (ids?.length) {
@@ -328,8 +351,14 @@ export async function processPendingPushes(db, { orgId = null, domain = null, li
             params
         ).then(r => r.rows);
     } else {
-        const params = [];
-        const conditions = [`p.status='pending'`];
+        // Default to 'pending' only — the unattended cron sweep (no explicit
+        // `statuses`) must never auto-retry 'failed' rows on every run, or a
+        // permanently-broken config (e.g. "no ad platform connection found")
+        // would get hammered against the ad platform's API forever. A caller
+        // that explicitly wants failed rows retried (the UI's bulk button)
+        // passes statuses: ['pending','failed'].
+        const params = [resolveRetryStatuses(statuses)];
+        const conditions = [`p.status = ANY($1)`];
         if (orgId)  { params.push(orgId);  conditions.push(`p.organisation_id=$${params.length}`); }
         if (domain) { params.push(domain); conditions.push(`s.domain=$${params.length}`); }
         params.push(limit);

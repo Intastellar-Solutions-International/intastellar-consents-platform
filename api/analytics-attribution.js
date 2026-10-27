@@ -8,6 +8,38 @@ import { isHeadlineConversionSql } from "./_conversions.js";
  *
  * Required headers: Authorization: Bearer <token>, Organisation: <org_id>
  */
+
+// Google's structured error responses embed a unique per-request requestId
+// inside a JSON blob in the middle of the message (e.g. `... |
+// {"@type":"...","requestId":"t-0ccaf03f-..."} | destinations[0]....`) — two
+// failures with the exact same real cause otherwise never group together,
+// since every row's message is technically unique. Stripping just that
+// blob leaves the stable, human-meaningful parts intact.
+function normalizeErrorMessage(msg) {
+    return msg.replace(/\s*\|\s*\{[^}]*\}\s*\|/, " |").trim();
+}
+
+// Top failure reasons — see docs/analytics-audit-plan.md item 9. Each
+// row's own error_message is already shown on hover in the UI, but with a
+// meaningful-sized backlog that's effectively invisible (nobody hovers
+// over 300+ rows to notice they all say the same thing, or — for Google's
+// errors — that they'd all say the same thing if not for an embedded
+// request ID making every single one look unique). Surfacing the dominant
+// reason up front — often a one-time config fix, e.g. "no ad platform
+// connected for this domain" — rather than only on a per-row basis.
+export function summarizeFailureReasons(pushes) {
+    const counts = new Map();
+    for (const p of pushes) {
+        if (p.status !== "failed" || !p.error_message) continue;
+        const key = normalizeErrorMessage(p.error_message);
+        counts.set(key, (counts.get(key) || 0) + 1);
+    }
+    return [...counts.entries()]
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 5)
+        .map(([message, count]) => ({ message, count }));
+}
+
 function validateJwt(authHeader) {
     const match = (authHeader || "").match(/^Bearer\s+(.+)$/i);
     if (!match) return null;
@@ -132,6 +164,8 @@ export default async function handler(req, res) {
     const pushStats = { pending: 0, sent: 0, failed: 0 };
     for (const p of pushes) pushStats[p.status] = (pushStats[p.status] || 0) + 1;
 
+    const topFailureReasons = summarizeFailureReasons(pushes);
+
     // Enrich events with push status
     const enriched = attributed.map(ev => ({
         ...ev,
@@ -150,6 +184,7 @@ export default async function handler(req, res) {
             totalAttributedValueCents: totalAttributedValue,
             platformCounts,
             pushStats,
+            topFailureReasons,
         },
     });
 }

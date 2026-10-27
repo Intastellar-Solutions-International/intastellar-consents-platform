@@ -861,6 +861,54 @@ confirming the bulk button's displayed count matches what it will actually proce
 
 ---
 
+### Status: implemented, live (2026-10-27)
+
+**Bulk retry fixed.** Added `resolveRetryStatuses()` (one shared rule, used by both the manual
+endpoint's request parsing and `processPendingPushes`' own default — avoiding exactly the kind of
+two-copies-that-drift bug the `NON_CONVERSION_AUTO_EVENTS` hotfix earlier in this project ran into)
+to `api/ad-conversion-push.js`. The cron sweep's default stays `['pending']` only — deliberately:
+auto-retrying `failed` rows on every unattended run would hammer a permanently-broken config (like
+asasoftware.aero's "no ad platform connection") against the ad platform's API forever. The UI's
+bulk button now explicitly sends `statuses: ['pending', 'failed']`, and its label was wrong twice
+over — fixed both: it now says `Retry {unsentCount} unsent` (was computing
+`pendingCount + failedCount` and calling the sum "pending"), and when the backlog exceeds the
+backend's 100-per-call cap (kept as-is — each push is a sequential external HTTP call to an ad
+platform; raising it risks a function timeout) it says `Retry 100 of {N} unsent` instead of
+implying one click clears everything.
+
+**Failure reasons surfaced.** Added `summarizeFailureReasons()` to `api/analytics-attribution.js`
+and a visible panel above the retry button showing the top 5 failure reasons with counts, instead
+of only a per-row hover tooltip nobody notices at scale. Also normalizes Google's structured error
+messages (which embed a unique `requestId` per failure) before grouping — without that, 76
+structurally-identical "conversion action type is not valid" failures each looked like their own
+distinct, one-off reason instead of one real, actionable group.
+
+**The 276 "no ad platform connection" failures — corrected, not what Phase 0 guessed.** The
+original hypothesis (tied to item 1's page_host/multi-host finding) was wrong, and I want to say so
+rather than let a half-right guess stand: the connection lookup keys on `analytics_sites.domain`
+(the one registered domain for the site, resolved once via `site_id` — never on `page_host`), so
+`book.asasoftware.aero` vs `www.asasoftware.aero` was never actually in play here. Checked what's
+really going on: **every one of these 276 failures is `platform = 'microsoft_ads'`**, and this
+organisation has connections for `google_ads`/`google_analytics`/`google_search_console` across
+several domains but has simply never connected Microsoft Ads for *any* domain. This isn't a code
+bug — the tracker correctly queues a push whenever it sees an `msclkid` (Bing/Microsoft click ID)
+regardless of whether a connection exists yet, and the failure message is already accurate. The
+real fix is operational (connect Microsoft Ads in Settings if this account runs Bing Ads
+campaigns, or stop expecting these to ever succeed if it doesn't) — the dashboard now says so
+plainly via the new failure-reasons panel instead of leaving it to be discovered 276 hovers deep.
+
+9/9 new tests pass (66/66 overall).
+
+**Before/after — asasoftware.aero, 2026-09-27 to 2026-10-27:**
+
+| | Before | After |
+|---|---|---|
+| Bulk button label | "Push 361 pending" (0 pending + 361 failed, mislabeled) | "Retry 100 of 361 unsent" |
+| Clicking it today would process | **0** of the 361 (defaulted to `status='pending'`, and 0 rows are pending) | **100** (the per-call cap — 3 more clicks clear the rest) |
+| Failure visibility | Per-row hover tooltip only | Panel: 276× no ad platform connection (Microsoft Ads never connected), 76× Google "conversion action type is not valid" (grouped — was 76 separate 1-count noise entries before the requestId-normalization fix), 9× no Meta Pixel configured |
+
+---
+
 ## 10. Performance accuracy — 🟢 one exact bug found; several confirmed gaps; two items need a live screenshot/payload to finish
 
 **Where:** `api/analytics-performance.js`, `api/analytics-page-weight.js`,
