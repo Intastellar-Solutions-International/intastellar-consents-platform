@@ -44,8 +44,24 @@ function validateJwt(authHeader) {
     } catch { return null; }
 }
 
-const Pn = (col, p) =>
-    `PERCENTILE_CONT(${p}) WITHIN GROUP (ORDER BY (extra_data->>'${col}')::numeric) FILTER (WHERE extra_data->>'${col}' IS NOT NULL AND (extra_data->>'${col}')::numeric > 0)`;
+// CLS = 0 is a valid measurement (no layout shifts) and must not be excluded
+// from the distribution — omitting it inflates every CLS percentile. Mirrors
+// the identical zero-guard in api/analytics-performance.js; that file's CLS
+// percentiles were already correct, this one's weren't, which is why this
+// tab's CLS figure (0.499) didn't match the Performance tab's (0.000) for
+// the exact same underlying data — see docs/analytics-audit-plan.md item 10.
+// Same winsorize caps as api/analytics-performance.js — see item 10 there
+// for why (an impossible single outlier shouldn't drag a percentile).
+const WINSORIZE_CAP_MS = { lcp: 60000, inp: 10000, load: 60000, tbt: 10000 };
+
+export const Pn = (col, p) => {
+    const cap = WINSORIZE_CAP_MS[col];
+    const valueExpr = cap
+        ? `LEAST((extra_data->>'${col}')::numeric, ${cap})`
+        : `(extra_data->>'${col}')::numeric`;
+    const zeroGuard = col === "cls" ? "" : ` AND (extra_data->>'${col}')::numeric > 0`;
+    return `PERCENTILE_CONT(${p}) WITHIN GROUP (ORDER BY ${valueExpr}) FILTER (WHERE extra_data->>'${col}' IS NOT NULL${zeroGuard})`;
+};
 const P75 = (col) => Pn(col, 0.75);
 // Same shape as Pn()/P75() above but for a numeric field nested one level
 // deeper — pageWeight sits at extra_data->>'pageWeight' (top-level, like lcp/

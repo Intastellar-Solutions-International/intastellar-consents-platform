@@ -52,13 +52,49 @@ function validateJwt(authHeader) {
 // distribution — omitting it inflates every CLS percentile and breaks CrUX parity.
 // All other metrics use > 0 to guard against spurious zero values (TTFB and Load are
 // already stored as NULL when zero by the embed, so the guard is mostly redundant there).
-const Pn = (col, p) => {
+// Winsorize caps, ms — an impossible single outlier (LCP 217s, INP minutes
+// long — real examples from this audit, see docs/analytics-audit-plan.md
+// item 10) shouldn't be able to drag a percentile or corrupt histogram
+// bucket boundaries. Only duration-style metrics get a cap; CLS is a
+// bounded score already and doesn't run away the same way.
+const WINSORIZE_CAP_MS = { lcp: 60000, inp: 10000, load: 60000, tbt: 10000 };
+
+export const Pn = (col, p) => {
+    const cap = WINSORIZE_CAP_MS[col];
+    const valueExpr = cap
+        ? `LEAST((extra_data->>'${col}')::numeric, ${cap})`
+        : `(extra_data->>'${col}')::numeric`;
     const zeroGuard = col === "cls"
         ? ""
         : ` AND (extra_data->>'${col}')::numeric > 0`;
-    return `PERCENTILE_CONT(${p}) WITHIN GROUP (ORDER BY (extra_data->>'${col}')::numeric) FILTER (WHERE extra_data->>'${col}' IS NOT NULL${zeroGuard})`;
+    return `PERCENTILE_CONT(${p}) WITHIN GROUP (ORDER BY ${valueExpr}) FILTER (WHERE extra_data->>'${col}' IS NOT NULL${zeroGuard})`;
 };
 const P75 = (col) => Pn(col, 0.75);
+
+// Resources that aren't the site's own assets at all — a browser extension
+// (antivirus, ad blocker, password manager, ...) injecting its own scripts
+// into the page — showing up in "slowest file" as if the site itself were
+// responsible for them. See docs/analytics-audit-plan.md item 10. Kept
+// short and evidence-based (seeded only with the domain actually observed
+// in this audit, kaspersky-labs.com) rather than padded with a guessed-at
+// general list — same convention as SPAM_REFERRER_DOMAINS in
+// api/_self-referral.js.
+// A conversionRate is flagged lowSample below either threshold — see
+// docs/analytics-audit-plan.md item 10 ("Business impact: 2 of 343" from
+// the original audit). That example is exactly why both thresholds exist,
+// not just a session-count floor: asasoftware.aero's real "good" bucket
+// has 351 sessions (comfortably past any reasonable session-count floor)
+// but only 2 conversions — a percentage computed from a numerator that
+// small swings wildly with one more or one fewer conversion, regardless of
+// how many sessions sit underneath it.
+export const MIN_BUSINESS_IMPACT_SAMPLE = 20;
+export const MIN_BUSINESS_IMPACT_CONVERSIONS = 10;
+
+const THIRD_PARTY_RESOURCE_HOSTS = ["kaspersky-labs.com"];
+const THIRD_PARTY_RESOURCE_SQL = `
+    res->>'url' !~* '^(chrome|moz|safari|edge)-extension://'
+    AND res->>'url' !~* '(${THIRD_PARTY_RESOURCE_HOSTS.map(h => h.replace(/\./g, "\\.")).join("|")})'
+`;
 
 export default async function handler(req, res) {
     setCors(req, res);
@@ -381,6 +417,7 @@ export default async function handler(req, res) {
                      ELSE '[]'::jsonb END
               ) AS res
             WHERE ${ATTR_WHERE}
+              AND ${THIRD_PARTY_RESOURCE_SQL}
             GROUP BY 1, 2
             HAVING COUNT(*) >= 3
             ORDER BY avg_dur DESC
@@ -686,6 +723,17 @@ export default async function handler(req, res) {
                     sessions,
                     conversions,
                     conversionRate:  sessions > 0 ? Math.round(conversions / sessions * 1000) / 10 : 0,
+                    // See docs/analytics-audit-plan.md item 10 — a bucket
+                    // this small (e.g. 2 conversions from 343 sessions)
+                    // produces a conversionRate that looks precise but is
+                    // statistical noise; the frontend shows "not enough
+                    // data yet" instead of the percentage when this is
+                    // true. Checks the conversion count specifically, not
+                    // just the session count — asasoftware.aero's real
+                    // "good" bucket has 351 sessions (plenty) but only 2
+                    // conversions, which a session-count-only floor would
+                    // have missed entirely.
+                    lowSample: sessions < MIN_BUSINESS_IMPACT_SAMPLE || conversions < MIN_BUSINESS_IMPACT_CONVERSIONS,
                 };
             }),
     });

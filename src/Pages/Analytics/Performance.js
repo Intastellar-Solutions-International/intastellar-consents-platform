@@ -38,6 +38,12 @@ const RATING_LABEL = {
     "needs-improvement":"Needs improvement",
     "poor":             "Poor",
 };
+// Mirrors MIN_BUSINESS_IMPACT_SAMPLE / MIN_BUSINESS_IMPACT_CONVERSIONS in
+// api/analytics-performance.js — only used for the copy text below; the
+// actual lowSample flag per bucket is computed server-side against these
+// same thresholds. api/ and src/ aren't cross-imported in this project, so
+// this is kept in sync by hand.
+const MIN_BUSINESS_IMPACT_CONVERSIONS_CLIENT = 10;
 
 function fmtMs(v) {
     if (v == null) return "—";
@@ -1318,20 +1324,32 @@ function BusinessImpact({ businessImpact, qualifyingEvents }) {
     const maxRate  = Math.max(...businessImpact.map(r => r.conversionRate), 0.01);
     const goodRow  = businessImpact.find(r => r.rating === "good");
     const poorRow  = businessImpact.find(r => r.rating === "poor");
-    const uplift   = goodRow && poorRow && poorRow.conversionRate > 0
+    // Don't compute an uplift headline from a bucket too small to mean
+    // anything (e.g. "2 of 343 sessions") — see docs/analytics-audit-plan.md
+    // item 10. `lowSample` is computed server-side (api/analytics-performance.js)
+    // against the same sessions count shown in the per-row sub-label below.
+    const eitherLowSample = Boolean(goodRow?.lowSample || poorRow?.lowSample);
+    const uplift   = goodRow && poorRow && poorRow.conversionRate > 0 && !eitherLowSample
         ? ((goodRow.conversionRate - poorRow.conversionRate) / poorRow.conversionRate * 100)
         : null;
 
     return (
         <div>
-            {uplift !== null && uplift > 0 && (
+            {eitherLowSample && (
+                <div className="sa-perf-bi-callout sa-perf-bi-callout--neutral">
+                    Not enough data yet to compare Good vs Poor conversion rates reliably
+                    (fewer than {MIN_BUSINESS_IMPACT_CONVERSIONS_CLIENT} conversions in at least one bucket).
+                    Consider a longer date range.
+                </div>
+            )}
+            {!eitherLowSample && uplift !== null && uplift > 0 && (
                 <div className="sa-perf-bi-callout">
                     Sessions with <strong>Good</strong> Core Web Vitals convert at a{" "}
                     <strong>{Math.round(uplift)}% higher rate</strong> than <strong>Poor</strong> sessions
                     — a direct performance-to-revenue signal.
                 </div>
             )}
-            {uplift !== null && uplift <= 0 && (
+            {!eitherLowSample && uplift !== null && uplift <= 0 && (
                 <div className="sa-perf-bi-callout sa-perf-bi-callout--neutral">
                     No clear conversion uplift between Good and Poor sessions in this period.
                     Consider a longer date range or check if the qualifying event fires on the right page.
@@ -1341,7 +1359,7 @@ function BusinessImpact({ businessImpact, qualifyingEvents }) {
                 {businessImpact.map(r => {
                     const color   = RATING_COLOR[r.rating] || "rgba(160,160,180,0.6)";
                     const label   = RATING_LABEL[r.rating]  || r.rating;
-                    const barPct  = maxRate > 0 ? (r.conversionRate / maxRate) * 100 : 0;
+                    const barPct  = r.lowSample ? 0 : (maxRate > 0 ? (r.conversionRate / maxRate) * 100 : 0);
                     return (
                         <div key={r.rating} className="sa-perf-bi-row">
                             <div className="sa-perf-bi-label">
@@ -1356,7 +1374,9 @@ function BusinessImpact({ businessImpact, qualifyingEvents }) {
                                               background: color.replace(/[\d.]+\)$/, "0.35)") }} />
                             </div>
                             <div className="sa-perf-bi-rate">
-                                {r.conversionRate.toFixed(1).replace(".", ",")}%
+                                {r.lowSample
+                                    ? <span className="sa-muted" style={{ fontSize: 12 }}>not enough data</span>
+                                    : `${r.conversionRate.toFixed(1).replace(".", ",")}%`}
                             </div>
                             <div className="sa-perf-bi-sessions sa-muted">
                                 {r.conversions.toLocaleString("de-DE")} / {r.sessions.toLocaleString("de-DE")} sessions

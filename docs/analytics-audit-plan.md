@@ -966,6 +966,52 @@ zero/non-zero sample set produces the same P75 as the equivalent (correct) Perfo
 
 ---
 
+### Status: (a)(b)(c)(f) implemented and live; (d)(e) still need what Phase 0 said they'd need
+
+**(c) CLS bug — fixed, confirmed with real data.** Mirrored `api/analytics-performance.js`'s CLS
+zero-guard into `api/analytics-page-weight.js`'s `Pn()`. Real asasoftware.aero numbers: the old
+Page Weight calculation (zero-excluded) gives **CLS p75 = 0.524**; the fixed one (zero included,
+now identical in both files) gives **CLS p75 = 0** — matching the Performance tab's correct 0.000
+almost exactly (the brief cited 0.499, close enough to be the same underlying bug measured a few
+days apart). Verified both files now produce byte-identical SQL for `Pn("cls", p)`.
+
+**(a) Winsorization — implemented.** `WINSORIZE_CAP_MS = { lcp: 60000, inp: 10000, load: 60000, tbt:
+10000 }`, applied inside the shared `Pn()` in both files (every one of the ~15 call sites across
+both files gets it for free, not just the headline KPI). Real data turned up an even more extreme
+outlier than the brief's example: **one event has `lcp = 514,336,112` ms — ~5.9 days**, not 217
+seconds. 35 events in the 30-day window exceed the 60s cap entirely. As expected (and as the plan
+predicted), **P75 is unchanged** (2,252ms before and after — a single outlier can't move a
+percentile drawn from hundreds of samples) — the real effect is at the tail: **P99 drops from
+93,065ms to 60,000ms (the cap)**, which is what actually feeds histogram bucket boundaries and
+"slowest" displays.
+
+**(b) Third-party resource filtering — implemented, confirmed hitting real data.** Added a
+browser-extension-URL-scheme filter (`chrome/moz/safari/edge-extension://`) plus the
+evidence-based `kaspersky-labs.com` entry to the slow-resources query. Confirmed in real data:
+asasoftware.aero's slow-resources list currently includes 2 occurrences of
+`gc.kis.v2.scr.kaspersky-labs.com/.../longpooling` — exactly the brief's cited example — now
+excluded.
+
+**(f) Business-impact sample-size guard — implemented, and I caught my own bug before shipping it.**
+First pass: `lowSample = sessions < 20`. Checked it against asasoftware.aero's real numbers before
+calling it done — the actual "good" CWV bucket has **351 sessions but only 2 conversions**. A
+session-count-only floor doesn't catch this at all (351 ≥ 20), which would have shipped the exact
+same "2 of 343"-style misleading precision the brief flagged, just with a guard that looked like it
+was handling it. Fixed before committing: `lowSample` now also checks the conversion count
+specifically (`MIN_BUSINESS_IMPACT_CONVERSIONS = 10`), independent of session count. Real
+asasoftware.aero buckets this period: good (351 sessions / 2 conversions → **now flagged**
+lowSample), needs-improvement (61 / 0 → **now flagged**), poor (141 / 0 → **now flagged**) — all
+three correctly caught; the frontend shows "not enough data" instead of a percentage for each.
+
+**(d) headline-vs-trend LCP and (e) garbled axis labels — still not touched, as planned.** Both
+explicitly needed a live screenshot/payload before proposing a fix rather than guessing, and I
+still don't have one. Not re-attempted this session.
+
+15/15 new tests pass (75/75 overall), including live-Postgres checks for the winsorization cap and
+the CLS parity fix.
+
+---
+
 ## 11. Heatmap — 🟢 scroll-depth root cause tied to item 1; preview bug needs live repro
 
 **Where:** scroll milestones `api/a.js:1396-1408`; per-pageview `scroll_depth` column
