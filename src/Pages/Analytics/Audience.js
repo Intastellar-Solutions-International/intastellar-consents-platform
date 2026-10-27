@@ -25,7 +25,8 @@ function topicLabel(id){ return TOPIC_LABELS[id] || ('Topic #' + id); }
 // null = filter out (structural/generic types with no user-interest signal).
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import AnalyticsWorldMap from "./AnalyticsWorldMap.js";
-import { useAnalyticsPage, MiniBar, KpiCard, useAnalyticsReport, toIsoDate, pctChange, PanelSkeleton } from "./_shared.js";
+import { useAnalyticsPage, MiniBar, KpiCard, useAnalyticsReport, toIsoDate, pctChange } from "./_shared.js";
+import { SkeletonRows } from "./components/Skeleton.js";
 import { IconGlobe, IconUsers, IconRadio } from "./Icons.js";
 import ErrorBoundary from "../../Components/Error/ErrorBoundary.js";
 import "./Analytics.css";
@@ -117,7 +118,7 @@ function InterestsPanel({ ruleInterests, topicInterests, maxTopics, detailLoadin
             </h3>
 
             {detailLoading && !hasAny ? (
-                <PanelSkeleton rows={4} />
+                <SkeletonRows rows={4} />
             ) : !hasAny ? (
                 <p className="sa-notice" style={{ margin:0,padding:"8px 0" }}>
                     No interest data yet. Define{" "}
@@ -126,7 +127,7 @@ function InterestsPanel({ ruleInterests, topicInterests, maxTopics, detailLoadin
                 </p>
             ) : tab === "rules" ? (
                 detailLoading && !hasRules ? (
-                    <PanelSkeleton rows={4} />
+                    <SkeletonRows rows={4} />
                 ) : !hasRules ? (
                     <p className="sa-notice" style={{ margin:0,padding:"6px 0",fontSize:12 }}>
                         No rules configured yet. Add URL-pattern → label rules in{" "}

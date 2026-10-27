@@ -431,19 +431,6 @@ export function IndustryBenchmarkNote({ benchmark, actualPct }) {
 
 // Shimmer placeholder shown while the slow analytics-report-detail call loads.
 // `rows` controls how many skeleton lines to render inside the panel.
-export function PanelSkeleton({ rows = 4 }) {
-    return (
-        <div className="sa-skeleton-rows">
-            {Array.from({ length: rows }, (_, i) => (
-                <div key={i} className="sa-skeleton-row">
-                    <div className="sa-skeleton" style={{ width: (38 + (i * 19) % 38) + "%", height: 10 }} />
-                    <div className="sa-skeleton" style={{ flex: 1, height: 8 }} />
-                </div>
-            ))}
-        </div>
-    );
-}
-
 export function MiniBar({ value, max, color = "rgba(192,159,83,0.7)" }) {
     const pct = max > 0 ? Math.round((value / max) * 100) : 0;
     return (

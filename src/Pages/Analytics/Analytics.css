@@ -44,7 +44,7 @@
 
     /* 5 semantic status colors, kept separate from --sa-accent (gold stays
        reserved for brand/interactive use — buttons, links — never status).
-       RGB triplets, same convention as --sa-text-*/--sa-c-* above, so call
+       RGB triplets, same convention as --sa-text-* and --sa-c-* above, so call
        sites pick their own opacity and a future light theme (Phase 7) only
        redefines these, not every call site.
 
@@ -1823,6 +1823,7 @@
     align-items: center;
     gap: 10px;
 }
+.sa-skeleton--flex { flex: 1; }
 
 /* ── Shared dark-theme form primitives (interest rules, etc.) ──────────────── */
 
@@ -6518,10 +6519,17 @@ details[open] .ca-context-summary::before { content: "▾"; }
     height: 100%;
     background: linear-gradient(90deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.07) 50%, rgba(255,255,255,0.03) 100%);
     background-size: 200% 100%;
-    animation: sa-shimmer 1.6s infinite;
+    animation: sa-shimmer-perf-thumb 1.6s infinite;
     border-radius: 3px;
 }
-@keyframes sa-shimmer {
+/* Renamed from a second @keyframes sa-shimmer (Phase 1 Skeleton work found
+   this — two different @keyframes shared that exact name; CSS doesn't
+   merge same-named @keyframes, the later one in source order silently wins
+   for EVERY usage, so .sa-skeleton's own animation (line ~1812) was
+   actually running this rule's reversed direction, not its own. Renamed
+   rather than deleted — this one's duration (1.6s vs 1.5s) and direction
+   genuinely differ, not a pure duplicate. */
+@keyframes sa-shimmer-perf-thumb {
     0%   { background-position: 200% 0; }
     100% { background-position: -200% 0; }
 }

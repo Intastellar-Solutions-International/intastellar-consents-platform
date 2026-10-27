@@ -544,4 +544,40 @@ which had real edge cases). Verified via babel syntax check only.
 **No before/after screenshots** — neither component is wired into any page yet, so nothing renders
 differently. Screenshots start once a real page adopts one of these (Phase 2/6).
 
+### 3. Skeleton — done, promoted + a real latent CSS bug fixed along the way
+
+New `src/Pages/Analytics/components/Skeleton.js`: `SkeletonBlock` (the base shimmer rectangle,
+replacing the ad-hoc `<span className="sa-skeleton" style={{width,height}} />` pattern typed out at
+each call site), `SkeletonRows` (promoted from `_shared.js`'s old `PanelSkeleton` export — renamed,
+see below), `KpiCardSkeleton` and `PanelSkeleton` (promoted from `index.js`'s local
+`KpiCardSkeleton`/`PanelSkeletonShell`). `index.js`'s page-specific `OverviewSkeleton` composition
+stays in `index.js` (it hardcodes Overview's exact `.sa-overview-main`/`.sa-overview-geo` grid shape
+— not generic enough to promote) but now imports the generic pieces instead of defining them
+locally, and its raw inline `.sa-skeleton` spans were swapped for `SkeletonBlock`.
+
+**Naming fix, not just a move:** `_shared.js` and `index.js` each had a thing called
+`PanelSkeleton`/`PanelSkeletonShell` meaning two *different* amounts of markup (rows-only vs. a full
+panel with a title) — confusing if you only saw the import, not the implementation. Renamed the
+rows-only one to `SkeletonRows`; `PanelSkeleton` now consistently means "a whole panel." Updated
+both real consumers (`Audience.js`, `index.js`) directly rather than keeping a compatibility
+re-export — only 2 call sites existed, confirmed via a repo-wide grep before touching anything.
+
+**Found and fixed a real latent bug while building this, unrelated to the promotion itself:**
+`Analytics.css` had **two different `@keyframes sa-shimmer` rules** (lines ~1799 and ~6524) animating
+in *opposite directions* with different durations (1.5s vs. 1.6s). CSS doesn't merge same-named
+`@keyframes` — the later one in source order silently wins for every usage, meaning `.sa-skeleton`'s
+own shimmer (the one this component now formalizes) was actually running the *other* rule's timing,
+not its own, this whole time. Renamed the second one (`Performance.js`'s thumbnail-loading shimmer,
+genuinely different timing, not a true duplicate) to `sa-shimmer-perf-thumb` and repointed its one
+call site — both animations now run their own, correct, intended timing.
+
+**Screenshots:** skipped, deliberately, with a reason — not just "didn't bother." Every visual
+change in this commit is one of: (a) componentized but pixel-identical (same class names, same
+computed widths/heights preserved exactly — `Audience.js`, `OverviewSkeleton`), or (b) a sub-second
+loading-flash state that only exists for the duration of an initial data fetch, or (c) an animation
+*timing* difference (the shimmer-direction fix) that a static screenshot cannot represent at all. A
+screenshot diff here would show nothing, or at best mislead by implying nothing changed when an
+animation nuance genuinely did. Verified via babel syntax check + the full `npm test` suite (94/94,
+unchanged) instead.
+
 Not yet committed — see commit message for exact diff once pushed.

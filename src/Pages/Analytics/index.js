@@ -9,9 +9,10 @@ import AnalyticsWorldMap from "./AnalyticsWorldMap.js";
 import {
     authHeaders, KpiCard, MiniBar, useAnalyticsPage, useAnalyticsReport, useSiteConfig,
     toIsoDate, pctChange, IndustryBenchmarkNote, formatPercent, SegmentFilter, AnalyticsSubNav,
-    useForeignDomains, splitForeignDomainsByRecency, PanelSkeleton,
+    useForeignDomains, splitForeignDomainsByRecency,
     formatCurrency, CURRENCY_SYMBOLS,
 } from "./_shared.js";
+import { SkeletonBlock, KpiCardSkeleton, PanelSkeleton } from "./components/Skeleton.js";
 import {
     IconBarChart, IconUsers, IconShieldCheck, IconGlobe, IconTrendingUp,
     IconDocument, IconRadio, IconTarget, IconMegaphone, IconCash, IconExternalLink, IconCursorClick,
@@ -741,33 +742,9 @@ function ConsentImpactPanel({ impact }) {
 // the real layout below (KPI strip, chart + live feed, geo row) so the page
 // doesn't flash from blank to fully populated.
 
-function KpiCardSkeleton() {
-    return (
-        <div className="sa-kpi">
-            <div className="sa-kpi__head">
-                <span className="sa-skeleton" style={{ width: 70, height: 10 }} />
-            </div>
-            <span className="sa-kpi__value">
-                <span className="sa-skeleton" style={{ width: 56, height: 20, display: "inline-block" }} />
-            </span>
-            <span className="sa-kpi__sub">
-                <span className="sa-skeleton" style={{ width: 90, height: 8, display: "inline-block" }} />
-            </span>
-        </div>
-    );
-}
-
-function PanelSkeletonShell({ rows = 4 }) {
-    return (
-        <div className="sa-panel">
-            <h3 className="sa-panel__title">
-                <span className="sa-skeleton" style={{ width: 120, height: 11 }} />
-            </h3>
-            <PanelSkeleton rows={rows} />
-        </div>
-    );
-}
-
+// KpiCardSkeleton/PanelSkeleton promoted to components/Skeleton.js (Phase 1
+// of docs/design-audit-plan.md) — this page now only composes them into its
+// own specific layout shape, same as before.
 function OverviewSkeleton() {
     return (
         <div className="sa-overview">
@@ -778,18 +755,18 @@ function OverviewSkeleton() {
             <div className="sa-overview-main">
                 <div className="sa-chart-section">
                     <div className="sa-chart-section__hd">
-                        <span className="sa-skeleton" style={{ width: 140, height: 12 }} />
-                        <span className="sa-skeleton" style={{ width: 70, height: 10 }} />
+                        <SkeletonBlock width={140} height={12} />
+                        <SkeletonBlock width={70} height={10} />
                     </div>
-                    <span className="sa-skeleton" style={{ width: "100%", height: 220, display: "block" }} />
+                    <SkeletonBlock width="100%" height={220} />
                 </div>
-                <PanelSkeletonShell rows={5} />
+                <PanelSkeleton rows={5} />
             </div>
 
             <div className="sa-overview-geo">
-                <PanelSkeletonShell rows={5} />
-                <PanelSkeletonShell rows={5} />
-                <PanelSkeletonShell rows={3} />
+                <PanelSkeleton rows={5} />
+                <PanelSkeleton rows={5} />
+                <PanelSkeleton rows={3} />
             </div>
         </div>
     );
