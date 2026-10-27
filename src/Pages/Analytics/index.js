@@ -472,7 +472,7 @@ function KpiStrip({ data, siteConfig, trendEngaged, trendEvents, trendSessions, 
                 icon={<IconShieldCheck />}
                 label="Consent rate"
                 value={formatPercent(consentPct)}
-                sub="statisticCookies accepted"
+                sub="statisticCookies accepted — this analytics tracker's own full-consent rate"
                 variant={consentPct < 20 ? "warn" : "live"}
                 trend={trendConsent}
             >
@@ -679,7 +679,9 @@ function ConsentImpactPanel({ impact }) {
             </p>
             <div className="sa-ci-kpis">
                 <div className="sa-ci-kpi">
-                    <span className="sa-ci-kpi__label">Consent rate</span>
+                    <span className="sa-ci-kpi__label" title="This analytics tracker's own full-consent rate — not the CMP banner's acceptance rate shown on the Marketing tab, which is a different metric from a different system.">
+                        Full-consent rate
+                    </span>
                     <span className="sa-ci-kpi__value">{formatPercent(consentRate)}</span>
                 </div>
                 <div className="sa-ci-kpi">

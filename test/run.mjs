@@ -7,5 +7,7 @@ import "./noise-referral-sql.test.mjs";
 import "./foreign-domains-banner.test.mjs";
 import "./conversions.test.mjs";
 import "./conversions-sql.test.mjs";
+import "./consent-granular.test.mjs";
+import "./consent-impact.test.mjs";
 
 await run();

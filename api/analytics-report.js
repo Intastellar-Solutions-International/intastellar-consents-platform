@@ -54,6 +54,41 @@ export function embeddedClause(includeEmbedded) {
     return includeEmbedded ? null : "is_embedded = false";
 }
 
+// Estimates the "true" unfiltered visitor count from the full-consent
+// fraction. Not derived from the consent platform's own DB (which lives on
+// a separate server); computed entirely from the consent_level field
+// captured in analytics_events at event time. Exported (and extracted out
+// of the inline IIFE it used to be) so the percent-vs-fraction scale is
+// directly testable — see docs/analytics-audit-plan.md item 6: this used
+// to return `consentRate` as a raw 0-1 fraction while every other consumer
+// of formatPercent() expects a 0-100 percent, so the estimator rendered
+// "0.3%" instead of "27.3%" for the exact same underlying ratio the KPI
+// card showed correctly.
+export function computeConsentImpact(totalsRow, dailyRows) {
+    const t = totalsRow || {};
+    const full = Number(t.full_count || 0);
+    const totalObs = Number(t.total || 0);
+    // Fraction (0-1) — used for the estimation math below, which needs a
+    // divisor, not a display value.
+    const consentRateFraction = totalObs > 0 ? full / totalObs : 0;
+    const uniqueSess = Number(t.unique_sessions || 0);
+    return {
+        // Percent-scaled (0-100), matching totals.consentRate's contract.
+        consentRate: Math.round(consentRateFraction * 1000) / 10,
+        observedSessions: uniqueSess,
+        estimatedTrue: consentRateFraction > 0 ? Math.round(uniqueSess / consentRateFraction) : null,
+        dailyEstimates: (dailyRows || []).map(r => {
+            const d_full = Number(r.full_count || 0);
+            const d_total = Number(r.minimal || 0) + d_full;
+            const d_rate = d_total > 0 ? d_full / d_total : consentRateFraction;
+            return {
+                date: r.date,
+                estimated: d_rate > 0 ? Math.round(d_full / d_rate) : d_total,
+            };
+        }),
+    };
+}
+
 // utm_campaign is whatever literal text was in the visitor's landing URL —
 // we only capture it, never generate or template it ourselves. Two common
 // garbage-in cases from misconfigured ad platforms: (1) an unsubstituted
@@ -663,27 +698,7 @@ async function _handler(req, res) {
         // full-consent fraction. Not derived from the consent platform's own DB
         // (which lives on a separate server); computed entirely from the consent_level
         // field captured in analytics_events at event time.
-        consentImpact: (() => {
-            const t = totalsRes.rows[0] || {};
-            const full = Number(t.full_count || 0);
-            const totalObs = Number(t.total || 0);
-            const consentRate = totalObs > 0 ? full / totalObs : 0;
-            const uniqueSess  = Number(t.unique_sessions || 0);
-            return {
-                consentRate,
-                observedSessions: uniqueSess,
-                estimatedTrue: consentRate > 0 ? Math.round(uniqueSess / consentRate) : null,
-                dailyEstimates: dailyRes.rows.map(r => {
-                    const d_full = Number(r.full_count || 0);
-                    const d_total = Number(r.minimal || 0) + d_full;
-                    const d_rate = d_total > 0 ? d_full / d_total : consentRate;
-                    return {
-                        date: r.date,
-                        estimated: d_rate > 0 ? Math.round(d_full / d_rate) : d_total,
-                    };
-                }),
-            };
-        })(),
+        consentImpact: computeConsentImpact(totalsRes.rows[0], dailyRes.rows),
         lastTouchByChannel: lastTouchByChannelRes.rows.map(r => ({
             channel:  r.channel,
             sessions: Number(r.sessions || 0),

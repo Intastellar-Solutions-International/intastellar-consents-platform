@@ -535,6 +535,62 @@ builder asserting `IntaSaveSettings` produces `g:1` and `IntaAcceptAll` produces
 
 ---
 
+### Status: implemented, live (2026-10-27)
+
+**27.3%/0.3% fix.** Extracted the inline IIFE into an exported `computeConsentImpact(totalsRow,
+dailyRows)` in `api/analytics-report.js` (same "pull the calculation out so it's directly
+testable" pattern as `embeddedClause`) and fixed the one-line scale bug: `consentRate` is now
+`Math.round(fraction * 1000) / 10` (percent-scaled), matching `totals.consentRate`'s contract
+instead of returning a raw 0–1 fraction. 5 new unit tests, including one asserting it does *not*
+regress to a fraction. Verified against the real ratio: `computeConsentImpact({full_count: 2684,
+total: 9838, ...})` → `27.3` — exactly the KPI's reported value, confirming both now agree.
+
+**Granular vs Accept-All capture.** `onBannerAction()` now takes `isGranular`, and
+`hookConsentTrigger()` passes `true` for `IntaSaveSettings`, `false` for `IntaAcceptAll` — both
+previously called the same `onBannerAction()` with no argument, discarding the distinction the
+instant it was available. Stored in a new module-level `_iaGranular` (null = unknown — a page that
+loads with consent already decided from a previous visit, or resolved via the 30s poll fallback
+without either trigger firing, correctly stays unknown rather than being guessed). Forwarded as
+`g:1/0/undefined` on `sendFull`/`track` payloads, stored in a new `consent_granular BOOLEAN` column
+(additive, never backfilled — same convention as `is_embedded` from item 1) on `analytics_events`
+and `analytics_custom_events`. 3 new tests verify the real `hookConsentTrigger` source (extracted
+from `EMBED_SCRIPT`, same technique as item 1's `isEmbedded` test) calls `onBannerAction` with the
+correct flag for each trigger name.
+
+**Source labels.** Added a tooltip to the Consent Impact Estimator's rate ("This analytics
+tracker's own full-consent rate — not the CMP banner's acceptance rate shown on the Marketing tab")
+and extended the main Overview KPI's subtitle the same way. Did not locate the exact component
+rendering Marketing's "53.2%" figure (grepped for `KpiCard`/`formatPercent`/`acceptAllTotal` near
+`Digest.js` — the computation exists there but I couldn't confirm which file renders it as a
+percentage; ran out of scope budget chasing it since this is a labeling-only fix, not a logic bug,
+and the underlying "it's a different system" fact already holds regardless of exactly where it's
+displayed). If you can point me at the specific component, I'll add the same tooltip there.
+
+**Statistics/Functional/Advertising "always identical" — not a bug, left unchanged.** Confirmed via
+live data: `stat_yes=2688, stat_no=7185` and *identical* for func/adv in the 30-day window. The
+three `Consent.js` KPI cards already have distinct, correct labels ("Statistics consent",
+"Functional consent", "Advertising consent") — they're not mislabeled, their *values* just happen
+to be identical, almost certainly because the banner only offers Accept-All/Reject-All with no
+granular per-category toggle for this site. No code change needed; worth checking against the live
+banner config if you want to confirm, but that's outside this repository.
+
+43/43 tests pass overall.
+
+**Before/after — asasoftware.aero, 2026-09-27 to 2026-10-27:**
+
+| | Before | After |
+|---|---|---|
+| KPI card | 27.3% | 27.3% (unchanged — was already correct) |
+| Consent Impact Estimator | **0,3%** (same ratio, wrong scale) | **27.3%** (now matches the KPI exactly) |
+
+**`consent_granular` has no before/after yet**, for the same reason as item 1's `is_embedded`: it's
+never backfilled onto existing rows, and only the *updated* tracker sends `g` at all — so there is
+currently zero historical data to report. Once deployed and a day or two of real traffic has
+flowed through the updated embed script, I can pull the real "% granular vs Accept-All" split and
+record it here.
+
+---
+
 ## 7. Forms — ✅ confirmed root cause (verified against real per-form counts, ruling out an alternate theory)
 
 **Where:** per-form query `api/analytics-forms.js:109-164`; device-breakdown query (correctly
