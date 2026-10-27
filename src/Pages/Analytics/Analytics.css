@@ -1171,6 +1171,62 @@
     font-weight: 700;
 }
 
+/* ── ChartCard (Phase 1 shared component) ──────────────────────────────────────
+   Same visual shape as .sa-chart-section above (background/border/radius/
+   shadow) — not a visual redesign, just the new state-aware wrapper
+   (loading/error/empty) the Phase 5 Chart component will render inside. */
+
+.sa-chart-card {
+    background: var(--sa-surface-3, rgba(26,26,36,0.92));
+    border: 1px solid var(--sa-border, rgba(255,255,255,0.055));
+    border-radius: var(--sa-radius, 12px);
+    padding: 22px 24px 20px;
+    box-shadow: var(--sa-shadow-panel);
+}
+
+.sa-chart-card__head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--sa-space-3, 12px);
+    margin-bottom: var(--sa-space-4, 16px);
+}
+
+.sa-chart-card__title-group {
+    display: flex;
+    align-items: center;
+    gap: var(--sa-space-2, 8px);
+    min-width: 0;
+}
+
+.sa-chart-card__title {
+    margin: 0;
+    font-size: var(--sa-font-md, 0.9rem);
+    font-weight: 600;
+    color: rgba(var(--sa-text),0.9);
+}
+
+.sa-chart-card__subtitle {
+    font-size: var(--sa-font-xs, 0.78rem);
+    color: rgba(var(--sa-text-muted),0.7);
+    white-space: nowrap;
+}
+
+.sa-chart-card__actions { display: flex; align-items: center; gap: var(--sa-space-2, 8px); flex-shrink: 0; }
+
+.sa-chart-card__body { position: relative; width: 100%; }
+
+.sa-chart-card__legend {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--sa-space-4, 16px);
+    margin-top: var(--sa-space-3, 12px);
+    font-size: var(--sa-font-xs, 0.78rem);
+    color: rgba(var(--sa-text-muted),0.75);
+}
+
 /* ── Dashboard grid ──────────────────────────────────────────────────────────── */
 
 .sa-dashboard-grid {

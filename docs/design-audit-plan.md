@@ -632,4 +632,15 @@ work, not this commit.
 
 **No before/after screenshots** — not wired into any page yet.
 
+### 7. ChartCard — done
+
+New `src/Pages/Analytics/components/ChartCard.js`. Handles the loading/error/empty states every
+chart needs (reusing the Phase 1 `SkeletonBlock`/`ErrorState`/`EmptyState`), so Phase 5's actual
+`Chart` component only has to handle the "there is real data" case. Title row with optional
+badge/subtitle, and a bottom legend slot matching the GA4 reference's bottom-left legend convention
+(Decisions §3). New `.sa-chart-card` CSS class, visually based on the existing `.sa-chart-section`
+(same background/border/radius/shadow) — not a visual redesign, just the new state-aware wrapper.
+
+**No before/after screenshots** — not wired into any page yet.
+
 Not yet committed — see commit message for exact diff once pushed.
