@@ -303,6 +303,44 @@ date-scoped count.
 
 ---
 
+### Status: implemented, live (2026-10-27)
+
+Went with copy + scoping only, no logic change and no bulk-approve UI — resolving open question 3
+per my own recommendation above (33 of 35 domains hadn't been seen in over a month; reads as
+spoofed/scan noise, not a legitimate second domain worth a bulk-approve shortcut). Extracted the
+recent-vs-stale split into a pure `splitForeignDomainsByRecency(domains, fromDate)` in
+`src/Pages/Analytics/_shared.js` (unit-testable without mounting the component) and call it from
+the Overview banner in `src/Pages/Analytics/index.js`, which already had `fromDate` in scope from
+`useAnalyticsPage()`.
+
+New banner copy:
+- If any unapproved domain was seen within the selected date range: *"`<domain>` — an unrecognized
+  domain seen in this date range. **Not counted** in any number below — approve it here if it's
+  actually yours. (+N older, already-excluded domains not shown here.)"*
+- If none were seen in range (all stale): *"N unrecognized domains seen previously (none in this
+  date range) — already excluded from every number below. Review in case any are still active."*
+
+Both replace the old *"Receiving signals from N unrecognized domains. Tracking is paused until
+approved"* — which never said whether visible numbers were affected, and read as an active, urgent
+problem regardless of whether any of the N had been seen in the last two months. 4/4 new tests
+pass (24/24 overall).
+
+**Before/after — asasoftware.aero, 2026-09-27 to 2026-10-27 (live query):**
+
+Of the 35 unapproved domains, exactly **1** (`www-asasoftware-aero.translate.goog`, last seen
+2026-10-26) falls inside this 30-day window — the other 34 were last seen in late August/early
+September, 4-8 weeks before the window even starts.
+
+| | Before | After |
+|---|---|---|
+| Banner text | "Receiving signals from **35 unrecognized domains**. Tracking is paused until approved." | "**www-asasoftware-aero.translate.goog** — an unrecognized domain seen in this date range. **Not counted** in any number below — approve it here if it's actually yours. (+34 older, already-excluded domains not shown here.)" |
+
+The old banner made it look like 35 domains were a live, current problem; the new one correctly
+surfaces the 1 that's actually recent and makes unambiguous that none of the 35 — recent or
+stale — are affecting any number on the page.
+
+---
+
 ## 5. One conversion definition — ✅ confirmed; the single highest-leverage fix in Phase 1
 
 **Where:** `AUTO_EVENT_NAMES` in `src/Pages/Analytics/Conversions.js:25-53` (the one real source of

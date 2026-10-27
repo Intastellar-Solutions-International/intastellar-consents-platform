@@ -455,6 +455,18 @@ export function SegmentFilter({ segment, setSegment }) {
 }
 
 // ── Foreign domain signals ────────────────────────────────────────────────────
+
+// The foreign-domains list itself is all-time (api/analytics-foreign-domains.js's
+// GET has no date filter), so without this, the Overview banner's count mixes
+// in domains that haven't been seen in weeks alongside ones seen today — see
+// docs/analytics-audit-plan.md item 4. Pulled out as a pure function (used by
+// a useMemo in index.js) so the split itself is unit-testable without
+// mounting the component.
+export function splitForeignDomainsByRecency(domains, fromDate) {
+    const recent = domains.filter(d => d.last_seen && new Date(d.last_seen) >= fromDate);
+    return { recent, olderCount: domains.length - recent.length };
+}
+
 export function useForeignDomains(domain) {
     const [domains, setDomains] = useState([]);
     const [reload, setReload] = useState(0);

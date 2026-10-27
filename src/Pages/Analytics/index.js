@@ -9,7 +9,7 @@ import AnalyticsWorldMap from "./AnalyticsWorldMap.js";
 import {
     authHeaders, KpiCard, MiniBar, useAnalyticsPage, useAnalyticsReport, useSiteConfig,
     toIsoDate, pctChange, IndustryBenchmarkNote, formatPercent, SegmentFilter, AnalyticsSubNav,
-    useForeignDomains, PanelSkeleton,
+    useForeignDomains, splitForeignDomainsByRecency, PanelSkeleton,
 } from "./_shared.js";
 import {
     IconBarChart, IconUsers, IconShieldCheck, IconGlobe, IconTrendingUp,
@@ -787,6 +787,12 @@ export default function SiteAnalytics() {
     const siteConfig    = useSiteConfig(domain);
     const { domains: foreignDomains } = useForeignDomains(domain);
     const pendingForeignDomains = foreignDomains.filter(d => !d.approved);
+    // Split by whether the domain was actually seen within the selected date
+    // range — see docs/analytics-audit-plan.md item 4.
+    const { recent: recentPendingForeignDomains, olderCount: olderPendingForeignDomainsCount } = useMemo(
+        () => splitForeignDomainsByRecency(pendingForeignDomains, fromDate),
+        [pendingForeignDomains, fromDate]
+    );
 
     const trendEngaged  = useMemo(() => pctChange(data?.totals?.engagedUsers,   prevData?.totals?.engagedUsers),   [data, prevData]);
     const trendEvents   = useMemo(() => pctChange(data?.totals?.total,          prevData?.totals?.total),          [data, prevData]);
@@ -876,10 +882,24 @@ export default function SiteAnalytics() {
                         <div className="sa-foreign-banner">
                             <span className="sa-foreign-banner__dot" />
                             <span className="sa-foreign-banner__text">
-                                Receiving signals from {pendingForeignDomains.length === 1
-                                    ? <><strong>{pendingForeignDomains[0].domain}</strong> — an unrecognized domain</>
-                                    : <><strong>{pendingForeignDomains.length} unrecognized domains</strong></>
-                                }. Tracking is paused until approved.
+                                {recentPendingForeignDomains.length > 0 ? (
+                                    <>
+                                        {recentPendingForeignDomains.length === 1
+                                            ? <><strong>{recentPendingForeignDomains[0].domain}</strong> — an unrecognized domain</>
+                                            : <><strong>{recentPendingForeignDomains.length} unrecognized domains</strong></>
+                                        } seen in this date range. <strong>Not counted</strong> in any number below —
+                                        approve it here if it's actually yours.
+                                        {olderPendingForeignDomainsCount > 0 && (
+                                            <> (+{olderPendingForeignDomainsCount} older, already-excluded domain{olderPendingForeignDomainsCount === 1 ? "" : "s"} not shown here.)</>
+                                        )}
+                                    </>
+                                ) : (
+                                    <>
+                                        <strong>{pendingForeignDomains.length} unrecognized domain{pendingForeignDomains.length === 1 ? "" : "s"}</strong> seen
+                                        previously (none in this date range) — already excluded from every number below.
+                                        Review in case any are still active.
+                                    </>
+                                )}
                             </span>
                             <Link className="sa-foreign-banner__link" to={analyticsSettingsPath(domain)}>
                                 Review &amp; approve →

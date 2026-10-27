@@ -4,5 +4,6 @@ import "./analytics-report-embed-filter.test.mjs";
 import "./push-gate-scope.test.mjs";
 import "./self-referral.test.mjs";
 import "./noise-referral-sql.test.mjs";
+import "./foreign-domains-banner.test.mjs";
 
 await run();
