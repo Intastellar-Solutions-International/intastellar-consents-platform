@@ -62,7 +62,9 @@
        UNCHANGED here — every current call site keeps working as-is. These
        tokens back a NEW `status` prop added to KpiCard separately, for the
        invertible, semantically-correct color behavior the design brief
-       asks for (see src/Pages/Analytics/components/KpiCard.js). */
+       asks for (see KpiCard in src/Pages/Analytics/_shared.js — extended in
+       place, not moved: 13 pages already import it from there, and this
+       phase's component promotions only applied to genuinely new pieces). */
     --sa-good:    74, 222, 128;   /* = --sa-c-green's value, already the dominant "healthy" green in use */
     --sa-bad:     248, 113, 113;  /* = --sa-c-red's value (#f87171) */
     --sa-warn:    249, 191, 64;   /* = --sa-c-amber's value — true caution amber, distinct from --sa-bad */
@@ -1010,6 +1012,15 @@
 .sa-kpi--live::before { background: rgba(74,222,128,0.85) !important; }
 .sa-kpi--revenue::before { background: rgba(52,211,153,0.85) !important; }
 
+/* `status` prop (Phase 1) — the new semantically-correct variant, backed
+   by the design tokens rather than hardcoded hues. Separate from the
+   `variant` rules above (see _shared.js's KpiCard for why). */
+.sa-kpi--status-good::before    { background: rgba(var(--sa-good),0.85) !important; }
+.sa-kpi--status-warn::before    { background: rgba(var(--sa-warn),0.85) !important; }
+.sa-kpi--status-bad::before     { background: rgba(var(--sa-bad),0.85) !important; }
+.sa-kpi--status-info::before    { background: rgba(var(--sa-info),0.85) !important; }
+.sa-kpi--status-neutral::before { background: rgba(var(--sa-neutral),0.6) !important; }
+
 .sa-kpi__head {
     display: flex;
     align-items: center;
@@ -1024,6 +1035,14 @@
 .sa-kpi--warn .sa-kpi__icon    { color: rgba(248,113,113,0.7) !important; }
 .sa-kpi--live .sa-kpi__icon    { color: rgba(74,222,128,0.7) !important; }
 .sa-kpi--revenue .sa-kpi__icon { color: rgba(52,211,153,0.7) !important; }
+
+.sa-kpi--status-good    .sa-kpi__icon { color: rgba(var(--sa-good),0.75) !important; }
+.sa-kpi--status-warn    .sa-kpi__icon { color: rgba(var(--sa-warn),0.75) !important; }
+.sa-kpi--status-bad     .sa-kpi__icon { color: rgba(var(--sa-bad),0.75) !important; }
+.sa-kpi--status-info    .sa-kpi__icon { color: rgba(var(--sa-info),0.75) !important; }
+.sa-kpi--status-neutral .sa-kpi__icon { color: rgba(var(--sa-neutral),0.75) !important; }
+
+.sa-kpi__badge { margin-left: auto; }
 
 .sa-kpi__icon svg {
     width: 14px;
@@ -1066,6 +1085,25 @@
 
 .sa-kpi__trend--up   { color: rgba(74,222,128,0.9); }
 .sa-kpi__trend--down { color: rgba(248,113,113,0.9); }
+
+/* `delta` prop (Phase 1) — good/bad reflect the metric's actual sentiment
+   (can be inverted per metric via delta.invert), independent of whether
+   the raw number went up or down — see _shared.js's KpiCard. */
+.sa-kpi__trend--good { color: rgb(var(--sa-good)); }
+.sa-kpi__trend--bad  { color: rgb(var(--sa-bad)); }
+
+.sa-kpi__delta-label {
+    display: block;
+    font-size: var(--sa-font-xs, 0.68rem);
+    color: rgba(var(--sa-text-dim),0.55);
+    margin-top: -2px;
+}
+
+.sa-kpi__sparkline {
+    display: block;
+    margin-top: 2px;
+    color: rgba(var(--sa-accent),0.7);
+}
 
 .sa-kpi__sub {
     font-size: 0.69rem;

@@ -17,5 +17,6 @@ import "./performance.test.mjs";
 import "./heatmap.test.mjs";
 import "./consistency.test.mjs";
 import "./overview-kpi.test.mjs";
+import "./kpi-card.test.mjs";
 
 await run();

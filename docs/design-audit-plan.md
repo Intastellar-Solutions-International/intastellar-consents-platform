@@ -643,4 +643,43 @@ badge/subtitle, and a bottom legend slot matching the GA4 reference's bottom-lef
 
 **No before/after screenshots** — not wired into any page yet.
 
+### 8. KpiCard extension — done, extended in place (not promoted/moved)
+
+Extended `KpiCard` directly in `_shared.js` rather than moving it into `components/` — found it has
+**13 existing consumers** (`AdSpend.js`, `Audience.js`, `Acquisition.js`, `Bots.js`, `Consent.js`,
+`ConversionsOverview.js`, `Forms.js`, `GoogleAnalytics.js`, `PageWeight.js`, `ReportBuilder.js`,
+`SearchConsole.js`, `ReportView.js`, `index.js`), all importing from `./_shared.js` — unlike the
+earlier promotions (2-3 consumers each), moving the file here would mean touching every one of those
+13 import paths for no functional benefit. The original API (`icon`/`label`/`value`/`sub`/
+`variant`/`trend`/`children`) is **completely unchanged**; every existing call site keeps working
+exactly as before. (Also fixed a stale `components/KpiCard.js` file-path reference left in the
+design-tokens commit's comment, from before this scope decision was made.)
+
+**Added, per the design brief:**
+- `status` (good/warn/bad/info/neutral) — the new semantically-correct left-border/icon color,
+  backed by the Phase 1 tokens. A *new* prop rather than redefining what `variant` means, since
+  `variant`'s existing values are decorative/absolute-threshold-based today (Phase 0's consent-rate
+  and bounce-rate findings) and retrofitting all 13 call sites is Phase 6 rollout work.
+- `delta` (`{ value, label, invert }`) — richer than `trend`: `label` carries the explicit
+  comparison text the brief asks for ("vs previous 30 days"), and `invert: true` means a *falling*
+  value is the good direction. The arrow still points the direction the number actually moved
+  (factual) — only its color sentiment flips. `trend` is untouched for existing callers.
+- `sparkline` — an array of numbers rendered as a tiny inline SVG trend line (hand-rolled, same
+  convention as every chart in this codebase, not a new dependency).
+- `badge` — an arbitrary node slot next to the label (e.g. a `StatusBadge` reading "Consented
+  sessions only").
+
+**Tests:** extracted the `delta`→sentiment logic into a standalone `deltaSentiment()` function
+(`_shared.js`) and added 6 tests in `test/kpi-card.test.mjs`, including the exact bounce-rate case
+from the design brief. Hit a real gotcha while writing these: `assert.deepStrictEqual` on the
+returned object failed even though every field matched — the function runs inside a separate `vm`
+realm (same text-extraction technique as every other test in this suite), so the plain object it
+returns has a different `Object.prototype` than one built in the test file, and Node's strict-mode
+`deepStrictEqual` checks prototype identity too. Fixed by comparing the primitive fields
+individually instead of the whole object — worth remembering for any future test on a function that
+returns an object rather than a primitive/array. Full suite: 100/100 passing (94 previous + 6 new).
+
+**No before/after screenshots** — the new props are all optional and no existing call site passes
+them yet, so no current page's rendering changes.
+
 Not yet committed — see commit message for exact diff once pushed.

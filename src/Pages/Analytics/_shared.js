@@ -293,12 +293,68 @@ export function pctChange(current, previous) {
     return ((current - previous) / previous) * 100;
 }
 
-export function KpiCard({ icon, label, value, sub, variant, className, trend, children }) {
+// Extracted for testability — the arrow always reflects which way the raw
+// number actually moved (isUp); only the color sentiment (isGood) flips
+// per delta.invert, e.g. a falling bounce rate is isUp=false, isGood=true.
+export function deltaSentiment(delta) {
+    const isUp = delta.value >= 0;
+    const isGood = delta.invert ? !isUp : isUp;
+    return { isUp, isGood };
+}
+
+// Tiny inline SVG trend line — same hand-rolled-SVG convention as every
+// chart in this codebase (see TrendLineChart.js and friends), not a new
+// dependency. aria-hidden since it's a supplementary visual next to the
+// already-accessible numeric value/delta text, not an independent source
+// of information.
+function KpiSparkline({ data, width = 56, height = 20 }) {
+    if (!data || data.length < 2) return null;
+    const max = Math.max(...data);
+    const min = Math.min(...data);
+    const range = max - min || 1;
+    const points = data.map((v, i) => {
+        const x = (i / (data.length - 1)) * width;
+        const y = height - ((v - min) / range) * height;
+        return `${x.toFixed(1)},${y.toFixed(1)}`;
+    }).join(" ");
     return (
-        <div className={"sa-kpi" + (variant ? " sa-kpi--" + variant : "") + (className ? " " + className : "")}>
+        <svg className="sa-kpi__sparkline" width={width} height={height} viewBox={`0 0 ${width} ${height}`} aria-hidden="true">
+            <polyline points={points} fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+    );
+}
+
+// Extended in docs/design-audit-plan.md Phase 1 — the original API
+// (icon/label/value/sub/variant/trend/children) is unchanged and every
+// existing call site (13 pages) keeps working exactly as before. Added:
+//
+// - `status` (good/warn/bad/info/neutral) — the new semantically-correct
+//   left-border/icon color, backed by the Phase 1 design tokens. A NEW
+//   prop rather than redefining what `variant` means, because `variant`'s
+//   existing values (warn/live/revenue) are decorative/absolute-threshold-
+//   based today (see the design-tokens commit) and retrofitting every
+//   existing call site to the new semantics is Phase 6 rollout work, not
+//   this one. If both are passed, `status` wins for the border/icon color.
+// - `delta` ({ value, label, invert }) — richer than `trend`: `label` is
+//   the explicit comparison text the design brief asks for ("vs previous
+//   30 days"), and `invert: true` means a FALLING value is the good
+//   direction (e.g. bounce rate) — the arrow still points the direction
+//   the number actually moved (factual), only its *color* flips (good/bad
+//   token) instead of being hardcoded to "up is always green." `trend` is
+//   untouched for existing callers; don't pass both on one card.
+// - `sparkline` — an array of numbers rendered as a tiny inline trend line.
+// - `badge` — an arbitrary node slot next to the label, e.g. a
+//   `<StatusBadge status="neutral" label="Consented sessions only" />`.
+export function KpiCard({
+    icon, label, value, sub, variant, status, className, trend, delta, sparkline, badge, children,
+}) {
+    const borderClass = status ? "sa-kpi--status-" + status : (variant ? "sa-kpi--" + variant : "");
+    return (
+        <div className={"sa-kpi" + (borderClass ? " " + borderClass : "") + (className ? " " + className : "")}>
             <div className="sa-kpi__head">
                 {icon && <span className="sa-kpi__icon" aria-hidden="true">{icon}</span>}
                 <span className="sa-kpi__label">{label}</span>
+                {badge && <span className="sa-kpi__badge">{badge}</span>}
             </div>
             <span className="sa-kpi__value">
                 {value}
@@ -308,7 +364,20 @@ export function KpiCard({ icon, label, value, sub, variant, className, trend, ch
                         {trend >= 0 ? "▲" : "▼"} {formatPercent(Math.abs(trend))}
                     </span>
                 )}
+                {delta && Number.isFinite(delta.value) && (() => {
+                    const { isUp, isGood } = deltaSentiment(delta);
+                    return (
+                        <span
+                            className={"sa-kpi__trend" + (isGood ? " sa-kpi__trend--good" : " sa-kpi__trend--bad")}
+                            title={delta.label || "vs. previous period of the same length"}
+                        >
+                            {isUp ? "▲" : "▼"} {formatPercent(Math.abs(delta.value))}
+                        </span>
+                    );
+                })()}
             </span>
+            {delta?.label && <span className="sa-kpi__delta-label">{delta.label}</span>}
+            {sparkline && <KpiSparkline data={sparkline} />}
             {sub && <span className="sa-kpi__sub">{sub}</span>}
             {children}
         </div>
