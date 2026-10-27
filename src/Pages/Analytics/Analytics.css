@@ -690,6 +690,104 @@
     color: rgba(var(--sa-neutral),0.95);
 }
 
+/* ── InsightCard (Phase 1 shared component) ──────────────────────────────────
+   Structural shape (padding, border-left, radius) modeled on the existing
+   .marketing-suggestions__card pattern (MarketingReport.css), but using
+   this section's own tokens rather than that stylesheet's literals — see
+   components/InsightCard.js. */
+
+.sa-insight-card {
+    position: relative;
+    padding: 14px 16px 14px 18px;
+    background: rgba(255,255,255,0.025);
+    border: 1px solid var(--sa-border, rgba(255,255,255,0.055));
+    border-left-width: 3px;
+    border-radius: var(--sa-radius, 12px);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.sa-insight-card--good    { border-left-color: rgb(var(--sa-good)); }
+.sa-insight-card--warn    { border-left-color: rgb(var(--sa-warn)); }
+.sa-insight-card--bad     { border-left-color: rgb(var(--sa-bad)); }
+.sa-insight-card--info    { border-left-color: rgb(var(--sa-info)); }
+.sa-insight-card--neutral { border-left-color: rgba(var(--sa-neutral),0.6); }
+
+.sa-insight-card__head {
+    display: flex;
+    align-items: center;
+    gap: var(--sa-space-2, 8px);
+}
+
+.sa-insight-card__title {
+    margin: 0;
+    font-size: var(--sa-font-md, 0.88rem);
+    font-weight: 600;
+    color: rgba(var(--sa-text),0.92);
+}
+
+.sa-insight-card__body {
+    margin: 0;
+    font-size: var(--sa-font-sm, 0.82rem);
+    line-height: 1.5;
+    color: rgba(var(--sa-text-secondary),0.85);
+}
+
+.sa-insight-card__sample {
+    margin: 0;
+    font-size: var(--sa-font-xs, 0.74rem);
+    color: rgba(var(--sa-text-dim),0.6);
+}
+
+.sa-insight-card__actions {
+    display: flex;
+    align-items: center;
+    gap: var(--sa-space-3, 12px);
+    margin-top: 2px;
+}
+
+.sa-insight-card__cta {
+    font-size: var(--sa-font-sm, 0.82rem);
+    font-weight: 600;
+    color: rgb(var(--sa-accent));
+    text-decoration: none;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+.sa-insight-card__cta:hover { text-decoration: underline; }
+
+.sa-insight-card__snooze {
+    font-size: var(--sa-font-xs, 0.78rem);
+    color: rgba(var(--sa-text-muted),0.75);
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+.sa-insight-card__snooze:hover { color: rgba(var(--sa-text),0.9); }
+
+.sa-insight-card__evidence {
+    margin-top: 2px;
+    font-size: var(--sa-font-xs, 0.76rem);
+    color: rgba(var(--sa-text-dim),0.65);
+}
+.sa-insight-card__evidence summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: rgba(var(--sa-text-muted),0.8);
+}
+.sa-insight-card__evidence ul {
+    margin: 6px 0 0;
+    padding-left: 18px;
+}
+.sa-insight-card__evidence code {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    color: rgba(var(--sa-text-secondary),0.85);
+}
+
 /* ── Analytics section nav — underline tab strip (Vercel/Mixpanel style) ──────── */
 
 .sa-subnav {

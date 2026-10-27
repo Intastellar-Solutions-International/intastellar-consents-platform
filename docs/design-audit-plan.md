@@ -682,4 +682,30 @@ returns an object rather than a primitive/array. Full suite: 100/100 passing (94
 **No before/after screenshots** — the new props are all optional and no existing call site passes
 them yet, so no current page's rendering changes.
 
+### 9. InsightCard — done
+
+New `src/Pages/Analytics/components/InsightCard.js`. Found the pattern the design brief asked to
+model this on — `src/Pages/Reports/MarketingReport/MarketingSuggestionsStrip.js` — already has
+everything specified: a severity chip, a finding (title + body), one action CTA, a snooze button,
+and a collapsible "Why this?" evidence disclosure, with real localStorage snooze-persistence logic
+(7-day expiry, per-domain). This is a promotion/generalization of an already-proven pattern, not a
+new design.
+
+**Scope decisions:**
+- `severity` reuses the same 5-value vocabulary as `status`/`StatusBadge` (good/warn/bad/info/
+  neutral) rather than inventing a parallel critical/high/medium/low scale — the chip itself is
+  rendered via `StatusBadge`, so severity automatically gets a label and (mostly) an icon too.
+- Stateless/presentational, same as every other Phase 1 component — the snooze **button** is here,
+  but the localStorage persistence logic (`loadSnoozeMap`/`saveSnoozeMap`/the 7-day expiry) stays
+  page-specific orchestration via an `onSnooze` callback prop, not duplicated into this component.
+  A future Phase 4 consumer (the "Needs attention" list) can reuse that exact persistence logic or
+  write its own; this card doesn't assume which.
+- Styled with the Analytics section's own tokens in `Analytics.css`, not `MarketingReport.css`'s
+  literals — that stylesheet is out of scope (CMP/Reports side, confirmed in Phase 0).
+
+**Added, per the design brief:** a `sampleSize` prop rendering "Based on N visitors" — the one
+thing the existing Marketing pattern doesn't have.
+
+**No before/after screenshots** — not wired into any page yet.
+
 Not yet committed — see commit message for exact diff once pushed.
