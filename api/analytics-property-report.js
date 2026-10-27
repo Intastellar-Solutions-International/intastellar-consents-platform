@@ -9,6 +9,7 @@
  */
 
 import { getPool } from "./_db.js";
+import { selfReferralClause, getApprovedDomainsForSites } from "./_self-referral.js";
 
 const ALLOWED_ORIGINS = [
     "https://www.intastellarconsents.com",
@@ -101,6 +102,14 @@ async function _handler(req, res) {
 
     const siteIds = siteRows.map(r => r.id);
     // $1 = siteIds array, $2 = fromDate, $3 = toDateExclusive
+
+    // See docs/analytics-audit-plan.md item 2 — none of this portfolio's own
+    // domains (or their approved cross-site domains) should show up as a
+    // "referral". Combined across every site in the rollup rather than
+    // resolved per-row; see getApprovedDomainsForSites's own comment for why
+    // that's an acceptable simplification here.
+    const approvedDomains = await getApprovedDomainsForSites(db, siteIds);
+    const SELF_REFERRAL = selfReferralClause(requestedDomains, approvedDomains);
 
     const [
         totalsRes, dailyRes, pagesRes, countriesRes, devicesRes,
@@ -199,7 +208,8 @@ async function _handler(req, res) {
         ),
 
         db.query(`
-            SELECT COALESCE(referrer_host, '(direct)') AS referrer,
+            SELECT CASE WHEN COALESCE(referrer_host, '') = '' OR ${SELF_REFERRAL}
+                        THEN '(direct)' ELSE referrer_host END AS referrer,
                    COUNT(*)                                                         AS events,
                    COUNT(DISTINCT session_id) FILTER (WHERE session_id IS NOT NULL) AS sessions
             FROM analytics_events
@@ -307,7 +317,7 @@ async function _handler(req, res) {
                     WHEN utm_medium = 'organic'
                          OR (COALESCE(utm_medium,'')='' AND COALESCE(utm_source,'')=''
                              AND referrer_host ~* '(google|bing|duckduckgo|yahoo|baidu|yandex|ecosia)\\.') THEN 'organic'
-                    WHEN COALESCE(referrer_host,'') != ''                                              THEN 'referral'
+                    WHEN COALESCE(referrer_host,'') != '' AND NOT ${SELF_REFERRAL}                      THEN 'referral'
                     WHEN COALESCE(utm_source,'') != ''                                                 THEN 'paid'
                     ELSE 'direct'
                 END AS channel,

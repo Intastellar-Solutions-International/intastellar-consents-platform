@@ -7,6 +7,7 @@
 
 import { INDUSTRY_BENCHMARKS } from "./_industry-benchmarks.js";
 import { getPool } from "./_db.js";
+import { selfReferralClause, getApprovedDomains } from "./_self-referral.js";
 const ALLOWED_ORIGINS = [
     "https://www.intastellarconsents.com",
     "https://www.consentsmanagement.com",
@@ -114,6 +115,7 @@ async function _handler(req, res) {
     }
 
     const siteId = siteRows[0].id;
+    const approvedDomains = await getApprovedDomains(db, siteId);
     const leadQualityEnabled = siteRows[0].lead_quality_enabled === true;
     const leadRequireEngaged = siteRows[0].lead_require_engaged !== false;
     const leadQualifyingPages = Array.isArray(siteRows[0].lead_qualifying_pages) ? siteRows[0].lead_qualifying_pages : [];
@@ -137,12 +139,16 @@ async function _handler(req, res) {
 
     // Channel segment maps to UTM+referrer conditions (no user text in SQL).
     const META_SOURCE_PATTERN = `'^(fb|facebook|ig|instagram|msg|messenger|an)$'`;
+    // The site's own domain (any subdomain) and any explicitly-approved
+    // cross-site domain (e.g. a booking widget host) is never a real
+    // "referral" — see docs/analytics-audit-plan.md item 2.
+    const SELF_REFERRAL = selfReferralClause(domain, approvedDomains);
     const CHANNEL_SQL = {
         organic:     `(utm_medium = 'organic' OR (COALESCE(utm_medium,'')='' AND COALESCE(utm_source,'')='' AND referrer_host ~* '(google|bing|duckduckgo|yahoo|baidu|yandex|ecosia)\\.'))`,
         paid:        `(utm_medium ~* '^(cpc|ppc|paid|cpm|display)' OR (COALESCE(utm_source,'')!='' AND COALESCE(utm_medium,'') NOT IN ('organic','') AND utm_source !~* ${META_SOURCE_PATTERN}))`,
         paid_social: `(utm_source ~* ${META_SOURCE_PATTERN})`,
-        referral:    `(COALESCE(referrer_host,'')!='' AND COALESCE(utm_source,'')='' AND COALESCE(utm_medium,'')='')`,
-        direct:      `(COALESCE(referrer_host,'')='' AND COALESCE(utm_source,'')='' AND COALESCE(utm_medium,'')='')`,
+        referral:    `(COALESCE(referrer_host,'')!='' AND COALESCE(utm_source,'')='' AND COALESCE(utm_medium,'')='' AND NOT ${SELF_REFERRAL})`,
+        direct:      `((COALESCE(referrer_host,'')='' OR ${SELF_REFERRAL}) AND COALESCE(utm_source,'')='' AND COALESCE(utm_medium,'')='')`,
     };
 
     // Embedded-context pageviews (a booking widget or similar preloaded as an
@@ -270,8 +276,12 @@ async function _handler(req, res) {
         // no UTM, etc). Un-referred traffic is grouped as "(direct)", same
         // convention most analytics tools use, so this one table gives the
         // full referral/direct picture rather than just the tagged slice.
+        // Self-referrals (the site's own domain/subdomains, or an approved
+        // cross-site domain) fold into "(direct)" too, instead of showing up
+        // as if a third party had linked in — see item 2.
         db.query(`
-            SELECT COALESCE(referrer_host, '(direct)') AS referrer,
+            SELECT CASE WHEN COALESCE(referrer_host, '') = '' OR ${SELF_REFERRAL}
+                        THEN '(direct)' ELSE referrer_host END AS referrer,
                    COUNT(*)                                                          AS events,
                    COUNT(DISTINCT session_id) FILTER (WHERE session_id IS NOT NULL)  AS sessions
             FROM analytics_events
@@ -544,7 +554,7 @@ async function _handler(req, res) {
                     WHEN utm_medium = 'organic'
                          OR (COALESCE(utm_medium,'')='' AND COALESCE(utm_source,'')=''
                              AND referrer_host ~* '(google|bing|duckduckgo|yahoo|baidu|yandex|ecosia)\\.') THEN 'organic'
-                    WHEN COALESCE(referrer_host,'') != ''                                              THEN 'referral'
+                    WHEN COALESCE(referrer_host,'') != '' AND NOT ${SELF_REFERRAL}                      THEN 'referral'
                     WHEN COALESCE(utm_source,'') != ''                                                 THEN 'paid'
                     ELSE 'direct'
                 END AS channel,

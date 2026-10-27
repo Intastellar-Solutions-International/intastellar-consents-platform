@@ -8,6 +8,8 @@
  *           sendReportEmail({ recipients, subject, html })
  */
 
+import { selfReferralClause, getApprovedDomains } from "./_self-referral.js";
+
 function pctChange(cur, prev) {
     if (prev == null || prev === 0 || cur == null) return null;
     return ((cur - prev) / prev) * 100;
@@ -21,6 +23,16 @@ export async function buildReportData(db, siteId, periodDays) {
     const fromDate          = new Date(now - periodDays * 86400000).toISOString().slice(0, 10);
     const prevToExclusive   = fromDate;
     const prevFrom          = new Date(now - periodDays * 2 * 86400000).toISOString().slice(0, 10);
+
+    // See docs/analytics-audit-plan.md item 2 — same self-referral exclusion
+    // as api/analytics-report.js's referrers table, applied here so the
+    // weekly/monthly emailed report doesn't show the site's own domain as a
+    // top "referrer".
+    const [{ rows: siteDomainRows }, approvedDomains] = await Promise.all([
+        db.query(`SELECT domain FROM analytics_sites WHERE id = $1 LIMIT 1`, [siteId]).catch(() => ({ rows: [] })),
+        getApprovedDomains(db, siteId),
+    ]);
+    const SELF_REFERRAL = selfReferralClause(siteDomainRows[0]?.domain, approvedDomains);
 
     const totalsQuery = (from, to) => db.query(`
         SELECT
@@ -90,7 +102,9 @@ export async function buildReportData(db, siteId, periodDays) {
         ).catch(() => ({ rows: [] })),
 
         db.query(`
-            SELECT COALESCE(referrer_host, '(direct)') AS referrer, COUNT(*) AS events
+            SELECT CASE WHEN COALESCE(referrer_host, '') = '' OR ${SELF_REFERRAL}
+                        THEN '(direct)' ELSE referrer_host END AS referrer,
+                   COUNT(*) AS events
             FROM analytics_events
             WHERE site_id = $1 AND consent_level = 'full'
               AND received_at >= $2 AND received_at < $3

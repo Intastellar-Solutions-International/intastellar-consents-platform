@@ -1,4 +1,5 @@
 import { getPool } from "./_db.js";
+import { selfReferralClause, getApprovedDomains } from "./_self-referral.js";
 /**
  * GET /api/analytics-user-flow?domain=<domain>&from=<YYYY-MM-DD>&to=<YYYY-MM-DD>
  *      [&goal=<eventName>&direction=to|from]
@@ -204,6 +205,13 @@ export default async function handler(req, res) {
     if (!siteRows.length) return res.status(200).json({ noSiteKey: true });
     const siteId = siteRows[0].id;
 
+    // See docs/analytics-audit-plan.md item 2 — a self-referral (the site's
+    // own domain, or an approved cross-site domain) must not be labeled
+    // "referral" in the first-touch channel_label below.
+    const approvedDomains = await getApprovedDomains(db, siteId);
+    const SELF_REFERRAL    = selfReferralClause(domain, approvedDomains);
+    const SELF_REFERRAL_AE = selfReferralClause(domain, approvedDomains, "ae.referrer_host");
+
     // ── Exact-attribution trace for one clicked node ───────────────────────
     // The main response below is capFlow()'d — a handful of aggregate
     // pairwise edges, not full session paths — because that's all a Sankey
@@ -236,11 +244,11 @@ export default async function handler(req, res) {
                     SELECT DISTINCT ON (session_id)
                         session_id,
                         CASE
-                            WHEN NULLIF(utm_source, '') IS NULL AND NULLIF(utm_medium, '') IS NULL AND referrer_host IS NULL
+                            WHEN NULLIF(utm_source, '') IS NULL AND NULLIF(utm_medium, '') IS NULL AND (referrer_host IS NULL OR ${SELF_REFERRAL})
                                 THEN '(direct)'
                             ELSE
                                 COALESCE(NULLIF(utm_source, ''), '(direct)') || ' / ' ||
-                                COALESCE(NULLIF(utm_medium, ''), CASE WHEN referrer_host IS NOT NULL THEN 'referral' ELSE '(none)' END)
+                                COALESCE(NULLIF(utm_medium, ''), CASE WHEN referrer_host IS NOT NULL AND NOT ${SELF_REFERRAL} THEN 'referral' ELSE '(none)' END)
                         END AS channel_label
                     FROM analytics_events
                     WHERE site_id = $1 AND session_id IS NOT NULL
@@ -270,11 +278,11 @@ export default async function handler(req, res) {
                 SELECT DISTINCT ON (ae.session_id)
                     ae.session_id,
                     CASE
-                        WHEN NULLIF(ae.utm_source, '') IS NULL AND NULLIF(ae.utm_medium, '') IS NULL AND ae.referrer_host IS NULL
+                        WHEN NULLIF(ae.utm_source, '') IS NULL AND NULLIF(ae.utm_medium, '') IS NULL AND (ae.referrer_host IS NULL OR ${SELF_REFERRAL_AE})
                             THEN '(direct)'
                         ELSE
                             COALESCE(NULLIF(ae.utm_source, ''), '(direct)') || ' / ' ||
-                            COALESCE(NULLIF(ae.utm_medium, ''), CASE WHEN ae.referrer_host IS NOT NULL THEN 'referral' ELSE '(none)' END)
+                            COALESCE(NULLIF(ae.utm_medium, ''), CASE WHEN ae.referrer_host IS NOT NULL AND NOT ${SELF_REFERRAL_AE} THEN 'referral' ELSE '(none)' END)
                     END AS channel_label
                 FROM analytics_events ae
                 JOIN qualifying_sessions qs ON qs.session_id = ae.session_id
@@ -369,11 +377,11 @@ export default async function handler(req, res) {
                     -- gets the plain "(direct)" label instead of the redundant
                     -- "(direct) / (none)" compound.
                     CASE
-                        WHEN NULLIF(utm_source, '') IS NULL AND NULLIF(utm_medium, '') IS NULL AND referrer_host IS NULL
+                        WHEN NULLIF(utm_source, '') IS NULL AND NULLIF(utm_medium, '') IS NULL AND (referrer_host IS NULL OR ${SELF_REFERRAL})
                             THEN '(direct)'
                         ELSE
                             COALESCE(NULLIF(utm_source, ''), '(direct)') || ' / ' ||
-                            COALESCE(NULLIF(utm_medium, ''), CASE WHEN referrer_host IS NOT NULL THEN 'referral' ELSE '(none)' END)
+                            COALESCE(NULLIF(utm_medium, ''), CASE WHEN referrer_host IS NOT NULL AND NOT ${SELF_REFERRAL} THEN 'referral' ELSE '(none)' END)
                     END AS channel_label
                 FROM analytics_events
                 WHERE site_id = $1 AND session_id IS NOT NULL
@@ -413,11 +421,11 @@ export default async function handler(req, res) {
                 SELECT DISTINCT ON (ae.session_id)
                     ae.session_id,
                     CASE
-                        WHEN NULLIF(ae.utm_source, '') IS NULL AND NULLIF(ae.utm_medium, '') IS NULL AND ae.referrer_host IS NULL
+                        WHEN NULLIF(ae.utm_source, '') IS NULL AND NULLIF(ae.utm_medium, '') IS NULL AND (ae.referrer_host IS NULL OR ${SELF_REFERRAL_AE})
                             THEN '(direct)'
                         ELSE
                             COALESCE(NULLIF(ae.utm_source, ''), '(direct)') || ' / ' ||
-                            COALESCE(NULLIF(ae.utm_medium, ''), CASE WHEN ae.referrer_host IS NOT NULL THEN 'referral' ELSE '(none)' END)
+                            COALESCE(NULLIF(ae.utm_medium, ''), CASE WHEN ae.referrer_host IS NOT NULL AND NOT ${SELF_REFERRAL_AE} THEN 'referral' ELSE '(none)' END)
                     END AS channel_label
                 FROM analytics_events ae
                 JOIN qualifying_sessions qs ON qs.session_id = ae.session_id

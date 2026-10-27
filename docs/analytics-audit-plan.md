@@ -144,6 +144,49 @@ and without `www.`) classifies as direct, not referral.
 
 ---
 
+### Status: implemented, live (2026-10-27)
+
+Shipped: a new shared `api/_self-referral.js` (`selfReferralClause()` + `getApprovedDomains()` /
+`getApprovedDomainsForSites()`), reused by all 5 locations named above —
+`api/analytics-report.js` (channel segmentation + referrers table + last-touch-by-channel),
+`api/analytics-report-detail.js` (same two patterns), `api/_scheduled-report.js` (the weekly/
+monthly emailed referrers table), `api/analytics-user-flow.js` (first-touch `channel_label`,
+4 occurrences), and `api/analytics-property-report.js` (the multi-site portfolio rollup — combines
+every site's own domain + every site's approved domains into one check, since a single row there
+can belong to any site in the portfolio; noted as a deliberate, minor simplification in the code
+comment). `selfReferralClause()` re-validates every hostname against a strict shape before
+string-interpolating it into SQL (same convention this file's `CHANNEL_SQL`/`segCountry` already
+used) — covered by a dedicated injection-shaped-input test. 16/16 tests pass.
+
+Unlike item 1, this fix needs no schema change and no backfill — `referrer_host` was always
+captured correctly, it was only ever *misclassified* downstream, so re-running the fixed query
+against already-collected data gives a real, immediate before/after:
+
+**Before/after — asasoftware.aero, 2026-09-27 to 2026-10-27 (live query, no deploy needed to see
+this — the fix is query-time only):**
+
+| Referrers table (top rows) | Before | After |
+|---|---|---|
+| `www.asasoftware.aero` | 4,408 | — (folded into direct) |
+| `asasoftware.aero` | 1,172 | — (folded into direct) |
+| `new.asasoftware.aero` | 1,134 | — (folded into direct) |
+| `(direct)` | 1,329 | **8,553** |
+| `www.google.com` | 401 | 401 (unchanged, now visibly the top real referrer) |
+| `de.search.yahoo.com` | 278 | 278 |
+
+| Channel split (untagged traffic) | Before | After |
+|---|---|---|
+| "referral" | 8,370 | **1,166** |
+| "direct" | 1,315 | **8,519** |
+
+Before this fix, 86% of this site's untagged traffic was misclassified as "referral" when it was
+actually the site's own domains referring to themselves. The real top external referrer
+(`www.google.com`, 401 events) was previously buried below three self-referral rows and didn't even
+make the top 3. This also means the "organic"/"paid" channel math (which depends on `referral` not
+swallowing real direct traffic) was working from a referral bucket that was ~86% noise.
+
+---
+
 ## 3. Internal/dev/spam traffic — ✅ confirmed, with exact numbers
 
 **Where:** `isDevOrLocalHost()` (`api/a.js:159-169`), called at `:2031` on **`page_host`** only.
