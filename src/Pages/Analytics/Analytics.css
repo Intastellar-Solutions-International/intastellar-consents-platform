@@ -37,6 +37,75 @@
     --sa-bg-amber:   rgba(249, 191, 64, 0.08);
     --sa-bg-purple:  rgba(167, 139, 250, 0.08);
     --sa-bg-teal:    rgba(45, 212, 191, 0.08);
+
+    /* ── Phase 1 design-system foundation (docs/design-audit-plan.md) ──────
+       Additive only — nothing below is consumed by any existing rule yet,
+       so this commit does not change how any current page renders. */
+
+    /* 5 semantic status colors, kept separate from --sa-accent (gold stays
+       reserved for brand/interactive use — buttons, links — never status).
+       RGB triplets, same convention as --sa-text-*/--sa-c-* above, so call
+       sites pick their own opacity and a future light theme (Phase 7) only
+       redefines these, not every call site.
+
+       Reconciling drift found during the Phase 0 audit: THREE different
+       "warn/bad" reds are simultaneously live today — .sa-kpi--warn's own
+       left-border (248,113,113, already --sa-c-red's value), that same
+       variant's VALUE text color (252,165,55 — actually amber, not red,
+       line 785 below), and the separate red used for low-completion-rate
+       thresholds in Forms.js/index.js (239,68,68). --sa-bad below adopts
+       the first as the one canonical value — already the most "tokenized"
+       of the three. Reconciling the other two call sites is Phase 6
+       rollout cleanup, not this commit.
+
+       The existing `variant` prop on KpiCard (.sa-kpi--warn etc.) is
+       UNCHANGED here — every current call site keeps working as-is. These
+       tokens back a NEW `status` prop added to KpiCard separately, for the
+       invertible, semantically-correct color behavior the design brief
+       asks for (see src/Pages/Analytics/components/KpiCard.js). */
+    --sa-good:    74, 222, 128;   /* = --sa-c-green's value, already the dominant "healthy" green in use */
+    --sa-bad:     248, 113, 113;  /* = --sa-c-red's value (#f87171) */
+    --sa-warn:    249, 191, 64;   /* = --sa-c-amber's value — true caution amber, distinct from --sa-bad */
+    --sa-info:    96, 165, 250;   /* = --sa-c-blue's value */
+    --sa-neutral: 160, 160, 160;  /* = --sa-text-muted's value, named for its status role rather than text */
+
+    /* One bar/line color per chart type, distinct from --sa-accent (gold
+       stays button/link-only). Used by the shared Chart component (Phase 5)
+       and any single-series chart that needs one consistent hue. */
+    --sa-chart-primary: 59, 130, 246;
+
+    /* 8px spacing scale for new components. --sa-gap (20px, above) predates
+       this and stays as-is — many existing rules depend on its exact value
+       and aren't retrofitted here. */
+    --sa-space-1: 4px;
+    --sa-space-2: 8px;
+    --sa-space-3: 12px;
+    --sa-space-4: 16px;
+    --sa-space-5: 24px;
+    --sa-space-6: 32px;
+    --sa-space-7: 40px;
+    --sa-space-8: 48px;
+
+    /* Type scale — 13px floor per the design brief's accessibility
+       requirement. Phase 0 found several existing sizes already below this
+       floor (.sa-kpi__label 0.72rem/11.5px, .sa-panel__title 0.78rem/
+       12.5px, .sa-table th 0.65rem/10.4px, .sa-map__caption 0.72rem/
+       11.5px) — this scale sets the correct target; retrofitting those call
+       sites is Phase 6 rollout work, not this commit. */
+    --sa-font-xs:  13px;  /* floor — smallest legal body text */
+    --sa-font-sm:  14px;
+    --sa-font-md:  15px;
+    --sa-font-lg:  17px;
+    --sa-font-xl:  22px;
+    --sa-font-2xl: 32px;  /* matches .sa-kpi__value's existing 2rem */
+
+    /* Extra radii for the new shared components. --sa-radius/--sa-radius-lg
+       above are unchanged (panels/cards). These add a smaller size (chips
+       and pills inside panels — the prior design-consistency pass found
+       most "radius drift" at this size was legitimate, not reinvented
+       panels) and a full pill radius for StatusBadge. */
+    --sa-radius-sm:   8px;
+    --sa-radius-full: 999px;
 }
 
 /* ── Site Analytics report page ─────────────────────────────────────────────── */
