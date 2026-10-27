@@ -708,4 +708,63 @@ thing the existing Marketing pattern doesn't have.
 
 **No before/after screenshots** — not wired into any page yet.
 
-Not yet committed — see commit message for exact diff once pushed.
+### 10. MetricTabStrip — done. Phase 1 complete.
+
+New `src/Pages/Analytics/components/MetricTabStrip.js` — the KPI half of the GA4-style hero
+composite from the Decisions section. A row of clickable metric tabs (label/value/delta stacked),
+where `active`/`onSelect` are controlled by the parent page, which pairs this with a `ChartCard`/
+future `Chart` bound to whichever metric is selected. Deliberately chart-agnostic — doesn't know
+about or render any chart itself.
+
+**Accessibility decision worth flagging:** used `role="group"` with `aria-pressed` toggle buttons,
+*not* a full ARIA tablist (`role="tablist"`/`role="tab"`). A real tablist requires each tab to be
+cross-referenced with its own tabpanel via `aria-controls`/`id`, and the actual chart "panel" lives
+outside this component, owned by whichever page pairs them (Phase 4). Claiming tablist semantics
+without that linkage would set the wrong expectations for assistive tech (arrow-key roving focus,
+exactly one associated panel) that this component alone can't back up. If Phase 4's actual
+implementation wants full tablist semantics once the chart panel exists, that wiring layers on top
+of this component, not inside it.
+
+**One deliberate deviation from the GA4 reference, re-flagged here too (first noted in the
+Decisions section):** GA4's own delta arrows don't invert per metric — a rising bounce rate renders
+green in their UI, the exact decorative-not-semantic bug this whole audit exists to fix. Each
+metric's `delta.invert` uses `deltaSentiment()` (built for the Phase 1 `KpiCard` extension, reused
+here) to get the correct inversion instead.
+
+Underline-tab visual language matches the existing `.sa-subnav__tab` pattern (same active-state
+accent gold) rather than inventing a third tab style.
+
+**No before/after screenshots** — not wired into any page yet.
+
+---
+
+## Phase 1 complete — summary
+
+| # | Item | Status |
+|---|---|---|
+| 1 | Design tokens | Done — 5 semantic colors, chart-series color, 8px spacing scale, 13px-floor type scale, 2 new radii. Reconciled 3 stray reds. |
+| 2 | EmptyState + ErrorState | Done — reconciled a 4th stray red. |
+| 3 | Skeleton | Done — promoted + renamed for clarity; found and fixed a real duplicate-`@keyframes` bug along the way. |
+| 4 | StatusBadge | Done — 3 new icons added. |
+| 5 | DataTable | Done — directly implements the Phase 0 overflow-at-1100px fix. |
+| 6 | PageHeader | Done — scoped as Analytics-only, not a `StickyPageTitle` replacement (found that component is shared app-wide and has its own pre-existing bugs out of this audit's scope). |
+| 7 | ChartCard | Done — state wrapper for the Phase 5 `Chart` component. |
+| 8 | KpiCard extension | Done — extended in place (13 existing consumers, not promoted/moved); added `status`/`delta`/`sparkline`/`badge`. |
+| 9 | InsightCard | Done — promoted from the already-proven Marketing page pattern. |
+| 10 | MetricTabStrip | Done — the GA4-style hero composite's KPI half. |
+
+**10 commits, all additive — zero visual change to any live page.** Every component is built, tested
+where there was real logic to test (16 new tests across `consistency.test.mjs`-adjacent files,
+tokens otherwise verified via `postcss.parse()` + babel + the full suite after every change), and
+not yet wired into any page — that wiring is Phase 2 (quick wins) and Phase 6 (rollout). No
+before/after screenshots exist for Phase 1 for that same reason: there is nothing to diff visually
+yet, by design, since nothing consumes these new pieces until later phases.
+
+**Two real bugs found and fixed along the way, unrelated to the foundation work itself:**
+- A duplicate `@keyframes sa-shimmer` (item 3) that was silently overriding `.sa-skeleton`'s own
+  intended animation direction/timing.
+- A CSS syntax error from a literal `*/` inside a comment (item 1→3), caught by the live dev server
+  and fixed immediately — `postcss.parse()` used for every CSS edit from that point on.
+
+Ready for Phase 2 whenever you want to continue — that's where these components actually get wired
+into real pages and the first real before/after screenshots happen.

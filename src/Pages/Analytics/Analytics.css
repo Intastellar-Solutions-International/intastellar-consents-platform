@@ -836,6 +836,67 @@
     color: rgba(249, 191, 64, 1);
 }
 
+/* ── MetricTabStrip (Phase 1 shared component) ─────────────────────────────────
+   Underline-tab visual language matches .sa-subnav__tab above (same active-
+   state accent gold) — the GA4 reference's hero metric selector, each tab
+   stacking label/value/delta instead of being a plain nav link. */
+
+.sa-metric-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sa-space-6, 32px);
+    border-bottom: 1px solid var(--sa-border, rgba(255,255,255,0.055));
+    padding-bottom: var(--sa-space-3, 12px);
+}
+
+.sa-metric-tab {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    padding: 0 0 var(--sa-space-3, 12px);
+    margin-bottom: calc(-1 * var(--sa-space-3, 12px) - 1px);
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    text-align: left;
+}
+
+.sa-metric-tab:hover .sa-metric-tab__label { color: rgba(var(--sa-text),0.9); }
+
+.sa-metric-tab--active {
+    border-bottom-color: rgb(var(--sa-accent));
+}
+.sa-metric-tab--active .sa-metric-tab__label { color: rgb(var(--sa-accent)); }
+
+.sa-metric-tab__label {
+    font-size: var(--sa-font-sm, 0.85rem);
+    font-weight: 600;
+    color: rgba(var(--sa-text-muted),0.75);
+    transition: color 0.12s;
+}
+
+.sa-metric-tab__value {
+    font-size: var(--sa-font-2xl, 2rem);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    color: rgba(240,240,252,0.95);
+}
+
+.sa-metric-tab__delta {
+    font-size: var(--sa-font-xs, 0.78rem);
+    font-weight: 600;
+}
+.sa-metric-tab__delta--good { color: rgb(var(--sa-good)); }
+.sa-metric-tab__delta--bad  { color: rgb(var(--sa-bad)); }
+
+@media (max-width: 680px) {
+    .sa-metric-tabs { gap: var(--sa-space-4, 16px); }
+    .sa-metric-tab__value { font-size: var(--sa-font-xl, 1.3rem); }
+}
+
 /* ── Dashboard mode badge ────────────────────────────────────────────────────── */
 
 /* ── Foreign-domain warning banner ───────────────────────────────────────── */
