@@ -13,6 +13,7 @@ export default function StickyPageTitle({
     url,
     method,
     header,
+    className,
     numberofDays,
     getLastDays,
     setActiveData,
@@ -44,7 +45,7 @@ export default function StickyPageTitle({
 
     if (!children) {
         return <>
-            <div className="infoHeader" style={{ padding: "10px 0" }}>
+            <div className={"infoHeader" + (className ? " " + className : "")} style={{ padding: "10px 0" }}>
                 {loadingUpdated || finalLoaded ? <LoadingBar /> : null}
                 <div className="dashboard-content" style={{
                     display: "grid",

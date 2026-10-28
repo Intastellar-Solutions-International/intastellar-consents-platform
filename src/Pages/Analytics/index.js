@@ -781,14 +781,31 @@ export default function SiteAnalytics() {
         tick, setTick, data, loading, detailLoading, error, showSetup, showData, segment, setSegment,
     } = useAnalyticsPage();
 
-    // Previous period of the same length, immediately preceding the current
-    // range — powers the "vs previous period" trend chips on the KPI cards.
+    // Comparison period for the "vs previous period" trend chips on the KPI
+    // cards — defaults to the immediately-preceding period of the same
+    // length, same as before this control existed. docs/design-audit-plan.md
+    // Phase 3 "compact header": the sticky header's date-range control
+    // (Filter, via StickyPageTitle) already has a "Compare to prior period"
+    // toggle + baseline picker built in and working elsewhere in the app
+    // (Dashboard.js et al.) — it just wasn't wired up on any Analytics page
+    // yet. Wiring it here lets the user override the comparison window
+    // through that existing control; this only changes which dates get
+    // requested from the same useAnalyticsReport hook already in use below,
+    // not what it calculates or how trend/pctChange works.
+    const [compareRange, setCompareRange] = useState(0);
+    const [previousPeriod, setPreviousPeriod] = useState(null);
+    const [previousPeriod2, setPreviousPeriod2] = useState(null);
+    const compareActive = compareRange !== 0 && compareRange != null;
+
     const prevRange = useMemo(() => {
+        if (compareActive && previousPeriod && previousPeriod2) {
+            return { fromIso: toIsoDate(previousPeriod), toIso: toIsoDate(previousPeriod2) };
+        }
         const spanMs = toDate.getTime() - fromDate.getTime();
         const prevTo = new Date(fromDate.getTime() - 24 * 60 * 60 * 1000);
         const prevFrom = new Date(prevTo.getTime() - spanMs);
         return { fromIso: toIsoDate(prevFrom), toIso: toIsoDate(prevTo) };
-    }, [fromDate, toDate]);
+    }, [fromDate, toDate, compareActive, previousPeriod, previousPeriod2]);
     const { data: prevData } = useAnalyticsReport(domain, prevRange.fromIso, prevRange.toIso, tick);
 
     const siteConfig    = useSiteConfig(domain);
@@ -842,6 +859,7 @@ export default function SiteAnalytics() {
     return (
         <div style={{ flex: "1", minWidth: 0 }}>
             <StickyPageTitle
+                className="sa-sticky-header"
                 title="Overview"
                 numberofDays={setLastDays}
                 getLastDays={getLastDays}
@@ -849,6 +867,12 @@ export default function SiteAnalytics() {
                 toDate={toDate}
                 setFromDate={setFromDate}
                 setToDate={setToDate}
+                previousPeriod={previousPeriod}
+                previousPeriod2={previousPeriod2}
+                compareRange={compareRange}
+                setCompareRange={setCompareRange}
+                setCompareWindowStart={setPreviousPeriod}
+                setCompareWindowEnd={setPreviousPeriod2}
             />
             <div className="dashboard-content">
                 <div className="sa-page">

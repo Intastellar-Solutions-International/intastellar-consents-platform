@@ -181,6 +181,48 @@
     .sa-page-header__title-group { margin-right: 0; }
 }
 
+/* ── Sticky header date-range affordance (Phase 3, "make the date range
+   obviously clickable") ─────────────────────────────────────────────────────
+   src/Components/Filter/index.js's trigger button is already a real <button>
+   with aria-expanded/aria-haspopup, but its default styling (Filter.css) is
+   nearly invisible against the dashboard's dark background — an 8%-opacity
+   border and 18%-opacity black fill that Phase 0 found read as plain text,
+   not a control. Filter.css itself is shared app-wide (CMP pages use the
+   same trigger via StickyPageTitle), so rather than edit it directly, these
+   rules key off `.sa-sticky-header` — the className StickyPageTitle now
+   accepts (additive, optional prop; every other caller is unaffected) and
+   that only Analytics pages pass. Scoped this way, CMP's date picker keeps
+   its existing look exactly as-is. */
+
+.sa-sticky-header .filter-calendar-trigger {
+    border-color: rgba(255, 255, 255, 0.16);
+    background: rgba(255, 255, 255, 0.045);
+    padding-right: 34px;
+    position: relative;
+}
+
+.sa-sticky-header .filter-calendar-trigger:hover {
+    border-color: rgba(var(--sa-accent), 0.55);
+    background: rgba(255, 255, 255, 0.075);
+}
+
+.sa-sticky-header .filter-calendar-trigger::after {
+    content: "";
+    position: absolute;
+    right: 13px;
+    top: 50%;
+    width: 7px;
+    height: 7px;
+    border-right: 2px solid rgba(230, 230, 230, 0.7);
+    border-bottom: 2px solid rgba(230, 230, 230, 0.7);
+    transform: translateY(-65%) rotate(45deg);
+    transition: transform 0.15s ease;
+}
+
+.sa-sticky-header .filter-calendar-root--open .filter-calendar-trigger::after {
+    transform: translateY(-35%) rotate(-135deg);
+}
+
 /* ── Site Analytics report page ─────────────────────────────────────────────── */
 
 .sa-page {

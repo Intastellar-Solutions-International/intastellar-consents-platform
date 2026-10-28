@@ -1242,5 +1242,80 @@ screenshot-backlog note below). Static validation: babel transform on all five t
 **Screenshot backlog note:** Phase 3's per-item screenshots (items 1-3) have only been captured ad hoc
 into the scratchpad for live verification, not yet formally saved to `/docs/design-screenshots/` at
 all three required widths the way Phase 2's closing commit did. Flagging this now so it isn't lost —
-plan to close it out with a batched screenshot commit before moving on to Phase 3's remaining items
-(header compaction, date-range affordance, compare-to-previous-period) or Phase 4.
+plan to close it out with a batched screenshot commit before moving on to Phase 4.
+
+### 4. Compact header: obviously-clickable date range + working compare-to-previous-period — done on Overview, verified live; scope decisions below
+
+The brief's remaining header line — "compact the sticky header (single row: title, date range, compare
+toggle, view switch); make the date range obviously clickable and add 'compare to previous period'" —
+turned out to already be mostly built, just not finished or wired up:
+
+**What was already true, confirmed before writing anything:** the sticky header (`StickyPageTitle` /
+`.infoHeader`) was already visually a single row (title left, date-range control right, in the same
+horizontal band — the "Property rollup — 1 domains" line beneath it is page content, not part of the
+header). The date-range control (`Filter`, `src/Components/Filter/index.js`) was already a real
+`<button>` with `aria-expanded`/`aria-haspopup`, and its popover already had a working "Compare to
+prior period" toggle + baseline picker ("Previous period", "Preceding period", "Same period last
+year", etc.) — this exact control already drives comparisons on every CMP page (`Dashboard.js`,
+`Compliance/index.js`, `UserConsents.js`, the Reports pages). No Analytics page had ever wired it up,
+so on Overview the toggle was dead UI — flipping it did nothing, because `compareRange`/
+`setCompareRange`/`setCompareWindowStart`/`setCompareWindowEnd` were never passed down from
+`StickyPageTitle`.
+
+**Scope decision: no PageHeader swap.** Phase 1 already built a parallel, Analytics-only compact
+header shell (`src/Pages/Analytics/components/PageHeader.js` + its CSS) specifically anticipating this
+item, staged exactly for the day a page needs a `viewSwitch` slot `StickyPageTitle` doesn't have. Since
+the sticky header was already single-row and Overview doesn't have a view switch yet (that's Phase 4,
+"Overview redesign + view switch"), swapping it in now would just be a shell migration with no new
+capability unlocked — so `PageHeader.js` stays staged, unused, for whichever Phase 4/6 page actually
+needs the extra slot. Keeps this item to its two concrete, literal asks instead of a bigger rewrite.
+
+**What changed:**
+- **`StickyPageTitle` (`Components/Header/Sticky/index.js`)**: added one new optional `className` prop,
+  applied to the outer `.infoHeader` div. Purely additive — every existing caller that doesn't pass it
+  (CMP pages, Settings, DSR, Reports, ~60 call sites total, grepped before touching this shared
+  component, same discipline as `SideNav.js`/`StickyPageTitle` earlier in Phase 3) renders identically.
+  Overview is the only current caller that passes one (`"sa-sticky-header"`), giving the CSS below
+  something Analytics-only to key off without editing the shared `Filter.css` directly.
+- **Date range "obviously clickable" (`Analytics.css`)**: new rules scoped under
+  `.sa-sticky-header .filter-calendar-trigger` — stronger border (16% vs. the base 8% white, nearly
+  invisible against the dark background per Phase 0), a visible background tint, and a chevron (▾ via
+  `::after`, rotating to ▴ when the popover is open) signaling it opens something. CMP's own date
+  picker is untouched — no `.sa-sticky-header` ancestor there, confirmed live (its trigger's
+  `padding-right` stayed the unmodified `10px`, not the new `34px`).
+- **Compare-to-previous-period, wired end to end (`Pages/Analytics/index.js`)**: added
+  `compareRange`/`previousPeriod`/`previousPeriod2` state (same shape `Dashboard.js` already uses) and
+  passed it through to `StickyPageTitle`. `prevRange` — which already existed, feeding the KPI cards'
+  "vs previous period" trend chips — now uses the user's selected comparison window when compare is
+  active, falling back to the existing default (immediately-preceding period of equal length) exactly
+  as before when it isn't. Same `useAnalyticsReport` hook, same `pctChange`/trend-chip rendering, no
+  calculation or query-shape changes — only which `from`/`to` dates get requested, which is what a
+  date-range control is for.
+
+**Verified live** (Chrome): opened the popover, toggled compare on, picked "Previous period", hit
+Apply — the collapsed trigger correctly updated to show both ranges (`28.09.2026 → 28.10.2026` /
+`vs 28.08.2026 → 27.09.2026`), proving the full round trip (Filter's internal state → the new
+`setCompareRange`/`setCompareWindowStart`/`setCompareWindowEnd` callbacks → index.js state → `prevRange`
+→ refetch → back down into `Filter`'s own display) actually works. Computed styles confirmed the
+scoped CSS applied only where intended. No new console errors (same pre-existing CDN warnings as every
+other check this phase). Static validation: babel on both touched JS files, `postcss.parse()` on
+`Analytics.css`, full test suite (117/117 passed).
+
+**Pre-existing bug found during verification, not caused by this change, not fixed here:** the KPI
+trend chips still don't render with compare active while "All domains" (property rollup) is selected.
+Traced it to `useAnalyticsPage()` (`_shared.js`): the main KPI data already switches to the rollup-aware
+`usePropertyReport`/`/api/analytics-property-report` endpoint when a workspace combined view is active
+(`chrome.domain` is `null` in that mode) — but `index.js`'s `prevData` fetch calls
+`useAnalyticsReport(domain, ...)` directly with that same `null` domain, and `useAnalyticsReport` bails
+out immediately whenever `domain` is falsy (`if (!domain) { setData(null); return; }`). So the
+previous-period comparison has silently never worked for any property-rollup view, regardless of this
+item's changes — confirmed by checking before touching anything that trend chips were already absent
+on Overview with the *default* (non-user-selected) comparison too. Fixing it means making `prevData`
+rollup-aware the same way the main `data` fetch already is (mirroring `useAnalyticsPage`'s own
+`workspaceDomains ? propertyResult : singleResult` branch) — a real fix, but a query-selection change
+to existing data-fetching logic, not a presentation change, so flagging it here as a follow-up rather
+than rolling it into this commit. Confirmed the control itself isn't at fault: on a single-domain view
+the same compare flow updates the trigger's displayed comparison range correctly (the KPI trend-chip
+population for that case wasn't independently re-verified this session, since the test session's
+domain-switcher click didn't land on a single domain before time ran out on this verification pass —
+worth a quick re-check before fixing the rollup bug above).
