@@ -1645,3 +1645,39 @@ present Denmark highlight (same calculated opacity, just less visually prominent
 map size — an inherent property of choropleth maps, not a bug). No console errors. Babel + postcss +
 full test suite (117/117) pass. This mocking approach only validates the frontend matching logic — the
 real per-country counts still depend on the backend's `countriesRes` query, unverified until deployed.
+
+**Note:** this item's live-verification session caught the real, deployed data for the first time
+(earlier checks used a leftover mocked `fetch` override — see the note above). Confirmed the fix held:
+a fresh tab shows ES/US/EC matching the real API exactly, sparkline and KPIs all consistent with each
+other. No further action needed here.
+
+### 4. Headline sentence — done, verified live; one pre-existing unrelated overflow found, not fixed
+
+A single data-driven sentence at the top of Overview's content, modeled on the `{eyebrow, headline,
+subline}` pattern Channel Analytics' own Marketing page already uses (`MarketingReport/index.js`'s
+`computeReconciliationHighlights`/the main highlights builder) — but built fresh with Analytics'
+own Phase 1 tokens rather than reusing `MarketingReport.css`'s `.marketing-highlights` classes, which
+is CMP/Reports-side and out of scope per Phase 0/`InsightCard`'s own precedent for the same decision.
+
+`buildOverviewHeadline()` (module-scope, pure function) synthesizes only numbers Overview already
+fetches — `data.totals` (active users, events, consent rate), the same `trendEvents` the hero's "Total
+events" tab already shows, and `data.industryBenchmark` (the same source `IndustryBenchmarkNote`
+uses). Two honesty rules, matching the ground rules and this page's own existing trend-chip
+convention: the trend clause is dropped entirely (not shown as "0%" or silently omitted as if nothing
+changed) when `trendEvents` has no real previous-period baseline to compare against, and the benchmark
+clause only appears when `data.industryBenchmark` actually exists for the site's configured industry.
+
+**Verified live:** renders "Here's what to care about today" / "549 active users generated 10.521
+events this period, up 163,9% from the period before." / "26,0% full-consent rate over the last 30
+days — 15,0pts below the Aviation average" — all three lines matching the account's real totals at
+the time. Checked all three widths (1024/1280/1440); the headline element itself never exceeds 751px
+(well within bounds) at any of them.
+
+**Found, not fixed — pre-existing, unrelated:** checking for horizontal overflow at 1024/1280px turned
+up a real one, but traced to `.sa-rage__cls` in the "Frustration signals" (rage-click) panel — a long
+CSS-selector string from real page data overflowing its container without wrapping. Confirmed via
+`document.querySelectorAll('*')` scroll-width scan that this is the only overflowing element and that
+`.sa-overview-headline` isn't it. Same panel as the pre-existing React key-duplication warning flagged
+in item 1/3's verification — neither is part of this phase's headline work, flagging both together here
+as a worthwhile follow-up rather than scope-creeping a fix into this commit. Babel + postcss + full test
+suite (117/117) pass.

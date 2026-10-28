@@ -1170,6 +1170,39 @@
     background: rgba(52,211,153,0.22);
 }
 
+/* ── Overview headline sentence (Phase 1 token set — not
+   MarketingReport.css's .marketing-highlights, which is CMP/Reports-side
+   and out of scope here, see docs/design-audit-plan.md Phase 0/1) ────────── */
+
+.sa-overview-headline {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.sa-overview-headline__eyebrow {
+    margin: 0;
+    font-size: var(--sa-font-xs, 0.72rem);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(var(--sa-accent), 0.85);
+}
+
+.sa-overview-headline__text {
+    margin: 0;
+    font-size: var(--sa-font-xl, 1.3rem);
+    font-weight: 600;
+    line-height: 1.3;
+    color: rgba(var(--sa-text), 0.95);
+}
+
+.sa-overview-headline__sub {
+    margin: 0;
+    font-size: var(--sa-font-sm, 0.85rem);
+    color: rgba(var(--sa-text-muted), 0.75);
+}
+
 /* ── Mode badge ───────────────────────────────────────────────────────────── */
 
 .sa-mode-badge {

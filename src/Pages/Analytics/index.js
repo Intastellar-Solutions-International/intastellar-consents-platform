@@ -382,6 +382,36 @@ function CustomizePanel({ currentCards, defaultCards, onSave, onClose }) {
     );
 }
 
+// docs/design-audit-plan.md Phase 4: the Executive Overview's headline
+// sentence — pure presentation, synthesizing numbers this page already
+// fetches (data.totals, the same trendEvents the hero's "Total events" tab
+// already shows, data.industryBenchmark — same source IndustryBenchmarkNote
+// uses). No new calculation, no fabricated data: the trend clause is
+// dropped entirely (not shown as "0%" or omitted silently as if nothing
+// changed) when there's no real previous-period baseline to compare
+// against, same as the hero's own trend chips do via pctChange().
+function buildOverviewHeadline({ data, trendEvents, getLastDays }) {
+    const users  = data.totals.engagedUsers;
+    const events = data.totals.total;
+    const consentPct = data.totals.consentRate;
+
+    let headline = `${users.toLocaleString("de-DE")} active user${users === 1 ? "" : "s"} generated `
+        + `${events.toLocaleString("de-DE")} event${events === 1 ? "" : "s"} this period`;
+    if (trendEvents != null && Number.isFinite(trendEvents)) {
+        headline += `, ${trendEvents >= 0 ? "up" : "down"} ${formatPercent(Math.abs(trendEvents))} from the period before`;
+    }
+    headline += ".";
+
+    let subline = `${formatPercent(consentPct)} full-consent rate over the last ${getLastDays} days`;
+    if (data.industryBenchmark) {
+        const diff = consentPct - data.industryBenchmark.consentRatePct;
+        const diffStr = Math.abs(diff).toLocaleString("de-DE", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+        subline += ` — ${diffStr}pts ${diff >= 0 ? "above" : "below"} the ${data.industryBenchmark.label} average`;
+    }
+
+    return { eyebrow: "Here's what to care about today", headline, subline };
+}
+
 // Per-business-type default KPI card ordering — extracted from KpiStrip so
 // both it and the parent (for the hero composite below) can derive the same
 // `order` without duplicating this switch. Pure function of data/siteConfig,
@@ -928,6 +958,19 @@ export default function SiteAnalytics() {
 
                     {showData && (
                         <div className="sa-overview">
+
+                            {/* ── Headline sentence ───────────────────────────────
+                                docs/design-audit-plan.md Phase 4. */}
+                            {(() => {
+                                const h = buildOverviewHeadline({ data, trendEvents, getLastDays });
+                                return (
+                                    <div className="sa-overview-headline">
+                                        <p className="sa-overview-headline__eyebrow">{h.eyebrow}</p>
+                                        <p className="sa-overview-headline__text">{h.headline}</p>
+                                        <p className="sa-overview-headline__sub">{h.subline}</p>
+                                    </div>
+                                );
+                            })()}
 
                             {/* ── Dashboard mode badge ───────────────────────────── */}
                             {siteConfig?.businessType && (
