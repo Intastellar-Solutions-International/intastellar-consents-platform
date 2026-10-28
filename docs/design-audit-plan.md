@@ -1681,3 +1681,48 @@ CSS-selector string from real page data overflowing its container without wrappi
 in item 1/3's verification — neither is part of this phase's headline work, flagging both together here
 as a worthwhile follow-up rather than scope-creeping a fix into this commit. Babel + postcss + full test
 suite (117/117) pass.
+
+### 5. Estimated visitors — reconciled, no new work needed
+
+Continuing Phase 4, found that the original "estimated visitors: EmptyState" decision (item 1) needed
+revisiting: Overview already has a **Consent Impact Estimator** panel with a real, shipped estimation
+model (`computeConsentImpact()`, `api/analytics-report.js`) — observed sessions ÷ full-consent rate =
+estimated true total, correcting for traffic invisible because consent was declined. It's scoped to
+*sessions*, not visitors specifically, but it's the same underlying concept. Flagged this to you rather
+than silently deciding either way, since it directly revisits a decision you'd already made — you
+confirmed treating it as already covered. No code changes for this item; noting the resolution here so
+it isn't lost.
+
+### 6. "Where we lose them" funnel — done, verified live
+
+Wired the existing `ConversionFunnel.js` (built earlier, never connected to any page — confirmed via
+`grep` it had zero consumers anywhere in the repo before this) into Overview as the "where we lose
+them" panel from the brief's Decisions section. The component already handles the "no funnel
+registered" case with its own explanatory message, so no new UI needed — just real data to feed it.
+
+**Checked both existing paths before building anything new:** `api/analytics-funnels.js` (the custom
+funnel-builder endpoint `FunnelBuilder.js` — itself not currently linked in the nav — uses) requires a
+funnel to be explicitly created per account first; not something any test account has configured, and
+not a reliable "works for everyone" source for an Overview panel. `ConversionFunnel.js`'s own fixed
+e-commerce-step approach (view_item → add_to_cart → ... → purchase) is more broadly applicable — any
+account that registers these specific event kinds gets a real funnel — but neither
+`api/analytics-report.js` nor `api/analytics-property-report.js` had session counts per funnel kind.
+
+**Backend (`api/analytics-report.js`, `api/analytics-property-report.js`):** new `funnelRes` query —
+distinct sessions per funnel-step kind, same `JOIN analytics_event_defs d ON d.site_id = ... AND
+d.name = ...` pattern the existing `converted` sessions query already uses, filtered to exactly
+`ConversionFunnel.js`'s own `FUNNEL_ORDER` kind list (not a new definition — reusing the component's
+existing one). Response gains `funnel: [{kind, sessions}]`.
+
+**Frontend (`index.js`):** `linkedConversions` computed client-side from `data.conversions` (sum of
+`.linkedCount`, same per-event data the Conversions KPI card's `totalConversions()` already sums `.count`
+from) — no new backend needed for that prop. Rendered unconditionally (not gated behind a data check),
+same as `ConsentImpactPanel` beside it, so an account without funnel events registered sees
+`ConversionFunnel.js`'s own guidance instead of the panel just silently not appearing.
+
+**Verified live:** renders correctly on this test account (Aviation, non-ecommerce — no funnel events
+registered, as expected) showing "Register at least two checkout-funnel events ... to see a funnel
+here," positioned before the Consent Impact Estimator panel. No new console errors (same pre-existing
+Frustration-signals warning). This only confirms the empty-state path — the real-data path needs both
+this deploying and an e-commerce-type account with those event kinds registered, neither available to
+test from here. Babel + full test suite (117/117) pass.

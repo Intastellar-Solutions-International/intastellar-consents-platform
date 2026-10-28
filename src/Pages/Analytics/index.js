@@ -6,6 +6,7 @@ import {
 import { ScannerHost } from "../../API/host.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import AnalyticsWorldMap from "./AnalyticsWorldMap.js";
+import ConversionFunnel from "./ConversionFunnel.js";
 import {
     authHeaders, KpiCard, MiniBar, useAnalyticsPage, useAnalyticsReport, useSiteConfig,
     toIsoDate, pctChange, IndustryBenchmarkNote, formatPercent, SegmentFilter,
@@ -824,6 +825,15 @@ export default function SiteAnalytics() {
     const prevBounceRate = useMemo(() => prevData?.totals?.uniqueSessions > 0 ? (prevData.totals.uniqueSessions - prevData.totals.engagedUsers) / prevData.totals.uniqueSessions * 100 : null, [prevData]);
     const trendBounce    = useMemo(() => pctChange(bounceRate, prevBounceRate), [bounceRate, prevBounceRate]);
 
+    // "Where we lose them" funnel (Phase 4) — same totalConversions()
+    // definition the Conversions KPI card already uses (sum of per-event
+    // counts, not session-deduped), plus its session-linked share for
+    // ConversionFunnel.js's own "N of M couldn't be tied to a session" note.
+    const linkedConversions = useMemo(
+        () => (data?.conversions || []).reduce((s, c) => s + (c.linkedCount || 0), 0),
+        [data]
+    );
+
     // Dashboard card customization — stored in DB via analytics-site PATCH.
     const [customCards,     setCustomCards]     = useState(null);
     const [showCustomize,   setShowCustomize]   = useState(false);
@@ -1304,6 +1314,20 @@ export default function SiteAnalytics() {
                                     </div>
                                 )}
                             </div>
+
+                            {/* ── Where we lose them ──────────────────────────────
+                                docs/design-audit-plan.md Phase 4. ConversionFunnel.js
+                                already handles "no funnel events registered yet" with
+                                its own explanatory message — rendered unconditionally
+                                here rather than hidden, same as ConsentImpactPanel
+                                below it, so the account actually learns what to set up
+                                instead of the panel just silently not appearing. */}
+                            <ConversionFunnel
+                                domain={domain}
+                                funnel={data.funnel}
+                                totalConversions={totalConversions(data.conversions)}
+                                linkedConversions={linkedConversions}
+                            />
 
                             {data.consentImpact && (
                                 <ConsentImpactPanel impact={data.consentImpact} />

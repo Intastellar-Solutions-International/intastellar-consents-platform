@@ -214,7 +214,7 @@ async function _handler(req, res) {
            conversionCountriesRes, convertedSessionsRes,
            osRes, screensRes, languagesRes, timezonesRes, engagedRes, leadRes,
            pageEngagementRes, newVsReturningRes, lastTouchByChannelRes,
-           revenueRes, dailyEngagedRes] = await Promise.all([
+           revenueRes, dailyEngagedRes, funnelRes] = await Promise.all([
 
         db.query(`
             SELECT
@@ -661,12 +661,33 @@ async function _handler(req, res) {
             throw err;
         }),
 
+        // Distinct sessions reaching each step of the fixed e-commerce funnel
+        // (view_item → add_to_cart → view_basket → begin_checkout → checkout
+        // → payment_info → purchase) — same kind list as ConversionFunnel.js's
+        // own FUNNEL_ORDER. Powers the Phase 4 Overview "where we lose them"
+        // panel; stays empty for accounts that haven't registered any of
+        // these event kinds (ConversionFunnel.js already handles that case).
+        db.query(`
+            SELECT d.kind, COUNT(DISTINCT ace.session_id) AS sessions
+            FROM analytics_custom_events ace
+            JOIN analytics_event_defs d ON d.site_id = ace.site_id AND d.name = ace.name
+            WHERE ace.site_id = $1 AND ace.received_at >= $2 AND ace.received_at < $3
+              AND ace.session_id IS NOT NULL
+              AND d.kind = ANY($4::text[])
+            GROUP BY d.kind`,
+            [siteId, fromDate, toDateExclusive,
+             ["view_item", "add_to_cart", "view_basket", "begin_checkout", "checkout", "payment_info", "purchase"]]
+        ).catch((err) => {
+            if (err?.message?.includes("does not exist")) return { rows: [] };
+            throw err;
+        }),
+
     ]).catch((err) => {
         // Schema not yet migrated, connection limit hit, or other transient DB
         // error — return empty rows for every query so the response stays a
         // valid (if empty) 200 instead of crashing with a 500.
         console.error("[analytics-report] batch error:", err?.message);
-        return Array(25).fill({ rows: [] });
+        return Array(26).fill({ rows: [] });
     });
 
     const t = totalsRes.rows[0] || {};
@@ -832,5 +853,9 @@ async function _handler(req, res) {
                 }));
             return rows;
         })(),
+        funnel: funnelRes.rows.map(r => ({
+            kind:     r.kind,
+            sessions: Number(r.sessions || 0),
+        })),
     });
 }

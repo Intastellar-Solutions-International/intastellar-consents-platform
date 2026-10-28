@@ -117,7 +117,7 @@ async function _handler(req, res) {
         browsersRes, consentRes, utmRes, referrersRes,
         conversionsRes, conversionCountriesRes, convertedSessionsRes,
         osRes, engagedRes, newVsReturningRes, lastTouchByChannelRes,
-        revenueRes, dailyEngagedRes,
+        revenueRes, dailyEngagedRes, funnelRes,
     ] = await Promise.all([
 
         db.query(`
@@ -376,9 +376,24 @@ async function _handler(req, res) {
             [siteIds, fromDate, toDateExclusive]
         ).catch(() => ({ rows: [] })),
 
+        // Distinct sessions reaching each step of the fixed e-commerce funnel
+        // — same kind list as ConversionFunnel.js's own FUNNEL_ORDER. Powers
+        // the Phase 4 Overview "where we lose them" panel in rollup mode.
+        db.query(`
+            SELECT d.kind, COUNT(DISTINCT ace.session_id) AS sessions
+            FROM analytics_custom_events ace
+            JOIN analytics_event_defs d ON d.site_id = ace.site_id AND d.name = ace.name
+            WHERE ace.site_id = ANY($1) AND ace.received_at >= $2 AND ace.received_at < $3
+              AND ace.session_id IS NOT NULL
+              AND d.kind = ANY($4::text[])
+            GROUP BY d.kind`,
+            [siteIds, fromDate, toDateExclusive,
+             ["view_item", "add_to_cart", "view_basket", "begin_checkout", "checkout", "payment_info", "purchase"]]
+        ).catch(() => ({ rows: [] })),
+
     ]).catch((err) => {
         console.error("[analytics-property-report] batch error:", err?.message);
-        return Array(18).fill({ rows: [] });
+        return Array(19).fill({ rows: [] });
     });
 
     const t = totalsRes.rows[0] || {};
@@ -514,6 +529,10 @@ async function _handler(req, res) {
             linkedCount: Number(r.linked_count || 0),
             value:       Number(r.value_cents || 0) / 100,
             currency:    r.currency || null,
+        })),
+        funnel: funnelRes.rows.map(r => ({
+            kind:     r.kind,
+            sessions: Number(r.sessions || 0),
         })),
     });
 }
