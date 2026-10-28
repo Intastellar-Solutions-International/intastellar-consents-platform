@@ -788,58 +788,10 @@
     color: rgba(var(--sa-text-secondary),0.85);
 }
 
-/* ── Analytics section nav — underline tab strip (Vercel/Mixpanel style) ──────── */
-
-.sa-subnav {
-    display: flex;
-    align-items: flex-end;
-    gap: 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
-    overflow-x: auto;
-    scrollbar-width: none;
-    flex-wrap: nowrap;
-    margin-bottom: 4px;
-    padding-top: 2px;
-}
-
-.sa-subnav::-webkit-scrollbar { display: none; }
-
-.sa-subnav__tab {
-    flex-shrink: 0;
-    padding: 0 4px 11px;
-    margin-right: 28px;
-    border-bottom: 2px solid transparent;
-    margin-bottom: -1px;
-    font-size: 0.8rem;
-    font-weight: 500;
-    color: rgba(155, 155, 175, 0.6);
-    text-decoration: none;
-    transition: color 0.12s, border-color 0.12s;
-    white-space: nowrap;
-    line-height: 1;
-    letter-spacing: 0.01em;
-}
-
-.sa-subnav__tab:last-child { margin-right: 0; }
-
-.sa-subnav__tab:hover {
-    color: rgba(215, 215, 235, 0.9);
-}
-
-.sa-subnav__tab--active {
-    color: rgba(249, 191, 64, 1);
-    border-bottom-color: rgba(249, 191, 64, 0.75);
-    font-weight: 600;
-}
-
-.sa-subnav__tab--active:hover {
-    color: rgba(249, 191, 64, 1);
-}
-
 /* ── MetricTabStrip (Phase 1 shared component) ─────────────────────────────────
-   Underline-tab visual language matches .sa-subnav__tab above (same active-
-   state accent gold) — the GA4 reference's hero metric selector, each tab
-   stacking label/value/delta instead of being a plain nav link. */
+   Underline-tab visual language: active-state accent gold, matching the
+   GA4 reference's hero metric selector — each tab stacking label/value/delta
+   instead of being a plain nav link. */
 
 .sa-metric-tabs {
     display: flex;
@@ -7481,12 +7433,6 @@ details[open] .ca-context-summary::before { content: "▾"; }
 }
 
 /* ── Channel Digest page ─────────────────────────────────────────────────────── */
-
-.sa-subnav__tab--portfolio {
-    margin-left: auto;
-    padding-left: 16px;
-    border-left: 1px solid rgba(255,255,255,0.06);
-}
 
 .sa-digest-meta {
     display: flex;

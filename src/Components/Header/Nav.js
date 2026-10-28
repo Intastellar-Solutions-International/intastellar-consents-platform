@@ -1,7 +1,7 @@
 import "./header.css";
 import Authentication from "../../Authentication/Auth";
 import { DomainContext } from "../../App.js";
-import { dashboardPath, reportsPath, analyticsPath, analyticsAudiencePath, analyticsAcquisitionPath, analyticsHeatmapPath, analyticsConversionsPath, detectDashboardMode, analyticsRailSection } from "../../Functions/domainPathSegments.js";
+import { dashboardPath, reportsPath, detectDashboardMode } from "../../Functions/domainPathSegments.js";
 const Link = window.ReactRouterDOM.Link;
 const useLocation = window.ReactRouterDOM.useLocation;
 const useContext = React.useContext;
@@ -17,11 +17,6 @@ import experiments from "./icons/experiment.svg";
 import benchmark from "./icons/benchmark.svg";
 import compliance from "./icons/compliance.svg";
 import cookies from "./icons/cookies.svg";
-import analyticsOverview from "./icons/analytics-overview.svg";
-import audience from "./icons/audience.svg";
-import acquisition from "./icons/acquisition.svg";
-import heatmapIcon from "./icons/heatmap.svg";
-import conversionsIcon from "./icons/conversions.svg";
 import { getOrg } from "../../Functions/storage.js";
 
 export default function Nav() {
@@ -32,61 +27,16 @@ export default function Nav() {
     const path = location.pathname;
     const mode = detectDashboardMode(path);
 
-    // ── Analytics mode: one entry point per section — Overview is a
-    // standalone landing page (no secondary sidebar); the other four jump
-    // into their group's first report and reveal the grouped AnalyticsSideNav
-    // (mounted alongside this rail, see App.js), which lists the rest of
-    // that group's pages. Groups mirror the dividers in SideNavLinks'
-    // analyticsLinks — see analyticsRailSection(). ──
+    // docs/design-audit-plan.md Phase 3 item 3: the analytics-mode icon
+    // rail that used to render here is gone — it was unlabeled by default
+    // (labels only appeared on :hover, a keyboard-accessibility gap Phase 0
+    // flagged) and duplicated the grouped sidebar (AnalyticsSidebar.js,
+    // Phase 3 item 2) one level up. That sidebar is now the only nav in
+    // Analytics mode, shown on every page including Overview (which
+    // previously had neither the sidebar nor any labeled nav at all, only
+    // this rail plus the now also-removed Overview-only tab strip).
     if (mode === "analytics") {
-        const overviewPath    = analyticsPath(currentDomain);
-        const audiencePath    = analyticsAudiencePath(currentDomain);
-        const acquisitionPath = analyticsAcquisitionPath(currentDomain);
-        const behaviorPath    = analyticsHeatmapPath(currentDomain);
-        const conversionsPath = analyticsConversionsPath(currentDomain);
-
-        const section = analyticsRailSection(path);
-
-        return (
-            <>
-                <div className="navOverlay">
-                    <aside className="sidebar">
-                        <nav className="collapsed">
-                            <Link className={"navItems" + (section === "overview" ? " --active" : "")} to={overviewPath}>
-                                <i className="dashboard-icons analytics-overview" style={{ backgroundImage: `url(${analyticsOverview})` }} data-icon={analyticsOverview}></i>
-                                <span className="hiddenCollapsed">Overview</span>
-                            </Link>
-                            <Link className={"navItems" + (section === "audience" ? " --active" : "")} to={audiencePath}>
-                                <i className="dashboard-icons audience" style={{ backgroundImage: `url(${audience})` }} data-icon={audience}></i>
-                                <span className="hiddenCollapsed">Audience</span>
-                            </Link>
-                            <Link className={"navItems" + (section === "acquisition" ? " --active" : "")} to={acquisitionPath}>
-                                <i className="dashboard-icons acquisition" style={{ backgroundImage: `url(${acquisition})` }} data-icon={acquisition}></i>
-                                <span className="hiddenCollapsed">Acquisition</span>
-                            </Link>
-                            <Link className={"navItems" + (section === "behavior" ? " --active" : "")} to={behaviorPath}>
-                                <i className="dashboard-icons heatmap" style={{ backgroundImage: `url(${heatmapIcon})` }} data-icon={heatmapIcon}></i>
-                                <span className="hiddenCollapsed">Behavior</span>
-                            </Link>
-                            <Link className={"navItems" + (section === "conversions" ? " --active" : "")} to={conversionsPath}>
-                                <i className="dashboard-icons conversions" style={{ backgroundImage: `url(${conversionsIcon})` }} data-icon={conversionsIcon}></i>
-                                <span className="hiddenCollapsed">Conversions</span>
-                            </Link>
-                            <section className="navItems--bottom">
-                                <Link className={"navItems" + (path.indexOf("/settings") > -1 ? " --active" : "")} to={"/settings"}>
-                                    <i className="dashboard-icons settings" style={{ backgroundImage: `url(${settings})` }} data-icon={settings}></i>
-                                    <span className="hiddenCollapsed">Settings</span>
-                                </Link>
-                                <button className="navLogout" onClick={() => Authentication.Logout()}>
-                                    <i className="dashboard-icons logout" style={{ backgroundImage: `url(${logout})` }}></i>
-                                    <span className="hiddenCollapsed" data-icon={logout}>Logout</span>
-                                </button>
-                            </section>
-                        </nav>
-                    </aside>
-                </div>
-            </>
-        )
+        return null;
     }
 
     // ── CMP mode: original consent-management navigation ──────────────────

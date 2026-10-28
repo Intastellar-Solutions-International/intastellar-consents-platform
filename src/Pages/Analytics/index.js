@@ -8,7 +8,7 @@ import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import AnalyticsWorldMap from "./AnalyticsWorldMap.js";
 import {
     authHeaders, KpiCard, MiniBar, useAnalyticsPage, useAnalyticsReport, useSiteConfig,
-    toIsoDate, pctChange, IndustryBenchmarkNote, formatPercent, SegmentFilter, AnalyticsSubNav,
+    toIsoDate, pctChange, IndustryBenchmarkNote, formatPercent, SegmentFilter,
     useForeignDomains, splitForeignDomainsByRecency,
     formatCurrency, CURRENCY_SYMBOLS, elementLabel,
 } from "./_shared.js";
@@ -852,8 +852,6 @@ export default function SiteAnalytics() {
             />
             <div className="dashboard-content">
                 <div className="sa-page">
-
-                    <AnalyticsSubNav domain={domain} />
 
                     {data && !data.noSiteKey && (
                         <div className="sa-meta-row">

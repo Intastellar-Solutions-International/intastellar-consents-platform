@@ -1,16 +1,10 @@
 const { useState, useEffect, useContext, useMemo, useCallback } = React;
 const useParams  = window.ReactRouterDOM.useParams;
-const Link       = window.ReactRouterDOM.Link;
-const useLocation = window.ReactRouterDOM.useLocation;
 import { ScannerHost } from "../../API/host.js";
 import Authentication from "../../Authentication/Auth.js";
 import { DomainContext, WorkspaceContext, DateRangeContext } from "../../App.js";
 import {
     useSyncDomainFromRoute, isCombinedOrClearDomain,
-    analyticsPath, analyticsAudiencePath, analyticsAcquisitionPath,
-    analyticsConsentPath, analyticsAdSpendPath, analyticsAttributionPath,
-    analyticsConversionsPath, analyticsHeatmapPath, analyticsFormsPath,
-    analyticsPerformancePath, analyticsPageWeightPath, analyticsDigestPath,
 } from "../../Functions/domainPathSegments.js";
 import { ymdLocal } from "../../Components/Filter/filterDatePresets.js";
 
@@ -641,48 +635,5 @@ export function useSiteConfig(domain) {
             .catch(() => {});
     }, [domain]);
     return config;
-}
-
-// ── Analytics section quick-nav (shared across all Analytics pages) ───────────
-export function AnalyticsSubNav({ domain }) {
-    const { pathname } = useLocation();
-
-    const domainTabs = domain ? [
-        { label: "Overview",    path: analyticsPath(domain),          end: true },
-        { label: "Audience",    path: analyticsAudiencePath(domain) },
-        { label: "Consent",     path: analyticsConsentPath(domain) },
-        { label: "Acquisition", path: analyticsAcquisitionPath(domain) },
-        { label: "Ad Spend",    path: analyticsAdSpendPath(domain) },
-        { label: "Attribution", path: analyticsAttributionPath(domain) },
-        { label: "Conversions", path: analyticsConversionsPath(domain) },
-        { label: "Forms",       path: analyticsFormsPath(domain) },
-        { label: "Performance", path: analyticsPerformancePath(domain) },
-        { label: "Page Weight", path: analyticsPageWeightPath(domain) },
-        { label: "Heatmap",     path: analyticsHeatmapPath(domain) },
-    ] : [];
-
-    // Digest is a portfolio-level tab — always visible regardless of domain selection
-    const allTabs = [
-        ...domainTabs,
-        { label: "Digest", path: analyticsDigestPath(), end: true, portfolio: true },
-    ];
-
-    if (!domain && !allTabs.length) return null;
-
-    return (
-        <nav className="sa-subnav" aria-label="Analytics sections">
-            {allTabs.map(t => {
-                const active = t.end
-                    ? pathname === t.path || pathname === t.path + '/'
-                    : pathname === t.path || pathname.startsWith(t.path + '/');
-                return (
-                    <Link key={t.path} to={t.path}
-                        className={"sa-subnav__tab" + (active ? " sa-subnav__tab--active" : "") + (t.portfolio ? " sa-subnav__tab--portfolio" : "")}>
-                        {t.label}
-                    </Link>
-                );
-            })}
-        </nav>
-    );
 }
 

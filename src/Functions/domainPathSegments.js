@@ -309,32 +309,6 @@ export function detectDashboardMode(pathname) {
     return String(pathname || "").indexOf("/analytics") === 0 ? "analytics" : "cmp";
 }
 
-const ANALYTICS_SUBPATHS = ["/audience", "/acquisition", "/consent", "/marketing", "/heatmap", "/recordings", "/bots", "/user-flow", "/conversions", "/ad-spend", "/attribution", "/settings", "/google-analytics", "/search-console", "/page-experiments", "/cohorts", "/alerts", "/digest", "/scheduled-reports", "/reports", "/forms", "/performance", "/page-weight"];
-
-/** True for the Analytics overview ("Reports snapshot") page itself, false for any sub-report under it. */
-export function isAnalyticsOverviewPath(pathname) {
-    const path = String(pathname || "");
-    if (path.indexOf("/analytics") !== 0) return false;
-    return !ANALYTICS_SUBPATHS.some(s => path.includes(s));
-}
-
-/**
- * Which analytics icon-rail "section" a pathname belongs to. Mirrors the
- * group dividers in SideNavLinks' analyticsLinks, so the rail's icon and the
- * secondary sidebar's expanded group always agree on where you are.
- */
-export function analyticsRailSection(pathname) {
-    const path = String(pathname || "");
-    if (isAnalyticsOverviewPath(path)) return "overview";
-    if (path.includes("/audience") || path.includes("/consent")) return "audience";
-    if (path.includes("/acquisition") || path.includes("/marketing") || path.includes("/ad-spend") || path.includes("/google-analytics") || path.includes("/search-console")) return "acquisition";
-    if (path.includes("/heatmap") || path.includes("/recordings") || path.includes("/bots") || path.includes("/user-flow") || path.includes("/performance") || path.includes("/page-weight")) return "behavior";
-    if (path.includes("/conversions") || path.includes("/page-experiments")) return "conversions";
-    if (path.includes("/cohorts") || path.includes("/alerts") || path.includes("/digest")) return "insights";
-    if (path.includes("/reports")) return "reports";
-    return null;
-}
-
 /** Path for a dashboard mode ("cmp" | "analytics") at the given domain. */
 export function modePath(mode, platformId, domainUnicode) {
     if (mode === "analytics") {

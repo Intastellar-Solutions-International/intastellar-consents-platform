@@ -1196,3 +1196,51 @@ while rebuilding it, and fixed several sub-13px font sizes (group labels, link t
 No console errors on this page or Overview (still correctly showing its old nav, unaffected). The
 new groups from item 1 render correctly through the new component. Verified via `postcss.parse()`,
 babel transform, and the full test suite alongside the live checks above.
+
+### 3. Unify Overview's navigation with the rest of Analytics — done, verified live
+
+Overview was the one page item 2 deliberately left alone: it still had the old, pre-Phase-3
+navigation — the unlabeled icon rail (`Nav.js`) plus an Overview-only underline tab strip
+(`AnalyticsSubNav` in `_shared.js`) — instead of the new grouped sidebar, because removing any one
+of these three pieces alone would have left Overview in a visibly broken intermediate state (either
+double nav, or none at all). All three needed to land together:
+
+- **`Nav.js`**: the analytics-mode branch — a 5-icon rail (Overview/Audience/Acquisition/Behavior/
+  Conversions) whose labels only appeared on `:hover`, a keyboard-accessibility gap Phase 0 flagged —
+  now just `return null`. It fully duplicated the new sidebar one level up and was never shown outside
+  analytics mode's old layout. Removed the now-unused icon/path-function imports that fed it
+  (`analyticsOverview`, `audience`, `acquisition`, `heatmapIcon`, `conversionsIcon`,
+  `analyticsAudiencePath`, `analyticsAcquisitionPath`, `analyticsHeatmapPath`,
+  `analyticsConversionsPath`, `analyticsRailSection`); CMP-mode's branch (Home/Compliance/Reports/
+  Portfolio Benchmark/A-B Testing + the admin/Settings/Logout footer) is untouched.
+- **`AnalyticsSideNav.js`**: dropped the `isAnalyticsOverviewPath` skip-check that kept the new
+  sidebar (item 2) off Overview specifically. The sidebar now renders on every analytics-mode page,
+  Overview included.
+- **`index.js` / `_shared.js`**: removed `<AnalyticsSubNav domain={domain} />` from the Overview page
+  and deleted the `AnalyticsSubNav` function definition itself (confirmed via grep it had exactly one
+  caller). Also removed the now-fully-dead `Link`/`useLocation` globals and the 12 `analytics*Path`
+  imports in `_shared.js` that existed only to feed that component, and deleted the orphaned
+  `.sa-subnav`/`.sa-subnav__tab*` CSS rules from `Analytics.css` (confirmed zero remaining JS
+  references to those class names anywhere in the repo before removing).
+- **`domainPathSegments.js`**: deleted the now-fully-dead `ANALYTICS_SUBPATHS`, `isAnalyticsOverviewPath`,
+  and `analyticsRailSection` — each confirmed via grep to have zero remaining callers once the three
+  changes above landed.
+
+**Verified live** (Chrome, connected via CDP to the already-authenticated session) at 1024/1280/1440px
+on the Overview page: the new grouped sidebar renders (`#ia-analytics-sidebar` present, 231px wide),
+correctly highlights "Overview" as the active link, no icon rail (`.sidebar nav.collapsed` absent on
+this page), no old tab strip (`.sa-subnav` absent), no horizontal overflow at any of the three widths
+(`body.scrollWidth` ≤ `innerWidth` throughout), and no new console errors introduced by the change
+(the CDN `react-use-websocket` import warnings and one `500` are pre-existing — confirmed present on
+the unmodified CMP dashboard page too, unrelated to this work). Also re-confirmed the CMP-mode
+dashboard (`/gdpr/dashboard`) still renders its own 7-link icon rail untouched, with the new sidebar
+correctly absent there. Screenshots: `overview-unified-{1024,1280,1440}.png`,
+`cmp-dashboard-unaffected.png` (scratchpad; not yet copied into `/docs/design-screenshots/` — see the
+screenshot-backlog note below). Static validation: babel transform on all five touched JS files,
+`postcss.parse()` on `Analytics.css`, full test suite (117/117 passed).
+
+**Screenshot backlog note:** Phase 3's per-item screenshots (items 1-3) have only been captured ad hoc
+into the scratchpad for live verification, not yet formally saved to `/docs/design-screenshots/` at
+all three required widths the way Phase 2's closing commit did. Flagging this now so it isn't lost —
+plan to close it out with a batched screenshot commit before moving on to Phase 3's remaining items
+(header compaction, date-range affordance, compare-to-previous-period) or Phase 4.
