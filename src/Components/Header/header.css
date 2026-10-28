@@ -1004,3 +1004,224 @@
     font-size: 0.7rem;
     color: rgba(180,185,200,0.4);
 }
+
+/* ── AnalyticsSidebar (docs/design-audit-plan.md Phase 3 item 2) ──────────────
+   A fully independent class family from .sidebar/.collapsed/.navItems above
+   — this is a NEW component (AnalyticsSidebar.js), not a restyle of the
+   shared SideNav.js, specifically so this fix can't affect SideNav.js's
+   other consumers (Settings, DSR, Countries, UserConsents pages). The
+   visual appearance matches the old grouped sidebar closely; what changed
+   is `position: sticky` instead of `fixed` on the nav — sticky keeps the
+   "stays in view while scrolling" behavior without removing the element
+   from normal flow, so it genuinely reserves its own width in the flex
+   row instead of only *looking* like it does by coincidence. */
+
+.ia-sidebar {
+    width: 231px;
+    flex-shrink: 0;
+}
+
+.ia-sidebar__nav {
+    position: sticky;
+    top: 66px;
+    height: calc(100vh - 66px);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-right: 1px solid rgba(255, 255, 255, 0.06);
+    background: linear-gradient(180deg, rgb(58, 58, 58) 0%, rgb(48, 48, 48) 45%, rgb(42, 42, 42) 100%);
+    box-shadow: inset -1px 0 0 rgba(0, 0, 0, 0.25);
+}
+
+.ia-sidebar__top {
+    display: contents;
+}
+
+.ia-sidebar__heading {
+    margin: 0;
+    padding: 18px 14px 12px;
+    font-size: var(--sa-font-xs, 0.78rem);
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.5);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ia-sidebar__close {
+    display: none;
+}
+
+.ia-sidebar__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+    overflow-y: auto;
+    padding-bottom: 24px;
+}
+
+.ia-sidebar__item { margin: 0; padding: 0; }
+
+.ia-sidebar__group-label {
+    margin: 10px 0 2px;
+    padding: 0 10px;
+    list-style: none;
+}
+.ia-sidebar__group-label:first-child { margin-top: 4px; }
+
+.ia-sidebar__group-label-text {
+    display: block;
+    font-size: var(--sa-font-xs, 0.72rem);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.32);
+    padding: 4px 2px 2px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.ia-sidebar__group-label:first-child .ia-sidebar__group-label-text { border-top: none; }
+
+.ia-sidebar__link {
+    color: rgba(255, 255, 255, 0.88);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 10px 14px;
+    overflow: hidden;
+    white-space: nowrap;
+    font-size: var(--sa-font-sm, 0.86rem);
+    transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+    text-decoration: none;
+    box-sizing: border-box;
+}
+
+.ia-sidebar__link-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ia-sidebar__link.--active {
+    background: rgba(255, 255, 255, 0.08);
+    color: rgb(255, 255, 255);
+    box-shadow: inset 3px 0 0 0 rgb(192, 159, 83);
+}
+
+.ia-sidebar__link--indent {
+    padding-left: 30px;
+    color: rgba(255, 255, 255, 0.6);
+}
+.ia-sidebar__link--indent.--active { color: rgb(255, 255, 255); }
+
+.ia-sidebar__link:hover:not(.--active) {
+    background-color: rgba(255, 255, 255, 0.06);
+    color: rgb(255, 255, 255);
+}
+
+/* Mobile drawer — below 1024px, per the design brief. Same pattern as
+   SideNav.js's own drawer (toggle + backdrop + slide-in), independent
+   classes, breakpoint moved from that component's 769px to the brief's
+   1024px. */
+.ia-sidebar-toggle { display: none; }
+.ia-sidebar-backdrop { display: none; }
+
+@media (max-width: 1023px) {
+    .ia-sidebar-toggle {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        position: fixed;
+        top: 76px;
+        left: 12px;
+        z-index: 102;
+        padding: 8px 12px;
+        margin: 0;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: var(--sa-radius-sm, 8px);
+        background: linear-gradient(180deg, rgb(58, 58, 58) 0%, rgb(48, 48, 48) 100%);
+        color: rgba(255, 255, 255, 0.92);
+        font: inherit;
+        font-size: var(--sa-font-sm, 0.85rem);
+        cursor: pointer;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+    }
+    .ia-sidebar-toggle__bars { display: flex; flex-direction: column; gap: 4px; }
+    .ia-sidebar-toggle__bar { display: block; width: 18px; height: 2px; background: currentColor; border-radius: 1px; }
+    .ia-sidebar-toggle__label {
+        position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+        overflow: hidden; clip: rect(0,0,0,0); border: 0;
+    }
+
+    .ia-sidebar-backdrop {
+        display: block;
+        position: fixed;
+        inset: 0;
+        z-index: 100;
+        background: rgba(0, 0, 0, 0.5);
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transition: opacity 0.25s ease, visibility 0.25s ease;
+    }
+    .ia-sidebar-backdrop--visible { opacity: 1; visibility: visible; pointer-events: auto; }
+
+    .ia-sidebar {
+        width: 0;
+        min-width: 0;
+        overflow: visible;
+    }
+    .ia-sidebar__nav {
+        position: fixed;
+        transform: translateX(-100%);
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        width: min(86vw, 300px);
+        top: 66px;
+        height: calc(100vh - 66px);
+        z-index: 102;
+        box-shadow: 6px 0 28px rgba(0, 0, 0, 0.35);
+    }
+    .ia-sidebar--open .ia-sidebar__nav {
+        transform: translateX(0);
+    }
+
+    .ia-sidebar__top {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 8px;
+        padding-right: 4px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        margin-bottom: 4px;
+    }
+    .ia-sidebar__top .ia-sidebar__heading { border-bottom: none; padding-bottom: 8px; flex: 1; min-width: 0; }
+
+    .ia-sidebar__close {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        width: 40px;
+        height: 40px;
+        margin: 0;
+        padding: 0;
+        border: none;
+        border-radius: var(--sa-radius-sm, 8px);
+        background: transparent;
+        color: rgba(255, 255, 255, 0.88);
+        font-size: 28px;
+        line-height: 1;
+        cursor: pointer;
+    }
+    .ia-sidebar__close:hover { background: rgba(255, 255, 255, 0.08); }
+}

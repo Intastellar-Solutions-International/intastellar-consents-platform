@@ -1159,3 +1159,40 @@ Conversions in-page sub-nav still works alongside the simplified main sidebar).
 
 **Not yet touched in this commit:** the sidebar is still `position: fixed` (overlay, not push) and
 still hidden on Overview — those are the next, riskier items.
+
+### 2. Fix the overlay-vs-push structural bug — done, verified live with measurements, not just a screenshot
+
+The root fix: `position: sticky` instead of `position: fixed` on the sidebar nav. Sticky keeps the
+same "stays in view while the page scrolls" behavior the old fixed positioning had, but — unlike
+fixed — a sticky element is never removed from normal document flow, so it genuinely contributes
+its width to the flex row it sits in and actually pushes its siblings, instead of only *looking*
+like it does by the coincidence Phase 0 found (its box reserving space while a `position:fixed`
+child happened to render in the same spot by default).
+
+**Scope decision found mid-implementation, not anticipated in Phase 0:** `SideNav.js` (the
+component this sidebar used to render through) turned out to be a *shared, app-wide* component —
+grepped before touching anything and found it's also used by Settings pages, DSR, Countries, and
+UserConsents. Modifying its positioning model would have risked every one of those unrelated pages.
+Built a new, Analytics-only component instead — `AnalyticsSidebar.js` — with a fully independent CSS
+class family (`.ia-sidebar*`, `header.css`) that shares zero selectors with `SideNav.js`'s own
+`.sidebar`/`.collapsed`/`.navItems` classes or with `Nav.js`'s icon rail (which also uses
+`.sidebar`/`.collapsed` and is untouched by this commit — removing it is a later item). Also moved
+the responsive drawer breakpoint from the borrowed pattern's 769px to the brief's requested 1024px
+while rebuilding it, and fixed several sub-13px font sizes (group labels, link text) using the Phase
+1 type-scale tokens, since this was a full rebuild rather than an edit to pre-existing rules.
+
+**Verified with actual measurements, not just a visual read:**
+- No overflow introduced: `document.body.scrollWidth` (1438px) vs. `window.innerWidth` (1440px) on
+  the Audience page — consistent with Phase 2 item 9's own measurement approach.
+- Genuinely sticky, not coincidentally positioned: scrolled the page 800px, then read
+  `getBoundingClientRect().top` on the live DOM — stayed at `66` (its intended offset) regardless of
+  scroll position, and `getComputedStyle().position` confirmed `"sticky"`. Hit the same viewport-
+  reset gotcha as earlier screenshot sessions here (a `page.evaluate` click without a fresh
+  `setViewport` call silently reverted to Puppeteer's 800px default) — caught it by explicitly
+  re-confirming `window.innerWidth` immediately before the measurement, rather than trusting the
+  screenshot alone; the first attempt would have "confirmed" the *mobile* drawer's fixed-position
+  rule instead of the desktop sticky rule without that check.
+
+No console errors on this page or Overview (still correctly showing its old nav, unaffected). The
+new groups from item 1 render correctly through the new component. Verified via `postcss.parse()`,
+babel transform, and the full test suite alongside the live checks above.
