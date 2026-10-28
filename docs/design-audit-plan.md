@@ -1617,3 +1617,31 @@ screenshot confirms a close visual match to the reference, no console errors.
 
 Backend fields (`countries`, `perMinuteUsers`) will populate once this deploys — worth a final live
 check after that lands (same propagation-lag caveat as item 2).
+
+**Second follow-up: highlight the actual countries, not marker dots.** Replaced the pulsing-dot
+approach entirely — `LiveActivityMap.js` now fills each active country's own shape (green, opacity
+scaled by its share of the busiest country's active-user count via the same sqrt curve
+`AnalyticsWorldMap.js`'s `colorForShare()` already uses, so a single dominant country doesn't flatten
+every other active one into the same low-opacity band) instead of plotting a dot at its centroid.
+
+The real work here was matching: this TopoJSON source (`world-atlas@2/countries-110m.json`) IDs each
+country feature by ISO 3166-1 *numeric* code, not the alpha-2 codes `api/analytics-live.js`'s
+`country_code` column uses. Found the exact precedent already solved this in the codebase —
+`src/Components/AuditSnapshotCard/AuditComplianceWorldMap.js` highlights specific countries on this
+same TopoJSON for compliance-framework overlays, via `src/Functions/isoNumericToAlpha2.js`'s
+`numericToAlpha2()`. Reused that directly rather than re-deriving a mapping table. Dropped
+`countryCoordinates`/`projectMercator` (only needed for placing a dot at a point, not for filling a
+shape) and the dot/ring CSS, added `.lam-country--active`.
+
+**Verified live** — since the backend isn't deployed yet, live country data isn't available from the
+real API, so verified via a `window.fetch` monkey-patch injected at document-creation time
+(`page.evaluateOnNewDocument`), overriding `analytics-live`'s response to add four fake countries
+(DK/US/DE/JP, varying `activeUsers` counts) while leaving everything else from the real response
+untouched. All four matched correctly: 16 `<path>` elements got `.lam-country--active` (some
+countries are MultiPolygons in this TopoJSON — the US mainland + islands, Denmark's islands — each
+polygon highlighted separately, which is correct), each with the right country/count in its tooltip
+title. Screenshot confirms the visual result: the US (brightest, large landmass) and a small but
+present Denmark highlight (same calculated opacity, just less visually prominent at Denmark's actual
+map size — an inherent property of choropleth maps, not a bug). No console errors. Babel + postcss +
+full test suite (117/117) pass. This mocking approach only validates the frontend matching logic — the
+real per-country counts still depend on the backend's `countriesRes` query, unverified until deployed.
