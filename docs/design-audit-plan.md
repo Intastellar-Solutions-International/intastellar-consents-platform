@@ -1086,3 +1086,36 @@ innerWidth` re-checked at all three required widths post-fix — 1024px (1022 vs
 1280px (1278 vs. 1280, -2px), 1440px (1438 vs. 1440, -2px). No overflow at any of the three.
 Screenshotted the Top Pages table to confirm it truncates cleanly with an ellipsis instead of
 looking broken.
+
+## Phase 2 screenshots — captured in `/docs/design-screenshots/`
+
+All captured live against real asasoftware.aero data via `puppeteer-core` connected to your Chrome
+over CDP, navigating by clicking in-app links (not `page.goto()`/reload, which this dev server's
+routing doesn't support for nested paths — see the note above).
+
+| File(s) | What it shows |
+|---|---|
+| `overview-before-{1024,1280,1440}.png` | Overview at all 3 required widths, pre-Phase-2 (commit `48d93552`, checked out temporarily via git, then returned to `deployment` HEAD) |
+| `overview-after-{1024,1280,1440}.png` | Overview at all 3 required widths, current state — covers items 1 (dead space), 2 (Feedback tab), 4 (element labels), 6 (bar colors), 8 (map), 9 (overflow) in one page |
+| `map-before.png` / `map-after.png` | The world map specifically — near-white no-data land/no legend/flat compressed gradient vs. dark no-data land/working legend/visible country-to-country differentiation (item 8) |
+| `forms-chart-zoom.png` | The "Submissions over time" chart on the Forms page — zero-filled daily line (~30 evenly-spaced points, clean date labels) instead of a sparse 3-point connected zigzag (item 7); also visible in this same screenshot: the Forms page's own "Unique forms" KPI and table both independently read 2 on current real data, reconfirming item 4's finding that the originally-reported "2 vs 4" doesn't reproduce here |
+| `performance-after-1440.png`, `attribution-after-1440.png`, `marketing-after-1440.png` | Page title now matches the nav label on all 3 renamed pages (item 3) — "Performance," "Attribution," "Marketing," not "Core Web Vitals"/"Conversion Attribution"/"Channel Analytics" |
+| `forms-after-1440.png` | Full Forms page for context around the chart-zoom crop above |
+
+**Not captured, with reasons already given inline above:** item 5 (Loading→skeleton) is a loading-
+flash state inherently hard to catch in a static screenshot — the code-level fix and reasoning
+stand without one. The map's `+`/`−` zoom-button re-theme is visible in `map-after.png` but wasn't
+isolated into its own before/after pair — it's a small, low-risk, already-code-confirmed change
+(exact CSS property values read from the library's own stylesheet, not guessed) rather than one
+that needed live pixel comparison to trust.
+
+## Phase 2 complete
+
+All 9 items plus the regression fix are implemented, tested, and now verified live against real
+data — not just statically reasoned about. Two corrections worth restating plainly since they
+reflect well on verifying rather than assuming: the map's color-scale direction was never actually
+inverted (Phase 0's hypothesis, reasonable before rendering was possible, turned out wrong), and a
+real bug (`PanelSkeletonShell`) was found and fixed that static analysis alone had missed for an
+entire pushed commit.
+
+Ready to push once reviewed, and ready for Phase 3 (navigation) whenever you want to continue.
