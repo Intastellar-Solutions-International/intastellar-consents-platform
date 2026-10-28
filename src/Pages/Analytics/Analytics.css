@@ -499,8 +499,38 @@
     color: rgba(74,222,128,0.95);
 }
 
-.sa-liveview__map-panel .sa-map__inner {
-    min-height: 440px;
+/* Full-bleed hero, same technique as Compliance's own map hero
+   (src/Pages/Compliance/Style.css .compliance-hero): negative margin to
+   break out of .dashboard-content's 20px horizontal gutter (the only
+   horizontal inset between here and the viewport edge of the content
+   column — .sa-page itself has no horizontal padding), a viewport-relative
+   height so it reads as a true hero rather than a bounded card, and the
+   map SVG absolutely positioned to fill it. */
+.sa-liveview__map-hero {
+    position: relative;
+    margin: 0 -20px;
+    width: calc(100% + 40px);
+    height: 46vh;
+    min-height: 380px;
+    max-height: 560px;
+    overflow: hidden;
+    background: #0e0c09;
+}
+
+.sa-liveview__map-hero .lam {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.sa-liveview__map-empty {
+    position: absolute;
+    bottom: 16px;
+    left: 20px;
+    margin: 0;
+    font-size: 0.8rem;
+    color: rgba(var(--sa-text-dim),0.6);
 }
 
 .sa-liveview__grid {
@@ -516,7 +546,7 @@
 
 @media (max-width: 900px) {
     .sa-liveview__grid { grid-template-columns: 1fr; }
-    .sa-liveview__map-panel .sa-map__inner { min-height: 300px; }
+    .sa-liveview__map-hero { height: 60vw; min-height: 240px; }
 }
 
 /* ── 2 × 2 KPI grid (Live View page) ── */

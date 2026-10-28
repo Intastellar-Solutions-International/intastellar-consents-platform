@@ -1570,15 +1570,50 @@ hosts — reusing the exact same `.sa-live__*` CSS classes those sections always
 a cramped sidebar card to full-page panels. No tier gate added — matches the widget's own current
 ungated behavior, not a new paywall decision.
 
-**Verification status:** static validation complete — babel on all 7 touched/new files (`App.js`,
-`SideNavLinks/index.js`, `LiveView.js`, `index.js`, `_shared.js`, `domainPathSegments.js`,
-`analytics-live.js`), `postcss.parse()` on `Analytics.css`, full test suite (117/117) pass, webpack's
-dev build recompiled cleanly (confirmed via `dist/bundle.js` picking up the change with no compile
-error). **Live verification in Chrome is blocked right now** — the connected session got logged out
-(session/token expiry over this conversation's length, unrelated to these changes) partway through
-testing, and the "Continue as Felix A." quick-resume button isn't completing a re-auth from here after
-several attempts; asked the user to re-authenticate that Chrome window. Once back in: confirm the
-sidebar's new "Live" entry, the simplified widget's hero number/sparkline/country table render
-correctly, the new page's map hero and detail grid render with real data, and no console errors —
-particularly the per-country/per-minute-user fields, which depend on the backend changes above having
-actually deployed (same propagation-lag caveat as item 2).
+**Verification status:** static validation complete — babel on all touched/new files, `postcss.parse()`
+on `Analytics.css`, full test suite (117/117) pass. **Live verification was blocked by a session
+logout partway through testing** (token expiry over this conversation's length, unrelated to these
+changes) — the user re-authenticated and live checks then ran clean:
+- Sidebar's new "Live" entry present, correctly positioned in the Behavior group, correctly highlights
+  active on `/analytics/:handle/live`.
+- Switched to a real single domain (asasoftware.aero — the account-picker interaction itself turned
+  out to be the flaky part across several attempts, not the app; using Puppeteer's native element
+  `.click()` instead of a synthetic DOM `.click()` fixed it) and confirmed the Overview widget renders
+  with real data: "Active users in last 30 minutes" / "6", correct `view real time` link
+  (`/analytics/asasoftware.aero/live`), sparkline and country table both present and gracefully showing
+  their empty states (not crashing) since the backend half isn't deployed yet.
+- New Live View page: status line ("6 active users right now"), map hero, and 4-card detail grid all
+  render; same graceful "No data yet" / "No active countries right now" empty states for the
+  not-yet-deployed fields. No console errors from any of this session's code on either page.
+- Found one **pre-existing, unrelated** React key-duplication warning (two "Frustration signals"
+  tables on Overview, neither touched by this item) while checking the console — confirmed via
+  `document.querySelectorAll('table')` that it traces to those tables, not anything built here. Not
+  fixed as part of this item — flagging only so it isn't mistaken for a regression from this work.
+
+**Map swap, per your follow-up request:** you asked for the Live View page's map to match the
+Compliance section's style (`ComplianceFlowMap.js` — full-bleed Mercator render, muted slate-blue
+countries on near-black) instead of `AnalyticsWorldMap`'s gold-choropleth `svgMap` style. Built
+`LiveActivityMap.js` + `.css` reusing `ComplianceFlowMap`'s actual rendering primitives
+(`worldTopoShared.js`'s `projectMercator`/`ringToPathD`/`topoToFeatures`, the same TopoJSON source and
+crop) but plotting a pulsing green dot per active country (sized by its share of the busiest country's
+count) instead of flow arcs — there's no origin/destination concept for live visitors, just "these
+countries have active users right now." Verified live: 285 country paths render, visual match to the
+reference confirmed by screenshot, "No active countries right now" shown correctly (backend not
+deployed yet), no console errors.
+
+**Follow-up: made it full-bleed, per your next request.** The map was still sitting inside a bordered
+`.sa-panel` card at this point — you pointed at Compliance's own hero (`.compliance-hero`,
+`Pages/Compliance/Style.css`) as the target instead: edge-to-edge within the content column, no panel
+chrome, a viewport-relative height so it reads as a true hero. Replicated that exact technique rather
+than inventing a new one: a negative margin breaking out of `.dashboard-content`'s 20px horizontal
+gutter (the only horizontal inset in this page's layout — `.sa-page` itself has none), `height: 46vh`
+(clamped 380-560px, same bounds Compliance uses), the map SVG absolutely positioned to fill it, and the
+"No active countries" message repositioned as a bottom-left overlay caption instead of plain body text.
+Dropped the "Active countries" panel title entirely to match the reference's un-chromed look — the
+page's own "Live View" heading and the status line above it already give enough context. Removed the
+now-unused `IconGlobe` import this left behind. Verified live: hero measures 1207px wide at 1440px
+viewport (nearly the full 1209px content-column width, confirming the breakout works), 414px tall,
+screenshot confirms a close visual match to the reference, no console errors.
+
+Backend fields (`countries`, `perMinuteUsers`) will populate once this deploys — worth a final live
+check after that lands (same propagation-lag caveat as item 2).

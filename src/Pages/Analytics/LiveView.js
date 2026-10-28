@@ -1,7 +1,6 @@
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
-import AnalyticsWorldMap from "./AnalyticsWorldMap.js";
+import LiveActivityMap from "./LiveActivityMap.js";
 import { useAnalyticsPageChrome, useSiteConfig, useLiveData, formatCurrency, timeAgo } from "./_shared.js";
-import { IconGlobe } from "./Icons.js";
 import "./Analytics.css";
 
 /**
@@ -10,10 +9,12 @@ import "./Analytics.css";
  * now (hero number, sparkline, top-5 countries); everything it used to
  * carry — the full sparkline + 2x2 KPI grid, the recent-events feed,
  * conversions, cross-site hosts — lives here instead, alongside a large
- * map hero (same AnalyticsWorldMap component Overview/Audience use, fed
- * live per-country active-user counts instead of a period aggregate).
- * Polls the same /api/analytics-live endpoint via the shared useLiveData()
- * hook (_shared.js) — no separate data source from the widget.
+ * map hero. The map is LiveActivityMap (not AnalyticsWorldMap) — the user
+ * asked for this page's map to match the Compliance section's full-bleed,
+ * muted-slate-on-near-black style (ComplianceFlowMap.js) rather than the
+ * gold-choropleth svgMap style Overview/Audience use. Polls the same
+ * /api/analytics-live endpoint via the shared useLiveData() hook
+ * (_shared.js) — no separate data source from the widget.
  */
 export default function LiveView() {
     document.title = "Live View | Site Analytics";
@@ -22,7 +23,7 @@ export default function LiveView() {
     const siteConfig = useSiteConfig(domain);
     const { data, countdown } = useLiveData(domain, siteConfig?.id);
 
-    const mapCountries = (data?.countries || []).map(c => ({ code: c.code, events: c.activeUsers }));
+    const mapCountries = data?.countries || [];
     const maxUserBar = Math.max(...(data?.perMinuteUsers || [1]), 1);
     const consentPct = data?.total > 0 ? Math.round((data.full / data.total) * 100) : 0;
 
@@ -49,9 +50,11 @@ export default function LiveView() {
                                 <span className="sa-live__countdown">refreshing in {countdown}s</span>
                             </div>
 
-                            <div className="sa-panel sa-liveview__map-panel">
-                                <h3 className="sa-panel__title"><IconGlobe className="sa-icon" /> Active countries</h3>
-                                <AnalyticsWorldMap countries={mapCountries} metricLabel="Active users" />
+                            <div className="sa-liveview__map-hero">
+                                <LiveActivityMap countries={mapCountries} />
+                                {mapCountries.length === 0 && (
+                                    <p className="sa-liveview__map-empty">No active countries right now.</p>
+                                )}
                             </div>
 
                             <div className="sa-liveview__grid">
