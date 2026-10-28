@@ -1488,3 +1488,50 @@ full row, which looks intentional in practice (checked live, see the screenshot)
 GA4-style dashboard treats secondary metrics as supplementary, not space-filling. Not changing the grid
 now; flagging in case it reads worse on some other business type's exact 5-card default than it did on
 this account's.
+
+### 2. Real daily breakdowns for the hero's other 3 metrics — backend done (pushed separately), frontend done
+
+Follow-up to item 1: the user asked to implement the daily breakdowns item 1 had deferred to
+`EmptyState`, rather than leaving them empty long-term. This is a genuine exception to this phase's
+"presentation-only" ground rule — the user explicitly asked for real backend queries here, which is
+their call to make.
+
+**Backend (`api/analytics-report.js`, `api/analytics-property-report.js`):**
+- `dailyRes` (the existing per-day query) now also selects `COUNT(DISTINCT session_id) ... AS
+  unique_sessions` — one extra column on the query that already existed, not a new round trip.
+- New `dailyEngagedRes` query: the *exact same* engagement criteria as the existing `engagedRes`
+  total (session lasted ≥10s, >1 pageview, or had a click — see that query's own comment) just grouped
+  by the session's first-seen day instead of collapsed to one number. Same calculation, finer
+  granularity — not a new metric definition.
+- Consent rate's daily series needed no backend change at all: it's `full / (minimal + full)` computed
+  client-side from the same per-day `minimal`/`full` columns the "Total events" chart already uses.
+- Response's `daily` array now carries `{date, minimal, full, uniqueSessions, engaged}` per day
+  (previously just `{date, minimal, full}`), merging `dailyEngagedRes` back in by date since it's a
+  structurally different query (session-level, full-consent only) from the plain event-level `dailyRes`.
+- Confirmed the pre-existing `computeConsentImpact()`/`dailyEstimates` code (which reads `dailyRes.rows`
+  directly, by field name) is unaffected by the added `unique_sessions` column — extra columns don't
+  break code that only reads specific named fields.
+
+**Note on how this got committed:** these two files ended up pushed to `origin/deployment` under commit
+`c04a6747` ("Updated reports API", authored as you) before I ran `git commit` myself — something
+external to this session picked up my uncommitted working-tree edits and pushed them. Confirmed via
+`git hash-object` that the pushed content is byte-for-byte identical to what I'd written, so nothing is
+broken or partial — just flagging that this one landed outside the normal commit-and-confirm-before-push
+flow this whole engagement has otherwise followed.
+
+**Frontend (`index.js`):** new `SingleValueChart` component — a single-series sibling to the existing
+`AreaChart` (shares `smoothPath()` and the same W/H/padding layout so switching hero tabs doesn't jump
+the chart's proportions), parameterized by a `valueOf` extractor, color, and optional `formatValue`/
+`yMax` so it covers both plain counts (Active users, Unique sessions) and a 0-100% scale (Consent
+rate) without three near-duplicate chart components. `buildKpiCardMeta()`'s `users`/`sessions`/
+`consent` entries flipped to `hasDaily: true` and each now carries its own `renderChart(daily)`
+function; `events` got the same `renderChart` wrapper around the existing `AreaChart` for a uniform
+call site. The hero's chart section is now just `cardMeta[activeHeroMetric].renderChart(data.daily)`
+or `EmptyState` — no per-metric branching left in the parent.
+
+**Verification status:** `ScannerHost` (`src/API/host.js`) points at the deployed production API, not
+a local server — this dev environment has never had a way to execute these queries against a live DB
+directly. Babel-validated both backend files and `index.js`, full test suite (117/117) still passes,
+but the actual SQL correctness (does `dailyEngagedRes` return sane numbers against real data) can't be
+confirmed from here until it's live — worth a live check once this frontend commit deploys alongside
+the already-pushed backend one (allow the usual 2-3 min propagation lag).

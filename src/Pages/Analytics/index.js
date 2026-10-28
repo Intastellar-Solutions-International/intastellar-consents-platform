@@ -336,6 +336,73 @@ function AreaChart({ daily }) {
     );
 }
 
+// Single-series version of AreaChart, for daily metrics that aren't a
+// minimal/full consent-level split — Phase 4's hero chart pairing needs this
+// for Active users, Unique sessions (counts), and Consent rate (a
+// percentage, not a volume, hence the separate `yMax`/`formatValue`
+// handling). Shares smoothPath()/the same W-H-PAD layout as AreaChart so
+// switching hero tabs doesn't visibly jump the chart's proportions.
+function SingleValueChart({ daily, valueOf, color, fillFrom, fillTo, formatValue, yMax, gradientId }) {
+    const W = 800, H = 182;
+    const PAD = { t: 14, r: 18, b: 34, l: 46 };
+    const cW = W - PAD.l - PAD.r, cH = H - PAD.t - PAD.b;
+
+    if (!daily?.length) return <div className="sa-chart sa-chart--empty">No data for this period</div>;
+
+    const values = daily.map(valueOf);
+    const maxVal = yMax ?? Math.max(...values, 1);
+    const n = daily.length;
+    const xOf = i => PAD.l + (n === 1 ? cW / 2 : (i / (n - 1)) * cW);
+    const yOf = v => PAD.t + cH - (v / maxVal) * cH;
+    const base = PAD.t + cH;
+
+    const pts = daily.map((d, i) => [xOf(i), yOf(valueOf(d))]);
+    const area = smoothPath(pts) + ` L${pts[n - 1][0]},${base} L${PAD.l},${base} Z`;
+
+    const yTicks = [0, 0.25, 0.5, 0.75, 1].map(f => maxVal * f);
+    const fmt = formatValue || (v => v >= 10000 ? (v / 1000).toFixed(0) + 'k' : v >= 1000 ? (v / 1000).toFixed(1) + 'k' : String(Math.round(v)));
+    const labelIdxs = n <= 1 ? [0] :
+        [0, Math.round(n / 4), Math.round(n / 2), Math.round((n * 3) / 4), n - 1]
+        .filter((v, idx, a) => a.indexOf(v) === idx && v < n);
+
+    return (
+        <div className="sa-area-chart">
+            <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" style={{ width: "100%", display: "block" }}>
+                <defs>
+                    <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%"   stopColor={fillFrom} />
+                        <stop offset="100%" stopColor={fillTo} />
+                    </linearGradient>
+                </defs>
+
+                {yTicks.map((v, i) => {
+                    const y = yOf(v);
+                    return (
+                        <g key={i}>
+                            <line x1={PAD.l} y1={y} x2={W - PAD.r} y2={y}
+                                stroke="rgba(255,255,255,0.05)" strokeWidth="1" />
+                            <text x={PAD.l - 6} y={y + 4} textAnchor="end"
+                                fontSize="9" fill="rgba(150,150,175,0.5)">
+                                {fmt(v)}
+                            </text>
+                        </g>
+                    );
+                })}
+
+                <path d={area} fill={`url(#${gradientId})`} />
+                <path d={smoothPath(pts)} fill="none" stroke={color} strokeWidth="1.5" />
+
+                {labelIdxs.map(i => (
+                    <text key={daily[i].date} x={xOf(i)} y={H - PAD.b + 18}
+                        textAnchor="middle" fontSize="9" fill="rgba(150,150,175,0.55)">
+                        {daily[i].date.slice(5)}
+                    </text>
+                ))}
+            </svg>
+        </div>
+    );
+}
+
 const BT_LABELS = {
     ecommerce:   "E-commerce",
     b2b:         "B2B / SaaS",
@@ -526,7 +593,15 @@ function buildKpiCardMeta({ data, siteConfig, trendEngaged, trendEvents, trendSe
         },
         users: {
             icon: <IconRadio />, label: "Active users", value: data.totals.engagedUsers.toLocaleString("de-DE"),
-            sub: "engaged: 10s+, clicked, or 2+ pages", variant: "live", trend: trendEngaged, hasDaily: false,
+            sub: "engaged: 10s+, clicked, or 2+ pages", variant: "live", trend: trendEngaged,
+            // api/analytics-report.js's dailyEngagedRes — same engagement
+            // criteria as the engagedUsers total, grouped by day (Phase 4).
+            hasDaily: true,
+            renderChart: (daily) => (
+                <SingleValueChart daily={daily} valueOf={d => d.engaged}
+                    color="rgba(96,165,250,0.85)" fillFrom="rgba(96,165,250,0.45)" fillTo="rgba(96,165,250,0.02)"
+                    gradientId="sa-grad-users" />
+            ),
         },
         bounce: {
             icon: <IconScrollDepth />, label: "Bounce rate",
@@ -540,15 +615,34 @@ function buildKpiCardMeta({ data, siteConfig, trendEngaged, trendEvents, trendSe
             value: data.totals.total.toLocaleString("de-DE"),
             sub: `${data.totals.minimal.toLocaleString("de-DE")} minimal · ${data.totals.full.toLocaleString("de-DE")} full`,
             trend: trendEvents, hasDaily: true,
+            renderChart: (daily) => <AreaChart daily={daily} />,
         },
         sessions: {
             icon: <IconUsers />, label: "Unique sessions", value: data.totals.uniqueSessions.toLocaleString("de-DE"),
-            sub: "consent-gated sessions only", trend: trendSessions, hasDaily: false,
+            sub: "consent-gated sessions only", trend: trendSessions,
+            // dailyRes now carries unique_sessions per day alongside the
+            // existing minimal/full columns — one extra column, same query.
+            hasDaily: true,
+            renderChart: (daily) => (
+                <SingleValueChart daily={daily} valueOf={d => d.uniqueSessions}
+                    color="rgba(167,139,250,0.85)" fillFrom="rgba(167,139,250,0.45)" fillTo="rgba(167,139,250,0.02)"
+                    gradientId="sa-grad-sessions" />
+            ),
         },
         consent: {
             icon: <IconShieldCheck />, label: "Consent rate", value: formatPercent(consentPct),
             sub: "statisticCookies accepted — this analytics tracker's own full-consent rate",
-            variant: consentPct < 20 ? "warn" : "live", trend: trendConsent, hasDaily: false,
+            variant: consentPct < 20 ? "warn" : "live", trend: trendConsent,
+            // Derived client-side from daily.minimal/.full — no backend change
+            // needed, same per-day event counts the "Total events" tab already
+            // has, just divided differently (full / (minimal+full)).
+            hasDaily: true,
+            renderChart: (daily) => (
+                <SingleValueChart daily={daily}
+                    valueOf={d => (d.minimal + d.full) > 0 ? (d.full / (d.minimal + d.full)) * 100 : 0}
+                    color="rgba(74,222,128,0.85)" fillFrom="rgba(74,222,128,0.45)" fillTo="rgba(74,222,128,0.02)"
+                    formatValue={v => formatPercent(v, 0)} yMax={100} gradientId="sa-grad-consent" />
+            ),
             children: <IndustryBenchmarkNote benchmark={data.industryBenchmark} actualPct={consentPct} />,
         },
         countries: {
@@ -980,7 +1074,7 @@ export default function SiteAnalytics() {
                                         <span className="sa-chart-section__period">Last {getLastDays} days</span>
                                     </div>
                                     {cardMeta[activeHeroMetric]?.hasDaily ? (
-                                        <AreaChart daily={data.daily} />
+                                        cardMeta[activeHeroMetric].renderChart(data.daily)
                                     ) : (
                                         <EmptyState
                                             title="No daily breakdown yet"
