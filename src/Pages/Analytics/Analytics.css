@@ -3324,9 +3324,15 @@
     .sa-lead-kpi-wrap { grid-template-columns: 1fr; }
 }
 
-/* ── Conversions sub-page submenu (same visual language as the app's
-   Settings sidebar — vertical list, gold inset-left-border active state —
-   scoped to this page instead of the global fixed SideNav) ─────────────── */
+/* ── Conversions sub-page submenu — a secondary, in-page nav for this page's
+   three views, kept (not folded into the main sidebar — see
+   docs/design-audit-plan.md Phase 3 item 1) because it's genuinely a
+   sub-view switch, not a destination of its own. Styled to match the
+   AnalyticsSidebar's visual language (header.css's .ia-sidebar__link) now
+   that both sit side by side: same gold inset-left-border active state and
+   hover tint, same --sa-font-sm size and flush (no border-radius) full-width
+   rows — previously a bolder, smaller, rounded-pill style that read as a
+   different component instead of this page's extension of the sidebar. ── */
 
 .sa-conv-layout {
     display: flex;
@@ -3361,10 +3367,10 @@
     border: none;
     background: transparent;
     color: rgba(var(--sa-text-muted),0.75);
-    font-size: 0.82rem;
-    font-weight: 600;
-    padding: 9px 12px;
-    border-radius: 6px;
+    font-size: var(--sa-font-sm, 0.86rem);
+    font-weight: 400;
+    padding: 10px 14px;
+    border-radius: 0;
     cursor: pointer;
 }
 

@@ -1361,3 +1361,35 @@ confirm it still updates the trigger's displayed comparison range correctly post
 pre-refactor. Static validation: babel transform on all 22 touched files (20 pages + `_shared.js` +
 `index.js`), full test suite (117/117 passed) — no CSS touched in this item, so no new `postcss.parse()`
 needed beyond item 4's.
+
+### 6. Style the Conversions in-page sub-nav to match the sidebar — done, verified live
+
+The last open item from Phase 0's own note: Conversions (`ConversionsOverview.js`) keeps a small
+in-page sub-nav (`sa-conv-submenu`) for its three views (Overview / Funnel & Sources / Events &
+Tracking) — correctly kept rather than folded into the main sidebar back in item 1, since it's a
+sub-view switch within one destination, not a destination of its own. But it was never
+visually reconciled with the new `AnalyticsSidebar` it now sits directly beside, and the two read as
+different components where they should read as one continuous system.
+
+**Root cause, found by comparing computed styles, not just eyeballing it:** the submenu's active/hover
+*colors* already matched the sidebar exactly (same `rgba(255,255,255,0.08)` background, same gold
+`inset 3px 0 0` left accent, same hover tint) — Phase 0's original build clearly intended consistency.
+What drifted was the geometry and type: a hardcoded `0.82rem` font size instead of the Phase 1
+`--sa-font-sm` token, an explicit `font-weight: 600` where the sidebar links use the browser default
+400, and `border-radius: 6px` turning the active state into a rounded pill inset within the 180px
+column instead of a flush, full-width highlighted row like the sidebar's. Together these made the
+submenu read as a separate rounded "card" component floating next to the sidebar rather than its
+natural extension.
+
+**Fix (`Analytics.css`, `.sa-conv-submenu__link`)**: font-size to `var(--sa-font-sm, 0.86rem)`,
+font-weight to `400`, border-radius to `0`, padding adjusted to `10px 14px` to match the sidebar's link
+padding. Left the `@media (max-width: 900px)` override untouched — below 900px the submenu switches to
+a horizontal row of tabs with a bottom-border active indicator instead of the sidebar's vertical/
+left-border pattern, a deliberate and correct adaptation to the different layout, not a drift to fix.
+
+**Verified live**: computed styles for `.sa-conv-submenu__link.--active` and `.ia-sidebar__link.--active`
+now read identically (`fontSize: "14px"`, `fontWeight: "400"`, `borderRadius: "0px"`, both) at 1440px;
+screenshot confirms the active "Overview" row is now a flush full-width highlight matching the
+sidebar's, not a rounded pill. Re-checked the 800px mobile layout (below the 900px breakpoint) — the
+horizontal-tabs fallback still renders correctly, unaffected by the base-rule change. `postcss.parse()`
+on `Analytics.css` and the full test suite (117/117) both pass; no JS touched in this item.
