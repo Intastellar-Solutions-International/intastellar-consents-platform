@@ -1535,3 +1535,50 @@ directly. Babel-validated both backend files and `index.js`, full test suite (11
 but the actual SQL correctness (does `dailyEngagedRes` return sane numbers against real data) can't be
 confirmed from here until it's live — worth a live check once this frontend commit deploys alongside
 the already-pushed backend one (allow the usual 2-3 min propagation lag).
+
+### 3. Live view: simplified Overview widget + new dedicated Live View page — implemented, live verification blocked (session logged out)
+
+The user asked for the embedded live widget to look closer to a GA4-style "Active users in last 30
+minutes" reference (hero number, "Active users per minute" sparkline, a country table, a "View real
+time" link) instead of the previous everything-in-one-sidebar-panel version, plus a new dedicated page
+with a large map hero showing active countries.
+
+**Backend (`api/analytics-live.js`):**
+- The existing per-minute query now also counts `COUNT(DISTINCT session_id) ... AS active_users`
+  alongside the existing event count — one extra column, not a new query — so the sparkline can show
+  genuine "active users per minute" instead of "events per minute" (what it actually showed before,
+  mislabeled-if-renamed; now it's both available and honestly labeled).
+- New `countriesRes` query: active users (distinct sessions) per country in the 30-minute window, same
+  combined pageviews+custom-events union the totals query already uses. Response gains
+  `countries: [{code, activeUsers, events}]` and `perMinuteUsers` (parallel to the existing `perMinute`).
+
+**Shared frontend (`_shared.js`):** extracted `useLiveData(domain, siteKey)` (the fetch/poll-every-30s
+logic) and `timeAgo()` out of `index.js`'s old `LivePanel`, since both the widget and the new page now
+need the exact same polling behavior — one implementation instead of two copies.
+
+**Embedded widget (`index.js`, `LivePanel`):** rebuilt to match the reference — hero number ("Active
+users in last 30 minutes" / `data.sessions`), the per-minute-active-users sparkline, a divider, a top-5
+country table, and a "View real time →" link to the new page. Dropped the 2×2 KPI grid, recent-events
+feed, conversions list, and cross-site hosts table from this view — not deleted, moved to the new page.
+
+**New page (`LiveView.js`, route `/analytics/live` + `/analytics/:handle/live`, nav entry under
+Behavior):** a status line (pulsing dot + live active-user count + refresh countdown), a large
+`AnalyticsWorldMap` hero (the same map component Overview/Audience already use, fed live per-country
+active-user counts via the same `{code, events}` shape instead of a period aggregate), then the detail
+grid that moved out of the widget — full sparkline + KPI grid, recent events, conversions, cross-site
+hosts — reusing the exact same `.sa-live__*` CSS classes those sections always had, just promoted from
+a cramped sidebar card to full-page panels. No tier gate added — matches the widget's own current
+ungated behavior, not a new paywall decision.
+
+**Verification status:** static validation complete — babel on all 7 touched/new files (`App.js`,
+`SideNavLinks/index.js`, `LiveView.js`, `index.js`, `_shared.js`, `domainPathSegments.js`,
+`analytics-live.js`), `postcss.parse()` on `Analytics.css`, full test suite (117/117) pass, webpack's
+dev build recompiled cleanly (confirmed via `dist/bundle.js` picking up the change with no compile
+error). **Live verification in Chrome is blocked right now** — the connected session got logged out
+(session/token expiry over this conversation's length, unrelated to these changes) partway through
+testing, and the "Continue as Felix A." quick-resume button isn't completing a re-auth from here after
+several attempts; asked the user to re-authenticate that Chrome window. Once back in: confirm the
+sidebar's new "Live" entry, the simplified widget's hero number/sparkline/country table render
+correctly, the new page's map hero and detail grid render with real data, and no console errors —
+particularly the per-country/per-minute-user fields, which depend on the backend changes above having
+actually deployed (same propagation-lag caveat as item 2).

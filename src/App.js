@@ -54,6 +54,7 @@ import AnalyticsAudience from "./Pages/Analytics/Audience.js";
 import AnalyticsAcquisition from "./Pages/Analytics/Acquisition.js";
 import AnalyticsConsent from "./Pages/Analytics/Consent.js";
 import AnalyticsHeatmap from "./Pages/Analytics/Heatmap.js";
+import AnalyticsLiveView from "./Pages/Analytics/LiveView.js";
 import AnalyticsRecordings, { AnalyticsRecordingDetail } from "./Pages/Analytics/Recordings.js";
 import AnalyticsBots from "./Pages/Analytics/Bots.js";
 import AnalyticsUserFlow from "./Pages/Analytics/UserFlow.js";
@@ -311,6 +312,16 @@ export default function App() {
                                         <Route path="/analytics/heatmap" exact>
                                             {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Heatmap Analytics" fullPage /> : <ErrorBoundary>
                                                 <AnalyticsHeatmap />
+                                            </ErrorBoundary>}
+                                        </Route>
+                                        <Route path="/analytics/:handle/live" exact>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : <ErrorBoundary>
+                                                <AnalyticsLiveView />
+                                            </ErrorBoundary>}
+                                        </Route>
+                                        <Route path="/analytics/live" exact>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : <ErrorBoundary>
+                                                <AnalyticsLiveView />
                                             </ErrorBoundary>}
                                         </Route>
                                         <Route path="/analytics/:handle/recordings/:recordingId" exact>

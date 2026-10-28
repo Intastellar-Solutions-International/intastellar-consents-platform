@@ -133,6 +133,12 @@ export function analyticsHeatmapPath(domainUnicode) {
     return `/analytics/${seg}/heatmap`;
 }
 
+export function analyticsLivePath(domainUnicode) {
+    const seg = encodeDomainPathSegment(domainUnicode);
+    if (!seg) return "/analytics/live";
+    return `/analytics/${seg}/live`;
+}
+
 export function analyticsRecordingsPath(domainUnicode) {
     const seg = encodeDomainPathSegment(domainUnicode);
     if (!seg) return "/analytics/recordings";

@@ -25,6 +25,14 @@ export function toIsoDate(d) {
     return ymdLocal(d);
 }
 
+// "12s" / "4m" relative-time label for a live-feed row — shared by the
+// Overview hero's live widget and the Live View page's recent-events list.
+export function timeAgo(isoString) {
+    const diff = Math.floor((Date.now() - new Date(isoString)) / 1000);
+    if (diff < 60) return diff + "s";
+    return Math.floor(diff / 60) + "m";
+}
+
 // Every Analytics sub-page (Overview, Audience, Acquisition, Conversions, ...)
 // calls this for the SAME domain+date-range within seconds of each other on
 // navigation, but each page is a fresh component mount with no memory of
@@ -312,6 +320,44 @@ export function usePrevRange(fromDate, toDate, compare) {
         const prevFrom = new Date(prevTo.getTime() - spanMs);
         return { fromIso: toIsoDate(prevFrom), toIso: toIsoDate(prevTo) };
     }, [fromDate, toDate, compare.compareActive, compare.previousPeriod, compare.previousPeriod2]);
+}
+
+const LIVE_URL = `${ScannerHost}/api/analytics-live`;
+export const LIVE_INTERVAL = 30;
+
+// Polls /api/analytics-live every 30s — extracted so the Overview hero's
+// live widget and the dedicated Live View page (docs/design-audit-plan.md
+// Phase 4) share one fetch/poll implementation instead of two copies.
+export function useLiveData(domain, siteKey) {
+    const [data, setData] = useState(null);
+    const [countdown, setCountdown] = useState(LIVE_INTERVAL);
+
+    const fetchLive = useCallback(async () => {
+        if (!domain) return;
+        try {
+            // Prefer ?site= (site key) — avoids the domain-lookup step and any
+            // domain-matching mismatch. Fall back to ?domain= if key isn't known yet.
+            const qs = siteKey
+                ? `site=${encodeURIComponent(siteKey)}`
+                : `domain=${encodeURIComponent(domain)}`;
+            const r = await fetch(`${LIVE_URL}?${qs}`, { headers: authHeaders() });
+            if (r.ok) setData(await r.json());
+        } catch {}
+        setCountdown(LIVE_INTERVAL);
+    }, [domain, siteKey]);
+
+    useEffect(() => {
+        fetchLive();
+        const poll = setInterval(fetchLive, LIVE_INTERVAL * 1000);
+        return () => clearInterval(poll);
+    }, [fetchLive]);
+
+    useEffect(() => {
+        const tick = setInterval(() => setCountdown(c => Math.max(0, c - 1)), 1000);
+        return () => clearInterval(tick);
+    }, []);
+
+    return { data, countdown };
 }
 
 // % change of `current` vs `previous` — null when there's no previous-period

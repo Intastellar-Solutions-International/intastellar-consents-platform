@@ -1,7 +1,7 @@
 const { useState, useEffect, useMemo, useCallback } = React;
 const Link = window.ReactRouterDOM.Link;
 import {
-    analyticsAudiencePath, analyticsAcquisitionPath, analyticsSettingsPath,
+    analyticsAudiencePath, analyticsAcquisitionPath, analyticsSettingsPath, analyticsLivePath,
 } from "../../Functions/domainPathSegments.js";
 import { ScannerHost } from "../../API/host.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
@@ -9,7 +9,7 @@ import AnalyticsWorldMap from "./AnalyticsWorldMap.js";
 import {
     authHeaders, KpiCard, MiniBar, useAnalyticsPage, useAnalyticsReport, useSiteConfig,
     toIsoDate, pctChange, IndustryBenchmarkNote, formatPercent, SegmentFilter,
-    useCompareRange, usePrevRange,
+    useCompareRange, usePrevRange, useLiveData,
     useForeignDomains, splitForeignDomainsByRecency,
     formatCurrency, CURRENCY_SYMBOLS, elementLabel,
 } from "./_shared.js";
@@ -23,63 +23,33 @@ import {
 } from "./Icons.js";
 import "./Analytics.css";
 
-const LIVE_URL = `${ScannerHost}/api/analytics-live`;
-const LIVE_INTERVAL = 30;
-
-function timeAgo(isoString) {
-    const diff = Math.floor((Date.now() - new Date(isoString)) / 1000);
-    if (diff < 60) return diff + "s";
-    return Math.floor(diff / 60) + "m";
-}
-
-
-function LivePanel({ domain, siteKey, engagedUsers }) {
-    const [data,      setData]    = useState(null);
-    const [open,      setOpen]    = useState(true);
-    const [countdown, setCountdown] = useState(LIVE_INTERVAL);
-
-    const fetchLive = useCallback(async () => {
-        if (!domain) return;
-        try {
-            // Prefer ?site= (site key) — avoids the domain-lookup step and any
-            // domain-matching mismatch. Fall back to ?domain= if key isn't known yet.
-            const qs = siteKey
-                ? `site=${encodeURIComponent(siteKey)}`
-                : `domain=${encodeURIComponent(domain)}`;
-            const r = await fetch(`${LIVE_URL}?${qs}`, { headers: authHeaders() });
-            if (r.ok) setData(await r.json());
-        } catch {}
-        setCountdown(LIVE_INTERVAL);
-    }, [domain, siteKey]);
-
-    useEffect(() => {
-        fetchLive();
-        const poll = setInterval(fetchLive, LIVE_INTERVAL * 1000);
-        return () => clearInterval(poll);
-    }, [fetchLive]);
-
-    useEffect(() => {
-        const tick = setInterval(() => setCountdown(c => Math.max(0, c - 1)), 1000);
-        return () => clearInterval(tick);
-    }, []);
+// docs/design-audit-plan.md Phase 4: redesigned to match the simpler GA4
+// "Active users in last 30 minutes" reference instead of the previous
+// everything-in-one-sidebar-panel version (2x2 KPI grid, recent-event feed,
+// conversions list, cross-site hosts table) — that detail now lives on the
+// dedicated Live View page (LiveView.js) this widget links to; the embedded
+// widget is deliberately just the hero number, the per-minute sparkline, and
+// a top-5 country table.
+function LivePanel({ domain, siteKey }) {
+    const { data, countdown } = useLiveData(domain, siteKey);
+    const [open, setOpen] = useState(true);
 
     if (!domain || !data || data.noSiteKey) return null;
 
-    const maxBar = Math.max(...(data.perMinute || [1]), 1);
-    const consentPct = data.total > 0 ? Math.round((data.full / data.total) * 100) : 0;
+    const maxUserBar = Math.max(...(data.perMinuteUsers || [1]), 1);
+    const topCountries = (data.countries || []).slice(0, 5);
+    const maxCountryUsers = Math.max(...topCountries.map(c => c.activeUsers), 1);
 
     return (
         <div className="sa-live">
-            {/* ── Header ── */}
             <div className="sa-live__header" onClick={() => setOpen(o => !o)} role="button" aria-expanded={open}>
                 <div className="sa-live__title">
                     <span className="sa-live__dot" />
                     <span className="sa-live__label">Live</span>
-                    <span className="sa-live__window">last 30 min</span>
                 </div>
                 <div className="sa-live__right">
                     <span className="sa-live__countdown">
-                        {open ? `${countdown}s` : `${data.total} events`}
+                        {open ? `${countdown}s` : `${data.sessions.toLocaleString("de-DE")} active`}
                     </span>
                     <button type="button" className="sa-live__toggle" aria-label={open ? "Collapse" : "Expand"}>
                         {open ? "▲" : "▼"}
@@ -89,20 +59,20 @@ function LivePanel({ domain, siteKey, engagedUsers }) {
 
             {open && (
                 <div className="sa-live__body">
+                    <p className="sa-live__hero-label">Active users in last 30 minutes</p>
+                    <p className="sa-live__hero-value">{data.sessions.toLocaleString("de-DE")}</p>
 
-                    {/* ── Sparkline ── */}
                     <div className="sa-live__sparkline">
                         <div className="sa-live__spark-hd">
-                            <span className="sa-live__spark-label">Events / min</span>
-                            <span className="sa-live__spark-peak">{maxBar} peak</span>
+                            <span className="sa-live__spark-label">Active users per minute</span>
                         </div>
                         <div className="sa-live__spark-bars">
-                            {(data.perMinute || []).map((v, i) => (
+                            {(data.perMinuteUsers || []).map((v, i) => (
                                 <div
                                     key={i}
-                                    className={"sa-live__spark-bar" + (i === (data.perMinute.length - 1) ? " sa-live__spark-bar--last" : "")}
-                                    style={{ height: Math.max(3, Math.round((v / maxBar) * 44)) + "px" }}
-                                    title={`${v} event${v !== 1 ? "s" : ""}`}
+                                    className={"sa-live__spark-bar" + (i === (data.perMinuteUsers.length - 1) ? " sa-live__spark-bar--last" : "")}
+                                    style={{ height: Math.max(3, Math.round((v / maxUserBar) * 44)) + "px" }}
+                                    title={`${v} active user${v !== 1 ? "s" : ""}`}
                                 />
                             ))}
                         </div>
@@ -113,113 +83,35 @@ function LivePanel({ domain, siteKey, engagedUsers }) {
                         </div>
                     </div>
 
-                    {/* ── 2 × 2 KPI grid ── */}
-                    <div className="sa-live__kpis">
-                        <div className="sa-live__kpi">
-                            <span className="sa-live__kpi-label">Active users</span>
-                            <span className="sa-live__kpi-value">{(engagedUsers ?? 0).toLocaleString("de-DE")}</span>
-                            <span className="sa-live__kpi-sub">in period</span>
-                        </div>
-                        <div className="sa-live__kpi">
-                            <span className="sa-live__kpi-label">Events</span>
-                            <span className="sa-live__kpi-value">{data.total.toLocaleString("de-DE")}</span>
-                            <span className="sa-live__kpi-sub">{data.minimal}m · {data.full}f</span>
-                        </div>
-                        <div className="sa-live__kpi">
-                            <span className="sa-live__kpi-label">Sessions</span>
-                            <span className="sa-live__kpi-value">{data.sessions.toLocaleString("de-DE")}</span>
-                            <span className="sa-live__kpi-sub">consent-gated</span>
-                        </div>
-                        <div className="sa-live__kpi sa-live__kpi--consent" style={{ '--cpct': consentPct + '%' }}>
-                            <span className="sa-live__kpi-label">Consent</span>
-                            <span className="sa-live__kpi-value">{consentPct}%</span>
-                            <span className="sa-live__kpi-sub">this window</span>
-                        </div>
-                    </div>
+                    <div className="sa-live__divider" />
 
-                    {/* ── Recent event feed ── */}
-                    <div className="sa-live__feed-wrap">
-                        <p className="sa-live__section-title">Recent events</p>
-                        <div className="sa-live__feed">
-                            {(data.recent || []).slice(0, 12).map((e, i) => (
-                                <div key={i} className={"sa-live__event" + (e.eventName ? " sa-live__event--custom" : "")}>
-                                    <span className="sa-live__event-path" title={e.host ? `${e.host}${e.path}` : e.path}>
-                                        {e.eventName
-                                            ? <span className="sa-live__event-name">{e.eventName.replace(/_/g, " ")}</span>
-                                            : <>{e.host && e.host !== domain ? `${e.host}` : ""}{e.path}</>
-                                        }
-                                    </span>
-                                    <div className="sa-live__event-meta">
-                                        {e.country && <span className="sa-live__event-flag">{e.country}</span>}
-                                        <span className={"sa-live__event-level sa-live__event-level--" + e.level}>
-                                            {e.level}
-                                        </span>
-                                        <span className="sa-live__event-time">{timeAgo(e.at)}</span>
-                                    </div>
+                    <div className="sa-live__countries">
+                        <div className="sa-live__countries-hd">
+                            <span>Country</span>
+                            <span>Active users</span>
+                        </div>
+                        {topCountries.length > 0 ? topCountries.map(c => (
+                            <div key={c.code} className="sa-live__country-row">
+                                <span className="sa-live__country-code">{c.code}</span>
+                                <div className="sa-live__country-bar-wrap">
+                                    <div className="sa-live__country-bar" style={{ width: Math.max(4, Math.round((c.activeUsers / maxCountryUsers) * 100)) + "%" }} />
                                 </div>
-                            ))}
-                            {!data.recent?.length && !data.trackerMismatch && (
-                                <p style={{ color: "rgba(130,130,130,0.55)", fontSize: "0.8rem", margin: 0 }}>No events yet</p>
-                            )}
-                            {data.trackerMismatch && (
-                                <p style={{ color: "#e06c2b", fontSize: "0.8rem", margin: 0, lineHeight: 1.4 }}>
-                                    Tracker is sending events under a different site key — the script tag on <strong>{domain}</strong> likely has a stale or wrong <code>data-site</code> value. Check Analytics Settings → Script.
-                                </p>
-                            )}
-                        </div>
-                    </div>
-
-                    {/* ── Conversions in last 30 min ── */}
-                    <div className="sa-live__conversions-wrap">
-                        <p className="sa-live__section-title">
-                            Conversions
-                            {data.conversions?.length > 0 && (
-                                <span className="sa-live__conv-total">
-                                    {data.conversions.reduce((s, c) => s + c.count, 0)} total
-                                </span>
-                            )}
-                        </p>
-                        {data.conversions?.length > 0 ? (
-                            <div className="sa-live__conv-list">
-                                {data.conversions.map(c => (
-                                    <div key={c.name} className="sa-live__conv-row">
-                                        <span className="sa-live__conv-label" title={c.name}>{c.label}</span>
-                                        <div className="sa-live__conv-right">
-                                            {c.valueCents != null && (
-                                                <span className="sa-live__conv-value">
-                                                    {formatCurrency(c.valueCents, c.currency || "EUR", { cents: true })}
-                                                </span>
-                                            )}
-                                            <span className="sa-live__conv-count">{c.count}×</span>
-                                        </div>
-                                    </div>
-                                ))}
+                                <span className="sa-live__country-value">{c.activeUsers}</span>
                             </div>
-                        ) : (
-                            <p className="sa-live__conv-empty">No conversions in this window</p>
+                        )) : (
+                            <p className="sa-live__countries-empty">No data available</p>
                         )}
                     </div>
 
-                    {/* ── Multi-host notice ── */}
-                    {data.topHosts && data.topHosts.length > 1 && (
-                        <div className="sa-live__hosts">
-                            <p className="sa-live__section-title">
-                                Cross-site hosts
-                                <span className="sa-panel__consent-note"> — multiple origins</span>
-                            </p>
-                            <table className="sa-table">
-                                <tbody>
-                                    {data.topHosts.map(h => (
-                                        <tr key={h.host}>
-                                            <td className="sa-table__path" title={h.host}>{h.host}</td>
-                                            <td className="sa-table__num">{h.views}</td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
+                    {data.trackerMismatch && (
+                        <p className="sa-live__mismatch">
+                            Tracker is sending events under a different site key — the script tag on <strong>{domain}</strong> likely has a stale or wrong <code>data-site</code> value. Check Analytics Settings → Script.
+                        </p>
                     )}
 
+                    <Link className="sa-live__view-all" to={analyticsLivePath(domain)}>
+                        View real time →
+                    </Link>
                 </div>
             )}
         </div>
@@ -1083,7 +975,7 @@ export default function SiteAnalytics() {
                                         />
                                     )}
                                 </div>
-                                <LivePanel domain={domain} siteKey={siteConfig?.id} engagedUsers={data.totals.engagedUsers} />
+                                <LivePanel domain={domain} siteKey={siteConfig?.id} />
                             </div>
 
                             {/* ── KPI strip: cards 5+ (business-type-aware, customizable) ─── */}

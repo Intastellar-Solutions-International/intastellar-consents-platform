@@ -81,7 +81,7 @@ export default async function handler(req, res) {
     // Prevent edge/CDN caching — live data must always be fresh
     res.setHeader("Cache-Control", "no-store");
 
-    const [totalsRes, minutesRes, pagesRes, hostsRes, recentRes, conversionsRes] = await Promise.all([
+    const [totalsRes, minutesRes, pagesRes, hostsRes, recentRes, conversionsRes, countriesRes] = await Promise.all([
 
         // Totals across both pageviews and custom events
         db.query(`
@@ -100,16 +100,20 @@ export default async function handler(req, res) {
             [siteId]
         ),
 
-        // Events per minute — pageviews + custom events combined
+        // Events AND active users (distinct sessions) per minute — pageviews +
+        // custom events combined. A session active across several minutes
+        // counts in each of them, same "active in this minute" semantic GA4's
+        // own "Active users per minute" chart uses.
         db.query(`
             SELECT
                 DATE_TRUNC('minute', received_at) AS minute,
-                COUNT(*) AS events
+                COUNT(*) AS events,
+                COUNT(DISTINCT session_id) FILTER (WHERE session_id IS NOT NULL) AS active_users
             FROM (
-                SELECT received_at FROM analytics_events
+                SELECT received_at, session_id FROM analytics_events
                 WHERE site_id = $1 AND received_at >= NOW() - INTERVAL '30 minutes' AND is_embedded = false
                 UNION ALL
-                SELECT received_at FROM analytics_custom_events
+                SELECT received_at, session_id FROM analytics_custom_events
                 WHERE site_id = $1 AND received_at >= NOW() - INTERVAL '30 minutes'
             ) combined
             GROUP BY 1
@@ -180,7 +184,30 @@ export default async function handler(req, res) {
             [siteId]
         ).catch(() => ({ rows: [] })),
 
-    ]).catch(() => Array(6).fill({ rows: [] }));
+        // Active users (distinct sessions) per country in the live window —
+        // same combined pageviews+custom-events union as totalsRes above.
+        // Powers the Live View page's map hero and the Overview widget's
+        // country table.
+        db.query(`
+            SELECT
+                country_code,
+                COUNT(DISTINCT session_id) FILTER (WHERE session_id IS NOT NULL) AS active_users,
+                COUNT(*) AS events
+            FROM (
+                SELECT country_code, session_id FROM analytics_events
+                WHERE site_id = $1 AND received_at >= NOW() - INTERVAL '30 minutes' AND is_embedded = false
+                UNION ALL
+                SELECT country_code, session_id FROM analytics_custom_events
+                WHERE site_id = $1 AND received_at >= NOW() - INTERVAL '30 minutes'
+            ) combined
+            WHERE country_code IS NOT NULL
+            GROUP BY country_code
+            ORDER BY active_users DESC, events DESC
+            LIMIT 30`,
+            [siteId]
+        ).catch(() => ({ rows: [] })),
+
+    ]).catch(() => Array(7).fill({ rows: [] }));
 
     const t = totalsRes.rows[0] || {};
     const totalEvents = parseInt(t.total || 0);
@@ -200,20 +227,23 @@ export default async function handler(req, res) {
         trackerMismatch = mismatchRows.length > 0;
     }
 
-    // Build a full 30-slot minute array (slot 0 = 30 min ago, slot 29 = most recent)
+    // Build full 30-slot minute arrays (slot 0 = 30 min ago, slot 29 = most
+    // recent) — one for events, one for active users, from the same rows.
     const now = new Date();
     const minuteMap = new Map();
     for (const row of minutesRes.rows) {
         const key = new Date(row.minute).toISOString().slice(0, 16);
-        minuteMap.set(key, parseInt(row.events));
+        minuteMap.set(key, { events: parseInt(row.events), activeUsers: parseInt(row.active_users || 0) });
     }
 
-    const perMinute = Array.from({ length: 30 }, (_, i) => {
+    const minuteSlots = Array.from({ length: 30 }, (_, i) => {
         const d = new Date(now.getTime() - (29 - i) * 60_000);
         d.setSeconds(0, 0);
         const key = d.toISOString().slice(0, 16);
-        return minuteMap.get(key) || 0;
+        return minuteMap.get(key) || { events: 0, activeUsers: 0 };
     });
+    const perMinute = minuteSlots.map(s => s.events);
+    const perMinuteUsers = minuteSlots.map(s => s.activeUsers);
 
     return res.status(200).json({
         asOf:     now.toISOString(),
@@ -223,6 +253,7 @@ export default async function handler(req, res) {
         sessions: parseInt(t.sessions || 0),
         trackerMismatch,
         perMinute,
+        perMinuteUsers,
         topPages: pagesRes.rows.map(r => ({
             pathname: r.pathname,
             views:    parseInt(r.views),
@@ -247,6 +278,11 @@ export default async function handler(req, res) {
             valueCents: r.total_value_cents ? Number(r.total_value_cents) : null,
             currency:   r.currency || null,
             lastAt:     r.last_at,
+        })),
+        countries: countriesRes.rows.map(r => ({
+            code:        r.country_code,
+            activeUsers: parseInt(r.active_users || 0),
+            events:      parseInt(r.events || 0),
         })),
     });
 }

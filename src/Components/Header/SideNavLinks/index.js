@@ -8,7 +8,7 @@ import {
     analyticsPath, analyticsAudiencePath, analyticsAcquisitionPath, analyticsConsentPath,
     analyticsMarketingPath, analyticsAdSpendPath, analyticsAttributionPath, analyticsSettingsPath, analyticsGoogleAnalyticsPath,
     analyticsSearchConsolePath,
-    analyticsHeatmapPath, analyticsRecordingsPath, analyticsBotsPath,
+    analyticsHeatmapPath, analyticsRecordingsPath, analyticsBotsPath, analyticsLivePath,
     analyticsUserFlowPath,
     analyticsConversionsPath, analyticsPageExperimentsPath, analyticsFormsPath,
     analyticsCohortPath, analyticsAlertsPath, analyticsScheduledReportsPath,
@@ -175,6 +175,10 @@ export function buildAnalyticsLinks(domain) {
         {
             divider: true,
             label: "Behavior",
+        },
+        {
+            name: "Live",
+            path: analyticsLivePath(domain),
         },
         {
             name: "Heatmap",

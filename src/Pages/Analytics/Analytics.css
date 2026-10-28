@@ -379,7 +379,147 @@
     color: rgba(var(--sa-text-dim),0.5);
 }
 
-/* ── 2 × 2 KPI grid ── */
+/* ── Hero number (Phase 4 — GA4-style simplified widget) ── */
+.sa-live__hero-label {
+    margin: 0;
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: rgba(var(--sa-text-dim),0.65);
+}
+
+.sa-live__hero-value {
+    margin: 2px 0 0;
+    font-size: 2.1rem;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: rgba(228,240,228,0.97);
+    font-variant-numeric: tabular-nums;
+}
+
+.sa-live__divider {
+    height: 1px;
+    background: rgba(74,222,128,0.1);
+    margin: 2px 0;
+}
+
+/* ── Country / active-users table ── */
+.sa-live__countries {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.sa-live__countries-hd {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: rgba(110,110,125,0.6);
+}
+
+.sa-live__country-row {
+    display: grid;
+    grid-template-columns: 32px 1fr auto;
+    align-items: center;
+    gap: 8px;
+}
+
+.sa-live__country-code {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: rgba(210,240,220,0.85);
+}
+
+.sa-live__country-bar-wrap {
+    height: 5px;
+    border-radius: 3px;
+    background: rgba(255,255,255,0.05);
+    overflow: hidden;
+}
+
+.sa-live__country-bar {
+    height: 100%;
+    border-radius: 3px;
+    background: rgba(74,222,128,0.55);
+}
+
+.sa-live__country-value {
+    font-size: 0.72rem;
+    font-variant-numeric: tabular-nums;
+    color: rgba(var(--sa-text-dim),0.75);
+    min-width: 20px;
+    text-align: right;
+}
+
+.sa-live__countries-empty {
+    font-size: 0.75rem;
+    color: rgba(130,130,150,0.45);
+    margin: 0;
+}
+
+.sa-live__mismatch {
+    font-size: 0.72rem;
+    color: #e06c2b;
+    line-height: 1.4;
+    margin: 0;
+}
+
+.sa-live__view-all {
+    align-self: flex-start;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: rgba(74,222,128,0.85);
+    text-decoration: none;
+}
+.sa-live__view-all:hover { color: rgba(74,222,128,1); text-decoration: underline; }
+
+/* ── Live View page (LiveView.js, Phase 4) — large map hero + detail grid ── */
+
+.sa-liveview {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.sa-liveview__status {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.sa-liveview__status-text {
+    font-size: 0.95rem;
+    color: rgba(var(--sa-text),0.9);
+}
+.sa-liveview__status-text strong {
+    font-variant-numeric: tabular-nums;
+    color: rgba(74,222,128,0.95);
+}
+
+.sa-liveview__map-panel .sa-map__inner {
+    min-height: 440px;
+}
+
+.sa-liveview__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    align-items: start;
+}
+
+.sa-liveview__card { margin: 0; }
+
+.sa-liveview__card-body { border-top: none; }
+
+@media (max-width: 900px) {
+    .sa-liveview__grid { grid-template-columns: 1fr; }
+    .sa-liveview__map-panel .sa-map__inner { min-height: 300px; }
+}
+
+/* ── 2 × 2 KPI grid (Live View page) ── */
 .sa-live__kpis {
     display: grid;
     grid-template-columns: 1fr 1fr;
