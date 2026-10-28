@@ -1239,10 +1239,8 @@ correctly absent there. Screenshots: `overview-unified-{1024,1280,1440}.png`,
 screenshot-backlog note below). Static validation: babel transform on all five touched JS files,
 `postcss.parse()` on `Analytics.css`, full test suite (117/117 passed).
 
-**Screenshot backlog note:** Phase 3's per-item screenshots (items 1-3) have only been captured ad hoc
-into the scratchpad for live verification, not yet formally saved to `/docs/design-screenshots/` at
-all three required widths the way Phase 2's closing commit did. Flagging this now so it isn't lost —
-plan to close it out with a batched screenshot commit before moving on to Phase 4.
+**Screenshot backlog note:** resolved — see "Phase 3: screenshot backlog closed out" below, after item
+6's writeup, for the final batched before/after set covering every item in this phase.
 
 ### 4. Compact header: obviously-clickable date range + working compare-to-previous-period — done on Overview, verified live; scope decisions below
 
@@ -1393,3 +1391,33 @@ screenshot confirms the active "Overview" row is now a flush full-width highligh
 sidebar's, not a rounded pill. Re-checked the 800px mobile layout (below the 900px breakpoint) — the
 horizontal-tabs fallback still renders correctly, unaffected by the base-rule change. `postcss.parse()`
 on `Analytics.css` and the full test suite (117/117) both pass; no JS touched in this item.
+
+### Phase 3: screenshot backlog closed out
+
+Used the same git-checkout technique as Phase 2's closing commit: checked out `cdb06d94` (the commit
+immediately before Phase 3 started, i.e. the true end-of-Phase-2 state) for every "before" shot, then
+checked back out to `deployment` for "after." Didn't attempt a literal before/after at three widths for
+every one of the 21 pages this phase touched — Phase 2's own closing commit didn't do that either (full
+3-width treatment went to Overview specifically, with single representative shots for other touched
+pages) — instead captured one before/after set per distinct visual change this phase made, at the
+widths where that change is actually width-sensitive:
+
+- **`nav-sidebar-{before,after}-{1024,1280,1440}.png`** (Audience page) — the headline change: items
+  1-2's unlabeled icon rail + ungrouped/overlaying sidebar vs. the labeled, grouped, correctly-pushing
+  `AnalyticsSidebar`. Chose Audience over Overview for this pair since Overview's own nav situation
+  (item 3) is a separate, distinct before/after in its own right — see next.
+- **`overview-nav-{before,after}-{1024,1280,1440}.png`** — item 3 specifically: Overview's old icon
+  rail + (mostly-empty, since this account's default view is a domain rollup with no single domain
+  selected) tab strip vs. the unified sidebar it shares with every other Analytics page now.
+- **`header-daterange-{before,after}-1440.png`** — items 4-5's date-range affordance fix: the old
+  control (just text, no visible border) vs. the new one (visible border/background, open/closed
+  chevron). One width only — this is a CSS-only change with no responsive behavior to show at
+  different breakpoints, consistent with Phase 2's own single-width shots for similarly contained
+  fixes (e.g. `map-before/after.png`).
+- **`conversions-subnav-{before,after}-1440.png`** — item 6: the submenu's old rounded-pill active
+  state vs. the new flush full-width one matching the sidebar. Same one-width reasoning as above; the
+  responsive (900px-and-below) horizontal-tabs layout was verified live during item 6 itself and wasn't
+  touched by this fix, so no separate shot needed for it.
+
+16 screenshots total, all saved to `/docs/design-screenshots/`. Phase 3 is now fully closed out —
+every item implemented, verified live, documented, and screenshotted.
