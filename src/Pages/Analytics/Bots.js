@@ -2,7 +2,7 @@ const { useState, useEffect, useMemo } = React;
 import { ScannerHost } from "../../API/host.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import botsLogo from "../../Components/Header/icons/bots.svg";
-import { authHeaders, useAnalyticsPageChrome, KpiCard, MiniBar } from "./_shared.js";
+import { authHeaders, useAnalyticsPageChrome, KpiCard, MiniBar, useCompareRange } from "./_shared.js";
 import { IconBot, IconGlobe, IconDocument, IconRadio, IconAlertTriangle } from "./Icons.js";
 import "./Analytics.css";
 
@@ -110,9 +110,13 @@ export default function AnalyticsBots() {
 
     const showData = !loading && data && !data.noSiteKey && !data.noData;
 
+    // Compare-to-previous-period header wiring (Phase 3, docs/design-audit-plan.md).
+    const compare = useCompareRange();
+
     return (
         <div style={{ flex: "1", minWidth: 0 }}>
             <StickyPageTitle
+                className="sa-sticky-header"
                 title="Bots"
                 titleLogo={botsLogo}
                 numberofDays={setLastDays}
@@ -121,6 +125,12 @@ export default function AnalyticsBots() {
                 toDate={toDate}
                 setFromDate={setFromDate}
                 setToDate={setToDate}
+                previousPeriod={compare.previousPeriod}
+                previousPeriod2={compare.previousPeriod2}
+                compareRange={compare.compareRange}
+                setCompareRange={compare.setCompareRange}
+                setCompareWindowStart={compare.setCompareWindowStart}
+                setCompareWindowEnd={compare.setCompareWindowEnd}
             />
             <div className="dashboard-content">
                 <div className="sa-page">

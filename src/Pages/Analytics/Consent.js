@@ -1,5 +1,5 @@
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
-import { useAnalyticsPage, KpiCard, ConsentBar, IndustryBenchmarkNote } from "./_shared.js";
+import { useAnalyticsPage, KpiCard, ConsentBar, IndustryBenchmarkNote, useCompareRange } from "./_shared.js";
 import { IconShieldCheck, IconBarChart } from "./Icons.js";
 import "./Analytics.css";
 
@@ -11,9 +11,13 @@ export default function AnalyticsConsent() {
         data, loading, error, showData,
     } = useAnalyticsPage();
 
+    // Compare-to-previous-period header wiring (Phase 3, docs/design-audit-plan.md).
+    const compare = useCompareRange();
+
     return (
         <div style={{ flex: "1", minWidth: 0 }}>
             <StickyPageTitle
+                className="sa-sticky-header"
                 title="Consent"
                 numberofDays={setLastDays}
                 getLastDays={getLastDays}
@@ -21,6 +25,12 @@ export default function AnalyticsConsent() {
                 toDate={toDate}
                 setFromDate={setFromDate}
                 setToDate={setToDate}
+                previousPeriod={compare.previousPeriod}
+                previousPeriod2={compare.previousPeriod2}
+                compareRange={compare.compareRange}
+                setCompareRange={compare.setCompareRange}
+                setCompareWindowStart={compare.setCompareWindowStart}
+                setCompareWindowEnd={compare.setCompareWindowEnd}
             />
             <div className="dashboard-content">
                 <div className="sa-page">

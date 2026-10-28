@@ -1,7 +1,7 @@
 const { useMemo, useState, useEffect, useRef } = React;
 import { ScannerHost } from "../../API/host.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
-import { useAnalyticsPage, MiniBar, KpiCard, useAnalyticsReport, toIsoDate, pctChange, formatPercent, formatDuration, SegmentFilter, authHeaders } from "./_shared.js";
+import { useAnalyticsPage, MiniBar, KpiCard, useAnalyticsReport, toIsoDate, pctChange, formatPercent, formatDuration, SegmentFilter, authHeaders, useCompareRange, usePrevRange } from "./_shared.js";
 import { IconMegaphone, IconTrendingUp, IconGlobe } from "./Icons.js";
 import "./Analytics.css";
 
@@ -35,13 +35,11 @@ export default function AnalyticsAcquisition() {
     } = useAnalyticsPage();
 
     // Previous period of the same length — same "vs previous period" pattern
-    // the Overview page's KPI cards use (src/Pages/Analytics/index.js).
-    const prevRange = useMemo(() => {
-        const spanMs = toDate.getTime() - fromDate.getTime();
-        const prevTo = new Date(fromDate.getTime() - 24 * 60 * 60 * 1000);
-        const prevFrom = new Date(prevTo.getTime() - spanMs);
-        return { fromIso: toIsoDate(prevFrom), toIso: toIsoDate(prevTo) };
-    }, [fromDate, toDate]);
+    // the Overview page's KPI cards use (src/Pages/Analytics/index.js), now
+    // including the same compare-to-previous-period header wiring (Phase 3)
+    // via the shared useCompareRange()/usePrevRange() hooks (_shared.js).
+    const compare = useCompareRange();
+    const prevRange = usePrevRange(fromDate, toDate, compare);
     const { data: prevData } = useAnalyticsReport(domain, prevRange.fromIso, prevRange.toIso, tick);
 
     const trendSessions = useMemo(() => pctChange(data?.totals?.uniqueSessions, prevData?.totals?.uniqueSessions), [data, prevData]);
@@ -102,6 +100,7 @@ export default function AnalyticsAcquisition() {
     return (
         <div style={{ flex: "1", minWidth: 0 }}>
             <StickyPageTitle
+                className="sa-sticky-header"
                 title="Acquisition"
                 numberofDays={setLastDays}
                 getLastDays={getLastDays}
@@ -109,6 +108,12 @@ export default function AnalyticsAcquisition() {
                 toDate={toDate}
                 setFromDate={setFromDate}
                 setToDate={setToDate}
+                previousPeriod={compare.previousPeriod}
+                previousPeriod2={compare.previousPeriod2}
+                compareRange={compare.compareRange}
+                setCompareRange={compare.setCompareRange}
+                setCompareWindowStart={compare.setCompareWindowStart}
+                setCompareWindowEnd={compare.setCompareWindowEnd}
             />
             <div className="dashboard-content">
                 <div className="sa-page">

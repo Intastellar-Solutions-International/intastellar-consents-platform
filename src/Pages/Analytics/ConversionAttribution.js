@@ -1,7 +1,7 @@
 const { useState, useEffect, useCallback, useRef } = React;
 import { ScannerHost } from "../../API/host.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
-import { authHeaders, useAnalyticsPageChrome, toIsoDate, formatCurrency } from "./_shared.js";
+import { authHeaders, useAnalyticsPageChrome, toIsoDate, formatCurrency, useCompareRange } from "./_shared.js";
 import { PanelSkeleton } from "./components/Skeleton.js";
 import "./Analytics.css";
 
@@ -309,9 +309,13 @@ export default function ConversionAttribution() {
     const unsentCount = pendingCount + failedCount;
     const unsentCountThisClick = Math.min(unsentCount, 100);
 
+    // Compare-to-previous-period header wiring (Phase 3, docs/design-audit-plan.md).
+    const compare = useCompareRange();
+
     return (
         <div style={{ flex: "1", minWidth: 0 }}>
             <StickyPageTitle
+                className="sa-sticky-header"
                 title="Attribution"
                 numberofDays={setLastDays}
                 getLastDays={getLastDays}
@@ -319,6 +323,12 @@ export default function ConversionAttribution() {
                 toDate={toDate}
                 setFromDate={setFromDate}
                 setToDate={setToDate}
+                previousPeriod={compare.previousPeriod}
+                previousPeriod2={compare.previousPeriod2}
+                compareRange={compare.compareRange}
+                setCompareRange={compare.setCompareRange}
+                setCompareWindowStart={compare.setCompareWindowStart}
+                setCompareWindowEnd={compare.setCompareWindowEnd}
             />
             <div className="dashboard-content">
                 <div className="sa-page">

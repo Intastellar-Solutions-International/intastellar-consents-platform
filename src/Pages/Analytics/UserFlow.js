@@ -1,7 +1,7 @@
 const { useState, useEffect } = React;
 import { ScannerHost } from "../../API/host.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
-import { authHeaders, useAnalyticsPageChrome } from "./_shared.js";
+import { authHeaders, useAnalyticsPageChrome, useCompareRange } from "./_shared.js";
 import { IconTrendingUp } from "./Icons.js";
 import UserFlowDiagram from "./UserFlowDiagram.js";
 import "./Analytics.css";
@@ -72,9 +72,13 @@ export default function AnalyticsUserFlow() {
     const hasData = data && !data.noSiteKey && (data.channelEdges?.length > 0);
     const goalOptions = events.filter(ev => ev.sessionCount > 0);
 
+    // Compare-to-previous-period header wiring (Phase 3, docs/design-audit-plan.md).
+    const compare = useCompareRange();
+
     return (
         <div style={{ flex: "1", minWidth: 0 }}>
             <StickyPageTitle
+                className="sa-sticky-header"
                 title="User Flow"
                 numberofDays={setLastDays}
                 getLastDays={getLastDays}
@@ -82,6 +86,12 @@ export default function AnalyticsUserFlow() {
                 toDate={toDate}
                 setFromDate={setFromDate}
                 setToDate={setToDate}
+                previousPeriod={compare.previousPeriod}
+                previousPeriod2={compare.previousPeriod2}
+                compareRange={compare.compareRange}
+                setCompareRange={compare.setCompareRange}
+                setCompareWindowStart={compare.setCompareWindowStart}
+                setCompareWindowEnd={compare.setCompareWindowEnd}
             />
             <div className="dashboard-content">
                 <div className="sa-page">

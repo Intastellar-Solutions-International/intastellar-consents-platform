@@ -8,7 +8,7 @@ import {
 } from "../../Functions/domainPathSegments.js";
 import { ScannerHost } from "../../API/host.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
-import { authHeaders, toIsoDate, KpiCard, MiniBar, formatCurrency } from "./_shared.js";
+import { authHeaders, toIsoDate, KpiCard, MiniBar, formatCurrency, useCompareRange } from "./_shared.js";
 import { IconCash, IconTarget, IconGlobe, IconTrendingUp } from "./Icons.js";
 import "./Analytics.css";
 
@@ -198,6 +198,10 @@ export default function AdSpend() {
     const [tick, setTick] = useState(0);
     const { data, loading, error } = useAdSpendReport(domainsHeaderValue, fromIso, toIso, displayCurrency, tick);
 
+    // Compare-to-previous-period header wiring (Phase 3, docs/design-audit-plan.md)
+    // — same shared hook as every other Analytics page (_shared.js).
+    const compare = useCompareRange();
+
     const maxPlatform = useMemo(() => Math.max(...(data?.platforms || []).map(p => p.amount), 1), [data]);
     const maxDomain   = useMemo(() => Math.max(...(data?.byDomain  || []).map(d => d.amount), 1), [data]);
 
@@ -227,6 +231,7 @@ export default function AdSpend() {
     return (
         <div style={{ flex: "1", minWidth: 0 }}>
             <StickyPageTitle
+                className="sa-sticky-header"
                 title="Ad Spend"
                 numberofDays={setLastDays}
                 getLastDays={getLastDays}
@@ -234,6 +239,12 @@ export default function AdSpend() {
                 toDate={toDate}
                 setFromDate={setFromDate}
                 setToDate={setToDate}
+                previousPeriod={compare.previousPeriod}
+                previousPeriod2={compare.previousPeriod2}
+                compareRange={compare.compareRange}
+                setCompareRange={compare.setCompareRange}
+                setCompareWindowStart={compare.setCompareWindowStart}
+                setCompareWindowEnd={compare.setCompareWindowEnd}
             />
             <div className="dashboard-content">
                 <div className="sa-page">

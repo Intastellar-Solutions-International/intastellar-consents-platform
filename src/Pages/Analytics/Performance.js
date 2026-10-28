@@ -3,7 +3,7 @@ const useParams  = window.ReactRouterDOM.useParams;
 const useHistory = window.ReactRouterDOM.useHistory;
 import { ScannerHost } from "../../API/host.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
-import { useAnalyticsPageChrome, authHeaders, MiniBar, formatPercent, formatCount } from "./_shared.js";
+import { useAnalyticsPageChrome, authHeaders, MiniBar, formatPercent, formatCount, useCompareRange } from "./_shared.js";
 import { analyticsPerformancePath, analyticsPerformanceCountryPath } from "../../Functions/domainPathSegments.js";
 import { IconBarChart, IconTarget, IconScrollDepth, IconGlobe, IconClock, IconAlertTriangle, IconBrowserChrome, IconBrowserFirefox, IconBrowserSafari, IconBrowserOpera } from "./Icons.js";
 import "./Analytics.css";
@@ -1418,9 +1418,13 @@ export default function AnalyticsPerformance() {
 
     const showData = data && !data.noData;
 
+    // Compare-to-previous-period header wiring (Phase 3, docs/design-audit-plan.md).
+    const compare = useCompareRange();
+
     return (
         <div style={{ flex: "1", minWidth: 0 }}>
             <StickyPageTitle
+                className="sa-sticky-header"
                 title={isCountryView ? `${flag} ${cName}` : "Performance"}
                 numberofDays={setLastDays}
                 getLastDays={getLastDays}
@@ -1428,6 +1432,12 @@ export default function AnalyticsPerformance() {
                 toDate={toDate}
                 setFromDate={setFromDate}
                 setToDate={setToDate}
+                previousPeriod={compare.previousPeriod}
+                previousPeriod2={compare.previousPeriod2}
+                compareRange={compare.compareRange}
+                setCompareRange={compare.setCompareRange}
+                setCompareWindowStart={compare.setCompareWindowStart}
+                setCompareWindowEnd={compare.setCompareWindowEnd}
             />
             <div className="dashboard-content">
                 <div className="sa-page">

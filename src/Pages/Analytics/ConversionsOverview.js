@@ -4,7 +4,7 @@ const useHistory = window.ReactRouterDOM.useHistory;
 import { analyticsConversionsPath } from "../../Functions/domainPathSegments.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import { ScannerHost } from "../../API/host.js";
-import { useAnalyticsPage, KpiCard, authHeaders, useAnalyticsReport, toIsoDate, pctChange, formatPercent } from "./_shared.js";
+import { useAnalyticsPage, KpiCard, authHeaders, useAnalyticsReport, toIsoDate, pctChange, formatPercent, useCompareRange, usePrevRange } from "./_shared.js";
 import { IconTarget, IconTrendingUp, IconGlobe } from "./Icons.js";
 import AnalyticsWorldMap from "./AnalyticsWorldMap.js";
 import ConversionsPanel, { EventsGlancePanel } from "./Conversions.js";
@@ -157,13 +157,11 @@ export default function AnalyticsConversionsOverview() {
 
     // Previous period of the same length, immediately preceding the current
     // range — same "vs previous period" pattern the Overview page's KPI
-    // cards use (src/Pages/Analytics/index.js).
-    const prevRange = useMemo(() => {
-        const spanMs = toDate.getTime() - fromDate.getTime();
-        const prevTo = new Date(fromDate.getTime() - 24 * 60 * 60 * 1000);
-        const prevFrom = new Date(prevTo.getTime() - spanMs);
-        return { fromIso: toIsoDate(prevFrom), toIso: toIsoDate(prevTo) };
-    }, [fromDate, toDate]);
+    // cards use (src/Pages/Analytics/index.js), now including the same
+    // compare-to-previous-period header wiring (Phase 3) via the shared
+    // useCompareRange()/usePrevRange() hooks (_shared.js).
+    const compare = useCompareRange();
+    const prevRange = usePrevRange(fromDate, toDate, compare);
     const { data: prevData } = useAnalyticsReport(domain, prevRange.fromIso, prevRange.toIso, tick);
 
     const section = SECTIONS.some(s => s.key === sectionParam) ? sectionParam : "overview";
@@ -222,6 +220,7 @@ export default function AnalyticsConversionsOverview() {
     return (
         <div style={{ flex: "1", minWidth: 0 }}>
             <StickyPageTitle
+                className="sa-sticky-header"
                 title="Conversions"
                 numberofDays={setLastDays}
                 getLastDays={getLastDays}
@@ -229,6 +228,12 @@ export default function AnalyticsConversionsOverview() {
                 toDate={toDate}
                 setFromDate={setFromDate}
                 setToDate={setToDate}
+                previousPeriod={compare.previousPeriod}
+                previousPeriod2={compare.previousPeriod2}
+                compareRange={compare.compareRange}
+                setCompareRange={compare.setCompareRange}
+                setCompareWindowStart={compare.setCompareWindowStart}
+                setCompareWindowEnd={compare.setCompareWindowEnd}
             />
             <div className="dashboard-content">
                 <div className="sa-page">

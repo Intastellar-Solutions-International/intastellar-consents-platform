@@ -1319,3 +1319,45 @@ the same compare flow updates the trigger's displayed comparison range correctly
 population for that case wasn't independently re-verified this session, since the test session's
 domain-switcher click didn't land on a single domain before time ran out on this verification pass —
 worth a quick re-check before fixing the rollup bug above).
+
+### 5. Roll the header treatment out to every other Analytics page — done, verified live, refactored into a shared hook
+
+Item 4 only touched Overview. Rolled the same two fixes — the clickability CSS and the compare-to-
+previous-period wiring — out to every other Analytics report page with a date-range control: Acquisition,
+Audience, Ad Spend, Alerts, Analytics Settings, Attribution, Bots, Cohorts, Consent, Conversions, Forms,
+Google Analytics, Heatmap, My Reports, Page Weight, Performance, Recordings, Scheduled Reports, Search
+Console, User Flow — 20 pages total. Left out the handful of `StickyPageTitle` callers that don't render
+a date-range control at all (`numberofDays` not passed): Digest, the Page Experiments pages, Report
+Builder/View, and `Recordings.js`'s own inner `<StickyPageTitle title="Recording" />` for its detail
+view — nothing to make clickable or wire compare into on those.
+
+**First pass duplicated the same ~9 lines (3 `useState` calls + 6 `StickyPageTitle` props) onto all 20
+files** — caught mid-rollout and refactored into two shared hooks in `_shared.js` instead, alongside
+`useAnalyticsPage`/`useAnalyticsPageChrome`/the rest of this file's existing hook exports:
+- **`useCompareRange()`**: the three `useState` calls (`compareRange`/`previousPeriod`/`previousPeriod2`)
+  in one hook, returning the exact field names `StickyPageTitle` expects
+  (`previousPeriod`/`previousPeriod2`/`compareRange`/`setCompareRange`/`setCompareWindowStart`/
+  `setCompareWindowEnd`) plus a `compareActive` boolean for callers that also need it.
+- **`usePrevRange(fromDate, toDate, compare)`**: the "immediately-preceding period, or the user's
+  selected comparison window once active" calculation item 4 wrote inline on Overview — now one call
+  shared by every page that computes a previous-period comparison.
+
+Every page now calls `const compare = useCompareRange();` and spreads its fields onto
+`StickyPageTitle`; the four pages with trend chips (Overview, Acquisition, Audience, Conversions) also
+call `const prevRange = usePrevRange(fromDate, toDate, compare);` in place of their own copy of the
+useMemo. Net effect: the 20-file rollout added one hook call (plus, for 4 of them, a second) to each
+page instead of duplicating the same block two dozen times.
+
+Two pages (`Consent.js`, `GoogleAnalytics.js`'s neighbor `SearchConsole.js`) didn't destructure any
+React hooks at all before this — `Consent.js` needed a one-line `const { useState } = React;` added in
+the item-4-style first pass, then removed again once the hook refactor made it unnecessary (the hook
+call doesn't need a local `useState` in the page itself).
+
+**Verified live**: looped through all 20 pages' sidebar links at 1440px, confirming `.sa-sticky-header`
+is present and the trigger's `padding-right` is the new `34px` (not the CMP-page default `10px`) on
+every one, with no console errors beyond the same pre-existing CDN noise. Re-ran the full compare-toggle
+flow (open → toggle on → pick "Previous period" → Apply) on Acquisition after the hook refactor to
+confirm it still updates the trigger's displayed comparison range correctly post-refactor, not just
+pre-refactor. Static validation: babel transform on all 22 touched files (20 pages + `_shared.js` +
+`index.js`), full test suite (117/117 passed) — no CSS touched in this item, so no new `postcss.parse()`
+needed beyond item 4's.

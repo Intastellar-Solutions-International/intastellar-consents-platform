@@ -9,6 +9,7 @@ import AnalyticsWorldMap from "./AnalyticsWorldMap.js";
 import {
     authHeaders, KpiCard, MiniBar, useAnalyticsPage, useAnalyticsReport, useSiteConfig,
     toIsoDate, pctChange, IndustryBenchmarkNote, formatPercent, SegmentFilter,
+    useCompareRange, usePrevRange,
     useForeignDomains, splitForeignDomainsByRecency,
     formatCurrency, CURRENCY_SYMBOLS, elementLabel,
 } from "./_shared.js";
@@ -788,24 +789,12 @@ export default function SiteAnalytics() {
     // (Filter, via StickyPageTitle) already has a "Compare to prior period"
     // toggle + baseline picker built in and working elsewhere in the app
     // (Dashboard.js et al.) — it just wasn't wired up on any Analytics page
-    // yet. Wiring it here lets the user override the comparison window
-    // through that existing control; this only changes which dates get
-    // requested from the same useAnalyticsReport hook already in use below,
-    // not what it calculates or how trend/pctChange works.
-    const [compareRange, setCompareRange] = useState(0);
-    const [previousPeriod, setPreviousPeriod] = useState(null);
-    const [previousPeriod2, setPreviousPeriod2] = useState(null);
-    const compareActive = compareRange !== 0 && compareRange != null;
-
-    const prevRange = useMemo(() => {
-        if (compareActive && previousPeriod && previousPeriod2) {
-            return { fromIso: toIsoDate(previousPeriod), toIso: toIsoDate(previousPeriod2) };
-        }
-        const spanMs = toDate.getTime() - fromDate.getTime();
-        const prevTo = new Date(fromDate.getTime() - 24 * 60 * 60 * 1000);
-        const prevFrom = new Date(prevTo.getTime() - spanMs);
-        return { fromIso: toIsoDate(prevFrom), toIso: toIsoDate(prevTo) };
-    }, [fromDate, toDate, compareActive, previousPeriod, previousPeriod2]);
+    // yet. useCompareRange()/usePrevRange() (_shared.js) wire it here; this
+    // only changes which dates get requested from the same useAnalyticsReport
+    // hook already in use below, not what it calculates or how trend/
+    // pctChange works.
+    const compare = useCompareRange();
+    const prevRange = usePrevRange(fromDate, toDate, compare);
     const { data: prevData } = useAnalyticsReport(domain, prevRange.fromIso, prevRange.toIso, tick);
 
     const siteConfig    = useSiteConfig(domain);
@@ -867,12 +856,12 @@ export default function SiteAnalytics() {
                 toDate={toDate}
                 setFromDate={setFromDate}
                 setToDate={setToDate}
-                previousPeriod={previousPeriod}
-                previousPeriod2={previousPeriod2}
-                compareRange={compareRange}
-                setCompareRange={setCompareRange}
-                setCompareWindowStart={setPreviousPeriod}
-                setCompareWindowEnd={setPreviousPeriod2}
+                previousPeriod={compare.previousPeriod}
+                previousPeriod2={compare.previousPeriod2}
+                compareRange={compare.compareRange}
+                setCompareRange={compare.setCompareRange}
+                setCompareWindowStart={compare.setCompareWindowStart}
+                setCompareWindowEnd={compare.setCompareWindowEnd}
             />
             <div className="dashboard-content">
                 <div className="sa-page">

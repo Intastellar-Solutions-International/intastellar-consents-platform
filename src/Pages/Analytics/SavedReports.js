@@ -2,7 +2,7 @@ const { useState, useEffect, useCallback } = React;
 const useHistory = window.ReactRouterDOM.useHistory;
 import { ScannerHost } from "../../API/host.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
-import { authHeaders, useAnalyticsPageChrome } from "./_shared.js";
+import { authHeaders, useAnalyticsPageChrome, useCompareRange } from "./_shared.js";
 import { SkeletonRows } from "./components/Skeleton.js";
 import { analyticsReportBuilderPath, analyticsReportViewPath } from "../../Functions/domainPathSegments.js";
 import { REPORT_TEMPLATES, CATEGORY_ORDER, CT_SVG, METRIC_LABELS, CATEGORY_COLOR } from "./reportTemplates.js";
@@ -201,9 +201,13 @@ export default function SavedReports() {
 
     const allCats = ["All", ...CATEGORY_ORDER];
 
+    // Compare-to-previous-period header wiring (Phase 3, docs/design-audit-plan.md).
+    const compare = useCompareRange();
+
     return (
         <div style={{ flex: "1", minWidth: 0 }}>
             <StickyPageTitle
+                className="sa-sticky-header"
                 title="My Reports"
                 numberofDays={setLastDays}
                 getLastDays={getLastDays}
@@ -211,6 +215,12 @@ export default function SavedReports() {
                 toDate={toDate}
                 setFromDate={setFromDate}
                 setToDate={setToDate}
+                previousPeriod={compare.previousPeriod}
+                previousPeriod2={compare.previousPeriod2}
+                compareRange={compare.compareRange}
+                setCompareRange={compare.setCompareRange}
+                setCompareWindowStart={compare.setCompareWindowStart}
+                setCompareWindowEnd={compare.setCompareWindowEnd}
             />
             <div className="dashboard-content">
                 <div className="sa-page">

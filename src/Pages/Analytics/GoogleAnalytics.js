@@ -8,7 +8,7 @@ import {
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import Authentication from "../../Authentication/Auth.js";
 import { ScannerHost } from "../../API/host.js";
-import { toIsoDate, formatPercent, KpiCard } from "./_shared.js";
+import { toIsoDate, formatPercent, KpiCard, useCompareRange } from "./_shared.js";
 import { PanelSkeleton } from "./components/Skeleton.js";
 import { IconBarChart, IconUsers, IconGlobe, IconCursorClick } from "./Icons.js";
 import { Ga4SessionsChart } from "./GoogleAnalyticsChart.js";
@@ -261,9 +261,13 @@ export default function GoogleAnalytics() {
 
     const bounceRatePct = summary ? Math.round((summary.bounceRate || 0) * 100) : null;
 
+    // Compare-to-previous-period header wiring (Phase 3, docs/design-audit-plan.md).
+    const compare = useCompareRange();
+
     return (
         <div style={{ flex: "1", minWidth: 0 }}>
             <StickyPageTitle
+                className="sa-sticky-header"
                 title="Google Analytics 4"
                 titleLogo={googleAnalyticsLogo}
                 numberofDays={setLastDays}
@@ -272,6 +276,12 @@ export default function GoogleAnalytics() {
                 toDate={toDate}
                 setFromDate={setFromDate}
                 setToDate={setToDate}
+                previousPeriod={compare.previousPeriod}
+                previousPeriod2={compare.previousPeriod2}
+                compareRange={compare.compareRange}
+                setCompareRange={compare.setCompareRange}
+                setCompareWindowStart={compare.setCompareWindowStart}
+                setCompareWindowEnd={compare.setCompareWindowEnd}
             />
             <div className="dashboard-content">
                 <div className="sa-page">

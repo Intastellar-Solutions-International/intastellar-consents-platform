@@ -278,6 +278,42 @@ export function useAnalyticsPage() {
     return { ...chrome, tick, setTick, data, loading, detailLoading, error, showSetup, showData, isPropertyRollup, hasDomain };
 }
 
+// Compare-to-previous-period header state (docs/design-audit-plan.md Phase 3)
+// — one hook instead of the same three useState calls copy-pasted onto every
+// Analytics page. Spread the returned fields straight onto StickyPageTitle's
+// matching props (previousPeriod/previousPeriod2/compareRange/
+// setCompareRange/setCompareWindowStart/setCompareWindowEnd); `compareActive`
+// is for pages that also feed it into usePrevRange() below.
+export function useCompareRange() {
+    const [compareRange, setCompareRange] = useState(0);
+    const [previousPeriod, setPreviousPeriod] = useState(null);
+    const [previousPeriod2, setPreviousPeriod2] = useState(null);
+    return {
+        compareActive: compareRange !== 0 && compareRange != null,
+        compareRange, setCompareRange,
+        previousPeriod, previousPeriod2,
+        setCompareWindowStart: setPreviousPeriod,
+        setCompareWindowEnd: setPreviousPeriod2,
+    };
+}
+
+// Previous-period date range for "vs previous period" trend chips — defaults
+// to the immediately-preceding period of the same length; uses the user's
+// selected comparison window (from useCompareRange() above, driven by
+// StickyPageTitle's date-range control) once compare is active. `compare` is
+// a useCompareRange() result.
+export function usePrevRange(fromDate, toDate, compare) {
+    return useMemo(() => {
+        if (compare.compareActive && compare.previousPeriod && compare.previousPeriod2) {
+            return { fromIso: toIsoDate(compare.previousPeriod), toIso: toIsoDate(compare.previousPeriod2) };
+        }
+        const spanMs = toDate.getTime() - fromDate.getTime();
+        const prevTo = new Date(fromDate.getTime() - 24 * 60 * 60 * 1000);
+        const prevFrom = new Date(prevTo.getTime() - spanMs);
+        return { fromIso: toIsoDate(prevFrom), toIso: toIsoDate(prevTo) };
+    }, [fromDate, toDate, compare.compareActive, compare.previousPeriod, compare.previousPeriod2]);
+}
+
 // % change of `current` vs `previous` — null when there's no previous-period
 // baseline to compare against (0 or missing), so callers can hide the chip
 // instead of showing a misleading "+∞%"/"0%".

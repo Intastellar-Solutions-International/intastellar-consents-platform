@@ -8,7 +8,7 @@ import {
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import Authentication from "../../Authentication/Auth.js";
 import { ScannerHost } from "../../API/host.js";
-import { toIsoDate, KpiCard, formatPercent } from "./_shared.js";
+import { toIsoDate, KpiCard, formatPercent, useCompareRange } from "./_shared.js";
 import { IconTrendingUp, IconGlobe, IconTarget } from "./Icons.js";
 import TrendLineChart from "./TrendLineChart.js";
 import searchConsoleLogo from "../../Components/Header/icons/search-console.svg";
@@ -144,9 +144,13 @@ export default function SearchConsole() {
 
     const trendData = useMemo(() => (gsc.rows || []).map(r => ({ date: r.date, num: r.clicks })), [gsc.rows]);
 
+    // Compare-to-previous-period header wiring (Phase 3, docs/design-audit-plan.md).
+    const compare = useCompareRange();
+
     return (
         <div style={{ flex: "1", minWidth: 0 }}>
             <StickyPageTitle
+                className="sa-sticky-header"
                 title="Search Console"
                 titleLogo={searchConsoleLogo}
                 numberofDays={setLastDays}
@@ -155,6 +159,12 @@ export default function SearchConsole() {
                 toDate={toDate}
                 setFromDate={setFromDate}
                 setToDate={setToDate}
+                previousPeriod={compare.previousPeriod}
+                previousPeriod2={compare.previousPeriod2}
+                compareRange={compare.compareRange}
+                setCompareRange={compare.setCompareRange}
+                setCompareWindowStart={compare.setCompareWindowStart}
+                setCompareWindowEnd={compare.setCompareWindowEnd}
             />
             <div className="dashboard-content">
                 <div className="sa-page">

@@ -1,7 +1,7 @@
 const { useState, useEffect, useCallback } = React;
 import { ScannerHost } from "../../API/host.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
-import { authHeaders, useAnalyticsPageChrome } from "./_shared.js";
+import { authHeaders, useAnalyticsPageChrome, useCompareRange } from "./_shared.js";
 import "./Analytics.css";
 
 const REPORTS_URL = `${ScannerHost}/api/analytics-scheduled-reports`;
@@ -368,9 +368,13 @@ export default function AnalyticsScheduledReports() {
 
     const { reports, loading, error, reload } = useScheduledReports(domain);
 
+    // Compare-to-previous-period header wiring (Phase 3, docs/design-audit-plan.md).
+    const compare = useCompareRange();
+
     return (
         <div style={{ flex: "1", minWidth: 0 }}>
             <StickyPageTitle
+                className="sa-sticky-header"
                 title="Scheduled Reports"
                 numberofDays={setLastDays}
                 getLastDays={getLastDays}
@@ -378,6 +382,12 @@ export default function AnalyticsScheduledReports() {
                 toDate={toDate}
                 setFromDate={setFromDate}
                 setToDate={setToDate}
+                previousPeriod={compare.previousPeriod}
+                previousPeriod2={compare.previousPeriod2}
+                compareRange={compare.compareRange}
+                setCompareRange={compare.setCompareRange}
+                setCompareWindowStart={compare.setCompareWindowStart}
+                setCompareWindowEnd={compare.setCompareWindowEnd}
             />
             <div className="dashboard-content">
                 <div className="sa-page">

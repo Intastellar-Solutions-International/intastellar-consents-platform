@@ -1,7 +1,7 @@
 const { useState, useEffect, useMemo } = React;
 import { ScannerHost } from "../../API/host.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
-import { useAnalyticsPageChrome, authHeaders, formatPercent } from "./_shared.js";
+import { useAnalyticsPageChrome, authHeaders, formatPercent, useCompareRange } from "./_shared.js";
 import { IconDocument, IconAlertTriangle } from "./Icons.js";
 import "./Analytics.css";
 
@@ -448,9 +448,13 @@ export default function PageWeight() {
     const weightSeverity = showData ? pageWeightSeverity(data.totals.avgPageWeight) : null;
     const weightColor = weightSeverity ? (weightSeverity === "good" ? "rgba(34,197,94,0.9)" : SEVERITY_COLOR[weightSeverity]) : "rgba(130,130,130,0.5)";
 
+    // Compare-to-previous-period header wiring (Phase 3, docs/design-audit-plan.md).
+    const compare = useCompareRange();
+
     return (
         <div style={{ flex: "1", minWidth: 0 }}>
             <StickyPageTitle
+                className="sa-sticky-header"
                 title="Page Weight"
                 numberofDays={setLastDays}
                 getLastDays={getLastDays}
@@ -458,6 +462,12 @@ export default function PageWeight() {
                 toDate={toDate}
                 setFromDate={setFromDate}
                 setToDate={setToDate}
+                previousPeriod={compare.previousPeriod}
+                previousPeriod2={compare.previousPeriod2}
+                compareRange={compare.compareRange}
+                setCompareRange={compare.setCompareRange}
+                setCompareWindowStart={compare.setCompareWindowStart}
+                setCompareWindowEnd={compare.setCompareWindowEnd}
             />
             <div className="dashboard-content">
                 <div className="sa-page">

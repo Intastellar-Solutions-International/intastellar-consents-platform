@@ -2,7 +2,7 @@ const { useState, useEffect, useMemo, useRef } = React;
 import { ScannerHost } from "../../API/host.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import heatmapLogo from "../../Components/Header/icons/heatmap.svg";
-import { authHeaders, useAnalyticsPageChrome, elementLabel } from "./_shared.js";
+import { authHeaders, useAnalyticsPageChrome, elementLabel, useCompareRange } from "./_shared.js";
 import { IconCursorClick, IconTarget, IconTrendingUp } from "./Icons.js";
 import "./Analytics.css";
 
@@ -218,9 +218,13 @@ export default function AnalyticsHeatmap() {
         domain, selected?.pathname, selected?.host, device, fromIso, toIso
     );
 
+    // Compare-to-previous-period header wiring (Phase 3, docs/design-audit-plan.md).
+    const compare = useCompareRange();
+
     return (
         <div style={{ flex: "1", minWidth: 0 }}>
             <StickyPageTitle
+                className="sa-sticky-header"
                 title="Heatmap"
                 titleLogo={heatmapLogo}
                 numberofDays={setLastDays}
@@ -229,6 +233,12 @@ export default function AnalyticsHeatmap() {
                 toDate={toDate}
                 setFromDate={setFromDate}
                 setToDate={setToDate}
+                previousPeriod={compare.previousPeriod}
+                previousPeriod2={compare.previousPeriod2}
+                compareRange={compare.compareRange}
+                setCompareRange={compare.setCompareRange}
+                setCompareWindowStart={compare.setCompareWindowStart}
+                setCompareWindowEnd={compare.setCompareWindowEnd}
             />
             <div className="dashboard-content">
                 <div className="sa-page">
