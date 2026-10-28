@@ -117,7 +117,7 @@ async function _handler(req, res) {
         browsersRes, consentRes, utmRes, referrersRes,
         conversionsRes, conversionCountriesRes, convertedSessionsRes,
         osRes, engagedRes, newVsReturningRes, lastTouchByChannelRes,
-        revenueRes,
+        revenueRes, dailyEngagedRes,
     ] = await Promise.all([
 
         db.query(`
@@ -137,7 +137,8 @@ async function _handler(req, res) {
             SELECT
                 TO_CHAR(DATE_TRUNC('day', received_at AT TIME ZONE 'UTC'), 'YYYY-MM-DD') AS date,
                 COUNT(*) FILTER (WHERE consent_level = 'minimal')  AS minimal,
-                COUNT(*) FILTER (WHERE consent_level = 'full')     AS full_count
+                COUNT(*) FILTER (WHERE consent_level = 'full')     AS full_count,
+                COUNT(DISTINCT session_id) FILTER (WHERE session_id IS NOT NULL) AS unique_sessions
             FROM analytics_events
             WHERE site_id = ANY($1) AND received_at >= $2 AND received_at < $3
             GROUP BY 1 ORDER BY 1`,
@@ -346,9 +347,38 @@ async function _handler(req, res) {
             [siteIds, fromDate, toDateExclusive]
         ).catch(() => ({ rows: [] })),
 
+        // Daily engaged-users breakdown — same engagement criteria as
+        // engagedRes above (>=10s, >1 pageview, or a click), just grouped by
+        // the session's first-seen day instead of collapsed to one total.
+        // Powers the Phase 4 Overview hero's "Active users" tab chart.
+        db.query(`
+            WITH session_stats AS (
+                SELECT session_id,
+                       DATE_TRUNC('day', MIN(received_at) AT TIME ZONE 'UTC') AS day,
+                       MAX(duration_sec) AS max_duration,
+                       COUNT(*) AS pageviews
+                FROM analytics_events
+                WHERE site_id = ANY($1) AND consent_level = 'full'
+                  AND received_at >= $2 AND received_at < $3
+                  AND session_id IS NOT NULL
+                GROUP BY session_id
+            )
+            SELECT TO_CHAR(day, 'YYYY-MM-DD') AS date, COUNT(*) AS engaged
+            FROM session_stats s
+            WHERE s.max_duration >= 10
+               OR s.pageviews > 1
+               OR EXISTS (
+                    SELECT 1 FROM analytics_clicks c
+                    WHERE c.site_id = ANY($1) AND c.session_id = s.session_id
+                      AND c.received_at >= $2 AND c.received_at < $3
+               )
+            GROUP BY 1 ORDER BY 1`,
+            [siteIds, fromDate, toDateExclusive]
+        ).catch(() => ({ rows: [] })),
+
     ]).catch((err) => {
         console.error("[analytics-property-report] batch error:", err?.message);
-        return Array(17).fill({ rows: [] });
+        return Array(18).fill({ rows: [] });
     });
 
     const t = totalsRes.rows[0] || {};
@@ -379,11 +409,20 @@ async function _handler(req, res) {
             revenueCurrency: revenueRes.rows[0]?.currency || null,
             transactions:    Number(revenueRes.rows[0]?.transactions || 0) || null,
         },
-        daily: dailyRes.rows.map(r => ({
-            date:    r.date,
-            minimal: Number(r.minimal    || 0),
-            full:    Number(r.full_count || 0),
-        })),
+        daily: (() => {
+            // dailyEngagedRes is a separate query (session-level, consent_level
+            // = 'full' only — a different shape from dailyRes' plain event
+            // count) joined back in by date. Phase 4: powers the Overview
+            // hero's Active users/Unique sessions tab charts.
+            const engagedByDate = new Map(dailyEngagedRes.rows.map(r => [r.date, Number(r.engaged || 0)]));
+            return dailyRes.rows.map(r => ({
+                date:           r.date,
+                minimal:        Number(r.minimal         || 0),
+                full:           Number(r.full_count      || 0),
+                uniqueSessions: Number(r.unique_sessions  || 0),
+                engaged:        engagedByDate.get(r.date) || 0,
+            }));
+        })(),
         topPages: pagesRes.rows.map(r => ({
             pathname: r.pathname,
             views:    Number(r.views    || 0),
