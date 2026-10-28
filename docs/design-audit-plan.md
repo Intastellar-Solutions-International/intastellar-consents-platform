@@ -1119,3 +1119,43 @@ real bug (`PanelSkeletonShell`) was found and fixed that static analysis alone h
 entire pushed commit.
 
 Ready to push once reviewed, and ready for Phase 3 (navigation) whenever you want to continue.
+
+---
+
+## Phase 3: Navigation
+
+A bigger, riskier change than Phase 1/2 — this touches the core app-wide layout (`App.js`'s
+`main-grid`, `Nav.js`, `SideNav.js`, `header.css`) rather than one component or page at a time.
+Breaking it into the same small-commit discipline as everywhere else, starting with the
+lowest-risk piece and building up to the structural fix.
+
+### 1. Regroup the sidebar to match the brief's exact groups — done, verified live
+
+`buildAnalyticsLinks()` (`SideNavLinks/index.js`) already had 8 divider groups before this —
+just not the ones specified. Regrouped to exactly: Overview, Audience (standalone, no group
+header) → Marketing (Acquisition, Ad Spend, Attribution, Search Console, Google Analytics,
+Consent) → Behavior (Heatmap, Recordings, Bots, User Flow, Performance, Page Weight) → Leads
+(Conversions, Forms, Experiments) → Insights (Cohorts, Alerts, Digest) → Reports (My Reports, New
+Report, Scheduled Reports) → Settings.
+
+**Two judgment calls, flagged rather than silently decided:**
+1. The brief's "Marketing (Acquisition, Ad Spend, Attribution, Search Console, Google Analytics,
+   Consent)" sub-item list doesn't itself list "Marketing" as a child — but that's a real page (the
+   Channel Analytics overview, renamed to match its nav label in Phase 2 item 3), and group-header
+   divider rows aren't clickable in this sidebar (`SideNav.js`: a `divider` row renders
+   `aria-hidden="true"`, no link). Omitting it would orphan that page from the main nav entirely —
+   included it as the group's own first item instead.
+2. **Resolved a genuine duplication, confirmed live** (the one open question carried over from
+   Phase 0): the old sidebar nested Conversions' "Overview"/"Funnel & Sources"/"Events & Tracking"
+   as indented children — but `ConversionsOverview.js` already renders its own in-page sub-nav
+   (`sa-conv-submenu`) for exactly these three destinations. Both existing simultaneously was
+   duplication, not two different navigation needs. Simplified the main sidebar to one "Conversions"
+   link, per the brief's own "keep in-page sub-nav only where truly needed (Conversions)" — the
+   in-page one is the one being kept, confirmed still working correctly in the same screenshot.
+
+Verified via babel transform, the full test suite, and a live render (no console errors; screenshot
+confirms every group landed exactly as designed, the Marketing page is still reachable, and the
+Conversions in-page sub-nav still works alongside the simplified main sidebar).
+
+**Not yet touched in this commit:** the sidebar is still `position: fixed` (overlay, not push) and
+still hidden on Overview — those are the next, riskier items.

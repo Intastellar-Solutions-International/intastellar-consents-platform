@@ -5,7 +5,7 @@ import heatmapLogo from "../icons/heatmap.svg";
 import recordingsLogo from "../icons/recordings.svg";
 
 import {
-    analyticsAudiencePath, analyticsAcquisitionPath, analyticsConsentPath,
+    analyticsPath, analyticsAudiencePath, analyticsAcquisitionPath, analyticsConsentPath,
     analyticsMarketingPath, analyticsAdSpendPath, analyticsAttributionPath, analyticsSettingsPath, analyticsGoogleAnalyticsPath,
     analyticsSearchConsolePath,
     analyticsHeatmapPath, analyticsRecordingsPath, analyticsBotsPath,
@@ -106,31 +106,49 @@ export const experimentsLinks = [
 // has no matching route at all. Pre-resolving full hrefs here sidesteps that
 // entirely: SideNav's rewrite only runs when it finds a handle, so with none
 // available it just passes these paths through unchanged.
+//
+// Regrouped for docs/design-audit-plan.md Phase 3 to the exact groups your
+// brief specified: Overview/Audience standalone, then Marketing/Behavior/
+// Leads/Insights/Reports/Settings. Two judgment calls worth flagging:
+//
+// 1. The brief's "Marketing (Acquisition, Ad Spend, Attribution, Search
+//    Console, Google Analytics, Consent)" sub-item list doesn't itself
+//    include a "Marketing" leaf — but there IS a real page at this exact
+//    path (the Channel Analytics / "Marketing" overview, renamed to match
+//    its nav label in Phase 2 item 3), and group-header divider rows
+//    aren't clickable links in this sidebar (see SideNav.js: `if
+//    (link.divider) return <li aria-hidden="true">...`). Omitting it would
+//    orphan that page from the main nav entirely, so it's included as the
+//    group's own first item rather than dropped.
+// 2. The Conversions sub-items (Overview/Funnel & Sources/Events &
+//    Tracking) are no longer nested here as indented children — confirmed
+//    live (Phase 3 investigation) that ConversionsOverview.js already
+//    renders its own in-page sub-nav (`sa-conv-submenu`) for exactly
+//    these three destinations. Keeping both was a genuine duplication,
+//    not two different things; "Conversions" is now one link here, per
+//    the brief's own "keep in-page sub-nav only where truly needed
+//    (Conversions)" — the in-page one is the one being kept.
 export function buildAnalyticsLinks(domain) {
     return [
         {
-            divider: true,
-            label: "Audience",
+            name: "Overview",
+            path: analyticsPath(domain),
         },
         {
             name: "Audience",
             path: analyticsAudiencePath(domain),
         },
         {
-            name: "Consent",
-            path: analyticsConsentPath(domain),
-        },
-        {
             divider: true,
-            label: "Acquisition",
-        },
-        {
-            name: "Acquisition",
-            path: analyticsAcquisitionPath(domain),
+            label: "Marketing",
         },
         {
             name: "Marketing",
             path: analyticsMarketingPath(domain),
+        },
+        {
+            name: "Acquisition",
+            path: analyticsAcquisitionPath(domain),
         },
         {
             name: "Ad Spend",
@@ -141,14 +159,18 @@ export function buildAnalyticsLinks(domain) {
             path: analyticsAttributionPath(domain),
         },
         {
+            name: "Search Console",
+            path: analyticsSearchConsolePath(domain),
+            logoSrc: searchConsoleLogo,
+        },
+        {
             name: "Google Analytics",
             path: analyticsGoogleAnalyticsPath(domain),
             logoSrc: googleAnalyticsLogo,
         },
         {
-            name: "Search Console",
-            path: analyticsSearchConsolePath(domain),
-            logoSrc: searchConsoleLogo,
+            name: "Consent",
+            path: analyticsConsentPath(domain),
         },
         {
             divider: true,
@@ -180,34 +202,21 @@ export function buildAnalyticsLinks(domain) {
         {
             name: "Page Weight",
             path: analyticsPageWeightPath(domain),
-            indent: true,
         },
         {
             divider: true,
-            label: "Conversions",
+            label: "Leads",
         },
         {
-            name: "Overview",
+            name: "Conversions",
             path: analyticsConversionsPath(domain),
-            indent: true,
-        },
-        {
-            name: "Funnel & Sources",
-            path: analyticsConversionsPath(domain, "deepdive"),
-            indent: true,
-        },
-        {
-            name: "Events & Tracking",
-            path: analyticsConversionsPath(domain, "setup"),
-            indent: true,
         },
         {
             name: "Forms",
             path: analyticsFormsPath(domain),
-            indent: true,
         },
         {
-            name: "Page Experiments",
+            name: "Experiments",
             path: analyticsPageExperimentsPath(domain),
         },
         {
@@ -215,7 +224,7 @@ export function buildAnalyticsLinks(domain) {
             label: "Insights",
         },
         {
-            name: "Retention Cohorts",
+            name: "Cohorts",
             path: analyticsCohortPath(domain),
         },
         {
@@ -223,17 +232,16 @@ export function buildAnalyticsLinks(domain) {
             path: analyticsAlertsPath(domain),
         },
         {
-            name: "Channel Digest",
+            name: "Digest",
             path: analyticsDigestPath(),
         },
         {
             divider: true,
-            label: "Custom Reports",
+            label: "Reports",
         },
         {
             name: "My Reports",
             path: analyticsReportsPath(domain),
-            indent: true,
         },
         {
             name: "New Report",
@@ -247,7 +255,7 @@ export function buildAnalyticsLinks(domain) {
         },
         {
             divider: true,
-            label: "Configuration",
+            label: "Settings",
         },
         {
             name: "Settings",
