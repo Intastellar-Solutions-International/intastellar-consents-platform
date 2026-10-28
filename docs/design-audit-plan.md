@@ -1421,3 +1421,70 @@ widths where that change is actually width-sensitive:
 
 16 screenshots total, all saved to `/docs/design-screenshots/`. Phase 3 is now fully closed out —
 every item implemented, verified live, documented, and screenshotted.
+
+---
+
+## Phase 4: Overview redesign + view switch
+
+Scope per the original brief (§"Proposed approach" above): rebuild Overview around a GA4-style
+"Executive Overview" hero (`MetricTabStrip` + chart, built in Phase 1/5 but never wired to a page
+yet), plus a headline sentence, "where leads come from"/"what they read"/"where we lose them" panels,
+a "needs attention" insights list, and the one flagged true data gap (estimated visitors).
+
+**Two scope decisions confirmed with you before writing any code, both already reflected below:**
+1. **Estimated visitors stays an `EmptyState`** ("needs: visitor-estimation model") — no estimation
+   method exists in this codebase and you don't have one in mind to implement for real, so per the
+   ground rules this renders honestly empty rather than a fabricated multiplier.
+2. **The hero pulls its 4 tabs from the business-type/user-customized KPI order, not a hardcoded
+   metric set.** `KpiStrip` (the KPI card grid) turned out to already be a mature, business-type-aware,
+   user-customizable system (10 possible card types, per-vertical default orderings for ecommerce/b2b/
+   aviation/etc., a Customize panel, DB-persisted) — a hardcoded hero (e.g. always Active users/Events/
+   Sessions/Consent) would have either duplicated cards already shown below it, or silently ignored a
+   user's own customization. The hero now always shows the *same first 4* ids `KpiStrip` would've shown
+   first anyway; `KpiStrip` renders the 5th+.
+
+### 1. Hero composite: MetricTabStrip + paired chart — done, verified live
+
+**Architecture change, not just new markup:** `kpiDefaultOrder()` (the business-type switch) and
+`buildKpiCardMeta()` (a new plain-data registry — label/value/trend/`hasDaily`, no JSX) were extracted
+from inside the old `KpiStrip` function to module scope in `index.js`, computed once in the parent
+(`SiteAnalytics`) via `useMemo`, and passed down. `KpiStrip` itself now only renders `order.slice(4)`
+(cards 5+) as before; the parent renders `order.slice(0, 4)` as a `MetricTabStrip`, paired with a chart
+card showing whichever metric is selected. One `order` list, two renderers, nothing duplicated and
+nothing diverges from what `customCards`/business-type would already have shown.
+
+**The real constraint found while building this, not anticipated in the brief:** checked
+`api/analytics-report.js`'s actual response shape — `data.daily` (day-by-day) only exists for event
+*count*. There's no daily breakdown for sessions, engaged users, bounce rate, or consent rate anywhere
+in the backend, and adding one would mean new SQL queries, off-limits for this presentation-only phase.
+Flagged this to you directly before building anything (a GA4-style hero where only 1 of 4 tabs can
+show a real chart is a real design tradeoff, not something to silently paper over) — you chose to build
+all 4 tabs now, each showing its correct current value/delta, with a labeled `EmptyState` ("needs:
+daily breakdown for this metric") in the chart area for the 3 metrics that don't have one. This is
+exactly the ground rules' own "needs: `<dependency>`" case, just discovered mid-implementation instead
+of in Phase 0.
+
+`buildKpiCardMeta()`'s `hasDaily` flag drives this: `true` only for `events`. The chart panel checks
+`cardMeta[activeHeroMetric]?.hasDaily` — `AreaChart` (existing, unchanged) if true, `EmptyState`
+otherwise. Default selection: the first hero id with `hasDaily` (so the page loads showing a working
+chart whenever "Total events" is one of the user's top 4, which it is by default for every business
+type except pure `ecommerce`), falling back to the first hero id otherwise — honest about what that
+account's actual top metric can show, rather than silently defaulting to a different metric the user
+didn't choose.
+
+**Verified live** (Chrome, ASA Software account, "All domains" property rollup): all 4 tabs render
+correct values (Active users 546, Total events 10.323, Unique sessions 3.623, Consent rate 27,4%),
+default lands on "Total events" with a real chart, clicking "Active users" correctly swaps to the
+`EmptyState` with an honest, metric-specific message and the "Needs: daily breakdown for this metric"
+line. Checked all three widths (1024/1280/1440) for overflow (none) and confirmed the tab strip wraps
+cleanly at 1024px (existing `flex-wrap` behavior, untouched). No console errors beyond the pre-existing
+CDN noise. Static validation: babel transform on `index.js`, `postcss.parse()` on `Analytics.css`, full
+test suite (117/117) pass.
+
+**Known follow-up, not a defect in this item:** the "rest" KPI strip below the hero now frequently
+renders just 1-2 cards (since the hero absorbs 4 of a typical 5-id default order) in a grid still fixed
+to `repeat(5, 1fr)` — visually this reads as a left-aligned card with trailing whitespace rather than a
+full row, which looks intentional in practice (checked live, see the screenshot) and matches how a
+GA4-style dashboard treats secondary metrics as supplementary, not space-filling. Not changing the grid
+now; flagging in case it reads worse on some other business type's exact 5-card default than it did on
+this account's.

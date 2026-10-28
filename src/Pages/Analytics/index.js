@@ -14,6 +14,8 @@ import {
     formatCurrency, CURRENCY_SYMBOLS, elementLabel,
 } from "./_shared.js";
 import { SkeletonBlock, KpiCardSkeleton, PanelSkeleton } from "./components/Skeleton.js";
+import MetricTabStrip from "./components/MetricTabStrip.js";
+import EmptyState from "./components/EmptyState.js";
 import {
     IconBarChart, IconUsers, IconShieldCheck, IconGlobe, IconTrendingUp,
     IconDocument, IconRadio, IconTarget, IconMegaphone, IconCash, IconExternalLink, IconCursorClick,
@@ -421,112 +423,14 @@ function CustomizePanel({ currentCards, defaultCards, onSave, onClose }) {
     );
 }
 
-function KpiStrip({ data, siteConfig, trendEngaged, trendEvents, trendSessions, trendConsent, trendBounce, customCards, onCustomize }) {
-    const bt          = siteConfig?.businessType || "";
-    const hasRevenue  = data.totals.revenue != null && data.totals.revenue > 0;
-    const hasLeads    = data.totals.qualityLeads !== null;
-    const consentPct  = data.totals.consentRate;
-    const currency    = data.totals.revenueCurrency || "EUR";
-
-    const bounceRate = data.totals.uniqueSessions > 0
-        ? ((data.totals.uniqueSessions - data.totals.engagedUsers) / data.totals.uniqueSessions) * 100
-        : null;
-
-    const CARDS = {
-        revenue: (
-            <KpiCard key="revenue"
-                icon={<IconCash />}
-                label="Revenue"
-                value={fmtRevenue(data.totals.revenue, currency)}
-                sub={data.totals.transactions ? `${data.totals.transactions.toLocaleString("de-DE")} transactions` : "ecommerce events"}
-                variant="revenue"
-            />
-        ),
-        users: (
-            <KpiCard key="users"
-                icon={<IconRadio />}
-                label="Active users"
-                value={data.totals.engagedUsers.toLocaleString("de-DE")}
-                sub="engaged: 10s+, clicked, or 2+ pages"
-                variant="live"
-                trend={trendEngaged}
-            />
-        ),
-        bounce: (
-            <KpiCard key="bounce"
-                icon={<IconScrollDepth />}
-                label="Bounce rate"
-                value={bounceRate != null ? formatPercent(bounceRate) : "—"}
-                sub="sessions with no engagement"
-                variant={bounceRate != null && bounceRate > 60 ? "warn" : "blue"}
-                trend={trendBounce != null ? -trendBounce : undefined}
-            />
-        ),
-        events: (
-            <KpiCard key="events"
-                icon={<IconBarChart />}
-                label={bt === "media" ? "Page views" : "Total events"}
-                value={data.totals.total.toLocaleString("de-DE")}
-                sub={`${data.totals.minimal.toLocaleString("de-DE")} minimal · ${data.totals.full.toLocaleString("de-DE")} full`}
-                trend={trendEvents}
-            />
-        ),
-        sessions: (
-            <KpiCard key="sessions"
-                icon={<IconUsers />}
-                label="Unique sessions"
-                value={data.totals.uniqueSessions.toLocaleString("de-DE")}
-                sub="consent-gated sessions only"
-                trend={trendSessions}
-            />
-        ),
-        consent: (
-            <KpiCard key="consent"
-                icon={<IconShieldCheck />}
-                label="Consent rate"
-                value={formatPercent(consentPct)}
-                sub="statisticCookies accepted — this analytics tracker's own full-consent rate"
-                variant={consentPct < 20 ? "warn" : "live"}
-                trend={trendConsent}
-            >
-                <IndustryBenchmarkNote benchmark={data.industryBenchmark} actualPct={consentPct} />
-            </KpiCard>
-        ),
-        countries: (
-            <KpiCard key="countries"
-                icon={<IconGlobe />}
-                label="Countries"
-                value={data.countries.length}
-                sub={data.countries[0] ? `Top: ${data.countries[0].code}` : null}
-            />
-        ),
-        leads: (
-            <KpiCard key="leads"
-                icon={<IconTarget />}
-                label="Quality leads"
-                value={(data.totals.qualityLeads ?? 0).toLocaleString("de-DE")}
-                sub="engaged + page/event match"
-                variant="live"
-            />
-        ),
-        conversions: (
-            <KpiCard key="conversions"
-                icon={<IconFunnel />}
-                label="Conversions"
-                value={totalConversions(data.conversions).toLocaleString("de-DE")}
-                sub="purchase, lead, and other registered events"
-                variant="live"
-            />
-        ),
-        conversionRate: (
-            <KpiCard key="conversionRate"
-                icon={<IconTrendingUp />}
-                label="Conversion rate"
-                value={formatPercent(data.totals.conversionRate ?? 0)}
-                sub="sessions with at least one conversion"
-            />
-        ),
-    };
+// Per-business-type default KPI card ordering — extracted from KpiStrip so
+// both it and the parent (for the hero composite below) can derive the same
+// `order` without duplicating this switch. Pure function of data/siteConfig,
+// no rendering.
+function kpiDefaultOrder({ data, siteConfig }) {
+    const bt         = siteConfig?.businessType || "";
+    const hasRevenue = data.totals.revenue != null && data.totals.revenue > 0;
+    const hasLeads   = data.totals.qualityLeads !== null;
 
     let defaultOrder;
     switch (bt) {
@@ -595,14 +499,102 @@ function KpiStrip({ data, siteConfig, trendEngaged, trendEvents, trendSessions, 
             if (hasLeads)   defaultOrder.push("leads");
             if (hasRevenue) defaultOrder.push("revenue");
     }
+    return defaultOrder;
+}
 
-    const order = customCards || defaultOrder;
-    const cards = order.map(id => CARDS[id]).filter(Boolean);
-    const cls = cards.length >= 6 ? "sa-kpi-strip sa-kpi-strip--6" : "sa-kpi-strip";
+// Plain-data registry for every possible overview KPI card — label/value/
+// trend/hasDaily, no JSX rendering. docs/design-audit-plan.md Phase 4: the
+// hero composite (MetricTabStrip, pulling its 4 tabs from the first 4 ids of
+// kpiDefaultOrder()/customCards, same as KpiStrip below it) needs this same
+// per-card data to build its tab labels/values/deltas, and needs `hasDaily`
+// to know which metric actually has a day-by-day series to chart —
+// api/analytics-report.js's `daily` field only covers event count today, so
+// every other metric's hasDaily is false (not a fabricated series).
+function buildKpiCardMeta({ data, siteConfig, trendEngaged, trendEvents, trendSessions, trendConsent, trendBounce }) {
+    const bt         = siteConfig?.businessType || "";
+    const consentPct = data.totals.consentRate;
+    const currency   = data.totals.revenueCurrency || "EUR";
+    const bounceRate = data.totals.uniqueSessions > 0
+        ? ((data.totals.uniqueSessions - data.totals.engagedUsers) / data.totals.uniqueSessions) * 100
+        : null;
+
+    return {
+        revenue: {
+            icon: <IconCash />, label: "Revenue", value: fmtRevenue(data.totals.revenue, currency),
+            sub: data.totals.transactions ? `${data.totals.transactions.toLocaleString("de-DE")} transactions` : "ecommerce events",
+            variant: "revenue", hasDaily: false,
+        },
+        users: {
+            icon: <IconRadio />, label: "Active users", value: data.totals.engagedUsers.toLocaleString("de-DE"),
+            sub: "engaged: 10s+, clicked, or 2+ pages", variant: "live", trend: trendEngaged, hasDaily: false,
+        },
+        bounce: {
+            icon: <IconScrollDepth />, label: "Bounce rate",
+            value: bounceRate != null ? formatPercent(bounceRate) : "—",
+            sub: "sessions with no engagement",
+            variant: bounceRate != null && bounceRate > 60 ? "warn" : "blue",
+            trend: trendBounce != null ? -trendBounce : undefined, hasDaily: false,
+        },
+        events: {
+            icon: <IconBarChart />, label: bt === "media" ? "Page views" : "Total events",
+            value: data.totals.total.toLocaleString("de-DE"),
+            sub: `${data.totals.minimal.toLocaleString("de-DE")} minimal · ${data.totals.full.toLocaleString("de-DE")} full`,
+            trend: trendEvents, hasDaily: true,
+        },
+        sessions: {
+            icon: <IconUsers />, label: "Unique sessions", value: data.totals.uniqueSessions.toLocaleString("de-DE"),
+            sub: "consent-gated sessions only", trend: trendSessions, hasDaily: false,
+        },
+        consent: {
+            icon: <IconShieldCheck />, label: "Consent rate", value: formatPercent(consentPct),
+            sub: "statisticCookies accepted — this analytics tracker's own full-consent rate",
+            variant: consentPct < 20 ? "warn" : "live", trend: trendConsent, hasDaily: false,
+            children: <IndustryBenchmarkNote benchmark={data.industryBenchmark} actualPct={consentPct} />,
+        },
+        countries: {
+            icon: <IconGlobe />, label: "Countries", value: data.countries.length,
+            sub: data.countries[0] ? `Top: ${data.countries[0].code}` : null, hasDaily: false,
+        },
+        leads: {
+            icon: <IconTarget />, label: "Quality leads", value: (data.totals.qualityLeads ?? 0).toLocaleString("de-DE"),
+            sub: "engaged + page/event match", variant: "live", hasDaily: false,
+        },
+        conversions: {
+            icon: <IconFunnel />, label: "Conversions", value: totalConversions(data.conversions).toLocaleString("de-DE"),
+            sub: "purchase, lead, and other registered events", variant: "live", hasDaily: false,
+        },
+        conversionRate: {
+            icon: <IconTrendingUp />, label: "Conversion rate", value: formatPercent(data.totals.conversionRate ?? 0),
+            sub: "sessions with at least one conversion", hasDaily: false,
+        },
+    };
+}
+
+// docs/design-audit-plan.md Phase 4: the first 4 ids of `order` become the
+// GA4-style MetricTabStrip hero (rendered by the parent, paired with a
+// chart); this component renders the *rest* (5th+) as the existing KpiCard
+// grid, same as before this phase — so the hero and the already-mature
+// business-type/customizable card system share one `order` instead of the
+// hero duplicating or ignoring it. `cardMeta`/`order` are computed once in
+// the parent (SiteAnalytics) via buildKpiCardMeta()/kpiDefaultOrder() above,
+// since the parent's chart section also needs them (to know the selected
+// hero metric's label and hasDaily flag).
+function KpiStrip({ cardMeta, order, onCustomize }) {
+    const restIds = order.slice(4);
+    const restCards = restIds.map(id => {
+        const m = cardMeta[id];
+        if (!m) return null;
+        return (
+            <KpiCard key={id} icon={m.icon} label={m.label} value={m.value} sub={m.sub} variant={m.variant} trend={m.trend}>
+                {m.children}
+            </KpiCard>
+        );
+    }).filter(Boolean);
+    const cls = restCards.length >= 6 ? "sa-kpi-strip sa-kpi-strip--6" : "sa-kpi-strip";
 
     return (
         <div className="sa-kpi-strip-wrap">
-            <div className={cls}>{cards}</div>
+            {restCards.length > 0 && <div className={cls}>{restCards}</div>}
             <button className="sa-customize-btn" onClick={onCustomize} title="Customize cards" aria-label="Customize dashboard cards">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
@@ -820,6 +812,29 @@ export default function SiteAnalytics() {
     const [customCards,     setCustomCards]     = useState(null);
     const [showCustomize,   setShowCustomize]   = useState(false);
 
+    // docs/design-audit-plan.md Phase 4: cardMeta/order computed once here —
+    // KpiStrip renders cards 5+ from it, and the hero MetricTabStrip below
+    // (paired with the chart) renders the first 4, so both share one
+    // business-type/customization-aware ordering instead of the hero
+    // duplicating or overriding it.
+    const cardMeta = useMemo(
+        () => data ? buildKpiCardMeta({ data, siteConfig, trendEngaged, trendEvents, trendSessions, trendConsent, trendBounce }) : {},
+        [data, siteConfig, trendEngaged, trendEvents, trendSessions, trendConsent, trendBounce]
+    );
+    const kpiOrder = useMemo(
+        () => data ? (customCards || kpiDefaultOrder({ data, siteConfig })) : [],
+        [data, siteConfig, customCards]
+    );
+    const heroIds = kpiOrder.slice(0, 4);
+
+    // Default to the first hero metric that actually has a daily series to
+    // chart (today, only "events" does — see buildKpiCardMeta's hasDaily);
+    // falls back to heroIds[0] so an account whose top metric has no daily
+    // breakdown honestly shows that gap instead of silently picking a
+    // different metric. Pinned to the user's own pick once they select a tab.
+    const [heroMetric, setHeroMetric] = useState(null);
+    const activeHeroMetric = heroMetric || heroIds.find(id => cardMeta[id]?.hasDaily) || heroIds[0] || null;
+
     useEffect(() => {
         if (siteConfig?.dashboard_cards) {
             setCustomCards(siteConfig.dashboard_cards);
@@ -937,16 +952,50 @@ export default function SiteAnalytics() {
                                 </div>
                             )}
 
-                            {/* ── KPI strip (business-type-aware, customizable) ─── */}
+                            {/* ── Main: hero (GA4-style metric tabs + paired chart,
+                                60 %) + live feed (40 %) ──────────────────────────
+                                docs/design-audit-plan.md Phase 4: tabs are the
+                                first 4 ids of the order KpiStrip uses below, so
+                                nothing duplicates and nothing overrides the
+                                user's own card choice. */}
+                            <div className="sa-overview-main">
+                                <div className="sa-chart-section">
+                                    <MetricTabStrip
+                                        className="sa-chart-section__tabs"
+                                        metrics={heroIds.map(id => cardMeta[id] && {
+                                            key: id,
+                                            label: cardMeta[id].label,
+                                            value: cardMeta[id].value,
+                                            delta: cardMeta[id].trend != null && Number.isFinite(cardMeta[id].trend)
+                                                ? { value: cardMeta[id].trend }
+                                                : null,
+                                        }).filter(Boolean)}
+                                        active={activeHeroMetric}
+                                        onSelect={setHeroMetric}
+                                    />
+                                    <div className="sa-chart-section__hd">
+                                        <h3 className="sa-chart-section__title">
+                                            <IconTrendingUp className="sa-icon" /> {cardMeta[activeHeroMetric]?.label || "Trend"}
+                                        </h3>
+                                        <span className="sa-chart-section__period">Last {getLastDays} days</span>
+                                    </div>
+                                    {cardMeta[activeHeroMetric]?.hasDaily ? (
+                                        <AreaChart daily={data.daily} />
+                                    ) : (
+                                        <EmptyState
+                                            title="No daily breakdown yet"
+                                            message={`${cardMeta[activeHeroMetric]?.label || "This metric"} is only available as a period total today — a day-by-day trend isn't tracked for it yet.`}
+                                            dependency="daily breakdown for this metric"
+                                        />
+                                    )}
+                                </div>
+                                <LivePanel domain={domain} siteKey={siteConfig?.id} engagedUsers={data.totals.engagedUsers} />
+                            </div>
+
+                            {/* ── KPI strip: cards 5+ (business-type-aware, customizable) ─── */}
                             <KpiStrip
-                                data={data}
-                                siteConfig={siteConfig}
-                                trendEngaged={trendEngaged}
-                                trendEvents={trendEvents}
-                                trendSessions={trendSessions}
-                                trendConsent={trendConsent}
-                                trendBounce={trendBounce}
-                                customCards={customCards}
+                                cardMeta={cardMeta}
+                                order={kpiOrder}
                                 onCustomize={() => setShowCustomize(true)}
                             />
                             {showCustomize && (
@@ -957,20 +1006,6 @@ export default function SiteAnalytics() {
                                     onClose={() => setShowCustomize(false)}
                                 />
                             )}
-
-                            {/* ── Main: chart (60 %) + live feed (40 %) ──────────── */}
-                            <div className="sa-overview-main">
-                                <div className="sa-chart-section">
-                                    <div className="sa-chart-section__hd">
-                                        <h3 className="sa-chart-section__title">
-                                            <IconTrendingUp className="sa-icon" /> Events per day
-                                        </h3>
-                                        <span className="sa-chart-section__period">Last {getLastDays} days</span>
-                                    </div>
-                                    <AreaChart daily={data.daily} />
-                                </div>
-                                <LivePanel domain={domain} siteKey={siteConfig?.id} engagedUsers={data.totals.engagedUsers} />
-                            </div>
 
                             {/* ── Geo row: map | countries | devices ─────────────── */}
                             <div className="sa-overview-geo">

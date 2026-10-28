@@ -1280,6 +1280,11 @@
     box-shadow: var(--sa-shadow-panel);
 }
 
+/* Phase 4 hero: the MetricTabStrip sits above the chart title/content
+   inside the same card — its own border-bottom already separates it, this
+   just adds breathing room before .sa-chart-section__hd below it. */
+.sa-chart-section__tabs { margin-bottom: 18px; }
+
 .sa-area-chart { width: 100%; }
 
 .sa-chart-section__hd {
