@@ -806,11 +806,32 @@ function onClick(e){
   try{
     var t=e.target;
     if(!t||t.nodeType!==1)return;
+    // The CMP's own banner (<intastellarconsents>) is platform UI, not
+    // visitor-facing site content — recording clicks on it (e.g. the
+    // persistent cookie-settings reopen icon) would pollute the heatmap's
+    // "top clicked elements" with the tool's own chrome.
+    if(t.closest&&t.closest('intastellarconsents'))return;
     var w=document.documentElement.clientWidth||window.innerWidth||1;
     var ph=pageHeight();
     var scrollY=window.pageYOffset||document.documentElement.scrollTop||0;
     var x=Math.min(100,Math.max(0,(e.clientX/w)*100));
-    var y=Math.min(100,Math.max(0,((e.clientY+scrollY)/ph)*100));
+    // A position:fixed/sticky ancestor (sticky header, cookie bar, etc.)
+    // sits at the same spot on screen regardless of scroll position, so
+    // page-absolute Y (clientY+scrollY) would scatter the SAME physical
+    // element's clicks across the full page height depending on where the
+    // visitor happened to be scrolled to. Use viewport-relative Y for those
+    // instead, which matches where they visually sit in a freshly-loaded
+    // (scroll-0) full-page screenshot.
+    var fixedAncestor=false;
+    try{
+      for(var el=t;el&&el!==document.body;el=el.parentElement){
+        var pos=getComputedStyle(el).position;
+        if(pos==='fixed'||pos==='sticky'){fixedAncestor=true;break;}
+      }
+    }catch(e3){}
+    var y=fixedAncestor
+      ?Math.min(100,Math.max(0,(e.clientY/ph)*100))
+      :Math.min(100,Math.max(0,((e.clientY+scrollY)/ph)*100));
     var tag=(t.tagName||'').toLowerCase().slice(0,20);
     var id=(t.id||'').slice(0,150);
     var cls=(typeof t.className==='string'?t.className:'').slice(0,300);
