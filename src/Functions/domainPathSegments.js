@@ -214,10 +214,12 @@ export function analyticsGoogleAnalyticsPath(domainUnicode) {
     return `/analytics/${seg}/google-analytics`;
 }
 
-export function analyticsSearchConsolePath(domainUnicode) {
+/** section: omit (or "overview") for the base tab, or "performance" | "coverage" for a specific one — see SearchConsole.js's SECTIONS. */
+export function analyticsSearchConsolePath(domainUnicode, section) {
     const seg = encodeDomainPathSegment(domainUnicode);
-    if (!seg) return "/analytics/search-console";
-    return `/analytics/${seg}/search-console`;
+    const suffix = section && section !== "overview" ? `/${section}` : "";
+    if (!seg) return `/analytics/search-console${suffix}`;
+    return `/analytics/${seg}/search-console${suffix}`;
 }
 
 export function analyticsPageExperimentsPath(domainUnicode) {

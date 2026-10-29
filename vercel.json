@@ -47,6 +47,10 @@
       "schedule": "0 2 * * *"
     },
     {
+      "path": "/api/cron-gsc-index-coverage",
+      "schedule": "30 2 * * *"
+    },
+    {
       "path": "/api/cron-ad-conversion-push",
       "schedule": "0 * * * *"
     },
@@ -158,6 +162,10 @@
     "api/cron-ad-sync.js": {
       "memory": 256,
       "maxDuration": 90
+    },
+    "api/cron-gsc-index-coverage.js": {
+      "memory": 256,
+      "maxDuration": 180
     },
     "api/cron-ad-conversion-push.js": {
       "memory": 256,

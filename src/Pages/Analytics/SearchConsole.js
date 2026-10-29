@@ -1,9 +1,10 @@
 const { useState, useEffect, useContext, useMemo } = React;
 const useParams = window.ReactRouterDOM.useParams;
+const useHistory = window.ReactRouterDOM.useHistory;
 const Link = window.ReactRouterDOM.Link;
 import { DomainContext } from "../../App.js";
 import {
-    useSyncDomainFromRoute, isCombinedOrClearDomain, analyticsMarketingPath,
+    useSyncDomainFromRoute, isCombinedOrClearDomain, analyticsMarketingPath, analyticsSearchConsolePath,
 } from "../../Functions/domainPathSegments.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import Authentication from "../../Authentication/Auth.js";
@@ -17,6 +18,12 @@ import "./Analytics.css";
 
 const VERDICT_STATUS = { PASS: "good", FAIL: "bad", PARTIAL: "warn", NEUTRAL: "neutral" };
 const VERDICT_LABEL  = { PASS: "Indexed", FAIL: "Not indexed", PARTIAL: "Partial", NEUTRAL: "Neutral" };
+
+const SECTIONS = [
+    { key: "overview",    label: "Overview" },
+    { key: "performance", label: "Queries & Pages" },
+    { key: "coverage",    label: "Indexing Coverage" },
+];
 
 /*
  * Search Console connection + daily clicks/impressions/position fetch —
@@ -196,10 +203,114 @@ function IndexingStatusPanel({ icon, rows }) {
     );
 }
 
+// Full-site indexing coverage — unlike useGscReport above, this isn't
+// scoped to the selected date range (coverage is a rolling, always-current
+// snapshot maintained by api/cron-gsc-index-coverage.js, not a per-period
+// metric), so it only re-fetches on domain/verdict-filter change.
+function useGscCoverage(domain, verdict) {
+    const [state, setState] = useState({ checked: false, connected: false, summary: null, rows: null, loading: false });
+
+    useEffect(() => {
+        if (!domain) { setState(s => ({ ...s, checked: false })); return; }
+        const authToken = Authentication.getToken();
+        const orgId = Authentication.getOrganisation();
+        if (!authToken || !orgId) return;
+
+        let cancelled = false;
+        setState(s => ({ ...s, loading: true }));
+        const headers = { Authorization: authToken, Organisation: String(orgId) };
+        const qs = new URLSearchParams({ domain, ...(verdict ? { verdict } : {}) }).toString();
+
+        fetch(`${ScannerHost}/api/gsc-index-coverage?${qs}`, { headers })
+            .then(r => r.ok ? r.json() : null)
+            .then(data => {
+                if (cancelled || !data) return;
+                setState({
+                    checked: true,
+                    connected: !!data.connected,
+                    summary: data.summary || null,
+                    rows: data.rows || [],
+                    loading: false,
+                });
+            })
+            .catch(() => { if (!cancelled) setState(s => ({ ...s, checked: true, loading: false })); });
+
+        return () => { cancelled = true; };
+    }, [domain, verdict]);
+
+    return state;
+}
+
+function CoverageSummary({ summary }) {
+    return (
+        <div className="sa-kpi-row">
+            <KpiCard icon={<IconGlobe />} label="Tracked URLs" value={summary.total.toLocaleString("de-DE")} />
+            <KpiCard icon={<IconTarget />} label="Indexed" value={summary.indexed.toLocaleString("de-DE")} />
+            <KpiCard icon={<IconTarget />} label="Not indexed" value={summary.notIndexed.toLocaleString("de-DE")} />
+            <KpiCard icon={<IconTrendingUp />} label="Pending check" value={summary.pending.toLocaleString("de-DE")} />
+        </div>
+    );
+}
+
+function CoverageTable({ rows, verdict, setVerdict }) {
+    return (
+        <div className="sa-panel">
+            <h3 className="sa-panel__title">
+                <IconGlobe className="sa-icon" /> All tracked pages
+                <select
+                    className="sa-select"
+                    style={{ marginLeft: "auto" }}
+                    value={verdict}
+                    onChange={e => setVerdict(e.target.value)}
+                >
+                    <option value="">All statuses</option>
+                    <option value="PASS">Indexed</option>
+                    <option value="FAIL">Not indexed</option>
+                    <option value="PARTIAL">Partial</option>
+                    <option value="NEUTRAL">Neutral</option>
+                </select>
+            </h3>
+            <table className="sa-table">
+                <thead>
+                    <tr>
+                        <th>Page</th>
+                        <th>Status</th>
+                        <th>Last crawled</th>
+                        <th>Last checked</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {(rows || []).map((r, i) => (
+                        <tr key={i}>
+                            <td className="sa-table__path" title={r.url}>{r.url}</td>
+                            <td>
+                                {r.checkedAt ? (
+                                    <StatusBadge
+                                        status={VERDICT_STATUS[r.verdict] || "neutral"}
+                                        label={VERDICT_LABEL[r.verdict] || r.coverageState || "Unknown"}
+                                    />
+                                ) : (
+                                    <StatusBadge status="neutral" label="Pending check" />
+                                )}
+                            </td>
+                            <td>{r.lastCrawlTime ? new Date(r.lastCrawlTime).toLocaleDateString("de-DE") : "—"}</td>
+                            <td>{r.checkedAt ? new Date(r.checkedAt).toLocaleDateString("de-DE") : "—"}</td>
+                        </tr>
+                    ))}
+                    {!rows?.length && (
+                        <tr><td colSpan={4} style={{ color: "rgba(130,130,130,0.55)", fontSize: "0.8rem" }}>No pages match this filter</td></tr>
+                    )}
+                </tbody>
+            </table>
+        </div>
+    );
+}
+
 export default function SearchConsole() {
     document.title = "Search Console | Site Analytics";
 
-    const { handle } = useParams();
+    const { handle, section: sectionParam } = useParams();
+    const history = useHistory();
     const [globalDomain, setGlobalDomain] = useContext(DomainContext);
     useSyncDomainFromRoute(handle, setGlobalDomain);
 
@@ -208,6 +319,8 @@ export default function SearchConsole() {
         return String(globalDomain || "").trim().toLowerCase();
     }, [globalDomain]);
 
+    const section = SECTIONS.some(s => s.key === sectionParam) ? sectionParam : "overview";
+
     const [getLastDays, setLastDays] = useState(30);
     const [fromDate, setFromDate] = useState(() => {
         const d = new Date(); d.setDate(d.getDate() - 30); return d;
@@ -215,6 +328,9 @@ export default function SearchConsole() {
     const [toDate, setToDate] = useState(() => new Date());
 
     const gsc = useGscReport(domain, fromDate, toDate);
+
+    const [coverageVerdict, setCoverageVerdict] = useState("");
+    const coverage = useGscCoverage(domain, coverageVerdict);
 
     // Avg position must be weighted by each day's impressions, not a flat
     // average across days — a day with 10 impressions at position 40 and a
@@ -280,26 +396,73 @@ export default function SearchConsole() {
                             )}
 
                             {(gsc.connected || gsc.loading) && (
-                                <>
-                                    <div className="sa-kpi-row">
-                                        <KpiCard icon={<IconTarget />} label="Clicks" value={totals.clicks.toLocaleString("de-DE")} />
-                                        <KpiCard icon={<IconTrendingUp />} label="Impressions" value={totals.impressions.toLocaleString("de-DE")} />
-                                        <KpiCard icon={<IconTarget />} label="Avg. CTR" value={totals.ctr != null ? formatPercent(totals.ctr) : "—"} />
-                                        <KpiCard icon={<IconTrendingUp />} label="Avg. position" value={totals.avgPosition != null ? totals.avgPosition.toLocaleString("de-DE", { minimumFractionDigits: 1, maximumFractionDigits: 1 }) : "—"} />
-                                    </div>
+                                <div className="sa-conv-layout">
+                                    <nav className="sa-conv-submenu" aria-label="Search Console view">
+                                        <ul className="sa-conv-submenu__list">
+                                            {SECTIONS.map(s => (
+                                                <li key={s.key} className="sa-conv-submenu__item">
+                                                    <button
+                                                        type="button"
+                                                        className={"sa-conv-submenu__link" + (section === s.key ? " --active" : "")}
+                                                        onClick={() => history.push(analyticsSearchConsolePath(domain, s.key))}
+                                                    >
+                                                        {s.label}
+                                                    </button>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </nav>
 
-                                    <div className="sa-panel">
-                                        <h3 className="sa-panel__title"><IconTrendingUp className="sa-icon" /> Clicks over time</h3>
-                                        <TrendLineChart data={trendData} fromDate={fromDate} toDate={toDate} title="Clicks" height={220} />
-                                    </div>
+                                    <div className="sa-conv-submenu-content">
+                                        {section === "overview" && (
+                                            <>
+                                                <div className="sa-kpi-row">
+                                                    <KpiCard icon={<IconTarget />} label="Clicks" value={totals.clicks.toLocaleString("de-DE")} />
+                                                    <KpiCard icon={<IconTrendingUp />} label="Impressions" value={totals.impressions.toLocaleString("de-DE")} />
+                                                    <KpiCard icon={<IconTarget />} label="Avg. CTR" value={totals.ctr != null ? formatPercent(totals.ctr) : "—"} />
+                                                    <KpiCard icon={<IconTrendingUp />} label="Avg. position" value={totals.avgPosition != null ? totals.avgPosition.toLocaleString("de-DE", { minimumFractionDigits: 1, maximumFractionDigits: 1 }) : "—"} />
+                                                </div>
 
-                                    <DimensionTable icon={<IconTarget className="sa-icon" />} title="Top queries" rows={gsc.topQueries} keyLabel="Query" />
-                                    <DimensionTable icon={<IconGlobe className="sa-icon" />} title="Top pages" rows={gsc.topPages} keyLabel="Page" />
-                                    <DimensionTable icon={<IconGlobe className="sa-icon" />} title="Top countries" rows={gsc.topCountries} keyLabel="Country" />
-                                    <DimensionTable icon={<IconTarget className="sa-icon" />} title="Top devices" rows={gsc.topDevices} keyLabel="Device" />
-                                    <QueryPageTable icon={<IconTarget className="sa-icon" />} title="Queries by page" rows={gsc.topQueriesByPage} />
-                                    <IndexingStatusPanel icon={<IconGlobe className="sa-icon" />} rows={gsc.indexingStatus} />
-                                </>
+                                                <div className="sa-panel">
+                                                    <h3 className="sa-panel__title"><IconTrendingUp className="sa-icon" /> Clicks over time</h3>
+                                                    <TrendLineChart data={trendData} fromDate={fromDate} toDate={toDate} title="Clicks" height={220} />
+                                                </div>
+
+                                                <DimensionTable icon={<IconTarget className="sa-icon" />} title="Top queries" rows={gsc.topQueries} keyLabel="Query" />
+                                                <DimensionTable icon={<IconGlobe className="sa-icon" />} title="Top pages" rows={gsc.topPages} keyLabel="Page" />
+                                            </>
+                                        )}
+
+                                        {section === "performance" && (
+                                            <>
+                                                <DimensionTable icon={<IconGlobe className="sa-icon" />} title="Top countries" rows={gsc.topCountries} keyLabel="Country" />
+                                                <DimensionTable icon={<IconTarget className="sa-icon" />} title="Top devices" rows={gsc.topDevices} keyLabel="Device" />
+                                                <QueryPageTable icon={<IconTarget className="sa-icon" />} title="Queries by page" rows={gsc.topQueriesByPage} />
+                                            </>
+                                        )}
+
+                                        {section === "coverage" && (
+                                            <>
+                                                {coverage.summary && coverage.summary.total > 0 ? (
+                                                    <>
+                                                        <CoverageSummary summary={coverage.summary} />
+                                                        <CoverageTable rows={coverage.rows} verdict={coverageVerdict} setVerdict={setCoverageVerdict} />
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <p className="sa-notice">
+                                                            Full-site coverage is still being gathered — a daily background
+                                                            crawl discovers your sitemap's URLs and inspects a batch of them
+                                                            each day, so this fills in over the next several days. Meanwhile,
+                                                            here's a live check of your current top pages by clicks:
+                                                        </p>
+                                                        <IndexingStatusPanel icon={<IconGlobe className="sa-icon" />} rows={gsc.indexingStatus} />
+                                                    </>
+                                                )}
+                                            </>
+                                        )}
+                                    </div>
+                                </div>
                             )}
                         </div>
                     )}

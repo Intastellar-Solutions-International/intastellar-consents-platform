@@ -23,6 +23,11 @@
  *                                            spend, currency}] via the SOAP Reporting Service (v13) —
  *                                            untested against a live account, see the function's own
  *                                            doc comment
+ * inspectGscUrl(accessToken, siteUrl, url)  → { verdict, coverageState, indexingState, robotsTxtState,
+ *                                            lastCrawlTime, googleCanonical, userCanonical } | null —
+ *                                            single-URL Search Console indexing status, shared between
+ *                                            the live top-pages panel (api/ad-daily-data.js) and the
+ *                                            full-site coverage cron (api/cron-gsc-index-coverage.js)
  */
 
 import zlib from "zlib";
@@ -1093,6 +1098,42 @@ async function fetchSearchConsoleDaily(conn, fromDate, toDate) {
         };
     }
     return result;
+}
+
+// Single-URL indexing status via GSC's URL Inspection API — note this is a
+// genuinely different quota bucket from searchAnalytics.query above (2,000
+// inspections/day/property, 600/minute), so callers need their own batching/
+// rate-limit discipline; this function itself does no batching, it's a
+// one-shot per call. Returns null on any failure (unreachable, not owned by
+// this property, quota exceeded, ...) rather than throwing, so a caller
+// iterating many URLs can just skip a failed one instead of aborting the
+// whole batch.
+export async function inspectGscUrl(accessToken, siteUrl, url) {
+    try {
+        const resp = await fetch(
+            `https://searchconsole.googleapis.com/v1/urlInspection/index:inspect`,
+            {
+                method: "POST",
+                headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+                body: JSON.stringify({ inspectionUrl: url, siteUrl }),
+            }
+        );
+        if (!resp.ok) return null;
+        const data = await resp.json().catch(() => null);
+        const result = data?.inspectionResult?.indexStatusResult;
+        if (!result) return null;
+        return {
+            verdict:         result.verdict || "UNKNOWN",
+            coverageState:   result.coverageState || null,
+            indexingState:   result.indexingState || null,
+            robotsTxtState:  result.robotsTxtState || null,
+            lastCrawlTime:   result.lastCrawlTime || null,
+            googleCanonical: result.googleCanonical || null,
+            userCanonical:   result.userCanonical || null,
+        };
+    } catch {
+        return null;
+    }
 }
 
 // Same Reporting Service flow as fetchMicrosoftAdsCampaigns, with

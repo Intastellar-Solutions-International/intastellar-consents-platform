@@ -298,41 +298,19 @@ async function fetchGSCDimension(accessToken, siteUrl, fromDate, toDate, dimensi
 }
 
 // Per-URL indexing status — a different category from everything else here
-// (technical SEO health, not performance). There's no bulk/list endpoint for
-// this, only inspect-one-URL-at-a-time, so this only covers the already-
-// fetched top pages (capped at 10) rather than every URL on the site — a
-// full-site crawl status would need its own sitemap-enumeration + cron +
-// storage design, not a live per-dashboard-load fetch like this.
+// (technical SEO health, not performance). This panel only covers the
+// already-fetched top pages (capped at 10), fetched fresh on every
+// dashboard load for instant feedback on a brand-new connection, before
+// the full-site coverage cron (api/cron-gsc-index-coverage.js) has had a
+// chance to accumulate anything. That cron covers every URL on the site via
+// sitemap enumeration, not just the top 10 by clicks — see its doc comment.
 async function fetchGSCIndexingStatus(accessToken, siteUrl, pages) {
     const results = await Promise.all((pages || []).slice(0, 10).map(async page => {
         const url = page.keys?.[0] || page.key;
         if (!url) return null;
-        try {
-            const resp = await fetch(
-                `https://searchconsole.googleapis.com/v1/urlInspection/index:inspect`,
-                {
-                    method: "POST",
-                    headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
-                    body: JSON.stringify({ inspectionUrl: url, siteUrl }),
-                }
-            );
-            if (!resp.ok) return null;
-            const data = await resp.json().catch(() => null);
-            const result = data?.inspectionResult?.indexStatusResult;
-            if (!result) return null;
-            return {
-                url,
-                verdict:         result.verdict || "UNKNOWN",
-                coverageState:   result.coverageState || null,
-                indexingState:   result.indexingState || null,
-                robotsTxtState:  result.robotsTxtState || null,
-                lastCrawlTime:   result.lastCrawlTime || null,
-                googleCanonical: result.googleCanonical || null,
-                userCanonical:   result.userCanonical || null,
-            };
-        } catch {
-            return null;
-        }
+        const inspected = await inspectGscUrl(accessToken, siteUrl, url);
+        if (!inspected) return null;
+        return { url, ...inspected };
     }));
     return results.filter(Boolean);
 }

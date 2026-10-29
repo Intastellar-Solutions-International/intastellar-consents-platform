@@ -479,12 +479,12 @@ export default function App() {
                                                 <AnalyticsGoogleAnalytics />
                                             </ErrorBoundary>}
                                         </Route>
-                                        <Route path="/analytics/:handle/search-console" exact>
+                                        <Route path="/analytics/:handle/search-console/:section?" exact>
                                             {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('growth') ? <TierGate minTier="growth" featureName="Search Console" fullPage /> : <ErrorBoundary>
                                                 <AnalyticsSearchConsole />
                                             </ErrorBoundary>}
                                         </Route>
-                                        <Route path="/analytics/search-console" exact>
+                                        <Route path="/analytics/search-console/:section?" exact>
                                             {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('growth') ? <TierGate minTier="growth" featureName="Search Console" fullPage /> : <ErrorBoundary>
                                                 <AnalyticsSearchConsole />
                                             </ErrorBoundary>}
