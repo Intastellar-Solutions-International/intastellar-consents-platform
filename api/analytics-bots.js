@@ -110,7 +110,8 @@ export default async function handler(req, res) {
         ).catch(() => ({ rows: [] })),
 
         db.query(
-            `SELECT received_at, bot_name, bot_category, pathname, country_code, page_host
+            `SELECT received_at, bot_name, bot_category, pathname, country_code, page_host,
+                    dns_verified, dns_hostname
              FROM analytics_bot_visits
              WHERE site_id = $1 AND received_at >= $2 AND received_at < $3
              ORDER BY received_at DESC LIMIT 20`,
@@ -194,6 +195,7 @@ export default async function handler(req, res) {
         recent: recentRes.rows.map(r => ({
             at: r.received_at, name: r.bot_name, category: r.bot_category,
             pathname: r.pathname, country: r.country_code, host: r.page_host,
+            dnsVerified: r.dns_verified, dnsHostname: r.dns_hostname,
         })),
         byHost: hostRes.rows.map(r => ({
             host: r.page_host, bot: r.bot_name, n: Number(r.n || 0),

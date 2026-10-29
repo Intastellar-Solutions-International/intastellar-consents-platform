@@ -1,5 +1,6 @@
 import { getPool } from "./_db.js";
-import { lookupNetwork } from "./_geoip.js";
+import { lookupNetwork, clientIp } from "./_geoip.js";
+import { verifyBotDNS } from "./_rdns.js";
 /**
  * GET  /api/a  → serves the Intastellar First-Party Analytics embed script
  * POST /api/a  → ingest endpoint receiving pageview events from embedded sites
@@ -522,6 +523,14 @@ async function ensureTables(db) {
         ALTER TABLE analytics_custom_events ADD COLUMN IF NOT EXISTS page_host VARCHAR(255);
         ALTER TABLE analytics_clicks ADD COLUMN IF NOT EXISTS page_host VARCHAR(255);
         ALTER TABLE analytics_bot_visits ADD COLUMN IF NOT EXISTS page_host VARCHAR(255);
+        -- Forward-confirmed reverse-DNS verification result (see
+        -- verifyBotDNS() in api/_rdns.js). dns_verified is NULL when the
+        -- check was inconclusive (no IP, resolver timeout/failure) — never
+        -- treated as a failed verification. dns_hostname is the PTR
+        -- hostname the IP resolved to, kept even on a failed verification so
+        -- an impersonator row shows what it actually resolved to.
+        ALTER TABLE analytics_bot_visits ADD COLUMN IF NOT EXISTS dns_verified BOOLEAN;
+        ALTER TABLE analytics_bot_visits ADD COLUMN IF NOT EXISTS dns_hostname VARCHAR(255);
         ALTER TABLE analytics_custom_events ADD COLUMN IF NOT EXISTS products JSONB;
         -- Free-form key/value data passed as track(name, { data: {...} }) —
         -- e.g. { reason: 'invalid_phone_format' } on a
@@ -2139,17 +2148,27 @@ export default async function handler(req, res) {
     // not just for full/enriched events).
     const bot = detectBot(req.headers["user-agent"]);
     if (bot) {
+        // Forward-confirmed reverse-DNS check (see api/_rdns.js) — a second,
+        // independent signal on top of the UA string, which anyone can
+        // spoof. A bot whose IP fails to verify gets reclassified as
+        // "impersonator" rather than being counted under whatever name it
+        // claimed, so dashboards don't report fake "Googlebot" traffic as
+        // real search-engine crawling.
+        const dnsResult = await verifyBotDNS(clientIp(req), bot.name);
+        const botCategory = dnsResult.verified === false ? "impersonator" : bot.category;
+
         await db.query(
             `INSERT INTO analytics_bot_visits
              (site_id, organisation_id, bot_name, bot_category, pathname, country_code, user_agent, page_host,
-              asn, as_org, is_hosting_ip)
-             VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)`,
+              asn, as_org, is_hosting_ip, dns_verified, dns_hostname)
+             VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)`,
             [
-                siteId, orgId, bot.name, bot.category,
+                siteId, orgId, bot.name, botCategory,
                 extractPathnameLoose(rawUrl), country,
                 String(req.headers["user-agent"] || "").slice(0, 500),
                 pageHostSanitized,
                 network.asn, network.asOrg, network.isHosting,
+                dnsResult.verified, dnsResult.hostname,
             ]
         ).catch(() => {});
         return res.status(202).end();

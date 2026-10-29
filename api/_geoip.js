@@ -63,7 +63,7 @@ function isHostingOrg(org) {
     return HOSTING_KEYWORDS.some(k => lower.includes(k));
 }
 
-function clientIp(req) {
+export function clientIp(req) {
     const xff = req.headers["x-forwarded-for"];
     if (xff) {
         const first = String(xff).split(",")[0].trim();
