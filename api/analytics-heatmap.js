@@ -182,7 +182,22 @@ export default async function handler(req, res) {
         hostClause = `AND COALESCE(page_host, $${clickParams.length - 1}) = $${clickParams.length}`;
     }
 
-    const [clicksRes, elementsRes, scrollRes, totalRes] = await Promise.all([
+    // Shared by scrollRes and attentionRes below — both read analytics_events
+    // with the same pathname/date/device/host filters, just a different
+    // column (scroll_depth vs attention_ms).
+    const eventsParams = [siteId, pathname, fromDate, toDateExclusive];
+    let eventsDeviceClause = "";
+    if (device) {
+        eventsParams.push(device);
+        eventsDeviceClause = `AND device_type = $${eventsParams.length}`;
+    }
+    let eventsHostClause = "";
+    if (host) {
+        eventsParams.push(domain, host);
+        eventsHostClause = `AND COALESCE(page_host, $${eventsParams.length - 1}) = $${eventsParams.length}`;
+    }
+
+    const [clicksRes, elementsRes, scrollRes, totalRes, attentionRes, attentionSessionsRes] = await Promise.all([
         db.query(
             `SELECT
                 FLOOR(x_pct / $${clickParams.length + 1}::numeric) * $${clickParams.length + 1}::numeric AS gx,
@@ -206,28 +221,15 @@ export default async function handler(req, res) {
             [...clickParams, pathname]
         ).catch(() => ({ rows: [] })),
 
-        (() => {
-            const scrollParams = [siteId, pathname, fromDate, toDateExclusive];
-            let scrollDeviceClause = "";
-            if (device) {
-                scrollParams.push(device);
-                scrollDeviceClause = `AND device_type = $${scrollParams.length}`;
-            }
-            let scrollHostClause = "";
-            if (host) {
-                scrollParams.push(domain, host);
-                scrollHostClause = `AND COALESCE(page_host, $${scrollParams.length - 1}) = $${scrollParams.length}`;
-            }
-            return db.query(
-                `SELECT FLOOR(scroll_depth / 10) * 10 AS bucket, COUNT(*) AS n
-                 FROM analytics_events
-                 WHERE site_id = $1 AND ${normPath("pathname")} = ${normPath("$2")}
-                   AND received_at >= $3 AND received_at < $4
-                   AND scroll_depth IS NOT NULL ${scrollDeviceClause} ${scrollHostClause} ${EMBED_FILTER}
-                 GROUP BY 1 ORDER BY 1`,
-                scrollParams
-            ).catch(() => ({ rows: [] }));
-        })(),
+        db.query(
+            `SELECT FLOOR(scroll_depth / 10) * 10 AS bucket, COUNT(*) AS n
+             FROM analytics_events
+             WHERE site_id = $1 AND ${normPath("pathname")} = ${normPath("$2")}
+               AND received_at >= $3 AND received_at < $4
+               AND scroll_depth IS NOT NULL ${eventsDeviceClause} ${eventsHostClause} ${EMBED_FILTER}
+             GROUP BY 1 ORDER BY 1`,
+            eventsParams
+        ).catch(() => ({ rows: [] })),
 
         db.query(
             `SELECT COUNT(*) AS clicks, COUNT(DISTINCT session_id) AS sessions
@@ -235,6 +237,29 @@ export default async function handler(req, res) {
              WHERE site_id = $1 AND ${normPath("pathname")} = ${normPath(`$${clickParams.length + 1}`)}
                AND received_at >= $2 AND received_at < $3 ${deviceClause} ${hostClause} ${EMBED_FILTER}`,
             [...clickParams, pathname]
+        ).catch(() => ({ rows: [{}] })),
+
+        // Dwell time per 10%-of-page-height band, summed across every
+        // pageview that reported one — attention_ms is a 10-element JSON
+        // array (see api/a.js), unnested here with its index giving the
+        // band (0-9).
+        db.query(
+            `SELECT (elem.idx - 1) AS band, SUM(elem.val::numeric) AS ms
+             FROM analytics_events, jsonb_array_elements_text(attention_ms) WITH ORDINALITY AS elem(val, idx)
+             WHERE site_id = $1 AND ${normPath("pathname")} = ${normPath("$2")}
+               AND received_at >= $3 AND received_at < $4
+               AND attention_ms IS NOT NULL ${eventsDeviceClause} ${eventsHostClause} ${EMBED_FILTER}
+             GROUP BY 1 ORDER BY 1`,
+            eventsParams
+        ).catch(() => ({ rows: [] })),
+
+        db.query(
+            `SELECT COUNT(DISTINCT session_id) AS sessions
+             FROM analytics_events
+             WHERE site_id = $1 AND ${normPath("pathname")} = ${normPath("$2")}
+               AND received_at >= $3 AND received_at < $4
+               AND attention_ms IS NOT NULL ${eventsDeviceClause} ${eventsHostClause} ${EMBED_FILTER}`,
+            eventsParams
         ).catch(() => ({ rows: [{}] })),
     ]);
 
@@ -261,5 +286,9 @@ export default async function handler(req, res) {
         scrollDepth: scrollRes.rows.map(r => ({
             bucket: Number(r.bucket), n: Number(r.n || 0),
         })),
+        attention: attentionRes.rows.map(r => ({
+            band: Number(r.band), ms: Number(r.ms || 0),
+        })),
+        attentionSessions: Number(attentionSessionsRes.rows[0]?.sessions || 0),
     });
 }

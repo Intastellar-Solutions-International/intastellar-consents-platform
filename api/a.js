@@ -338,6 +338,12 @@ async function ensureTables(db) {
         ALTER TABLE analytics_events ADD COLUMN IF NOT EXISTS language         VARCHAR(20);
         ALTER TABLE analytics_events ADD COLUMN IF NOT EXISTS timezone         VARCHAR(60);
         ALTER TABLE analytics_events ADD COLUMN IF NOT EXISTS scroll_depth     SMALLINT;
+        -- Dwell time per 10%-of-page-height band, in ms — a 10-element JSON
+        -- array, same band granularity as scroll_depth's bucketing at query
+        -- time. Only ever sent on the final (exit) beacon, same as
+        -- scroll_depth, so it's coalesced rather than overwritten on the
+        -- intermediate upsert — see the ON CONFLICT clause below.
+        ALTER TABLE analytics_events ADD COLUMN IF NOT EXISTS attention_ms     JSONB;
         ALTER TABLE analytics_events ALTER COLUMN session_id DROP NOT NULL;
         ALTER TABLE analytics_events ADD COLUMN IF NOT EXISTS is_new_visitor BOOLEAN;
         ALTER TABLE analytics_clicks ADD COLUMN IF NOT EXISTS target_text      VARCHAR(80);
@@ -785,6 +791,48 @@ var _spaRef='';
   try{window.addEventListener('scroll',onScroll,{passive:true});}catch(e){}
 })();
 
+// ── Attention (dwell-time-per-band) ─────────────────────────────────────────
+// Complements scroll depth: scroll depth answers "did they reach this band
+// of the page", this answers "how long did it stay in view". 10 bands, each
+// 10% of page height — same granularity the heatmap's scroll funnel already
+// uses, so the two can be read side by side. Sampled on a timer rather than
+// on every scroll event (cheap, and dwell time while NOT scrolling is the
+// whole point — a band sitting still in the viewport should keep accruing).
+// Paused while the tab is hidden so backgrounded time doesn't count as
+// "attention" — unlike duration_sec/scroll_depth elsewhere in this file,
+// which deliberately keep counting through backgrounding (see the
+// visibilitychange handler below them); this metric specifically means
+// time actually looking at the page, so pausing here is the correct
+// (and intentionally different) choice for what it's measuring.
+var attnMs=[0,0,0,0,0,0,0,0,0,0],attnLastTick=null,attnPaused=false;
+(function(){
+  function tick(){
+    if(attnPaused)return;
+    var now=Date.now();
+    if(attnLastTick!=null){
+      var elapsed=now-attnLastTick;
+      // Guard against a clock jump or a missed pause (e.g. laptop sleep)
+      // inflating one band by the whole gap instead of being dropped.
+      if(elapsed>0&&elapsed<5000){
+        var ph=pageHeight();
+        var vh=window.innerHeight||document.documentElement.clientHeight||1;
+        var scrollY=window.pageYOffset||document.documentElement.scrollTop||0;
+        var topBand=Math.max(0,Math.min(9,Math.floor((scrollY/ph)*10)));
+        var botBand=Math.max(0,Math.min(9,Math.floor(((scrollY+vh)/ph)*10)));
+        for(var b=topBand;b<=botBand;b++)attnMs[b]+=elapsed;
+      }
+    }
+    attnLastTick=now;
+  }
+  try{
+    setInterval(tick,1000);
+    document.addEventListener('visibilitychange',function(){
+      if(document.visibilityState==='hidden'){attnPaused=true;}
+      else{attnPaused=false;attnLastTick=Date.now();}
+    });
+  }catch(e){}
+})();
+
 // ── Click tracking for heatmaps (full-consent only) ────────────────────────
 // Started once full consent is confirmed (see sendFull()). Buffers clicks and
 // flushes in small batches so the heatmap read side can bucket them cheaply
@@ -1173,6 +1221,7 @@ function sendFull(c,final){
     lang:getLang(),tz:getTz(),
     dur:Math.round((Date.now()-t0)/1000),
     sd:final?maxScroll:undefined,
+    at:final?attnMs:undefined,
     cs:hasStat(c)?1:0,
     cf:hasFun(c)?1:0,
     ca:hasAdv(c)?1:0,
@@ -1363,6 +1412,7 @@ var _spaLastPath=location.pathname+location.search;
     t0=Date.now();
     pvid=Math.random().toString(36).slice(2,10)+Date.now().toString(36);
     maxScroll=0;fullFired=false;exitSent=false;
+    attnMs=[0,0,0,0,0,0,0,0,0,0];attnLastTick=null;
     clickBuf.splice(0,clickBuf.length);
     var cn=getConsents();
     if(hasStat(cn)){sendFull(cn,false);}else{sendMinimal(cn);}
@@ -2064,7 +2114,7 @@ export default async function handler(req, res) {
     }
 
     const { s: siteId, t: eventType, cl: consentLevel, sid, pv: pageviewId, u: rawUrl, r: referrer, h: pageHost, ti: title,
-            us, um, uc, uk, dt, sw, sh, vw, vh, lang, tz, sd, ph, ck,
+            us, um, uc, uk, dt, sw, sh, vw, vh, lang, tz, sd, at: rawAttentionMs, ph, ck,
             dur, cs, cf, ca, emb, g: isGranular, n: eventName, v: eventValue, cur: eventCurrency,
             txn: eventTransactionId, pr: rawProducts, ed: rawExtraData, src: eventSource, tid: abTestId, vid: abVariantId, nv,
             gc: gclid, mc: msclkid, fc: fbclid,
@@ -2086,6 +2136,15 @@ export default async function handler(req, res) {
         if (!funcConsent || !Array.isArray(rawBrowserTopics) || !rawBrowserTopics.length) return null;
         const ids = rawBrowserTopics.slice(0, 5).filter(n => Number.isInteger(n) && n > 0 && n <= 9999);
         return ids.length ? JSON.stringify(ids) : null;
+    })();
+
+    // Dwell-time-per-band — exactly 10 bands (10% of page height each),
+    // each a non-negative ms count. Reject anything malformed outright
+    // rather than coercing a wrong-shaped array into a misleading number.
+    const attentionMs = (() => {
+        if (!Array.isArray(rawAttentionMs) || rawAttentionMs.length !== 10) return null;
+        const ms = rawAttentionMs.map(n => (Number.isFinite(n) && n >= 0 ? Math.min(Math.round(n), 86400000) : 0));
+        return ms.some(n => n > 0) ? JSON.stringify(ms) : null;
     })();
 
     if (!siteId || typeof siteId !== "string" || !rawUrl) {
@@ -2467,13 +2526,14 @@ export default async function handler(req, res) {
               country_code, region, device_type,
               screen_width, screen_height, viewport_width, viewport_height,
               browser_family, os_family, language, timezone,
-              duration_sec, scroll_depth, pageview_id, is_new_visitor,
+              duration_sec, scroll_depth, attention_ms, pageview_id, is_new_visitor,
               gclid, msclkid, fbclid,
               browser_topics, asn, as_org, is_hosting_ip, is_embedded, consent_granular)
-             VALUES ($1,$2,$3,'full',$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28,$29,$30,$31,$32,$33,$34,$35,$36,$37,$38,$39)
+             VALUES ($1,$2,$3,'full',$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28,$29,$30,$31,$32,$33,$34,$35,$36,$37,$38,$39,$40)
              ON CONFLICT (pageview_id) DO UPDATE SET
                duration_sec     = EXCLUDED.duration_sec,
                scroll_depth     = COALESCE(EXCLUDED.scroll_depth,     analytics_events.scroll_depth),
+               attention_ms     = COALESCE(EXCLUDED.attention_ms,     analytics_events.attention_ms),
                browser_topics   = COALESCE(EXCLUDED.browser_topics,   analytics_events.browser_topics),
                consent_granular = COALESCE(EXCLUDED.consent_granular, analytics_events.consent_granular)`,
             [
@@ -2495,15 +2555,16 @@ export default async function handler(req, res) {
                 (tz   || "").slice(0, 60) || null,                  // $26 timezone
                 Math.min(Number(dur) || 0, 86400),                  // $27 duration_sec
                 (sd != null && sd >= 0 && sd <= 100) ? Number(sd) : null, // $28 scroll_depth
-                pageviewId ? String(pageviewId).slice(0, 40) : null,      // $29 pageview_id
-                nv === 1 ? true : nv === 0 ? false : null,                // $30 is_new_visitor
-                gclid   ? String(gclid).slice(0, 512)   : null,           // $31 gclid
-                msclkid ? String(msclkid).slice(0, 512) : null,           // $32 msclkid
-                fbclid  ? String(fbclid).slice(0, 512)  : null,           // $33 fbclid
-                browserTopics,                                             // $34 browser_topics JSONB
-                network.asn, network.asOrg, network.isHosting,             // $35 $36 $37
-                isEmbeddedEvent,                                           // $38 is_embedded
-                consentGranular,                                           // $39 consent_granular
+                attentionMs,                                               // $29 attention_ms JSONB
+                pageviewId ? String(pageviewId).slice(0, 40) : null,      // $30 pageview_id
+                nv === 1 ? true : nv === 0 ? false : null,                // $31 is_new_visitor
+                gclid   ? String(gclid).slice(0, 512)   : null,           // $32 gclid
+                msclkid ? String(msclkid).slice(0, 512) : null,           // $33 msclkid
+                fbclid  ? String(fbclid).slice(0, 512)  : null,           // $34 fbclid
+                browserTopics,                                             // $35 browser_topics JSONB
+                network.asn, network.asOrg, network.isHosting,             // $36 $37 $38
+                isEmbeddedEvent,                                           // $39 is_embedded
+                consentGranular,                                           // $40 consent_granular
             ]
         ).catch(() => {});
     }

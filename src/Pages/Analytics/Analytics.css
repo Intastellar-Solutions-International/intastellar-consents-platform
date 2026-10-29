@@ -3072,6 +3072,30 @@
     color: rgba(230,210,160,0.95);
 }
 
+/* Clicks/Attention toggle inside the viewport label itself, rather than
+   the controls row (device/page pickers apply to both modes, this toggle
+   only changes which overlay renders on the same screenshot). */
+.sa-heatmap__mode-tabs {
+    display: flex;
+    gap: 3px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 7px;
+    padding: 2px;
+}
+.sa-heatmap__mode-tab {
+    background: transparent;
+    border: none;
+    color: rgba(var(--sa-text-secondary),0.7);
+    font-size: 0.72rem;
+    padding: 4px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.sa-heatmap__mode-tab.--active {
+    background: rgba(var(--sa-accent),0.18);
+    color: rgba(230,210,160,0.95);
+}
+
 /* frame-outer fills the viewport panel via flex: 1; the parent's min-height
    is the floor. min-height: 0 overrides the browser default so flexbox can
    actually shrink it when the viewport panel is smaller than the screenshot. */
@@ -3141,7 +3165,8 @@
    scroll/clicks on the page preview underneath), but the dots themselves
    need pointer-events to receive hover — without this override, nothing in
    the overlay (including the native SVG <title> tooltip) ever fires. */
-.sa-heatmap__overlay circle {
+.sa-heatmap__overlay circle,
+.sa-heatmap__overlay rect {
     pointer-events: auto;
     cursor: pointer;
 }

@@ -43,15 +43,27 @@ function intensityColor(t) {
     return `rgba(${r},${g},${b},${alpha.toFixed(2)})`;
 }
 
-function HeatmapLegend() {
+function HeatmapLegend({ lowLabel = "Fewer clicks", highLabel = "More clicks" }) {
     const gradient = `linear-gradient(90deg, ${HEAT_STOPS.map(([r, g, b]) => `rgb(${r},${g},${b})`).join(", ")})`;
     return (
         <div className="sa-heatmap__legend">
-            <span className="sa-heatmap__legend-label">Fewer clicks</span>
+            <span className="sa-heatmap__legend-label">{lowLabel}</span>
             <div className="sa-heatmap__legend-bar" style={{ background: gradient }} />
-            <span className="sa-heatmap__legend-label">More clicks</span>
+            <span className="sa-heatmap__legend-label">{highLabel}</span>
         </div>
     );
+}
+
+// Seconds/minutes label for a dwell-time tooltip — mirrors formatDuration's
+// style elsewhere in Analytics but kept local since this only ever gets a
+// plain ms number, not the {hours,minutes,seconds} shape formatDuration
+// expects.
+function formatDwell(ms) {
+    const s = ms / 1000;
+    if (s < 60) return `${s.toFixed(1)}s`;
+    const m = Math.floor(s / 60);
+    const rem = Math.round(s % 60);
+    return `${m}m ${rem}s`;
 }
 
 function usePaths(domain, fromIso, toIso) {
@@ -231,6 +243,105 @@ function ClickOverlay({ domain, pathname, device, clicks }) {
     );
 }
 
+// Same screenshot + overlay structure as ClickOverlay, but renders 10
+// horizontal bands (one per 10% of page height, matching how attention_ms
+// is captured in api/a.js) tinted by average dwell time instead of dots at
+// click coordinates — a per-pixel position doesn't exist for "attention",
+// only a per-band aggregate, so a banded overlay is the right shape for
+// this data rather than reusing ClickOverlay's dot renderer.
+function AttentionOverlay({ domain, pathname, device, attention, sessions }) {
+    const imgRef  = useRef(null);
+    const wrapRef = useRef(null);
+    const { screenshotUrl, screenshotLoading } = usePageScreenshot(domain, pathname, device);
+    const [svgHeight,     setSvgHeight]     = useState(null);
+    const [naturalAspect, setNaturalAspect] = useState(1);
+    const [hover, setHover] = useState(null);
+
+    function calcDimensions(img) {
+        if (!img?.naturalWidth || !img.offsetWidth) return;
+        const aspect = img.naturalHeight / img.naturalWidth;
+        setNaturalAspect(aspect);
+        setSvgHeight(Math.round(img.offsetWidth * aspect));
+    }
+
+    useEffect(() => { setSvgHeight(null); setNaturalAspect(1); }, [screenshotUrl]);
+
+    useEffect(() => {
+        function onResize() {
+            const img = imgRef.current;
+            if (!img?.naturalWidth || !img.offsetWidth) return;
+            setSvgHeight(Math.round(img.offsetWidth * (img.naturalHeight / img.naturalWidth)));
+        }
+        window.addEventListener("resize", onResize);
+        return () => window.removeEventListener("resize", onResize);
+    }, []);
+
+    function showTooltip(e, avgMs) {
+        const rect = wrapRef.current?.getBoundingClientRect();
+        if (!rect) return;
+        setHover({ x: e.clientX - rect.left, y: e.clientY - rect.top, avgMs });
+    }
+
+    const byBand = new Map(attention.map(a => [a.band, a.ms]));
+    const bands  = Array.from({ length: 10 }, (_, i) => byBand.get(i) || 0);
+    const maxMs  = Math.max(...bands, 1);
+    const viewBox = `0 0 100 ${(100 * naturalAspect).toFixed(3)}`;
+
+    return (
+        <div className="sa-heatmap__frame-outer">
+            <div className="sa-heatmap__frame-wrap" ref={wrapRef}>
+                {screenshotLoading ? (
+                    <div className="sa-heatmap__frame-fallback">Loading page preview&hellip;</div>
+                ) : screenshotUrl ? (
+                    <img
+                        ref={imgRef}
+                        className="sa-heatmap__frame-img"
+                        src={screenshotUrl}
+                        alt="Page preview"
+                        draggable={false}
+                        onLoad={e => calcDimensions(e.target)}
+                    />
+                ) : (
+                    <div className="sa-heatmap__frame-fallback">Page preview unavailable.</div>
+                )}
+                {svgHeight !== null && (
+                    <svg
+                        className="sa-heatmap__overlay"
+                        viewBox={viewBox}
+                        preserveAspectRatio="none"
+                        style={{ height: svgHeight }}
+                    >
+                        {bands.map((ms, i) => {
+                            const avgMs = sessions > 0 ? ms / sessions : 0;
+                            return (
+                                <rect
+                                    key={i}
+                                    x={0}
+                                    y={i * 10 * naturalAspect}
+                                    width={100}
+                                    height={10 * naturalAspect}
+                                    fill={intensityColor(ms / maxMs)}
+                                    onMouseEnter={e => showTooltip(e, avgMs)}
+                                    onMouseMove={e => showTooltip(e, avgMs)}
+                                    onMouseLeave={() => setHover(null)}
+                                >
+                                    <title>{formatDwell(avgMs)} avg</title>
+                                </rect>
+                            );
+                        })}
+                    </svg>
+                )}
+                {hover && (
+                    <div className="sa-heatmap__tooltip" style={{ left: hover.x, top: hover.y }}>
+                        {formatDwell(hover.avgMs)} avg dwell
+                    </div>
+                )}
+            </div>
+            <HeatmapLegend lowLabel="Less time" highLabel="More time" />
+        </div>
+    );
+}
+
 function ScrollFunnel({ scrollDepth }) {
     const total = scrollDepth.reduce((s, b) => s + b.n, 0);
     if (!total) return <p className="sa-notice">No scroll data for this page yet.</p>;
@@ -274,6 +385,7 @@ export default function AnalyticsHeatmap() {
     const { paths, loading: pathsLoading, noSiteKey } = usePaths(domain, fromIso, toIso);
     const [selected, setSelected] = useState(null);
     const [device,   setDevice]   = useState("");
+    const [mode,     setMode]     = useState("clicks"); // "clicks" | "attention"
 
     const pathKey   = p => `${p.host} ${p.pathname}`;
     const multiHost = useMemo(() => new Set(paths.map(p => p.host)).size > 1, [paths]);
@@ -358,10 +470,30 @@ export default function AnalyticsHeatmap() {
                             <div className="sa-heatmap__viewport">
                                 <div className="sa-heatmap__viewport-label">
                                     <IconCursorClick className="sa-icon" />
-                                    <span>Click heatmap</span>
-                                    {data && !loading && !data.noData && (
+                                    <div className="sa-heatmap__mode-tabs">
+                                        <button
+                                            type="button"
+                                            className={"sa-heatmap__mode-tab" + (mode === "clicks" ? " --active" : "")}
+                                            onClick={() => setMode("clicks")}
+                                        >
+                                            Clicks
+                                        </button>
+                                        <button
+                                            type="button"
+                                            className={"sa-heatmap__mode-tab" + (mode === "attention" ? " --active" : "")}
+                                            onClick={() => setMode("attention")}
+                                        >
+                                            Attention
+                                        </button>
+                                    </div>
+                                    {mode === "clicks" && data && !loading && !data.noData && (
                                         <span className="sa-heatmap__sample-size">
                                             {data.totalClicks.toLocaleString("de-DE")} clicks · {data.totalSessions.toLocaleString("de-DE")} sessions
+                                        </span>
+                                    )}
+                                    {mode === "attention" && data && !loading && !!data.attention?.length && (
+                                        <span className="sa-heatmap__sample-size">
+                                            {data.attentionSessions.toLocaleString("de-DE")} sessions
                                         </span>
                                     )}
                                 </div>
@@ -369,11 +501,25 @@ export default function AnalyticsHeatmap() {
                                     <div className="sa-heatmap__frame-fallback">Loading heatmap&hellip;</div>
                                 ) : error ? (
                                     <div className="sa-heatmap__frame-fallback --error">{error}</div>
-                                ) : data?.noData ? (
-                                    <div className="sa-heatmap__frame-fallback">No click data for this page/device combination.</div>
-                                ) : data ? (
-                                    <ClickOverlay domain={domain} pathname={data.pathname} device={device} clicks={data.clicks} />
-                                ) : null}
+                                ) : mode === "clicks" ? (
+                                    data?.noData ? (
+                                        <div className="sa-heatmap__frame-fallback">No click data for this page/device combination.</div>
+                                    ) : data ? (
+                                        <ClickOverlay domain={domain} pathname={data.pathname} device={device} clicks={data.clicks} />
+                                    ) : null
+                                ) : (
+                                    !data?.attention?.length ? (
+                                        <div className="sa-heatmap__frame-fallback">No attention data for this page/device combination yet.</div>
+                                    ) : (
+                                        <AttentionOverlay
+                                            domain={domain}
+                                            pathname={data.pathname}
+                                            device={device}
+                                            attention={data.attention}
+                                            sessions={data.attentionSessions}
+                                        />
+                                    )
+                                )}
                             </div>
 
                             {/* ── Sidebar ──────────────────────────────────── */}
