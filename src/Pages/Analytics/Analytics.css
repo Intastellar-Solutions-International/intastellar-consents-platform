@@ -3705,6 +3705,14 @@
 .sa-conv-submenu-content {
     flex: 1;
     min-width: 0;
+    display: flex;
+    flex-direction: column;
+    /* 14px matches .sa-gsc-stack's own gap, so Search Console's panels above
+       and below the submenu read as one consistently-spaced stack. Harmless
+       for Conversions (the only other consumer of this class): each of its
+       sections renders exactly one child div here, so a gap between
+       siblings never applies. */
+    gap: 14px;
 }
 
 @media (max-width: 900px) {
