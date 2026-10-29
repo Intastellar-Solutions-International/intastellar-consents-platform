@@ -40,7 +40,7 @@ export default function RecordingPlayer({ events }) {
                 events:         sortedEvents,
                 width,
                 height:         Math.round(width * (9 / 16)),
-                autoPlay:       false,
+                autoPlay:       true,
                 showController: true,
                 skipInactive:   true,
             },

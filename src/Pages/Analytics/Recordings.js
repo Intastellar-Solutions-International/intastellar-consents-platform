@@ -231,9 +231,57 @@ export function AnalyticsRecordingDetail() {
                     {loading && <p className="sa-notice">Loading recording&hellip;</p>}
                     {error && <p className="sa-notice sa-notice--error">{error}</p>}
                     {data && !loading && (
-                        <div className="sa-panel" style={{ marginTop: 12 }}>
-                            <RecordingPlayer events={data.events} />
-                        </div>
+                        <>
+                            <div className="sa-panel sa-recording-meta" style={{ marginTop: 12 }}>
+                                <div className="sa-recording-meta__row">
+                                    <span className="sa-recording-meta__label">Started</span>
+                                    <span className="sa-recording-meta__value">{data.startedAt ? new Date(data.startedAt).toLocaleString("de-DE") : "—"}</span>
+                                </div>
+                                <div className="sa-recording-meta__row">
+                                    <span className="sa-recording-meta__label">Duration</span>
+                                    <span className="sa-recording-meta__value">{fmtDuration(data.durationSec)}</span>
+                                </div>
+                                <div className="sa-recording-meta__row">
+                                    <span className="sa-recording-meta__label">Entry page</span>
+                                    <span className="sa-recording-meta__value" title={data.entryPathname}>{data.entryPathname || "—"}</span>
+                                </div>
+                                <div className="sa-recording-meta__row">
+                                    <span className="sa-recording-meta__label">Device</span>
+                                    <span className="sa-recording-meta__value">{data.deviceType || "—"}</span>
+                                </div>
+                                <div className="sa-recording-meta__row">
+                                    <span className="sa-recording-meta__label">Browser</span>
+                                    <span className="sa-recording-meta__value">{data.browserFamily || "—"}</span>
+                                </div>
+                                <div className="sa-recording-meta__row">
+                                    <span className="sa-recording-meta__label">OS</span>
+                                    <span className="sa-recording-meta__value">{data.osFamily || "—"}</span>
+                                </div>
+                                <div className="sa-recording-meta__row">
+                                    <span className="sa-recording-meta__label">Country</span>
+                                    <span className="sa-recording-meta__value">{data.countryCode || "—"}</span>
+                                </div>
+                                <div className="sa-recording-meta__row">
+                                    <span className="sa-recording-meta__label">Pages visited</span>
+                                    <span className="sa-recording-meta__value" title={(data.pathnames || []).join(", ")}>
+                                        {(data.pathnames || []).length || "—"}
+                                    </span>
+                                </div>
+                                <div className="sa-recording-meta__row">
+                                    <span className="sa-recording-meta__label">Status</span>
+                                    <span className="sa-recording-meta__value">{data.status || "—"}</span>
+                                </div>
+                                <div className="sa-recording-meta__row">
+                                    <span className="sa-recording-meta__label">Size</span>
+                                    <span className="sa-recording-meta__value">
+                                        {data.byteSize ? `${Math.round(data.byteSize / 1024).toLocaleString("de-DE")} KB` : "—"}
+                                    </span>
+                                </div>
+                            </div>
+                            <div className="sa-panel" style={{ marginTop: 12 }}>
+                                <RecordingPlayer events={data.events} />
+                            </div>
+                        </>
                     )}
                 </div>
             </div>

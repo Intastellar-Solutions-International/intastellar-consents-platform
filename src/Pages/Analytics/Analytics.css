@@ -3214,6 +3214,32 @@
 
 /* ── Recording player ────────────────────────────────────────────────────────── */
 
+.sa-recording-meta {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 14px 20px;
+}
+.sa-recording-meta__row {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+}
+.sa-recording-meta__label {
+    font-size: 0.64rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: rgba(var(--sa-text-dim),0.5);
+}
+.sa-recording-meta__value {
+    font-size: 0.86rem;
+    color: rgba(var(--sa-text-secondary),0.9);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 .sa-recording-player {
     width: 100%;
     min-height: 520px;
