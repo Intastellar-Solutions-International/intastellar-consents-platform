@@ -81,7 +81,7 @@ export default async function handler(req, res) {
     // Prevent edge/CDN caching — live data must always be fresh
     res.setHeader("Cache-Control", "no-store");
 
-    const [totalsRes, minutesRes, pagesRes, hostsRes, recentRes, conversionsRes, countriesRes] = await Promise.all([
+    const [totalsRes, minutesRes, pagesRes, hostsRes, recentRes, conversionsRes, countriesRes, activeVisitorsRes] = await Promise.all([
 
         // Totals across both pageviews and custom events
         db.query(`
@@ -134,14 +134,16 @@ export default async function handler(req, res) {
             [siteId]
         ),
 
-        // Hosts actually serving this site key in the last 30 min — a booking
-        // widget/white-label host embedded under the same site key shows up
-        // here as separate traffic from the registered domain.
+        // Hosts actually serving this site key in the last 30 min, excluding
+        // embedded/iframe traffic — kept consistent with every other query
+        // in this file (and with analytics-report.js's default) rather than
+        // reporting a "views" number that includes widget/iframe loads the
+        // rest of the dashboard excludes.
         db.query(`
             SELECT COALESCE(page_host, '(unknown)') AS host, COUNT(*) AS events
             FROM analytics_events
             WHERE site_id = $1
-              AND received_at >= NOW() - INTERVAL '30 minutes'
+              AND received_at >= NOW() - INTERVAL '30 minutes' AND is_embedded = false
             GROUP BY host ORDER BY events DESC LIMIT 10`,
             [siteId]
         ).catch(() => ({ rows: [] })),
@@ -207,7 +209,35 @@ export default async function handler(req, res) {
             [siteId]
         ).catch(() => ({ rows: [] })),
 
-    ]).catch(() => Array(7).fill({ rows: [] }));
+        // Current page per active visitor — the most recent pageview/custom-
+        // event per session_id in the same 30-minute window the rest of this
+        // file treats as "active" (there's no heartbeat/ping from the embed
+        // while a visitor sits on one page, only a load event and an exit
+        // event, so "latest known event per session" is the closest signal
+        // to "what page are they on right now" the data model supports).
+        db.query(`
+            SELECT * FROM (
+                SELECT DISTINCT ON (session_id)
+                    session_id, pathname, page_host, country_code, device_type, received_at
+                FROM (
+                    SELECT session_id, pathname, page_host, country_code, device_type, received_at
+                    FROM analytics_events
+                    WHERE site_id = $1 AND received_at >= NOW() - INTERVAL '30 minutes'
+                      AND is_embedded = false AND session_id IS NOT NULL
+                    UNION ALL
+                    SELECT session_id, pathname, page_host, country_code, device_type, received_at
+                    FROM analytics_custom_events
+                    WHERE site_id = $1 AND received_at >= NOW() - INTERVAL '30 minutes'
+                      AND session_id IS NOT NULL
+                ) combined
+                ORDER BY session_id, received_at DESC
+            ) latest
+            ORDER BY received_at DESC
+            LIMIT 50`,
+            [siteId]
+        ).catch(() => ({ rows: [] })),
+
+    ]).catch(() => Array(8).fill({ rows: [] }));
 
     const t = totalsRes.rows[0] || {};
     const totalEvents = parseInt(t.total || 0);
@@ -283,6 +313,14 @@ export default async function handler(req, res) {
             code:        r.country_code,
             activeUsers: parseInt(r.active_users || 0),
             events:      parseInt(r.events || 0),
+        })),
+        activeVisitors: activeVisitorsRes.rows.map(r => ({
+            sessionId: r.session_id,
+            path:      r.pathname,
+            host:      r.page_host,
+            country:   r.country_code,
+            device:    r.device_type,
+            at:        r.received_at,
         })),
     });
 }

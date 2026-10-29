@@ -139,6 +139,29 @@ export default function LiveView() {
 
                                 <div className="sa-live sa-liveview__card">
                                     <div className="sa-live__body sa-liveview__card-body">
+                                        <p className="sa-live__section-title">Active visitors</p>
+                                        <div className="sa-live__feed">
+                                            {(data.activeVisitors || []).map(v => (
+                                                <div key={v.sessionId} className="sa-live__event">
+                                                    <span className="sa-live__event-path" title={v.host ? `${v.host}${v.path}` : v.path}>
+                                                        {v.host && v.host !== domain ? `${v.host}` : ""}{v.path}
+                                                    </span>
+                                                    <div className="sa-live__event-meta">
+                                                        {v.country && <span className="sa-live__event-flag">{v.country}</span>}
+                                                        {v.device && <span className="sa-live__event-flag">{v.device}</span>}
+                                                        <span className="sa-live__event-time">{timeAgo(v.at)}</span>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                            {!data.activeVisitors?.length && (
+                                                <p style={{ color: "rgba(130,130,130,0.55)", fontSize: "0.8rem", margin: 0 }}>No active visitors right now</p>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="sa-live sa-liveview__card">
+                                    <div className="sa-live__body sa-liveview__card-body">
                                         <p className="sa-live__section-title">
                                             Conversions
                                             {data.conversions?.length > 0 && (
