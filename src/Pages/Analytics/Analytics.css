@@ -2999,6 +2999,19 @@
     flex-shrink: 0;
 }
 
+/* Sample size shown next to every heatmap/scroll-depth metric — a funnel
+   or dot pattern built from a handful of sessions reads very differently
+   than one built from thousands, and nothing surfaced that distinction. */
+.sa-heatmap__sample-size {
+    font-size: 0.66rem;
+    font-weight: 400;
+    color: rgba(var(--sa-text-dim),0.5);
+    margin-left: auto;
+}
+.sa-heatmap__sample-size--inline {
+    margin: 2px 0 8px;
+}
+
 /* ── Data sidebar ── */
 .sa-heatmap__sidecar {
     grid-area: sidecar;
@@ -3123,6 +3136,49 @@
     left: 0;
     width: 100%;
     pointer-events: none;
+}
+/* The overlay itself stays non-blocking (empty space shouldn't intercept
+   scroll/clicks on the page preview underneath), but the dots themselves
+   need pointer-events to receive hover — without this override, nothing in
+   the overlay (including the native SVG <title> tooltip) ever fires. */
+.sa-heatmap__overlay circle {
+    pointer-events: auto;
+    cursor: pointer;
+}
+
+.sa-heatmap__tooltip {
+    position: absolute;
+    transform: translate(-50%, calc(-100% - 8px));
+    background: #161921;
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 6px;
+    padding: 4px 8px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: #e8ecf8;
+    white-space: nowrap;
+    pointer-events: none;
+    z-index: 5;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.35);
+}
+
+.sa-heatmap__legend {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 2px 2px;
+    flex-shrink: 0;
+}
+.sa-heatmap__legend-bar {
+    flex: 1;
+    max-width: 180px;
+    height: 6px;
+    border-radius: 3px;
+}
+.sa-heatmap__legend-label {
+    font-size: 0.66rem;
+    color: rgba(var(--sa-text-dim),0.6);
+    white-space: nowrap;
 }
 
 .sa-scroll-funnel {

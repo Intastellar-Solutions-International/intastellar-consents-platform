@@ -9,6 +9,7 @@
  */
 
 import { selfReferralClause, noiseReferralClause, getApprovedDomains } from "./_self-referral.js";
+import { isHeadlineConversionSql } from "./_conversions.js";
 
 function pctChange(cur, prev) {
     if (prev == null || prev === 0 || cur == null) return null;
@@ -66,10 +67,15 @@ export async function buildReportData(db, siteId, periodDays) {
         [siteId, from, to]
     ).catch(() => ({ rows: [] }));
 
+    // "Conversion" here means headline tier (lead/sale) per api/_conversions.js
+    // — not just "any event registered in analytics_event_defs", which also
+    // matches Intent-tier clicks and unregistered/auto-collected Micro-tier
+    // noise (scroll_depth, page_perf, ...) if those ever got registered too.
     const conversionsTotalQuery = (from, to) => db.query(`
-        SELECT COUNT(*) AS total FROM analytics_custom_events
-        WHERE site_id = $1 AND received_at >= $2 AND received_at < $3
-          AND name IN (SELECT name FROM analytics_event_defs WHERE site_id = $1)`,
+        SELECT COUNT(*) AS total FROM analytics_custom_events ace
+        LEFT JOIN analytics_event_defs d ON d.site_id = ace.site_id AND d.name = ace.name
+        WHERE ace.site_id = $1 AND ace.received_at >= $2 AND ace.received_at < $3
+          AND ${isHeadlineConversionSql("ace", "d")}`,
         [siteId, from, to]
     ).catch(() => ({ rows: [] }));
 
@@ -114,11 +120,12 @@ export async function buildReportData(db, siteId, periodDays) {
         ).catch(() => ({ rows: [] })),
 
         db.query(`
-            SELECT name, COUNT(*) AS count
-            FROM analytics_custom_events
-            WHERE site_id = $1 AND received_at >= $2 AND received_at < $3
-              AND name IN (SELECT name FROM analytics_event_defs WHERE site_id = $1)
-            GROUP BY name ORDER BY count DESC LIMIT 1`,
+            SELECT ace.name, COUNT(*) AS count
+            FROM analytics_custom_events ace
+            LEFT JOIN analytics_event_defs d ON d.site_id = ace.site_id AND d.name = ace.name
+            WHERE ace.site_id = $1 AND ace.received_at >= $2 AND ace.received_at < $3
+              AND ${isHeadlineConversionSql("ace", "d")}
+            GROUP BY ace.name ORDER BY count DESC LIMIT 1`,
             [siteId, fromDate, toDateExclusive]
         ).catch(() => ({ rows: [] })),
 

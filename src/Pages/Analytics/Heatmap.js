@@ -16,9 +16,42 @@ const DEVICES = [
     { value: "mobile",  label: "Mobile" },
 ];
 
+// Cool-to-hot scale (blue → teal → yellow → red) instead of one beige tone
+// at varying opacity — a single low-saturation colour at low alpha reads as
+// "barely there" against light page backgrounds, and gives no way to read
+// density at a glance without hovering every dot.
+const HEAT_STOPS = [
+    [59, 130, 246],   // blue   — fewest clicks
+    [45, 212, 191],   // teal
+    [250, 204, 21],   // yellow
+    [239, 68, 68],    // red    — most clicks
+];
+
 function intensityColor(t) {
-    const alpha = 0.08 + Math.min(1, Math.max(0, t)) * 0.72;
-    return `rgba(192,159,83,${alpha.toFixed(2)})`;
+    t = Math.min(1, Math.max(0, t));
+    const seg = t * (HEAT_STOPS.length - 1);
+    const i = Math.min(HEAT_STOPS.length - 2, Math.floor(seg));
+    const f = seg - i;
+    const [r1, g1, b1] = HEAT_STOPS[i];
+    const [r2, g2, b2] = HEAT_STOPS[i + 1];
+    const r = Math.round(r1 + (r2 - r1) * f);
+    const g = Math.round(g1 + (g2 - g1) * f);
+    const b = Math.round(b1 + (b2 - b1) * f);
+    // Floor of 0.45 so even the lowest-density dot stays visible on a light
+    // background — pure opacity scaling let low-count dots fade to nothing.
+    const alpha = 0.45 + t * 0.45;
+    return `rgba(${r},${g},${b},${alpha.toFixed(2)})`;
+}
+
+function HeatmapLegend() {
+    const gradient = `linear-gradient(90deg, ${HEAT_STOPS.map(([r, g, b]) => `rgb(${r},${g},${b})`).join(", ")})`;
+    return (
+        <div className="sa-heatmap__legend">
+            <span className="sa-heatmap__legend-label">Fewer clicks</span>
+            <div className="sa-heatmap__legend-bar" style={{ background: gradient }} />
+            <span className="sa-heatmap__legend-label">More clicks</span>
+        </div>
+    );
 }
 
 function usePaths(domain, fromIso, toIso) {
@@ -63,7 +96,7 @@ function useHeatmapDetail(domain, pathname, host, device, fromIso, toIso) {
     return { data, loading, error };
 }
 
-function usePageScreenshot(domain, pathname) {
+function usePageScreenshot(domain, pathname, device) {
     const [screenshotUrl,     setScreenshotUrl]     = useState(null);
     const [screenshotLoading, setScreenshotLoading] = useState(false);
 
@@ -71,7 +104,13 @@ function usePageScreenshot(domain, pathname) {
         if (!domain || !pathname) { setScreenshotUrl(null); return; }
         let objectUrl = null;
         setScreenshotLoading(true);
-        const qs = new URLSearchParams({ domain, path: pathname, fullPage: "1" }).toString();
+        // "All devices" (device === "") has no single matching viewport —
+        // falls back to the endpoint's own default (1280×720) rather than
+        // picking one device's size to represent a mix of all of them.
+        const qs = new URLSearchParams({
+            domain, path: pathname, fullPage: "1",
+            ...(device ? { device } : {}),
+        }).toString();
         fetch(`${SCREENSHOT_URL}?${qs}`, { headers: authHeaders() })
             .then(r => r.ok ? r.blob() : null)
             .then(blob => {
@@ -86,19 +125,31 @@ function usePageScreenshot(domain, pathname) {
             if (objectUrl) URL.revokeObjectURL(objectUrl);
             setScreenshotUrl(null);
         };
-    }, [domain, pathname]);
+    }, [domain, pathname, device]);
 
     return { screenshotUrl, screenshotLoading };
 }
 
-function ClickOverlay({ domain, pathname, clicks }) {
-    const maxN   = useMemo(() => Math.max(...clicks.map(c => c.n), 1), [clicks]);
-    const imgRef = useRef(null);
-    const { screenshotUrl, screenshotLoading } = usePageScreenshot(domain, pathname);
+function ClickOverlay({ domain, pathname, device, clicks }) {
+    const maxN    = useMemo(() => Math.max(...clicks.map(c => c.n), 1), [clicks]);
+    const imgRef  = useRef(null);
+    const wrapRef = useRef(null);
+    const { screenshotUrl, screenshotLoading } = usePageScreenshot(domain, pathname, device);
     const [svgHeight,     setSvgHeight]     = useState(null);
     // naturalAspect = naturalHeight / naturalWidth — kept separate from svgHeight
     // because it doesn't change on window resize (only svgHeight does).
     const [naturalAspect, setNaturalAspect] = useState(1);
+    // Custom tooltip instead of relying solely on the SVG <title> — a native
+    // title tooltip has a long hover delay and no styling, easy to miss on
+    // a 2-unit-radius dot that may be scaled down to just a few screen
+    // pixels on a tall full-page screenshot.
+    const [hover, setHover] = useState(null);
+
+    function showTooltip(e, n) {
+        const rect = wrapRef.current?.getBoundingClientRect();
+        if (!rect) return;
+        setHover({ x: e.clientX - rect.left, y: e.clientY - rect.top, n });
+    }
 
     function calcDimensions(img) {
         if (!img?.naturalWidth || !img.offsetWidth) return;
@@ -126,7 +177,7 @@ function ClickOverlay({ domain, pathname, clicks }) {
 
     return (
         <div className="sa-heatmap__frame-outer">
-            <div className="sa-heatmap__frame-wrap">
+            <div className="sa-heatmap__frame-wrap" ref={wrapRef}>
                 {screenshotLoading ? (
                     <div className="sa-heatmap__frame-fallback">Loading page preview&hellip;</div>
                 ) : screenshotUrl ? (
@@ -155,13 +206,27 @@ function ClickOverlay({ domain, pathname, clicks }) {
                                 cy={c.gy * naturalAspect}
                                 r={2}
                                 fill={intensityColor(c.n / maxN)}
+                                stroke="rgba(255,255,255,0.65)"
+                                strokeWidth={0.3}
+                                onMouseEnter={e => showTooltip(e, c.n)}
+                                onMouseMove={e => showTooltip(e, c.n)}
+                                onMouseLeave={() => setHover(null)}
                             >
                                 <title>{c.n} click{c.n !== 1 ? "s" : ""}</title>
                             </circle>
                         ))}
                     </svg>
                 )}
+                {hover && (
+                    <div
+                        className="sa-heatmap__tooltip"
+                        style={{ left: hover.x, top: hover.y }}
+                    >
+                        {hover.n} click{hover.n !== 1 ? "s" : ""}
+                    </div>
+                )}
             </div>
+            <HeatmapLegend />
         </div>
     );
 }
@@ -181,6 +246,9 @@ function ScrollFunnel({ scrollDepth }) {
 
     return (
         <div className="sa-scroll-funnel">
+            <p className="sa-heatmap__sample-size sa-heatmap__sample-size--inline">
+                Based on {maxReached.toLocaleString("de-DE")} session{maxReached !== 1 ? "s" : ""}
+            </p>
             {rows.map(r => (
                 <div key={r.bucket} className="sa-consent-row">
                     <span className="sa-consent-row__label">{r.bucket}%+</span>
@@ -291,6 +359,11 @@ export default function AnalyticsHeatmap() {
                                 <div className="sa-heatmap__viewport-label">
                                     <IconCursorClick className="sa-icon" />
                                     <span>Click heatmap</span>
+                                    {data && !loading && !data.noData && (
+                                        <span className="sa-heatmap__sample-size">
+                                            {data.totalClicks.toLocaleString("de-DE")} clicks · {data.totalSessions.toLocaleString("de-DE")} sessions
+                                        </span>
+                                    )}
                                 </div>
                                 {loading ? (
                                     <div className="sa-heatmap__frame-fallback">Loading heatmap&hellip;</div>
@@ -299,7 +372,7 @@ export default function AnalyticsHeatmap() {
                                 ) : data?.noData ? (
                                     <div className="sa-heatmap__frame-fallback">No click data for this page/device combination.</div>
                                 ) : data ? (
-                                    <ClickOverlay domain={domain} pathname={data.pathname} clicks={data.clicks} />
+                                    <ClickOverlay domain={domain} pathname={data.pathname} device={device} clicks={data.clicks} />
                                 ) : null}
                             </div>
 
@@ -314,6 +387,11 @@ export default function AnalyticsHeatmap() {
 
                                 <div className="sa-panel">
                                     <h3 className="sa-panel__title"><IconTarget className="sa-icon" /> Top clicked elements</h3>
+                                    {data && !loading && !data.noData && (
+                                        <p className="sa-heatmap__sample-size sa-heatmap__sample-size--inline">
+                                            Based on {data.totalSessions.toLocaleString("de-DE")} session{data.totalSessions !== 1 ? "s" : ""}
+                                        </p>
+                                    )}
                                     <table className="sa-table">
                                         <thead>
                                             <tr>

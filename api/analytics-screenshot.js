@@ -1,10 +1,13 @@
 /**
- * GET /api/analytics-screenshot?domain=<domain>&path=<pathname>
+ * GET /api/analytics-screenshot?domain=<domain>&path=<pathname>&device=<desktop|tablet|mobile>
  *
- * Returns a JPEG screenshot (1280×720) of the given page. Only domains that
- * belong to the requesting organisation are allowed — prevents arbitrary URL
- * capture (SSRF). The response is browser-cached for 1 hour (private, no CDN)
- * so repeated dashboard views don't re-launch Chromium.
+ * Returns a JPEG screenshot of the given page, captured at a viewport
+ * matching `device` (1440×900/820×1180/390×844) so it lines up with clicks
+ * captured from a real visitor on that device class — defaults to 1280×720
+ * when `device` is omitted/unrecognised. Only domains that belong to the
+ * requesting organisation are allowed — prevents arbitrary URL capture
+ * (SSRF). The response is browser-cached for 1 hour (private, no CDN) so
+ * repeated dashboard views don't re-launch Chromium.
  *
  * Requires: Authorization: Bearer <token>   Organisation: <org_id>
  */
@@ -49,6 +52,20 @@ function validateJwt(authHeader) {
 // latency without affecting visual output. CSS, images, and fonts are allowed.
 const BLOCK_RE = /google-analytics\.com|googletagmanager\.com|hotjar\.com|connect\.facebook\.net|doubleclick\.net|bat\.bing\.com|analytics\.twitter\.com|tr\.snapchat\.com|analytics\.tiktok\.com|clarity\.ms|mouseflow\.com|fullstory\.com|logrocket\.com/;
 
+// Matches the Heatmap page's device tabs (analytics_clicks.device_type) so a
+// click captured from a real mobile/tablet visitor gets overlaid on a
+// screenshot rendered at roughly the same viewport, instead of always a
+// 1280-wide desktop render regardless of which device tab is selected.
+// Height matters too, not just width — a 100vh hero renders at a different
+// pixel height per viewport, which otherwise shifts where content below it
+// lands relative to clicks captured at a real (differently-sized) viewport.
+const DEVICE_VIEWPORTS = {
+    mobile:  { width: 390,  height: 844 },
+    tablet:  { width: 820,  height: 1180 },
+    desktop: { width: 1440, height: 900 },
+};
+const DEFAULT_VIEWPORT = { width: 1280, height: 720 };
+
 export default async function handler(req, res) {
     setCors(req, res);
     if (req.method === "OPTIONS") return res.status(204).end();
@@ -61,8 +78,9 @@ export default async function handler(req, res) {
 
     if (req.method !== "GET") return res.status(405).end();
 
-    const { domain, path: rawPath, fullPage: fullPageParam } = req.query;
+    const { domain, path: rawPath, fullPage: fullPageParam, device: rawDevice } = req.query;
     const fullPage = fullPageParam === "1" || fullPageParam === "true";
+    const viewport = DEVICE_VIEWPORTS[rawDevice] || DEFAULT_VIEWPORT;
     if (!domain || typeof domain !== "string") return res.status(400).json({ error: "domain required" });
 
     // Sanitise path: must be a root-relative pathname, no protocol or host.
@@ -91,7 +109,7 @@ export default async function handler(req, res) {
     try {
         browser = await puppeteer.launch({
             args: chromium.args,
-            defaultViewport: { width: 1280, height: 720, deviceScaleFactor: 1 },
+            defaultViewport: { ...viewport, deviceScaleFactor: 1 },
             executablePath: await chromium.executablePath(),
             headless: chromium.headless,
         });
@@ -109,8 +127,12 @@ export default async function handler(req, res) {
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
         );
 
-        // Tell the Intastellar banner (and any banner honouring this flag)
-        // to suppress itself so the screenshot shows the actual page content.
+        // __ICS_SCAN__ only suppresses the analytics embed's own event firing
+        // (api/a.js:573) — the cookie banner (an external script, not in this
+        // repo) never checks it, despite what this used to claim. The banner
+        // renders inside a single custom element, <intastellarconsents>, so
+        // it's hidden directly below instead — otherwise it covers the hero
+        // (and whatever's behind it) in every full-page heatmap screenshot.
         await page.evaluateOnNewDocument(() => {
             window.__ICS_SCAN__ = true;
         });
@@ -120,10 +142,14 @@ export default async function handler(req, res) {
         // Brief pause for CSS transitions and web fonts to settle
         await new Promise(r => setTimeout(r, 1200));
 
+        await page.evaluate(() => {
+            document.querySelectorAll("intastellarconsents").forEach(el => { el.style.display = "none"; });
+        }).catch(() => {});
+
         const screenshot = await page.screenshot({
             type: "jpeg",
             quality: 82,
-            ...(fullPage ? { fullPage: true } : { clip: { x: 0, y: 0, width: 1280, height: 720 } }),
+            ...(fullPage ? { fullPage: true } : { clip: { x: 0, y: 0, ...viewport } }),
         });
 
         await browser.close();

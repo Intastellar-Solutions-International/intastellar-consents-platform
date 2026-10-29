@@ -59,6 +59,36 @@ function safeDate(str, fallback) {
 
 const DEVICE_TYPES = new Set(["desktop", "tablet", "mobile"]);
 
+// Trailing-slash variants of the same path ("/x" vs "/x/") are folded
+// together for both the picker list and the detail queries below — without
+// this they'd silently split into separate rows/results with no indication
+// they're the same page. Comparing both sides with the same expression
+// keeps the picker's combined count and the drill-down's actual results
+// consistent (a picker count that doesn't match what drilling in returns
+// would be its own confusing bug).
+function normPath(col) {
+    return `regexp_replace(${col}, '/+$', '')`;
+}
+// "/" itself normalizes to '' — only relevant for display, comparisons on
+// both sides of an equality still agree either way.
+function displayPath(p) {
+    return p === "" ? "/" : p;
+}
+
+// Same-site check as isSameSite() in src/Pages/Analytics/Acquisition.js,
+// done in SQL: page_host matches the registered domain regardless of a
+// "www." prefix on either side. $domainParam is the positional placeholder
+// index holding `domain`.
+function sameHostClause(hostCol, domainParam) {
+    return `regexp_replace(COALESCE(${hostCol}, $${domainParam}), '^www\\.', '') =
+            regexp_replace($${domainParam}, '^www\\.', '')`;
+}
+
+// Internal/admin paths a visitor wouldn't think of as "a page" — same
+// purpose as the ^/api/ exclusion already used for Acquisition's top-pages
+// table, just a different set of prefixes relevant to this list.
+const INTERNAL_PATH_EXCLUDE = `pathname !~* '^/(admin|wp-admin)(/|$)'`;
+
 export default async function handler(req, res) {
     setCors(req, res);
     if (req.method === "OPTIONS") return res.status(204).end();
@@ -86,6 +116,13 @@ export default async function handler(req, res) {
     // docs/analytics-audit-plan.md item 11.
     const includeEmbedded = req.query.includeEmbedded === "1";
     const EMBED_FILTER = includeEmbedded ? "" : "AND is_embedded = false";
+    // Default the picker to the registered domain (+ "www." either way) —
+    // a page key can legitimately cover other real hostnames (a booking
+    // system on its own subdomain, a staging/preview subdomain that happens
+    // to run the same tracking snippet, ...), but mixed indiscriminately
+    // into one page list those read as duplicate/unrelated entries rather
+    // than what they are. ?allHosts=1 opts back into the unfiltered list.
+    const allHosts = req.query.allHosts === "1";
 
     const today     = new Date().toISOString().slice(0, 10);
     const thirtyAgo = new Date(Date.now() - 30 * 86400000).toISOString().slice(0, 10);
@@ -109,11 +146,17 @@ export default async function handler(req, res) {
     // show up distinctly from the same path on the registered domain, instead
     // of being silently merged into one row.
     if (!pathname) {
+        const hostFilter = allHosts ? "" : `AND ${sameHostClause("page_host", 4)}`;
         const { rows: pathRows } = await db.query(
-            `SELECT pathname, COALESCE(page_host, $4) AS host, COUNT(*) AS clicks
-             FROM analytics_clicks
-             WHERE site_id = $1 AND received_at >= $2 AND received_at < $3 ${EMBED_FILTER}
-             GROUP BY pathname, COALESCE(page_host, $4) ORDER BY clicks DESC LIMIT 50`,
+            `SELECT ${normPath("pathname")} AS pathname, COALESCE(page_host, $4) AS host, SUM(n) AS clicks
+             FROM (
+                 SELECT pathname, page_host, COUNT(*) AS n
+                 FROM analytics_clicks
+                 WHERE site_id = $1 AND received_at >= $2 AND received_at < $3 ${EMBED_FILTER}
+                   AND ${INTERNAL_PATH_EXCLUDE} ${hostFilter}
+                 GROUP BY pathname, page_host
+             ) raw
+             GROUP BY 1, 2 ORDER BY clicks DESC LIMIT 50`,
             [siteId, fromDate, toDateExclusive, domain]
         ).catch(() => ({ rows: [] }));
 
@@ -123,7 +166,7 @@ export default async function handler(req, res) {
             from: fromDate,
             to: toDate,
             noData: pathRows.length === 0,
-            paths: pathRows.map(r => ({ pathname: r.pathname, host: r.host, clicks: Number(r.clicks || 0) })),
+            paths: pathRows.map(r => ({ pathname: displayPath(r.pathname), host: r.host, clicks: Number(r.clicks || 0) })),
         });
     }
 
@@ -146,7 +189,7 @@ export default async function handler(req, res) {
                 FLOOR(y_pct / $${clickParams.length + 1}::numeric) * $${clickParams.length + 1}::numeric AS gy,
                 COUNT(*) AS n
              FROM analytics_clicks
-             WHERE site_id = $1 AND pathname = $${clickParams.length + 2}
+             WHERE site_id = $1 AND ${normPath("pathname")} = ${normPath(`$${clickParams.length + 2}`)}
                AND received_at >= $2 AND received_at < $3
                AND x_pct IS NOT NULL AND y_pct IS NOT NULL ${deviceClause} ${hostClause} ${EMBED_FILTER}
              GROUP BY 1, 2 ORDER BY n DESC LIMIT 5000`,
@@ -156,7 +199,7 @@ export default async function handler(req, res) {
         db.query(
             `SELECT target_tag, target_id, target_class, target_text, COUNT(*) AS n
              FROM analytics_clicks
-             WHERE site_id = $1 AND pathname = $${clickParams.length + 1}
+             WHERE site_id = $1 AND ${normPath("pathname")} = ${normPath(`$${clickParams.length + 1}`)}
                AND received_at >= $2 AND received_at < $3 ${deviceClause} ${hostClause} ${EMBED_FILTER}
              GROUP BY target_tag, target_id, target_class, target_text
              ORDER BY n DESC LIMIT 30`,
@@ -178,7 +221,7 @@ export default async function handler(req, res) {
             return db.query(
                 `SELECT FLOOR(scroll_depth / 10) * 10 AS bucket, COUNT(*) AS n
                  FROM analytics_events
-                 WHERE site_id = $1 AND pathname = $2
+                 WHERE site_id = $1 AND ${normPath("pathname")} = ${normPath("$2")}
                    AND received_at >= $3 AND received_at < $4
                    AND scroll_depth IS NOT NULL ${scrollDeviceClause} ${scrollHostClause} ${EMBED_FILTER}
                  GROUP BY 1 ORDER BY 1`,
@@ -189,7 +232,7 @@ export default async function handler(req, res) {
         db.query(
             `SELECT COUNT(*) AS clicks, COUNT(DISTINCT session_id) AS sessions
              FROM analytics_clicks
-             WHERE site_id = $1 AND pathname = $${clickParams.length + 1}
+             WHERE site_id = $1 AND ${normPath("pathname")} = ${normPath(`$${clickParams.length + 1}`)}
                AND received_at >= $2 AND received_at < $3 ${deviceClause} ${hostClause} ${EMBED_FILTER}`,
             [...clickParams, pathname]
         ).catch(() => ({ rows: [{}] })),
