@@ -33,7 +33,7 @@ import { record } from "rrweb";
         var payload = JSON.stringify({
             s: cfg.s, sid: cfg.sid, recId: recId, seq: seq++,
             final: !!final, pathname: pathnames[pathnames.length - 1],
-            pathnames: pathnames, events: batch,
+            pathnames: pathnames, events: batch, dt: cfg.dt,
         });
         // fetch+keepalive (not sendBeacon) — see api/a.js's send() for why:
         // sendBeacon's spec-mandated credentialed CORS mode is incompatible
@@ -59,6 +59,19 @@ import { record } from "rrweb";
             emit: function (event) {
                 if (stopped) return;
                 buf.push(event);
+                // The FullSnapshot (rrweb event type 2) is the one event the
+                // player can't render anything without, and it's usually the
+                // single largest event in the whole recording — flush it out
+                // immediately rather than waiting for the thresholds below.
+                // Without this, a fast bounce (page small enough to stay
+                // under the 50KB/200-event thresholds, gone before the 10s
+                // timer) funnels the FullSnapshot through the pagehide-only
+                // final flush, which is keepalive-capped at 64KB combined
+                // in-flight (see flush()'s keepalive comment) and competes
+                // with the main analytics embed's own exit beacon firing at
+                // the same instant — silently dropping it and producing a
+                // 0s recording with nothing to play back.
+                if (event.type === 2) { flush(false); return; }
                 if (buf.length >= 200) { flush(false); return; }
                 try { if (JSON.stringify(buf).length > 50000) flush(false); } catch (e) {}
             },

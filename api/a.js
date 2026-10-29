@@ -999,7 +999,8 @@ function bootstrapSiteFeatures(){
       window.__intaRecCfg={
         s:SITE,sid:getSid(),
         ep:'https://analytics.consentsmanagement.com/api/analytics-recording-ingest',
-        block:cfg.blockSelectors||[],mask:cfg.maskSelectors||[]
+        block:cfg.blockSelectors||[],mask:cfg.maskSelectors||[],
+        dt:devType()
       };
       var s=document.createElement('script');
       s.src='https://analytics.consentsmanagement.com/r.js';

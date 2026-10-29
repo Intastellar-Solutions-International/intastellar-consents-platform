@@ -89,7 +89,8 @@ export default async function handler(req, res) {
     // ── Detail mode: server-side Blob proxy, never exposes raw URLs ───────────
     if (recordingId) {
         const { rows } = await db.query(
-            `SELECT id, started_at, ended_at, duration_sec, pathnames, chunk_urls, status
+            `SELECT id, started_at, ended_at, duration_sec, pathnames, entry_pathname, chunk_urls, status,
+                    device_type, browser_family, os_family, country_code, byte_size
              FROM analytics_recordings WHERE id = $1 AND site_id = $2 LIMIT 1`,
             [recordingId, siteId]
         ).catch(() => ({ rows: [] }));
@@ -129,7 +130,13 @@ export default async function handler(req, res) {
             endedAt: rec.ended_at,
             durationSec: rec.duration_sec,
             pathnames: rec.pathnames,
+            entryPathname: rec.entry_pathname,
             status: rec.status,
+            deviceType: rec.device_type,
+            browserFamily: rec.browser_family,
+            osFamily: rec.os_family,
+            countryCode: rec.country_code,
+            byteSize: rec.byte_size,
             events,
         });
     }

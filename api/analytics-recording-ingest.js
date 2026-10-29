@@ -89,7 +89,7 @@ export default async function handler(req, res) {
         return res.status(400).end();
     }
 
-    const { s: siteId, sid, recId, seq, final, pathname, pathnames, events } = body;
+    const { s: siteId, sid, recId, seq, final, pathname, pathnames, events, dt } = body;
 
     if (!siteId || typeof siteId !== "string" || !sid || !recId || !Array.isArray(events)) {
         return res.status(400).end();
@@ -134,6 +134,10 @@ export default async function handler(req, res) {
 
     const country = (req.headers["x-vercel-ip-country"] || "").slice(0, 2) || null;
     const { browser, os } = parseUA(req.headers["user-agent"]);
+    // Same 'm'/'t'/'d' short code + expansion convention as api/a.js's main
+    // pageview ingest, so a recording's device_type agrees with the same
+    // visitor's analytics_events rows rather than being derived separately.
+    const deviceType = dt === "m" ? "mobile" : dt === "t" ? "tablet" : dt === "d" ? "desktop" : null;
     const pathList = Array.isArray(pathnames) && pathnames.length
         ? pathnames.slice(0, 50).map(p => String(p).slice(0, 500))
         : [String(pathname || "/").slice(0, 500)];
@@ -167,7 +171,7 @@ export default async function handler(req, res) {
         [
             recordingId, siteId, orgId, sessionId,
             pathList, pathList[0],
-            blobUrl, Buffer.byteLength(eventsJson), null,
+            blobUrl, Buffer.byteLength(eventsJson), deviceType,
             browser, os, country,
             !!final,
             chunkHasSnapshot,
