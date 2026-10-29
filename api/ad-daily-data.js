@@ -272,24 +272,69 @@ async function fetchGA4PlatformBreakdown(accessToken, propertyId, fromDate, toDa
 // day) is generous relative to this being an admin-triggered view, not
 // high-traffic. rowLimit 20 matches every other "top N" table in this
 // dashboard (analytics-report.js's topPages/utmSources/referrers/hosts).
-async function fetchGSCDimension(accessToken, siteUrl, fromDate, toDate, dimension) {
+// `dimensions` is an array so this covers both single-dimension breakdowns
+// (query, page, country, device) and the combined query+page view — `keys`
+// comes back from the API in the same order as the `dimensions` array, so
+// callers index into the returned `keys` array positionally.
+async function fetchGSCDimension(accessToken, siteUrl, fromDate, toDate, dimensions) {
     const resp = await fetch(
         `https://www.googleapis.com/webmasters/v3/sites/${encodeURIComponent(siteUrl)}/searchAnalytics/query`,
         {
             method: "POST",
             headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
-            body: JSON.stringify({ startDate: fromDate, endDate: toDate, dimensions: [dimension], rowLimit: 20 }),
+            body: JSON.stringify({ startDate: fromDate, endDate: toDate, dimensions, rowLimit: 20, dataState: "all" }),
         }
     );
     if (!resp.ok) return [];
     const data = await resp.json().catch(() => null);
     return (data?.rows || []).map(row => ({
-        key:         row.keys?.[0] || "",
+        keys:        row.keys || [],
+        key:         row.keys?.[0] || "", // kept for existing single-dimension callers
         clicks:      Number(row.clicks || 0),
         impressions: Number(row.impressions || 0),
         ctr:         Number(row.ctr || 0),
         position:    Number(row.position || 0),
     }));
+}
+
+// Per-URL indexing status — a different category from everything else here
+// (technical SEO health, not performance). There's no bulk/list endpoint for
+// this, only inspect-one-URL-at-a-time, so this only covers the already-
+// fetched top pages (capped at 10) rather than every URL on the site — a
+// full-site crawl status would need its own sitemap-enumeration + cron +
+// storage design, not a live per-dashboard-load fetch like this.
+async function fetchGSCIndexingStatus(accessToken, siteUrl, pages) {
+    const results = await Promise.all((pages || []).slice(0, 10).map(async page => {
+        const url = page.keys?.[0] || page.key;
+        if (!url) return null;
+        try {
+            const resp = await fetch(
+                `https://searchconsole.googleapis.com/v1/urlInspection/index:inspect`,
+                {
+                    method: "POST",
+                    headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+                    body: JSON.stringify({ inspectionUrl: url, siteUrl }),
+                }
+            );
+            if (!resp.ok) return null;
+            const data = await resp.json().catch(() => null);
+            const result = data?.inspectionResult?.indexStatusResult;
+            if (!result) return null;
+            return {
+                url,
+                verdict:         result.verdict || "UNKNOWN",
+                coverageState:   result.coverageState || null,
+                indexingState:   result.indexingState || null,
+                robotsTxtState:  result.robotsTxtState || null,
+                lastCrawlTime:   result.lastCrawlTime || null,
+                googleCanonical: result.googleCanonical || null,
+                userCanonical:   result.userCanonical || null,
+            };
+        } catch {
+            return null;
+        }
+    }));
+    return results.filter(Boolean);
 }
 
 export default async function handler(req, res) {
@@ -414,12 +459,23 @@ export default async function handler(req, res) {
     // is always exactly one of "google_analytics" / "google_search_console",
     // so only one of the two branches ever actually assigns it.
     let topQueries = null;
+    let topQueriesByPage = null;
+    let indexingStatus = null;
     if (gscConn) {
-        [topQueries, topPages] = await Promise.all([
-            fetchGSCDimension(gscConn.access_token, gscConn.account_id, fromDate, toDate, "query").catch(() => []),
-            fetchGSCDimension(gscConn.access_token, gscConn.account_id, fromDate, toDate, "page").catch(() => []),
+        [topQueries, topPages, countryBreakdown, deviceBreakdown, topQueriesByPage] = await Promise.all([
+            fetchGSCDimension(gscConn.access_token, gscConn.account_id, fromDate, toDate, ["query"]).catch(() => []),
+            fetchGSCDimension(gscConn.access_token, gscConn.account_id, fromDate, toDate, ["page"]).catch(() => []),
+            fetchGSCDimension(gscConn.access_token, gscConn.account_id, fromDate, toDate, ["country"]).catch(() => []),
+            fetchGSCDimension(gscConn.access_token, gscConn.account_id, fromDate, toDate, ["device"]).catch(() => []),
+            fetchGSCDimension(gscConn.access_token, gscConn.account_id, fromDate, toDate, ["query", "page"]).catch(() => []),
         ]);
+        // Indexing status for the top pages — run after topPages resolves
+        // (needs its URLs as input), not folded into the Promise.all above.
+        indexingStatus = await fetchGSCIndexingStatus(gscConn.access_token, gscConn.account_id, topPages).catch(() => []);
     }
 
-    return res.status(200).json({ rows, platformBreakdown, summary, channelBreakdown, deviceBreakdown, countryBreakdown, topPages, topQueries });
+    return res.status(200).json({
+        rows, platformBreakdown, summary, channelBreakdown, deviceBreakdown, countryBreakdown, topPages, topQueries,
+        topQueriesByPage, indexingStatus,
+    });
 }

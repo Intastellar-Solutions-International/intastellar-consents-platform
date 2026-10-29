@@ -11,8 +11,12 @@ import { ScannerHost } from "../../API/host.js";
 import { toIsoDate, KpiCard, formatPercent, useCompareRange } from "./_shared.js";
 import { IconTrendingUp, IconGlobe, IconTarget } from "./Icons.js";
 import TrendLineChart from "./TrendLineChart.js";
+import StatusBadge from "./components/StatusBadge.js";
 import searchConsoleLogo from "../../Components/Header/icons/search-console.svg";
 import "./Analytics.css";
+
+const VERDICT_STATUS = { PASS: "good", FAIL: "bad", PARTIAL: "warn", NEUTRAL: "neutral" };
+const VERDICT_LABEL  = { PASS: "Indexed", FAIL: "Not indexed", PARTIAL: "Partial", NEUTRAL: "Neutral" };
 
 /*
  * Search Console connection + daily clicks/impressions/position fetch —
@@ -25,7 +29,8 @@ import "./Analytics.css";
 function useGscReport(domain, fromDate, toDate) {
     const [state, setState] = useState({
         checked: false, connected: false, rows: null,
-        topQueries: null, topPages: null, loading: false,
+        topQueries: null, topPages: null, topCountries: null, topDevices: null,
+        topQueriesByPage: null, indexingStatus: null, loading: false,
     });
 
     useEffect(() => {
@@ -46,7 +51,11 @@ function useGscReport(domain, fromDate, toDate) {
                 if (cancelled) return null;
                 const hasGsc = (data?.connections || []).some(c => c.platform === "google_search_console" && c.account_id);
                 if (!hasGsc) {
-                    setState({ checked: true, connected: false, rows: null, topQueries: null, topPages: null, loading: false });
+                    setState({
+                        checked: true, connected: false, rows: null,
+                        topQueries: null, topPages: null, topCountries: null, topDevices: null,
+                        topQueriesByPage: null, indexingStatus: null, loading: false,
+                    });
                     return null;
                 }
                 const qs = `platform=google_search_console&domain=${encodeURIComponent(domain)}&fromDate=${fromYmd}&toDate=${toYmd2}`;
@@ -60,6 +69,10 @@ function useGscReport(domain, fromDate, toDate) {
                     rows: daily.rows || [],
                     topQueries: daily.topQueries || [],
                     topPages: daily.topPages || [],
+                    topCountries: daily.countryBreakdown || [],
+                    topDevices: daily.deviceBreakdown || [],
+                    topQueriesByPage: daily.topQueriesByPage || [],
+                    indexingStatus: daily.indexingStatus || [],
                     loading: false,
                 });
             })
@@ -97,6 +110,85 @@ function DimensionTable({ icon, title, rows, keyLabel }) {
                     ))}
                     {!rows?.length && (
                         <tr><td colSpan={5} style={{ color: "rgba(130,130,130,0.55)", fontSize: "0.8rem" }}>No data for this period</td></tr>
+                    )}
+                </tbody>
+            </table>
+        </div>
+    );
+}
+
+// Query+page combined — two keys per row (query, page) instead of
+// DimensionTable's one, so you can see which specific query drove clicks to
+// which specific page, rather than two disconnected top-10 lists.
+function QueryPageTable({ icon, title, rows }) {
+    return (
+        <div className="sa-panel">
+            <h3 className="sa-panel__title">{icon} {title}</h3>
+            <table className="sa-table">
+                <thead>
+                    <tr>
+                        <th>Query</th>
+                        <th>Page</th>
+                        <th className="sa-table__num">Clicks</th>
+                        <th className="sa-table__num">Impressions</th>
+                        <th className="sa-table__num">CTR</th>
+                        <th className="sa-table__num">Avg. position</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {(rows || []).map((r, i) => (
+                        <tr key={i}>
+                            <td title={r.keys?.[0]}>{r.keys?.[0] || "—"}</td>
+                            <td className="sa-table__path" title={r.keys?.[1]}>{r.keys?.[1] || "—"}</td>
+                            <td className="sa-table__num">{r.clicks.toLocaleString("de-DE")}</td>
+                            <td className="sa-table__num">{r.impressions.toLocaleString("de-DE")}</td>
+                            <td className="sa-table__num">{formatPercent(r.ctr * 100)}</td>
+                            <td className="sa-table__num">{r.position.toLocaleString("de-DE", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}</td>
+                        </tr>
+                    ))}
+                    {!rows?.length && (
+                        <tr><td colSpan={6} style={{ color: "rgba(130,130,130,0.55)", fontSize: "0.8rem" }}>No data for this period</td></tr>
+                    )}
+                </tbody>
+            </table>
+        </div>
+    );
+}
+
+// Indexing status — a different category from every other panel on this
+// page: technical SEO health (is Google actually able to index this page,
+// and why/why not) rather than search performance. Only covers the top
+// pages by clicks (see fetchGSCIndexingStatus's doc comment in
+// api/ad-daily-data.js for why this can't cover the whole site).
+function IndexingStatusPanel({ icon, rows }) {
+    return (
+        <div className="sa-panel">
+            <h3 className="sa-panel__title">{icon} Indexing status
+                <span className="sa-panel__consent-note">top pages by clicks</span>
+            </h3>
+            <table className="sa-table">
+                <thead>
+                    <tr>
+                        <th>Page</th>
+                        <th>Status</th>
+                        <th>Last crawled</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {(rows || []).map((r, i) => (
+                        <tr key={i}>
+                            <td className="sa-table__path" title={r.url}>{r.url}</td>
+                            <td>
+                                <StatusBadge
+                                    status={VERDICT_STATUS[r.verdict] || "neutral"}
+                                    label={VERDICT_LABEL[r.verdict] || r.coverageState || "Unknown"}
+                                />
+                            </td>
+                            <td>{r.lastCrawlTime ? new Date(r.lastCrawlTime).toLocaleDateString("de-DE") : "—"}</td>
+                        </tr>
+                    ))}
+                    {!rows?.length && (
+                        <tr><td colSpan={3} style={{ color: "rgba(130,130,130,0.55)", fontSize: "0.8rem" }}>No indexing data available</td></tr>
                     )}
                 </tbody>
             </table>
@@ -203,6 +295,10 @@ export default function SearchConsole() {
 
                                     <DimensionTable icon={<IconTarget className="sa-icon" />} title="Top queries" rows={gsc.topQueries} keyLabel="Query" />
                                     <DimensionTable icon={<IconGlobe className="sa-icon" />} title="Top pages" rows={gsc.topPages} keyLabel="Page" />
+                                    <DimensionTable icon={<IconGlobe className="sa-icon" />} title="Top countries" rows={gsc.topCountries} keyLabel="Country" />
+                                    <DimensionTable icon={<IconTarget className="sa-icon" />} title="Top devices" rows={gsc.topDevices} keyLabel="Device" />
+                                    <QueryPageTable icon={<IconTarget className="sa-icon" />} title="Queries by page" rows={gsc.topQueriesByPage} />
+                                    <IndexingStatusPanel icon={<IconGlobe className="sa-icon" />} rows={gsc.indexingStatus} />
                                 </>
                             )}
                         </div>

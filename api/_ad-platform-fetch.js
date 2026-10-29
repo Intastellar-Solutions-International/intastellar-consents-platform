@@ -1065,6 +1065,11 @@ async function fetchSearchConsoleDaily(conn, fromDate, toDate) {
                 endDate: toDate,
                 dimensions: ["date"],
                 rowLimit: 25000,
+                // "all" includes GSC's fresh/not-yet-finalized data for the
+                // most recent few days — the default ("final" only) silently
+                // drops them, so a date range ending "today" would otherwise
+                // look like a dip that isn't real, just not finalized yet.
+                dataState: "all",
             }),
         }
     );
