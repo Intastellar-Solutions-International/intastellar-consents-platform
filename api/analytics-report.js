@@ -214,7 +214,7 @@ async function _handler(req, res) {
            conversionCountriesRes, convertedSessionsRes,
            osRes, screensRes, languagesRes, timezonesRes, engagedRes, leadRes,
            pageEngagementRes, newVsReturningRes, lastTouchByChannelRes,
-           revenueRes, dailyEngagedRes, funnelRes] = await Promise.all([
+           revenueRes, dailyEngagedRes, funnelRes, channelsRes] = await Promise.all([
 
         db.query(`
             SELECT
@@ -682,12 +682,37 @@ async function _handler(req, res) {
             throw err;
         }),
 
+        // Total traffic (all events, not just conversion-linked sessions —
+        // contrast with lastTouchByChannelRes above) bucketed into the same
+        // organic/paid/paid_social/referral/direct channels CHANNEL_SQL
+        // already defines for the seg_channel filter — "which channel
+        // caused how much traffic" for the Acquisition page.
+        db.query(`
+            SELECT
+                CASE
+                    WHEN ${CHANNEL_SQL.organic}     THEN 'organic'
+                    WHEN ${CHANNEL_SQL.paid_social} THEN 'paid_social'
+                    WHEN ${CHANNEL_SQL.paid}         THEN 'paid'
+                    WHEN ${CHANNEL_SQL.referral}     THEN 'referral'
+                    ELSE 'direct'
+                END AS channel,
+                COUNT(*)                                                          AS events,
+                COUNT(DISTINCT session_id) FILTER (WHERE session_id IS NOT NULL)  AS sessions
+            FROM analytics_events
+            WHERE site_id = $1 AND received_at >= $2 AND received_at < $3 ${EMBED_FILTER}
+            GROUP BY channel ORDER BY events DESC`,
+            [siteId, fromDate, toDateExclusive]
+        ).catch((err) => {
+            if (err?.message?.includes("does not exist")) return { rows: [] };
+            throw err;
+        }),
+
     ]).catch((err) => {
         // Schema not yet migrated, connection limit hit, or other transient DB
         // error — return empty rows for every query so the response stays a
         // valid (if empty) 200 instead of crashing with a 500.
         console.error("[analytics-report] batch error:", err?.message);
-        return Array(26).fill({ rows: [] });
+        return Array(27).fill({ rows: [] });
     });
 
     const t = totalsRes.rows[0] || {};
@@ -764,6 +789,11 @@ async function _handler(req, res) {
         consentImpact: computeConsentImpact(totalsRes.rows[0], dailyRes.rows),
         lastTouchByChannel: lastTouchByChannelRes.rows.map(r => ({
             channel:  r.channel,
+            sessions: Number(r.sessions || 0),
+        })),
+        channels: channelsRes.rows.map(r => ({
+            channel:  r.channel,
+            events:   Number(r.events   || 0),
             sessions: Number(r.sessions || 0),
         })),
         segment: { device: segDevice, country: segCountry, channel: segChannel, consent: segConsent },

@@ -8,6 +8,17 @@ import "./Analytics.css";
 const AD_RESOLVE_URL = `${ScannerHost}/api/ad-id-resolve`;
 const _acqResolveCache = new Map();
 
+// Same five buckets as CHANNEL_SQL in api/analytics-report.js and the
+// Segment filter's "Channel" option — kept as display labels only, the
+// bucketing itself happens server-side.
+const CHANNEL_LABELS = {
+    organic:     "Organic Search",
+    paid:        "Paid",
+    paid_social: "Paid Social",
+    referral:    "Referral",
+    direct:      "Direct",
+};
+
 function isSameSite(host, domain) {
     const norm = h => (h || "").replace(/^www\./, "").toLowerCase();
     const h = norm(host), d = norm(domain);
@@ -45,6 +56,7 @@ export default function AnalyticsAcquisition() {
     const trendSessions = useMemo(() => pctChange(data?.totals?.uniqueSessions, prevData?.totals?.uniqueSessions), [data, prevData]);
     const trendPageviews = useMemo(() => pctChange(data?.totals?.total,          prevData?.totals?.total),          [data, prevData]);
 
+    const maxChannel   = useMemo(() => Math.max(...(data?.channels   || []).map(c => c.events), 1), [data]);
     const maxUtm       = useMemo(() => Math.max(...(data?.utmSources || []).map(u => u.events), 1), [data]);
     const maxPages     = useMemo(() => Math.max(...(data?.topPages   || []).map(p => p.views),  1), [data]);
     const maxReferrer  = useMemo(() => Math.max(...(data?.referrers  || []).map(r => r.events), 1), [data]);
@@ -150,6 +162,47 @@ export default function AnalyticsAcquisition() {
                                     value={data.totals.total.toLocaleString("de-DE")}
                                     trend={trendPageviews}
                                 />
+                            </div>
+
+                            {/* Channels — all traffic (not just conversion-linked sessions,
+                                contrast with Attribution's lastTouchByChannel) bucketed into
+                                organic/paid/paid_social/referral/direct, the same taxonomy
+                                the Segment filter's "Channel" option already uses. Answers
+                                "which channel caused how much traffic" at a glance, above the
+                                per-campaign/per-referrer detail tables below. */}
+                            <div className="sa-panel sa-acq-channels">
+                                <h3 className="sa-panel__title">
+                                    <IconTrendingUp className="sa-icon" /> Channels
+                                </h3>
+                                <table className="sa-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Channel</th>
+                                            <th className="sa-table__num">Events</th>
+                                            <th className="sa-table__num">Sessions</th>
+                                            <th className="sa-table__num">% of sessions</th>
+                                            <th className="sa-table__bar" />
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {(data.channels || []).map(c => (
+                                            <tr key={c.channel}>
+                                                <td>{CHANNEL_LABELS[c.channel] || c.channel}</td>
+                                                <td className="sa-table__num">{c.events.toLocaleString("de-DE")}</td>
+                                                <td className="sa-table__num">{c.sessions.toLocaleString("de-DE")}</td>
+                                                <td className="sa-table__num">
+                                                    {data.totals.uniqueSessions > 0 ? formatPercent((c.sessions / data.totals.uniqueSessions) * 100) : "—"}
+                                                </td>
+                                                <td className="sa-table__bar">
+                                                    <MiniBar value={c.events} max={maxChannel} color="rgba(167,139,250,0.6)" />
+                                                </td>
+                                            </tr>
+                                        ))}
+                                        {!data.channels?.length && (
+                                            <tr><td colSpan={5} style={{ color: "rgba(130,130,130,0.55)", fontSize: "0.8rem" }}>No data yet</td></tr>
+                                        )}
+                                    </tbody>
+                                </table>
                             </div>
 
                             {/* Top pages */}
