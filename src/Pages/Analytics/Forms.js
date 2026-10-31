@@ -3,6 +3,7 @@ import { ScannerHost } from "../../API/host.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import {
     useAnalyticsPageChrome, authHeaders, KpiCard, MiniBar, formatPercent, useCompareRange,
+    usePrevRange, pctChange,
 } from "./_shared.js";
 import { IconFormFill, IconBarChart, IconTarget, IconScrollDepth, IconGlobe } from "./Icons.js";
 import TrendLineChart from "./TrendLineChart.js";
@@ -694,6 +695,49 @@ function AcqPagesTable({ pages }) {
     );
 }
 
+// Pure, testable — same "synthesized takeaway" pattern as index.js's
+// buildOverviewHeadline() (docs/design-audit-plan.md Phase 4 item 4):
+// aggregate totals in the headline, the single most actionable finding
+// (the form most worth fixing right now) in the subline, rather than
+// leaving the reader to cross-reference the tables below to find it.
+function buildFormsHeadline({ data, trendSubmissions }) {
+    const subs = data.totals.submissions ?? 0;
+    const forms = data.forms || [];
+    const numForms = forms.length;
+    if (subs === 0 && numForms === 0) return null;
+
+    let headline = `${subs.toLocaleString("de-DE")} submission${subs === 1 ? "" : "s"} across `
+        + `${numForms} form${numForms === 1 ? "" : "s"} this period`;
+    if (data.totals.completionRate != null) {
+        headline += `, ${formatPercent(data.totals.completionRate, 1)} completion overall`;
+    }
+    if (trendSubmissions != null && Number.isFinite(trendSubmissions)) {
+        headline += `, ${trendSubmissions >= 0 ? "up" : "down"} ${formatPercent(Math.abs(trendSubmissions))} from the period before`;
+    }
+    headline += ".";
+
+    // Only call out a form by name once there's enough volume for the rate
+    // to mean anything — a 1-starter form at 0% isn't a real finding.
+    const MIN_STARTERS = 5;
+    const candidates = forms.filter(f => f.completionRate != null && f.starters >= MIN_STARTERS);
+    const worst = candidates.length
+        ? candidates.reduce((a, b) => (b.completionRate < a.completionRate ? b : a))
+        : null;
+
+    let subline = null;
+    if (worst) {
+        const abandon = (data.abandonment || []).find(a => a.formId === worst.formId);
+        subline = `${worst.label || cleanFormId(worst.formId)} has the lowest completion rate at ${formatPercent(worst.completionRate, 1)}`;
+        subline += abandon?.topDropoutField
+            ? ` — most drop-off happens at the "${abandon.topDropoutField}" field.`
+            : ".";
+    } else if (numForms > 0) {
+        subline = "No form is showing a concerning completion rate right now.";
+    }
+
+    return { eyebrow: "Here's what to care about today", headline, subline };
+}
+
 export default function AnalyticsForms() {
     const {
         domain,
@@ -727,6 +771,14 @@ export default function AnalyticsForms() {
     // Compare-to-previous-period header wiring (Phase 3, docs/design-audit-plan.md).
     const compare = useCompareRange();
 
+    // KPI trend chips + headline sentence — same usePrevRange()/pctChange()
+    // pattern index.js already uses, just not previously wired up here.
+    const prevRange = usePrevRange(fromDate, toDate, compare);
+    const { data: prevData } = useFormsReport(domain, prevRange.fromIso, prevRange.toIso);
+    const trendSubmissions = useMemo(() => pctChange(data?.totals?.submissions,    prevData?.totals?.submissions),    [data, prevData]);
+    const trendStarters    = useMemo(() => pctChange(data?.totals?.starters,       prevData?.totals?.starters),       [data, prevData]);
+    const trendCompletion  = useMemo(() => pctChange(data?.totals?.completionRate, prevData?.totals?.completionRate), [data, prevData]);
+
     return (
         <div style={{ flex: "1", minWidth: 0 }}>
             <StickyPageTitle
@@ -754,11 +806,27 @@ export default function AnalyticsForms() {
 
                     {domain && !loading && data && (
                         <>
+                            {/* ── Headline sentence ───────────────────────────────
+                                docs/design-audit-plan.md Phase 5, same synthesized-
+                                takeaway pattern as Overview's (Phase 4 item 4). */}
+                            {(() => {
+                                const h = buildFormsHeadline({ data, trendSubmissions });
+                                if (!h) return null;
+                                return (
+                                    <div className="sa-overview-headline">
+                                        <p className="sa-overview-headline__eyebrow">{h.eyebrow}</p>
+                                        <p className="sa-overview-headline__text">{h.headline}</p>
+                                        {h.subline && <p className="sa-overview-headline__sub">{h.subline}</p>}
+                                    </div>
+                                );
+                            })()}
+
                             <div className="sa-kpi-strip sa-kpi-strip--4">
                                 <KpiCard
                                     icon={<IconFormFill />}
                                     label="Form submissions"
                                     value={(data.totals.submissions ?? 0).toLocaleString("de-DE")}
+                                    trend={trendSubmissions}
                                     sub={
                                         data.totals.sessionSubmissions < data.totals.submissions
                                             ? `${data.totals.sessionSubmissions.toLocaleString("de-DE")} session-linked`
@@ -771,6 +839,7 @@ export default function AnalyticsForms() {
                                     value={data.totals.starters > 0
                                         ? data.totals.starters.toLocaleString("de-DE")
                                         : "—"}
+                                    trend={data.totals.starters > 0 ? trendStarters : undefined}
                                     sub={
                                         data.totals.starters > 0
                                             ? (data.totals.sessionStarters < data.totals.starters
@@ -785,6 +854,7 @@ export default function AnalyticsForms() {
                                     value={data.totals.completionRate != null
                                         ? formatPercent(data.totals.completionRate, 1)
                                         : "—"}
+                                    trend={data.totals.completionRate != null ? trendCompletion : undefined}
                                     sub={data.totals.completionRate != null
                                         ? "all events, any consent level"
                                         : "No form_started events yet"}

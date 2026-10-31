@@ -1726,3 +1726,48 @@ here," positioned before the Consent Impact Estimator panel. No new console erro
 Frustration-signals warning). This only confirms the empty-state path — the real-data path needs both
 this deploying and an e-commerce-type account with those event kinds registered, neither available to
 test from here. Babel + full test suite (117/117) pass.
+
+Phase 4's remaining item (a "needs attention" insights list using `InsightCard`) is paused, not
+dropped — you redirected to the Forms dashboard before I got a go/no-go on it.
+
+## Phase 5: Forms dashboard — more data-driven, more helpful
+
+You asked for the Forms page to be "more data driven + more helpful for understanding." It already had
+a lot of tables (abandonment, field errors, step progress, geo, acquisition, …) but none of the
+synthesized-takeaway treatment Phase 4 gave Overview, and its KPI strip never used the
+`useCompareRange`/`usePrevRange` hooks already sitting in `_shared.js` and already wired up on every
+other Analytics page. You picked all three candidate directions I proposed; doing them as separate
+items/commits rather than one large change.
+
+### 1. Headline insight + KPI trends — done, verified live
+
+**`src/Pages/Analytics/Forms.js`:** added `buildFormsHeadline({ data, trendSubmissions })`, a pure
+module-level function mirroring `index.js`'s `buildOverviewHeadline()` exactly — aggregate totals
+(submissions, forms, overall completion, trend vs. previous period) in the headline, and the single
+most actionable finding in the subline: the form with the lowest completion rate (among forms with
+≥5 starters, so a 1-starter form at 0% doesn't get called out), plus its top dropout field from
+`data.abandonment` when one exists. Rendered with the exact same `.sa-overview-headline*` CSS classes
+Overview uses — they were never scoped to `.sa-overview`, so no new CSS was needed.
+
+Wired `usePrevRange(fromDate, toDate, compare)` + a second `useFormsReport()` call for the previous
+period, then `pctChange()` (both already exported from `_shared.js`, already used this way on
+Overview — not new code, just not previously connected here) to feed `trend` into the Submissions,
+Forms started, and Completion rate KPI cards. Left "Unique forms" without a trend chip — it's a
+configuration fact, not a performance metric with a meaningful direction.
+
+**Verified live (asasoftware.aero, this test account's real data, 1024/1280/1440px):** headline reads
+"8 submissions across 3 forms this period, 10,8% completion overall, down 57,9% from the period
+before." / "Free Trial Request Form has the lowest completion rate at 42,9%." — matching the account's
+actual totals and the one form that actually has enough volume to be worth naming. KPI strip shows
+▼57,9% / ▼22,1% / ▼46,0% on the three trended cards, no chip on Unique forms. No horizontal overflow,
+no new console errors, at any of the three widths. Babel + full test suite (117/117) pass.
+
+**One self-caught capture issue, not a real bug:** the first `fullPage: true` screenshot of the
+"after" state showed the fixed header and sticky sidebar nav appearing a second time partway down the
+page. Checked via `document.querySelectorAll` before assuming anything — exactly one `.sa-sticky-header`
+and one nav element exist in the DOM; this was Puppeteer's own `fullPage` capture stitching fixed/sticky
+elements at their CSS offset rather than scroll position, not something a real scrolling user would
+ever see, and not present in the "before" shot only because it's sensitive to the page's total content
+height (which my change shifts by the few lines the headline adds). Re-captured every width with an
+explicit full-content-height viewport instead of `fullPage: true`, which is clean. Screenshots:
+`docs/design-screenshots/forms-{before,after}-{1024,1280,1440}.png`.
