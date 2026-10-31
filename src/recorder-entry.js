@@ -18,6 +18,31 @@ import { record } from "rrweb";
     var stopped = false;
     var flushIv = null;
 
+    // SPA frameworks (Next.js, React Router, Angular Router) navigate via the
+    // History API instead of a real page load, so pageview boundaries have to
+    // be detected explicitly here rather than relying on this script being
+    // freshly re-injected per page. Capped to match the 50-entry limit
+    // api/analytics-recording-ingest.js applies server-side anyway.
+    function trackPathname() {
+        if (location.pathname === pathnames[pathnames.length - 1]) return;
+        if (pathnames.length < 50) pathnames.push(location.pathname);
+    }
+    try {
+        var origPushState = history.pushState;
+        var origReplaceState = history.replaceState;
+        history.pushState = function () {
+            var ret = origPushState.apply(this, arguments);
+            trackPathname();
+            return ret;
+        };
+        history.replaceState = function () {
+            var ret = origReplaceState.apply(this, arguments);
+            trackPathname();
+            return ret;
+        };
+        window.addEventListener("popstate", trackPathname);
+    } catch (e) {}
+
     // Non-negotiable regardless of site config — merged with the site owner's
     // own selectors, never replacing them.
     var blockSelectors = [
@@ -91,6 +116,16 @@ import { record } from "rrweb";
         stopped = true;
         if (flushIv) { clearInterval(flushIv); flushIv = null; }
         try { stopRecording && stopRecording(); } catch (e) {}
+        // Only matters for the consent-revoked path (__intaRecStop) — on
+        // pagehide the document is being torn down anyway. Restores the
+        // site's own History API in case something there cares about
+        // identity (e.g. re-patching itself, or a router with a wrapped
+        // pushState guard).
+        try {
+            if (origPushState) history.pushState = origPushState;
+            if (origReplaceState) history.replaceState = origReplaceState;
+            window.removeEventListener("popstate", trackPathname);
+        } catch (e) {}
         flush(true);
     }
 
