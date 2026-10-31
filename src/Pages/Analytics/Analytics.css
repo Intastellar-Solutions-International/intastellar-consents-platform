@@ -3915,6 +3915,57 @@
     color: rgba(var(--sa-text-muted), 0.75);
 }
 
+/* Stats row + field-error list — Phase 5 item 3, the rest of what used to be
+   four separate tables (session abandonment, field errors, error recovery,
+   time to complete), now attached under each form's own funnel. */
+
+.sa-form-funnel__stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+.sa-form-funnel__stat {
+    display: flex;
+    flex-direction: column;
+}
+
+.sa-form-funnel__stat-value {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: rgba(var(--sa-text), 0.9);
+}
+
+.sa-form-funnel__stat-label {
+    font-size: 0.68rem;
+    color: rgba(var(--sa-text-muted), 0.65);
+}
+
+.sa-form-funnel__errors {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+.sa-form-funnel__errors-title {
+    margin: 0 0 6px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: rgba(var(--sa-text-muted), 0.75);
+}
+
+.sa-form-funnel__error-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    font-size: 0.76rem;
+    padding: 3px 0;
+}
+
 /* ── Campaign table (expandable rows) ───────────────────────────────────────── */
 
 .sa-campaign-row {
@@ -6959,10 +7010,6 @@ details[open] .ca-context-summary::before { content: "▾"; }
     grid-template-columns: 1fr 1fr;
 }
 
-.sa-forms-grid--insights {
-    grid-template-columns: 3fr 2fr;
-}
-
 .sa-forms-grid--acq {
     grid-template-columns: 3fr 2fr;
 }
@@ -6970,14 +7017,12 @@ details[open] .ca-context-summary::before { content: "▾"; }
 @media (max-width: 1100px) {
     .sa-forms-grid--main     { grid-template-columns: 1fr; }
     .sa-forms-grid--bottom   { grid-template-columns: 1fr; }
-    .sa-forms-grid--insights { grid-template-columns: 1fr; }
     .sa-forms-grid--acq      { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 680px) {
     .sa-forms-grid--main     { grid-template-columns: 1fr; }
     .sa-forms-grid--bottom   { grid-template-columns: 1fr; }
-    .sa-forms-grid--insights { grid-template-columns: 1fr; }
     .sa-forms-grid--acq      { grid-template-columns: 1fr; }
     .sa-forms-grid { gap: 10px; margin-bottom: 10px; }
 }

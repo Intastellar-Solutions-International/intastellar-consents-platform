@@ -1813,3 +1813,37 @@ outside a module`, `exports is not defined` from the `react-use-websocket` CDN s
 and unrelated — confirmed present identically in the "before" capture too, not introduced by this item.
 Babel + full test suite (117/117) pass. Screenshots:
 `docs/design-screenshots/forms-funnel-{before,after}-{1024,1280,1440}.png`.
+
+### 3. Consolidate per-form tables into one deep-dive panel — done, verified live
+
+Last of the three requested directions. Session abandonment, Field error breakdown, Error recovery
+rate, and Time to complete were four separate tables keyed by form — cross-referencing one form's full
+story meant scanning all four for its row. Folded them into the item-2 funnel card: `FormFunnelCard`
+became `FormDeepDivePanel`/`FormDeepDiveCard`, which now renders, per form, the funnel (unchanged from
+item 2) plus a stats row (median time to complete, error recovery rate, avg fields touched/total —
+only the ones with data, so a form with nothing to show doesn't get an empty row) and a compact
+"fields causing errors" list (field name, error sessions, blocking rate — same color thresholds
+`FieldErrorTable` used). Geographic breakdown isn't per-form (it's a cross-cutting country dimension)
+so it stayed a separate table, now paired with Device breakdown in the row Form errors vacated in
+item 2. Panel renamed "Funnel per form" → "Per-form breakdown" to match the wider scope.
+
+**`AbandonmentTable`, `FieldErrorTable`, `ErrorRecoveryTable`, `TimeToCompleteTable` deleted outright**
+(not left unused) — their data now renders via the new card, and `grep` confirmed each had exactly one
+caller, the panel block being replaced. `.sa-forms-grid--insights` (the grid class that held two of
+those panels) removed from `Analytics.css` too, same reason.
+
+**Verified live (asasoftware.aero, 1024/1280/1440px):** `document.querySelectorAll(".sa-panel__title")`
+confirms the four old panel titles are gone and "Per-form breakdown" is the only funnel/stats panel
+left. Stats render correctly per form — Free Trial Request Form and Contact Form show "? / 10" / "? / 9
+avg fields touched" (the `?` is the pre-existing placeholder for a null `avgFieldsTouched`, unchanged
+from the old table's own fallback), Book Demo Request Form correctly shows no stats row at all (no
+time/recovery/field data for it, so nothing renders rather than an empty section). No field-error rows
+render for any form — matches this account's real data, which already showed "No field-level
+validation errors recorded yet." in the old `FieldErrorTable` before this change, confirmed by diffing
+against the "before" capture of this exact item. No overflow at any width; Device breakdown + Geographic
+breakdown collapse to one column below 1100px, same breakpoint the page's other grids already use.
+Same pre-existing, unrelated `react-use-websocket` CDN console errors as items 1 and 2. Babel + full
+test suite (117/117) pass. Screenshots:
+`docs/design-screenshots/forms-deepdive-{before,after}-{1024,1280,1440}.png`.
+
+## Phase 5 complete (all three requested directions shipped)

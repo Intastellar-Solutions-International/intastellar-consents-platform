@@ -202,36 +202,6 @@ function fmtDuration(seconds) {
     return rem > 0 ? `${m}m ${rem}s` : `${m}m`;
 }
 
-function TimeToCompleteTable({ timeToComplete }) {
-    if (!timeToComplete || !timeToComplete.length) {
-        return <p className="sa-notice">No time data yet — requires session-linked form_field_focus and form_submit events from the same session.</p>;
-    }
-    return (
-        <div className="sa-table-scroll">
-        <table className="sa-table">
-            <thead>
-                <tr>
-                    <th>Form</th>
-                    <th className="sa-table__num">Sessions</th>
-                    <th className="sa-table__num">Median</th>
-                    <th className="sa-table__num">Average</th>
-                </tr>
-            </thead>
-            <tbody>
-                {timeToComplete.map((r, i) => (
-                    <tr key={i}>
-                        <td><span className="sa-form-id" title={r.formId}>{cleanFormId(r.formId)}</span></td>
-                        <td className="sa-table__num sa-muted">{r.sessions.toLocaleString("de-DE")}</td>
-                        <td className="sa-table__num" style={{ fontWeight: 600 }}>{fmtDuration(r.medianSeconds)}</td>
-                        <td className="sa-table__num sa-muted">{fmtDuration(r.avgSeconds)}</td>
-                    </tr>
-                ))}
-            </tbody>
-        </table>
-        </div>
-    );
-}
-
 // Per-form visual funnel — docs/design-audit-plan.md Phase 5 item 2. Replaces
 // the old plain Multi-step progress table (started → each data-analytics-step
 // → submitted, reached/completed/drop-off columns) with the same bar-funnel
@@ -254,7 +224,21 @@ function buildFunnelStages(form, stepProgress) {
     ];
 }
 
-function FormFunnelCard({ form, stages, dropoutField }) {
+// Field-error blocking-rate color — same thresholds FieldErrorTable used
+// before it was folded in here.
+function blockingColor(rate) {
+    if (rate == null) return undefined;
+    if (rate > 70) return "rgba(239,68,68,0.9)";
+    if (rate > 40) return "rgba(234,179,8,0.9)";
+    return "rgba(34,197,94,0.9)";
+}
+
+// One form's full story in one place — docs/design-audit-plan.md Phase 5
+// item 3. Used to be four separate tables (session abandonment, field
+// errors, error recovery, time to complete) you had to cross-reference by
+// form name; now it's stats + field errors attached directly below that
+// form's own funnel (item 2) instead of a second lookup.
+function FormDeepDiveCard({ form, stages, abandonEntry, timeEntry, recoveryEntry, fieldErrorsForForm }) {
     const first = stages[0].sessions || 0;
 
     // The single biggest stage-to-stage loss gets visually called out —
@@ -272,6 +256,16 @@ function FormFunnelCard({ form, stages, dropoutField }) {
     });
     let worstIdx = -1, worstDrop = -1;
     drops.forEach((d, i) => { if (d != null && d > worstDrop) { worstDrop = d; worstIdx = i; } });
+
+    const fieldInfo = abandonEntry?.totalFields != null
+        ? `${abandonEntry.avgFieldsTouched != null ? abandonEntry.avgFieldsTouched : "?"} / ${abandonEntry.totalFields}`
+        : abandonEntry?.avgFieldsTouched != null ? `${abandonEntry.avgFieldsTouched}` : null;
+
+    const stats = [
+        timeEntry?.medianSeconds != null && { label: "Median time", value: fmtDuration(timeEntry.medianSeconds) },
+        recoveryEntry?.errorSessions > 0 && { label: "Error recovery", value: formatPercent(recoveryEntry.recoveryRate, 1) },
+        fieldInfo && { label: "Avg fields touched", value: fieldInfo },
+    ].filter(Boolean);
 
     return (
         <div className="sa-form-funnel">
@@ -304,16 +298,44 @@ function FormFunnelCard({ form, stages, dropoutField }) {
                     </div>
                 );
             })}
-            {dropoutField && (
+            {abandonEntry?.topDropoutField && (
                 <p className="sa-form-funnel__field-note">
-                    Most drop-off happens at the <code className="sa-field-name">{dropoutField}</code> field.
+                    Most drop-off happens at the <code className="sa-field-name">{abandonEntry.topDropoutField}</code> field.
                 </p>
+            )}
+
+            {stats.length > 0 && (
+                <div className="sa-form-funnel__stats">
+                    {stats.map(s => (
+                        <div key={s.label} className="sa-form-funnel__stat">
+                            <span className="sa-form-funnel__stat-value">{s.value}</span>
+                            <span className="sa-form-funnel__stat-label">{s.label}</span>
+                        </div>
+                    ))}
+                </div>
+            )}
+
+            {fieldErrorsForForm.length > 0 && (
+                <div className="sa-form-funnel__errors">
+                    <p className="sa-form-funnel__errors-title">Fields causing errors</p>
+                    {fieldErrorsForForm.map((r, i) => (
+                        <div key={i} className="sa-form-funnel__error-row">
+                            <code className="sa-field-name">{r.field}</code>
+                            <span className="sa-muted">{r.errorSessions.toLocaleString("de-DE")} error sessions</span>
+                            <span style={{ color: blockingColor(r.blockingRate), fontWeight: 600 }}>
+                                {r.blockingRate != null ? `${formatPercent(r.blockingRate, 1)} blocking` : "—"}
+                            </span>
+                        </div>
+                    ))}
+                </div>
             )}
         </div>
     );
 }
 
-function FormFunnelPanel({ forms, abandonMap, stepProgress }) {
+function FormDeepDivePanel({ forms, abandonMap, stepProgress, timeToComplete, errorRecovery, fieldErrors }) {
+    const timeByForm     = useMemo(() => new Map((timeToComplete || []).map(r => [r.formId, r])), [timeToComplete]);
+    const recoveryByForm = useMemo(() => new Map((errorRecovery || []).map(r => [r.formId, r])), [errorRecovery]);
     const withFunnels = (forms || []).filter(f => (f.starters || 0) > 0);
     if (!withFunnels.length) {
         return (
@@ -329,11 +351,14 @@ function FormFunnelPanel({ forms, abandonMap, stepProgress }) {
                 const stages = buildFunnelStages(f, stepProgress);
                 if (!stages) return null;
                 return (
-                    <FormFunnelCard
+                    <FormDeepDiveCard
                         key={f.formId}
                         form={f}
                         stages={stages}
-                        dropoutField={abandonMap?.[f.formId]?.topDropoutField || null}
+                        abandonEntry={abandonMap?.[f.formId] || null}
+                        timeEntry={timeByForm.get(f.formId) || null}
+                        recoveryEntry={recoveryByForm.get(f.formId) || null}
+                        fieldErrorsForForm={(fieldErrors || []).filter(r => r.formId === f.formId)}
                     />
                 );
             })}
@@ -381,140 +406,6 @@ function GeoBreakdownTable({ geoBreakdown }) {
                             <td className="sa-table__num">{r.starters > 0 ? r.starters.toLocaleString("de-DE") : "—"}</td>
                             <td className="sa-table__num">{r.submissions.toLocaleString("de-DE")}</td>
                             <td className="sa-table__num sa-muted">{r.errors > 0 ? r.errors.toLocaleString("de-DE") : "—"}</td>
-                            <td className="sa-table__num" style={rateColor ? { color: rateColor, fontWeight: 600 } : {}}>
-                                {rate != null ? formatPercent(rate, 1) : "—"}
-                            </td>
-                        </tr>
-                    );
-                })}
-            </tbody>
-        </table>
-        </div>
-    );
-}
-
-function AbandonmentTable({ abandonment }) {
-    if (!abandonment || !abandonment.length) {
-        return <p className="sa-notice">No abandoned sessions detected, or session tracking requires full consent.</p>;
-    }
-    return (
-        <div className="sa-table-scroll">
-        <table className="sa-table">
-            <thead>
-                <tr>
-                    <th>Form</th>
-                    <th className="sa-table__num">Started</th>
-                    <th className="sa-table__num">Abandoned</th>
-                    <th className="sa-table__num">Rate</th>
-                    <th>Dropout field</th>
-                    <th className="sa-table__num">Avg fields</th>
-                </tr>
-            </thead>
-            <tbody>
-                {abandonment.map((r, i) => {
-                    const rate = r.abandonmentRate;
-                    const rateColor = rate == null ? undefined
-                        : rate > 70 ? "rgba(239,68,68,0.9)"
-                        : rate > 40 ? "rgba(234,179,8,0.9)"
-                        : "rgba(34,197,94,0.9)";
-                    const fieldInfo = r.totalFields != null
-                        ? `${r.avgFieldsTouched != null ? r.avgFieldsTouched : "?"} / ${r.totalFields}`
-                        : r.avgFieldsTouched != null ? r.avgFieldsTouched : "—";
-                    return (
-                        <tr key={`${r.formId}-${i}`}>
-                            <td><span className="sa-form-id" title={r.formId}>{cleanFormId(r.formId)}</span></td>
-                            <td className="sa-table__num">{(r.totalStarted ?? 0).toLocaleString("de-DE")}</td>
-                            <td className="sa-table__num">{(r.abandonedSessions ?? 0).toLocaleString("de-DE")}</td>
-                            <td className="sa-table__num" style={rateColor ? { color: rateColor, fontWeight: 600 } : {}}>
-                                {rate != null ? formatPercent(rate, 1) : "—"}
-                            </td>
-                            <td>
-                                {r.topDropoutField
-                                    ? <code className="sa-field-name">{r.topDropoutField}</code>
-                                    : <span className="sa-muted">—</span>}
-                            </td>
-                            <td className="sa-table__num sa-muted">{fieldInfo}</td>
-                        </tr>
-                    );
-                })}
-            </tbody>
-        </table>
-        </div>
-    );
-}
-
-function FieldErrorTable({ fieldErrors }) {
-    if (!fieldErrors || !fieldErrors.length) {
-        return <p className="sa-notice">No field-level validation errors recorded yet.</p>;
-    }
-    const maxDropout = Math.max(...fieldErrors.map(r => r.dropoutSessions), 1);
-    return (
-        <div className="sa-table-scroll">
-        <table className="sa-table">
-            <thead>
-                <tr>
-                    <th>Form</th>
-                    <th>Field</th>
-                    <th className="sa-table__num">Error sessions</th>
-                    <th className="sa-table__num">Dropped off</th>
-                    <th className="sa-table__num">Blocking</th>
-                </tr>
-            </thead>
-            <tbody>
-                {fieldErrors.map((r, i) => {
-                    const rate = r.blockingRate;
-                    const rateColor = rate == null ? undefined
-                        : rate > 70 ? "rgba(239,68,68,0.9)"
-                        : rate > 40 ? "rgba(234,179,8,0.9)"
-                        : "rgba(34,197,94,0.9)";
-                    return (
-                        <tr key={i}>
-                            <td><span className="sa-form-id" title={r.formId}>{cleanFormId(r.formId)}</span></td>
-                            <td><code className="sa-field-name">{r.field}</code></td>
-                            <td className="sa-table__num">{r.errorSessions.toLocaleString("de-DE")}</td>
-                            <td className="sa-table__num">
-                                {r.dropoutSessions.toLocaleString("de-DE")}
-                                <MiniBar value={r.dropoutSessions} max={maxDropout} color="rgba(239,68,68,0.35)" />
-                            </td>
-                            <td className="sa-table__num" style={rateColor ? { color: rateColor, fontWeight: 600 } : {}}>
-                                {rate != null ? formatPercent(rate, 1) : "—"}
-                            </td>
-                        </tr>
-                    );
-                })}
-            </tbody>
-        </table>
-        </div>
-    );
-}
-
-function ErrorRecoveryTable({ errorRecovery }) {
-    if (!errorRecovery || !errorRecovery.length) {
-        return <p className="sa-notice">No error sessions recorded yet — recovery rate requires session-linked events.</p>;
-    }
-    return (
-        <div className="sa-table-scroll">
-        <table className="sa-table">
-            <thead>
-                <tr>
-                    <th>Form</th>
-                    <th className="sa-table__num">Error sessions</th>
-                    <th className="sa-table__num">Recovered</th>
-                    <th className="sa-table__num">Recovery rate</th>
-                </tr>
-            </thead>
-            <tbody>
-                {errorRecovery.map((r, i) => {
-                    const rate = r.recoveryRate;
-                    const rateColor = rate == null ? undefined
-                        : rate >= 60 ? "rgba(34,197,94,0.9)"
-                        : rate >= 30 ? "rgba(234,179,8,0.9)"
-                        : "rgba(239,68,68,0.9)";
-                    return (
-                        <tr key={i}>
-                            <td><span className="sa-form-id" title={r.formId}>{cleanFormId(r.formId)}</span></td>
-                            <td className="sa-table__num">{r.errorSessions.toLocaleString("de-DE")}</td>
-                            <td className="sa-table__num">{r.recoveredSessions.toLocaleString("de-DE")}</td>
                             <td className="sa-table__num" style={rateColor ? { color: rateColor, fontWeight: 600 } : {}}>
                                 {rate != null ? formatPercent(rate, 1) : "—"}
                             </td>
@@ -953,15 +844,10 @@ export default function AnalyticsForms() {
 
                                 <div className="sa-panel">
                                     <h3 className="sa-panel__title">
-                                        <IconBarChart className="sa-icon" /> Session abandonment
+                                        <IconScrollDepth className="sa-icon" /> Geographic breakdown
                                     </h3>
-                                    <p className="sa-panel__desc">
-                                        Session-linked events only (full consent required) — a subset of the top-line starters count.
-                                        {data.totals.sessionStarters < data.totals.starters && data.totals.starters > 0 && (
-                                            <>{" "}{data.totals.sessionStarters.toLocaleString("de-DE")} of {data.totals.starters.toLocaleString("de-DE")} starters have session tracking.</>
-                                        )}
-                                    </p>
-                                    <AbandonmentTable abandonment={data.abandonment} />
+                                    <p className="sa-panel__desc">Completion rates and errors by country. Low completion in specific regions can signal localisation, payment, or connectivity issues.</p>
+                                    <GeoBreakdownTable geoBreakdown={data.geoBreakdown} />
                                 </div>
                             </div>
 
@@ -973,52 +859,29 @@ export default function AnalyticsForms() {
                                 <FormErrorsTable errors={data.formErrors} />
                             </div>
 
-                            <div className="sa-forms-grid sa-forms-grid--insights">
-                                <div className="sa-panel">
-                                    <h3 className="sa-panel__title">
-                                        <IconTarget className="sa-icon" /> Field error breakdown
-                                    </h3>
-                                    <p className="sa-panel__desc">Which fields cause errors that lead to abandonment. Blocking rate = sessions that errored on this field and never submitted.</p>
-                                    <FieldErrorTable fieldErrors={data.fieldErrors} />
-                                </div>
-
-                                <div className="sa-panel">
-                                    <h3 className="sa-panel__title">
-                                        <IconBarChart className="sa-icon" /> Error recovery rate
-                                    </h3>
-                                    <p className="sa-panel__desc">Of sessions that hit any form error, how many went on to submit successfully. Low rate means errors are blocking, not just annoying.</p>
-                                    <ErrorRecoveryTable errorRecovery={data.errorRecovery} />
-                                </div>
-                            </div>
-
-                            <div className="sa-forms-grid sa-forms-grid--insights">
-                                <div className="sa-panel">
-                                    <h3 className="sa-panel__title">
-                                        <IconScrollDepth className="sa-icon" /> Geographic breakdown
-                                    </h3>
-                                    <p className="sa-panel__desc">Completion rates and errors by country. Low completion in specific regions can signal localisation, payment, or connectivity issues.</p>
-                                    <GeoBreakdownTable geoBreakdown={data.geoBreakdown} />
-                                </div>
-
-                                <div className="sa-panel">
-                                    <h3 className="sa-panel__title">
-                                        <IconBarChart className="sa-icon" /> Time to complete
-                                    </h3>
-                                    <p className="sa-panel__desc">Median and average seconds from first field interaction to submission. High median on short forms indicates friction.</p>
-                                    <TimeToCompleteTable timeToComplete={data.timeToComplete} />
-                                </div>
-                            </div>
-
                             {data.forms?.length > 0 && (
                                 <div className="sa-panel">
                                     <h3 className="sa-panel__title">
-                                        <IconFunnel className="sa-icon" /> Funnel per form
+                                        <IconFunnel className="sa-icon" /> Per-form breakdown
                                     </h3>
                                     <p className="sa-panel__desc">
-                                        Started &rarr; submitted for every form, with any <code className="sa-field-name">data-analytics-step</code> stages
-                                        in between. The biggest stage-to-stage loss is called out directly.
+                                        Started &rarr; submitted for every form (with any <code className="sa-field-name">data-analytics-step</code> stages
+                                        in between, and the biggest stage-to-stage loss called out directly), plus time to complete, error recovery, and
+                                        which fields cause the most blocking errors — all in one place per form instead of four separate tables.
+                                        Session-linked stats (dropout field, avg fields touched, recovery rate) require full consent and are a subset of
+                                        the top-line starters count.
+                                        {data.totals.sessionStarters < data.totals.starters && data.totals.starters > 0 && (
+                                            <>{" "}{data.totals.sessionStarters.toLocaleString("de-DE")} of {data.totals.starters.toLocaleString("de-DE")} starters have session tracking.</>
+                                        )}
                                     </p>
-                                    <FormFunnelPanel forms={data.forms} abandonMap={abandonMap} stepProgress={data.stepProgress} />
+                                    <FormDeepDivePanel
+                                        forms={data.forms}
+                                        abandonMap={abandonMap}
+                                        stepProgress={data.stepProgress}
+                                        timeToComplete={data.timeToComplete}
+                                        errorRecovery={data.errorRecovery}
+                                        fieldErrors={data.fieldErrors}
+                                    />
                                 </div>
                             )}
 
