@@ -1771,3 +1771,45 @@ ever see, and not present in the "before" shot only because it's sensitive to th
 height (which my change shifts by the few lines the headline adds). Re-captured every width with an
 explicit full-content-height viewport instead of `fullPage: true`, which is clean. Screenshots:
 `docs/design-screenshots/forms-{before,after}-{1024,1280,1440}.png`.
+
+### 2. Visual funnel per form, and a drive-by: wider Form errors table — done, verified live
+
+**Funnel per form (`src/Pages/Analytics/Forms.js`, `src/Pages/Analytics/Analytics.css`):** replaced the
+old "Multi-step progress" table (reached/completed/drop-off columns, and only populated for the one
+form on this account with explicit `data-analytics-step` tracking) with a real bar-funnel visualization,
+reusing `ConversionFunnel.js`'s established `.sa-funnel-step*` CSS verbatim — same look as the "where we
+lose them" panel on Overview, not a new visual language. `buildFunnelStages()` builds Started → [any
+step rows for that form] → Submitted for *every* form with starter tracking, not just the ones with step
+data, since most forms on a typical account are single-step. The single biggest stage-to-stage loss per
+form is called out directly (bold red, "— biggest loss") instead of left for the reader to compare bar
+widths themselves, per your brief for this item. Cards lay out in a responsive grid
+(`repeat(auto-fit, minmax(380px,1fr))`) rather than a single stacked column, matching your standing
+preference for grid layouts over single-column stacks wherever elements can sit side by side.
+
+**Real bug caught by my own live-verification, fixed before shipping:** the first live check showed
+"Book Demo Request Form" rendering `Started 3 (100%) → Submitted 4 (133%)` — an impossible funnel.
+Root cause: `starters` and `submissions` come from independently-counted events (`form_started` vs.
+`form_submit`), so a form can genuinely have more submissions than tracked starts (e.g. a fast submit
+before the start event fires) — the same mismatch the page's own top-level completion-rate calc already
+guards against with `Math.min(100, …)`, just not something the funnel's per-stage math had inherited.
+Clamped the funnel's displayed bar width/percentage to 100% and drop-off to a minimum of 0%, while
+leaving the raw session counts next to each bar unclamped — so the mismatch stays visible as a number,
+it just doesn't render as a nonsensical overflowing bar or negative drop-off. Not a backend change;
+`starters`/`submissions` themselves are untouched.
+
+**Drive-by, requested mid-item:** you asked to make the Form errors table larger — it was one of three
+equal columns in a `repeat(3, 1fr)` row (`.sa-forms-grid--bottom`) alongside Device breakdown and Session
+abandonment, giving its 5 columns (Form/Type/Field/Message/Count) only ~380px to work with. Pulled it out
+into its own full-width panel; `.sa-forms-grid--bottom` is now a 2-column row for the remaining two
+panels (collapsing to 1 column at the existing 1100px breakpoint, same as the page's other grids).
+Verified: panel width went from 380px to 1167px at 1440px viewport, no horizontal overflow at any width.
+
+**Verified live (asasoftware.aero, 1024/1280/1440px):** three funnel cards render — Book Demo Request
+Form and Contact Form as simple 2-stage (Started → Submitted) funnels with the clamp fix confirmed
+working (100%/100%, not 133%), Free Trial Request Form as a 3-stage funnel (its one step included)
+correctly highlighting "85,7% drop-off — biggest loss" at Step 7. Funnel grid collapses to a single
+column at 1024px, no overflow at any width. Console errors present (`Cannot use import statement
+outside a module`, `exports is not defined` from the `react-use-websocket` CDN script) are pre-existing
+and unrelated — confirmed present identically in the "before" capture too, not introduced by this item.
+Babel + full test suite (117/117) pass. Screenshots:
+`docs/design-screenshots/forms-funnel-{before,after}-{1024,1280,1440}.png`.

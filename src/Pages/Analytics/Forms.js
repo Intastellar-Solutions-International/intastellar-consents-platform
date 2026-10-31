@@ -5,7 +5,7 @@ import {
     useAnalyticsPageChrome, authHeaders, KpiCard, MiniBar, formatPercent, useCompareRange,
     usePrevRange, pctChange,
 } from "./_shared.js";
-import { IconFormFill, IconBarChart, IconTarget, IconScrollDepth, IconGlobe } from "./Icons.js";
+import { IconFormFill, IconBarChart, IconTarget, IconScrollDepth, IconGlobe, IconFunnel } from "./Icons.js";
 import TrendLineChart from "./TrendLineChart.js";
 import "./Analytics.css";
 
@@ -232,65 +232,111 @@ function TimeToCompleteTable({ timeToComplete }) {
     );
 }
 
-function StepProgressTable({ stepProgress }) {
-    if (!stepProgress || !stepProgress.length) {
+// Per-form visual funnel — docs/design-audit-plan.md Phase 5 item 2. Replaces
+// the old plain Multi-step progress table (started → each data-analytics-step
+// → submitted, reached/completed/drop-off columns) with the same bar-funnel
+// visualization ConversionFunnel.js already established for the "where we
+// lose them" panel on Overview — reusing its .sa-funnel-step* CSS verbatim.
+// Unlike the old table, this covers every form with starter tracking, not
+// just the ones with explicit step data: "Started" and "Submitted" come from
+// the form's own totals, and any data-analytics-step rows (when present) are
+// inserted between them as extra stages.
+function buildFunnelStages(form, stepProgress) {
+    const started = form.starters || 0;
+    if (started <= 0) return null;
+    const steps = (stepProgress || [])
+        .filter(r => r.formId === form.formId)
+        .map(r => ({ label: `Step ${r.step}`, sessions: r.reached }));
+    return [
+        { label: "Started", sessions: started },
+        ...steps,
+        { label: "Submitted", sessions: form.submissions || 0 },
+    ];
+}
+
+function FormFunnelCard({ form, stages, dropoutField }) {
+    const first = stages[0].sessions || 0;
+
+    // The single biggest stage-to-stage loss gets visually called out —
+    // "highlighted directly in the chart" rather than left for the reader to
+    // spot by comparing bar widths themselves. Clamped at 0 — "started" and
+    // "submitted" come from independently-counted events (form_started vs.
+    // form_submit), so a form can genuinely show more submissions than
+    // starters; treating that as "0% drop-off" rather than a negative one
+    // is the honest reading, not a cover-up of the mismatch (the raw counts
+    // next to each bar are never clamped, so it's still visible).
+    const drops = stages.map((s, i) => {
+        if (i === 0) return null;
+        const prev = stages[i - 1];
+        return prev.sessions > 0 ? Math.max(0, Math.round((1 - s.sessions / prev.sessions) * 1000) / 10) : null;
+    });
+    let worstIdx = -1, worstDrop = -1;
+    drops.forEach((d, i) => { if (d != null && d > worstDrop) { worstDrop = d; worstIdx = i; } });
+
+    return (
+        <div className="sa-form-funnel">
+            <h4 className="sa-form-funnel__title">
+                <span className="sa-form-id" title={form.formId}>{form.label || cleanFormId(form.formId)}</span>
+            </h4>
+            {stages.map((stage, i) => {
+                // Bar width/pct clamped to 100% for the same reason — can't
+                // draw a bar wider than its track, and a form with more
+                // submissions than tracked starters hasn't "grown" past full.
+                const pct = first > 0 ? Math.min(100, Math.round((stage.sessions / first) * 100)) : 0;
+                const dropOffPct = drops[i];
+                return (
+                    <div key={i} className="sa-funnel-step">
+                        {i > 0 && dropOffPct != null && (
+                            <div className={"sa-funnel-step__dropoff" + (i === worstIdx && worstDrop > 0 ? " sa-funnel-step__dropoff--worst" : "")}>
+                                &darr; {dropOffPct}% drop-off{i === worstIdx && worstDrop > 0 ? " — biggest loss" : ""}
+                            </div>
+                        )}
+                        <div className="sa-funnel-step__row">
+                            <span className="sa-funnel-step__label">{stage.label}</span>
+                            <div className="sa-funnel-step__track">
+                                <div className="sa-funnel-step__fill" style={{ width: pct + "%" }} />
+                            </div>
+                            <span className="sa-funnel-step__value">
+                                {stage.sessions.toLocaleString("de-DE")}
+                                <span className="sa-funnel-step__pct">({pct}%)</span>
+                            </span>
+                        </div>
+                    </div>
+                );
+            })}
+            {dropoutField && (
+                <p className="sa-form-funnel__field-note">
+                    Most drop-off happens at the <code className="sa-field-name">{dropoutField}</code> field.
+                </p>
+            )}
+        </div>
+    );
+}
+
+function FormFunnelPanel({ forms, abandonMap, stepProgress }) {
+    const withFunnels = (forms || []).filter(f => (f.starters || 0) > 0);
+    if (!withFunnels.length) {
         return (
             <p className="sa-notice">
-                No step data yet. Add <code className="sa-field-name">data-analytics-step="1"</code> (etc.) to each step container,
-                or the embed will auto-detect Next/Continue button clicks.
+                No "form started" tracking yet — funnels need <code className="sa-field-name">form_started</code> events
+                to show a start → submit path.
             </p>
         );
     }
-    // Group by formId so each form shows its own funnel
-    const byForm = [];
-    const seen = new Map();
-    for (const r of stepProgress) {
-        if (!seen.has(r.formId)) { seen.set(r.formId, []); byForm.push({ formId: r.formId, steps: seen.get(r.formId) }); }
-        seen.get(r.formId).push(r);
-    }
-    const maxReached = Math.max(...stepProgress.map(r => r.reached), 1);
     return (
-        <div className="sa-table-scroll">
-        <table className="sa-table">
-            <thead>
-                <tr>
-                    <th>Form</th>
-                    <th>Step</th>
-                    <th className="sa-table__num">Reached</th>
-                    <th className="sa-table__num">Completed form</th>
-                    <th className="sa-table__num">Drop-off</th>
-                </tr>
-            </thead>
-            <tbody>
-                {byForm.map(({ formId, steps }) =>
-                    steps.map((r, i) => {
-                        const dropRate = r.completionRate != null ? 100 - r.completionRate : null;
-                        const dropColor = dropRate == null ? undefined
-                            : dropRate > 60 ? "rgba(239,68,68,0.9)"
-                            : dropRate > 30 ? "rgba(234,179,8,0.9)"
-                            : "rgba(34,197,94,0.9)";
-                        return (
-                            <tr key={`${formId}-${r.step}`}>
-                                {i === 0 && (
-                                    <td rowSpan={steps.length}>
-                                        <span className="sa-form-id" title={formId}>{cleanFormId(formId)}</span>
-                                    </td>
-                                )}
-                                <td><code className="sa-field-name">{r.step}</code></td>
-                                <td className="sa-table__num">
-                                    {r.reached.toLocaleString("de-DE")}
-                                    <MiniBar value={r.reached} max={maxReached} color="rgba(99,102,241,0.4)" />
-                                </td>
-                                <td className="sa-table__num sa-muted">{r.completed.toLocaleString("de-DE")}</td>
-                                <td className="sa-table__num" style={dropColor ? { color: dropColor, fontWeight: 600 } : {}}>
-                                    {dropRate != null ? formatPercent(dropRate, 1) : "—"}
-                                </td>
-                            </tr>
-                        );
-                    })
-                )}
-            </tbody>
-        </table>
+        <div className="sa-form-funnel-list">
+            {withFunnels.map(f => {
+                const stages = buildFunnelStages(f, stepProgress);
+                if (!stages) return null;
+                return (
+                    <FormFunnelCard
+                        key={f.formId}
+                        form={f}
+                        stages={stages}
+                        dropoutField={abandonMap?.[f.formId]?.topDropoutField || null}
+                    />
+                );
+            })}
         </div>
     );
 }
@@ -917,14 +963,14 @@ export default function AnalyticsForms() {
                                     </p>
                                     <AbandonmentTable abandonment={data.abandonment} />
                                 </div>
+                            </div>
 
-                                <div className="sa-panel">
-                                    <h3 className="sa-panel__title">
-                                        <IconFormFill className="sa-icon" /> Form errors
-                                    </h3>
-                                    <p className="sa-panel__desc">Validation failures, network errors, and server errors captured during form submissions.</p>
-                                    <FormErrorsTable errors={data.formErrors} />
-                                </div>
+                            <div className="sa-panel">
+                                <h3 className="sa-panel__title">
+                                    <IconFormFill className="sa-icon" /> Form errors
+                                </h3>
+                                <p className="sa-panel__desc">Validation failures, network errors, and server errors captured during form submissions.</p>
+                                <FormErrorsTable errors={data.formErrors} />
                             </div>
 
                             <div className="sa-forms-grid sa-forms-grid--insights">
@@ -963,13 +1009,16 @@ export default function AnalyticsForms() {
                                 </div>
                             </div>
 
-                            {data.stepProgress?.length > 0 && (
+                            {data.forms?.length > 0 && (
                                 <div className="sa-panel">
                                     <h3 className="sa-panel__title">
-                                        <IconTarget className="sa-icon" /> Multi-step progress
+                                        <IconFunnel className="sa-icon" /> Funnel per form
                                     </h3>
-                                    <p className="sa-panel__desc">Sessions reaching each step and how many ultimately submitted. Drop-off = 100% minus the share that completed the form from that step.</p>
-                                    <StepProgressTable stepProgress={data.stepProgress} />
+                                    <p className="sa-panel__desc">
+                                        Started &rarr; submitted for every form, with any <code className="sa-field-name">data-analytics-step</code> stages
+                                        in between. The biggest stage-to-stage loss is called out directly.
+                                    </p>
+                                    <FormFunnelPanel forms={data.forms} abandonMap={abandonMap} stepProgress={data.stepProgress} />
                                 </div>
                             )}
 
