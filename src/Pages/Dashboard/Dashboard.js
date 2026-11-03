@@ -36,7 +36,10 @@ import { preConsentCookieStat, postConsentCookieStat } from "../../Functions/coo
 import SectionError from "../../Components/SectionError";
 import { fetchJsonWithTimeout } from "../../Functions/fetchWithTimeout.js";
 import { Icon } from "../../Components/ui/icons.js";
-import { appLocale } from "../../Functions/format.js";
+import { appLocale, formatNumber, formatPercent } from "../../Functions/format.js";
+import { OverviewTemplate, AttentionPanel } from "../../Components/templates";
+import { KpiTile } from "../../Components/ui";
+import useDomainHealth from "../../Components/Shell/useDomainHealth.js";
 
 const { useState, useEffect, useRef, useContext, useMemo } = React;
 
@@ -341,6 +344,60 @@ export default function Dashboard(props) {
 
     const compareOn = compareRange !== 0 && compareRange != null;
 
+    // ── "Needs attention" (Overview template). Built only from data this page
+    // and the shell already load — no new requests.
+    const selectedDomain = handle || currentDomain;
+    const hasDomain = Boolean(selectedDomain) && selectedDomain !== "combined view";
+    const healthChecks = useDomainHealth(hasDomain ? selectedDomain : null);
+    const attentionItems = useMemo(() => {
+        if (!hasDomain) return [];
+        const items = [];
+        if (verificationStatus.show) {
+            items.push({
+                id: "verify",
+                severity: "danger",
+                title: verificationStatus.isExpired ? "Domain verification has lapsed" : "Domain not verified",
+                description: verificationStatus.isExpired
+                    ? `Verification for ${verificationStatus.domain} has lapsed — consent data attribution may be paused until re-verified.`
+                    : `${verificationStatus.domain} hasn't been verified yet. Without verification, consent interactions for this domain may not be attributed to your account.`,
+                action: { label: verificationStatus.isExpired ? "Re-verify" : "See token", to: "/settings/workspaces" },
+            });
+        }
+        const trackers = [...new Set((scanSummary?.pre_consent_transfers || [])
+            .filter((t) => ["advertising", "fingerprinting", "social"].includes(t.category))
+            .map((t) => t.service || t.host))];
+        if (trackers.length) {
+            items.push({
+                id: "trackers",
+                severity: "warning",
+                title: `${trackers.length} advertising or tracking vendor${trackers.length === 1 ? "" : "s"} found in the latest cookie scan`,
+                description: trackers.slice(0, 3).join(", ") + (trackers.length > 3 ? ` and ${trackers.length - 3} more` : ""),
+                action: { label: "Review in Compliance", to: reportsPath(id, selectedDomain, "/compliance") },
+            });
+        }
+        const logging = healthChecks?.find((c) => c.label === "Logging");
+        if (logging && (logging.status === "warning" || logging.status === "error")) {
+            items.push({
+                id: "logging",
+                severity: logging.status === "error" ? "danger" : "warning",
+                title: "Consent logging looks stale",
+                description: logging.detail ? logging.detail.charAt(0).toUpperCase() + logging.detail.slice(1) + "." : null,
+                action: { label: "Open audit log", to: reportsPath(id, selectedDomain, "/user-consents") },
+            });
+        }
+        const scan = healthChecks?.find((c) => c.label === "Last scan");
+        if (scan && scan.status === "warning") {
+            items.push({
+                id: "scan",
+                severity: "warning",
+                title: scan.detail === "not scanned yet" ? "No cookie scan yet" : "Cookie scan is out of date",
+                description: scan.detail === "not scanned yet" ? "Run a scan to see which cookies and vendors load on this domain." : `Last scan ${scan.detail}.`,
+                action: { label: "Scan now", onClick: triggerOverviewScan },
+            });
+        }
+        return items;
+    }, [hasDomain, verificationStatus, scanSummary, healthChecks, id, selectedDomain]);
+
     return (
         <>
             <StickyPageTitle demoMode={demoMode} loadingUpdated={loading} finalLoaded={loadingCountry} title={handle ? `Dashboard: ${punycode.toUnicode(handle)}` : "Dashboard"} url={url} method={method} header={header} numberofDays={setLastDays} getLastDays={getLastDays} setActiveData={setActiveData} fromDate={fromDate} toDate={toDate} setFromDate={setFromDate} setToDate={setToDate} previousPeriod={previousPeriod} previousPeriod2={previousPeriod2} compareRange={compareRange} setCompareRange={setCompareRange} setCompareWindowStart={setPreviousPeriod} setCompareWindowEnd={setPreviousPeriod2} />
@@ -369,42 +426,8 @@ export default function Dashboard(props) {
                         )}
                     </div>
                 )}
-                {/* Domain Verification Warning Banner */}
-                {verificationStatus.show && (
-                    <div className={`dashboard-verification-warning ${verificationStatus.isExpired ? 'dashboard-verification-warning--expired' : ''}`}>
-                        <span className="dashboard-verification-warning__icon">
-                            {verificationStatus.isExpired ? "!" : "?"}
-                        </span>
-                        <div className="dashboard-verification-warning__content">
-                            <strong>
-                                {verificationStatus.isExpired
-                                    ? "Domain verification expired"
-                                    : "Domain not verified"}
-                            </strong>
-                            <p>
-                                {verificationStatus.isExpired
-                                    ? `Verification for ${verificationStatus.domain} has lapsed — consent data attribution may be paused until re-verified.`
-                                    : `${verificationStatus.domain} hasn't been verified yet. Without verification, consent interactions for this domain may not be attributed to your account.`}
-                            </p>
-                            <p className="dashboard-verification-warning__steps">
-                                To verify: add{" "}
-                                <code>{"<meta name=\"intastellar-verification\" content=\"…\">"}</code>{" "}
-                                to your site's <code>{"<head>"}</code>, or set{" "}
-                                <code>{"window.INTA = { verification: \"…\" }"}</code>{" "}
-                                before the banner script. Your token is in{" "}
-                                <Link to="/settings/workspaces" className="dashboard-verification-warning__inline-link">
-                                    Settings → Workspaces
-                                </Link>.
-                            </p>
-                        </div>
-                        <Link
-                            to="/settings/workspaces"
-                            className="dashboard-verification-warning__action"
-                        >
-                            {verificationStatus.isExpired ? "Re-verify" : "See token"}
-                        </Link>
-                    </div>
-                )}
+                {hasDomain && <AttentionPanel items={attentionItems} loading={!healthChecks && !verificationStatus.show} />}
+
                 {/* <div className="profilePicture-container">
                     <img src={userProfile} className="profilePicture" />
                     <p className="profile-user">Welcome, {JSON.parse(appStorage.getItem("globals")).user.name.firstName}</p>
@@ -421,55 +444,35 @@ export default function Dashboard(props) {
                     </div> : null
                 }
 
-                {/* ── 1. Primary consent KPIs ── */}
-                {interactionsError ? (
-                    <SectionError
-                        title="Consent statistics couldn't be loaded"
-                        message={interactionsError}
-                        onRetry={() => setInteractionsAttempt((n) => n + 1)}
-                    />
-                ) : activeData != null ? (
-                    <>
-                        <div className="dashboard-hero-kpis">
-                            <Widget
-                                kpi={true}
-                                styleType="small"
-                                compareOn={compareOn}
-                                comparisonDelta={activeData?.comaprison?.accepted ?? activeData?.comparison?.accepted}
-                                comparisonRelative={activeData?.comaprison?.acceptedRelativeDrop ?? activeData?.comparison?.acceptedRelativeDrop}
-                                change={{ change: activeData?.changeRate?.accepted }}
-                                relativeDrop={{ relativeDrop: activeData?.relativeDrop?.accepted }}
-                                totalNumber={(activeData?.Accepted != null ? activeData.Accepted.toLocaleString(appLocale()) : "—") + "%"}
-                                type="Consent acceptance"
-                                fromDate={fromDate}
-                                toDate={toDate}
-                            />
-                            <Widget
-                                kpi={true}
-                                styleType="small"
-                                compareOn={compareOn}
-                                comparisonDelta={activeData?.comaprison?.declined ?? activeData?.comparison?.declined}
-                                comparisonRelative={activeData?.comaprison?.declinedRelativeDrop ?? activeData?.comparison?.declinedRelativeDrop}
-                                change={{ change: activeData?.changeRate?.declined }}
-                                relativeDrop={{ relativeDrop: activeData?.relativeDrop?.declined }}
-                                explainer={{ exist: true, title: "Essential-only rate", content: "Share of users who declined analytics and marketing cookies, allowing only required cookies." }}
-                                invertSentiment={true}
-                                totalNumber={(activeData?.Declined != null ? activeData.Declined.toLocaleString(appLocale()) : "—") + "%"}
-                                type="Essential-only rate"
-                                fromDate={fromDate}
-                                toDate={toDate}
-                            />
-                        </div>
-
-                    </>
-                ) : (
-                    <div className="dashboard-hero-kpis dashboard-hero-kpis--loading">
-                        <Loading small={true} /><Loading small={true} />
-                    </div>
-                )}
-
-                {/* ── 2. Geography & live (with EU/Non-EU context below) ── */}
-                <div className="dashboard-section">
+                <OverviewTemplate
+                    kpis={interactionsError ? [
+                        <SectionError
+                            key="error"
+                            title="Consent statistics couldn't be loaded"
+                            message={interactionsError}
+                            onRetry={() => setInteractionsAttempt((n) => n + 1)}
+                        />,
+                    ] : [
+                        <KpiTile key="consents" label="Consents" loading={activeData == null} value={formatNumber(activeData?.Total)} hint="Consent interactions in the period" />,
+                        <KpiTile
+                            key="acceptance"
+                            label="Consent acceptance"
+                            loading={activeData == null}
+                            value={formatPercent(activeData?.Accepted)}
+                            delta={compareOn && Number.isFinite(activeData?.changeRate?.accepted) ? { value: activeData.changeRate.accepted, formatted: formatPercent(activeData.changeRate.accepted), goodWhen: "up", label: "vs comparison" } : undefined}
+                        />,
+                        <KpiTile
+                            key="essential"
+                            label="Essential-only rate"
+                            loading={activeData == null}
+                            value={formatPercent(activeData?.Declined)}
+                            hint="Declined analytics and marketing; only required cookies"
+                            delta={compareOn && Number.isFinite(activeData?.changeRate?.declined) ? { value: activeData.changeRate.declined, formatted: formatPercent(activeData.changeRate.declined), goodWhen: "down", label: "vs comparison" } : undefined}
+                        />,
+                        <KpiTile key="users" label="Active users" loading={activeData == null} value={formatNumber(activeData?.activeUsers)} hint="Distinct visitors with a recorded decision" />,
+                    ]}
+                    main={
+                        <div className="dashboard-section">
                     <div className="grid-container grid-2" style={{ gridTemplateColumns: "1fr .5fr", gap: "20px" }}>
                         {loadingCountry ? <Loading /> : countryError ? (
                             <SectionError
@@ -498,6 +501,8 @@ export default function Dashboard(props) {
                         </div>
                     )}
                 </div>
+                    }
+                />
 
                 {/* ── 4. Decision behaviour ── */}
                 {hasTimeToDecision && (
@@ -621,13 +626,7 @@ export default function Dashboard(props) {
                         )}
 
                         <div className="dashboard-compliance-links">
-                            <Link
-                                to={reportsPath(id, currentDomain, "/compliance")}
-                                className="dashboard-compliance-link"
-                            >
-                                <span className="dashboard-compliance-link__label">Audit log &amp; compliance overview</span>
-                                <span className="dashboard-compliance-link__arrow">→</span>
-                            </Link>
+                            {/* Compliance itself is in the main navigation (and in "Needs attention" when relevant). */}
                             <Link
                                 to={analyticsMarketingPath(currentDomain)}
                                 className="dashboard-compliance-link"
