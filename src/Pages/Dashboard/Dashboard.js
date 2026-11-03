@@ -363,14 +363,22 @@ export default function Dashboard(props) {
                 action: { label: verificationStatus.isExpired ? "Re-verify" : "See token", to: "/settings/workspaces" },
             });
         }
+        // Scans since consent-phase tagging say which vendors loaded before the
+        // scanner accepted consent; only those are a problem. Older scans
+        // can't tell, so they keep the neutral "found in the scan" wording.
+        const phaseKnown = scanSummary?.consent_phase_known === true;
         const trackers = [...new Set((scanSummary?.pre_consent_transfers || [])
             .filter((t) => ["advertising", "fingerprinting", "social"].includes(t.category))
+            .filter((t) => !phaseKnown || t.consentPhase === "pre")
             .map((t) => t.service || t.host))];
         if (trackers.length) {
+            const vendors = `${trackers.length} advertising or tracking vendor${trackers.length === 1 ? "" : "s"}`;
             items.push({
                 id: "trackers",
-                severity: "warning",
-                title: `${trackers.length} advertising or tracking vendor${trackers.length === 1 ? "" : "s"} found in the latest cookie scan`,
+                severity: phaseKnown ? "danger" : "warning",
+                title: phaseKnown
+                    ? `${vendors} load${trackers.length === 1 ? "s" : ""} before consent`
+                    : `${vendors} found in the latest cookie scan`,
                 description: trackers.slice(0, 3).join(", ") + (trackers.length > 3 ? ` and ${trackers.length - 3} more` : ""),
                 action: { label: "Review in Compliance", to: reportsPath(id, selectedDomain, "/compliance") },
             });
@@ -426,7 +434,6 @@ export default function Dashboard(props) {
                         )}
                     </div>
                 )}
-                {hasDomain && <AttentionPanel items={attentionItems} loading={!healthChecks && !verificationStatus.show} />}
 
                 {/* <div className="profilePicture-container">
                     <img src={userProfile} className="profilePicture" />
@@ -435,16 +442,18 @@ export default function Dashboard(props) {
                         Use it to monitor acceptance rates and category-level consent behavior.</p>
 
                 </div> */}
-                {/* Org-level platform stats (admin only) */}
-                {organisation != null && JSON.parse(organisation).id == 1 && !demoMode && !handle && !workspaceId ?
-                    <div className="grid-container topWidget" style={{ gridTemplateColumns: "1fr 1fr 1fr", gap: "10px", marginBottom: "24px" }}>
-                        {jsLoading ? <Loading /> : <ErrorBoundary><Widget styleType="small" totalNumber={jsData.Total?.toLocaleString(appLocale())} type="Websites" /></ErrorBoundary>}
-                        {jsLoading ? <Loading /> : <ErrorBoundary><Widget styleType="small" totalNumber={jsData?.JS?.toLocaleString(appLocale()) + "%"} type="JavaScript" /></ErrorBoundary>}
-                        {jsLoading ? <Loading /> : <ErrorBoundary><Widget styleType="small" totalNumber={jsData?.WP?.toLocaleString(appLocale()) + "%"} type="WordPress" /></ErrorBoundary>}
-                    </div> : null
-                }
-
                 <OverviewTemplate
+                    attention={<>
+                        {hasDomain && <AttentionPanel items={attentionItems} loading={!healthChecks && !verificationStatus.show} />}
+                        {/* Org-level platform stats (admin only) */}
+                        {organisation != null && JSON.parse(organisation).id == 1 && !demoMode && !handle && !workspaceId ?
+                            <div className="grid-container topWidget" style={{ gridTemplateColumns: "1fr 1fr 1fr", gap: "10px" }}>
+                                {jsLoading ? <Loading /> : <ErrorBoundary><Widget styleType="small" totalNumber={jsData.Total?.toLocaleString(appLocale())} type="Websites" /></ErrorBoundary>}
+                                {jsLoading ? <Loading /> : <ErrorBoundary><Widget styleType="small" totalNumber={jsData?.JS?.toLocaleString(appLocale()) + "%"} type="JavaScript" /></ErrorBoundary>}
+                                {jsLoading ? <Loading /> : <ErrorBoundary><Widget styleType="small" totalNumber={jsData?.WP?.toLocaleString(appLocale()) + "%"} type="WordPress" /></ErrorBoundary>}
+                            </div> : null
+                        }
+                    </>}
                     kpis={interactionsError ? [
                         <SectionError
                             key="error"
@@ -472,7 +481,8 @@ export default function Dashboard(props) {
                         <KpiTile key="users" label="Active users" loading={activeData == null} value={formatNumber(activeData?.activeUsers)} hint="Distinct visitors with a recorded decision" />,
                     ]}
                     main={
-                        <div className="dashboard-section">
+                        // No .dashboard-section here: its top padding stacked on the template gap.
+                        <div>
                     <div className="grid-container grid-2" style={{ gridTemplateColumns: "1fr .5fr", gap: "20px" }}>
                         {loadingCountry ? <Loading /> : countryError ? (
                             <SectionError

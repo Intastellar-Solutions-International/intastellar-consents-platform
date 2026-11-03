@@ -9,7 +9,7 @@ export default function OverviewTemplate({ attention, kpis, main, children, clas
         <div className={`tw-flex tw-flex-col tw-gap-6 tw-w-full tw-min-w-0 ${className}`}>
             {attention}
             {kpis && kpis.length > 0 && (
-                <section aria-label="Key figures" className="tw-grid tw-gap-4" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))" }}>
+                <section aria-label="Key figures" className="tw-grid tw-gap-4" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))" }}>
                     {kpis}
                 </section>
             )}
