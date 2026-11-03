@@ -139,16 +139,10 @@ export default function App() {
         const globals = appStorage.getItem("globals");
         const path = window.location.pathname;
         const isApiRoute = path === "/api" || path.startsWith("/api/");
-        if (!globals && path !== "/login" && path !== "/" && !isApiRoute && path !== "/event-debugger") {
+        if (!globals && path !== "/login" && path !== "/" && !isApiRoute) {
             window.location.replace("/login");
         }
     }, []);
-
-    // Public, login-free tool — rendered standalone (no app header/sidebar)
-    // whether or not the visitor is signed in. See Pages/Analytics/EventDebugger.js.
-    if (window.location.pathname === "/event-debugger") {
-        return <ErrorBoundary><EventDebugger /></ErrorBoundary>;
-    }
 
     if (appStorage.getItem("globals") != null) {
         const path = window.location.pathname;
@@ -424,6 +418,16 @@ export default function App() {
                                         <Route path="/analytics/settings" exact>
                                             {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Analytics Settings" fullPage /> : <ErrorBoundary>
                                                 <AnalyticsSettings />
+                                            </ErrorBoundary>}
+                                        </Route>
+                                        <Route path="/analytics/:handle/event-debugger" exact>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Event Debugger" fullPage /> : <ErrorBoundary>
+                                                <EventDebugger />
+                                            </ErrorBoundary>}
+                                        </Route>
+                                        <Route path="/analytics/event-debugger" exact>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Event Debugger" fullPage /> : <ErrorBoundary>
+                                                <EventDebugger />
                                             </ErrorBoundary>}
                                         </Route>
                                         <Route path="/analytics/:handle/forms" exact>

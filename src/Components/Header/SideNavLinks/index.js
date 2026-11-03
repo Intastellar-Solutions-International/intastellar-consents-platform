@@ -14,7 +14,7 @@ import {
     analyticsCohortPath, analyticsAlertsPath, analyticsScheduledReportsPath,
     analyticsReportsPath, analyticsReportBuilderPath,
     analyticsPerformancePath, analyticsPageWeightPath, analyticsDigestPath,
-    isCombinedOrClearDomain,
+    analyticsEventDebuggerPath,
 } from "../../../Functions/domainPathSegments.js";
 
 export const reportsLinks = [
@@ -267,14 +267,8 @@ export function buildAnalyticsLinks(domain) {
             path: analyticsSettingsPath(domain),
         },
         {
-            // Standalone public page (see Pages/Analytics/EventDebugger.js),
-            // so it opens in a new tab rather than through the router —
-            // which also keeps the dashboard open next to it while debugging.
             name: "Event Debugger",
-            path: "/event-debugger" + (isCombinedOrClearDomain(domain)
-                ? ""
-                : "?site=" + encodeURIComponent(String(domain).trim())),
-            external: true,
+            path: analyticsEventDebuggerPath(domain),
         },
     ];
 }

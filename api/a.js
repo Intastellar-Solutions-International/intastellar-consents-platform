@@ -609,7 +609,7 @@ function isEmbedded(){try{return window.top!==window.self;}catch(e){return true;
 var EMB=isEmbedded();
 
 // Event debugger session (see api/_debug-hits.js). Opening any page with
-// ?ia_debug=<token> — the link the public /event-debugger page hands out —
+// ?ia_debug=<token> — the link Analytics → Event Debugger hands out —
 // tags every hit this tab sends with that token so the debugger can show
 // exactly what arrived and why it was stored or dropped. Kept in
 // sessionStorage so it survives navigation within the tab but never leaks
@@ -622,7 +622,7 @@ try{
   DBG=sessionStorage.getItem('_ia_dbg');
   if(DBG&&!/^[a-z0-9]{16,40}$/i.test(DBG))DBG=null;
 }catch(e){}
-if(DBG){try{console.info('[Intastellar Analytics] Debug mode on — watch hits live at https://www.intastellarconsents.com/event-debugger?token='+DBG+' (add ?ia_debug=off to any URL to stop).');}catch(e){}}
+if(DBG){try{console.info('[Intastellar Analytics] Debug mode on — watch hits live at https://www.intastellarconsents.com/analytics/event-debugger?token='+DBG+' (add ?ia_debug=off to any URL to stop).');}catch(e){}}
 
 function gc(n){var m=document.cookie.match(new RegExp('(?:^|;\\\\s*)'+n+'=([^;]*)'));return m?decodeURIComponent(m[1]):null;}
 

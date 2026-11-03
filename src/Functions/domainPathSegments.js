@@ -235,6 +235,12 @@ export function analyticsCohortPath(domainUnicode) {
 }
 
 /** Portfolio-level channel digest — not domain-scoped, always returns the same path. */
+export function analyticsEventDebuggerPath(domainUnicode) {
+    const seg = encodeDomainPathSegment(domainUnicode);
+    if (!seg) return "/analytics/event-debugger";
+    return `/analytics/${seg}/event-debugger`;
+}
+
 export function analyticsDigestPath() {
     return "/analytics/digest";
 }
@@ -280,7 +286,7 @@ export function navigateWithDomain(history, platformId, domainUnicode, pathname)
             history.push("/analytics/digest");
             return;
         }
-        const leaf = ["/marketing", "/audience", "/acquisition", "/consent", "/heatmap", "/recordings", "/bots", "/user-flow", "/conversions", "/ad-spend", "/attribution", "/settings", "/google-analytics", "/search-console", "/page-experiments", "/cohorts", "/alerts", "/scheduled-reports", "/forms", "/performance", "/page-weight"].find(s => pathname.includes(s));
+        const leaf = ["/marketing", "/audience", "/acquisition", "/consent", "/heatmap", "/recordings", "/bots", "/user-flow", "/conversions", "/ad-spend", "/attribution", "/settings", "/google-analytics", "/search-console", "/page-experiments", "/cohorts", "/alerts", "/scheduled-reports", "/forms", "/performance", "/page-weight", "/event-debugger"].find(s => pathname.includes(s));
         if (leaf === "/marketing")        history.push(analyticsMarketingPath(domainUnicode));
         else if (leaf === "/audience")    history.push(analyticsAudiencePath(domainUnicode));
         else if (leaf === "/acquisition") history.push(analyticsAcquisitionPath(domainUnicode));
@@ -301,6 +307,8 @@ export function navigateWithDomain(history, platformId, domainUnicode, pathname)
         else if (leaf === "/forms")       history.push(analyticsFormsPath(domainUnicode));
         else if (leaf === "/performance") history.push(analyticsPerformancePath(domainUnicode));
         else if (leaf === "/page-weight") history.push(analyticsPageWeightPath(domainUnicode));
+        // Keep ?token=… so switching domains doesn't drop the live debug session.
+        else if (leaf === "/event-debugger") history.push(analyticsEventDebuggerPath(domainUnicode) + window.location.search);
         else                              history.push(analyticsPath(domainUnicode));
         return;
     }

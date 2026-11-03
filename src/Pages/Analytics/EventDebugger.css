@@ -1,28 +1,14 @@
-/* ── Public event debugger (/event-debugger) ────────────────────────────────────
-   Standalone page (no app header/sidebar), built on the --sa-* tokens from
-   Analytics.css so it reads as part of the Analytics product. */
+/* ── Analytics → Event Debugger ─────────────────────────────────────────────────
+   Built on the --sa-* tokens from Analytics.css. */
 
 .ed-page {
-    min-height: 100vh;
-    box-sizing: border-box;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: var(--sa-space-6) var(--sa-space-4);
     display: grid;
     gap: var(--sa-gap);
     align-content: start;
     color: rgb(var(--sa-text));
 }
 
-.ed-header {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    gap: var(--sa-space-4);
-    align-items: center;
-}
-.ed-header__logo { width: 56px; height: 56px; }
-.ed-header__title { margin: 0; font-size: var(--sa-font-2xl); font-weight: 600; color: rgb(var(--sa-text)); }
-.ed-header__lede { margin: var(--sa-space-1) 0 0; font-size: var(--sa-font-sm); color: rgb(var(--sa-text-muted)); max-width: 70ch; }
+.ed-lede { margin: 0; font-size: var(--sa-font-sm); color: rgb(var(--sa-text-muted)); max-width: 75ch; }
 
 .ed-setup {
     display: grid;
@@ -260,8 +246,6 @@
     border-radius: var(--sa-radius-sm);
 }
 
-.ed-footer { text-align: center; font-size: var(--sa-font-xs); color: rgb(var(--sa-text-dim)); }
-
 @media (max-width: 900px) {
     .ed-setup { grid-template-columns: 1fr; }
     .ed-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -269,8 +253,6 @@
 }
 
 @media (max-width: 600px) {
-    .ed-header__logo { width: 40px; height: 40px; }
-    .ed-header__title { font-size: var(--sa-font-xl); }
     .ed-inline-form, .ed-link { grid-template-columns: 1fr; }
     .ed-input--search { width: 100%; }
     .ed-feed__controls { width: 100%; }

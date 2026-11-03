@@ -1,19 +1,24 @@
 const { useState, useEffect, useMemo, useRef } = React;
 import { ScannerHost } from "../../API/host.js";
+import StickyPageTitle from "../../Components/Header/Sticky/index.js";
+import { useAnalyticsPageChrome, authHeaders } from "./_shared.js";
 import StatusBadge from "./components/StatusBadge.js";
 import EmptyState from "./components/EmptyState.js";
 import "./Analytics.css";
 import "./EventDebugger.css";
 
 /**
- * Public event debugger (/event-debugger) — no login required.
+ * Analytics → Event Debugger — a preview mode in the spirit of Google Tag
+ * Manager's: see every hit one browser tab sends, and why it was stored or
+ * dropped.
  *
- * Flow: this page generates a random debug token and hands out a link to the
- * visitor's own site with ?ia_debug=<token>. The embed script (api/a.js) then
- * tags every hit from that tab with the token, /api/a records what it got and
- * whether it stored or dropped it (api/_debug-hits.js), and this page polls
- * /api/analytics-debug for those records. The token lives in this page's URL
- * so a refresh — or sending the link to a colleague — keeps the session.
+ * Flow: this page starts a debug session (POST /api/analytics-debug, owned by
+ * the signed-in organisation) and hands out a link to the user's own site
+ * with ?ia_debug=<token>. The embed script (api/a.js) then tags every hit
+ * from that tab with the token, /api/a records what it got and its verdict
+ * (api/_debug-hits.js), and this page polls GET /api/analytics-debug for
+ * those records. The token lives in this page's URL so a refresh — or a
+ * teammate in the same organisation opening the link — keeps the session.
  */
 const DEBUG_URL = `${ScannerHost}/api/analytics-debug`;
 const POLL_MS = 2000;
@@ -40,10 +45,11 @@ const FILTERS = [
     { id: "issues", label: "Problems", match: (h) => isProblem(h) },
 ];
 
-function newToken() {
-    const bytes = new Uint8Array(16);
-    crypto.getRandomValues(bytes);
-    return Array.from(bytes, (b) => (b % 36).toString(36)).join("") + Date.now().toString(36).slice(-6);
+async function createSession() {
+    const res = await fetch(DEBUG_URL, { method: "POST", headers: authHeaders() });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const { token } = await res.json();
+    return token;
 }
 
 function readParams() {
@@ -93,10 +99,14 @@ function formatTime(iso) {
     return new Date(iso).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" });
 }
 
-function useDebugHits(token) {
+// Polls for new hits. Calls onExpired (and stops) when the session is gone —
+// expired after 24h, or owned by a different organisation.
+function useDebugHits(token, onExpired) {
     const [hits, setHits] = useState([]);
     const [error, setError] = useState(null);
     const afterRef = useRef(0);
+    const onExpiredRef = useRef(onExpired);
+    onExpiredRef.current = onExpired;
 
     useEffect(() => {
         setHits([]);
@@ -109,7 +119,11 @@ function useDebugHits(token) {
         const poll = async () => {
             if (document.visibilityState === "visible") {
                 try {
-                    const res = await fetch(`${DEBUG_URL}?token=${token}&after=${afterRef.current}`);
+                    const res = await fetch(`${DEBUG_URL}?token=${token}&after=${afterRef.current}`, { headers: authHeaders() });
+                    if (res.status === 404) {
+                        if (!cancelled) onExpiredRef.current();
+                        return;
+                    }
                     if (!res.ok) throw new Error(`HTTP ${res.status}`);
                     const { hits: fresh } = await res.json();
                     if (cancelled) return;
@@ -186,32 +200,60 @@ function HitRow({ hit }) {
 }
 
 export default function EventDebugger() {
+    const { domain } = useAnalyticsPageChrome();
     const initial = useMemo(readParams, []);
     const [token, setToken] = useState(initial.token);
     const [expected, setExpected] = useState(initial.expect);
     const [expectDraft, setExpectDraft] = useState("");
-    const [siteUrl, setSiteUrl] = useState(initial.site);
+    const [siteUrl, setSiteUrl] = useState(initial.site || domain || "");
     const [filter, setFilter] = useState("events");
     const [query, setQuery] = useState("");
     const [copied, setCopied] = useState(false);
-    const [hits, error, clearHits] = useDebugHits(token);
+    const [starting, setStarting] = useState(false);
+    const [sessionNotice, setSessionNotice] = useState(null);
+    const [hits, error, clearHits] = useDebugHits(token, () => {
+        setToken(null);
+        setSessionNotice("That debug session has expired or belongs to another organisation. Start a new one below.");
+    });
 
     useEffect(() => { document.title = "Event Debugger | Intastellar Analytics"; }, []);
     useEffect(() => { writeParams(token, expected); }, [token, expected]);
+    // Follow the header's domain picker until the user types their own URL.
+    useEffect(() => { if (domain && !siteUrl) setSiteUrl(domain); }, [domain]);
 
-    const ensureToken = () => {
-        if (token) return token;
-        const t = newToken();
-        setToken(t);
-        return t;
+    const startSession = async () => {
+        setStarting(true);
+        setSessionNotice(null);
+        try {
+            const t = await createSession();
+            setToken(t);
+            return t;
+        } catch (err) {
+            setSessionNotice(`Couldn't start a debug session (${err.message}). Please try again.`);
+            return null;
+        } finally {
+            setStarting(false);
+        }
     };
 
     const debugLink = token ? buildDebugLink(siteUrl, token) : null;
 
-    const openSite = (e) => {
+    const openSite = async (e) => {
         e.preventDefault();
-        const link = buildDebugLink(siteUrl, ensureToken());
-        if (link) window.open(link, "_blank", "noopener");
+        if (token) {
+            const link = buildDebugLink(siteUrl, token);
+            if (link) window.open(link, "_blank", "noopener");
+            return;
+        }
+        // Open the tab synchronously (inside the click) so popup blockers
+        // allow it, then point it at the site once the session exists.
+        const win = window.open("", "_blank");
+        const t = await startSession();
+        const link = t && buildDebugLink(siteUrl, t);
+        if (win) {
+            if (link) { win.opener = null; win.location.href = link; }
+            else win.close();
+        }
     };
 
     const copyLink = async () => {
@@ -254,17 +296,15 @@ export default function EventDebugger() {
     }, [hits, filter, query]);
 
     return (
-        <div className="ed-page">
-            <header className="ed-header">
-                <img src="https://www.intastellarsolutions.com/assets/logos/intastellar-new-planet.svg" alt="Intastellar" className="ed-header__logo" />
-                <div>
-                    <h1 className="ed-header__title">Event Debugger</h1>
-                    <p className="ed-header__lede">
-                        Check whether your Intastellar Analytics events fire, and why one was stored or dropped.
-                        Only hits from the browser tab you open below appear here.
-                    </p>
-                </div>
-            </header>
+        <div style={{ flex: "1", minWidth: 0 }}>
+            <StickyPageTitle className="sa-sticky-header" title="Event Debugger" />
+            <div className="dashboard-content">
+            <div className="sa-page ed-page">
+            <p className="ed-lede">
+                Check whether your events fire, and why each hit was stored or dropped.
+                Only hits from the browser tab you open in debug mode appear here.
+            </p>
+            {sessionNotice && <p className="ed-error">{sessionNotice}</p>}
 
             <div className="ed-setup">
                 <section className="sa-panel">
@@ -279,7 +319,9 @@ export default function EventDebugger() {
                             onChange={(e) => setSiteUrl(e.target.value)}
                             aria-label="Page on your website"
                         />
-                        <button type="submit" className="ed-btn ed-btn--primary" disabled={!siteUrl.trim()}>Open in debug mode</button>
+                        <button type="submit" className="ed-btn ed-btn--primary" disabled={!siteUrl.trim() || starting}>
+                            {starting ? "Starting…" : "Open in debug mode"}
+                        </button>
                     </form>
                     {debugLink && (
                         <div className="ed-link">
@@ -290,7 +332,7 @@ export default function EventDebugger() {
                     <p className="ed-hint">
                         Debug mode stays on for that tab while you navigate. To end it, close the tab or add <code>?ia_debug=off</code> to any URL.
                         Hits are kept for 24 hours.
-                        {token && <> Session <code>{token}</code> · <button type="button" className="ed-text-btn" onClick={() => { setToken(newToken()); }}>start a new session</button></>}
+                        {token && <> Session <code>{token}</code> · <button type="button" className="ed-text-btn" disabled={starting} onClick={startSession}>start a new session</button></>}
                     </p>
                 </section>
 
@@ -382,9 +424,8 @@ export default function EventDebugger() {
                 )}
             </section>
 
-            <footer className="ed-footer">
-                <p>Powered by Intastellar Analytics · &copy; {new Date().getFullYear()} Intastellar Solutions, International</p>
-            </footer>
+            </div>
+            </div>
         </div>
     );
 }
