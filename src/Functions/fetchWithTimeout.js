@@ -13,7 +13,7 @@
  * A 401 or the API's "Err_Login_Expired" sends the user to /login, matching
  * the rest of the dashboard.
  */
-export const DEFAULT_TIMEOUT_MS = 15000;
+export const DEFAULT_TIMEOUT_MS = 30000;
 
 function requestError(kind, message, extra = {}) {
     return Object.assign(new Error(message), { kind }, extra);
