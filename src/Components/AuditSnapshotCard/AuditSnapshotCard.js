@@ -14,6 +14,7 @@ import "./AuditSnapshotCard.css";
 import appStorage from '../../Functions/storage.js';
 import { parseConsentTimestamp } from "../../Functions/consentTimestamp.js";
 import { useExcludeBots } from "../../Functions/botFilter.js";
+import { preConsentCookieStat, postConsentCookieStat } from "../../Functions/cookieStats.js";
 
 const Link = window.ReactRouterDOM.Link;
 
@@ -187,6 +188,7 @@ export default function AuditSnapshotCard(props) {
         interactionsLoading = false,
         complianceRegionRisk,
         observedCookies = null,
+        preConsentScan = null,
     } = props;
 
     const auditLogPath = useMemo(() => {
@@ -678,18 +680,23 @@ export default function AuditSnapshotCard(props) {
                                     <dd>{Number(activeData.Accepted).toLocaleString(locale)}%</dd>
                                 </div>
                             ) : null}
-                            {observedCookies?.preConsent?.count != null ? (
-                                <div className="audit-snapshot-card__stat">
-                                    <dt>Pre-consent cookies</dt>
-                                    <dd>{observedCookies.preConsent.count > 0 ? observedCookies.preConsent.count.toLocaleString(locale) : "—"}</dd>
-                                </div>
-                            ) : null}
-                            {observedCookies?.consent?.count != null ? (
-                                <div className="audit-snapshot-card__stat">
-                                    <dt>Post-consent cookies</dt>
-                                    <dd>{observedCookies.consent.count > 0 ? observedCookies.consent.count.toLocaleString(locale) : "—"}</dd>
-                                </div>
-                            ) : null}
+                            {(() => {
+                                // Same sources as Home and the Compliance header — see cookieStats.js.
+                                const pre = preConsentCookieStat(preConsentScan);
+                                const post = postConsentCookieStat(observedCookies);
+                                return (
+                                    <>
+                                        <div className="audit-snapshot-card__stat">
+                                            <dt>Pre-consent cookies</dt>
+                                            <dd title={pre.reason || undefined}>{pre.count != null ? pre.count.toLocaleString(locale) : pre.label}</dd>
+                                        </div>
+                                        <div className="audit-snapshot-card__stat">
+                                            <dt>Post-consent cookies</dt>
+                                            <dd title={post.reason || undefined}>{post.count != null ? post.count.toLocaleString(locale) : post.label}</dd>
+                                        </div>
+                                    </>
+                                );
+                            })()}
                         </dl>
                     ) : null}
                     <div className="audit-snapshot-card__cta-wrap">

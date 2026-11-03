@@ -14,6 +14,7 @@ import "../Dashboard/Style.css";
 import "./Style.css";
 import appStorage from '../../Functions/storage.js';
 import { useExcludeBots } from "../../Functions/botFilter.js";
+import { preConsentCookieStat, postConsentCookieStat } from "../../Functions/cookieStats.js";
 
 const Link = window.ReactRouterDOM.Link;
 const useParams = window.ReactRouterDOM.useParams;
@@ -412,8 +413,9 @@ export default function CompliancePage() {
 
     if (!id || !API[id]) return null;
 
-    const preCount = observedCookies?.preConsent?.count;
-    const postCount = observedCookies?.consent?.count;
+    // Same sources as Home and the audit snapshot card — see cookieStats.js.
+    const preStat = preConsentCookieStat(preConsentTransfers);
+    const postStat = postConsentCookieStat(observedCookies);
     const auditLogPath = reportsPath(id, currentDomain, "/user-consents");
 
     return (
@@ -445,21 +447,28 @@ export default function CompliancePage() {
                     dataFlowOrigin="DE"
                 />
                 {/* Cookie scan strip overlaid at the bottom of the hero */}
-                {observedCookies && (
+                {(observedCookies || preConsentTransfers) && (
                     <div className="compliance-hero__stats">
                         <div className="compliance-hero__stat">
-                            <span className="compliance-hero__stat-value">
-                                {preCount > 0 ? preCount.toLocaleString("de-DE") : "—"}
+                            <span className={"compliance-hero__stat-value" + (preStat.count == null ? " --empty" : "")}>
+                                {preStat.count != null ? preStat.count.toLocaleString("de-DE") : preStat.label}
                             </span>
                             <span className="compliance-hero__stat-label">Pre-consent cookies</span>
-                            <span className="compliance-hero__stat-source">CMP scanner · all visits</span>
+                            <span className="compliance-hero__stat-source">
+                                {preStat.count != null
+                                    ? `Cookie scan · ${new Date(preStat.scannedAt).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}`
+                                    : preStat.reason}
+                            </span>
                         </div>
                         <div className="compliance-hero__stat-divider" aria-hidden />
                         <div className="compliance-hero__stat">
-                            <span className="compliance-hero__stat-value">
-                                {postCount > 0 ? postCount.toLocaleString("de-DE") : "—"}
+                            <span className={"compliance-hero__stat-value" + (postStat.count == null ? " --empty" : "")}>
+                                {postStat.count != null ? postStat.count.toLocaleString("de-DE") : postStat.label}
                             </span>
                             <span className="compliance-hero__stat-label">Post-consent cookies</span>
+                            <span className="compliance-hero__stat-source">
+                                {postStat.count != null ? "Banner reports · real visits" : postStat.reason}
+                            </span>
                         </div>
                         <div className="compliance-hero__stat-divider" aria-hidden />
                         <div className="compliance-hero__stat">
@@ -1026,6 +1035,7 @@ export default function CompliancePage() {
                         demoMode={demoMode}
                         interactionsLoading={loading}
                         observedCookies={observedCookies}
+                        preConsentScan={preConsentTransfers}
                     />
                 </div>
 

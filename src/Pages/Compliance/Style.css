@@ -1374,3 +1374,9 @@
     background: rgba(255, 255, 255, 0.05);
     color: rgba(255, 255, 255, 0.6);
 }
+
+/* "Not scanned" / "Not observed yet" in place of a number */
+.compliance-hero__stat-value.--empty {
+    font-size: 1.1rem;
+    color: rgb(200, 200, 200);
+}

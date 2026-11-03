@@ -32,6 +32,7 @@ import punycode from "punycode";
 import appStorage from '../../Functions/storage.js';
 import BotFilterToggle from "../../Components/BotFilterToggle";
 import { useExcludeBots } from "../../Functions/botFilter.js";
+import { preConsentCookieStat, postConsentCookieStat } from "../../Functions/cookieStats.js";
 
 const { useState, useEffect, useRef, useContext, useMemo } = React;
 
@@ -100,6 +101,8 @@ export default function Dashboard(props) {
     const [loading, setLoading] = useState(false);
     const [loadingCountry, setLoadingCountry] = useState(false);
     const [scanSummary, setScanSummary] = useState(null);
+    // Raw scan response incl. 404 bodies — they say *why* there is no scan.
+    const [scanResult, setScanResult] = useState(null);
     const [excludeBots] = useExcludeBots();
     const [scanLoading, setScanLoading] = useState(false);
 
@@ -207,13 +210,17 @@ export default function Dashboard(props) {
         const domain = handle || currentDomain;
         if (!domain || domain === "combined view" || !id || !API[id]?.getPreConsentTransfers) return;
         setScanSummary(null);
+        setScanResult(null);
         fetch(`${API[id].getPreConsentTransfers.url}?domain=${encodeURIComponent(domain)}`, {
             method: API[id].getPreConsentTransfers.method,
             headers: { ...API[id].getPreConsentTransfers.headers },
         })
-            .then(r => r.ok ? r.json() : null)
-            .then(data => { if (data && !data.error) setScanSummary(data); })
-            .catch(() => {});
+            .then(r => r.json().catch(() => null))
+            .then(data => {
+                setScanResult(data || { error: "unreadable" });
+                if (data && !data.error) setScanSummary(data);
+            })
+            .catch(() => setScanResult(null));
     }, [handle, currentDomain, id]);
 
     const triggerOverviewScan = () => {
@@ -226,7 +233,7 @@ export default function Dashboard(props) {
             body: JSON.stringify({ domain, workspaceId }),
         })
             .then(r => r.ok ? r.json() : null)
-            .then(data => { if (data && !data.error) setScanSummary(data); })
+            .then(data => { if (data && !data.error) { setScanSummary(data); setScanResult(data); } })
             .catch(() => {})
             .finally(() => setScanLoading(false));
     };
@@ -508,6 +515,7 @@ export default function Dashboard(props) {
                                         return !c.domain?.replace(/^\./, "").endsWith(domain);
                                     }).length;
 
+                                    const preStat = preConsentCookieStat(scanResult);
                                     const scanAgeDays = scanSummary?.scanned_at
                                         ? Math.floor((Date.now() - new Date(scanSummary.scanned_at).getTime()) / 86400000)
                                         : null;
@@ -553,15 +561,15 @@ export default function Dashboard(props) {
                                             <Link to={compliancePath} className={"dash-scan-card" + (!scanSummary ? " --empty" : isStale ? " --stale" : thirdParty > 0 ? " --warn" : "")}>
                                                 <div className="dash-scan-card__top">
                                                     <span className="dash-scan-card__count">
-                                                        {scanSummary ? cookies.length : "—"}
+                                                        {preStat.count != null ? preStat.count : preStat.label}
                                                     </span>
                                                     <span className="dash-scan-card__icon">🍪</span>
                                                 </div>
                                                 <span className="dash-scan-card__label">Pre-consent cookies (scan)</span>
                                                 <span className="dash-scan-card__sub">
-                                                    {scanSummary
+                                                    {preStat.count != null
                                                         ? thirdParty > 0 ? `${thirdParty} third-party · ${cookies.length - thirdParty} first-party` : "All first-party"
-                                                        : "No scan yet"}
+                                                        : preStat.reason}
                                                 </span>
                                             </Link>
                                         </>
