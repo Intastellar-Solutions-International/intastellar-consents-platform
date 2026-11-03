@@ -566,6 +566,7 @@ export default function CompliancePage() {
                                         bannerMeta={BANNER_CATEGORY_META}
                                         resourceLabels={RESOURCE_LABELS}
                                         categoryOrder={CAT_ORDER}
+                                        phaseKnown={preConsentTransfers.consent_phase_known === true}
                                     />
                                     {/* Map: secondary to the table — smaller, collapsed by default. */}
                                     {dataFlowCountries.length > 0 && (

@@ -48,3 +48,11 @@ test("details come from the first host that has them", () => {
     assert.deepStrictEqual(v.dataCountries, ["US"]);
     assert.deepStrictEqual(v.purposes, ["ads"]);
 });
+
+test("vendor consent phase: pre if any host loaded before consent, post if all after, else unknown", () => {
+    const phaseOf = (...phases) => group(phases.map((p, i) => ({ host: `h${i}`, service: "S", consentPhase: p })), META)[0].consentPhase;
+    assert.strictEqual(phaseOf("post", "pre"), "pre");
+    assert.strictEqual(phaseOf("post", "post"), "post");
+    assert.strictEqual(phaseOf(undefined), null);       // scan made before phase tagging
+    assert.strictEqual(phaseOf("post", undefined), null);
+});

@@ -12,6 +12,8 @@ const RISK_RANK = { high: 3, medium: 2, low: 1, none: 0 };
  * Group scanned transfers (one per host) into vendors: every *.clarity.ms host
  * becomes one "Microsoft Clarity" row. Pure — exported for tests.
  * region: "eu" when all hosts are EU, "non-eu" when none are, else "mixed".
+ * consentPhase: "pre" when any host was contacted before the scanner granted
+ * consent, "post" when all were after, null when the scan has no phase tags.
  */
 export function groupTransfersByVendor(transfers, categoryMeta = {}) {
     const byVendor = new Map();
@@ -27,12 +29,15 @@ export function groupTransfersByVendor(transfers, categoryMeta = {}) {
             .sort((a, b) => (RISK_RANK[categoryMeta[b]?.risk] ?? 2) - (RISK_RANK[categoryMeta[a]?.risk] ?? 2))[0];
         const eu = v.hosts.filter((h) => (h.dataRegion || "non-eu") === "eu").length;
         const region = eu === v.hosts.length ? "eu" : eu === 0 ? "non-eu" : "mixed";
+        const phases = v.hosts.map((h) => h.consentPhase);
+        const consentPhase = phases.includes("pre") ? "pre" : phases.every((p) => p === "post") ? "post" : null;
         const first = (field) => v.hosts.find((h) => h[field])?.[field] || null;
         return {
             ...v,
             category,
             risk: categoryMeta[category]?.risk || "medium",
             region,
+            consentPhase,
             dataCountries: [...new Set(v.hosts.map((h) => h.dataCountry).filter(Boolean))],
             description: first("description"),
             privacyUrl: first("privacyUrl"),
@@ -45,6 +50,12 @@ export function groupTransfersByVendor(transfers, categoryMeta = {}) {
 }
 
 const REGION_LABEL = { eu: "EU", "non-eu": "Non-EU", mixed: "EU + non-EU" };
+const PHASE_LABEL = { pre: "Before consent", post: "After consent" };
+
+function PhaseBadge({ phase }) {
+    if (!PHASE_LABEL[phase]) return null;
+    return <Badge tone={phase === "pre" ? "danger" : "neutral"} icon={phase === "pre" ? "alert-triangle" : "check-circle"}>{PHASE_LABEL[phase]}</Badge>;
+}
 
 function Fact({ label, children }) {
     if (children == null || children === "" || (Array.isArray(children) && !children.length)) return null;
@@ -61,16 +72,19 @@ function Fact({ label, children }) {
  * Category tiles and the region filter narrow the table; a row opens a
  * drawer with the vendor's details and full host list. Pure presentation —
  * the scan data comes in unchanged from the page.
+ * phaseKnown: the scan tagged each host pre/post consent, so the
+ * "Loaded" column and filter are shown (older scans can't tell).
  */
-export default function TransferVendors({ transfers, categoryMeta, bannerMeta, resourceLabels, categoryOrder }) {
+export default function TransferVendors({ transfers, categoryMeta, bannerMeta, resourceLabels, categoryOrder, phaseKnown = false }) {
     const vendors = useMemo(() => groupTransfersByVendor(transfers, categoryMeta), [transfers, categoryMeta]);
     const [category, setCategory] = useState(null);
     const [region, setRegion] = useState("all");
+    const [phase, setPhase] = useState("all");
     const [query, setQuery] = useState("");
     const [sort, setSort] = useState({ key: "risk", direction: "desc" });
     const [page, setPage] = useState(0);
     const [selected, setSelected] = useState(null);
-    useEffect(() => setPage(0), [category, region, query, sort]);
+    useEffect(() => setPage(0), [category, region, phase, query, sort]);
 
     const byCategory = useMemo(() => {
         const acc = {};
@@ -83,6 +97,7 @@ export default function TransferVendors({ transfers, categoryMeta, bannerMeta, r
         return vendors
             .filter((v) => !category || v.category === category)
             .filter((v) => region === "all" || (region === "eu" ? v.region === "eu" : v.region !== "eu"))
+            .filter((v) => !phaseKnown || phase === "all" || v.consentPhase === phase)
             .filter((v) => !q || v.vendor.toLowerCase().includes(q) || v.hosts.some((h) => h.host.toLowerCase().includes(q)))
             .sort((a, b) => {
                 const dir = sort.direction === "asc" ? 1 : -1;
@@ -90,12 +105,13 @@ export default function TransferVendors({ transfers, categoryMeta, bannerMeta, r
                 if (sort.key === "risk") return (RISK_RANK[a.risk] - RISK_RANK[b.risk] || a.hosts.length - b.hosts.length) * dir;
                 return a.vendor.localeCompare(b.vendor) * dir;
             });
-    }, [vendors, category, region, query, sort]);
+    }, [vendors, category, region, phase, phaseKnown, query, sort]);
 
     const hostCount = vendors.reduce((n, v) => n + v.hosts.length, 0);
     const nonEu = vendors.filter((v) => v.region !== "eu").length;
-    const activeFilters = (category ? 1 : 0) + (region !== "all" ? 1 : 0) + (query ? 1 : 0);
-    const clear = () => { setCategory(null); setRegion("all"); setQuery(""); };
+    const preConsent = vendors.filter((v) => v.consentPhase === "pre").length;
+    const activeFilters = (category ? 1 : 0) + (region !== "all" ? 1 : 0) + (phaseKnown && phase !== "all" ? 1 : 0) + (query ? 1 : 0);
+    const clear = () => { setCategory(null); setRegion("all"); setPhase("all"); setQuery(""); };
     const pageRows = filtered.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
 
     const columns = [
@@ -122,6 +138,7 @@ export default function TransferVendors({ transfers, categoryMeta, bannerMeta, r
             key: "region", header: "Region",
             render: (v) => <Badge tone={v.region === "eu" ? "neutral" : "warning"} icon="globe">{REGION_LABEL[v.region]}</Badge>,
         },
+        ...(phaseKnown ? [{ key: "phase", header: "Loaded", render: (v) => <PhaseBadge phase={v.consentPhase} /> }] : []),
         { key: "hosts", header: "Hosts", align: "right", sortable: true, render: (v) => formatNumber(v.hosts.length) },
     ];
 
@@ -132,6 +149,7 @@ export default function TransferVendors({ transfers, categoryMeta, bannerMeta, r
                     <strong className="tw-text-text-primary">{formatNumber(vendors.length)}</strong> vendors ·{" "}
                     <strong className="tw-text-text-primary">{formatNumber(hostCount)}</strong> hosts ·{" "}
                     <strong className="tw-text-text-primary">{formatNumber(nonEu)}</strong> outside the EU
+                    {phaseKnown && <> · <strong className="tw-text-text-primary">{formatNumber(preConsent)}</strong> before consent</>}
                 </span>
             }
             filters={
@@ -167,6 +185,14 @@ export default function TransferVendors({ transfers, categoryMeta, bannerMeta, r
                             onChange={setRegion}
                             options={[{ value: "all", label: "All regions" }, { value: "eu", label: "EU only" }, { value: "non-eu", label: "Outside the EU" }]}
                         />
+                        {phaseKnown && (
+                            <FilterSelect
+                                label="Loaded"
+                                value={phase}
+                                onChange={setPhase}
+                                options={[{ value: "all", label: "Before or after consent" }, { value: "pre", label: "Pre-consent only" }, { value: "post", label: "After consent only" }]}
+                            />
+                        )}
                     </FilterBar>
                 </>
             }
@@ -178,6 +204,7 @@ export default function TransferVendors({ transfers, categoryMeta, bannerMeta, r
                             <div className="tw-flex tw-flex-wrap tw-gap-2">
                                 <RiskBadge level={selected.risk} />
                                 <Badge icon="globe" tone={selected.region === "eu" ? "neutral" : "warning"}>{REGION_LABEL[selected.region]}</Badge>
+                                {phaseKnown && <PhaseBadge phase={selected.consentPhase} />}
                             </div>
                             <dl className="tw-m-0 tw-flex tw-flex-col tw-gap-2">
                                 <Fact label="Category">{categoryMeta[selected.category]?.label || selected.category}</Fact>
@@ -204,6 +231,7 @@ export default function TransferVendors({ transfers, categoryMeta, bannerMeta, r
                                         { key: "host", header: "Host", render: (h) => <code className="tw-text-xs">{h.host}</code> },
                                         { key: "type", header: "Type", render: (h) => resourceLabels[h.resourceType] || h.resourceType || "Other" },
                                         { key: "region", header: "Region", render: (h) => REGION_LABEL[h.dataRegion === "eu" ? "eu" : "non-eu"] },
+                                        ...(phaseKnown ? [{ key: "phase", header: "Loaded", render: (h) => PHASE_LABEL[h.consentPhase] || "—" }] : []),
                                     ]}
                                     rows={selected.hosts}
                                     getRowKey={(h) => h.host}
