@@ -77,6 +77,7 @@ import AnalyticsSavedReports from "./Pages/Analytics/SavedReports.js";
 import AnalyticsReportBuilder from "./Pages/Analytics/ReportBuilder.js";
 import AnalyticsReportView from "./Pages/Analytics/ReportView.js";
 import AnalyticsDigest from "./Pages/Analytics/Digest.js";
+import EventDebugger from "./Pages/Analytics/EventDebugger.js";
 import CookieDatabase from "./Pages/CookieDatabase";
 import TierGate from "./Components/TierGate";
 import DevTierSwitcher from "./Components/DevTierSwitcher";
@@ -138,10 +139,16 @@ export default function App() {
         const globals = appStorage.getItem("globals");
         const path = window.location.pathname;
         const isApiRoute = path === "/api" || path.startsWith("/api/");
-        if (!globals && path !== "/login" && path !== "/" && !isApiRoute) {
+        if (!globals && path !== "/login" && path !== "/" && !isApiRoute && path !== "/event-debugger") {
             window.location.replace("/login");
         }
     }, []);
+
+    // Public, login-free tool — rendered standalone (no app header/sidebar)
+    // whether or not the visitor is signed in. See Pages/Analytics/EventDebugger.js.
+    if (window.location.pathname === "/event-debugger") {
+        return <ErrorBoundary><EventDebugger /></ErrorBoundary>;
+    }
 
     if (appStorage.getItem("globals") != null) {
         const path = window.location.pathname;

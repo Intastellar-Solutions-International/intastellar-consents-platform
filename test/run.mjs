@@ -20,5 +20,6 @@ import "./overview-kpi.test.mjs";
 import "./kpi-card.test.mjs";
 import "./element-label.test.mjs";
 import "./trend-chart.test.mjs";
+import "./event-debugger.test.mjs";
 
 await run();

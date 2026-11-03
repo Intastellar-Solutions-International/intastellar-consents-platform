@@ -1,6 +1,7 @@
 import { getPool } from "./_db.js";
 import { lookupNetwork, clientIp } from "./_geoip.js";
 import { verifyBotDNS } from "./_rdns.js";
+import { recordDebugHit, DEBUG_TOKEN_RE } from "./_debug-hits.js";
 /**
  * GET  /api/a  → serves the Intastellar First-Party Analytics embed script
  * POST /api/a  → ingest endpoint receiving pageview events from embedded sites
@@ -607,6 +608,22 @@ var EP=(el&&el.getAttribute('data-endpoint'))||'https://analytics.consentsmanage
 function isEmbedded(){try{return window.top!==window.self;}catch(e){return true;}}
 var EMB=isEmbedded();
 
+// Event debugger session (see api/_debug-hits.js). Opening any page with
+// ?ia_debug=<token> — the link the public /event-debugger page hands out —
+// tags every hit this tab sends with that token so the debugger can show
+// exactly what arrived and why it was stored or dropped. Kept in
+// sessionStorage so it survives navigation within the tab but never leaks
+// into other tabs or later visits; ?ia_debug=off ends it early.
+var DBG=null;
+try{
+  var _dq=new URLSearchParams(location.search).get('ia_debug');
+  if(_dq==='off'||_dq==='0')sessionStorage.removeItem('_ia_dbg');
+  else if(_dq&&/^[a-z0-9]{16,40}$/i.test(_dq))sessionStorage.setItem('_ia_dbg',_dq);
+  DBG=sessionStorage.getItem('_ia_dbg');
+  if(DBG&&!/^[a-z0-9]{16,40}$/i.test(DBG))DBG=null;
+}catch(e){}
+if(DBG){try{console.info('[Intastellar Analytics] Debug mode on — watch hits live at https://www.intastellarconsents.com/event-debugger?token='+DBG+' (add ?ia_debug=off to any URL to stop).');}catch(e){}}
+
 function gc(n){var m=document.cookie.match(new RegExp('(?:^|;\\\\s*)'+n+'=([^;]*)'));return m?decodeURIComponent(m[1]):null;}
 
 function decode(raw){
@@ -1170,6 +1187,10 @@ function send(payload){
   // and this endpoint has no use for cookies anyway (site_id in the payload
   // is the real trust boundary), so credentials:'omit' avoids that mismatch
   // entirely rather than loosening CORS to accommodate it.
+  if(DBG&&payload.length>2&&payload.charAt(0)==='{'){
+    payload='{"dbg":"'+DBG+'",'+payload.slice(1);
+    try{console.info('[Intastellar Analytics] →',JSON.parse(payload));}catch(e){}
+  }
   try{
     if(window.fetch){
       fetch(EP,{method:'POST',headers:{'Content-Type':'application/json'},body:payload,keepalive:true,credentials:'omit'}).catch(function(err){try{console.warn('[Intastellar Analytics] Failed to send event:',err&&err.message||err);}catch(e){}});
@@ -1333,8 +1354,46 @@ if(hasStat(c)){
 // record only when the visitor has accepted statisticCookies. \`data\` is a
 // free-form flat object shown back in the dashboard next to the event —
 // shallow-sanitized here (and again server-side) rather than sent as-is.
+// Debug-session-only lint of a track() call: everything here is otherwise
+// silently dropped or truncated below, which is exactly the class of
+// misconfiguration the event debugger exists to surface.
+function trackWarnings(name,opts){
+  var w=[];
+  if(name.length>64)w.push('Event name is longer than 64 characters and was cut to "'+name.slice(0,64)+'".');
+  if(opts==null)return w.length?w:undefined;
+  if(typeof opts!=='object'||Array.isArray(opts)){
+    w.push('The second argument must be an options object like { value: 49.99, currency: "EUR" } (got '+(Array.isArray(opts)?'an array':typeof opts)+') — it was ignored.');
+    return w;
+  }
+  var known={value:1,currency:1,transactionId:1,products:1,data:1,_source:1};
+  for(var k in opts){
+    if(Object.prototype.hasOwnProperty.call(opts,k)&&!known[k])w.push('Unknown option "'+k+'" was ignored — put custom fields inside data: { ... }.');
+  }
+  if(opts.value!=null&&!(typeof opts.value==='number'&&isFinite(opts.value))){
+    var vs='';try{vs=JSON.stringify(opts.value);}catch(e){}
+    w.push('value must be a number (got '+typeof opts.value+' '+vs+') — it was dropped.');
+  }
+  if(opts.currency!=null&&!/^[A-Za-z]{3}$/.test(String(opts.currency)))w.push('currency should be a 3-letter ISO code like "EUR" (got "'+String(opts.currency)+'").');
+  if(opts.products!=null&&!Array.isArray(opts.products))w.push('products must be an array — it was dropped.');
+  else if(Array.isArray(opts.products)){
+    if(opts.products.length>50)w.push('Only the first 50 of '+opts.products.length+' products are sent.');
+    for(var i=0;i<opts.products.length&&i<50;i++){
+      var p=opts.products[i]||{};
+      if(p.price!=null&&!(typeof p.price==='number'&&isFinite(p.price))){w.push('products['+i+'].price must be a number — dropped (same check applies to every product).');break;}
+      if(p.quantity!=null&&!(typeof p.quantity==='number'&&isFinite(p.quantity))){w.push('products['+i+'].quantity must be a number — dropped (same check applies to every product).');break;}
+    }
+  }
+  if(opts.data!=null&&(typeof opts.data!=='object'||Array.isArray(opts.data)))w.push('data must be a plain object — it was dropped.');
+  else if(opts.data&&Object.keys(opts.data).length>20)w.push('data has '+Object.keys(opts.data).length+' keys — only the first 20 are sent.');
+  return w.length?w:undefined;
+}
+
 function track(name,opts){
-  if(!name||typeof name!=='string')return;
+  if(!name||typeof name!=='string'){
+    if(DBG)send(JSON.stringify({s:SITE,t:'dbgerr',u:location.pathname,h:getHost(),msg:'intaAnalytics.track() was called without an event name (got '+(name===''?'an empty string':typeof name)+') — nothing was sent.'}));
+    return;
+  }
+  var dw=DBG?trackWarnings(name,opts):undefined;
   opts=opts||{};
   var c=getConsents();
   var full=hasStat(c);
@@ -1387,7 +1446,8 @@ function track(name,opts){
     uc:full?(_iaCid.uc||undefined):undefined,
     uk:full?(_iaCid.uk||undefined):undefined,
     us:full?(_iaCid.us||undefined):undefined,
-    um:full?(_iaCid.um||undefined):undefined
+    um:full?(_iaCid.um||undefined):undefined,
+    dw:dw
   }));
 }
 window.intaAnalytics={track:track};
@@ -2114,6 +2174,22 @@ export default async function handler(req, res) {
         return res.status(400).end();
     }
 
+    // Event debugger (see api/_debug-hits.js): only set when the sending tab
+    // is in a ?ia_debug=<token> session. For normal traffic debugToken is
+    // null and respond() is exactly res.status(code).end() — every exit below
+    // goes through it so a debug session can see *why* a hit was dropped.
+    const debugToken = typeof body?.dbg === "string" && DEBUG_TOKEN_RE.test(body.dbg) ? body.dbg : null;
+    const respond = async (code, verdict, reason) => {
+        if (debugToken) await recordDebugHit(debugToken, body, code, verdict, reason);
+        return res.status(code).end();
+    };
+
+    // Client-side problem reported by the tracker itself (e.g. track() called
+    // without a name) — only ever sent during a debug session, never stored.
+    if (body?.t === "dbgerr") {
+        return respond(202, "client_error", String(body.msg || "Tracker reported an error").slice(0, 500));
+    }
+
     const { s: siteId, t: eventType, cl: consentLevel, sid, pv: pageviewId, u: rawUrl, r: referrer, h: pageHost, ti: title,
             us, um, uc, uk, dt, sw, sh, vw, vh, lang, tz, sd, at: rawAttentionMs, ph, ck,
             dur, cs, cf, ca, emb, g: isGranular, n: eventName, v: eventValue, cur: eventCurrency,
@@ -2149,7 +2225,9 @@ export default async function handler(req, res) {
     })();
 
     if (!siteId || typeof siteId !== "string" || !rawUrl) {
-        return res.status(400).end();
+        return respond(400, "rejected", !siteId || typeof siteId !== "string"
+            ? "Missing site key (s) — the script tag needs a data-site attribute."
+            : "Missing page URL (u).");
     }
 
     const isMinimal = consentLevel !== "full";
@@ -2168,7 +2246,9 @@ export default async function handler(req, res) {
         [siteId]
     ).catch(() => ({ rows: [] }));
 
-    if (!sites.length) return res.status(403).end();
+    if (!sites.length) {
+        return respond(403, "rejected", `Site key "${siteId}" is not registered or the site is inactive. Compare the data-site attribute with Settings → Analytics Script.`);
+    }
     const orgId = sites[0].organisation_id;
     const siteDomain = sites[0].domain;
 
@@ -2187,7 +2267,7 @@ export default async function handler(req, res) {
     // it's the cheaper check and conceptually more fundamental (this traffic
     // isn't a "visit" at all, automated or not).
     if (isDevOrLocalHost(pageHostSanitized)) {
-        return res.status(202).end();
+        return respond(202, "dropped", `Hits from ${pageHostSanitized} are discarded — localhost, .local and private-network hosts are never tracked. Test on a public domain such as a staging site.`);
     }
 
     // ── Foreign-domain gate ───────────────────────────────────────────────────
@@ -2213,7 +2293,9 @@ export default async function handler(req, res) {
             [siteId, orgId, pageHostSanitized]
         ).catch(() => ({ rows: [] }));
 
-        if (!fdRows[0]?.approved) return res.status(202).end();
+        if (!fdRows[0]?.approved) {
+            return respond(202, "dropped", `${pageHostSanitized} isn't ${siteDomain} or one of its subdomains, so the hit was only logged as a foreign-domain signal. Approve the domain in Analytics → Settings to track it.`);
+        }
     }
 
     // ASN/hosting-provider — resolved via a local GeoLite2-ASN lookup (see
@@ -2252,7 +2334,7 @@ export default async function handler(req, res) {
                 dnsResult.verified, dnsResult.hostname,
             ]
         ).catch(() => {});
-        return res.status(202).end();
+        return respond(202, "dropped", `User agent identified as a bot (${bot.name}${botCategory === "impersonator" ? ", failed reverse-DNS verification" : ""}) — logged under Bots, not counted as a visit.`);
     }
 
     // ── Custom conversion event (purchase / click / custom) ───────────────────
@@ -2260,7 +2342,7 @@ export default async function handler(req, res) {
     // regardless of consent tier), unlike pageviews where full events send
     // the complete href — so this never goes through the URL parser below.
     if (isCustomEvent) {
-        if (!eventName || typeof eventName !== "string") return res.status(400).end();
+        if (!eventName || typeof eventName !== "string") return respond(400, "rejected", "Event name (n) is missing.");
 
         const evPathname = ("/" + String(rawUrl).replace(/^\//, "")).slice(0, 2000);
         const valueCents = typeof eventValue === "number" && isFinite(eventValue)
@@ -2384,7 +2466,10 @@ export default async function handler(req, res) {
             }
         }
 
-        return res.status(202).end();
+        if (!evId) return respond(202, "error", "The event was accepted but could not be saved (database insert failed).");
+        return respond(202, isMinimal ? "stored_minimal" : "stored", isMinimal
+            ? "Stored without a session link — the visitor hasn't accepted statistics cookies, so it won't show in funnels, attribution or user flows."
+            : null);
     }
 
     // ── Click batch (heatmap data) ────────────────────────────────────────────
@@ -2393,7 +2478,7 @@ export default async function handler(req, res) {
     // custom events. Coordinates arrive as compact arrays to match this file's
     // key-shortened wire format: [x_pct, y_pct, viewport_width, tag, id, class, text].
     if (isClickBatch) {
-        if (!sid || !Array.isArray(ck) || !ck.length) return res.status(400).end();
+        if (!sid || !Array.isArray(ck) || !ck.length) return respond(400, "rejected", "Click batch needs a session id and at least one click.");
 
         const ckPathname = ("/" + String(rawUrl).replace(/^\//, "")).slice(0, 2000);
         const sessionId  = String(sid).slice(0, 64);
@@ -2431,7 +2516,7 @@ export default async function handler(req, res) {
             ).catch(() => {});
         }
 
-        return res.status(202).end();
+        return respond(202, "stored", `${values.length} heatmap click(s) stored.`);
     }
 
     // ── Page Experiment exposure ──────────────────────────────────────────────
@@ -2446,7 +2531,7 @@ export default async function handler(req, res) {
     if (isAbExposure) {
         const testIdNum = parseInt(abTestId, 10);
         const variantIdNum = parseInt(abVariantId, 10);
-        if (!testIdNum || !variantIdNum || !sid) return res.status(400).end();
+        if (!testIdNum || !variantIdNum || !sid) return respond(400, "rejected", "Experiment exposure is missing its test id, variant id or session id.");
 
         const { rows: matches } = await db.query(
             `SELECT t.id FROM ab_tests t
@@ -2463,9 +2548,10 @@ export default async function handler(req, res) {
                  VALUES ($1,$2,$3,$4,$5)`,
                 [testIdNum, variantIdNum, siteDomain, String(sid).slice(0, 64), pageHostSanitized]
             ).catch(() => {});
+            return respond(202, "stored", "Experiment exposure stored.");
         }
 
-        return res.status(202).end();
+        return respond(202, "dropped", `No running experiment on ${siteDomain} matches test ${testIdNum} / variant ${variantIdNum} — exposure ignored.`);
     }
 
     // For minimal pageviews the URL is just a pathname; for full pageviews it's the full href.
@@ -2478,11 +2564,12 @@ export default async function handler(req, res) {
     } else {
         let parsedUrl;
         try { parsedUrl = new URL(rawUrl); }
-        catch { return res.status(400).end(); }
+        catch { return respond(400, "rejected", "Full pageview URL (u) isn't a valid absolute URL."); }
         pathname  = parsedUrl.pathname.slice(0, 2000);
         urlColumn = (parsedUrl.pathname + parsedUrl.search).slice(0, 2000);
     }
 
+    let pageviewInsertFailed = false;
     if (isMinimal) {
         const minSessionId = sid ? String(sid).slice(0, 64) : null;
         let minReferrerHost = null;
@@ -2501,10 +2588,10 @@ export default async function handler(req, res) {
                 network.asn, network.asOrg, network.isHosting,
                 isEmbeddedEvent,
             ]
-        ).catch(() => {});
+        ).catch(() => { pageviewInsertFailed = true; });
     } else {
         // Full: enriched event (sid required)
-        if (!sid) return res.status(400).end();
+        if (!sid) return respond(400, "rejected", "Full pageview is missing its session id (sid).");
 
         const { browser, os } = parseUA(req.headers["user-agent"]);
 
@@ -2567,8 +2654,14 @@ export default async function handler(req, res) {
                 isEmbeddedEvent,                                           // $39 is_embedded
                 consentGranular,                                           // $40 consent_granular
             ]
-        ).catch(() => {});
+        ).catch(() => { pageviewInsertFailed = true; });
     }
 
-    return res.status(202).end();
+    if (pageviewInsertFailed) return respond(202, "error", "The pageview was accepted but could not be saved (database insert failed).");
+    if (isMinimal) {
+        return respond(202, "stored_minimal", "Counted as a consentless pageview (path only) — full details are sent once the visitor accepts statistics cookies.");
+    }
+    return respond(202, "stored", body.final === 1
+        ? "Exit update stored (time on page, scroll depth)."
+        : null);
 }
