@@ -33,6 +33,8 @@ import appStorage from '../../Functions/storage.js';
 import BotFilterToggle from "../../Components/BotFilterToggle";
 import { useExcludeBots } from "../../Functions/botFilter.js";
 import { preConsentCookieStat, postConsentCookieStat } from "../../Functions/cookieStats.js";
+import SectionError from "../../Components/SectionError";
+import { fetchJsonWithTimeout } from "../../Functions/fetchWithTimeout.js";
 
 const { useState, useEffect, useRef, useContext, useMemo } = React;
 
@@ -100,6 +102,11 @@ export default function Dashboard(props) {
     );
     const [loading, setLoading] = useState(false);
     const [loadingCountry, setLoadingCountry] = useState(false);
+    const [interactionsError, setInteractionsError] = useState(null);
+    const [countryError, setCountryError] = useState(null);
+    // Bumped by the Retry buttons to re-run the matching request.
+    const [interactionsAttempt, setInteractionsAttempt] = useState(0);
+    const [countryAttempt, setCountryAttempt] = useState(0);
     const [scanSummary, setScanSummary] = useState(null);
     // Raw scan response incl. 404 bodies — they say *why* there is no scan.
     const [scanResult, setScanResult] = useState(null);
@@ -255,27 +262,48 @@ export default function Dashboard(props) {
         }
     }, [])
 
-    useEffect(() => {
-        setLoading(true);
-        setLoadingCountry(true);
+    // Interactions (hero KPIs, category cards, device chart) and the country
+    // map load independently: each has its own time limit, error state and
+    // Retry, and a change of range/domain cancels the request in flight so a
+    // slow old response can't overwrite newer data. Previously one fetch with
+    // no timeout or error handling fed every card, so a failed or hung request
+    // left the whole page on skeletons.
+    const onLoginExpired = () => {
+        appStorage.removeItem("globals");
+        window.location.href = "/login";
+    };
 
-        fetch(API[id].getInteractions.url, {
+    useEffect(() => {
+        const ac = new AbortController();
+        setLoading(true);
+        setInteractionsError(null);
+        fetchJsonWithTimeout(API[id].getInteractions.url, {
             method: API[id].getInteractions.method,
             headers: API[id].getInteractions.headers,
             body: JSON.stringify({ workspaceId }),
-        }).then((res) => res.json()).then((data) => {
-            if (data === "Err_Login_Expired") {
-                appStorage.removeItem("globals");
-                window.location.href = "/login";
-                return;
-            }
-            setActiveData(data);
-        }
-        ).catch((err) => {
-            console.error(err);
-        }).finally(() => {
-            setLoading(false);
-        });
+        }, { signal: ac.signal, onLoginExpired })
+            .then((data) => {
+                if (data && typeof data === "object" && !Array.isArray(data) && data.error == null) {
+                    setActiveData(data);
+                } else {
+                    setActiveData(null);
+                    setInteractionsError(typeof data?.error === "string" ? data.error : "The server returned no statistics.");
+                }
+                setLoading(false);
+            })
+            .catch((err) => {
+                if (err.kind === "aborted") return;
+                setActiveData(null);
+                setInteractionsError(err.message);
+                setLoading(false);
+            });
+        return () => ac.abort();
+    }, [fromDate, toDate, handle, currentDomain, compareRange, previousPeriod, previousPeriod2, workspaceId, excludeBots, interactionsAttempt]);
+
+    useEffect(() => {
+        const ac = new AbortController();
+        setLoadingCountry(true);
+        setCountryError(null);
 
         API[id].getInteractionsByCountry.headers.CompareRange = compareRange;
         API[id].getInteractionsByCountry.headers.PreviousPeriod = previousPeriod.toISOString().split("T")[0];
@@ -285,25 +313,23 @@ export default function Dashboard(props) {
         API[id].getInteractionsByCountry.headers["X-Compare-Range"] =
             compareRange === 0 || compareRange == null ? "" : String(compareRange);
 
-        fetch(API[id].getInteractionsByCountry.url, {
+        fetchJsonWithTimeout(API[id].getInteractionsByCountry.url, {
             method: API[id].getInteractionsByCountry.method,
             headers: API[id].getInteractionsByCountry.headers,
             body: JSON.stringify({ workspaceId }),
-        }).then((res) => res.json()).then((country) => {
-            if (country === "Err_Login_Expired") {
-                appStorage.removeItem("globals");
-                window.location.href = "/login";
-                return;
-            }
-            setactiveDataCountry(country);
-        }
-        ).catch((err) => {
-            console.error(err);
-        }).finally(() => {
-            setLoadingCountry(false);
-        });
-
-    }, [fromDate, toDate, handle, currentDomain, compareRange, previousPeriod, previousPeriod2, workspaceId, excludeBots]);
+        }, { signal: ac.signal, onLoginExpired })
+            .then((country) => {
+                setactiveDataCountry(country);
+                setLoadingCountry(false);
+            })
+            .catch((err) => {
+                if (err.kind === "aborted") return;
+                setactiveDataCountry(null);
+                setCountryError(err.message);
+                setLoadingCountry(false);
+            });
+        return () => ac.abort();
+    }, [fromDate, toDate, handle, currentDomain, compareRange, previousPeriod, previousPeriod2, workspaceId, excludeBots, countryAttempt]);
 
     document.querySelectorAll(".intInput").forEach((input) => {
         input.setAttribute("max", new Date().toISOString().split("T")[0]);
@@ -392,7 +418,13 @@ export default function Dashboard(props) {
                 }
 
                 {/* ── 1. Primary consent KPIs ── */}
-                {activeData != null ? (
+                {interactionsError ? (
+                    <SectionError
+                        title="Consent statistics couldn't be loaded"
+                        message={interactionsError}
+                        onRetry={() => setInteractionsAttempt((n) => n + 1)}
+                    />
+                ) : activeData != null ? (
                     <>
                         <div className="dashboard-hero-kpis">
                             <Widget
@@ -435,7 +467,13 @@ export default function Dashboard(props) {
                 {/* ── 2. Geography & live (with EU/Non-EU context below) ── */}
                 <div className="dashboard-section">
                     <div className="grid-container grid-2" style={{ gridTemplateColumns: "1fr .5fr", gap: "20px" }}>
-                        {loadingCountry ? <Loading /> : <Map demoMode={demoMode} data={{ Countries: activeDataCountry?.data?.Countries, total: activeData?.Total }} />}
+                        {loadingCountry ? <Loading /> : countryError ? (
+                            <SectionError
+                                title="The country map couldn't be loaded"
+                                message={countryError}
+                                onRetry={() => setCountryAttempt((n) => n + 1)}
+                            />
+                        ) : <Map demoMode={demoMode} data={{ Countries: activeDataCountry?.data?.Countries, total: activeData?.Total }} />}
                         <div className="widget no-padding">
                             <LiveView currentDomain={handle ? handle : currentDomain} demoMode={demoMode} />
                         </div>
@@ -597,7 +635,7 @@ export default function Dashboard(props) {
                     </div>
                 )}
 
-                <PremiumTier loading={loading} activeData={activeData} fromDate={fromDate} toDate={toDate} demoMode={demoMode} compareOn={compareOn} />
+                <PremiumTier loading={loading} error={interactionsError} onRetry={() => setInteractionsAttempt((n) => n + 1)} activeData={activeData} fromDate={fromDate} toDate={toDate} demoMode={demoMode} compareOn={compareOn} />
             </div>
         </>
     )

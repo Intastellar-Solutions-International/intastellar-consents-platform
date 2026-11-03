@@ -28,5 +28,6 @@ import "./consent-timestamp.test.mjs";
 import "./scanner-consent-block.test.mjs";
 import "./bot-filter.test.mjs";
 import "./cookie-stats.test.mjs";
+import "./fetch-with-timeout.test.mjs";
 
 await run();
