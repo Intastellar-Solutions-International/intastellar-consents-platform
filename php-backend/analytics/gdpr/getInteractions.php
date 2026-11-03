@@ -772,9 +772,9 @@ $euCountryNames = array_map(function ($name) {
 }, array_values($euCountries));
 $euCountryNamesList = "'" . implode("','", $euCountryNames) . "'";
 
-$getFullNumber = "SELECT * FROM cookiebanner_tracking_settings " . $whereClause . " " . $andClause . "";
+$getFullNumber = "SELECT COUNT(*) AS n FROM cookiebanner_tracking_settings " . $whereClause . " " . $andClause . "";
 $getFullNumberQuery = mysqli_query($db, $getFullNumber);
-$allTotal = mysqli_num_rows($getFullNumberQuery);
+$allTotal = $getFullNumberQuery ? (int) (mysqli_fetch_assoc($getFullNumberQuery)["n"] ?? 0) : 0;
 
 // Active users: uid lives on user_consents_tracking; consent (LONGTEXT) + consents_timestamp align with banner scope
 $activeUsers = 0;
@@ -800,30 +800,38 @@ if ($activeUsersQuery) {
 $countryQuery = mysqli_query($db, $country);
 $countryNum = mysqli_num_rows($countryQuery); */
 
-$euAccepted = "SELECT * FROM cookiebanner_tracking_settings WHERE `type`='all' AND `value` = '1' AND country IN ('" . implode("','", $euCountryNames) . "') " . $andClause . "";
-$euAcceptedQuery = mysqli_query($db, $euAccepted);
-$euAcceptedNum = mysqli_num_rows($euAcceptedQuery);
+/**
+ * KPI counts for one period in a single aggregate query. These used to be
+ * ~7 separate "SELECT * … " queries per period whose rows were fetched into
+ * PHP only to be counted with mysqli_num_rows() — every matching row of the
+ * window transferred just to count it, a main reason Home took 8+ seconds.
+ * Same conditions as before (type/value per KPI, EU split by country name),
+ * so the numbers don't change. COALESCE: SUM over no rows is NULL.
+ */
+function consentTotalsSql($condition, $euCountryNamesList)
+{
+    return "SELECT
+        COALESCE(SUM(`type` = 'all'        AND `value` = '1'), 0)        AS accepted,
+        COALESCE(SUM(`type` = 'all'        AND `value` = 'declined'), 0) AS declined,
+        COALESCE(SUM(`type` = 'marketing'  AND `value` = '1'), 0)        AS marketing,
+        COALESCE(SUM(`type` = 'functional' AND `value` = '1'), 0)        AS functional,
+        COALESCE(SUM(`type` = 'statics'    AND `value` = '1'), 0)        AS statics,
+        COALESCE(SUM(`type` = 'all' AND `value` = '1' AND country IN ($euCountryNamesList)), 0)     AS eu_accepted,
+        COALESCE(SUM(`type` = 'all' AND `value` = '1' AND country NOT IN ($euCountryNamesList)), 0) AS non_eu_accepted
+    FROM cookiebanner_tracking_settings
+    WHERE `type` IN ('all', 'marketing', 'functional', 'statics') " . $condition;
+}
 
-$noneEUAccepted = "SELECT * FROM cookiebanner_tracking_settings WHERE `type`='all' AND `value` = '1' AND country NOT IN ('" . implode("','", $euCountryNames) . "') " . $andClause . "";
-$noneEUAcceptedQuery = mysqli_query($db, $noneEUAccepted);
-$noneEUAcceptedNum = mysqli_num_rows($noneEUAcceptedQuery);
+function fetchConsentTotals($db, $sql)
+{
+    $res = mysqli_query($db, $sql);
+    if (!$res) return null;
+    return array_map('intval', mysqli_fetch_assoc($res) ?: []);
+}
 
-$settings = "SELECT * FROM cookiebanner_tracking_settings WHERE `type`='all' AND `value` = 'declined' " . $andClause . "";
-$declineSettingsQuery = mysqli_query($db, $settings);
-
-$accepts = "SELECT * FROM cookiebanner_tracking_settings WHERE `type`='all' AND `value` = '1' " . $andClause . "";
-
-$acceptsQuery = mysqli_query($db, $accepts);
-
-$marketing = "SELECT * FROM cookiebanner_tracking_settings WHERE `type` = 'marketing' AND `value` = '1' " . $andClause . "";
-
-$marketingSettingsQuery = mysqli_query($db, $marketing);
-
-$functional = "SELECT * FROM cookiebanner_tracking_settings WHERE `type` = 'functional' AND `value` = '1' " . $andClause . "";
-$functionalSettingsQuery = mysqli_query($db, $functional);
-
-$statics = "SELECT * FROM cookiebanner_tracking_settings WHERE `type` = 'statics' AND `value` = '1' " . $andClause . "";
-$staticsSettingsQuery = mysqli_query($db, $statics);
+$currentTotals = fetchConsentTotals($db, consentTotalsSql($andClause, $euCountryNamesList));
+$euAcceptedNum = $currentTotals["eu_accepted"] ?? 0;
+$noneEUAcceptedNum = $currentTotals["non_eu_accepted"] ?? 0;
 
 
 // Previous period: use comparison window only (NOT $andClause which has current-period dates)
@@ -843,40 +851,27 @@ if (strpos($andClause, 'domain IN') !== false) {
 // Optional opaque flag from client (e.g. compare mode / span hint)
 $compareRange = isset($_SERVER["HTTP_X_COMPARE_RANGE"]) ? $_SERVER["HTTP_X_COMPARE_RANGE"] : null;
 
-$previousAllTotal = "SELECT * FROM cookiebanner_tracking_settings WHERE `type`='all' AND `value` = '1' " . $previousAndClause . "";
-$previousAllTotalQuery = mysqli_query($db, $previousAllTotal);
-$previousAllTotal = mysqli_num_rows($previousAllTotalQuery);
+$previousTotals = fetchConsentTotals($db, consentTotalsSql($previousAndClause, $euCountryNamesList));
+$previousAllTotal = $previousTotals["accepted"] ?? 0;
 
+if ($currentTotals !== null) {
+    $previousTotals = $previousTotals ?? [];
+    $accepted = $currentTotals["accepted"];
+    $declined = $currentTotals["declined"];
+    $marketingNum = $currentTotals["marketing"];
+    $functionalNum = $currentTotals["functional"];
+    $staticsNum = $currentTotals["statics"];
 
-$previousAccepts = "SELECT * FROM cookiebanner_tracking_settings WHERE `type`='all' AND `value` = '1' " . $previousAndClause . "";
-$previousDeclineSettings = "SELECT * FROM cookiebanner_tracking_settings WHERE `type`='all' AND `value` = 'declined' " . $previousAndClause . "";
-$previousMarketing = "SELECT * FROM cookiebanner_tracking_settings WHERE `type` = 'marketing' AND `value` = '1' " . $previousAndClause . "";
-$previousFunctional = "SELECT * FROM cookiebanner_tracking_settings WHERE `type` = 'functional' AND `value` = '1' " . $previousAndClause . "";
-$previousStatics = "SELECT * FROM cookiebanner_tracking_settings WHERE `type` = 'statics' AND `value` = '1' " . $previousAndClause . "";
-
-$previousAcceptsQuery = mysqli_query($db, $previousAccepts);
-$previousDeclineSettingsQuery = mysqli_query($db, $previousDeclineSettings);
-$previousMarketingSettingsQuery = mysqli_query($db, $previousMarketing);
-$previousFunctionalSettingsQuery = mysqli_query($db, $previousFunctional);
-$previousStaticsSettingsQuery = mysqli_query($db, $previousStatics);
-
-if ($acceptsQuery && $declineSettingsQuery) {
-    $accepted = mysqli_num_rows($acceptsQuery);
-    $declined = mysqli_num_rows($declineSettingsQuery);
-    $marketingNum = mysqli_num_rows($marketingSettingsQuery);
-    $functionalNum = mysqli_num_rows($functionalSettingsQuery);
-    $staticsNum = mysqli_num_rows($staticsSettingsQuery);
-
-    $previousAccepted = mysqli_num_rows($previousAcceptsQuery);
-    $previousDeclined = mysqli_num_rows($previousDeclineSettingsQuery);
-    $previousMarketingNum = mysqli_num_rows($previousMarketingSettingsQuery);
-    $previousFunctionalNum = mysqli_num_rows($previousFunctionalSettingsQuery);
-    $previousStaticsNum = mysqli_num_rows($previousStaticsSettingsQuery);
+    $previousAccepted = $previousTotals["accepted"] ?? 0;
+    $previousDeclined = $previousTotals["declined"] ?? 0;
+    $previousMarketingNum = $previousTotals["marketing"] ?? 0;
+    $previousFunctionalNum = $previousTotals["functional"] ?? 0;
+    $previousStaticsNum = $previousTotals["statics"] ?? 0;
 
     $totalNumber = $total;
     
     if ($totalNumber > 0) {
-        $num2 = mysqli_num_rows($acceptsQuery);
+        $num2 = $accepted;
         /* $countryArr = [];
         $regionArr = [];
 
@@ -1008,13 +1003,13 @@ if ($acceptsQuery && $declineSettingsQuery) {
             "desktop" => ($deviceTotal > 0) ? (float) round($desktopNum / $deviceTotal * 100, 1) : 0
         ];
 
-        $euUsersQuery = "SELECT * FROM cookiebanner_tracking_settings " . $whereClause . " " . $andClause . " AND (country IN ($euCountryNamesList) OR country LIKE 'EU')";
+        $euUsersQuery = "SELECT COUNT(*) AS n FROM cookiebanner_tracking_settings " . $whereClause . " " . $andClause . " AND (country IN ($euCountryNamesList) OR country LIKE 'EU')";
         $euNoneEUQuery = mysqli_query($db, $euUsersQuery);
-        $euNoneEUNum = mysqli_num_rows($euNoneEUQuery);
+        $euNoneEUNum = $euNoneEUQuery ? (int) (mysqli_fetch_assoc($euNoneEUQuery)["n"] ?? 0) : 0;
 
-        $noneEUUsersQuery = "SELECT * FROM cookiebanner_tracking_settings " . $whereClause . " " . $andClause . " AND (country NOT IN ($euCountryNamesList) AND country NOT LIKE 'EU' AND country != '')";
+        $noneEUUsersQuery = "SELECT COUNT(*) AS n FROM cookiebanner_tracking_settings " . $whereClause . " " . $andClause . " AND (country NOT IN ($euCountryNamesList) AND country NOT LIKE 'EU' AND country != '')";
         $noneEUQuery = mysqli_query($db, $noneEUUsersQuery);
-        $noneEUNum = mysqli_num_rows($noneEUQuery);
+        $noneEUNum = $noneEUQuery ? (int) (mysqli_fetch_assoc($noneEUQuery)["n"] ?? 0) : 0;
 
         $timeToDecisionQuery = "SELECT AVG(time_to_decision) / 1000 AS avg_time_to_decision FROM cookiebanner_tracking_settings " . $whereClause . " " . $andClause . "";
         $timeToDecisionQuery = mysqli_query($db, $timeToDecisionQuery);
