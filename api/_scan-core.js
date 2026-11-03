@@ -185,7 +185,7 @@ export const TRACKERS = [
     // analytics subdomain is classified as "analytics" rather than "cmp".
     { domains: ["analytics.consentsmanagement.com", "analytics.intastellarconsents.com", "analytics.intastellar-consents.com"], service: "Intastellar Analytics", category: "analytics" },
     // Own CMP infrastructure — not a third-party transfer
-    { domains: ["consents.cdn.intastellarsolutions.com", "intastellarsolutions.com", "consentsmanagement.com", "www.consentsmanagement.com", "intastellar-consents.com", "www.intastellar-consents.com", "intastellarconsents.com", "www.intastellarconsents.com"], service: "Intastellar Consents", category: "cmp" },
+    { domains: ["cdn.intastellar.eu", "consents.cdn.intastellarsolutions.com", "intastellarsolutions.com", "consentsmanagement.com", "www.consentsmanagement.com", "intastellar-consents.com", "www.intastellar-consents.com", "intastellarconsents.com", "www.intastellarconsents.com"], service: "Intastellar Consents", category: "cmp" },
 ];
 
 // ── Service metadata ──────────────────────────────────────────────────────────
@@ -1455,6 +1455,30 @@ export function classifyHost(hostname) {
         }
     }
     return null;
+}
+
+// Stored scans keep the classification from when they ran. A host that was
+// unclassified then ("third-party") but is in TRACKERS now — e.g.
+// cdn.intastellar.eu, Intastellar Consents' CDN — is reclassified on read,
+// so existing scans don't need a rescan. Classified hosts are left as stored.
+export function reclassifyStoredTransfer(t) {
+    if (!t?.host || (t.category && t.category !== "third-party")) return t;
+    const match = classifyHost(t.host);
+    if (!match) return t;
+    const meta = VENDOR_META[match.service] || {};
+    return {
+        ...t,
+        service:           match.service,
+        category:          match.category,
+        bannerCategory:    BANNER_CATEGORY[match.category] || "functional",
+        dataRegion:        match.dataRegion,
+        dataCountry:       match.dataCountry,
+        rdapLookup:        false,
+        description:       meta.description       || null,
+        privacyUrl:        meta.privacyUrl        || null,
+        legalBasis:        meta.legalBasis        || null,
+        transferMechanism: meta.transferMechanism || null,
+    };
 }
 
 // ── RDAP lookup for unknown domains ──────────────────────────────────────────

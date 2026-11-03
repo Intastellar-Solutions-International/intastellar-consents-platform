@@ -23,7 +23,7 @@
  * CORS: wildcard — designed to be called from any website.
  */
 
-import { scanDomain, BANNER_CATEGORY, categoryFromCookieName, describeCookie, vendorFromCookieName } from "./_scan-core.js";
+import { scanDomain, BANNER_CATEGORY, categoryFromCookieName, describeCookie, vendorFromCookieName, reclassifyStoredTransfer } from "./_scan-core.js";
 import { getPool } from "./_db.js";
 import { normalizeBannerDomain, originMatchesDomain } from "./_banner-domain.js";
 let tableReady = false;
@@ -195,7 +195,7 @@ export default async function handler(req, res) {
 function buildResponse(row, domain) {
     const domainRoot = domain.split(".").slice(-2).join(".");
 
-    const vendors = (row.transfers || []).map(t => ({
+    const vendors = (row.transfers || []).map(reclassifyStoredTransfer).map(t => ({
         service:        t.service,
         host:           t.host,
         category:       t.category,

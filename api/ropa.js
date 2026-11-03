@@ -158,10 +158,12 @@ async function handleAutoPopulate(db, organisationId, body, res) {
     }
 
     // Collect unique services; key = "domain::serviceName" to allow same service on different domains
+    // Loaded here, not at the top: _scan-core.js pulls in Chromium.
+    const { reclassifyStoredTransfer } = await import("./_scan-core.js");
     const toCreate = [];
     for (const scan of scans) {
         const scanDomain = scan.domain;
-        const transfers = Array.isArray(scan.transfers) ? scan.transfers : [];
+        const transfers = (Array.isArray(scan.transfers) ? scan.transfers : []).map(reclassifyStoredTransfer);
 
         // Get existing names for this domain to avoid duplicates
         const { rows: existing } = await db.query(

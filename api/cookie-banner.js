@@ -82,11 +82,11 @@ const BANNER_CATEGORIES = ["necessary", "security", "analytics", "marketing", "f
 // grouped categories object the banner consumes.
 // overrides: Record<cookieName, { bannerCategory?, vendor?, description? }>
 function buildCategories(domain, transfers, rawCookies, overrides = {}, definitions = [], scanCore) {
-    const { categoryFromCookieName, vendorFromCookieName, describeCookie, VENDOR_META } = scanCore;
+    const { categoryFromCookieName, vendorFromCookieName, describeCookie, VENDOR_META, reclassifyStoredTransfer } = scanCore;
     const domainRoot = domain.split(".").slice(-2).join(".");
 
     const vendorMap = new Map();
-    for (const t of (transfers || [])) {
+    for (const t of (transfers || []).map(reclassifyStoredTransfer)) {
         const bannerCategory = t.bannerCategory || BANNER_CATEGORY[t.category] || "functional";
         if (!vendorMap.has(t.service)) {
             vendorMap.set(t.service, {

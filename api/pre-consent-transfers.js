@@ -16,7 +16,7 @@
  *   POSTGRES_URL  — Neon connection string (EU Frankfurt)
  */
 
-import { vendorFromCookieName, VENDOR_META } from "./_scan-core.js";
+import { vendorFromCookieName, VENDOR_META, reclassifyStoredTransfer } from "./_scan-core.js";
 import { getPool } from "./_db.js";
 import { normalizeBannerDomain } from "./_banner-domain.js";
 import { summarizeConsentPhase } from "./_consent-phase.js";
@@ -95,7 +95,7 @@ function categoryFromCookieName(name) {
 
 function enrichWithBannerCategory(transfers, cookies, domain) {
     const domainRoot = domain.split(".").slice(-2).join(".");
-    const enrichedTransfers = transfers.map(t => ({
+    const enrichedTransfers = transfers.map(reclassifyStoredTransfer).map(t => ({
         ...t,
         bannerCategory: t.bannerCategory || BANNER_CATEGORY[t.category] || "functional",
     }));
