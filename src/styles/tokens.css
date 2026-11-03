@@ -76,6 +76,12 @@
     --space-10: 40px; --space-12: 48px; --space-14: 56px; --space-16: 64px;
     --space-20: 80px; --space-24: 96px;
 
+    /* ── Component sizes ───────────────────────────────────────────────── */
+    --size-field: 224px;        /* search/filter inputs */
+    --size-drawer-sm: 384px;
+    --size-drawer-md: 560px;
+    --size-drawer-lg: 720px;
+
     /* ── Radius ────────────────────────────────────────────────────────── */
     --radius-xs: 2px;
     --radius-sm: 4px;
