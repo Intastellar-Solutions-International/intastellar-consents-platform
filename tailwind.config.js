@@ -53,7 +53,7 @@ module.exports = {
         },
         boxShadow: {
             none: "none", sm: "var(--shadow-sm)", DEFAULT: "var(--shadow-md)", md: "var(--shadow-md)", lg: "var(--shadow-lg)",
-            overlay: "var(--shadow-overlay)", inset: "var(--shadow-inset)", focus: "var(--shadow-focus)",
+            overlay: "var(--shadow-overlay)", inset: "var(--shadow-inset)", focus: "var(--shadow-focus)", active: "var(--shadow-active)",
         },
         fontFamily: { sans: "var(--font-sans)", mono: "var(--font-mono)" },
         fontSize: {

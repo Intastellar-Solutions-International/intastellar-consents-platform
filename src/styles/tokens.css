@@ -81,6 +81,10 @@
     --size-drawer-sm: 384px;
     --size-drawer-md: 560px;
     --size-drawer-lg: 720px;
+    --size-rail: 232px;          /* new shell rail, expanded */
+    --size-rail-collapsed: 64px;
+    --size-header: 66px;          /* fixed app header */
+    --size-feedback-gutter: 40px; /* right gutter kept clear of the docked Feedback tab */
 
     /* ── Radius ────────────────────────────────────────────────────────── */
     --radius-xs: 2px;
@@ -98,6 +102,7 @@
     --shadow-overlay: 0 24px 56px rgb(var(--c-black) / 0.50);
     --shadow-inset: inset 0 1px 0 rgb(var(--c-white) / 0.04);
     --shadow-focus: 0 0 0 2px rgb(var(--c-accent-strong) / 0.9);
+    --shadow-active: inset 3px 0 0 rgb(var(--c-accent));   /* active nav item marker */
 
     /* ── Type: minimum 13px ────────────────────────────────────────────── */
     --font-sans: "Questrial", Arial, Helvetica, sans-serif;

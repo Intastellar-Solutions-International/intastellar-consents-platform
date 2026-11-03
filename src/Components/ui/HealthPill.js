@@ -29,7 +29,7 @@ export default function HealthPill({ checks = [], onClick, className = "" }) {
             onClick={onClick}
             title={summary}
             aria-label={`Domain health: ${s.word}. ${summary}`}
-            className={`tw-inline-flex tw-items-center tw-gap-2 tw-h-8 tw-px-3 tw-rounded-full tw-border tw-border-solid tw-text-sm tw-font-semibold ${s.cls} ${onClick ? "tw-cursor-pointer focus-visible:tw-outline-none focus-visible:tw-shadow-focus" : ""} ${className}`}
+            className={`tw-inline-flex tw-items-center tw-gap-2 tw-h-8 tw-px-3 tw-rounded-full tw-border tw-border-solid tw-text-sm tw-font-semibold tw-whitespace-nowrap ${s.cls} ${onClick ? "tw-cursor-pointer focus-visible:tw-outline-none focus-visible:tw-shadow-focus" : ""} ${className}`}
         >
             <Icon name={s.icon} size={14} />
             <span>{s.word}</span>
