@@ -3,7 +3,7 @@
     height: 100%;
     min-height: 350px;
     overflow: hidden;
-    border-radius: 10px;
+    border-radius: var(--radius-lg);
 }
 
 .anychart-credits{
@@ -19,20 +19,20 @@
 .line-chart__insights {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
-    margin-bottom: 10px;
+    gap: var(--space-2);
+    margin-bottom: var(--space-2);
 }
 
 .line-chart__insight-chip {
     display: inline-flex;
     align-items: center;
-    gap: 4px;
-    padding: 4px 8px;
-    border-radius: 999px;
-    font-size: 0.74rem;
+    gap: var(--space-1);
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-full);
+    font-size: var(--text-xs);
     color: rgba(235, 235, 242, 0.95);
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgb(var(--c-white) / 0.06);
+    border: 1px solid rgb(var(--c-white) / 0.12);
 }
 
 .line-chart__insight-chip--up {
@@ -47,28 +47,28 @@
 
 .line-chart__controls {
     display: inline-flex;
-    gap: 6px;
-    margin-bottom: 10px;
+    gap: var(--space-1);
+    margin-bottom: var(--space-2);
 }
 
 .line-chart__control-btn {
-    padding: 4px 10px;
-    border-radius: 999px;
-    border: 1px solid rgba(255, 255, 255, 0.16);
-    background: rgba(255, 255, 255, 0.04);
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-full);
+    border: 1px solid rgb(var(--c-white) / 0.16);
+    background: rgb(var(--c-white) / 0.04);
     color: rgba(225, 225, 235, 0.95);
-    font-size: 0.72rem;
+    font-size: var(--text-xs);
     cursor: pointer;
     transition: all 140ms ease;
 }
 
 .line-chart__control-btn:hover {
-    border-color: rgba(192, 159, 83, 0.55);
-    background: rgba(192, 159, 83, 0.14);
+    border-color: rgb(var(--c-accent) / 0.55);
+    background: rgb(var(--c-accent) / 0.14);
 }
 
 .line-chart__control-btn.is-active {
-    border-color: rgba(192, 159, 83, 0.78);
+    border-color: rgb(var(--c-accent) / 0.78);
     color: rgba(246, 229, 182, 1);
-    background: rgba(192, 159, 83, 0.22);
+    background: rgb(var(--c-accent) / 0.22);
 }

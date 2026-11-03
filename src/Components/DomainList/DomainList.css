@@ -2,10 +2,10 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 20px;
+    padding: var(--space-2) var(--space-5);
     background-color: #befc4d;
-    border-radius: 5px;
-    margin-bottom: 15px;
+    border-radius: var(--radius-sm);
+    margin-bottom: var(--space-4);
     border: none;
     float: right;
 }
@@ -17,17 +17,17 @@
 }
 
 .domain-list{
-    padding: 0 15px;
+    padding: 0 var(--space-4);
     background-color: #f5f5f5;
-    border-radius: 10px;
-    color: #6b6b6b;
-    padding-bottom: 15px;
+    border-radius: var(--radius-lg);
+    color: var(--color-text-muted);
+    padding-bottom: var(--space-4);
     white-space: pre-line;
 }
 
 .editor{
     background-color: #d5d5d5;
     display: block;
-    padding: 15px;
-    border-radius: 10px;
+    padding: var(--space-4);
+    border-radius: var(--radius-lg);
 }

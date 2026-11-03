@@ -925,7 +925,7 @@ function UtmSourcesChart({ scopeRows }) {
                     })}
                 </svg>
                 <div className="recon-chart-legend">
-                    <span><span className="recon-legend-dot" style={{ background: "rgba(74,222,128,0.72)" }} />Visible in analytics</span>
+                    <span><span className="recon-legend-dot" style={{ background: "rgb(var(--c-success) / 0.72)" }} />Visible in analytics</span>
                     <span><span className="recon-legend-dot" style={{ background: "rgba(245,158,11,0.52)" }} />Consented, not measurable</span>
                 </div>
             </div>
@@ -1007,7 +1007,7 @@ function PlatformBarsChart({ rows, currency }) {
                     })}
                 </svg>
                 <div className="recon-chart-legend">
-                    <span><span className="recon-legend-dot" style={{ background: "rgba(74,222,128,0.72)" }} />Visible in analytics</span>
+                    <span><span className="recon-legend-dot" style={{ background: "rgb(var(--c-success) / 0.72)" }} />Visible in analytics</span>
                     <span><span className="recon-legend-dot" style={{ background: "rgba(245,158,11,0.52)" }} />Consented, not measurable</span>
                 </div>
             </div>
@@ -1145,9 +1145,9 @@ function SnapshotComboChart({ snapshots }) {
                     <span style={{ display: "inline-block", width: "18px", height: "2px", background: "rgba(240,245,255,0.85)", verticalAlign: "middle" }} />
                     Visibility %
                 </span>
-                <span><span className="recon-legend-dot" style={{ background: "#4ade80" }} />≥65%</span>
+                <span><span className="recon-legend-dot" style={{ background: "var(--color-success)" }} />≥65%</span>
                 <span><span className="recon-legend-dot" style={{ background: "#f59e0b" }} />40–65%</span>
-                <span><span className="recon-legend-dot" style={{ background: "#f87171" }} />&lt;40%</span>
+                <span><span className="recon-legend-dot" style={{ background: "var(--color-danger)" }} />&lt;40%</span>
             </div>
         </div>
     );
@@ -1842,7 +1842,7 @@ function CostByChannelTable({ rows, currency }) {
                                     <td className={`num${visPct != null ? visPct >= 65 ? " cost-by-channel__good" : visPct < 40 ? " cost-by-channel__bad" : " cost-by-channel__warn" : ""}`}>
                                         {visPct != null ? formatPct(visPct) : "—"}
                                     </td>
-                                    <td className="num cost-col" style={{ color: costColor, fontWeight: 700, fontSize: "1.05rem" }}>
+                                    <td className="num cost-col" style={{ color: costColor, fontWeight: 700, fontSize: "var(--text-base)" }}>
                                         {cost != null ? formatMoney(cost, currency) : "—"}
                                     </td>
                                     <td className={`num${vsAvg != null ? vsAvg < 0 ? " cost-by-channel__good" : vsAvg > 20 ? " cost-by-channel__bad" : "" : ""}`}>

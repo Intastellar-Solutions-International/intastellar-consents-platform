@@ -135,7 +135,7 @@ function DiscoveriesTab({ discoveries, onAction, onBatchAction }) {
                                 <td><span className="cdb-name">{row.name}</span></td>
                                 <td><span className="cdb-times-seen">{row.times_seen}×</span></td>
                                 <td>
-                                    <span style={{ fontSize: "0.775rem", color: "rgba(255,255,255,0.55)" }}>
+                                    <span style={{ fontSize: "var(--text-xs)", color: "rgb(var(--c-white) / 0.55)" }}>
                                         {row.enriched_vendor || "—"}
                                     </span>
                                     {row.enriched_category && (
@@ -316,7 +316,7 @@ function DefinitionsTab({ definitions, onAction }) {
                                         onChange={e => edit(row.name, "description", e.target.value)}
                                     />
                                 </td>
-                                <td style={{ fontSize: "0.72rem", color: "rgba(255,255,255,0.35)", whiteSpace: "nowrap" }}>
+                                <td style={{ fontSize: "var(--text-xs)", color: "rgb(var(--c-white) / 0.35)", whiteSpace: "nowrap" }}>
                                     {row.promoted_at ? new Date(row.promoted_at).toLocaleDateString() : "—"}
                                 </td>
                                 <td>
@@ -449,7 +449,7 @@ export default function CookieDatabase() {
                     <h1>Cookie Database</h1>
                     <button
                         className="cdb-btn --promote"
-                        style={{ fontSize: "0.8rem", padding: "6px 14px" }}
+                        style={{ fontSize: "var(--text-xs)", padding: "6px 14px" }}
                         disabled={backfilling}
                         onClick={runBackfill}
                     >

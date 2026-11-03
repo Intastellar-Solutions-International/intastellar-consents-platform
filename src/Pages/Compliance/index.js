@@ -757,7 +757,7 @@ export default function CompliancePage() {
                                                                                 </span>
                                                                             )}
                                                                             {!t.description && !t.dataCountry && !t.url && !t.initiator && !t.purposes?.length && (
-                                                                                <span className="compliance-transfers__row-detail-item" style={{ color: "rgba(255,255,255,0.25)" }}>
+                                                                                <span className="compliance-transfers__row-detail-item" style={{ color: "rgb(var(--c-white) / 0.25)" }}>
                                                                                     No additional detail available for this transfer.
                                                                                 </span>
                                                                             )}

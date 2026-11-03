@@ -378,7 +378,7 @@ export function LiveView(props) {
                                     display: "flex",
                                     alignItems: "flex-end",
                                     width: "100%",
-                                    borderBottom: "1px solid rgb(192, 159, 83)",
+                                    borderBottom: "1px solid var(--color-accent)",
                                     marginBottom: "10px",
                                 }}
                             >
@@ -401,7 +401,7 @@ export function LiveView(props) {
                                                 style={{
                                                     width: "calc(100% / 30)",
                                                     height: `${barHeight}px`,
-                                                    backgroundColor: "rgb(192, 159, 83)",
+                                                    backgroundColor: "var(--color-accent)",
                                                     transition: "height 0.5s ease-in-out",
                                                     opacity: count > 0 ? "1" : "0.3",
                                                 }}
@@ -440,7 +440,7 @@ export function LiveView(props) {
                                                             <p className="liveView-content-data-1-text">{countryCount}</p>
                                                         </div>
                                                         <div style={{ width: "100%", height: "2px", backgroundColor: "#c4c4c4", marginBottom: "10px" }}>
-                                                            <div style={{ width: `${(countryCount / totalCount) * 100}%`, height: "2px", backgroundColor: "rgb(222, 189, 113)" }} />
+                                                            <div style={{ width: `${(countryCount / totalCount) * 100}%`, height: "2px", backgroundColor: "var(--color-accent-strong)" }} />
                                                         </div>
                                                         {!demoMode && (
                                                             <>

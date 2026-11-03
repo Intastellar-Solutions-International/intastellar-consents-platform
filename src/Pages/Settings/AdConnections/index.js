@@ -289,10 +289,10 @@ export default function AdConnectionsSettings() {
                 <StickyPageTitle title="Ad Connections" />
                 <div className="dashboard-content">
                     <header style={{ marginBottom: "24px" }}>
-                        <h1 style={{ fontSize: "1.5rem", fontWeight: 700, marginBottom: "6px" }}>
+                        <h1 style={{ fontSize: "var(--text-2xl)", fontWeight: 700, marginBottom: "6px" }}>
                             Ad Connections
                         </h1>
-                        <p style={{ color: "rgba(180,185,200,0.8)", fontSize: "0.9rem" }}>
+                        <p style={{ color: "rgba(180,185,200,0.8)", fontSize: "var(--text-sm)" }}>
                             Connect Google Ads, Meta, LinkedIn, and Microsoft Ads to auto-import
                             clicks and spend for each domain. Connections are per-domain.
                         </p>
@@ -305,7 +305,7 @@ export default function AdConnectionsSettings() {
                     )}
 
                     {notLoggedIn ? (
-                        <p style={{ color: "rgba(230,80,80,0.9)", fontSize: "0.9rem" }}>
+                        <p style={{ color: "rgba(230,80,80,0.9)", fontSize: "var(--text-sm)" }}>
                             Session not found. Please reload the page or log in again.
                         </p>
                     ) : domainsLoading ? (
@@ -317,7 +317,7 @@ export default function AdConnectionsSettings() {
                     ) : (
                         <>
                             <label style={{ display: "flex", flexDirection: "column", gap: "6px", marginBottom: "20px", maxWidth: "360px" }}>
-                                <span style={{ fontSize: "0.75rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em", color: "rgba(160,165,175,0.85)" }}>
+                                <span style={{ fontSize: "var(--text-xs)", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em", color: "rgba(160,165,175,0.85)" }}>
                                     Domain
                                 </span>
                                 <select
@@ -334,7 +334,7 @@ export default function AdConnectionsSettings() {
 
                             {selectedDomain ? (
                                 <>
-                                    <p style={{ fontSize: "0.8rem", color: "rgba(160,165,175,0.75)", marginBottom: "16px" }}>
+                                    <p style={{ fontSize: "var(--text-xs)", color: "rgba(160,165,175,0.75)", marginBottom: "16px" }}>
                                         Managing connections for{" "}
                                         <strong style={{ color: "rgba(220,225,235,0.9)" }}>{selectedDomain}</strong>
                                     </p>

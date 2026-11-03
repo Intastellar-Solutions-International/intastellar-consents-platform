@@ -54,7 +54,7 @@
 }
 
 .cfm-dest-ring {
-    fill: rgba(220, 80, 80, 0.12);
+    fill: rgb(var(--c-danger) / 0.12);
     stroke: rgba(220, 80, 80, 0.6);
     stroke-width: 1.2;
     pointer-events: none;

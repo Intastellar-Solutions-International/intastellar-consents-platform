@@ -29,8 +29,8 @@ function StatusBadge({ status }) {
     return (
         <span style={{
             display: "inline-flex", alignItems: "center",
-            padding: "4px 12px", borderRadius: "8px",
-            fontSize: "0.75rem", fontWeight: 700,
+            padding: "4px 12px", borderRadius: "var(--radius-md)",
+            fontSize: "var(--text-xs)", fontWeight: 700,
             textTransform: "uppercase", letterSpacing: "0.06em",
             background: s.bg, border: `1px solid ${s.border}`, color: s.color,
         }}>
@@ -120,8 +120,8 @@ export default function DSRDetail() {
                 <div className="settings-subpage__panel" style={{ marginBottom: "20px" }}>
                     <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-start", justifyContent: "space-between", gap: "12px 20px", marginBottom: "20px" }}>
                         <div>
-                            <p style={{ margin: "0 0 6px", fontSize: "0.75rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: "rgba(192,159,83,0.9)" }}>Subject UID</p>
-                            <p style={{ margin: 0, fontFamily: "ui-monospace, monospace", fontSize: "1rem", color: "#f2f2f2" }}>{request.uid}</p>
+                            <p style={{ margin: "0 0 6px", fontSize: "var(--text-xs)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: "rgb(var(--c-accent) / 0.9)" }}>Subject UID</p>
+                            <p style={{ margin: 0, fontFamily: "ui-monospace, monospace", fontSize: "var(--text-base)", color: "var(--color-text-primary)" }}>{request.uid}</p>
                         </div>
                         <StatusBadge status={derivedStatus} />
                     </div>
@@ -143,7 +143,7 @@ export default function DSRDetail() {
                             <span className="dsr-meta-label">Deadline</span>
                             <span className="dsr-meta-value" style={{ color: isOverdue ? "#f0a8a0" : undefined }}>
                                 {deadline.toLocaleDateString()}
-                                <span style={{ marginLeft: "6px", fontSize: "0.75rem", color: "rgba(140,140,140,0.7)" }}>({days} days)</span>
+                                <span style={{ marginLeft: "6px", fontSize: "var(--text-xs)", color: "rgba(140,140,140,0.7)" }}>({days} days)</span>
                             </span>
                         </div>
                         {request.notes && (
@@ -154,10 +154,10 @@ export default function DSRDetail() {
                         )}
                     </div>
 
-                    <div style={{ marginTop: "20px", paddingTop: "18px", borderTop: "1px solid rgba(255,255,255,0.08)", display: "flex", flexWrap: "wrap", gap: "10px", alignItems: "center" }}>
+                    <div style={{ marginTop: "20px", paddingTop: "18px", borderTop: "1px solid rgb(var(--c-white) / 0.08)", display: "flex", flexWrap: "wrap", gap: "10px", alignItems: "center" }}>
                         <Link
                             to={auditLogHref}
-                            style={{ padding: "9px 16px", borderRadius: "10px", border: "1px solid rgba(255,255,255,0.14)", background: "rgba(255,255,255,0.06)", color: "#e0e0e0", fontSize: "0.875rem", fontWeight: 600, textDecoration: "none" }}
+                            style={{ padding: "9px 16px", borderRadius: "var(--radius-lg)", border: "1px solid rgb(var(--c-white) / 0.14)", background: "rgb(var(--c-white) / 0.06)", color: "var(--color-text-secondary)", fontSize: "var(--text-sm)", fontWeight: 600, textDecoration: "none" }}
                         >
                             View consent history →
                         </Link>
@@ -179,7 +179,7 @@ export default function DSRDetail() {
                                     className="settings-blacklist-modal__btn settings-blacklist-modal__btn--primary"
                                     onClick={() => updateStatus("completed")}
                                     disabled={updating}
-                                    style={{ background: "rgba(80,180,100,0.2)", borderColor: "rgba(80,180,100,0.45)", color: "#a8edb8" }}
+                                    style={{ background: "rgb(var(--c-success) / 0.2)", borderColor: "rgba(80,180,100,0.45)", color: "#a8edb8" }}
                                 >
                                     Mark completed
                                 </button>
@@ -190,7 +190,7 @@ export default function DSRDetail() {
 
                 {Array.isArray(request.history) && request.history.length > 0 && (
                     <div className="settings-subpage__panel">
-                        <h3 style={{ margin: "0 0 14px", fontSize: "0.8125rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: "rgba(192,159,83,0.9)" }}>
+                        <h3 style={{ margin: "0 0 14px", fontSize: "var(--text-xs)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: "rgb(var(--c-accent) / 0.9)" }}>
                             Activity
                         </h3>
                         <ul className="dsr-timeline">

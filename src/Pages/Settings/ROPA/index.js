@@ -93,10 +93,10 @@ export default function ROPA() {
                 </p>
 
                 <div className="settings-subpage__toolbar">
-                    <span style={{ fontSize: "0.875rem", color: "rgba(180,180,180,0.8)" }}>
+                    <span style={{ fontSize: "var(--text-sm)", color: "rgba(180,180,180,0.8)" }}>
                         {entries.length} {entries.length === 1 ? "activity" : "activities"}
                         {entries.filter((e) => e.isDraft).length > 0 && (
-                            <span style={{ marginLeft: "10px", color: "#d4b87a", fontSize: "0.8125rem" }}>
+                            <span style={{ marginLeft: "10px", color: "var(--color-accent-strong)", fontSize: "var(--text-xs)" }}>
                                 {entries.filter((e) => e.isDraft).length} draft
                             </span>
                         )}
@@ -107,7 +107,7 @@ export default function ROPA() {
                             className="settings-subpage__submit"
                             onClick={autoPopulate}
                             disabled={populating}
-                            style={{ background: "rgba(80,130,210,0.18)", borderColor: "rgba(80,130,210,0.4)", color: "#a8c4f0" }}
+                            style={{ background: "rgb(var(--c-info) / 0.18)", borderColor: "rgba(80,130,210,0.4)", color: "var(--color-info-text)" }}
                         >
                             {populating ? "Scanning…" : activeDomain ? `Auto-populate from ${activeDomain}` : "Auto-populate from all scans"}
                         </button>
@@ -142,43 +142,43 @@ export default function ROPA() {
                             <div key={entry.id} className="settings-subpage__panel" style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-start", gap: "12px 20px" }}>
                                 <div style={{ flex: "1 1 260px" }}>
                                     <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px", flexWrap: "wrap" }}>
-                                        <span style={{ fontWeight: 600, fontSize: "0.9375rem", color: "#f2f2f2" }}>
+                                        <span style={{ fontWeight: 600, fontSize: "var(--text-base)", color: "var(--color-text-primary)" }}>
                                             {entry.activityName}
                                         </span>
                                         {entry.isDraft && (
-                                            <span style={{ padding: "2px 8px", borderRadius: "5px", fontSize: "0.65rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", background: "rgba(192,159,83,0.15)", border: "1px solid rgba(192,159,83,0.3)", color: "#c0a053" }}>
+                                            <span style={{ padding: "2px 8px", borderRadius: "var(--radius-sm)", fontSize: "var(--text-xs)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", background: "rgb(var(--c-accent) / 0.15)", border: "1px solid rgb(var(--c-accent) / 0.3)", color: "var(--color-accent)" }}>
                                                 Draft
                                             </span>
                                         )}
                                         {entry.domain ? (
-                                            <span style={{ padding: "2px 8px", borderRadius: "5px", fontSize: "0.65rem", fontWeight: 600, background: "rgba(80,130,210,0.12)", border: "1px solid rgba(80,130,210,0.3)", color: "#88b0e8", fontFamily: "ui-monospace, monospace" }}>
+                                            <span style={{ padding: "2px 8px", borderRadius: "var(--radius-sm)", fontSize: "var(--text-xs)", fontWeight: 600, background: "rgb(var(--c-info) / 0.12)", border: "1px solid rgb(var(--c-info) / 0.3)", color: "var(--color-info-text)", fontFamily: "ui-monospace, monospace" }}>
                                                 {entry.domain}
                                             </span>
                                         ) : (
-                                            <span style={{ padding: "2px 8px", borderRadius: "5px", fontSize: "0.65rem", fontWeight: 600, background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(160,160,160,0.7)" }}>
+                                            <span style={{ padding: "2px 8px", borderRadius: "var(--radius-sm)", fontSize: "var(--text-xs)", fontWeight: 600, background: "rgb(var(--c-white) / 0.05)", border: "1px solid rgb(var(--c-white) / 0.1)", color: "rgba(160,160,160,0.7)" }}>
                                                 org-wide
                                             </span>
                                         )}
                                     </div>
-                                    <p style={{ margin: 0, fontSize: "0.8125rem", color: "rgba(180,180,180,0.85)", lineHeight: 1.45 }}>
+                                    <p style={{ margin: 0, fontSize: "var(--text-xs)", color: "rgb(var(--c-text-muted) / 0.85)", lineHeight: 1.45 }}>
                                         {entry.purpose && <span>Purpose: {entry.purpose}</span>}
                                         {entry.legalBasis && <span style={{ marginLeft: "12px" }}>Legal basis: {entry.legalBasis}</span>}
                                         {entry.retentionPeriod && <span style={{ marginLeft: "12px" }}>Retention: {entry.retentionPeriod}</span>}
                                     </p>
                                     {Array.isArray(entry.thirdCountryTransfers) && entry.thirdCountryTransfers.length > 0 && (
-                                        <p style={{ margin: "4px 0 0", fontSize: "0.75rem", color: "#d4b87a" }}>
+                                        <p style={{ margin: "4px 0 0", fontSize: "var(--text-xs)", color: "var(--color-accent-strong)" }}>
                                             Third-country transfers: {entry.thirdCountryTransfers.map((t) => t.country).join(", ")}
                                         </p>
                                     )}
                                 </div>
                                 <div style={{ flexShrink: 0, display: "flex", gap: "8px", alignItems: "center" }}>
-                                    <span style={{ fontSize: "0.75rem", color: "rgba(140,140,140,0.7)" }}>
+                                    <span style={{ fontSize: "var(--text-xs)", color: "rgba(140,140,140,0.7)" }}>
                                         {entry.updatedAt ? new Date(entry.updatedAt).toLocaleDateString() : entry.createdAt ? new Date(entry.createdAt).toLocaleDateString() : ""}
                                     </span>
                                     <button
                                         type="button"
                                         className="settings-blacklist-modal__btn settings-blacklist-modal__btn--primary"
-                                        style={{ padding: "7px 14px", fontSize: "0.8125rem" }}
+                                        style={{ padding: "7px 14px", fontSize: "var(--text-xs)" }}
                                         onClick={() => history.push(`/settings/ropa/${entry.id}`)}
                                     >
                                         Edit
@@ -186,7 +186,7 @@ export default function ROPA() {
                                     <button
                                         type="button"
                                         className="settings-blacklist-modal__btn settings-blacklist-modal__btn--danger"
-                                        style={{ padding: "7px 12px", fontSize: "0.8125rem" }}
+                                        style={{ padding: "7px 12px", fontSize: "var(--text-xs)" }}
                                         onClick={() => deleteEntry(entry.id)}
                                     >
                                         ×

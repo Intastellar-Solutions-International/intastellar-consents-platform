@@ -2,13 +2,13 @@
     position: fixed;
     right: 0;
     top: 100px;
-    background: rgb(58, 58, 58);
+    background: var(--color-bg-base);
     width: auto;
     border-top: 2px solid green;
     transition: right .5s ease-in-out;
 }
 
 .successWindow-content{
-    padding: 15px;
-    color: #fff;
+    padding: var(--space-4);
+    color: var(--color-text-primary);
 }

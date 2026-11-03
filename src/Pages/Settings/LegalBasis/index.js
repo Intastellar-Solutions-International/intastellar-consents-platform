@@ -86,11 +86,11 @@ export default function LegalBasis() {
                     <table style={{ borderCollapse: "collapse", width: "100%", minWidth: `${220 + activeFrameworks.length * 180}px` }}>
                         <thead>
                             <tr>
-                                <th style={{ textAlign: "left", padding: "12px 16px", fontSize: "0.65rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "rgba(192,159,83,0.95)", borderBottom: "1px solid rgba(255,255,255,0.1)", background: "rgba(0,0,0,0.25)", width: "200px" }}>
+                                <th style={{ textAlign: "left", padding: "12px 16px", fontSize: "var(--text-xs)", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "rgb(var(--c-accent) / 0.95)", borderBottom: "1px solid rgb(var(--c-white) / 0.1)", background: "rgb(var(--c-black) / 0.25)", width: "200px" }}>
                                     Processing purpose
                                 </th>
                                 {activeFrameworks.map((fw) => (
-                                    <th key={fw} style={{ textAlign: "left", padding: "12px 16px", fontSize: "0.65rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "rgba(192,159,83,0.95)", borderBottom: "1px solid rgba(255,255,255,0.1)", background: "rgba(0,0,0,0.25)" }}>
+                                    <th key={fw} style={{ textAlign: "left", padding: "12px 16px", fontSize: "var(--text-xs)", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "rgb(var(--c-accent) / 0.95)", borderBottom: "1px solid rgb(var(--c-white) / 0.1)", background: "rgb(var(--c-black) / 0.25)" }}>
                                         {fw}
                                     </th>
                                 ))}
@@ -99,13 +99,13 @@ export default function LegalBasis() {
                         <tbody>
                             {PROCESSING_PURPOSES.map((p, i) => (
                                 <tr key={p.id} style={{ background: i % 2 === 0 ? "transparent" : "rgba(255,255,255,0.015)" }}>
-                                    <td style={{ padding: "12px 16px", fontSize: "0.875rem", color: "#e0e0e0", borderBottom: "1px solid rgba(255,255,255,0.06)", fontWeight: 500 }}>
+                                    <td style={{ padding: "12px 16px", fontSize: "var(--text-sm)", color: "var(--color-text-secondary)", borderBottom: "1px solid rgb(var(--c-white) / 0.06)", fontWeight: 500 }}>
                                         {p.label}
                                     </td>
                                     {activeFrameworks.map((fw) => {
                                         const bases = LEGAL_BASES[fw] || [];
                                         return (
-                                            <td key={fw} style={{ padding: "8px 16px", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+                                            <td key={fw} style={{ padding: "8px 16px", borderBottom: "1px solid rgb(var(--c-white) / 0.06)" }}>
                                                 <select
                                                     className="settings-subpage__select"
                                                     style={{ width: "100%", minWidth: "160px" }}

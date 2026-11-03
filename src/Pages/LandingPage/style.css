@@ -5,7 +5,7 @@
 
 .crawlerPage-logo {
     width: 150px;
-    padding: 15px;
+    padding: var(--space-4);
 }
 
 .main-content {
@@ -16,15 +16,15 @@
 /* Ribbon from Login.css — tuned for light landing background */
 .main-content-section .icc-product-parent-ribbon--on-light {
     text-align: left;
-    margin-top: 8px;
-    margin-bottom: 18px;
-    border-color: rgba(192, 159, 83, 0.45);
+    margin-top: var(--space-2);
+    margin-bottom: var(--space-4);
+    border-color: rgb(var(--c-accent) / 0.45);
     background: rgba(255, 252, 246, 0.95);
-    box-shadow: 0 2px 14px rgba(0, 0, 0, 0.06);
+    box-shadow: var(--shadow-md);
 }
 
 .main-content-section .icc-product-parent-ribbon--on-light .icc-product-parent-ribbon__product {
-    color: #2c2c2c;
+    color: var(--color-text-inverse);
 }
 
 .main-content-section .icc-product-parent-ribbon--on-light .icc-product-parent-ribbon__rest {
@@ -36,12 +36,12 @@
 }
 
 .main-content-section-button {
-    margin-top: 20px;
-    color: #f8f9fa;
-    background-color: #c09f53;
+    margin-top: var(--space-5);
+    color: var(--color-text-primary);
+    background-color: var(--color-accent);
     text-decoration: none;
-    padding: 10px 20px;
-    border-radius: 5px;
+    padding: var(--space-2) var(--space-5);
+    border-radius: var(--radius-sm);
 }
 
 @media screen and (max-width: 900px) {
@@ -53,23 +53,23 @@
     }
 
     .main-content-section-description{
-        font-size: 14px;
+        font-size: var(--text-sm);
         line-height: 20px;
-        margin-bottom: 15px;
+        margin-bottom: var(--space-4);
     }
     .main-content-section-title{
-        font-size: 20px;
+        font-size: var(--text-xl);
         line-height: 30px;
     }
 
     .main-content-section{
         width: 100%;
-        padding: 25px;
+        padding: var(--space-6);
     }
 
     .feature-list{
         grid-template-columns: 1fr;
         width: 100%;
-        padding: 15px;
+        padding: var(--space-4);
     }
 }

@@ -7,12 +7,12 @@
     top: 0;
     grid-template-columns: 1fr;
     z-index: 20000;
-    background-color: rgb(36, 36, 36);
+    background-color: var(--color-bg-sunken);
 }
 
 .platform-select-logo{
     filter: invert(1);
     width: 35%;
-    padding: 45px;
+    padding: var(--space-12);
     margin-top: -105px;
 }
