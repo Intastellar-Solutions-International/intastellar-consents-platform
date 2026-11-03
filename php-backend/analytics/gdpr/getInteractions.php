@@ -54,8 +54,26 @@ $previousPeriod2 = $compareStart;
 $previousPeriod = $compareEnd;
 
 $total = 0;
-$whereClause = "WHERE `type` != ''";
-$andClause = "";
+
+/**
+ * SQL fragment that leaves out records flagged is_suspected_bot (see
+ * suspectedBotReason() in collect.php). On unless the client sends
+ * "ExcludeBots: 0" — the dashboard's "Exclude suspected bots" toggle.
+ * Requires the columns from php-backend/sql/2026-11-03-suspected-bots.sql.
+ */
+function botFilterSql($excludeBotsHeader, $column = "is_suspected_bot")
+{
+    $include = trim((string) $excludeBotsHeader) === "0";
+    return $include ? "" : " AND $column = 0";
+}
+
+// Appended wherever $whereClause / $andClause / $previousAndClause are (re)set
+// below, so every count honours it. Unqualified on purpose: the column exists
+// on both cookiebanner_tracking_settings and user_consents_tracking (the
+// active-users query rewrites these clauses for the latter).
+$botFilter = botFilterSql($_SERVER["HTTP_EXCLUDEBOTS"] ?? null);
+$whereClause = "WHERE `type` != ''" . $botFilter;
+$andClause = $botFilter;
 $num_per_day = [];
 $bannerStyle = "";
 /**
@@ -152,7 +170,7 @@ if ($domains != "combined view") {
         strtotime($fromDate)
     );
 
-    $whereClause = "WHERE domain='" . $domains . "' AND `type` != '' AND DATE(consentsGiving) >= $installedTime";
+    $whereClause = "WHERE domain='" . $domains . "' AND `type` != '' AND DATE(consentsGiving) >= $installedTime" . $botFilter;
     /* $andClause .= "AND domain = '" . $domains . "'"; */
 
     $fromDate = $installedTime;
@@ -182,8 +200,8 @@ if($workspaceId > 0){
     $domains = $row['domain'];
     $domainsArray = explode(',', $domains);
     $domains = implode(',', $domainsArray);
-    $andClause = " AND domain IN ($domains)";
-    $whereClause = " AND cookiebanner_tracking_settings.domain IN ($domains)";
+    $andClause = " AND domain IN ($domains)" . $botFilter;
+    $whereClause = " AND cookiebanner_tracking_settings.domain IN ($domains)" . $botFilter;
     
     $hourlyTodaySql = "SELECT
         HOUR(cookiebanner_tracking_settings.consentsGiving) AS h,
@@ -794,6 +812,7 @@ if (!empty($compareStart) && !empty($compareEnd)) {
 } else {
     $previousAndClause = " AND 1=0";
 }
+$previousAndClause .= $botFilter;
 // Preserve domain IN filter for combined view if present in $andClause
 if (strpos($andClause, 'domain IN') !== false) {
     $previousAndClause .= preg_replace('/.*( AND domain IN \([^)]+\)).*/s', '$1', $andClause);

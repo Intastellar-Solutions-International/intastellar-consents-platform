@@ -252,6 +252,8 @@ function MyFunction()
         'regionName'   => $user['regionName'] ?? "",
         // ISO 3166-2 subdivision code, e.g. "CA" — what getRegulationApplied() compares against.
         'regionCode'   => $user['region'] ?? "",
+        // ip-api: the IP belongs to a hosting/datacenter provider.
+        'hosting'      => !empty($user['hosting']),
         'city'         => $user['city'] ?? "",
         'ip'           => $ip,
         'isp'          => $user['isp'] ?? $user["as_name"],
@@ -604,13 +606,66 @@ if($experiment && $experiment->id) {
     }
 }
 
+/**
+ * Why this consent record looks automated, or "" if it doesn't.
+ *
+ *   datacenter_ip          the visitor's IP belongs to a hosting provider
+ *                          (ip-api "hosting") — scanners, headless browsers
+ *   conflicting_decisions  the same visitor stored a *different* consent
+ *                          within ±1 second — no person accepts and rejects
+ *                          in the same second
+ *   high_rate              more than 5 separate decisions by one visitor in
+ *                          the last 60 seconds
+ *
+ * Deliberately not used: "no regulation applied" on its own (that is every
+ * visitor from a place without a listed privacy law), ip-api "proxy" (VPN
+ * users are people), and per-IP rates (IPs aren't stored).
+ * Note one decision arrives as several identical rows (one request per
+ * category), so rates count distinct decisions, not rows.
+ */
+function suspectedBotReason($isHostingIp, $hasConflictingDecision, $recentDecisions)
+{
+    if ($isHostingIp) return 'datacenter_ip';
+    if ($hasConflictingDecision) return 'conflicting_decisions';
+    if ((int) $recentDecisions >= 5) return 'high_rate'; // this one is the 6th+
+    return '';
+}
+
+$botUid      = mysqli_real_escape_string($db, (string) $uid);
+$botDomain   = mysqli_real_escape_string($db, (string) $domain);
+$botConsent  = mysqli_real_escape_string($db, (string) $consent);
+$hasConflictingDecision = false;
+$recentDecisions = 0;
+if ($botUid !== '') {
+    $conflictWhere = "uid = '$botUid' AND domain = '$botDomain'
+        AND consents_timestamp BETWEEN DATE_SUB('$consentsGiving', INTERVAL 1 SECOND) AND DATE_ADD('$consentsGiving', INTERVAL 1 SECOND)
+        AND consent <> '$botConsent'";
+    $res = @mysqli_query($db, "SELECT 1 FROM user_consents_tracking WHERE $conflictWhere LIMIT 1");
+    $hasConflictingDecision = $res && mysqli_num_rows($res) > 0;
+
+    $res = @mysqli_query($db, "SELECT COUNT(DISTINCT consents_timestamp) AS n FROM user_consents_tracking
+        WHERE uid = '$botUid' AND domain = '$botDomain'
+          AND consents_timestamp >= DATE_SUB('$consentsGiving', INTERVAL 60 SECOND)
+          AND consents_timestamp < '$consentsGiving'");
+    if ($res) $recentDecisions = (int) (mysqli_fetch_assoc($res)['n'] ?? 0);
+
+    // The earlier half of a conflicting pair was stored before we knew —
+    // flag it too, so both sides drop out of the totals.
+    if ($hasConflictingDecision) {
+        @mysqli_query($db, "UPDATE user_consents_tracking SET is_suspected_bot = 1, bot_reason = 'conflicting_decisions' WHERE $conflictWhere");
+    }
+}
+$botReason = suspectedBotReason(!empty($countryData['hosting']), $hasConflictingDecision, $recentDecisions);
+$isSuspectedBot = $botReason !== '' ? 1 : 0;
+$botReasonSql = $botReason !== '' ? "'$botReason'" : "NULL";
+
 $selectPolicyId = "SELECT policy_id FROM banner_policies WHERE active = 1 LIMIT 1";
 $selectPolicyId_query = mysqli_query($db, $selectPolicyId);
 $policyIdRow = mysqli_fetch_assoc($selectPolicyId_query);
 $policyId = $policyIdRow['policy_id'] ?? "ic-consent-v1";
 
 $transferEffectiveFromSql = $transfer_effective_from !== null ? "'$transfer_effective_from'" : "NULL";
-$user_consents_tracking = "INSERT INTO user_consents_tracking(`url`, `domain`,`consents_timestamp`, `referrer`, `consent`, `uid`, `banner_policy_id`, `time_to_decision`, `shopify_consent_id`, `regulation_applied`, `country_code`, `region`, `language`, `consent_method`, `transfer_basis`, `transfer_destination`, `transfer_data_importer`, `transfer_instrument`, `transfer_effective_from`) VALUES('$consent_url', '$domain', '$consentsGiving', '$referrer', '$consent', '$uid', '$policyId', '$timeToDecision', '$shopifyConsentId', '$regulation_applied', '$countryCode', '$region', '$language', '$consentMethod', '$transfer_basis', '$transfer_destination', '$transfer_data_importer', '$transfer_instrument', $transferEffectiveFromSql)";
+$user_consents_tracking = "INSERT INTO user_consents_tracking(`url`, `domain`,`consents_timestamp`, `referrer`, `consent`, `uid`, `banner_policy_id`, `time_to_decision`, `shopify_consent_id`, `regulation_applied`, `country_code`, `region`, `language`, `consent_method`, `transfer_basis`, `transfer_destination`, `transfer_data_importer`, `transfer_instrument`, `transfer_effective_from`, `is_suspected_bot`, `bot_reason`) VALUES('$consent_url', '$domain', '$consentsGiving', '$referrer', '$consent', '$uid', '$policyId', '$timeToDecision', '$shopifyConsentId', '$regulation_applied', '$countryCode', '$region', '$language', '$consentMethod', '$transfer_basis', '$transfer_destination', '$transfer_data_importer', '$transfer_instrument', $transferEffectiveFromSql, $isSuspectedBot, $botReasonSql)";
 $user_consents_query = mysqli_query($db, $user_consents_tracking);
 //$user_consents_query2 = mysqli_query($backUpDb, $user_consents_tracking);
 
@@ -916,7 +971,7 @@ try {
 }
 
 if ($consent_giving == 1 ) {
-    $sql2 = "INSERT INTO cookiebanner_tracking_settings(`type`, `value`, domain, country, countryCode, region, consentsGiving, screenSize, new_datetime_column, time_to_decision) VALUES('$type', '$value', '$domain', '$country', '$countryCode', '$region', '$consentsGiving', '$screen', '$timestamp', '$timeToDecision')";
+    $sql2 = "INSERT INTO cookiebanner_tracking_settings(`type`, `value`, domain, country, countryCode, region, consentsGiving, screenSize, new_datetime_column, time_to_decision, is_suspected_bot, bot_reason) VALUES('$type', '$value', '$domain', '$country', '$countryCode', '$region', '$consentsGiving', '$screen', '$timestamp', '$timeToDecision', $isSuspectedBot, $botReasonSql)";
     $query2 = mysqli_query($db, $sql2);
     //$query2BackUp = mysqli_query($backUpDb, $sql2);
 

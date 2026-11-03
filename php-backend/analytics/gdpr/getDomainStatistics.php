@@ -40,6 +40,18 @@ $sortRaw = isset($_SERVER["HTTP_SORTORDER"]) ? strtolower(trim($_SERVER["HTTP_SO
 
 $consent_url = [];
 
+/**
+ * SQL fragment that leaves out records flagged is_suspected_bot (see
+ * suspectedBotReason() in collect.php). On unless the client sends
+ * "ExcludeBots: 0" — the dashboard's "Exclude suspected bots" toggle.
+ * Requires the columns from php-backend/sql/2026-11-03-suspected-bots.sql.
+ */
+function botFilterSql($excludeBotsHeader, $column = "is_suspected_bot")
+{
+    $include = trim((string) $excludeBotsHeader) === "0";
+    return $include ? "" : " AND $column = 0";
+}
+
 $andClause = "";
 if ($fromDate !== null && $toDate !== null) {
     if ($fromDate != "null" && $toDate != "null" && $fromDate !== "" && $toDate !== "") {
@@ -58,6 +70,8 @@ if ($uid !== "" && strtolower($uid) !== "null") {
     $uidEsc = mysqli_real_escape_string($db, $uid);
     $andClause .= " AND ucs.uid = '$uidEsc'";
 }
+
+$andClause .= botFilterSql($_SERVER["HTTP_EXCLUDEBOTS"] ?? null, "ucs.is_suspected_bot");
 
 $domainsEsc = mysqli_real_escape_string($db, $domains);
 
@@ -93,6 +107,8 @@ function push_consent_row(&$consent_url, $row)
         "transfer_data_importer" => $row["transfer_data_importer"],
         "transfer_instrument" => $row["transfer_instrument"],
         "consent_method" => $row["consent_method"],
+        "is_suspected_bot" => !empty($row["is_suspected_bot"]),
+        "bot_reason" => $row["bot_reason"] ?? null,
     ]);
 }
 
