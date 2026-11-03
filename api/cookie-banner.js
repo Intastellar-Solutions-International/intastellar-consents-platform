@@ -23,6 +23,7 @@
  */
 
 import { getPool } from "./_db.js";
+import { normalizeBannerDomain } from "./_banner-domain.js";
 // _scan-core.js (which bundles Chromium/Puppeteer) is loaded dynamically so
 // it doesn't bloat the cold-start module graph for the common happy path.
 let tableReady = false;
@@ -221,6 +222,11 @@ async function runBackgroundScan(domain, db, scanCore) {
     const { rows: active } = await db.query(
         `SELECT id FROM pre_consent_scans
           WHERE domain = $1 AND status IN ('pending', 'in_progress')
+            -- A scan that died mid-run (function timeout/crash) stays
+            -- in_progress until the daily cleanup cron; don't let it block
+            -- rescans for up to a day. Same 10-minute window as
+            -- cookie-banner-scan.js.
+            AND scanned_at > NOW() - INTERVAL '10 minutes'
           LIMIT 1`,
         [domain]
     );
@@ -272,9 +278,7 @@ export default async function handler(req, res) {
         return res.status(405).json({ error: "Method not allowed" });
     }
 
-    let domain = ((req.query.domain || "")).trim().toLowerCase()
-        .replace(/^https?:\/\//, "").split("/")[0]
-        .replace(/^www\./, "");
+    const domain = normalizeBannerDomain(req.query.domain);
     if (!domain) {
         return res.status(400).json({ error: "domain query parameter is required" });
     }
@@ -319,10 +323,14 @@ export default async function handler(req, res) {
             return;
         }
 
-        // A scan is already running — tell the banner to retry shortly
+        // A scan is already running — tell the banner to retry shortly.
+        // Same 10-minute staleness window as runBackgroundScan(): a first
+        // scan that crashed must not answer "in progress" until the daily
+        // cleanup cron removes it.
         const { rows: pending } = await db.query(
             `SELECT id FROM pre_consent_scans
               WHERE domain = $1 AND status IN ('pending', 'in_progress')
+                AND scanned_at > NOW() - INTERVAL '10 minutes'
               LIMIT 1`,
             [domain]
         );

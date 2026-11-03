@@ -1,4 +1,5 @@
 import { getPool } from "./_db.js";
+import { normalizeBannerDomain } from "./_banner-domain.js";
 /**
  * GET  /api/cookie-overrides?domain=example.com  — load overrides for a domain
  * POST /api/cookie-overrides                      — upsert overrides for a domain
@@ -72,8 +73,7 @@ export default async function handler(req, res) {
         await ensureTable(db);
 
         if (req.method === "GET") {
-            let domain = ((req.query.domain || "")).trim().toLowerCase()
-                .replace(/^https?:\/\//, "").split("/")[0];
+            const domain = normalizeBannerDomain(req.query.domain);
             if (!domain) return res.status(400).json({ error: "domain query parameter is required" });
 
             const { rows } = await db.query(
@@ -96,8 +96,7 @@ export default async function handler(req, res) {
 
         if (req.method === "POST") {
             const { domain: rawDomain, overrides } = req.body || {};
-            let domain = (rawDomain || "").trim().toLowerCase()
-                .replace(/^https?:\/\//, "").split("/")[0];
+            const domain = normalizeBannerDomain(rawDomain);
             if (!domain) return res.status(400).json({ error: "domain is required" });
             if (!overrides || typeof overrides !== "object") {
                 return res.status(400).json({ error: "overrides must be an object" });

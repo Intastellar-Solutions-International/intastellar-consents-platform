@@ -22,5 +22,6 @@ import "./element-label.test.mjs";
 import "./trend-chart.test.mjs";
 import "./event-debugger.test.mjs";
 import "./minify-embed.test.mjs";
+import "./banner-domain.test.mjs";
 
 await run();

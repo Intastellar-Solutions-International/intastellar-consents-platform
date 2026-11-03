@@ -25,6 +25,7 @@
 
 import { scanDomain, BANNER_CATEGORY, categoryFromCookieName, describeCookie, vendorFromCookieName } from "./_scan-core.js";
 import { getPool } from "./_db.js";
+import { normalizeBannerDomain, originMatchesDomain } from "./_banner-domain.js";
 let tableReady = false;
 async function ensureTable(db) {
     if (tableReady) return;
@@ -75,9 +76,7 @@ export default async function handler(req, res) {
     }
 
     // Parse and normalise domain
-    let domain = ((req.query.domain || "")).trim().toLowerCase()
-        .replace(/^https?:\/\//, "").split("/")[0]
-        .replace(/^www\./, "");
+    const domain = normalizeBannerDomain(req.query.domain);
     if (!domain) {
         return res.status(400).json({ error: "domain query parameter is required" });
     }
@@ -86,19 +85,15 @@ export default async function handler(req, res) {
     // Browsers always send Origin on cross-origin fetch — this stops any third-party
     // site from triggering a scan of someone else's domain.
     const originHeader = (req.headers.origin || req.headers.referer || "").trim();
-    if (originHeader) {
-        const originRoot = originHeader
-            .replace(/^https?:\/\//, "").split("/")[0]
-            .split(".").slice(-2).join(".");
-        const domainRoot = domain.split(".").slice(-2).join(".");
-        if (originRoot !== domainRoot) {
-            return res.status(403).json({
-                error: "Request origin does not match the requested domain.",
-            });
-        }
+    if (originHeader && !originMatchesDomain(originHeader, domain)) {
+        return res.status(403).json({
+            error: "Request origin does not match the requested domain.",
+        });
     }
     // Requests without an Origin header (e.g. server-side, curl) are allowed
-    // through; the recency guard prevents runaway scanning.
+    // through — the WordPress cookie-table plugin and customers proxying the
+    // banner API (data-api-base) call without one. The recency guard prevents
+    // runaway scanning of the same domain.
 
     const db = getPool();
 

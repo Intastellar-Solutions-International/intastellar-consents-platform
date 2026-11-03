@@ -1514,6 +1514,18 @@ async function lookupRdap(domainRoot) {
 }
 
 // ── Core scan ─────────────────────────────────────────────────────────────────
+// @sparticuz/chromium unpacks its binary to /tmp on executablePath(). Two
+// scans starting at once in the same (Fluid-compute) instance would both
+// unpack and spawn at the same moment, failing one with "spawn ETXTBSY"
+// (the most common scan error in production). Resolve it once per instance.
+let chromiumPath = null;
+function getChromiumPath() {
+    if (!chromiumPath) {
+        chromiumPath = chromium.executablePath().catch((err) => { chromiumPath = null; throw err; });
+    }
+    return chromiumPath;
+}
+
 export async function scanDomain(domain) {
     const startMs = Date.now();
     let browser;
@@ -1521,7 +1533,7 @@ export async function scanDomain(domain) {
         browser = await puppeteer.launch({
             args: chromium.args,
             defaultViewport: chromium.defaultViewport,
-            executablePath: await chromium.executablePath(),
+            executablePath: await getChromiumPath(),
             headless: chromium.headless,
         });
         const page = await browser.newPage();
