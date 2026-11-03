@@ -1,0 +1,6 @@
+/* SettingsTemplate: two columns from 900px, stacked below. */
+.settings-template { grid-template-columns: 1fr; }
+@media (min-width: 900px) {
+    .settings-template { grid-template-columns: var(--size-settings-nav) minmax(0, 1fr); align-items: start; }
+    .settings-template__nav { position: sticky; top: calc(var(--size-header) + var(--space-4)); }
+}

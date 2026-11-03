@@ -12,3 +12,4 @@ export { default as ErrorState } from "./ErrorState.js";
 export { default as Skeleton, SkeletonText, SkeletonKpiTile, SkeletonTableRows, SkeletonCard } from "./Skeleton.js";
 export { default as KpiTile } from "./KpiTile.js";
 export { default as HealthPill, worstStatus } from "./HealthPill.js";
+export { default as Pagination } from "./Pagination.js";

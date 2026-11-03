@@ -3,6 +3,8 @@ import {
     FilterChip, Drawer, EmptyState, ErrorState, SkeletonText, SkeletonKpiTile, SkeletonTableRows, SkeletonCard, KpiTile, HealthPill,
 } from "../../Components/ui";
 import { formatNumber, formatPercent, formatDate, formatDateTime, formatDateRange, appLocale } from "../../Functions/format.js";
+import { Pagination } from "../../Components/ui";
+import { OverviewTemplate, ListTemplate, SettingsTemplate, AttentionPanel } from "../../Components/templates";
 
 const { useState } = React;
 
@@ -169,6 +171,37 @@ export default function Styleguide() {
                 </Grid>
                 <Grid><SkeletonKpiTile /><SkeletonCard /><Card><SkeletonText /></Card></Grid>
                 <Card padding="none"><SkeletonTableRows rows={3} columns={4} /></Card>
+            </Section>
+
+            <Section id="sg-templates" title="Page templates">
+                <h3 className="tw-m-0 tw-text-base tw-text-text-primary">Overview</h3>
+                <OverviewTemplate
+                    attention={<AttentionPanel items={[
+                        { id: "verify", severity: "danger", title: "Domain not verified", description: "Consents may not be attributed to your account.", action: { label: "Verify now", onClick: () => {} } },
+                        { id: "trackers", severity: "warning", title: "3 trackers load before consent", description: "Google Ads, Meta Pixel, Microsoft Clarity.", action: { label: "Open Compliance", onClick: () => {} } },
+                    ]} />}
+                    kpis={[
+                        <KpiTile key="a" label="Consents" value={formatNumber(9959)} />,
+                        <KpiTile key="b" label="Acceptance" value={formatPercent(61.2)} />,
+                        <KpiTile key="c" label="Loading" loading />,
+                    ]}
+                    main={<SkeletonCard height={120} label="Loading chart" />}
+                />
+                <AttentionPanel items={[]} />
+                <h3 className="tw-m-0 tw-mt-6 tw-text-base tw-text-text-primary">List</h3>
+                <ListTemplate
+                    summary="3 vendors · 14 hosts"
+                    filters={<FilterBar resultCount={3}><FilterSearch label="Vendor" value="" onChange={() => {}} placeholder="Search" /></FilterBar>}
+                    pagination={<Pagination page={0} pageSize={25} total={60} onChange={() => {}} />}
+                    bulk={{ count: 2, actions: <><Button size="sm">Export</Button><Button size="sm" variant="danger">Dismiss</Button></> }}
+                >
+                    <Card padding="none"><Table caption="Example" columns={[{ key: "vendor", header: "Vendor" }, { key: "hosts", header: "Hosts", align: "right" }]} rows={ROWS} getRowKey={(r) => r.vendor} /></Card>
+                </ListTemplate>
+                <h3 className="tw-m-0 tw-mt-6 tw-text-base tw-text-text-primary">Settings</h3>
+                <SettingsTemplate sections={[{ id: "sg-general", label: "General" }, { id: "sg-users", label: "Users" }, { id: "sg-domains", label: "Domains" }]} activeId="sg-general">
+                    <Card id="sg-general" title="General" description="Locale and default date range.">Form fields…</Card>
+                    <Card id="sg-users" title="Users">Table…</Card>
+                </SettingsTemplate>
             </Section>
 
             <Section id="sg-format" title={`Formatting (locale: ${appLocale()})`}>
