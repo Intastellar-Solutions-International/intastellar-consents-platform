@@ -108,13 +108,16 @@ export async function recordDebugHit(token, body, status, verdict, reason) {
         if (payload.length > MAX_PAYLOAD_CHARS) {
             payload = JSON.stringify({ _truncated: true, preview: payload.slice(0, MAX_PAYLOAD_CHARS) });
         }
-        // INSERT ... SELECT so the session check and the write are one round trip.
+        // INSERT ... SELECT so the session check and the write are one round
+        // trip. The casts are required: in a SELECT list Postgres can't infer
+        // parameter types from the target columns, and without them this
+        // fails with "inconsistent types deduced for parameter $1".
         await db.query(
             `INSERT INTO analytics_debug_hits (token, site_id, hit_type, event_name, status, verdict, reason, payload)
-             SELECT $1,$2,$3,$4,$5,$6,$7,$8
+             SELECT $1::varchar, $2::varchar, $3::varchar, $4::varchar, $5::smallint, $6::varchar, $7::text, $8::jsonb
              WHERE EXISTS (
                  SELECT 1 FROM analytics_debug_sessions
-                 WHERE token = $1 AND created_at > NOW() - make_interval(hours => $9)
+                 WHERE token = $1::varchar AND created_at > NOW() - make_interval(hours => $9::int)
              )`,
             [
                 token,
@@ -128,5 +131,9 @@ export async function recordDebugHit(token, body, status, verdict, reason) {
                 DEBUG_TTL_HOURS,
             ]
         );
-    } catch { /* debug logging is best-effort */ }
+    } catch (err) {
+        // Best-effort — never affects ingestion — but logged, since a failure
+        // here is otherwise invisible (the debugger just stays empty).
+        console.error("[debug-hits] failed to record hit:", err?.message || err);
+    }
 }
