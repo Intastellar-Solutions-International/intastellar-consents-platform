@@ -12,6 +12,7 @@ import {
     dispatchUserSettingsChanged,
 } from "../../../Functions/userLocale";
 import "../Style.css";
+import { isNewShell, setNewShell } from "../../../Functions/featureFlags.js";
 
 const { useState } = React;
 
@@ -126,6 +127,23 @@ export default function UserPreferences() {
                                         align="left"
                                     />
                                 </div>
+                            </section>
+                            <section className="settings-preferences__group" aria-labelledby="pref-layout">
+                                <h3 className="settings-preferences__group-title" id="pref-layout">
+                                    Layout (beta)
+                                </h3>
+                                <p className="settings-preferences__group-desc">
+                                    A labelled, grouped navigation and a top bar with the date range and domain
+                                    health. Applies to this browser only; switch back any time.
+                                </p>
+                                <label className="settings-preferences__field" style={{ display: "flex", alignItems: "center", gap: "var(--space-2)" }}>
+                                    <input
+                                        type="checkbox"
+                                        defaultChecked={isNewShell()}
+                                        onChange={(e) => { setNewShell(e.target.checked); window.location.reload(); }}
+                                    />
+                                    Use the new navigation
+                                </label>
                             </section>
                         </div>
 

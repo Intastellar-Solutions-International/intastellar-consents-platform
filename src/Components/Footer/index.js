@@ -71,11 +71,11 @@ function TrustStrip({ variant }) {
     );
 }
 
-export default function Footer() {
+export default function Footer({ showTrust = true }) {
     const year = new Date().getFullYear();
     return (
         <footer className="footer footer--app dashboard-content">
-            <TrustStrip variant="dark" />
+            {showTrust && <TrustStrip variant="dark" />}
             <div className="footer-app-bottom">
                 <p className="footer-copyright">&copy; {year} Intastellar Solutions International. All rights reserved.</p>
                 <img
