@@ -25,5 +25,6 @@ import "./minify-embed.test.mjs";
 import "./banner-domain.test.mjs";
 import "./php-backend.test.mjs";
 import "./consent-timestamp.test.mjs";
+import "./scanner-consent-block.test.mjs";
 
 await run();

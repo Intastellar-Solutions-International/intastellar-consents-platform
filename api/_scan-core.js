@@ -1514,6 +1514,22 @@ async function lookupRdap(domainRoot) {
 }
 
 // ── Core scan ─────────────────────────────────────────────────────────────────
+// Endpoints where the Intastellar Consents banner records what a visitor did.
+// The scanner calls IntaAcceptAll() on every site it scans (see below) and
+// runs from US East — without blocking these, every scan was stored as a real
+// visitor's "accept all" (the ~1/s US/Virginia consents in customers' audit
+// logs and totals), and the scanner's cookies as "observed cookies". The
+// banner ignores window.__ICS_SCAN__, so the block has to happen here.
+// Blocking the requests doesn't change what the scan sees: IntaAcceptAll()
+// still writes the consent cookie locally, so post-consent cookies still load.
+// Patterns use Chrome's Network.setBlockedURLs wildcard syntax.
+export const CONSENT_RECORDING_URLS = [
+    "*://www.consentsmanagement.com/api/beacon-collector.php*",
+    "*://consentsmanagement.com/api/beacon-collector.php*",
+    "*://consents.intastellarsolutions.com/api/v1/cookie-events*",
+    "*://analytics.intastellarsolutions.com/form/collect*",
+];
+
 // @sparticuz/chromium unpacks its binary to /tmp on executablePath(). Two
 // scans starting at once in the same (Fluid-compute) instance would both
 // unpack and spawn at the same moment, failing one with "spawn ETXTBSY"
@@ -1541,6 +1557,7 @@ export async function scanDomain(domain) {
 
         const cdpClient = await page.target().createCDPSession();
         await cdpClient.send("Network.enable");
+        await cdpClient.send("Network.setBlockedURLs", { urls: CONSENT_RECORDING_URLS });
 
         await page.evaluateOnNewDocument(() => {
             Object.defineProperty(navigator, "webdriver",  { get: () => undefined });
