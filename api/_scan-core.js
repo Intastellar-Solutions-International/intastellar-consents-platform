@@ -1546,6 +1546,11 @@ function getChromiumPath() {
     return chromiumPath;
 }
 
+// Identity of a cookie in the browser jar (CDP Network.Cookie).
+export function cookieKey(c) {
+    return `${c.name}|${c.domain}|${c.path}`;
+}
+
 export async function scanDomain(domain) {
     const startMs = Date.now();
     let browser;
@@ -1591,6 +1596,11 @@ export async function scanDomain(domain) {
 
         const targetRoot = domain.split(".").slice(-2).join(".");
         const seen = new Map();
+        // "pre" until the scanner grants consent (IntaAcceptAll), then "post".
+        // Hosts are recorded on first sight, so a host keeps the phase in which
+        // it was first contacted. Without Intastellar Consents on the site the
+        // scanner never grants consent and everything stays "pre".
+        let consentPhase = "pre";
 
         page.on("request", (req) => {
             try {
@@ -1609,6 +1619,7 @@ export async function scanDomain(domain) {
                         host,
                         resourceType: type,
                         url: req.url().split("?")[0].slice(0, 200),
+                        consentPhase,
                     });
                 }
             } catch {}
@@ -1624,19 +1635,29 @@ export async function scanDomain(domain) {
         // If Intastellar Consents is present, call IntaAcceptAll() so GCM v2 signals
         // flip to "granted" and analytics cookies (GA etc.) are actually written.
         // We poll until the function exists (banner JS not yet parsed) or time out.
+        // Existence is checked first and the call made separately, so the phase
+        // flips to "post" (and the pre-consent cookie jar is snapshotted) before
+        // any request IntaAcceptAll() triggers.
+        let preConsentCookieKeys = null;
         const clicked = await new Promise(resolve => {
             const deadline = Date.now() + 5000;
+            let busy = false;
             const interval = setInterval(async () => {
+                if (busy) return;
+                busy = true;
                 try {
-                    const found = await page.evaluate(() => {
-                        if (typeof IntaAcceptAll === "function") {
-                            IntaAcceptAll();
-                            return true;
-                        }
-                        return false;
-                    });
-                    if (found) { clearInterval(interval); resolve(true); return; }
+                    const found = await page.evaluate(() => typeof IntaAcceptAll === "function");
+                    if (found) {
+                        clearInterval(interval);
+                        const { cookies: jar } = await cdpClient.send("Network.getAllCookies");
+                        preConsentCookieKeys = new Set(jar.map(cookieKey));
+                        consentPhase = "post";
+                        await page.evaluate(() => IntaAcceptAll()).catch(() => {});
+                        resolve(true);
+                        return;
+                    }
                 } catch {}
+                busy = false;
                 if (Date.now() >= deadline) { clearInterval(interval); resolve(false); }
             }, 300);
         });
@@ -1725,6 +1746,7 @@ export async function scanDomain(domain) {
                 dataRegion:        match?.dataRegion  || "non-eu",
                 dataCountry:       match?.dataCountry || rdap?.dataCountry || null,
                 resourceType:      info.resourceType,
+                consentPhase:      info.consentPhase,
                 rdapLookup:        !match && !!rdap,
                 description:       meta.description       || null,
                 privacyUrl:        meta.privacyUrl        || null,
@@ -1751,13 +1773,16 @@ export async function scanDomain(domain) {
                 session:     c.expires === -1,
                 expires:     c.expires !== -1 ? c.expires : null,
                 size:        c.size,
+                // Cookies already in the jar when consent was granted are pre-consent;
+                // without a consent step every cookie is.
+                consentPhase: !preConsentCookieKeys || preConsentCookieKeys.has(cookieKey(c)) ? "pre" : "post",
                 bannerCategory,
                 vendor:      matchedVendor?.service || vendorFromCookieName(c.name) || null,
                 description: describeCookie(c.name) || null,
             };
         });
 
-        return { transfers, cookies, durationMs: Date.now() - startMs, error: null };
+        return { transfers, cookies, consentGranted: clicked, durationMs: Date.now() - startMs, error: null };
     } catch (err) {
         if (browser) await browser.close().catch(() => {});
         return { transfers: [], cookies: [], durationMs: Date.now() - startMs, error: err.message };

@@ -15,6 +15,7 @@
  */
 
 import { scanDomain } from "./_scan-core.js";
+import { summarizeConsentPhase } from "./_consent-phase.js";
 import { getPool } from "./_db.js";
 
 // ── DB pool (reused across warm invocations) ──────────────────────────────────
@@ -104,6 +105,7 @@ export default async function handler(req, res) {
         status,
         pre_consent_transfers: transfers,
         pre_consent_cookies:   cookies,
+        ...summarizeConsentPhase(transfers, cookies),
         ...(error ? { error } : {}),
     });
 }
