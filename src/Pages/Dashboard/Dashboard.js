@@ -87,19 +87,19 @@ export default function Dashboard(props) {
         localStorage.getItem("settings") != null ? JSON.parse(localStorage.getItem("settings")).dateRange : 30;
     const [getLastDays, setLastDays] = useState(initialLastDays);
     const today = new Date();
-    const [fromDate, setFromDate] = useState(new Date(new Date().setDate(today.getDate() - initialLastDays)));
-    const [toDate, setToDate] = useState(new Date(new Date().setDate(today.getDate() - 1)));
+    const [fromDate, setFromDate] = useState(new Date(new Date().setDate(today.getDate() - (initialLastDays - 1))));
+    const [toDate, setToDate] = useState(new Date());
     const [compareRange, setCompareRange] = useState(0);
     const [previousPeriod, setPreviousPeriod] = useState(() =>
         defaultCompareWindowForPrimary(
-            new Date(new Date().setDate(new Date().getDate() - initialLastDays)),
-            new Date(new Date().setDate(new Date().getDate() - 1))
+            new Date(new Date().setDate(new Date().getDate() - (initialLastDays - 1))),
+            new Date()
         ).start
     );
     const [previousPeriod2, setPreviousPeriod2] = useState(() =>
         defaultCompareWindowForPrimary(
-            new Date(new Date().setDate(new Date().getDate() - initialLastDays)),
-            new Date(new Date().setDate(new Date().getDate() - 1))
+            new Date(new Date().setDate(new Date().getDate() - (initialLastDays - 1))),
+            new Date()
         ).end
     );
     const [loading, setLoading] = useState(false);

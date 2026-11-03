@@ -1613,21 +1613,21 @@ export default function MarketingReport() {
         localStorage.getItem("settings") != null ? JSON.parse(localStorage.getItem("settings")).dateRange : 30;
     const [getLastDays, setLastDays] = useState(initialLastDays);
     const [fromDate, setFromDate] = useState(
-        new Date(new Date().setDate(today.getDate() - (settings?.dateRange ?? 30)))
+        new Date(new Date().setDate(today.getDate() - ((settings?.dateRange ?? 30) - 1)))
     );
-    const [toDate, setToDate] = useState(new Date(new Date().setDate(today.getDate() - 1)));
+    const [toDate, setToDate] = useState(new Date());
     const [, setActiveData] = useState(null);
     const [compareRange, setCompareRange] = useState(0);
     const [previousPeriod, setPreviousPeriod] = useState(() =>
         defaultCompareWindowForPrimary(
-            new Date(new Date().setDate(new Date().getDate() - (settings?.dateRange ?? 30))),
-            new Date(new Date().setDate(new Date().getDate() - 1))
+            new Date(new Date().setDate(new Date().getDate() - ((settings?.dateRange ?? 30) - 1))),
+            new Date()
         ).start
     );
     const [previousPeriod2, setPreviousPeriod2] = useState(() =>
         defaultCompareWindowForPrimary(
-            new Date(new Date().setDate(new Date().getDate() - (settings?.dateRange ?? 30))),
-            new Date(new Date().setDate(new Date().getDate() - 1))
+            new Date(new Date().setDate(new Date().getDate() - ((settings?.dateRange ?? 30) - 1))),
+            new Date()
         ).end
     );
 

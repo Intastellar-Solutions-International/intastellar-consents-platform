@@ -40,19 +40,19 @@ export default function CookiesDashboard() {
     const [domainFilter, setDomainFilter] = useState("combined view");
 
     const today = new Date();
-    const [fromDate, setFromDate] = useState(new Date(new Date().setDate(today.getDate() - settings?.dateRange)));
-    const [toDate, setToDate] = useState(new Date(new Date().setDate(today.getDate() - 1)));
+    const [fromDate, setFromDate] = useState(new Date(new Date().setDate(today.getDate() - ((settings?.dateRange ?? 30) - 1))));
+    const [toDate, setToDate] = useState(new Date());
     const [compareRange, setCompareRange] = useState(0);
     const [previousPeriod, setPreviousPeriod] = useState(() =>
         defaultCompareWindowForPrimary(
-            new Date(new Date().setDate(new Date().getDate() - settings?.dateRange)),
-            new Date(new Date().setDate(new Date().getDate() - 1))
+            new Date(new Date().setDate(new Date().getDate() - ((settings?.dateRange ?? 30) - 1))),
+            new Date()
         ).start
     );
     const [previousPeriod2, setPreviousPeriod2] = useState(() =>
         defaultCompareWindowForPrimary(
-            new Date(new Date().setDate(new Date().getDate() - settings?.dateRange)),
-            new Date(new Date().setDate(new Date().getDate() - 1))
+            new Date(new Date().setDate(new Date().getDate() - ((settings?.dateRange ?? 30) - 1))),
+            new Date()
         ).end
     );
 

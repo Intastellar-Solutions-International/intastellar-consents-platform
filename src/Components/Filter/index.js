@@ -133,9 +133,10 @@ export default function Filter({
         }
     }
 
+    // "Last N days" = the N calendar days ending today (today included).
     function lastNDaysRelative(n, labelNum) {
-        const y = addDays(new Date(), -1);
-        const end = new Date(y.getFullYear(), y.getMonth(), y.getDate());
+        const t = new Date();
+        const end = new Date(t.getFullYear(), t.getMonth(), t.getDate());
         const start = addDays(end, -(n - 1));
         applyLocalRange(start, end, labelNum, () => {
             if (selectedComparison === "Previous period") setSelectedCompareRange(n + 1);

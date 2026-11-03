@@ -104,22 +104,22 @@ export default function CompliancePage() {
     const [getLastDays, setLastDays] = useState(initialLastDays);
     const today = new Date();
     const [fromDate, setFromDate] = useState(
-        new Date(new Date().setDate(today.getDate() - initialLastDays))
+        new Date(new Date().setDate(today.getDate() - (initialLastDays - 1)))
     );
     const [toDate, setToDate] = useState(
-        new Date(new Date().setDate(today.getDate() - 1))
+        new Date()
     );
     const [compareRange, setCompareRange] = useState(0);
     const [previousPeriod, setPreviousPeriod] = useState(() =>
         defaultCompareWindowForPrimary(
-            new Date(new Date().setDate(new Date().getDate() - initialLastDays)),
-            new Date(new Date().setDate(new Date().getDate() - 1))
+            new Date(new Date().setDate(new Date().getDate() - (initialLastDays - 1))),
+            new Date()
         ).start
     );
     const [previousPeriod2, setPreviousPeriod2] = useState(() =>
         defaultCompareWindowForPrimary(
-            new Date(new Date().setDate(new Date().getDate() - initialLastDays)),
-            new Date(new Date().setDate(new Date().getDate() - 1))
+            new Date(new Date().setDate(new Date().getDate() - (initialLastDays - 1))),
+            new Date()
         ).end
     );
     const [, setActiveDataDummy] = useState(null);

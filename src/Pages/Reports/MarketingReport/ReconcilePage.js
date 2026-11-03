@@ -227,9 +227,9 @@ export default function ReconcilePage() {
     const initialLastDays = settings?.dateRange ?? 30;
     const [getLastDays, setLastDays] = useState(initialLastDays);
     const [fromDate, setFromDate] = useState(
-        new Date(new Date().setDate(today.getDate() - initialLastDays))
+        new Date(new Date().setDate(today.getDate() - (initialLastDays - 1)))
     );
-    const [toDate, setToDate] = useState(new Date(new Date().setDate(today.getDate() - 1)));
+    const [toDate, setToDate] = useState(new Date());
     const [, setActiveData] = useState(null);
     const [selectedChannel, setSelectedChannel] = useState(null);
 

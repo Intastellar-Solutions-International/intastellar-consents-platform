@@ -22,9 +22,9 @@ export default function Calendar({
     comparePreviewStart,
     comparePreviewEnd,
 }) {
+    // Latest selectable day is today ("Last 30 days" includes today).
     const today = new Date();
-    today.setDate(today.getDate() - 1);
-    const yesterdayStr = formatLocalYmd(today);
+    const todayStr = formatLocalYmd(today);
     const currentMonth = today.getMonth();
     const currentYear = today.getFullYear();
 
@@ -155,7 +155,7 @@ export default function Calendar({
                                 setEndDate={setEndDate}
                                 setSelectedDays={setSelectedDays}
                                 setDateRange={setDateRange}
-                                today={yesterdayStr}
+                                today={todayStr}
                                 compareRangeStart={comparePreviewStart}
                                 compareRangeEnd={comparePreviewEnd}
                             />
