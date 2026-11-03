@@ -1,4 +1,5 @@
 import "./DeviceTypeInteractions.css";
+import { appLocale } from "../../../Functions/format.js";
 
 const DEVICES = [
     {
@@ -45,11 +46,11 @@ function formatPeriod(fromDate, toDate) {
     if (!fromDate || !toDate) return null;
     try {
         if (fromDate === toDate) {
-            return new Intl.DateTimeFormat("de-DE", { dateStyle: "medium" }).format(new Date(fromDate));
+            return new Intl.DateTimeFormat(appLocale(), { dateStyle: "medium" }).format(new Date(fromDate));
         }
         const a = new Date(fromDate);
         const b = new Date(toDate);
-        return `${new Intl.DateTimeFormat("de-DE", { day: "numeric", month: "short" }).format(a)} – ${new Intl.DateTimeFormat("de-DE", { day: "numeric", month: "short", year: "numeric" }).format(b)}`;
+        return `${new Intl.DateTimeFormat(appLocale(), { day: "numeric", month: "short" }).format(a)} – ${new Intl.DateTimeFormat(appLocale(), { day: "numeric", month: "short", year: "numeric" }).format(b)}`;
     } catch {
         return null;
     }
@@ -79,7 +80,7 @@ function formatCount(n, demoMode) {
         return s;
     }
     if (n == null || !Number.isFinite(n)) return "—";
-    return Math.round(n).toLocaleString("de-DE");
+    return Math.round(n).toLocaleString(appLocale());
 }
 
 function DeviceGlyph({ type }) {

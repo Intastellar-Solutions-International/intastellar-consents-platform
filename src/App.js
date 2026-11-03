@@ -2,6 +2,7 @@ import punycode from "punycode";
 import "./styles/tokens.css";
 import "./styles/tailwind.css";
 import "./App.css";
+import "./Components/Shell/Shell.css";
 import Header from "./Components/Header/header";
 import Footer from "./Components/Footer";
 import Login from "./Login/Login";
@@ -80,11 +81,14 @@ import AnalyticsReportBuilder from "./Pages/Analytics/ReportBuilder.js";
 import AnalyticsReportView from "./Pages/Analytics/ReportView.js";
 import AnalyticsDigest from "./Pages/Analytics/Digest.js";
 import EventDebugger from "./Pages/Analytics/EventDebugger.js";
+import Styleguide from "./Pages/Styleguide/index.js";
 import CookieDatabase from "./Pages/CookieDatabase";
 import TierGate from "./Components/TierGate";
 import DevTierSwitcher from "./Components/DevTierSwitcher";
 import { canAccess } from "./Functions/tier.js";
 import appStorage, { getOrg } from './Functions/storage.js';
+import ShellRail from "./Components/Shell/ShellRail.js";
+import { isNewShell } from "./Functions/featureFlags.js";
 
 const { useState, useEffect, useRef, createContext } = React;
 const Router = window.ReactRouterDOM.BrowserRouter;
@@ -107,6 +111,15 @@ export const WorkspaceContext = createContext([null, () => {}]);
 // outside the real Provider below (e.g. in isolation/tests) — the Provider
 // always supplies a fresh value for the actual app.
 export const DateRangeContext = createContext([null, () => {}]);
+
+// webpack sets process.env.NODE_ENV from the build mode, so this is false in
+// production builds and the route doesn't exist there.
+function isStyleguideRoute() {
+    return process.env.NODE_ENV === "development" && window.location.pathname === "/styleguide";
+}
+
+// Read once per page load; switching the flag reloads (see featureFlags.js).
+const newShell = isNewShell();
 
 export default function App() {
     const [dashboardView, setDashboardView] = useState((localStorage.getItem("platform")) ? localStorage.getItem("platform") : null);
@@ -141,10 +154,15 @@ export default function App() {
         const globals = appStorage.getItem("globals");
         const path = window.location.pathname;
         const isApiRoute = path === "/api" || path.startsWith("/api/");
-        if (!globals && path !== "/login" && path !== "/" && !isApiRoute) {
+        if (!globals && path !== "/login" && path !== "/" && !isApiRoute && !isStyleguideRoute()) {
             window.location.replace("/login");
         }
     }, []);
+
+    // Component styleguide — development builds only, no login needed.
+    if (isStyleguideRoute()) {
+        return <ErrorBoundary><Styleguide /></ErrorBoundary>;
+    }
 
     if (appStorage.getItem("globals") != null) {
         const path = window.location.pathname;
@@ -260,13 +278,17 @@ export default function App() {
                                         <BugReport />
                                     </> : null}
                                 </ErrorBoundary>
-                                <div className="main-grid">
+                                <div className={"main-grid" + (newShell ? " shell-new" : "")}>
                                     {
                                         id && window.location.pathname != "/" || window.location.pathname != "/login" ? <>
-                                            <Nav />
+                                            {newShell ? <ShellRail /> : <Nav />}
                                             <AnalyticsSideNav />
                                         </> : null
                                     }
+                                    {/* Pages lay out inside this column, never under the rail —
+                                        pages that return a bare fragment (Benchmark, A/B testing)
+                                        used to wrap to x = 0 underneath the fixed rail. */}
+                                    <div className="main-content">
                                     <Switch>
                                         <Route path="/:id/dashboard" exact>
                                             <div style={{ flex: "1" }}>
@@ -815,9 +837,11 @@ export default function App() {
                                         <Route path="/api" render={() => null} />
                                         <Redirect to="/login" />
                                     </Switch>
+                                    </div>
                                 </div>
                                 <ErrorBoundary>
-                                    <Footer />
+                                    {/* Trust badges belong on the login page; the new shell drops them from inner pages. */}
+                                    <Footer showTrust={!newShell} />
                                 </ErrorBoundary>
                             </DateRangeContext.Provider>
                             </DomainContext.Provider>

@@ -3,6 +3,7 @@ const { useState, useEffect, useMemo, useCallback } = React;
 const svgMap = window.svgMap;
 import { countryCodes, countryCoordinates } from "./countryCodes.js";
 import CountryDetailDrawer from "./CountryDetailDrawer.js";
+import { appLocale } from "../../../Functions/format.js";
 
 /**
  * Optional: per-country device mix (when your API adds `device_type` on each country row):
@@ -49,7 +50,7 @@ function formatCountDelta(current, previous) {
     const d = Math.round(c - p);
     if (d === 0) return "↔ 0";
     const arrow = d > 0 ? "↑" : "↓";
-    return `${arrow} ${d > 0 ? "+" : ""}${Math.abs(d).toLocaleString("de-DE")}`;
+    return `${arrow} ${d > 0 ? "+" : ""}${Math.abs(d).toLocaleString(appLocale())}`;
 }
 
 function formatPctDeltaPp(currentPct, prevPct) {
@@ -59,7 +60,7 @@ function formatPctDeltaPp(currentPct, prevPct) {
     const d = Math.round((c - p) * 10) / 10;
     const arrow = d > 0 ? "↑" : d < 0 ? "↓" : "↔";
     const sign = d > 0 ? "+" : "";
-    return `${arrow} ${sign}${d.toLocaleString("de-DE", { maximumFractionDigits: 1 })} pp`;
+    return `${arrow} ${sign}${d.toLocaleString(appLocale(), { maximumFractionDigits: 1 })} pp`;
 }
 
 function buildCodeToName() {
@@ -350,7 +351,7 @@ export default function Map(props) {
              * never removes its tooltip <div> from <body>. */
             /* onGetTooltip: (tooltipDiv, countryID, countryValues) => {
                 if (!countryValues) return "";
-                const fmt = (n) => (n != null && !isNaN(n) ? (typeof n === "number" ? n.toLocaleString("de-DE") : n) : "-");
+                const fmt = (n) => (n != null && !isNaN(n) ? (typeof n === "number" ? n.toLocaleString(appLocale()) : n) : "-");
                 const rows = [
                     { label: "Country", value: countryID ? CODE_TO_NAME[countryID] || countryID : "Unknown", total: null },
                     { label: "Total", value: countryValues.total, total: null },
@@ -543,7 +544,7 @@ export default function Map(props) {
                                             <span className="world-map__row-val">
                                                 {demoMode
                                                     ? `${c.num.total > 9999 ? String(c.num.total).slice(0, 2) : String(c.num.total).slice(0, 1)}${c.num.total > 999 ? "k" : "**"}`
-                                                    : c.num.total.toLocaleString("de-DE")}
+                                                    : c.num.total.toLocaleString(appLocale())}
                                                 {compareOn && c.previousPeriod?.num?.total != null ? (
                                                     <span className="world-map__row-cmp">
                                                         {" "}

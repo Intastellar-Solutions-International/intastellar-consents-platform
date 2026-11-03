@@ -822,6 +822,16 @@ function consentTotalsSql($condition, $euCountryNamesList)
     WHERE `type` IN ('all', 'marketing', 'functional', 'statics') " . $condition;
 }
 
+function deviceSplitSql($condition)
+{
+    $width = "CAST(JSON_EXTRACT(screenSize, '$.width') AS UNSIGNED)";
+    return "SELECT
+        COALESCE(SUM($width BETWEEN 0 AND 767), 0)    AS mobile,
+        COALESCE(SUM($width BETWEEN 768 AND 1024), 0) AS tablet,
+        COALESCE(SUM($width > 1024), 0)               AS desktop
+    FROM cookiebanner_tracking_settings " . $condition;
+}
+
 function fetchConsentTotals($db, $sql)
 {
     $res = mysqli_query($db, $sql);
@@ -955,42 +965,15 @@ if ($currentTotals !== null) {
             ]);
         } */
 
-        // mobile: width 0–767px
-        $mobile = "SELECT *, COUNT(screenSize) AS screenSize 
-            FROM cookiebanner_tracking_settings 
-            WHERE JSON_EXTRACT(screenSize,'$.width') BETWEEN 0 AND 767 
-            AND JSON_EXTRACT(screenSize,'$.height') BETWEEN 0 AND 900"
-            . $andClause . " 
-            GROUP BY JSON_EXTRACT(screenSize,'$.width')";
-
-        // tablet: width 768–1024px
-        $tablet = "SELECT *, COUNT(screenSize) AS screenSize 
-            FROM cookiebanner_tracking_settings 
-            WHERE JSON_EXTRACT(screenSize,'$.width') BETWEEN 768 AND 1024 
-            AND JSON_EXTRACT(screenSize,'$.height') BETWEEN 0 AND 400
-            "
-            . $andClause . " 
-            GROUP BY JSON_EXTRACT(screenSize,'$.width')";
-
-        // desktop: width >1024px
-        $desktop = "SELECT *, COUNT(screenSize) AS screenSize 
-            FROM cookiebanner_tracking_settings 
-            WHERE JSON_EXTRACT(screenSize,'$.width') > 1024 
-            AND JSON_EXTRACT(screenSize,'$.height') BETWEEN 0 AND 1400"
-            . $andClause . " 
-            GROUP BY JSON_EXTRACT(screenSize,'$.width')";
-
-        $mobileQuery  = mysqli_query($db, $mobile);
-        $tabletQuery  = mysqli_query($db, $tablet);
-        $desktopQuery = mysqli_query($db, $desktop);
-
-        $mobileNum = mysqli_num_rows($mobileQuery);
-        $tabletNum = mysqli_num_rows($tabletQuery);
-        $desktopNum = mysqli_num_rows($desktopQuery);
-
-        $mobileNum = $mobileNum == 0 ? 0 : $mobileNum;
-        $tabletNum = $tabletNum == 0 ? 0 : $tabletNum;
-        $desktopNum = $desktopNum == 0 ? 0 : $desktopNum;
+        // Device split by screen width: mobile <768px, tablet 768–1024px,
+        // desktop >1024px. Same rows as "Total" ($getFullNumber), so "other"
+        // below is the rows with no recorded width. This used to GROUP BY
+        // width and take mysqli_num_rows(), i.e. count distinct widths, with
+        // height limits that dropped most tablets (height ≤400).
+        $deviceSplit = fetchConsentTotals($db, deviceSplitSql($whereClause . " " . $andClause));
+        $mobileNum  = $deviceSplit["mobile"] ?? 0;
+        $tabletNum  = $deviceSplit["tablet"] ?? 0;
+        $desktopNum = $deviceSplit["desktop"] ?? 0;
         $deviceType = [
             "mobile" => $mobileNum,
             "tablet" => $tabletNum,

@@ -1,7 +1,8 @@
 /**
  * Tailwind theme = the design tokens in src/styles/tokens.css. Every value
  * here points at a CSS variable, so Tailwind classes and plain CSS share one
- * source. The theme *replaces* Tailwind's defaults (no `extend`) so only the
+ * source. The theme *replaces* Tailwind's defaults (only component widths use
+ * `extend`) so only the
  * token scale is available.
  *
  * - prefix "tw-": legacy class names (hidden, sticky, container, flex…) are
@@ -52,12 +53,21 @@ module.exports = {
         },
         boxShadow: {
             none: "none", sm: "var(--shadow-sm)", DEFAULT: "var(--shadow-md)", md: "var(--shadow-md)", lg: "var(--shadow-lg)",
-            overlay: "var(--shadow-overlay)", inset: "var(--shadow-inset)", focus: "var(--shadow-focus)",
+            overlay: "var(--shadow-overlay)", inset: "var(--shadow-inset)", focus: "var(--shadow-focus)", active: "var(--shadow-active)",
         },
         fontFamily: { sans: "var(--font-sans)", mono: "var(--font-mono)" },
         fontSize: {
             xs: "var(--text-xs)", sm: "var(--text-sm)", base: "var(--text-base)", lg: "var(--text-lg)", xl: "var(--text-xl)",
             "2xl": "var(--text-2xl)", "3xl": "var(--text-3xl)", "4xl": "var(--text-4xl)", "5xl": "var(--text-5xl)",
+        },
+        // Component sizes (tokens.css --size-*); added to Tailwind's width scale.
+        extend: {
+            width: {
+                field: "var(--size-field)",
+                "drawer-sm": "var(--size-drawer-sm)",
+                "drawer-md": "var(--size-drawer-md)",
+                "drawer-lg": "var(--size-drawer-lg)",
+            },
         },
     },
     plugins: [],

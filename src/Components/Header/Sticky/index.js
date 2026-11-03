@@ -2,6 +2,7 @@ import Filter from "../../Filter/index.js";
 import { LoadingBar } from "../../../Components/widget/Loading";
 import Button from "../../Button/Button.js";
 import SideCart from "../../SideCart/SideCart.js";
+import { isNewShell } from "../../../Functions/featureFlags.js";
 
 // Added showInfoButton and infoType props
 export default function StickyPageTitle({
@@ -39,9 +40,18 @@ export default function StickyPageTitle({
         }
     })
     
+    // New shell: the date range lives in the top bar. The page still owns the
+    // range state — the control is just rendered into the bar's slot.
+    const [dateSlot, setDateSlot] = React.useState(null);
+    React.useEffect(() => {
+        if (isNewShell()) setDateSlot(document.getElementById("shell-daterange-slot"));
+    }, []);
+
     function openSideCart() {
         document.querySelector(".sideCart").classList.add("open");
     }
+
+    const wrapDate = (el) => (dateSlot ? window.ReactDOM.createPortal(el, dateSlot) : el);
 
     if (!children) {
         return <>
@@ -62,8 +72,8 @@ export default function StickyPageTitle({
                         )}
                     </h1>
                     {
-                        (numberofDays) ?
-                            <Filter
+                        (numberofDays && !(isNewShell() && !dateSlot)) ?
+                            wrapDate(<Filter
                                 numberOfDays={getLastDays}
                                 setNumberOfDays={numberofDays}
                                 compareRange={compareRange}
@@ -79,7 +89,7 @@ export default function StickyPageTitle({
                                 setFromDate={setFromDate}
                                 setToDate={setToDate}
                                 demoMode={demoMode}
-                            /> : null
+                            />) : null
                     }
                 </div>
             </div>

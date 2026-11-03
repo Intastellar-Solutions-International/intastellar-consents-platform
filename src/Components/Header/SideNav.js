@@ -4,8 +4,12 @@ const useParams = window.ReactRouterDOM.useParams;
 import Authentication from "../../Authentication/Auth";
 import { lockBodyScroll, unlockBodyScroll } from "../../Functions/bodyScrollLock.js";
 import { canAccess } from "../../Functions/tier.js";
+import { isNewShell } from "../../Functions/featureFlags.js";
 
 export default function SideNav(props) {
+    // New shell: every Reports destination (incl. Compliance) is in the rail,
+    // so this second sidebar would only repeat it.
+    if (isNewShell() && props?.title === "Reports") return null;
     const useLocation = window.ReactRouterDOM.useLocation;
     const location = useLocation();
     const { handle, id } = useParams();

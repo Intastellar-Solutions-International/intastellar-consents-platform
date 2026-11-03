@@ -7,6 +7,7 @@ import Fetch from "../../Functions/fetch";
 import "../Dashboard/Style.css";
 import "./Style.css";
 import appStorage from '../../Functions/storage.js';
+import { appLocale } from "../../Functions/format.js";
 
 const SLOT_COUNT = 5;
 
@@ -39,19 +40,19 @@ export default function Compare({ organisations: _organisations, domains }) {
         localStorage.getItem("settings") != null ? JSON.parse(localStorage.getItem("settings")).dateRange : 30;
     const [getLastDays, setLastDays] = useState(initialLastDays);
     const today = new Date();
-    const [fromDate, setFromDate] = useState(new Date(new Date().setDate(today.getDate() - initialLastDays)));
-    const [toDate, setToDate] = useState(new Date(new Date().setDate(today.getDate() - 1)));
+    const [fromDate, setFromDate] = useState(new Date(new Date().setDate(today.getDate() - (initialLastDays - 1))));
+    const [toDate, setToDate] = useState(new Date());
     const [compareRange, setCompareRange] = useState(0);
     const [previousPeriod, setPreviousPeriod] = useState(() =>
         defaultCompareWindowForPrimary(
-            new Date(new Date().setDate(new Date().getDate() - initialLastDays)),
-            new Date(new Date().setDate(new Date().getDate() - 1))
+            new Date(new Date().setDate(new Date().getDate() - (initialLastDays - 1))),
+            new Date()
         ).start
     );
     const [previousPeriod2, setPreviousPeriod2] = useState(() =>
         defaultCompareWindowForPrimary(
-            new Date(new Date().setDate(new Date().getDate() - initialLastDays)),
-            new Date(new Date().setDate(new Date().getDate() - 1))
+            new Date(new Date().setDate(new Date().getDate() - (initialLastDays - 1))),
+            new Date()
         ).end
     );
 
@@ -322,7 +323,7 @@ export default function Compare({ organisations: _organisations, domains }) {
                                         <header className="compare-card__head">
                                             <h3 className="compare-card__name">{domain.name}</h3>
                                             <p className="compare-card__total">
-                                                {Intl.NumberFormat("de-DE").format(domain.Total)} interactions
+                                                {Intl.NumberFormat(appLocale()).format(domain.Total)} interactions
                                             </p>
                                             <p className="compare-card__meta">Banner: {domain.style ?? "—"}</p>
                                         </header>
@@ -367,7 +368,7 @@ export default function Compare({ organisations: _organisations, domains }) {
                                             return (
                                                 <tr key={domain.name || index}>
                                                     <td className="compare-table__domain">{domain.name}</td>
-                                                    <td>{Intl.NumberFormat("de-DE").format(domain.Total)}</td>
+                                                    <td>{Intl.NumberFormat(appLocale()).format(domain.Total)}</td>
                                                     <td>
                                                         <span className="compare-pill compare-pill--pos">{domain.Accepted}%</span>
                                                     </td>
@@ -451,7 +452,7 @@ export default function Compare({ organisations: _organisations, domains }) {
                                             ].map(([label, n]) => (
                                                 <li key={label}>
                                                     <span>{label}</span>
-                                                    <span>{n != null ? Intl.NumberFormat("de-DE").format(n) : "—"}</span>
+                                                    <span>{n != null ? Intl.NumberFormat(appLocale()).format(n) : "—"}</span>
                                                 </li>
                                             ))}
                                         </ul>

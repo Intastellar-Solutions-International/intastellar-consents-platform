@@ -15,6 +15,7 @@ import {
 } from "../../../Functions/auditReportsStorage";
 import { useSyncDomainFromRoute } from "../../../Functions/domainPathSegments.js";
 import appStorage from '../../../Functions/storage.js';
+import { appLocale } from "../../../Functions/format.js";
 
 const useParams = window.ReactRouterDOM.useParams;
 
@@ -40,7 +41,7 @@ function formatDisplayDate(isoOrYmd) {
     try {
         const d = new Date(isoOrYmd);
         if (Number.isNaN(d.getTime())) return String(isoOrYmd);
-        return d.toLocaleDateString("de-DE", { dateStyle: "medium" });
+        return d.toLocaleDateString(appLocale(), { dateStyle: "medium" });
     } catch {
         return String(isoOrYmd);
     }
@@ -76,21 +77,21 @@ export default function AuditReport() {
         localStorage.getItem("settings") != null ? JSON.parse(localStorage.getItem("settings")).dateRange : 30;
     const [getLastDays, setLastDays] = useState(initialLastDays);
     const [fromDate, setFromDate] = useState(
-        new Date(new Date().setDate(today.getDate() - (settings?.dateRange ?? 30)))
+        new Date(new Date().setDate(today.getDate() - ((settings?.dateRange ?? 30) - 1)))
     );
-    const [toDate, setToDate] = useState(new Date(new Date().setDate(today.getDate() - 1)));
+    const [toDate, setToDate] = useState(new Date());
     const [activeData, setActiveData] = useState(null);
     const [compareRange, setCompareRange] = useState(0);
     const [previousPeriod, setPreviousPeriod] = useState(() =>
         defaultCompareWindowForPrimary(
-            new Date(new Date().setDate(new Date().getDate() - (settings?.dateRange ?? 30))),
-            new Date(new Date().setDate(new Date().getDate() - 1))
+            new Date(new Date().setDate(new Date().getDate() - ((settings?.dateRange ?? 30) - 1))),
+            new Date()
         ).start
     );
     const [previousPeriod2, setPreviousPeriod2] = useState(() =>
         defaultCompareWindowForPrimary(
-            new Date(new Date().setDate(new Date().getDate() - (settings?.dateRange ?? 30))),
-            new Date(new Date().setDate(new Date().getDate() - 1))
+            new Date(new Date().setDate(new Date().getDate() - ((settings?.dateRange ?? 30) - 1))),
+            new Date()
         ).end
     );
 

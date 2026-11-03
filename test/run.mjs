@@ -26,8 +26,11 @@ import "./banner-domain.test.mjs";
 import "./php-backend.test.mjs";
 import "./consent-timestamp.test.mjs";
 import "./scanner-consent-block.test.mjs";
+import "./consent-phase.test.mjs";
 import "./bot-filter.test.mjs";
 import "./cookie-stats.test.mjs";
 import "./fetch-with-timeout.test.mjs";
+import "./shell.test.mjs";
+import "./transfer-vendors.test.mjs";
 
 await run();

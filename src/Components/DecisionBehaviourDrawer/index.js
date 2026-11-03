@@ -3,6 +3,7 @@ import "./Style.css";
 import Widget from "../../Components/widget/widget.js";
 import Select from "../../Components/SelectInput/Selector.js";
 import { lockBodyScroll, unlockBodyScroll } from "../../Functions/bodyScrollLock.js";
+import { appLocale } from "../../Functions/format.js";
 
 export function DecisionBehaviourDrawer({ isOpen, onClose, timeToDecision, onChangeRegion, timeToDecisionSlice, fromDate, toDate }) {
     useEffect(() => {
@@ -18,16 +19,16 @@ export function DecisionBehaviourDrawer({ isOpen, onClose, timeToDecision, onCha
 
     if (!isOpen) return null;
 
-    const fmt = (v) => (v == null || v === 0 ? "N/A" : v.toLocaleString("de-DE"));
+    const fmt = (v) => (v == null || v === 0 ? "N/A" : v.toLocaleString(appLocale()));
     const details = timeToDecisionSlice ? {
         avg: fmt(timeToDecisionSlice.avg) + (timeToDecisionSlice.avg ? "s" : ""),
         median: fmt(timeToDecisionSlice.median) + (timeToDecisionSlice.median ? "s" : ""),
         p90: fmt(timeToDecisionSlice.p90) + (timeToDecisionSlice.p90 ? "s" : ""),
         percentageOver10s: fmt(timeToDecisionSlice.percentageOver10s) + (timeToDecisionSlice.percentageOver10s ? "%" : ""),
         percentageUnder1s: fmt(timeToDecisionSlice.percentageUnder1s) + (timeToDecisionSlice.percentageUnder1s ? "%" : ""),
-        count: timeToDecisionSlice.count?.toLocaleString("de-DE"),
-        countOver10s: timeToDecisionSlice.countOver10s?.toLocaleString("de-DE"),
-        countUnder1s: timeToDecisionSlice.countUnder1s?.toLocaleString("de-DE"),
+        count: timeToDecisionSlice.count?.toLocaleString(appLocale()),
+        countOver10s: timeToDecisionSlice.countOver10s?.toLocaleString(appLocale()),
+        countUnder1s: timeToDecisionSlice.countUnder1s?.toLocaleString(appLocale()),
         deviceType: timeToDecisionSlice.deviceType,
     } : null;
 
@@ -67,12 +68,12 @@ export function DecisionBehaviourDrawer({ isOpen, onClose, timeToDecision, onCha
                     {timeToDecisionSlice ? (
                         <>
                             <p className="behaviour-drawer__count">
-                                {timeToDecisionSlice.count?.toLocaleString("de-DE")} interactions in this period
+                                {timeToDecisionSlice.count?.toLocaleString(appLocale())} interactions in this period
                             </p>
                             <div className="behaviour-drawer__widgets">
                                 <Widget
                                     styleType="small"
-                                    totalNumber={timeToDecisionSlice.median === 0 ? "N/A" : timeToDecisionSlice.median.toLocaleString("de-DE") + "s"}
+                                    totalNumber={timeToDecisionSlice.median === 0 ? "N/A" : timeToDecisionSlice.median.toLocaleString(appLocale()) + "s"}
                                     explainer={{ exist: true, title: "Median time to decision", content: "Median time taken by users to decide on consent." }}
                                     type="Median time to decision"
                                     fromDate={fromDate}
@@ -81,7 +82,7 @@ export function DecisionBehaviourDrawer({ isOpen, onClose, timeToDecision, onCha
                                 />
                                 <Widget
                                     styleType="small"
-                                    totalNumber={timeToDecisionSlice.p90 === 0 ? "N/A" : timeToDecisionSlice.p90.toLocaleString("de-DE") + "s"}
+                                    totalNumber={timeToDecisionSlice.p90 === 0 ? "N/A" : timeToDecisionSlice.p90.toLocaleString(appLocale()) + "s"}
                                     explainer={{ exist: true, title: "90th percentile time to decision", content: "Time taken by 90% of users to decide on consent." }}
                                     type="P90 decision time"
                                     fromDate={fromDate}
@@ -90,7 +91,7 @@ export function DecisionBehaviourDrawer({ isOpen, onClose, timeToDecision, onCha
                                 />
                                 <Widget
                                     styleType="small"
-                                    totalNumber={timeToDecisionSlice.avg === 0 ? "N/A" : timeToDecisionSlice.avg.toLocaleString("de-DE") + "s"}
+                                    totalNumber={timeToDecisionSlice.avg === 0 ? "N/A" : timeToDecisionSlice.avg.toLocaleString(appLocale()) + "s"}
                                     explainer={{ exist: true, title: "Average time to decision", content: "Average time taken by users to decide on consent." }}
                                     type="Average time to decision"
                                     fromDate={fromDate}
@@ -99,7 +100,7 @@ export function DecisionBehaviourDrawer({ isOpen, onClose, timeToDecision, onCha
                                 />
                                 <Widget
                                     styleType="small"
-                                    totalNumber={timeToDecisionSlice.percentageOver10s === 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%"}
+                                    totalNumber={timeToDecisionSlice.percentageOver10s === 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString(appLocale()) + "%"}
                                     explainer={{ exist: true, title: "Decided in more than 10 seconds", content: "Percentage of users who took more than 10 seconds to decide on consent." }}
                                     type=">10s time to decision"
                                     fromDate={fromDate}
@@ -108,7 +109,7 @@ export function DecisionBehaviourDrawer({ isOpen, onClose, timeToDecision, onCha
                                 />
                                 <Widget
                                     styleType="small"
-                                    totalNumber={timeToDecisionSlice.percentageUnder1s === 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%"}
+                                    totalNumber={timeToDecisionSlice.percentageUnder1s === 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString(appLocale()) + "%"}
                                     explainer={{ exist: true, title: "Decided in less than 1 second", content: "Percentage of users who took less than 1 second to decide on consent." }}
                                     type="<1s time to decision"
                                     fromDate={fromDate}

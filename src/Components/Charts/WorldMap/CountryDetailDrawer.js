@@ -2,6 +2,7 @@ const { useEffect } = React;
 const Link = window.ReactRouterDOM.Link;
 const useParams = window.ReactRouterDOM.useParams;
 import { lockBodyScroll, unlockBodyScroll } from "../../../Functions/bodyScrollLock.js";
+import { appLocale } from "../../../Functions/format.js";
 
 /**
  * Build the deep-link to the UserConsents audit log filtered by a country.
@@ -25,7 +26,7 @@ function fmt(n, demoMode) {
         if (s.length > 3) return `${s.slice(0, 2)}**`;
         return s;
     }
-    if (typeof n === "number") return n.toLocaleString("de-DE");
+    if (typeof n === "number") return n.toLocaleString(appLocale());
     return String(n);
 }
 
@@ -42,7 +43,7 @@ function formatCountDelta(current, previous) {
     const d = Math.round(c - p);
     if (d === 0) return "↔ 0";
     const arrow = d > 0 ? "↑" : "↓";
-    return `${arrow} ${d > 0 ? "+" : ""}${Math.abs(d).toLocaleString("de-DE")}`;
+    return `${arrow} ${d > 0 ? "+" : ""}${Math.abs(d).toLocaleString(appLocale())}`;
 }
 
 function formatPctDeltaPp(currentPct, prevPct) {
@@ -52,7 +53,7 @@ function formatPctDeltaPp(currentPct, prevPct) {
     const d = Math.round((c - p) * 10) / 10;
     const arrow = d > 0 ? "↑" : d < 0 ? "↓" : "↔";
     const sign = d > 0 ? "+" : "";
-    return `${arrow} ${sign}${d.toLocaleString("de-DE", { maximumFractionDigits: 1 })} pp`;
+    return `${arrow} ${sign}${d.toLocaleString(appLocale(), { maximumFractionDigits: 1 })} pp`;
 }
 
 export default function CountryDetailDrawer({ country, total, demoMode, onClose, renderCountryPanelExtras }) {

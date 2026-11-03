@@ -20,6 +20,8 @@ import { canAccess } from "../../Functions/tier.js";
 import punycode from "punycode";
 import appStorage from '../../Functions/storage.js';
 import { ScannerHost } from "../../API/host";
+import DomainHealthPill from "../Shell/DomainHealthPill.js";
+import { isNewShell } from "../../Functions/featureFlags.js";
 
 const { useState, useEffect, useContext, useMemo, useRef, useCallback } = React;
 
@@ -354,6 +356,8 @@ function resolveDomainsPlatformKey(API) {
     return "gdpr";
 }
 
+const newShell = isNewShell();
+
 export default function Header(props) {
 
     const [Organisation, setOrganisation] = useContext(OrganisationContext);
@@ -533,11 +537,12 @@ export default function Header(props) {
     return (
         <>
             <header className="dashboard-header">
-                <div className="dashboard-profile">
+                <div className={"dashboard-profile" + (newShell ? " shell-profile" : "")}>
                     <section className="logo-selector-container">
                         <section className="logo_container">
-                            <button className="menu" onClick={() => {
-                                document.querySelector(".navOverlay").classList.toggle("expand");
+                            <button className="menu" aria-label="Toggle navigation" onClick={() => {
+                                if (newShell) window.dispatchEvent(new Event("shell:toggle-rail"));
+                                else document.querySelector(".navOverlay")?.classList.toggle("expand");
                             }}>
                                 <div className="menu-bar"></div>
                                 <div className="menu-bar"></div>
@@ -572,6 +577,13 @@ export default function Header(props) {
                             )}
                         </section>
                     </section>
+                    {newShell && (
+                        <div className="shell-topbar-tools">
+                            {/* StickyPageTitle renders the page's date range in here. */}
+                            <div id="shell-daterange-slot" className="shell-topbar-date" />
+                            {dashboardMode !== "analytics" && <DomainHealthPill />}
+                        </div>
+                    )}
                     <div className="flex profileImage" style={{ gap: "12px" }}>
                         <NotificationCenter />
                         <img src={profileImage} className="content-img" onClick={() => setViewUserProfile(!viewUserProfile)} />

@@ -19,6 +19,7 @@
 import { vendorFromCookieName, VENDOR_META } from "./_scan-core.js";
 import { getPool } from "./_db.js";
 import { normalizeBannerDomain } from "./_banner-domain.js";
+import { summarizeConsentPhase } from "./_consent-phase.js";
 
 const BANNER_CATEGORY = {
     advertising:    "marketing",
@@ -234,6 +235,10 @@ export default async function handler(req, res) {
             status:                row.status,
             pre_consent_transfers: enrichedTransfers,
             pre_consent_cookies:   enrichedCookies,
+            // Every transfer/cookie carries consentPhase ("pre" | "post") on
+            // scans made since phase tagging; despite the field names above,
+            // the lists include post-consent items. See api/_consent-phase.js.
+            ...summarizeConsentPhase(enrichedTransfers, enrichedCookies),
             // Only when a newer attempt than this completed scan exists.
             ...(latestAttempt && latestAttempt.status !== "completed" ? { latest_attempt: latestAttempt } : {}),
         });

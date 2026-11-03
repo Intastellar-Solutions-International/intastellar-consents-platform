@@ -24,7 +24,7 @@ export function preConsentCookieStat(scan) {
         };
     }
     const attempt = scan?.latest_attempt;
-    let reason = "No cookie scan has run for this domain yet. Run one from the Compliance page.";
+    let reason = "No cookie scan has run for this domain yet. Run a scan to see them.";
     if (attempt?.status === "in_progress" || attempt?.status === "pending") {
         reason = "A cookie scan is running for this domain. Check back in a minute.";
     } else if (attempt?.status === "failed") {

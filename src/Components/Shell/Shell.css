@@ -1,0 +1,55 @@
+/* ── Page column (both shells) ─────────────────────────────────────────────
+   Pages lay out inside .main-content, next to the rail — never under it.
+   The right gutter keeps the docked Feedback tab (BugReport) from covering
+   right-aligned controls (e.g. Dismiss on /cookie-database). */
+.main-content {
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    padding-right: var(--size-feedback-gutter);
+    box-sizing: border-box;
+}
+
+/* ── New shell (feature flag newShell) ───────────────────────────────────── */
+.main-grid.shell-new {
+    flex-wrap: nowrap;
+}
+.shell-rail {
+    position: sticky;
+    top: var(--size-header);
+    height: calc(100vh - var(--size-header));
+    flex-shrink: 0;
+    z-index: 50;
+    transition: width 0.2s ease;
+    box-sizing: border-box;
+}
+@media (prefers-reduced-motion: reduce) {
+    .shell-rail { transition: none; }
+}
+@media (max-width: 900px) {
+    /* The classic layout stacks on small screens; the new shell keeps the
+       (collapsed) rail beside the content. */
+    .main-grid.shell-new { display: flex; }
+}
+
+/* Top bar: logo + domain switcher | date range + health pill | account.
+   The classic header is a two-column grid; the new shell adds the middle
+   column, which shrinks before anything wraps. */
+.dashboard-profile.shell-profile {
+    grid-template-columns: auto minmax(0, 1fr) min-content;
+    column-gap: var(--space-4);
+}
+.shell-topbar-tools {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: nowrap;
+    gap: var(--space-3);
+    min-width: 0;
+    font-size: var(--text-sm);
+}
+.shell-topbar-date:empty {
+    display: none;
+}

@@ -25,6 +25,7 @@ import appStorage from '../../Functions/storage.js';
 import { parseConsentTimestamp } from "../../Functions/consentTimestamp.js";
 import BotFilterToggle from "../../Components/BotFilterToggle";
 import { useExcludeBots } from "../../Functions/botFilter.js";
+import { appLocale } from "../../Functions/format.js";
 
 const { useState, useEffect, useRef, useContext, useCallback, useMemo } = React;
 const useParams = window.ReactRouterDOM.useParams;
@@ -336,19 +337,19 @@ export default function UserConsents(props) {
 
     const today = new Date();
     const rangeDays = settings?.dateRange ?? 30;
-    const [fromDate, setFromDate] = useState(new Date(new Date().setDate(today.getDate() - rangeDays)));
-    const [toDate, setToDate] = useState(new Date(new Date().setDate(today.getDate() - 1)));
+    const [fromDate, setFromDate] = useState(new Date(new Date().setDate(today.getDate() - (rangeDays - 1))));
+    const [toDate, setToDate] = useState(new Date());
     const [compareRange, setCompareRange] = useState(0);
     const [previousPeriod, setPreviousPeriod] = useState(() =>
         defaultCompareWindowForPrimary(
-            new Date(new Date().setDate(new Date().getDate() - rangeDays)),
-            new Date(new Date().setDate(new Date().getDate() - 1))
+            new Date(new Date().setDate(new Date().getDate() - (rangeDays - 1))),
+            new Date()
         ).start
     );
     const [previousPeriod2, setPreviousPeriod2] = useState(() =>
         defaultCompareWindowForPrimary(
-            new Date(new Date().setDate(new Date().getDate() - rangeDays)),
-            new Date(new Date().setDate(new Date().getDate() - 1))
+            new Date(new Date().setDate(new Date().getDate() - (rangeDays - 1))),
+            new Date()
         ).end
     );
 
@@ -780,7 +781,7 @@ export default function UserConsents(props) {
                                     const urlClean = d?.url ? String(d.url).split("?")[0].split("#")[0] : "—";
                                     const parsedTime = parseConsentTimestamp(d?.consents_timestamp);
                                     const timeStr = parsedTime
-                                        ? parsedTime.toLocaleString("de-DE", { timeZone: "Europe/Copenhagen" })
+                                        ? parsedTime.toLocaleString(appLocale(), { timeZone: "Europe/Copenhagen" })
                                         : "—";
 
                                     const consentLabel = (t) => (t === "statics" ? "analytics" : t);

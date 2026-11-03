@@ -6,6 +6,7 @@ import ErrorBoundary from "../Error/ErrorBoundary";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
 import appStorage from '../../Functions/storage.js';
+import { appLocale } from "../../Functions/format.js";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -29,11 +30,11 @@ export default function TopWidgets(props) {
         <>
             <div className="grid-container grid-3">
                 {(loading) ? <Loading /> : <ErrorBoundary>
-                    <Widget overviewTotal={true} totalNumber={data?.Total?.toLocaleString("de-DE")} type="Website" />
+                    <Widget overviewTotal={true} totalNumber={data?.Total?.toLocaleString(appLocale())} type="Website" />
                 </ErrorBoundary>
                 }
-                {(loading) ? <Loading /> : <ErrorBoundary><Widget totalNumber={data?.JS?.toLocaleString("de-DE") + "%"} type="JavaScript" /></ErrorBoundary>}
-                {(loading) ? <Loading /> : <ErrorBoundary><Widget totalNumber={data?.WP?.toLocaleString("de-DE") + "%"} type="WordPress" /></ErrorBoundary>}
+                {(loading) ? <Loading /> : <ErrorBoundary><Widget totalNumber={data?.JS?.toLocaleString(appLocale()) + "%"} type="JavaScript" /></ErrorBoundary>}
+                {(loading) ? <Loading /> : <ErrorBoundary><Widget totalNumber={data?.WP?.toLocaleString(appLocale()) + "%"} type="WordPress" /></ErrorBoundary>}
             </div>
         </>
     )
