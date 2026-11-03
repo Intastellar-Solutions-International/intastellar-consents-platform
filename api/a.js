@@ -2,6 +2,7 @@ import { getPool } from "./_db.js";
 import { lookupNetwork, clientIp } from "./_geoip.js";
 import { verifyBotDNS } from "./_rdns.js";
 import { recordDebugHit, DEBUG_TOKEN_RE } from "./_debug-hits.js";
+import { createEmbedCache } from "./_minify-embed.js";
 /**
  * GET  /api/a  → serves the Intastellar First-Party Analytics embed script
  * POST /api/a  → ingest endpoint receiving pageview events from embedded sites
@@ -2148,6 +2149,9 @@ function _formId(form){
 
 // ─────────────────────────────────────────────────────────────────────────────
 
+// Served minified — see api/_minify-embed.js.
+const getEmbedScript = createEmbedCache(EMBED_SCRIPT);
+
 export default async function handler(req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
@@ -2159,7 +2163,7 @@ export default async function handler(req, res) {
     if (req.method === "GET") {
         res.setHeader("Content-Type", "application/javascript; charset=utf-8");
         res.setHeader("Cache-Control", "public, s-maxage=86400, stale-while-revalidate=604800, max-age=3600");
-        return res.status(200).end(EMBED_SCRIPT);
+        return res.status(200).end(await getEmbedScript());
     }
 
     // ── POST: ingest a pageview event ─────────────────────────────────────────

@@ -42,6 +42,7 @@
     "rrweb-player": "^2.1.1",
     "simple-icons": "^16.29.0",
     "tar-stream": "^2.2.0",
+    "terser": "^5.51.2",
     "web-push": "^3.6.7",
     "webpack-node-externals": "^3.0.0"
   },
