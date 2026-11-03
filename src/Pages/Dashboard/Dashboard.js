@@ -35,6 +35,7 @@ import { useExcludeBots } from "../../Functions/botFilter.js";
 import { preConsentCookieStat, postConsentCookieStat } from "../../Functions/cookieStats.js";
 import SectionError from "../../Components/SectionError";
 import { fetchJsonWithTimeout } from "../../Functions/fetchWithTimeout.js";
+import { Icon } from "../../Components/ui/icons.js";
 
 const { useState, useEffect, useRef, useContext, useMemo } = React;
 
@@ -588,7 +589,7 @@ export default function Dashboard(props) {
                                                     <span className="dash-scan-card__count">
                                                         {scanSummary ? transfers.length : "—"}
                                                     </span>
-                                                    <span className="dash-scan-card__icon">↗</span>
+                                                    <span className="dash-scan-card__icon"><Icon name="globe" size={18} /></span>
                                                 </div>
                                                 <span className="dash-scan-card__label">Pre-consent transfers</span>
                                                 <span className="dash-scan-card__sub">
@@ -603,7 +604,7 @@ export default function Dashboard(props) {
                                                     <span className="dash-scan-card__count">
                                                         {preStat.count != null ? preStat.count : preStat.label}
                                                     </span>
-                                                    <span className="dash-scan-card__icon">🍪</span>
+                                                    <span className="dash-scan-card__icon"><Icon name="cookie" size={18} /></span>
                                                 </div>
                                                 <span className="dash-scan-card__label">Pre-consent cookies (scan)</span>
                                                 <span className="dash-scan-card__sub">

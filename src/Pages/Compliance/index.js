@@ -15,19 +15,21 @@ import "./Style.css";
 import appStorage from '../../Functions/storage.js';
 import { useExcludeBots } from "../../Functions/botFilter.js";
 import { preConsentCookieStat, postConsentCookieStat } from "../../Functions/cookieStats.js";
+import { Icon } from "../../Components/ui/icons.js";
 
 const Link = window.ReactRouterDOM.Link;
 const useParams = window.ReactRouterDOM.useParams;
 
 const CATEGORY_META = {
-    fingerprinting: { label: "Fingerprinting", risk: "high",   icon: "◆", color: "#c0365a" },
-    advertising:    { label: "Advertising",    risk: "high",   icon: "◈", color: "#dc5050" },
-    analytics:      { label: "Analytics",      risk: "medium", icon: "◉", color: "#5090dc" },
-    social:         { label: "Social",         risk: "medium", icon: "◎", color: "#8264c8" },
-    functional:     { label: "Functional",     risk: "low",    icon: "◌", color: "#50a878" },
-    cdn:            { label: "CDN / Fonts",    risk: "low",    icon: "○", color: "#787878" },
-    cmp:            { label: "CMP",            risk: "none",   icon: "✓", color: "#50a878" },
-    "third-party":  { label: "Third-party",    risk: "medium", icon: "◇", color: "#909090" },
+    // icon: name in src/Components/ui/icons.js (was Unicode glyphs ◆ ◈ ◉ ◎ ◌ ○ ✓ ◇)
+    fingerprinting: { label: "Fingerprinting", risk: "high",   icon: "fingerprint",  color: "#c0365a" },
+    advertising:    { label: "Advertising",    risk: "high",   icon: "megaphone",    color: "#dc5050" },
+    analytics:      { label: "Analytics",      risk: "medium", icon: "bar-chart",    color: "#5090dc" },
+    social:         { label: "Social",         risk: "medium", icon: "share",        color: "#8264c8" },
+    functional:     { label: "Functional",     risk: "low",    icon: "sliders",      color: "#50a878" },
+    cdn:            { label: "CDN / Fonts",    risk: "low",    icon: "server",       color: "#787878" },
+    cmp:            { label: "CMP",            risk: "none",   icon: "shield-check", color: "#50a878" },
+    "third-party":  { label: "Third-party",    risk: "medium", icon: "link",         color: "#909090" },
 };
 
 const BANNER_CATEGORY_META = {
@@ -597,7 +599,7 @@ export default function CompliancePage() {
                                         {/* ── Category summary cards ── */}
                                         <div className="transfers-summary">
                                             {sortedCategories.map(([cat, count]) => {
-                                                const meta = CATEGORY_META[cat] || { label: cat, risk: "medium", icon: "◇", color: "#909090" };
+                                                const meta = CATEGORY_META[cat] || { label: cat, risk: "medium", icon: "link", color: "#909090" };
                                                 const isActive = activeFilter === cat;
                                                 return (
                                                     <button
@@ -606,8 +608,10 @@ export default function CompliancePage() {
                                                         className={"transfers-summary__card" + (isActive ? " --active" : "")}
                                                         onClick={() => { setActiveFilter(isActive ? null : cat); setTransferPage(0); setSearchQuery(""); setExpandedTransfer(null); }}
                                                         style={{ "--cat-color": meta.color }}
+                                                        aria-pressed={isActive}
+                                                        aria-label={`${meta.label}: ${count} transfer${count === 1 ? "" : "s"}${meta.risk !== "none" ? `, ${meta.risk} risk` : ""}. Filter by this category.`}
                                                     >
-                                                        <span className="transfers-summary__card-icon">{meta.icon}</span>
+                                                        <span className="transfers-summary__card-icon"><Icon name={meta.icon} size={18} /></span>
                                                         <span className="transfers-summary__card-count">{count}</span>
                                                         <span className="transfers-summary__card-label">{meta.label}</span>
                                                         {meta.risk !== "none" && (
@@ -661,7 +665,7 @@ export default function CompliancePage() {
                                                     </div>
                                                     <div className="compliance-transfers__list">
                                                         {pageSlice.map((t) => {
-                                                            const meta     = CATEGORY_META[t.category] || { label: t.category, risk: "medium", icon: "◇", color: "#909090" };
+                                                            const meta     = CATEGORY_META[t.category] || { label: t.category, risk: "medium", icon: "link", color: "#909090" };
                                                             const resLabel = RESOURCE_LABELS[t.resourceType] || (t.resourceType || "Other");
                                                             const region   = t.dataRegion || "non-eu";
                                                             const isExp    = expandedTransfer === t.host;
@@ -677,7 +681,8 @@ export default function CompliancePage() {
                                                                         aria-expanded={isExp}
                                                                     >
                                                                         <span className="compliance-transfers__row-icon" style={{ color: meta.color }}>
-                                                                            {meta.icon}
+                                                                            {/* The row shows no category text, so the icon carries the label. */}
+                                                                            <Icon name={meta.icon} size={16} label={meta.label} />
                                                                         </span>
                                                                         <div className="compliance-transfers__row-main">
                                                                             <span className="compliance-transfers__row-service">{t.service || t.host}</span>
@@ -752,7 +757,7 @@ export default function CompliancePage() {
                                                                             {t.privacyUrl && (
                                                                                 <span className="compliance-transfers__row-detail-item compliance-transfers__row-detail-item--full">
                                                                                     <a className="compliance-transfers__row-detail-privacy" href={t.privacyUrl} target="_blank" rel="noopener noreferrer">
-                                                                                        Privacy policy ↗
+                                                                                        Privacy policy <Icon name="external-link" size={13} /><span className="tw-sr-only"> (opens in a new tab)</span>
                                                                                     </a>
                                                                                 </span>
                                                                             )}
