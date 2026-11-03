@@ -7,3 +7,6 @@
 .vercel
 .env*.local
 .env*
+
+# Consent API DB credentials (see php-backend/db-config.example.php)
+php-backend/**/db-config.php
