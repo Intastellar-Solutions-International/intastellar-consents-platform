@@ -230,7 +230,7 @@ function MyFunction()
     $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
     if ($httpCode != 200) { */
-        $newAPI = "http://ip-api.com/json/" . $ip . "?fields=status,message,country,countryCode,regionName,city,zip,lat,lon,timezone,isp,org,as,asname,reverse,mobile,proxy,hosting,query,continentCode";
+        $newAPI = "http://ip-api.com/json/" . $ip . "?fields=status,message,country,countryCode,region,regionName,city,zip,lat,lon,timezone,isp,org,as,asname,reverse,mobile,proxy,hosting,query,continentCode";
         $ch = curl_init($newAPI);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -250,6 +250,8 @@ function MyFunction()
         'countryCode'  => $user['country_code'] ?? $user['countryCode'],
         'continentCode' => $user['continent_code'] ?? $user['continentCode'],
         'regionName'   => $user['regionName'] ?? "",
+        // ISO 3166-2 subdivision code, e.g. "CA" — what getRegulationApplied() compares against.
+        'regionCode'   => $user['region'] ?? "",
         'city'         => $user['city'] ?? "",
         'ip'           => $ip,
         'isp'          => $user['isp'] ?? $user["as_name"],
@@ -260,6 +262,7 @@ $countryData = MyFunction();
 $country = $countryData['country_name'];
 $countryCode = $countryData['countryCode'];
 $region = $countryData['regionName'];
+$regionCode = $countryData['regionCode'];
 $city = $countryData['city'];
 $continentCode = $countryData['continentCode'];
 
@@ -473,7 +476,10 @@ function seedDomainDataTransferDefault($db, $domain) {
     @mysqli_query($db, $sql);
 }
 
-$regulation_applied = getRegulationApplied($countryCode, $region, $continentCode);
+// Region *code*, not $region: $region is ip-api's full name ("California"),
+// so comparing it with 'CA'/'VA'/… never matched and no US state law was ever
+// applied — every US visitor fell through to the catch-all.
+$regulation_applied = getRegulationApplied($countryCode, $regionCode, $continentCode);
 
 seedDomainDataTransferDefault($db, $domain);
 
