@@ -51,6 +51,7 @@ function readParams() {
     const token = q.get("token");
     return {
         token: token && TOKEN_RE.test(token) ? token : null,
+        site: q.get("site") || "",
         expect: (q.get("expect") || "").split(",").map((s) => s.trim()).filter(Boolean),
     };
 }
@@ -189,7 +190,7 @@ export default function EventDebugger() {
     const [token, setToken] = useState(initial.token);
     const [expected, setExpected] = useState(initial.expect);
     const [expectDraft, setExpectDraft] = useState("");
-    const [siteUrl, setSiteUrl] = useState("");
+    const [siteUrl, setSiteUrl] = useState(initial.site);
     const [filter, setFilter] = useState("events");
     const [query, setQuery] = useState("");
     const [copied, setCopied] = useState(false);
