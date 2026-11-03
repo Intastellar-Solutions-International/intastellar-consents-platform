@@ -1514,12 +1514,16 @@ async function lookupRdap(domainRoot) {
 }
 
 // ── Core scan ─────────────────────────────────────────────────────────────────
-// Endpoints where the Intastellar Consents banner records what a visitor did.
-// The scanner calls IntaAcceptAll() on every site it scans (see below) and
-// runs from US East — without blocking these, every scan was stored as a real
-// visitor's "accept all" (the ~1/s US/Virginia consents in customers' audit
-// logs and totals), and the scanner's cookies as "observed cookies". The
-// banner ignores window.__ICS_SCAN__, so the block has to happen here.
+// Endpoints where the Intastellar Consents banner reports back what happened
+// on the page: its network observer (beacon-collector.php), cookie events
+// (the dashboard's "observed cookies") and form analytics. The scanner calls
+// IntaAcceptAll() on every site it scans (see below), so without this block
+// each scan was reported as real visitor activity. The banner ignores
+// window.__ICS_SCAN__, so the block has to happen here.
+// (Checked 2026-11-03 on intastellar.eu: neither IntaAcceptAll() nor a real
+// click on Accept calls collect.php there, so scans don't appear to create
+// user_consents_tracking rows on current banner builds — bot records are
+// handled by the is_suspected_bot flag in collect.php instead.)
 // Blocking the requests doesn't change what the scan sees: IntaAcceptAll()
 // still writes the consent cookie locally, so post-consent cookies still load.
 // Patterns use Chrome's Network.setBlockedURLs wildcard syntax.
