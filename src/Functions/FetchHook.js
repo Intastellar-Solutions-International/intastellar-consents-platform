@@ -84,6 +84,7 @@ export default function useFetch(updateInterval, url, method, headers, body, han
         headers?.Organisation,
         headers?.SortOrder,
         headers?.UID,
+        headers?.ExcludeBots,
     ]);
 
     if (data == "Err_Login_Expired") {

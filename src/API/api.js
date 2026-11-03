@@ -1,5 +1,6 @@
 import { PrimaryHost, LoginHost, ScannerHost } from "./host";
 import Authentication from "../Authentication/Auth";
+import { excludeBotsHeader } from "../Functions/botFilter.js";
 
 const API = {
     Login: {
@@ -75,6 +76,9 @@ const API = {
                 "Organisation": Authentication.getOrganisation(),
                 "Content-Type": "application/json",
                 "SortOrder": "desc",
+                // Getter, not a value: read at request time so the "Exclude
+                // suspected bots" toggle applies to every caller of this API.
+                get ExcludeBots() { return excludeBotsHeader(); },
             }
         },
         getInteractions: {
@@ -83,7 +87,8 @@ const API = {
             headers: {
                 "Authorization": Authentication.getToken(),
                 "Organisation": Authentication.getOrganisation(),
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                get ExcludeBots() { return excludeBotsHeader(); },
             }
         },
         getInteractionsByCountry: {

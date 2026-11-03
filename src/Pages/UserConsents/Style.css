@@ -467,3 +467,10 @@
         gap: 2px;
     }
 }
+
+/* Suspected-bot records (shown when "Exclude suspected bots" is off) */
+.user-consent-card__badge--bot {
+    background: rgba(249, 191, 64, 0.14);
+    color: rgb(249, 191, 64);
+    border: 1px solid rgba(249, 191, 64, 0.4);
+}

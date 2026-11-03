@@ -30,6 +30,8 @@ import ErrorBoundary from "../../Components/Error/ErrorBoundary.js";
 import Authentication from "../../Authentication/Auth";
 import punycode from "punycode";
 import appStorage from '../../Functions/storage.js';
+import BotFilterToggle from "../../Components/BotFilterToggle";
+import { useExcludeBots } from "../../Functions/botFilter.js";
 
 const { useState, useEffect, useRef, useContext, useMemo } = React;
 
@@ -98,6 +100,7 @@ export default function Dashboard(props) {
     const [loading, setLoading] = useState(false);
     const [loadingCountry, setLoadingCountry] = useState(false);
     const [scanSummary, setScanSummary] = useState(null);
+    const [excludeBots] = useExcludeBots();
     const [scanLoading, setScanLoading] = useState(false);
 
     const dashboardView = props.dashboardView;
@@ -293,7 +296,7 @@ export default function Dashboard(props) {
             setLoadingCountry(false);
         });
 
-    }, [fromDate, toDate, handle, currentDomain, compareRange, previousPeriod, previousPeriod2, workspaceId]);
+    }, [fromDate, toDate, handle, currentDomain, compareRange, previousPeriod, previousPeriod2, workspaceId, excludeBots]);
 
     document.querySelectorAll(".intInput").forEach((input) => {
         input.setAttribute("max", new Date().toISOString().split("T")[0]);
@@ -305,6 +308,7 @@ export default function Dashboard(props) {
         <>
             <StickyPageTitle demoMode={demoMode} loadingUpdated={loading} finalLoaded={loadingCountry} title={handle ? `Dashboard: ${punycode.toUnicode(handle)}` : "Dashboard"} url={url} method={method} header={header} numberofDays={setLastDays} getLastDays={getLastDays} setActiveData={setActiveData} fromDate={fromDate} toDate={toDate} setFromDate={setFromDate} setToDate={setToDate} previousPeriod={previousPeriod} previousPeriod2={previousPeriod2} compareRange={compareRange} setCompareRange={setCompareRange} setCompareWindowStart={setPreviousPeriod} setCompareWindowEnd={setPreviousPeriod2} />
             <div className="dashboard-content">
+                <BotFilterToggle />
                 {/* Workspace banner */}
                 {activeWorkspace && (
                     <div className="dashboard-workspace-banner">

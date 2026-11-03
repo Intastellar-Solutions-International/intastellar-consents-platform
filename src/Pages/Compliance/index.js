@@ -13,6 +13,7 @@ import Authentication from "../../Authentication/Auth";
 import "../Dashboard/Style.css";
 import "./Style.css";
 import appStorage from '../../Functions/storage.js';
+import { useExcludeBots } from "../../Functions/botFilter.js";
 
 const Link = window.ReactRouterDOM.Link;
 const useParams = window.ReactRouterDOM.useParams;
@@ -122,6 +123,7 @@ export default function CompliancePage() {
     const [activeData, setActiveData] = useState(null);
     const [activeDataCountry, setActiveDataCountry] = useState(null);
     const [observedCookies, setObservedCookies] = useState(null);
+    const [excludeBots] = useExcludeBots();
     const [preConsentTransfers, setPreConsentTransfers] = useState(null);
     const [scanLoading, setScanLoading] = useState(false);
     const [activeFilter, setActiveFilter] = useState(null);
@@ -250,7 +252,7 @@ export default function CompliancePage() {
                 })
                 .catch(() => setPreConsentTransfers(null));
         }
-    }, [id, domainsForApi, fromDate, toDate, compareRange, previousPeriod, previousPeriod2, workspaceId]);
+    }, [id, domainsForApi, fromDate, toDate, compareRange, previousPeriod, previousPeriod2, workspaceId, excludeBots]);
 
     const triggerScan = () => {
         const domain = handle || currentDomain;

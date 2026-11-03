@@ -23,6 +23,8 @@ import { FRAMEWORK_IDS, frameworksForAuditRow } from "../../Components/AuditSnap
 import punycode from "punycode";
 import appStorage from '../../Functions/storage.js';
 import { parseConsentTimestamp } from "../../Functions/consentTimestamp.js";
+import BotFilterToggle from "../../Components/BotFilterToggle";
+import { useExcludeBots } from "../../Functions/botFilter.js";
 
 const { useState, useEffect, useRef, useContext, useCallback, useMemo } = React;
 const useParams = window.ReactRouterDOM.useParams;
@@ -172,6 +174,13 @@ function formatConsentMethod(method) {
     };
     return NAMES[s] || s.replace(/_/g, " ");
 }
+
+/** Why collect.php flagged a record — see suspectedBotReason() there. */
+const BOT_REASON_LABELS = {
+    datacenter_ip: "Sent from a datacenter IP address",
+    conflicting_decisions: "Same visitor stored a different choice within one second",
+    high_rate: "More than 5 decisions by this visitor within a minute",
+};
 
 /**
  * Short label for a data-transfer basis code. These match the `basis` values
@@ -343,9 +352,11 @@ export default function UserConsents(props) {
         ).end
     );
 
+    const [excludeBots] = useExcludeBots();
+
     const consentsQueryKey = useMemo(
-        () => `${id}|${domainsApiHeader}|${consentDateKey(fromDate)}|${consentDateKey(toDate)}|${uidQuery}`,
-        [id, domainsApiHeader, fromDate, toDate, uidQuery]
+        () => `${id}|${domainsApiHeader}|${consentDateKey(fromDate)}|${consentDateKey(toDate)}|${uidQuery}|${excludeBots}`,
+        [id, domainsApiHeader, fromDate, toDate, uidQuery, excludeBots]
     );
 
     API[id].getDomainsUrl.headers.Domains = domainsApiHeader;
@@ -615,6 +626,7 @@ export default function UserConsents(props) {
                 <StickyPageTitle demoMode={demoMode} loadingUpdated={getDomainsUrlLoading} finalLoaded={getDomainsUrlLoading} title={"Audit log" + (titleDomainLabel ? " for " + punycode.toUnicode(titleDomainLabel) : "")} numberofDays={setLastDays} getLastDays={getLastDays} setActiveData={setActiveData} fromDate={fromDate} toDate={toDate} setFromDate={setFromDate} setToDate={setToDate} previousPeriod={previousPeriod} previousPeriod2={previousPeriod2} compareRange={compareRange} setCompareRange={setCompareRange} setCompareWindowStart={setPreviousPeriod} setCompareWindowEnd={setPreviousPeriod2} />
                 <div className="dashboard-content">
                     <section className="filter user-consents-filter-bar" aria-label="Audit log filters">
+                        <BotFilterToggle />
                         <label className="user-consents-filter-field" htmlFor="user-consents-framework-filter">
                             <span className="user-consents-filter-label">Framework</span>
                             <select
@@ -786,12 +798,20 @@ export default function UserConsents(props) {
                                     return (
                                         <div
                                             className="user-consent-card"
-                                            key={d?.uid || d?.shopify_consent_id || `${key}-${d?.banner_policy_id || ""}`}
+                                            key={`${d?.uid || d?.shopify_consent_id || key}-${d?.consents_timestamp || ""}-${key}`}
                                         >
                                             <header className="user-consent-card__header">
                                                 <span className="user-consent-card__badge">
                                                     {d?.banner_policy_id ? `ID ${d.banner_policy_id}` : "Legacy record"}
                                                 </span>
+                                                {d?.is_suspected_bot && (
+                                                    <span
+                                                        className="user-consent-card__badge user-consent-card__badge--bot"
+                                                        title={BOT_REASON_LABELS[d.bot_reason] || "Flagged as automated traffic"}
+                                                    >
+                                                        Suspected bot
+                                                    </span>
+                                                )}
                                                 <div className="user-consent-card__header-meta">
                                                     <span className="user-consent-card__id-line" title={d?.uid != null ? String(d.uid) : ""}>
                                                         <span className="user-consent-card__id-label">UID</span>

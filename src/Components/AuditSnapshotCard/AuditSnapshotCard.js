@@ -13,6 +13,7 @@ import AuditComplianceMiniMap from "./AuditComplianceMiniMap.js";
 import "./AuditSnapshotCard.css";
 import appStorage from '../../Functions/storage.js';
 import { parseConsentTimestamp } from "../../Functions/consentTimestamp.js";
+import { useExcludeBots } from "../../Functions/botFilter.js";
 
 const Link = window.ReactRouterDOM.Link;
 
@@ -199,6 +200,7 @@ export default function AuditSnapshotCard(props) {
     }, [handle, currentDomain]);
 
     const [auditPreview, setAuditPreview] = useState([]);
+    const [excludeBots] = useExcludeBots();
     const [auditPreviewLoading, setAuditPreviewLoading] = useState(false);
     const [auditFetchState, setAuditFetchState] = useState({ phase: "loading", error: null });
 
@@ -290,7 +292,7 @@ export default function AuditSnapshotCard(props) {
             cancelled = true;
             ac.abort();
         };
-    }, [platformId, fromDate, toDate, domainsApiHeaderForStats]);
+    }, [platformId, fromDate, toDate, domainsApiHeaderForStats, excludeBots]);
 
     const systemHealth = useMemo(
         () =>

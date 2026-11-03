@@ -26,5 +26,6 @@ import "./banner-domain.test.mjs";
 import "./php-backend.test.mjs";
 import "./consent-timestamp.test.mjs";
 import "./scanner-consent-block.test.mjs";
+import "./bot-filter.test.mjs";
 
 await run();
