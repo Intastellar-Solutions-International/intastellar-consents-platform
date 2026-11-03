@@ -22,6 +22,7 @@ import { defaultCompareWindowForPrimary } from "../../Components/Filter/filterDa
 import { FRAMEWORK_IDS, frameworksForAuditRow } from "../../Components/AuditSnapshotCard/complianceRegions.js";
 import punycode from "punycode";
 import appStorage from '../../Functions/storage.js';
+import { parseConsentTimestamp } from "../../Functions/consentTimestamp.js";
 
 const { useState, useEffect, useRef, useContext, useCallback, useMemo } = React;
 const useParams = window.ReactRouterDOM.useParams;
@@ -69,10 +70,8 @@ function consentDateKey(d) {
 
 /** Parse consent time for sorting (newest first). */
 function consentTimestampMs(row) {
-    const t = row?.consents_timestamp;
-    if (t == null || t === "") return 0;
-    const ms = new Date(t).getTime();
-    return Number.isFinite(ms) ? ms : 0;
+    const d = parseConsentTimestamp(row?.consents_timestamp);
+    return d ? d.getTime() : 0;
 }
 
 /** Newest decisions first so “yesterday” appears before older days while scrolling loads more. */
@@ -767,8 +766,9 @@ export default function UserConsents(props) {
 
                                     const referrerClean = d?.referrer ? String(d.referrer).split("?")[0] : "—";
                                     const urlClean = d?.url ? String(d.url).split("?")[0].split("#")[0] : "—";
-                                    const timeStr = d?.consents_timestamp
-                                        ? new Date(d.consents_timestamp).toLocaleString("de-DE", { timeZone: "Europe/Copenhagen" })
+                                    const parsedTime = parseConsentTimestamp(d?.consents_timestamp);
+                                    const timeStr = parsedTime
+                                        ? parsedTime.toLocaleString("de-DE", { timeZone: "Europe/Copenhagen" })
                                         : "—";
 
                                     const consentLabel = (t) => (t === "statics" ? "analytics" : t);

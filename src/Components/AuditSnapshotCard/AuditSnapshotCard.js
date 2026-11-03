@@ -12,6 +12,7 @@ import { deriveComplianceRegionStatus } from "./complianceRegions.js";
 import AuditComplianceMiniMap from "./AuditComplianceMiniMap.js";
 import "./AuditSnapshotCard.css";
 import appStorage from '../../Functions/storage.js';
+import { parseConsentTimestamp } from "../../Functions/consentTimestamp.js";
 
 const Link = window.ReactRouterDOM.Link;
 
@@ -69,9 +70,8 @@ function shortenFramework(reg) {
 }
 
 function formatAuditRowClock(ts, locale) {
-    if (ts == null || ts === "") return "—";
-    const d = new Date(ts);
-    if (!Number.isFinite(d.getTime())) return "—";
+    const d = parseConsentTimestamp(ts);
+    if (!d) return "—";
     return d.toLocaleTimeString(locale, {
         hour: "2-digit",
         minute: "2-digit",
@@ -81,10 +81,9 @@ function formatAuditRowClock(ts, locale) {
 }
 
 function formatLastConsentAgo(ts) {
-    if (ts == null || ts === "") return null;
-    const d = new Date(ts);
+    const d = parseConsentTimestamp(ts);
+    if (!d) return null;
     const ms = d.getTime();
-    if (!Number.isFinite(ms)) return null;
     const sec = Math.max(0, Math.floor((Date.now() - ms) / 1000));
     if (sec < 90) return "just now";
     const min = Math.floor(sec / 60);

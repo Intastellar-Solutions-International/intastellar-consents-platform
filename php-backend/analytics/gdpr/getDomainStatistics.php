@@ -37,7 +37,6 @@ $limit = isset($_SERVER["HTTP_LIMIT"]) ? (int) $_SERVER["HTTP_LIMIT"] : 40;
 $limit = max(1, min(500, $limit));
 
 $sortRaw = isset($_SERVER["HTTP_SORTORDER"]) ? strtolower(trim($_SERVER["HTTP_SORTORDER"])) : "desc";
-$sortDir = ($sortRaw === "asc") ? "ASC" : "DESC";
 
 $consent_url = [];
 
@@ -98,7 +97,21 @@ function push_consent_row(&$consent_url, $row)
 }
 
 
-$orderSql = "GROUP BY ucs.consents_timestamp ORDER BY ucs.consents_timestamp, ucs.uid $sortDir";
+/**
+ * Newest (or oldest) records first, by timestamp. Previously
+ * "GROUP BY ucs.consents_timestamp ORDER BY ucs.consents_timestamp, ucs.uid $sortDir":
+ * the direction only applied to uid, so the timestamp always sorted ascending
+ * and every page started at the oldest record in the window — and the GROUP BY
+ * collapsed different visitors' records that shared a timestamp into one row.
+ * The audit log is a record of every decision, so nothing is grouped away.
+ */
+function consentRowsOrderSql($sortOrder)
+{
+    $dir = (strtolower(trim((string) $sortOrder)) === "asc") ? "ASC" : "DESC";
+    return "ORDER BY ucs.consents_timestamp $dir, ucs.uid $dir";
+}
+
+$orderSql = consentRowsOrderSql($sortRaw);
 
 if ($domains != "combined view") {
     $sql = "SELECT ucs.*, bp.`GitHub-link`, bp.code_version "

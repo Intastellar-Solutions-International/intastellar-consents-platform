@@ -47,8 +47,23 @@ $timeToDecision = $data->timeToDecision;
 $experiment = $data->experiment ?? null;
 
 
-$consentsGiving = substr($consentsGiving, 0, strpos($consentsGiving, 'Z'));
-$consentsGiving = date('Y-m-d h:i:s', strtotime($consentsGiving));
+/**
+ * The banner sends an ISO-8601 UTC timestamp ("2026-11-03T14:30:05.123Z").
+ * Stored as UTC wall-clock time, 24-hour. Previously
+ *   date('Y-m-d h:i:s', strtotime(substr($ts, 0, strpos($ts, 'Z'))))
+ * used "h" — the 12-hour clock with no AM/PM — so 14:30 was stored as 02:30,
+ * and a timestamp without a "Z" collapsed to 1970-01-01.
+ */
+function normalizeConsentTimestamp($raw)
+{
+    $ts = is_string($raw) && $raw !== "" ? strtotime($raw) : false;
+    if ($ts === false) {
+        $ts = time();
+    }
+    return gmdate('Y-m-d H:i:s', $ts);
+}
+
+$consentsGiving = normalizeConsentTimestamp($consentsGiving);
 
 $tcfData = $data->tcfData;
 
