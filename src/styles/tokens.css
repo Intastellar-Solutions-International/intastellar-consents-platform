@@ -1,0 +1,108 @@
+/*
+ * Design tokens — the single source for colour, spacing, radius, shadow and
+ * type across the CMP dashboard. tailwind.config.js maps its theme onto these
+ * variables, so Tailwind classes (tw-…) and plain CSS (var(--…)) always agree.
+ *
+ * Colours are stored as space-separated RGB channels (--c-*) so any token can
+ * take an alpha: rgb(var(--c-accent) / 0.2). The --color-* forms are the
+ * opaque shorthand.
+ *
+ * Usage rules (see docs/design-tokens.md):
+ * - Gold (accent) is for primary actions and the active state only — never
+ *   to frame cards, tags or panels.
+ * - Text tokens meet WCAG AA (4.5:1) on all three background layers.
+ * - Risk/status colours always come with an icon or a text label.
+ */
+:root {
+    /* ── Background layers ─────────────────────────────────────────────── */
+    --c-bg-sunken: 34 34 34;      /* #222222 — wells, card bottoms, inputs */
+    --c-bg-base:   55 55 55;      /* #373737 — page */
+    --c-bg-raised: 63 63 63;      /* #3f3f3f — header, raised surfaces */
+    --color-bg-sunken: rgb(var(--c-bg-sunken));
+    --color-bg-base:   rgb(var(--c-bg-base));
+    --color-bg-raised: rgb(var(--c-bg-raised));
+
+    /* ── Neutrals for tints and overlays (always used with an alpha) ───── */
+    --c-white: 255 255 255;
+    --c-black: 0 0 0;
+
+    /* ── Borders ───────────────────────────────────────────────────────── */
+    --color-border-subtle: rgb(var(--c-white) / 0.06);
+    --color-border:        rgb(var(--c-white) / 0.10);
+    --color-border-strong: rgb(var(--c-white) / 0.18);
+
+    /* ── Text — contrast on sunken / base / raised ─────────────────────── */
+    --c-text-primary:   240 240 240;  /* #f0f0f0  13.96 / 10.45 / 9.24 */
+    --c-text-secondary: 197 197 197;  /* #c5c5c5   9.22 /  6.90 / 6.10 */
+    --c-text-muted:     173 173 173;  /* #adadad   7.09 /  5.30 / 4.69 */
+    --c-text-inverse:   27 27 27;     /* #1b1b1b — on gold / light surfaces */
+    --color-text-primary:   rgb(var(--c-text-primary));
+    --color-text-secondary: rgb(var(--c-text-secondary));
+    --color-text-muted:     rgb(var(--c-text-muted));
+    --color-text-inverse:   rgb(var(--c-text-inverse));
+
+    /* ── Accent (gold): primary actions + active state only ────────────── */
+    --c-accent:        192 159 83;   /* #c09f53 — fills, borders of active items; #1b1b1b on it = 6.83 */
+    --c-accent-strong: 212 182 116;  /* #d4b674 — hover, and gold *text* (AA on all layers) */
+    --color-accent:        rgb(var(--c-accent));
+    --color-accent-strong: rgb(var(--c-accent-strong));
+    --color-accent-subtle: rgb(var(--c-accent) / 0.12);   /* active-state background */
+
+    /* ── Semantic ──────────────────────────────────────────────────────── */
+    /* Base colours: icons, borders, fills (≥3:1 on all layers). *-text: text (≥4.5:1). */
+    --c-success: 74 222 128;    /* #4ade80 — also passes as text */
+    --c-warning: 249 191 64;    /* #f9bf40 — also passes as text */
+    --c-danger:  248 113 113;   /* #f87171 */
+    --c-danger-text: 252 165 165;  /* #fca5a5 */
+    --c-info:    96 165 250;    /* #60a5fa */
+    --c-info-text: 147 197 253;    /* #93c5fd */
+    --color-success: rgb(var(--c-success));
+    --color-warning: rgb(var(--c-warning));
+    --color-danger:  rgb(var(--c-danger));
+    --color-danger-text: rgb(var(--c-danger-text));
+    --color-info:    rgb(var(--c-info));
+    --color-info-text: rgb(var(--c-info-text));
+
+    /* Risk levels — always rendered with an icon or label, never colour alone. */
+    --color-risk-high:   var(--color-danger);
+    --color-risk-medium: var(--color-warning);
+    --color-risk-low:    var(--color-success);
+
+    /* ── Spacing: 4px scale ────────────────────────────────────────────── */
+    --space-px: 1px;
+    --space-0-5: 2px;
+    --space-1: 4px;   --space-2: 8px;   --space-3: 12px;  --space-4: 16px;
+    --space-5: 20px;  --space-6: 24px;  --space-7: 28px;  --space-8: 32px;
+    --space-10: 40px; --space-12: 48px; --space-14: 56px; --space-16: 64px;
+    --space-20: 80px; --space-24: 96px;
+
+    /* ── Radius ────────────────────────────────────────────────────────── */
+    --radius-xs: 2px;
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+    --radius-2xl: 24px;
+    --radius-full: 9999px;
+
+    /* ── Shadows ───────────────────────────────────────────────────────── */
+    --shadow-sm: 0 1px 3px rgb(var(--c-black) / 0.30);
+    --shadow-md: 0 8px 28px rgb(var(--c-black) / 0.24);
+    --shadow-lg: 0 16px 40px rgb(var(--c-black) / 0.32);
+    --shadow-overlay: 0 24px 56px rgb(var(--c-black) / 0.50);
+    --shadow-inset: inset 0 1px 0 rgb(var(--c-white) / 0.04);
+    --shadow-focus: 0 0 0 2px rgb(var(--c-accent-strong) / 0.9);
+
+    /* ── Type: minimum 13px ────────────────────────────────────────────── */
+    --font-sans: "Questrial", Arial, Helvetica, sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    --text-xs: 13px;
+    --text-sm: 14px;
+    --text-base: 16px;
+    --text-lg: 18px;
+    --text-xl: 20px;
+    --text-2xl: 24px;
+    --text-3xl: 28px;
+    --text-4xl: 32px;
+    --text-5xl: 40px;
+}

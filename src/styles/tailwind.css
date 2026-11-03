@@ -1,0 +1,5 @@
+/* Tailwind utilities only. Preflight (base reset) is disabled in
+   tailwind.config.js so existing pages keep their current styling; classes
+   are prefixed "tw-" so legacy class names (hidden, sticky, container, …)
+   never pick up Tailwind rules. */
+@tailwind utilities;

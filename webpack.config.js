@@ -62,7 +62,9 @@ const client = {
       {
         test: /\.(css)$/,
         include: path.resolve(__dirname, 'src'),
-        use: ["style-loader", "css-loader"],
+        // postcss-loader runs Tailwind (postcss.config.js); it only acts on
+        // files with @tailwind directives (src/styles/tailwind.css).
+        use: ["style-loader", "css-loader", "postcss-loader"],
       },
       {
         // rrweb-player ships its own stylesheet (node_modules), outside the

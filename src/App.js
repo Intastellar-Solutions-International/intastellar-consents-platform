@@ -1,4 +1,6 @@
 import punycode from "punycode";
+import "./styles/tokens.css";
+import "./styles/tailwind.css";
 import "./App.css";
 import Header from "./Components/Header/header";
 import Footer from "./Components/Footer";
