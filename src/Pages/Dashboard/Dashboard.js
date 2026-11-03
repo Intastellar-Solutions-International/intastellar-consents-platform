@@ -283,6 +283,7 @@ export default function Dashboard(props) {
             body: JSON.stringify({ workspaceId }),
         }, { signal: ac.signal, onLoginExpired })
             .then((data) => {
+                if (ac.signal.aborted) return;
                 if (data && typeof data === "object" && !Array.isArray(data) && data.error == null) {
                     setActiveData(data);
                 } else {
@@ -292,7 +293,7 @@ export default function Dashboard(props) {
                 setLoading(false);
             })
             .catch((err) => {
-                if (err.kind === "aborted") return;
+                if (err.kind === "aborted" || ac.signal.aborted) return;
                 setActiveData(null);
                 setInteractionsError(err.message);
                 setLoading(false);
@@ -319,11 +320,12 @@ export default function Dashboard(props) {
             body: JSON.stringify({ workspaceId }),
         }, { signal: ac.signal, onLoginExpired })
             .then((country) => {
+                if (ac.signal.aborted) return;
                 setactiveDataCountry(country);
                 setLoadingCountry(false);
             })
             .catch((err) => {
-                if (err.kind === "aborted") return;
+                if (err.kind === "aborted" || ac.signal.aborted) return;
                 setactiveDataCountry(null);
                 setCountryError(err.message);
                 setLoadingCountry(false);

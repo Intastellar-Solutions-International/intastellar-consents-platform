@@ -46,3 +46,9 @@ test("an expired login triggers the login redirect hook", async () => {
     await assert.rejects(load(ok({}, 401))("u", {}, { onLoginExpired: () => redirected++ }), (e) => e.kind === "auth");
     assert.strictEqual(redirected, 2);
 });
+
+test("an abort while the body is being read is a cancellation, not a parse error", async () => {
+    const ac = new AbortController();
+    const fetchImpl = async () => ({ ok: true, status: 200, json: () => { ac.abort(); return Promise.reject(new Error("AbortError")); } });
+    await assert.rejects(load(fetchImpl)("u", {}, { signal: ac.signal }), (e) => e.kind === "aborted");
+});

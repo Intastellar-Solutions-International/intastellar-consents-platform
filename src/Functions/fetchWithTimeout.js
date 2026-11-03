@@ -47,9 +47,13 @@ export async function fetchJsonWithTimeout(url, init = {}, { timeoutMs = DEFAULT
         try {
             data = await res.json();
         } catch {
+            // An abort can also land while the body is being read — that's a
+            // cancellation, not a bad response.
             if (timedOut) throw requestError("timeout", `No response within ${Math.round(timeoutMs / 1000)} seconds.`);
+            if (signal && signal.aborted) throw requestError("aborted", "Request cancelled.");
             throw requestError("parse", "The server sent an unreadable response.");
         }
+        if (signal && signal.aborted) throw requestError("aborted", "Request cancelled.");
         if (data === "Err_Login_Expired") throw expired();
         return data;
     } finally {
