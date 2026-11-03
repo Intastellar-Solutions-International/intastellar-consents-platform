@@ -5,6 +5,15 @@ import { getPool } from "./_db.js";
  * Returns a 30-minute rolling window of activity for the Live View panel.
  * Polled every 30 seconds by the client — keep queries fast.
  *
+ * GET /api/analytics-live?site=<siteId>&session=<sessionId>
+ *
+ * Detail for one active visitor (Live View's visitor drawer): their page
+ * journey, events, device/source and consent choices, plus their session
+ * recording if one exists. Built only from consent_level = 'full' rows:
+ * pre-consent pageviews carry a session_id too (sendMinimal in api/a.js),
+ * but a visitor who hasn't accepted statistics cookies must not get a
+ * per-visitor profile — for them this returns 404.
+ *
  * Requires: Authorization: Bearer <token>   Organisation: <org_id>
  */
 const ALLOWED_ORIGINS = [
@@ -15,6 +24,148 @@ const ALLOWED_ORIGINS = [
     "http://localhost:8080",
     "http://localhost:3000",
 ];
+
+// A session_id comes from a browser-session cookie (_ia_s, see api/a.js), so
+// a session can in principle span days — cap lookups so a stale tab can't
+// make these queries scan arbitrarily far back.
+const SESSION_LOOKBACK = "24 hours";
+
+// Auto-collected technical events that would drown out the visitor journey.
+const TECHNICAL_EVENTS = ["network_connection", "page_perf", "page_load", "scroll_depth"];
+
+// Where a session came from, from its first pageview. Same coarse grouping as
+// the Digest page's deriveChannel() (src/Pages/Analytics/Digest.js), plus ad
+// click ids — those are the strongest paid signal there is. A referrer on the
+// site's own domain is internal navigation, not a source.
+function deriveSource(first, siteDomain) {
+    if (!first) return null;
+    const site = String(siteDomain || "").replace(/^www\./, "").toLowerCase();
+    let host = String(first.entry_referrer || "").replace(/^www\./, "").toLowerCase();
+    if (host && site && (host === site || host.endsWith("." + site))) host = "";
+    const src = String(first.entry_utm_source || "").toLowerCase();
+    const med = String(first.entry_utm_medium || "").toLowerCase();
+
+    const clickIds = [
+        first.has_gclid   && "Google Ads",
+        first.has_msclkid && "Microsoft Ads",
+        first.has_fbclid  && "Meta Ads",
+    ].filter(Boolean);
+
+    let channel = "Direct";
+    if (clickIds.length || /cpc|ppc|paid|display|cpm/.test(med)) channel = "Paid";
+    else if (/facebook|instagram|linkedin|twitter|x\.com|t\.co|tiktok|pinterest/.test(src + " " + host)) channel = "Social";
+    else if (med === "email" || /newsletter|mail/.test(src)) channel = "Email";
+    else if (med === "organic" || /(^|\.)(google|bing|duckduckgo|yahoo|yandex|ecosia)\./.test(host)) channel = "Organic Search";
+    else if (src || host) channel = "Referral";
+
+    return {
+        channel,
+        referrer: host || null,
+        utmSource: first.entry_utm_source || null,
+        utmMedium: first.entry_utm_medium || null,
+        utmCampaign: first.entry_utm_campaign || null,
+        clickIds,
+    };
+}
+
+async function sessionDetail(db, siteId, domain, sessionId) {
+    const [pvRes, evRes, recRes] = await Promise.all([
+        db.query(`
+            SELECT received_at, pathname, page_host, title, duration_sec, scroll_depth,
+                   NULLIF(referrer_host, '') AS entry_referrer,
+                   NULLIF(utm_source, '')    AS entry_utm_source,
+                   NULLIF(utm_medium, '')    AS entry_utm_medium,
+                   NULLIF(utm_campaign, '')  AS entry_utm_campaign,
+                   gclid IS NOT NULL AS has_gclid, msclkid IS NOT NULL AS has_msclkid, fbclid IS NOT NULL AS has_fbclid,
+                   country_code, device_type, browser_family, os_family, language, timezone,
+                   screen_width, screen_height, viewport_width, viewport_height,
+                   is_new_visitor, consent_stat, consent_func, consent_adv, consent_granular
+            FROM analytics_events
+            WHERE site_id = $1 AND session_id = $2 AND is_embedded = false
+              AND consent_level = 'full'
+              AND received_at >= NOW() - INTERVAL '${SESSION_LOOKBACK}'
+            ORDER BY received_at ASC
+            LIMIT 200`,
+            [siteId, sessionId]
+        ),
+        db.query(`
+            SELECT ce.received_at, ce.name, COALESCE(d.label, ce.name) AS label, d.name IS NOT NULL AS is_conversion,
+                   ce.value_cents, ce.currency, ce.pathname
+            FROM analytics_custom_events ce
+            LEFT JOIN analytics_event_defs d ON d.site_id = ce.site_id AND d.name = ce.name
+            WHERE ce.site_id = $1 AND ce.session_id = $2
+              AND ce.received_at >= NOW() - INTERVAL '${SESSION_LOOKBACK}'
+              AND ce.name <> ALL($3::text[])
+            ORDER BY ce.received_at ASC
+            LIMIT 200`,
+            [siteId, sessionId, TECHNICAL_EVENTS]
+        ),
+        db.query(`
+            SELECT id, started_at, duration_sec, status
+            FROM analytics_recordings
+            WHERE site_id = $1 AND session_id = $2
+            ORDER BY started_at DESC
+            LIMIT 1`,
+            [siteId, sessionId]
+        ).catch(() => ({ rows: [] })),
+    ]);
+
+    const pvs = pvRes.rows;
+    const evs = evRes.rows;
+    // No full-consent pageview → no profile, even if events exist.
+    if (!pvs.length) return null;
+
+    const first = pvs[0];
+    const last = pvs[pvs.length - 1];
+    const times = [...pvs, ...evs].map((r) => new Date(r.received_at).getTime());
+
+    return {
+        sessionId,
+        startedAt: new Date(Math.min(...times)).toISOString(),
+        lastSeenAt: new Date(Math.max(...times)).toISOString(),
+        visitor: last ? {
+            isNew: first.is_new_visitor,
+            country: last.country_code,
+            device: last.device_type,
+            browser: last.browser_family,
+            os: last.os_family,
+            language: last.language,
+            timezone: last.timezone,
+            screen: last.screen_width ? `${last.screen_width}×${last.screen_height}` : null,
+            viewport: last.viewport_width ? `${last.viewport_width}×${last.viewport_height}` : null,
+        } : null,
+        consent: last ? {
+            statistics: last.consent_stat,
+            functional: last.consent_func,
+            marketing: last.consent_adv,
+            granular: last.consent_granular,
+        } : null,
+        source: deriveSource(first, domain),
+        pageviews: pvs.map((r) => ({
+            at: r.received_at,
+            path: r.pathname,
+            host: r.page_host,
+            title: r.title || null,
+            durationSec: r.duration_sec,
+            scrollDepth: r.scroll_depth,
+        })),
+        events: evs.map((r) => ({
+            at: r.received_at,
+            name: r.name,
+            label: r.label,
+            isConversion: r.is_conversion,
+            valueCents: r.value_cents != null ? Number(r.value_cents) : null,
+            currency: r.currency,
+            path: r.pathname,
+        })),
+        recording: recRes.rows[0] ? {
+            id: recRes.rows[0].id,
+            startedAt: recRes.rows[0].started_at,
+            durationSec: recRes.rows[0].duration_sec,
+            status: recRes.rows[0].status,
+        } : null,
+    };
+}
 
 function setCors(req, res) {
     const origin = req.headers.origin || "";
@@ -80,6 +231,18 @@ export default async function handler(req, res) {
 
     // Prevent edge/CDN caching — live data must always be fresh
     res.setHeader("Cache-Control", "no-store");
+
+    const rawSession = String(req.query.session || "").trim();
+    if (rawSession) {
+        try {
+            const detail = await sessionDetail(db, siteId, domain, rawSession.slice(0, 64));
+            if (!detail) return res.status(404).json({ error: "Session not found" });
+            return res.status(200).json({ session: detail });
+        } catch (err) {
+            console.error("[analytics-live] session detail:", err);
+            return res.status(500).json({ error: "Failed to load session" });
+        }
+    }
 
     const [totalsRes, minutesRes, pagesRes, hostsRes, recentRes, conversionsRes, countriesRes, activeVisitorsRes] = await Promise.all([
 
@@ -215,8 +378,13 @@ export default async function handler(req, res) {
         // while a visitor sits on one page, only a load event and an exit
         // event, so "latest known event per session" is the closest signal
         // to "what page are they on right now" the data model supports).
+        // The LATERAL adds a per-session summary (pages, browser, entry
+        // source) over the whole session, not just the live window — one
+        // indexed session_id lookup per row, at most 50 rows. Full-consent
+        // rows only: for a visitor without statistics consent it comes back
+        // empty (pages = 0), and they stay a bare anonymous row.
         db.query(`
-            SELECT * FROM (
+            SELECT latest.*, s.* FROM (
                 SELECT DISTINCT ON (session_id)
                     session_id, pathname, page_host, country_code, device_type, received_at
                 FROM (
@@ -232,7 +400,26 @@ export default async function handler(req, res) {
                 ) combined
                 ORDER BY session_id, received_at DESC
             ) latest
-            ORDER BY received_at DESC
+            LEFT JOIN LATERAL (
+                SELECT
+                    COUNT(*)::int                AS pages,
+                    MIN(e.received_at)           AS started_at,
+                    MAX(e.browser_family)        AS browser,
+                    MAX(e.os_family)             AS os,
+                    BOOL_OR(e.is_new_visitor)    AS is_new,
+                    (ARRAY_AGG(NULLIF(e.referrer_host, '') ORDER BY e.received_at))[1] AS entry_referrer,
+                    (ARRAY_AGG(NULLIF(e.utm_source, '')    ORDER BY e.received_at))[1] AS entry_utm_source,
+                    (ARRAY_AGG(NULLIF(e.utm_medium, '')    ORDER BY e.received_at))[1] AS entry_utm_medium,
+                    (ARRAY_AGG(NULLIF(e.utm_campaign, '')  ORDER BY e.received_at))[1] AS entry_utm_campaign,
+                    (ARRAY_AGG(e.gclid   IS NOT NULL ORDER BY e.received_at))[1] AS has_gclid,
+                    (ARRAY_AGG(e.msclkid IS NOT NULL ORDER BY e.received_at))[1] AS has_msclkid,
+                    (ARRAY_AGG(e.fbclid  IS NOT NULL ORDER BY e.received_at))[1] AS has_fbclid
+                FROM analytics_events e
+                WHERE e.site_id = $1 AND e.session_id = latest.session_id AND e.is_embedded = false
+                  AND e.consent_level = 'full'
+                  AND e.received_at >= NOW() - INTERVAL '${SESSION_LOOKBACK}'
+            ) s ON true
+            ORDER BY latest.received_at DESC
             LIMIT 50`,
             [siteId]
         ).catch(() => ({ rows: [] })),
@@ -321,6 +508,13 @@ export default async function handler(req, res) {
             country:   r.country_code,
             device:    r.device_type,
             at:        r.received_at,
+            fullConsent: r.pages > 0,
+            browser:   r.browser || null,
+            os:        r.os || null,
+            isNew:     r.is_new ?? null,
+            pages:     r.pages || 0,
+            startedAt: r.started_at || null,
+            source:    r.pages ? deriveSource(r, domain) : null,
         })),
     });
 }

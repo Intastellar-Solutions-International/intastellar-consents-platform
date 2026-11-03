@@ -1,5 +1,7 @@
+const { useState, useCallback } = React;
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import LiveActivityMap from "./LiveActivityMap.js";
+import LiveVisitorDrawer, { countryName } from "./LiveVisitorDrawer.js";
 import { useAnalyticsPageChrome, useSiteConfig, useLiveData, formatCurrency, timeAgo } from "./_shared.js";
 import "./Analytics.css";
 
@@ -22,6 +24,8 @@ export default function LiveView() {
     const { domain } = useAnalyticsPageChrome();
     const siteConfig = useSiteConfig(domain);
     const { data, countdown } = useLiveData(domain, siteConfig?.id);
+    const [openSession, setOpenSession] = useState(null);
+    const closeVisitor = useCallback(() => setOpenSession(null), []);
 
     const mapCountries = data?.countries || [];
     const maxUserBar = Math.max(...(data?.perMinuteUsers || [1]), 1);
@@ -141,18 +145,37 @@ export default function LiveView() {
                                     <div className="sa-live__body sa-liveview__card-body">
                                         <p className="sa-live__section-title">Active visitors</p>
                                         <div className="sa-live__feed">
-                                            {(data.activeVisitors || []).map(v => (
-                                                <div key={v.sessionId} className="sa-live__event">
-                                                    <span className="sa-live__event-path" title={v.host ? `${v.host}${v.path}` : v.path}>
-                                                        {v.host && v.host !== domain ? `${v.host}` : ""}{v.path}
+                                            {(data.activeVisitors || []).map(v => {
+                                                const path = <span className="sa-live__event-path" title={v.host ? `${v.host}${v.path}` : v.path}>
+                                                    {v.host && v.host !== domain ? `${v.host}` : ""}{v.path}
+                                                </span>;
+                                                const meta = <div className="sa-live__event-meta">
+                                                    {v.country && <span className="sa-live__event-flag" title={countryName(v.country)}>{v.country}</span>}
+                                                    {v.device && <span className="sa-live__event-flag">{v.device}</span>}
+                                                    <span className={"sa-live__event-level sa-live__event-level--" + (v.fullConsent ? "full" : "minimal")}>
+                                                        {v.fullConsent ? "full" : "no consent"}
                                                     </span>
-                                                    <div className="sa-live__event-meta">
-                                                        {v.country && <span className="sa-live__event-flag">{v.country}</span>}
-                                                        {v.device && <span className="sa-live__event-flag">{v.device}</span>}
-                                                        <span className="sa-live__event-time">{timeAgo(v.at)}</span>
-                                                    </div>
-                                                </div>
-                                            ))}
+                                                    <span className="sa-live__event-time">{timeAgo(v.at)}</span>
+                                                </div>;
+                                                // Visitors without statistics consent stay an anonymous row —
+                                                // no profile exists for them (see api/analytics-live.js).
+                                                if (!v.fullConsent) {
+                                                    return <div key={v.sessionId} className="sa-live__event sa-live__event--anonymous">{path}{meta}</div>;
+                                                }
+                                                const detail = [
+                                                    v.isNew === false ? "Returning" : v.isNew ? "New visitor" : null,
+                                                    v.source?.channel && (v.source.referrer && v.source.channel !== "Direct" ? `${v.source.channel} · ${v.source.referrer}` : v.source.channel),
+                                                    v.browser,
+                                                    `${v.pages} page${v.pages !== 1 ? "s" : ""}`,
+                                                ].filter(Boolean).join(" · ");
+                                                return (
+                                                    <button key={v.sessionId} type="button" className="sa-live__event sa-live__visitor"
+                                                        onClick={() => setOpenSession(v.sessionId)} aria-label={`Show details for visitor on ${v.path}`}>
+                                                        {path}{meta}
+                                                        <span className="sa-live__visitor-detail">{detail} — view details →</span>
+                                                    </button>
+                                                );
+                                            })}
                                             {!data.activeVisitors?.length && (
                                                 <p style={{ color: "rgba(130,130,130,0.55)", fontSize: "0.8rem", margin: 0 }}>No active visitors right now</p>
                                             )}
@@ -214,6 +237,15 @@ export default function LiveView() {
                     )}
                 </div>
             </div>
+            {openSession && (
+                <LiveVisitorDrawer
+                    siteKey={siteConfig?.id}
+                    domain={domain}
+                    sessionId={openSession}
+                    refreshKey={data?.asOf}
+                    onClose={closeVisitor}
+                />
+            )}
         </div>
     );
 }
