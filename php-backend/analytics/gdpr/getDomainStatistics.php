@@ -98,17 +98,21 @@ function push_consent_row(&$consent_url, $row)
 
 
 /**
- * Newest (or oldest) records first, by timestamp. Previously
+ * One row per decision, newest (or oldest) first. Previously
  * "GROUP BY ucs.consents_timestamp ORDER BY ucs.consents_timestamp, ucs.uid $sortDir":
- * the direction only applied to uid, so the timestamp always sorted ascending
- * and every page started at the oldest record in the window — and the GROUP BY
- * collapsed different visitors' records that shared a timestamp into one row.
- * The audit log is a record of every decision, so nothing is grouped away.
+ * - the direction only applied to uid, so the timestamp always sorted
+ *   ascending and every page started at the oldest record in the window;
+ * - grouping by timestamp alone merged *different visitors* who decided in
+ *   the same second into one row.
+ * collect.php is called once per consent category and writes a full
+ * user_consents_tracking row each time, so one decision arrives as several
+ * identical rows — grouping on (uid, timestamp, consent) collapses exactly
+ * those, while distinct visitors and conflicting decisions stay separate.
  */
 function consentRowsOrderSql($sortOrder)
 {
     $dir = (strtolower(trim((string) $sortOrder)) === "asc") ? "ASC" : "DESC";
-    return "ORDER BY ucs.consents_timestamp $dir, ucs.uid $dir";
+    return "GROUP BY ucs.uid, ucs.consents_timestamp, ucs.consent ORDER BY ucs.consents_timestamp $dir, ucs.uid $dir";
 }
 
 $orderSql = consentRowsOrderSql($sortRaw);

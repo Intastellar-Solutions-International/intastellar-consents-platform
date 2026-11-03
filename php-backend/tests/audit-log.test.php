@@ -3,20 +3,25 @@
 load_functions("$ROOT/analytics/gdpr/getDomainStatistics.php", ['consentRowsOrderSql']);
 load_functions("$ROOT/consents/collect.php", ['normalizeConsentTimestamp']);
 
+const DEDUPE = 'GROUP BY ucs.uid, ucs.consents_timestamp, ucs.consent ';
+
 test('audit log sorts by timestamp newest first by default', function () {
-    eq(consentRowsOrderSql('desc'), 'ORDER BY ucs.consents_timestamp DESC, ucs.uid DESC');
-    eq(consentRowsOrderSql(''), 'ORDER BY ucs.consents_timestamp DESC, ucs.uid DESC');
-    eq(consentRowsOrderSql(null), 'ORDER BY ucs.consents_timestamp DESC, ucs.uid DESC');
+    eq(consentRowsOrderSql('desc'), DEDUPE . 'ORDER BY ucs.consents_timestamp DESC, ucs.uid DESC');
+    eq(consentRowsOrderSql(''), DEDUPE . 'ORDER BY ucs.consents_timestamp DESC, ucs.uid DESC');
+    eq(consentRowsOrderSql(null), DEDUPE . 'ORDER BY ucs.consents_timestamp DESC, ucs.uid DESC');
 });
 
 test('audit log direction applies to the timestamp, not only the uid', function () {
-    eq(consentRowsOrderSql(' ASC '), 'ORDER BY ucs.consents_timestamp ASC, ucs.uid ASC');
+    eq(consentRowsOrderSql(' ASC '), DEDUPE . 'ORDER BY ucs.consents_timestamp ASC, ucs.uid ASC');
     // Anything unexpected falls back to DESC — never interpolated into SQL.
-    eq(consentRowsOrderSql("asc; DROP TABLE x"), 'ORDER BY ucs.consents_timestamp DESC, ucs.uid DESC');
+    eq(consentRowsOrderSql("asc; DROP TABLE x"), DEDUPE . 'ORDER BY ucs.consents_timestamp DESC, ucs.uid DESC');
 });
 
-test('audit log no longer groups records that share a timestamp', function () {
-    if (stripos(consentRowsOrderSql('desc'), 'GROUP BY') !== false) throw new RuntimeException('GROUP BY still present');
+test('audit log collapses duplicate rows of one decision, not different visitors', function () {
+    // Grouping on the timestamp alone merged different visitors who decided
+    // in the same second; uid and consent must be part of the key.
+    $sql = consentRowsOrderSql('desc');
+    if (!preg_match('/GROUP BY ucs\.uid, ucs\.consents_timestamp, ucs\.consent ORDER/', $sql)) throw new RuntimeException($sql);
 });
 
 test('consent timestamps are stored in 24-hour UTC', function () {
