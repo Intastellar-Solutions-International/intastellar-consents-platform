@@ -80,6 +80,7 @@ import AnalyticsReportBuilder from "./Pages/Analytics/ReportBuilder.js";
 import AnalyticsReportView from "./Pages/Analytics/ReportView.js";
 import AnalyticsDigest from "./Pages/Analytics/Digest.js";
 import EventDebugger from "./Pages/Analytics/EventDebugger.js";
+import Styleguide from "./Pages/Styleguide/index.js";
 import CookieDatabase from "./Pages/CookieDatabase";
 import TierGate from "./Components/TierGate";
 import DevTierSwitcher from "./Components/DevTierSwitcher";
@@ -107,6 +108,12 @@ export const WorkspaceContext = createContext([null, () => {}]);
 // outside the real Provider below (e.g. in isolation/tests) — the Provider
 // always supplies a fresh value for the actual app.
 export const DateRangeContext = createContext([null, () => {}]);
+
+// webpack sets process.env.NODE_ENV from the build mode, so this is false in
+// production builds and the route doesn't exist there.
+function isStyleguideRoute() {
+    return process.env.NODE_ENV === "development" && window.location.pathname === "/styleguide";
+}
 
 export default function App() {
     const [dashboardView, setDashboardView] = useState((localStorage.getItem("platform")) ? localStorage.getItem("platform") : null);
@@ -141,10 +148,15 @@ export default function App() {
         const globals = appStorage.getItem("globals");
         const path = window.location.pathname;
         const isApiRoute = path === "/api" || path.startsWith("/api/");
-        if (!globals && path !== "/login" && path !== "/" && !isApiRoute) {
+        if (!globals && path !== "/login" && path !== "/" && !isApiRoute && !isStyleguideRoute()) {
             window.location.replace("/login");
         }
     }, []);
+
+    // Component styleguide — development builds only, no login needed.
+    if (isStyleguideRoute()) {
+        return <ErrorBoundary><Styleguide /></ErrorBoundary>;
+    }
 
     if (appStorage.getItem("globals") != null) {
         const path = window.location.pathname;
