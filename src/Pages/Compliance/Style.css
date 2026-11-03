@@ -1380,3 +1380,34 @@
     font-size: var(--text-lg);
     color: var(--color-text-secondary);
 }
+
+/* ── Stage 4 layout: KPI strip, vendor table, collapsible map ─────────── */
+.compliance-kpis {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: var(--space-4);
+    margin: var(--space-4) 0 var(--space-6);
+}
+.compliance-map {
+    margin-top: var(--space-6);
+    border-top: 1px solid var(--color-border-subtle);
+    padding-top: var(--space-4);
+}
+.compliance-map__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+}
+.compliance-map__title {
+    margin: 0;
+    font-size: var(--text-base);
+    color: var(--color-text-primary);
+}
+.compliance-map__body {
+    position: relative;
+    height: 320px;
+    margin-top: var(--space-3);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+}

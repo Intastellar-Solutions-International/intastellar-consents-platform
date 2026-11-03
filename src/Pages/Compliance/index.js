@@ -16,7 +16,9 @@ import appStorage from '../../Functions/storage.js';
 import { useExcludeBots } from "../../Functions/botFilter.js";
 import { preConsentCookieStat, postConsentCookieStat } from "../../Functions/cookieStats.js";
 import { Icon } from "../../Components/ui/icons.js";
-import { appLocale, formatDate } from "../../Functions/format.js";
+import { appLocale, formatDate, formatNumber } from "../../Functions/format.js";
+import TransferVendors from "./TransferVendors.js";
+import { KpiTile, Button, Tabs, TabPanel, EmptyState } from "../../Components/ui";
 
 const Link = window.ReactRouterDOM.Link;
 const useParams = window.ReactRouterDOM.useParams;
@@ -130,15 +132,13 @@ export default function CompliancePage() {
     const [excludeBots] = useExcludeBots();
     const [preConsentTransfers, setPreConsentTransfers] = useState(null);
     const [scanLoading, setScanLoading] = useState(false);
-    const [activeFilter, setActiveFilter] = useState(null);
     const [activeTab, setActiveTab] = useState("transfers");
     const [loading, setLoading] = useState(false);
-    const [transferPage, setTransferPage] = useState(0);
     const [cookiePage, setCookiePage] = useState(0);
 
     const PAGE_SIZE = 10;
     const [searchQuery, setSearchQuery] = useState("");
-    const [expandedTransfer, setExpandedTransfer] = useState(null);
+    const [mapOpen, setMapOpen] = useState(false);
     const [scanHistory, setScanHistory] = useState([]);
     const [copyTableCopied, setCopyTableCopied] = useState(false);
     const [showEmbedModal, setShowEmbedModal] = useState(false);
@@ -417,6 +417,7 @@ export default function CompliancePage() {
     if (!id || !API[id]) return null;
 
     // Same sources as Home and the audit snapshot card — see cookieStats.js.
+    const vendorCount = new Set((preConsentTransfers?.pre_consent_transfers || []).map((t) => t.service || t.host)).size;
     const preStat = preConsentCookieStat(preConsentTransfers);
     const postStat = postConsentCookieStat(observedCookies);
     const auditLogPath = reportsPath(id, currentDomain, "/user-consents");
@@ -443,52 +444,27 @@ export default function CompliancePage() {
                 demoMode={demoMode}
             />
 
-            {/* ── Hero map — full-width, outside dashboard-content padding ── */}
-            <div className="compliance-hero">
-                <ComplianceFlowMap
-                    dataFlowCountries={dataFlowCountries}
-                    dataFlowOrigin="DE"
-                />
-                {/* Cookie scan strip overlaid at the bottom of the hero */}
-                {(observedCookies || preConsentTransfers) && (
-                    <div className="compliance-hero__stats">
-                        <div className="compliance-hero__stat">
-                            <span className={"compliance-hero__stat-value" + (preStat.count == null ? " --empty" : "")}>
-                                {preStat.count != null ? preStat.count.toLocaleString(appLocale()) : preStat.label}
-                            </span>
-                            <span className="compliance-hero__stat-label">Pre-consent cookies</span>
-                            <span className="compliance-hero__stat-source">
-                                {preStat.count != null
-                                    ? `Cookie scan · ${formatDate(new Date(preStat.scannedAt))}`
-                                    : preStat.reason}
-                            </span>
-                        </div>
-                        <div className="compliance-hero__stat-divider" aria-hidden />
-                        <div className="compliance-hero__stat">
-                            <span className={"compliance-hero__stat-value" + (postStat.count == null ? " --empty" : "")}>
-                                {postStat.count != null ? postStat.count.toLocaleString(appLocale()) : postStat.label}
-                            </span>
-                            <span className="compliance-hero__stat-label">Post-consent cookies</span>
-                            <span className="compliance-hero__stat-source">
-                                {postStat.count != null ? "Banner reports · real visits" : postStat.reason}
-                            </span>
-                        </div>
-                        <div className="compliance-hero__stat-divider" aria-hidden />
-                        <div className="compliance-hero__stat">
-                            <span className="compliance-hero__stat-value">
-                                {activeData?.Total != null ? Number(activeData.Total).toLocaleString(appLocale()) : "—"}
-                            </span>
-                            <span className="compliance-hero__stat-label">Consent interactions</span>
-                        </div>
-                        <Link to={auditLogPath} className="compliance-hero__audit-btn">
-                            Open audit log
-                        </Link>
-                    </div>
-                )}
-            </div>
-
             {/* ── Content ── */}
             <div className="dashboard-content compliance-page">
+            {/* Headline figures (were overlaid on the hero map). Same sources as before. */}
+            <section aria-label="Key figures" className="compliance-kpis">
+                <KpiTile
+                    label="Pre-consent cookies"
+                    value={preStat.count != null ? formatNumber(preStat.count) : preStat.label}
+                    hint={preStat.count != null ? `Cookie scan · ${formatDate(preStat.scannedAt)}` : preStat.reason}
+                />
+                <KpiTile
+                    label="Post-consent cookies"
+                    value={postStat.count != null ? formatNumber(postStat.count) : postStat.label}
+                    hint={postStat.count != null ? "Banner reports · real visits" : postStat.reason}
+                />
+                <KpiTile
+                    label="Consent interactions"
+                    loading={loading && activeData == null}
+                    value={activeData?.Total != null ? formatNumber(activeData.Total) : "—"}
+                    hint={<Link to={auditLogPath} className="tw-text-accent-strong tw-font-semibold focus-visible:tw-outline-none focus-visible:tw-shadow-focus tw-rounded-sm">Open audit log</Link>}
+                />
+            </section>
             <div className="compliance-bottom-grid">
 
                 {/* ── Data transfers ── */}
@@ -518,7 +494,7 @@ export default function CompliancePage() {
                                     )}
                                 </div>
                                 <div className="compliance-transfers__header-actions">
-                                    {preConsentTransfers && !scanLoading && (
+                                    {preConsentTransfers && !preConsentTransfers.error && !scanLoading && (
                                         <button type="button" className="compliance-transfers__export-btn" onClick={exportCSV}>
                                             Export CSV
                                         </button>
@@ -546,23 +522,27 @@ export default function CompliancePage() {
                             )}
 
                             {/* ── Tabs (shown once a scan exists) ── */}
-                            {preConsentTransfers && !scanLoading && (
-                                <div className="compliance-transfers__tabs">
-                                    {[
-                                        { key: "transfers", label: "Transfers", count: preConsentTransfers.pre_consent_transfers?.length },
-                                        { key: "cookies",   label: "Cookies",   count: preConsentTransfers.pre_consent_cookies?.length   },
-                                    ].map(({ key, label, count }) => (
-                                        <button
-                                            key={key}
-                                            type="button"
-                                            className={"compliance-transfers__tab" + (activeTab === key ? " --active" : "")}
-                                            onClick={() => { setActiveTab(key); setTransferPage(0); setCookiePage(0); setSearchQuery(""); setExpandedTransfer(null); }}
-                                        >
-                                            {label}
-                                            {count > 0 && <span className="compliance-tab-pill">{count}</span>}
-                                        </button>
-                                    ))}
-                                </div>
+                            {preConsentTransfers && !scanLoading && !preConsentTransfers.error && (
+                                <Tabs
+                                    label="Scan results"
+                                    idPrefix="compliance"
+                                    value={activeTab}
+                                    onChange={(key) => { setActiveTab(key); setCookiePage(0); setSearchQuery(""); }}
+                                    tabs={[
+                                        { id: "transfers", label: "Transfers", count: vendorCount },
+                                        { id: "cookies", label: "Cookies", count: preConsentTransfers.pre_consent_cookies?.length || 0 },
+                                    ]}
+                                    className="tw-mb-4"
+                                />
+                            )}
+
+                            {preConsentTransfers?.error && !scanLoading && (
+                                <EmptyState
+                                    icon="search"
+                                    title={preStat.label}
+                                    message={preStat.reason}
+                                    action={{ label: "Scan now", onClick: triggerScan }}
+                                />
                             )}
 
                             {!preConsentTransfers && !scanLoading && (
@@ -578,226 +558,40 @@ export default function CompliancePage() {
                                 </div>
                             )}
 
-                            {activeTab === "transfers" && preConsentTransfers?.pre_consent_transfers?.length > 0 && (() => {
-                                const transfers = preConsentTransfers.pre_consent_transfers;
-                                const countsByCategory = transfers.reduce((acc, t) => {
-                                    acc[t.category] = (acc[t.category] || 0) + 1;
-                                    return acc;
-                                }, {});
-                                const sortedCategories = Object.entries(countsByCategory)
-                                    .sort(([a], [b]) => (CAT_ORDER[a] ?? 99) - (CAT_ORDER[b] ?? 99));
-                                const sq = searchQuery.toLowerCase();
-                                const displayed = (activeFilter
-                                    ? transfers.filter(t => t.category === activeFilter)
-                                    : transfers
-                                ).filter(t => !sq ||
-                                    (t.service || "").toLowerCase().includes(sq) ||
-                                    (t.host || "").toLowerCase().includes(sq)
-                                );
-
-                                return (
-                                    <>
-                                        {/* ── Category summary cards ── */}
-                                        <div className="transfers-summary">
-                                            {sortedCategories.map(([cat, count]) => {
-                                                const meta = CATEGORY_META[cat] || { label: cat, risk: "medium", icon: "link", color: "#909090" };
-                                                const isActive = activeFilter === cat;
-                                                return (
-                                                    <button
-                                                        key={cat}
-                                                        type="button"
-                                                        className={"transfers-summary__card" + (isActive ? " --active" : "")}
-                                                        onClick={() => { setActiveFilter(isActive ? null : cat); setTransferPage(0); setSearchQuery(""); setExpandedTransfer(null); }}
-                                                        style={{ "--cat-color": meta.color }}
-                                                        aria-pressed={isActive}
-                                                        aria-label={`${meta.label}: ${count} transfer${count === 1 ? "" : "s"}${meta.risk !== "none" ? `, ${meta.risk} risk` : ""}. Filter by this category.`}
-                                                    >
-                                                        <span className="transfers-summary__card-icon"><Icon name={meta.icon} size={18} /></span>
-                                                        <span className="transfers-summary__card-count">{count}</span>
-                                                        <span className="transfers-summary__card-label">{meta.label}</span>
-                                                        {meta.risk !== "none" && (
-                                                            <span className={"transfers-summary__card-risk --" + meta.risk}>
-                                                                {meta.risk === "high" ? "High" : meta.risk === "medium" ? "Med" : "Low"}
-                                                            </span>
-                                                        )}
-                                                    </button>
-                                                );
-                                            })}
-                                            {activeFilter && (
-                                                <button type="button" className="transfers-summary__clear" onClick={() => { setActiveFilter(null); setTransferPage(0); setSearchQuery(""); setExpandedTransfer(null); }}>
-                                                    Show all
-                                                </button>
-                                            )}
-                                        </div>
-
-                                        {/* ── Search ── */}
-                                        <div className="compliance-search">
-                                            <input
-                                                type="search"
-                                                className="compliance-search__input"
-                                                placeholder="Search by service or host…"
-                                                value={searchQuery}
-                                                onChange={e => { setSearchQuery(e.target.value); setTransferPage(0); }}
-                                            />
-                                            {searchQuery && (
-                                                <span className="compliance-search__count">
-                                                    {displayed.length} result{displayed.length !== 1 ? "s" : ""}
-                                                </span>
-                                            )}
-                                        </div>
-
-                                        {/* ── Transfer rows ── */}
-                                        {searchQuery && !displayed.length ? (
-                                            <div className="compliance-transfers__empty">
-                                                <span>No transfers match "{searchQuery}".</span>
+                            {activeTab === "transfers" && preConsentTransfers?.pre_consent_transfers?.length > 0 && (
+                                <TabPanel idPrefix="compliance" id="transfers" active>
+                                    <TransferVendors
+                                        transfers={preConsentTransfers.pre_consent_transfers}
+                                        categoryMeta={CATEGORY_META}
+                                        bannerMeta={BANNER_CATEGORY_META}
+                                        resourceLabels={RESOURCE_LABELS}
+                                        categoryOrder={CAT_ORDER}
+                                    />
+                                    {/* Map: secondary to the table — smaller, collapsed by default. */}
+                                    {dataFlowCountries.length > 0 && (
+                                        <section className="compliance-map" aria-labelledby="compliance-map-title">
+                                            <div className="compliance-map__head">
+                                                <h3 id="compliance-map-title" className="compliance-map__title">Data flow map</h3>
+                                                <Button
+                                                    size="sm"
+                                                    variant="ghost"
+                                                    iconRight={mapOpen ? "chevron-up" : "chevron-down"}
+                                                    aria-expanded={mapOpen}
+                                                    aria-controls="compliance-map-body"
+                                                    onClick={() => setMapOpen((o) => !o)}
+                                                >
+                                                    {mapOpen ? "Hide map" : "Show map"}
+                                                </Button>
                                             </div>
-                                        ) : (() => {
-                                            const totalTransferPages = Math.ceil(displayed.length / PAGE_SIZE);
-                                            const pageSlice = displayed.slice(transferPage * PAGE_SIZE, (transferPage + 1) * PAGE_SIZE);
-                                            return (
-                                                <>
-                                                    <div className="compliance-transfers__list-header" aria-hidden>
-                                                        <span />
-                                                        <span>Service</span>
-                                                        <span>Type</span>
-                                                        <span>Region</span>
-                                                        <span>Category</span>
-                                                        <span />
-                                                    </div>
-                                                    <div className="compliance-transfers__list">
-                                                        {pageSlice.map((t) => {
-                                                            const meta     = CATEGORY_META[t.category] || { label: t.category, risk: "medium", icon: "link", color: "#909090" };
-                                                            const resLabel = RESOURCE_LABELS[t.resourceType] || (t.resourceType || "Other");
-                                                            const region   = t.dataRegion || "non-eu";
-                                                            const isExp    = expandedTransfer === t.host;
-                                                            const toggle   = () => setExpandedTransfer(prev => prev === t.host ? null : t.host);
-                                                            return (
-                                                                <div key={t.host} className="compliance-transfers__row-wrap">
-                                                                    <div
-                                                                        className={"compliance-transfers__row compliance-transfers__row--" + (t.category || "other") + (isExp ? " --expanded" : "")}
-                                                                        onClick={toggle}
-                                                                        role="button"
-                                                                        tabIndex={0}
-                                                                        onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(); }}}
-                                                                        aria-expanded={isExp}
-                                                                    >
-                                                                        <span className="compliance-transfers__row-icon" style={{ color: meta.color }}>
-                                                                            {/* The row shows no category text, so the icon carries the label. */}
-                                                                            <Icon name={meta.icon} size={16} label={meta.label} />
-                                                                        </span>
-                                                                        <div className="compliance-transfers__row-main">
-                                                                            <span className="compliance-transfers__row-service">{t.service || t.host}</span>
-                                                                            <span className="compliance-transfers__row-host">{t.host}</span>
-                                                                        </div>
-                                                                        <span className={"compliance-transfers__row-resource compliance-transfers__row-resource--" + (t.resourceType || "other")}>
-                                                                            {resLabel}
-                                                                        </span>
-                                                                        <span className={"compliance-transfers__row-region --" + region}>
-                                                                            {region === "eu" ? "EU" : "Non-EU"}
-                                                                        </span>
-                                                                        <span className={"compliance-transfers__row-cat compliance-transfers__row-cat--" + (t.category || "other")}>
-                                                                            {meta.label || t.category}
-                                                                        </span>
-                                                                        <span className="compliance-transfers__row-toggle" aria-hidden>{isExp ? "▾" : "▸"}</span>
-                                                                    </div>
-                                                                    {isExp && (
-                                                                        <div className="compliance-transfers__row-detail">
-                                                                            {t.description && (
-                                                                                <span className="compliance-transfers__row-detail-item compliance-transfers__row-detail-item--full">
-                                                                                    <span className="compliance-transfers__row-detail-label">About</span>
-                                                                                    {t.description}
-                                                                                </span>
-                                                                            )}
-                                                                            {t.bannerCategory && (() => {
-                                                                                const bm = BANNER_CATEGORY_META[t.bannerCategory];
-                                                                                return (
-                                                                                    <span className="compliance-transfers__row-detail-item">
-                                                                                        <span className="compliance-transfers__row-detail-label">Consent category</span>
-                                                                                        <span className="compliance-banner-cat" style={{ "--bc-color": bm?.color || "#909090" }}>
-                                                                                            {bm?.label || t.bannerCategory}
-                                                                                        </span>
-                                                                                    </span>
-                                                                                );
-                                                                            })()}
-                                                                            {t.legalBasis && (
-                                                                                <span className="compliance-transfers__row-detail-item">
-                                                                                    <span className="compliance-transfers__row-detail-label">Legal basis</span>
-                                                                                    {t.legalBasis}
-                                                                                </span>
-                                                                            )}
-                                                                            {t.transferMechanism && (
-                                                                                <span className="compliance-transfers__row-detail-item">
-                                                                                    <span className="compliance-transfers__row-detail-label">Transfer mechanism</span>
-                                                                                    {t.transferMechanism}
-                                                                                </span>
-                                                                            )}
-                                                                            {t.dataCountry && (
-                                                                                <span className="compliance-transfers__row-detail-item">
-                                                                                    <span className="compliance-transfers__row-detail-label">Data country</span>
-                                                                                    {t.dataCountry}
-                                                                                </span>
-                                                                            )}
-                                                                            {t.url && (
-                                                                                <span className="compliance-transfers__row-detail-item compliance-transfers__row-detail-item--full">
-                                                                                    <span className="compliance-transfers__row-detail-label">URL</span>
-                                                                                    <code className="compliance-transfers__row-detail-code">{t.url}</code>
-                                                                                </span>
-                                                                            )}
-                                                                            {t.initiator && (
-                                                                                <span className="compliance-transfers__row-detail-item compliance-transfers__row-detail-item--full">
-                                                                                    <span className="compliance-transfers__row-detail-label">Initiator</span>
-                                                                                    <code className="compliance-transfers__row-detail-code">{t.initiator}</code>
-                                                                                </span>
-                                                                            )}
-                                                                            {t.purposes?.length > 0 && (
-                                                                                <span className="compliance-transfers__row-detail-item">
-                                                                                    <span className="compliance-transfers__row-detail-label">Purposes</span>
-                                                                                    {t.purposes.join(", ")}
-                                                                                </span>
-                                                                            )}
-                                                                            {t.privacyUrl && (
-                                                                                <span className="compliance-transfers__row-detail-item compliance-transfers__row-detail-item--full">
-                                                                                    <a className="compliance-transfers__row-detail-privacy" href={t.privacyUrl} target="_blank" rel="noopener noreferrer">
-                                                                                        Privacy policy <Icon name="external-link" size={13} /><span className="tw-sr-only"> (opens in a new tab)</span>
-                                                                                    </a>
-                                                                                </span>
-                                                                            )}
-                                                                            {!t.description && !t.dataCountry && !t.url && !t.initiator && !t.purposes?.length && (
-                                                                                <span className="compliance-transfers__row-detail-item" style={{ color: "rgb(var(--c-white) / 0.25)" }}>
-                                                                                    No additional detail available for this transfer.
-                                                                                </span>
-                                                                            )}
-                                                                        </div>
-                                                                    )}
-                                                                </div>
-                                                            );
-                                                        })}
-                                                    </div>
-                                                    {totalTransferPages > 1 && (
-                                                        <div className="compliance-pagination">
-                                                            <button
-                                                                type="button"
-                                                                className="compliance-pagination__btn"
-                                                                onClick={() => setTransferPage(p => p - 1)}
-                                                                disabled={transferPage === 0}
-                                                            >‹ Prev</button>
-                                                            <span className="compliance-pagination__info">
-                                                                {transferPage + 1} / {totalTransferPages}
-                                                            </span>
-                                                            <button
-                                                                type="button"
-                                                                className="compliance-pagination__btn"
-                                                                onClick={() => setTransferPage(p => p + 1)}
-                                                                disabled={transferPage >= totalTransferPages - 1}
-                                                            >Next ›</button>
-                                                        </div>
-                                                    )}
-                                                </>
-                                            );
-                                        })()}
-                                    </>
-                                );
-                            })()}
+                                            {mapOpen && (
+                                                <div id="compliance-map-body" className="compliance-map__body">
+                                                    <ComplianceFlowMap dataFlowCountries={dataFlowCountries} dataFlowOrigin="DE" />
+                                                </div>
+                                            )}
+                                        </section>
+                                    )}
+                                </TabPanel>
+                            )}
 
                             {activeTab === "transfers" && preConsentTransfers?.pre_consent_transfers?.length === 0 && !scanLoading && (
                                 <div className="compliance-transfers__empty compliance-transfers__empty--clean">
@@ -807,7 +601,8 @@ export default function CompliancePage() {
                             )}
 
                             {/* ── Cookies tab ── */}
-                            {activeTab === "cookies" && !scanLoading && (() => {
+                            <TabPanel idPrefix="compliance" id="cookies" active={activeTab === "cookies"}>
+{activeTab === "cookies" && !scanLoading && (() => {
                                 const domain  = (handle || currentDomain || "").replace(/^www\./, "");
                                 const csq = searchQuery.toLowerCase();
                                 const allCookies = preConsentTransfers?.pre_consent_cookies || [];
@@ -1025,6 +820,7 @@ export default function CompliancePage() {
                                     </>
                                 );
                             })()}
+</TabPanel>
                         </div>
                     </div>
                 )}

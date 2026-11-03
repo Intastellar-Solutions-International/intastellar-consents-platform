@@ -30,5 +30,6 @@ import "./bot-filter.test.mjs";
 import "./cookie-stats.test.mjs";
 import "./fetch-with-timeout.test.mjs";
 import "./shell.test.mjs";
+import "./transfer-vendors.test.mjs";
 
 await run();
