@@ -1,7 +1,15 @@
 const SETTINGS_KEY = "settings";
 export const USER_SETTINGS_CHANGED = "intastellar-user-settings-changed";
 
-const DEFAULT_LOCALE = "de-DE";
+// No saved preference → the browser's language. Previously "de-DE", which
+// made an English UI show "9.959" and "92,1%" for every user.
+function browserLocale() {
+    try {
+        const l = (navigator.languages && navigator.languages[0]) || navigator.language;
+        if (l) return l;
+    } catch { /* non-browser */ }
+    return "en-GB";
+}
 
 export function readUserSettings() {
     try {
@@ -17,7 +25,7 @@ export function readUserSettings() {
 export function getUserLocale() {
     const s = readUserSettings();
     if (typeof s.locale === "string" && s.locale.trim() !== "") return s.locale.trim();
-    return DEFAULT_LOCALE;
+    return browserLocale();
 }
 
 export function dispatchUserSettingsChanged() {
