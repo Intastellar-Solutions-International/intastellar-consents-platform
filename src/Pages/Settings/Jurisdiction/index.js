@@ -38,7 +38,7 @@ function Toggle({ on, onToggle, label }) {
             <span style={{
                 flexShrink: 0,
                 width: "40px", height: "22px",
-                borderRadius: "11px",
+                borderRadius: "var(--radius-lg)",
                 background: on ? "rgba(192,159,83,0.75)" : "rgba(100,100,100,0.4)",
                 position: "relative",
                 transition: "background 0.2s",
@@ -53,7 +53,7 @@ function Toggle({ on, onToggle, label }) {
                     transition: "left 0.2s",
                 }} />
             </span>
-            {label && <span style={{ fontSize: "0.9375rem", fontWeight: 600, color: on ? "#f2f2f2" : "#888" }}>{label}</span>}
+            {label && <span style={{ fontSize: "var(--text-base)", fontWeight: 600, color: on ? "#f2f2f2" : "#888" }}>{label}</span>}
         </button>
     );
 }
@@ -136,7 +136,7 @@ export default function JurisdictionConfig() {
                     <div style={{ display: "flex", alignItems: "flex-start", gap: "16px", flexWrap: "wrap" }}>
                         <div style={{ flex: "1 1 280px" }}>
                             <Toggle on={managed} onToggle={() => setManaged((v) => !v)} label="Managed mode" />
-                            <p style={{ margin: "8px 0 0", fontSize: "0.8125rem", color: "rgba(180,180,180,0.85)", lineHeight: 1.5 }}>
+                            <p style={{ margin: "8px 0 0", fontSize: "var(--text-xs)", color: "rgb(var(--c-text-muted) / 0.85)", lineHeight: 1.5 }}>
                                 {managed
                                     ? "Only the regulations you enable below will trigger a banner. Use this when you want full control over which regions see a consent prompt."
                                     : "The banner automatically applies any matching regulation based on the visitor's location. Ideal for simple sites that just want a compliant banner without manual configuration."}
@@ -146,8 +146,8 @@ export default function JurisdictionConfig() {
                             <span style={{
                                 display: "inline-block",
                                 padding: "4px 12px",
-                                borderRadius: "8px",
-                                fontSize: "0.75rem", fontWeight: 700,
+                                borderRadius: "var(--radius-md)",
+                                fontSize: "var(--text-xs)", fontWeight: 700,
                                 textTransform: "uppercase", letterSpacing: "0.07em",
                                 background: managed ? "rgba(192,159,83,0.15)" : "rgba(80,130,210,0.15)",
                                 border: `1px solid ${managed ? "rgba(192,159,83,0.35)" : "rgba(80,130,210,0.35)"}`,
@@ -169,9 +169,9 @@ export default function JurisdictionConfig() {
                                     <div style={{ marginBottom: "6px" }}>
                                         <Toggle on={enabled} onToggle={() => toggleFramework(fw)} label={FRAMEWORK_LABELS[fw]} />
                                     </div>
-                                    <p style={{ margin: 0, fontSize: "0.8125rem", color: "rgba(180,180,180,0.85)", lineHeight: 1.5 }}>
+                                    <p style={{ margin: 0, fontSize: "var(--text-xs)", color: "rgb(var(--c-text-muted) / 0.85)", lineHeight: 1.5 }}>
                                         {FRAMEWORK_DESCRIPTIONS[fw]}
-                                        <span style={{ marginLeft: "8px", fontSize: "0.75rem", color: "rgba(192,159,83,0.75)" }}>
+                                        <span style={{ marginLeft: "8px", fontSize: "var(--text-xs)", color: "rgb(var(--c-accent) / 0.75)" }}>
                                             {FRAMEWORK_COUNTRY_COUNTS[fw]} {FRAMEWORK_COUNTRY_COUNTS[fw] === 1 ? "country" : "countries"}
                                         </span>
                                     </p>
@@ -179,7 +179,7 @@ export default function JurisdictionConfig() {
 
                                 {enabled ? (
                                     <div style={{ flex: "0 0 220px" }}>
-                                        <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 600, color: "#b8b8b8", marginBottom: "6px", textTransform: "uppercase", letterSpacing: "0.07em" }}>
+                                        <label style={{ display: "block", fontSize: "var(--text-xs)", fontWeight: 600, color: "var(--color-text-muted)", marginBottom: "6px", textTransform: "uppercase", letterSpacing: "0.07em" }}>
                                             Banner type
                                         </label>
                                         <select
@@ -197,7 +197,7 @@ export default function JurisdictionConfig() {
                                     </div>
                                 ) : (
                                     <div style={{ flex: "0 0 220px", display: "flex", alignItems: "center" }}>
-                                        <span style={{ fontSize: "0.75rem", color: "rgba(140,140,140,0.7)", fontStyle: "italic" }}>Disabled — no banner shown</span>
+                                        <span style={{ fontSize: "var(--text-xs)", color: "rgba(140,140,140,0.7)", fontStyle: "italic" }}>Disabled — no banner shown</span>
                                     </div>
                                 )}
                             </div>

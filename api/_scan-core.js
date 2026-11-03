@@ -1514,6 +1514,26 @@ async function lookupRdap(domainRoot) {
 }
 
 // ── Core scan ─────────────────────────────────────────────────────────────────
+// Endpoints where the Intastellar Consents banner reports back what happened
+// on the page: its network observer (beacon-collector.php), cookie events
+// (the dashboard's "observed cookies") and form analytics. The scanner calls
+// IntaAcceptAll() on every site it scans (see below), so without this block
+// each scan was reported as real visitor activity. The banner ignores
+// window.__ICS_SCAN__, so the block has to happen here.
+// (Checked 2026-11-03 on intastellar.eu: neither IntaAcceptAll() nor a real
+// click on Accept calls collect.php there, so scans don't appear to create
+// user_consents_tracking rows on current banner builds — bot records are
+// handled by the is_suspected_bot flag in collect.php instead.)
+// Blocking the requests doesn't change what the scan sees: IntaAcceptAll()
+// still writes the consent cookie locally, so post-consent cookies still load.
+// Patterns use Chrome's Network.setBlockedURLs wildcard syntax.
+export const CONSENT_RECORDING_URLS = [
+    "*://www.consentsmanagement.com/api/beacon-collector.php*",
+    "*://consentsmanagement.com/api/beacon-collector.php*",
+    "*://consents.intastellarsolutions.com/api/v1/cookie-events*",
+    "*://analytics.intastellarsolutions.com/form/collect*",
+];
+
 // @sparticuz/chromium unpacks its binary to /tmp on executablePath(). Two
 // scans starting at once in the same (Fluid-compute) instance would both
 // unpack and spawn at the same moment, failing one with "spawn ETXTBSY"
@@ -1541,6 +1561,7 @@ export async function scanDomain(domain) {
 
         const cdpClient = await page.target().createCDPSession();
         await cdpClient.send("Network.enable");
+        await cdpClient.send("Network.setBlockedURLs", { urls: CONSENT_RECORDING_URLS });
 
         await page.evaluateOnNewDocument(() => {
             Object.defineProperty(navigator, "webdriver",  { get: () => undefined });

@@ -4,14 +4,14 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 20px;
+    padding: var(--space-5);
     box-sizing: border-box;
     font-family: 'Roboto', sans-serif;
     font-weight: 300;
-    font-size: 16px;
+    font-size: var(--text-base);
     line-height: 24px;
     text-align: center;
-    margin-top: 50px;
+    margin-top: var(--space-12);
 }
 
 .stripe-price-table{
@@ -26,7 +26,7 @@
     max-width: 1400px;
     width: 100%;
     margin: auto;
-    padding: 15px;
+    padding: var(--space-4);
 }
 .logo{
     width: 250px;
@@ -34,14 +34,14 @@
 }
 
 .footer a{
-    color: #fff;
+    color: var(--color-text-primary);
     text-decoration: none;
     display: inline-block;
-    padding: 0 10px;
+    padding: 0 var(--space-2);
 }
 
 .footer a:hover{
-    color: #c0a053;
+    color: var(--color-accent);
 }
 
 @media screen and (max-width: 600px){

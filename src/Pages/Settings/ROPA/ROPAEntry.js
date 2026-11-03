@@ -46,7 +46,7 @@ function TextInput({ value, onChange, placeholder }) {
             value={value}
             onChange={(e) => onChange(e.target.value)}
             placeholder={placeholder}
-            style={{ width: "100%", boxSizing: "border-box", padding: "10px 12px", borderRadius: "10px", border: "1px solid rgba(255,255,255,0.14)", background: "rgba(0,0,0,0.35)", color: "#f0f0f0", fontSize: "0.875rem", fontFamily: "inherit" }}
+            style={{ width: "100%", boxSizing: "border-box", padding: "10px 12px", borderRadius: "var(--radius-lg)", border: "1px solid rgb(var(--c-white) / 0.14)", background: "rgb(var(--c-black) / 0.35)", color: "var(--color-text-primary)", fontSize: "var(--text-sm)", fontFamily: "inherit" }}
         />
     );
 }
@@ -58,7 +58,7 @@ function Textarea({ value, onChange, placeholder, rows = 3 }) {
             value={value}
             onChange={(e) => onChange(e.target.value)}
             placeholder={placeholder}
-            style={{ width: "100%", boxSizing: "border-box", padding: "10px 12px", borderRadius: "10px", border: "1px solid rgba(255,255,255,0.14)", background: "rgba(0,0,0,0.35)", color: "#f0f0f0", fontSize: "0.875rem", fontFamily: "inherit", resize: "vertical" }}
+            style={{ width: "100%", boxSizing: "border-box", padding: "10px 12px", borderRadius: "var(--radius-lg)", border: "1px solid rgb(var(--c-white) / 0.14)", background: "rgb(var(--c-black) / 0.35)", color: "var(--color-text-primary)", fontSize: "var(--text-sm)", fontFamily: "inherit", resize: "vertical" }}
         />
     );
 }
@@ -70,7 +70,7 @@ function MultiCheckbox({ options, selected, onChange }) {
     return (
         <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
             {options.map((o) => (
-                <label key={o} style={{ display: "flex", alignItems: "center", gap: "6px", cursor: "pointer", padding: "5px 10px", borderRadius: "8px", border: `1px solid ${selected.includes(o) ? "rgba(192,159,83,0.4)" : "rgba(255,255,255,0.1)"}`, background: selected.includes(o) ? "rgba(192,159,83,0.12)" : "rgba(0,0,0,0.15)", fontSize: "0.8125rem", color: selected.includes(o) ? "#d4b87a" : "#b0b0b0", userSelect: "none" }}>
+                <label key={o} style={{ display: "flex", alignItems: "center", gap: "6px", cursor: "pointer", padding: "5px 10px", borderRadius: "var(--radius-md)", border: `1px solid ${selected.includes(o) ? "rgba(192,159,83,0.4)" : "rgba(255,255,255,0.1)"}`, background: selected.includes(o) ? "rgba(192,159,83,0.12)" : "rgba(0,0,0,0.15)", fontSize: "var(--text-xs)", color: selected.includes(o) ? "#d4b87a" : "#b0b0b0", userSelect: "none" }}>
                     <input type="checkbox" checked={selected.includes(o)} onChange={() => toggle(o)} style={{ display: "none" }} />
                     {o}
                 </label>
@@ -175,7 +175,7 @@ export default function ROPAEntry() {
                 {status === "missing_name" && <p className="settings-subpage__status settings-subpage__status--error">Activity name is required.</p>}
 
                 <div className="settings-subpage__panel" style={{ marginBottom: "16px" }}>
-                    <h3 style={{ margin: "0 0 18px", fontSize: "0.75rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.09em", color: "rgba(192,159,83,0.9)" }}>Identity</h3>
+                    <h3 style={{ margin: "0 0 18px", fontSize: "var(--text-xs)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.09em", color: "rgb(var(--c-accent) / 0.9)" }}>Identity</h3>
                     <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
                         <Field label="Activity name" required>
                             <TextInput value={entry.activityName} onChange={(v) => set("activityName", v)} placeholder="e.g. Google Analytics, Email marketing, Payment processing" />
@@ -193,7 +193,7 @@ export default function ROPAEntry() {
                 </div>
 
                 <div className="settings-subpage__panel" style={{ marginBottom: "16px" }}>
-                    <h3 style={{ margin: "0 0 18px", fontSize: "0.75rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.09em", color: "rgba(192,159,83,0.9)" }}>Purpose & Legal Basis</h3>
+                    <h3 style={{ margin: "0 0 18px", fontSize: "var(--text-xs)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.09em", color: "rgb(var(--c-accent) / 0.9)" }}>Purpose & Legal Basis</h3>
                     <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
                         <Field label="Processing purpose">
                             <select className="settings-subpage__select" style={{ width: "100%" }} value={entry.purpose} onChange={(e) => set("purpose", e.target.value)}>
@@ -215,7 +215,7 @@ export default function ROPAEntry() {
                 </div>
 
                 <div className="settings-subpage__panel" style={{ marginBottom: "16px" }}>
-                    <h3 style={{ margin: "0 0 18px", fontSize: "0.75rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.09em", color: "rgba(192,159,83,0.9)" }}>Data & Data Subjects</h3>
+                    <h3 style={{ margin: "0 0 18px", fontSize: "var(--text-xs)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.09em", color: "rgb(var(--c-accent) / 0.9)" }}>Data & Data Subjects</h3>
                     <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                         <Field label="Categories of data subjects">
                             <MultiCheckbox options={DATA_SUBJECT_CATEGORIES} selected={entry.dataSubjectCategories} onChange={(v) => set("dataSubjectCategories", v)} />
@@ -230,7 +230,7 @@ export default function ROPAEntry() {
                 </div>
 
                 <div className="settings-subpage__panel" style={{ marginBottom: "16px" }}>
-                    <h3 style={{ margin: "0 0 18px", fontSize: "0.75rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.09em", color: "rgba(192,159,83,0.9)" }}>Recipients & Transfers</h3>
+                    <h3 style={{ margin: "0 0 18px", fontSize: "var(--text-xs)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.09em", color: "rgb(var(--c-accent) / 0.9)" }}>Recipients & Transfers</h3>
                     <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                         <Field label="Recipients / processors">
                             <div style={{ display: "flex", gap: "8px", marginBottom: "8px" }}>
@@ -240,16 +240,16 @@ export default function ROPAEntry() {
                                     onChange={(e) => setNewRecipient(e.target.value)}
                                     onKeyDown={(e) => e.key === "Enter" && addRecipient()}
                                     placeholder="Processor or recipient name"
-                                    style={{ flex: 1, padding: "9px 12px", borderRadius: "10px", border: "1px solid rgba(255,255,255,0.14)", background: "rgba(0,0,0,0.35)", color: "#f0f0f0", fontSize: "0.875rem", fontFamily: "inherit" }}
+                                    style={{ flex: 1, padding: "9px 12px", borderRadius: "var(--radius-lg)", border: "1px solid rgb(var(--c-white) / 0.14)", background: "rgb(var(--c-black) / 0.35)", color: "var(--color-text-primary)", fontSize: "var(--text-sm)", fontFamily: "inherit" }}
                                 />
-                                <button type="button" className="settings-blacklist-modal__btn settings-blacklist-modal__btn--primary" onClick={addRecipient} style={{ padding: "9px 14px", fontSize: "0.8125rem" }}>Add</button>
+                                <button type="button" className="settings-blacklist-modal__btn settings-blacklist-modal__btn--primary" onClick={addRecipient} style={{ padding: "9px 14px", fontSize: "var(--text-xs)" }}>Add</button>
                             </div>
                             {entry.recipients.length > 0 && (
                                 <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexWrap: "wrap", gap: "6px" }}>
                                     {entry.recipients.map((r, i) => (
-                                        <li key={i} style={{ display: "flex", alignItems: "center", gap: "6px", padding: "4px 10px", borderRadius: "8px", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", fontSize: "0.8125rem", color: "#e0e0e0" }}>
+                                        <li key={i} style={{ display: "flex", alignItems: "center", gap: "6px", padding: "4px 10px", borderRadius: "var(--radius-md)", background: "rgb(var(--c-white) / 0.06)", border: "1px solid rgb(var(--c-white) / 0.1)", fontSize: "var(--text-xs)", color: "var(--color-text-secondary)" }}>
                                             {r.name}
-                                            <button type="button" onClick={() => removeRecipient(i)} style={{ background: "none", border: "none", color: "#888", cursor: "pointer", padding: 0, fontSize: "0.9rem", lineHeight: 1 }}>×</button>
+                                            <button type="button" onClick={() => removeRecipient(i)} style={{ background: "none", border: "none", color: "var(--color-text-muted)", cursor: "pointer", padding: 0, fontSize: "var(--text-sm)", lineHeight: 1 }}>×</button>
                                         </li>
                                     ))}
                                 </ul>
@@ -263,7 +263,7 @@ export default function ROPAEntry() {
                                     value={newTransfer.country}
                                     onChange={(e) => setNewTransfer((t) => ({ ...t, country: e.target.value }))}
                                     placeholder="Country (e.g. US, IN)"
-                                    style={{ flex: "0 0 100px", padding: "9px 12px", borderRadius: "10px", border: "1px solid rgba(255,255,255,0.14)", background: "rgba(0,0,0,0.35)", color: "#f0f0f0", fontSize: "0.875rem", fontFamily: "inherit" }}
+                                    style={{ flex: "0 0 100px", padding: "9px 12px", borderRadius: "var(--radius-lg)", border: "1px solid rgb(var(--c-white) / 0.14)", background: "rgb(var(--c-black) / 0.35)", color: "var(--color-text-primary)", fontSize: "var(--text-sm)", fontFamily: "inherit" }}
                                 />
                                 <select
                                     value={newTransfer.mechanism}
@@ -273,15 +273,15 @@ export default function ROPAEntry() {
                                 >
                                     {TRANSFER_MECHANISMS.map((m) => <option key={m} value={m}>{m}</option>)}
                                 </select>
-                                <button type="button" className="settings-blacklist-modal__btn settings-blacklist-modal__btn--primary" onClick={addTransfer} style={{ padding: "9px 14px", fontSize: "0.8125rem" }}>Add</button>
+                                <button type="button" className="settings-blacklist-modal__btn settings-blacklist-modal__btn--primary" onClick={addTransfer} style={{ padding: "9px 14px", fontSize: "var(--text-xs)" }}>Add</button>
                             </div>
                             {entry.thirdCountryTransfers.length > 0 && (
                                 <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: "6px" }}>
                                     {entry.thirdCountryTransfers.map((t, i) => (
-                                        <li key={i} style={{ display: "flex", alignItems: "center", gap: "10px", padding: "6px 12px", borderRadius: "8px", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", fontSize: "0.8125rem" }}>
-                                            <span style={{ fontFamily: "ui-monospace, monospace", color: "#c0a053", fontWeight: 600 }}>{t.country}</span>
-                                            <span style={{ color: "#b0b0b0" }}>{t.mechanism}</span>
-                                            <button type="button" onClick={() => removeTransfer(i)} style={{ marginLeft: "auto", background: "none", border: "none", color: "#888", cursor: "pointer", fontSize: "0.9rem" }}>×</button>
+                                        <li key={i} style={{ display: "flex", alignItems: "center", gap: "10px", padding: "6px 12px", borderRadius: "var(--radius-md)", background: "rgb(var(--c-white) / 0.05)", border: "1px solid rgb(var(--c-white) / 0.08)", fontSize: "var(--text-xs)" }}>
+                                            <span style={{ fontFamily: "ui-monospace, monospace", color: "var(--color-accent)", fontWeight: 600 }}>{t.country}</span>
+                                            <span style={{ color: "var(--color-text-muted)" }}>{t.mechanism}</span>
+                                            <button type="button" onClick={() => removeTransfer(i)} style={{ marginLeft: "auto", background: "none", border: "none", color: "var(--color-text-muted)", cursor: "pointer", fontSize: "var(--text-sm)" }}>×</button>
                                         </li>
                                     ))}
                                 </ul>
@@ -291,7 +291,7 @@ export default function ROPAEntry() {
                 </div>
 
                 <div className="settings-subpage__panel" style={{ marginBottom: "24px" }}>
-                    <h3 style={{ margin: "0 0 18px", fontSize: "0.75rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.09em", color: "rgba(192,159,83,0.9)" }}>Security</h3>
+                    <h3 style={{ margin: "0 0 18px", fontSize: "var(--text-xs)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.09em", color: "rgb(var(--c-accent) / 0.9)" }}>Security</h3>
                     <Field label="Security measures">
                         <Textarea
                             value={entry.securityMeasures}

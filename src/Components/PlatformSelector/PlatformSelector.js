@@ -47,7 +47,7 @@ export default function PlatformSelector(props) {
                             }
                         } />
                     </>
-                ) : <Select style={{ left: "0", fontSize: "16px" }} key={""} items={items} defaultValue={"Choose a platform"} onChange={(e) => {
+                ) : <Select style={{ left: "0", fontSize: "var(--text-base)" }} key={""} items={items} defaultValue={"Choose a platform"} onChange={(e) => {
                     props.setId(JSON.parse(e).uri);
                     localStorage.setItem("platform", JSON.parse(e).uri);
                     window.location.href = `/${JSON.parse(e).uri}/dashboard`;

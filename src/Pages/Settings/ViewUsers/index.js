@@ -295,7 +295,7 @@ export default function ViewUsers() {
                             {modalError ? (
                                 <p
                                     className="settings-subpage__status settings-subpage__status--error"
-                                    style={{ marginBottom: 14, fontSize: "0.8125rem" }}
+                                    style={{ marginBottom: 14, fontSize: "var(--text-xs)" }}
                                 >
                                     {modalError}
                                 </p>

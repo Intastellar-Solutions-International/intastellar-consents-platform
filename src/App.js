@@ -1,4 +1,6 @@
 import punycode from "punycode";
+import "./styles/tokens.css";
+import "./styles/tailwind.css";
 import "./App.css";
 import Header from "./Components/Header/header";
 import Footer from "./Components/Footer";
@@ -761,7 +763,7 @@ export default function App() {
                                                     const role = org?.id ? Authentication.getOrganisationAccessStatusForOrganisation(org.id) : null;
                                                     const isAdminRole = role === "admin" || role === "super-admin";
                                                     if (!canAccess('agency-pro')) return <TierGate minTier="agency-pro" featureName="Client Workspaces" fullPage />;
-                                                    return isAdminRole ? <Workspaces /> : <p style={{ padding: "40px", color: "#999" }}>Admin access required.</p>;
+                                                    return isAdminRole ? <Workspaces /> : <p style={{ padding: "40px", color: "var(--color-text-muted)" }}>Admin access required.</p>;
                                                 })()}
                                             </ErrorBoundary>
                                         </Route>
@@ -807,7 +809,7 @@ export default function App() {
                                         </Route>
                                         <Route path="/cookie-database" exact>
                                             <ErrorBoundary>
-                                                {Number(getOrg()?.id) === 1 ? <CookieDatabase /> : <p style={{ padding: "40px", color: "#999" }}>Admin access required.</p>}
+                                                {Number(getOrg()?.id) === 1 ? <CookieDatabase /> : <p style={{ padding: "40px", color: "var(--color-text-muted)" }}>Admin access required.</p>}
                                             </ErrorBoundary>
                                         </Route>
                                         <Route path="/api" render={() => null} />

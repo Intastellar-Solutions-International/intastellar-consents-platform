@@ -23,5 +23,11 @@ import "./trend-chart.test.mjs";
 import "./event-debugger.test.mjs";
 import "./minify-embed.test.mjs";
 import "./banner-domain.test.mjs";
+import "./php-backend.test.mjs";
+import "./consent-timestamp.test.mjs";
+import "./scanner-consent-block.test.mjs";
+import "./bot-filter.test.mjs";
+import "./cookie-stats.test.mjs";
+import "./fetch-with-timeout.test.mjs";
 
 await run();

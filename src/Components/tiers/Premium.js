@@ -2,6 +2,7 @@ import { Loading } from "../widget/Loading";
 import Widget from "../widget/widget";
 import ErrorBoundary from "../Error/ErrorBoundary";
 import DeviceTypeInteractions from "../Charts/DeviceTypeInteractions";
+import SectionError from "../SectionError";
 
 export default function PremiumTier(props) {
     const loading = props.loading;
@@ -12,6 +13,12 @@ export default function PremiumTier(props) {
     const demoMode = props.demoMode;
     const compareOn = Boolean(props.compareOn);
     const cmp = activeData?.comaprison ?? activeData?.comparison;
+
+    // Same request as the Home hero, which shows the full error; this keeps
+    // the category cards from sitting on skeletons when it failed.
+    if (props.error && !loading) {
+        return <SectionError compact title="Category breakdown unavailable" message={props.error} onRetry={props.onRetry} />;
+    }
 
     return <>
         {(loading) ? <Loading /> : <ErrorBoundary><Widget compareOn={compareOn} totalNumber={activeData} activeUsers={activeData?.activeUsers.toLocaleString("de-DE")} fromDate={fromDate} toDate={toDate} type="Consents given" /></ErrorBoundary>}

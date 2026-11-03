@@ -1,32 +1,32 @@
 .intInput{
-    padding: 12px;
+    padding: var(--space-3);
     width: 100%;
     border: none;
     appearance: none;
     -webkit-appearance: none;
-    border-radius: 5px;
-    font-size: 14px;
+    border-radius: var(--radius-sm);
+    font-size: var(--text-sm);
 }
 
 .intInput:focus{
     outline: none;
     border: 1px solid #000;
-    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 0 2px rgb(var(--c-black) / 0.1);
 }
 
 .intInput:focus-visible{
     outline: none;
     border: 1px solid #000;
-    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 0 2px rgb(var(--c-black) / 0.1);
 }
 
 .intInput:focus-within{
     outline: none;
     border: 1px solid #000;
-    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 0 2px rgb(var(--c-black) / 0.1);
 }
 
 .flex-col{
     flex-direction: column;
-    gap: 10px;
+    gap: var(--space-2);
 }

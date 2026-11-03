@@ -13,135 +13,135 @@
 }
 
 .audit-reports-page {
-    padding-bottom: 48px;
+    padding-bottom: var(--space-12);
 }
 
 .audit-reports-hero {
-    margin-bottom: 24px;
-    padding: 20px 22px;
-    border-radius: 14px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    background: linear-gradient(165deg, rgba(58, 58, 58, 0.92) 0%, rgba(34, 34, 34, 0.98) 100%);
-    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.22);
+    margin-bottom: var(--space-6);
+    padding: var(--space-5) var(--space-5);
+    border-radius: var(--radius-xl);
+    border: 1px solid rgb(var(--c-white) / 0.08);
+    background: linear-gradient(165deg, rgb(var(--c-bg-base) / 0.92) 0%, rgb(var(--c-bg-sunken) / 0.98) 100%);
+    box-shadow: var(--shadow-md);
 }
 
 .audit-reports-hero h1 {
-    margin: 0 0 8px;
+    margin: 0 0 var(--space-2);
     font-size: clamp(1.25rem, 2.2vw, 1.6rem);
     font-weight: 600;
-    color: rgb(245, 245, 245);
+    color: var(--color-text-primary);
 }
 
 .audit-reports-hero p {
     margin: 0;
-    font-size: 0.88rem;
+    font-size: var(--text-sm);
     line-height: 1.5;
-    color: rgba(255, 255, 255, 0.48);
+    color: rgb(var(--c-white) / 0.48);
     max-width: 65ch;
 }
 
 .audit-reports-banner {
-    margin-bottom: 20px;
-    padding: 12px 16px;
-    border-radius: 10px;
-    border: 1px solid rgba(218, 190, 120, 0.35);
-    background: rgba(192, 159, 83, 0.12);
-    font-size: 0.85rem;
-    color: rgba(255, 255, 255, 0.75);
+    margin-bottom: var(--space-5);
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-lg);
+    border: 1px solid rgb(var(--c-accent-strong) / 0.35);
+    background: rgb(var(--c-accent) / 0.12);
+    font-size: var(--text-sm);
+    color: rgb(var(--c-white) / 0.75);
 }
 
 .audit-reports-toolbar {
     display: flex;
     flex-wrap: wrap;
-    gap: 12px;
+    gap: var(--space-3);
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 18px;
+    margin-bottom: var(--space-4);
 }
 
 .audit-reports-search {
     flex: 1;
     min-width: 200px;
     max-width: 360px;
-    padding: 10px 14px;
-    border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    background: rgba(0, 0, 0, 0.25);
-    color: rgb(230, 230, 230);
-    font-size: 0.88rem;
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-lg);
+    border: 1px solid rgb(var(--c-white) / 0.12);
+    background: rgb(var(--c-black) / 0.25);
+    color: var(--color-text-primary);
+    font-size: var(--text-sm);
 }
 
 .audit-reports-search::placeholder {
-    color: rgba(255, 255, 255, 0.35);
+    color: rgb(var(--c-white) / 0.35);
 }
 
 .audit-reports-search:focus {
     outline: none;
-    border-color: rgba(192, 159, 83, 0.45);
-    box-shadow: 0 0 0 2px rgba(192, 159, 83, 0.15);
+    border-color: rgb(var(--c-accent) / 0.45);
+    box-shadow: 0 0 0 2px rgb(var(--c-accent) / 0.15);
 }
 
 .audit-reports-create {
-    margin-bottom: 28px;
-    padding: 20px 22px;
-    border-radius: 14px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    background: linear-gradient(180deg, rgba(52, 52, 52, 0.95) 0%, rgba(38, 38, 38, 0.98) 100%);
+    margin-bottom: var(--space-7);
+    padding: var(--space-5) var(--space-5);
+    border-radius: var(--radius-xl);
+    border: 1px solid rgb(var(--c-white) / 0.08);
+    background: linear-gradient(180deg, rgb(var(--c-bg-base) / 0.95) 0%, rgb(var(--c-bg-sunken) / 0.98) 100%);
 }
 
 .audit-reports-create h2 {
-    margin: 0 0 6px;
-    font-size: 0.68rem;
+    margin: 0 0 var(--space-1);
+    font-size: var(--text-xs);
     font-weight: 600;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.38);
+    color: rgb(var(--c-white) / 0.38);
 }
 
 .audit-reports-create p {
-    margin: 0 0 14px;
-    font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.42);
+    margin: 0 0 var(--space-3);
+    font-size: var(--text-xs);
+    color: rgb(var(--c-white) / 0.42);
 }
 
 .audit-reports-create-row {
     display: flex;
     flex-wrap: wrap;
-    gap: 12px;
+    gap: var(--space-3);
     align-items: flex-end;
 }
 
 .audit-reports-date-field {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: var(--space-1);
 }
 
 .audit-reports-date-field span {
-    font-size: 0.65rem;
+    font-size: var(--text-xs);
     font-weight: 600;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.4);
+    color: rgb(var(--c-white) / 0.4);
 }
 
 .audit-reports-date-field input {
-    padding: 10px 12px;
-    border-radius: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    background: rgba(0, 0, 0, 0.25);
-    color: rgb(230, 230, 230);
-    font-size: 0.85rem;
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-md);
+    border: 1px solid rgb(var(--c-white) / 0.12);
+    background: rgb(var(--c-black) / 0.25);
+    color: var(--color-text-primary);
+    font-size: var(--text-sm);
 }
 
 .audit-reports-btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    padding: 11px 20px;
-    border-radius: 10px;
-    font-size: 0.86rem;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-5);
+    border-radius: var(--radius-lg);
+    font-size: var(--text-sm);
     font-weight: 600;
     cursor: pointer;
     border: 1px solid transparent;
@@ -154,9 +154,9 @@
 }
 
 .audit-reports-btn--primary {
-    color: rgb(34, 34, 34);
-    background: linear-gradient(180deg, rgb(218, 190, 120) 0%, rgb(192, 159, 83) 100%);
-    border-color: rgba(255, 255, 255, 0.1);
+    color: var(--color-text-inverse);
+    background: linear-gradient(180deg, var(--color-accent-strong) 0%, var(--color-accent) 100%);
+    border-color: rgb(var(--c-white) / 0.1);
 }
 
 .audit-reports-btn--primary:hover:not(:disabled) {
@@ -164,14 +164,14 @@
 }
 
 .audit-reports-btn--ghost {
-    color: rgba(255, 255, 255, 0.85);
-    background: rgba(255, 255, 255, 0.06);
-    border-color: rgba(255, 255, 255, 0.12);
+    color: rgb(var(--c-white) / 0.85);
+    background: rgb(var(--c-white) / 0.06);
+    border-color: rgb(var(--c-white) / 0.12);
 }
 
 .audit-reports-btn--ghost:hover:not(:disabled) {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(192, 159, 83, 0.35);
+    background: rgb(var(--c-white) / 0.1);
+    border-color: rgb(var(--c-accent) / 0.35);
 }
 
 .audit-reports-btn--danger {
@@ -186,55 +186,55 @@
 
 .audit-reports-table-wrap {
     overflow-x: auto;
-    border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    background: rgba(0, 0, 0, 0.2);
+    border-radius: var(--radius-lg);
+    border: 1px solid rgb(var(--c-white) / 0.08);
+    background: rgb(var(--c-black) / 0.2);
 }
 
 .audit-reports-table {
     width: 100%;
     min-width: 640px;
     border-collapse: collapse;
-    font-size: 0.82rem;
+    font-size: var(--text-xs);
 }
 
 .audit-reports-table th,
 .audit-reports-table td {
-    padding: 12px 14px;
+    padding: var(--space-3) var(--space-3);
     text-align: left;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    border-bottom: 1px solid rgb(var(--c-white) / 0.06);
 }
 
 .audit-reports-table th {
-    font-size: 0.62rem;
+    font-size: var(--text-xs);
     font-weight: 600;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.4);
-    background: rgba(0, 0, 0, 0.28);
+    color: rgb(var(--c-white) / 0.4);
+    background: rgb(var(--c-black) / 0.28);
 }
 
 .audit-reports-table tbody tr:hover {
-    background: rgba(255, 255, 255, 0.04);
+    background: rgb(var(--c-white) / 0.04);
 }
 
 .audit-reports-table-actions {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: var(--space-2);
 }
 
 .audit-reports-empty {
-    padding: 36px 20px;
+    padding: var(--space-8) var(--space-5);
     text-align: center;
-    border-radius: 12px;
-    border: 1px dashed rgba(255, 255, 255, 0.12);
-    color: rgba(255, 255, 255, 0.45);
-    font-size: 0.9rem;
+    border-radius: var(--radius-lg);
+    border: 1px dashed rgb(var(--c-white) / 0.12);
+    color: rgb(var(--c-white) / 0.45);
+    font-size: var(--text-sm);
 }
 
 .audit-reports-meta {
-    font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.38);
-    margin-top: 16px;
+    font-size: var(--text-xs);
+    color: rgb(var(--c-white) / 0.38);
+    margin-top: var(--space-4);
 }

@@ -47,8 +47,8 @@ function StatusBadge({ status }) {
     return (
         <span style={{
             display: "inline-flex", alignItems: "center",
-            padding: "3px 10px", borderRadius: "6px",
-            fontSize: "0.6875rem", fontWeight: 700,
+            padding: "3px 10px", borderRadius: "var(--radius-md)",
+            fontSize: "var(--text-xs)", fontWeight: 700,
             textTransform: "uppercase", letterSpacing: "0.06em",
             background: s.bg, border: `1px solid ${s.border}`, color: s.color,
         }}>
@@ -113,10 +113,10 @@ export default function DSR() {
                 </p>
 
                 <div className="settings-subpage__toolbar">
-                    <span style={{ fontSize: "0.875rem", color: "rgba(180,180,180,0.8)" }}>
+                    <span style={{ fontSize: "var(--text-sm)", color: "rgba(180,180,180,0.8)" }}>
                         {enriched.length} request{enriched.length !== 1 ? "s" : ""}
                         {enriched.filter((r) => r.derivedStatus === "overdue").length > 0 && (
-                            <span style={{ marginLeft: "10px", color: "#f0a8a0", fontWeight: 600 }}>
+                            <span style={{ marginLeft: "10px", color: "var(--color-danger-text)", fontWeight: 600 }}>
                                 {enriched.filter((r) => r.derivedStatus === "overdue").length} overdue
                             </span>
                         )}
@@ -153,17 +153,17 @@ export default function DSR() {
                                             style={{ cursor: "pointer" }}
                                             onClick={() => history.push(`/${id}/reports/dsr/${r.id}`)}
                                         >
-                                            <td style={{ fontFamily: "ui-monospace, monospace", fontSize: "0.8125rem", color: "#c0a053" }}>
+                                            <td style={{ fontFamily: "ui-monospace, monospace", fontSize: "var(--text-xs)", color: "var(--color-accent)" }}>
                                                 {r.uid}
                                             </td>
                                             <td>{typeLabel}</td>
                                             <td>{FRAMEWORK_LABELS[r.regulation] || r.regulation}</td>
-                                            <td style={{ color: "rgba(180,180,180,0.85)", fontSize: "0.8125rem" }}>
+                                            <td style={{ color: "rgb(var(--c-text-muted) / 0.85)", fontSize: "var(--text-xs)" }}>
                                                 {new Date(r.submitted).toLocaleDateString()}
                                             </td>
-                                            <td style={{ fontSize: "0.8125rem", color: r.derivedStatus === "overdue" ? "#f0a8a0" : "rgba(180,180,180,0.85)" }}>
+                                            <td style={{ fontSize: "var(--text-xs)", color: r.derivedStatus === "overdue" ? "#f0a8a0" : "rgba(180,180,180,0.85)" }}>
                                                 {dl.toLocaleDateString()}
-                                                <span style={{ marginLeft: "6px", fontSize: "0.6875rem", color: "rgba(140,140,140,0.7)" }}>
+                                                <span style={{ marginLeft: "6px", fontSize: "var(--text-xs)", color: "rgba(140,140,140,0.7)" }}>
                                                     ({DSR_DEADLINES_DAYS[r.regulation] ?? 30} days)
                                                 </span>
                                             </td>
@@ -189,7 +189,7 @@ export default function DSR() {
                                     placeholder="e.g. user-abc123 or UUID"
                                     value={form.uid}
                                     onChange={(e) => setForm((f) => ({ ...f, uid: e.target.value }))}
-                                    style={{ width: "100%", boxSizing: "border-box", padding: "10px 12px", borderRadius: "10px", border: "1px solid rgba(255,255,255,0.14)", background: "rgba(0,0,0,0.35)", color: "#f0f0f0", fontSize: "0.875rem", fontFamily: "inherit", marginBottom: "0" }}
+                                    style={{ width: "100%", boxSizing: "border-box", padding: "10px 12px", borderRadius: "var(--radius-lg)", border: "1px solid rgb(var(--c-white) / 0.14)", background: "rgb(var(--c-black) / 0.35)", color: "var(--color-text-primary)", fontSize: "var(--text-sm)", fontFamily: "inherit", marginBottom: "0" }}
                                 />
                             </div>
 
@@ -199,7 +199,7 @@ export default function DSR() {
                                     className="settings-org-modal__select settings-blacklist-modal__card"
                                     value={form.type}
                                     onChange={(e) => setForm((f) => ({ ...f, type: e.target.value }))}
-                                    style={{ width: "100%", boxSizing: "border-box", padding: "10px 12px", borderRadius: "10px", border: "1px solid rgba(255,255,255,0.14)", background: "rgba(0,0,0,0.35)", color: "#f0f0f0", fontSize: "0.875rem", fontFamily: "inherit" }}
+                                    style={{ width: "100%", boxSizing: "border-box", padding: "10px 12px", borderRadius: "var(--radius-lg)", border: "1px solid rgb(var(--c-white) / 0.14)", background: "rgb(var(--c-black) / 0.35)", color: "var(--color-text-primary)", fontSize: "var(--text-sm)", fontFamily: "inherit" }}
                                 >
                                     {REQUEST_TYPES.map((t) => (
                                         <option key={t.id} value={t.id}>{t.label}</option>
@@ -213,13 +213,13 @@ export default function DSR() {
                                     className="settings-org-modal__select settings-blacklist-modal__card"
                                     value={form.regulation}
                                     onChange={(e) => setForm((f) => ({ ...f, regulation: e.target.value }))}
-                                    style={{ width: "100%", boxSizing: "border-box", padding: "10px 12px", borderRadius: "10px", border: "1px solid rgba(255,255,255,0.14)", background: "rgba(0,0,0,0.35)", color: "#f0f0f0", fontSize: "0.875rem", fontFamily: "inherit" }}
+                                    style={{ width: "100%", boxSizing: "border-box", padding: "10px 12px", borderRadius: "var(--radius-lg)", border: "1px solid rgb(var(--c-white) / 0.14)", background: "rgb(var(--c-black) / 0.35)", color: "var(--color-text-primary)", fontSize: "var(--text-sm)", fontFamily: "inherit" }}
                                 >
                                     {REGULATIONS.map((r) => (
                                         <option key={r} value={r}>{FRAMEWORK_LABELS[r] || r}</option>
                                     ))}
                                 </select>
-                                <p style={{ margin: "6px 0 0", fontSize: "0.75rem", color: "rgba(150,150,150,0.8)" }}>
+                                <p style={{ margin: "6px 0 0", fontSize: "var(--text-xs)", color: "rgba(150,150,150,0.8)" }}>
                                     Deadline: {DSR_DEADLINES_DAYS[form.regulation] ?? 30} days from today
                                     ({new Date(Date.now() + (DSR_DEADLINES_DAYS[form.regulation] ?? 30) * 86400000).toLocaleDateString()})
                                 </p>
@@ -232,7 +232,7 @@ export default function DSR() {
                                     placeholder="Internal notes about this request…"
                                     value={form.notes}
                                     onChange={(e) => setForm((f) => ({ ...f, notes: e.target.value }))}
-                                    style={{ width: "100%", boxSizing: "border-box", padding: "10px 12px", borderRadius: "10px", border: "1px solid rgba(255,255,255,0.14)", background: "rgba(0,0,0,0.35)", color: "#f0f0f0", fontSize: "0.875rem", fontFamily: "inherit", resize: "vertical" }}
+                                    style={{ width: "100%", boxSizing: "border-box", padding: "10px 12px", borderRadius: "var(--radius-lg)", border: "1px solid rgb(var(--c-white) / 0.14)", background: "rgb(var(--c-black) / 0.35)", color: "var(--color-text-primary)", fontSize: "var(--text-sm)", fontFamily: "inherit", resize: "vertical" }}
                                 />
                             </div>
 

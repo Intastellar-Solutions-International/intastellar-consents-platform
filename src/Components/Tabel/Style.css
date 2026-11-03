@@ -1,14 +1,14 @@
 .table{
     background-color: #5c5c5c;
-    padding: 15px;
-    border-radius: 10px;
+    padding: var(--space-4);
+    border-radius: var(--radius-lg);
     max-height: 500px;
     overflow: scroll;
     position: relative;
 }
 
 .table-header{
-    font-size: 18px;
+    font-size: var(--text-lg);
     border-bottom: 1px solid #fff;
     font-weight: bold;
     position: sticky;
@@ -20,14 +20,14 @@
 .table-row{
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    padding: 15px 0;
-    gap: 10px;
+    padding: var(--space-4) 0;
+    gap: var(--space-2);
     white-space: wrap;
 }
 
 .table-cell{
-    color: #fff;
-    padding: 0 5px;
+    color: var(--color-text-primary);
+    padding: 0 var(--space-1);
     white-space: wrap;
     overflow: scroll;
 }

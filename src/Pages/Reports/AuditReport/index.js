@@ -287,7 +287,7 @@ export default function AuditReport() {
                             to create and list audit reports for that property.
                         </div>
                     ) : (
-                        <div className="audit-reports-banner" style={{ borderColor: "rgba(255,255,255,0.12)", background: "rgba(0,0,0,0.2)" }}>
+                        <div className="audit-reports-banner" style={{ borderColor: "rgb(var(--c-white) / 0.12)", background: "rgb(var(--c-black) / 0.2)" }}>
                             Showing reports for <strong>{currentDomain}</strong>. Dates below follow the sticky period controls
                             or adjust and generate.
                         </div>
@@ -297,7 +297,7 @@ export default function AuditReport() {
                         <h2 id="audit-create-heading">New report</h2>
                         <p>
                             Uses the same PDF export as portfolio audit: current domain only,{" "}
-                            <code style={{ color: "rgba(192,159,83,0.9)" }}>reportType: portfolio_audit</code>.
+                            <code style={{ color: "rgb(var(--c-accent) / 0.9)" }}>reportType: portfolio_audit</code>.
                         </p>
                         <div className="audit-reports-create-row">
                             <div className="audit-reports-date-field">
@@ -346,7 +346,7 @@ export default function AuditReport() {
                             onChange={(e) => setSearch(e.target.value)}
                             disabled={combinedView}
                         />
-                        <span style={{ fontSize: "0.78rem", color: "rgba(255,255,255,0.4)" }}>
+                        <span style={{ fontSize: "var(--text-xs)", color: "rgb(var(--c-white) / 0.4)" }}>
                             {combinedView ? "—" : `${filteredReports.length} of ${reports.length} saved`}
                         </span>
                     </div>

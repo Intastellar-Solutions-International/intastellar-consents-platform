@@ -4,8 +4,8 @@
     right: -400px;
     width: 400px;
     height: 100%;
-    background-color: rgb(55, 55, 55);
-    box-shadow: -2px 0 5px rgba(0,0,0,0.5);
+    background-color: var(--color-bg-base);
+    box-shadow: var(--shadow-sm);
     transition: right 0.3s ease;
     z-index: 1000;
     overflow: hidden;
@@ -19,7 +19,7 @@
     justify-content: space-between;
     align-items: center;
     color: white;
-    padding: 20px;
+    padding: var(--space-5);
     max-height: 60px;
 }
 

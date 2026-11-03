@@ -18,6 +18,7 @@
 
 import { vendorFromCookieName, VENDOR_META } from "./_scan-core.js";
 import { getPool } from "./_db.js";
+import { normalizeBannerDomain } from "./_banner-domain.js";
 
 const BANNER_CATEGORY = {
     advertising:    "marketing",
@@ -171,24 +172,53 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: "Missing Organisation header" });
     }
 
-    let domain = ((req.query.domain || "")).trim().toLowerCase();
-    domain = domain.replace(/^https?:\/\//, "").split("/")[0];
+    const domain = normalizeBannerDomain(req.query.domain);
     if (!domain) {
         return res.status(400).json({ error: "Missing domain query parameter" });
     }
 
+    // Which scans count for this domain:
+    // - the canonical domain and its "www." form — the banner stores scans
+    //   under the bare domain, dashboard scans may carry the "www.";
+    // - this organisation's dashboard scans AND banner-triggered scans
+    //   (organisation_id NULL). Most scans are banner-triggered (515 domains
+    //   vs 4 with dashboard scans as of 2026-11-03), so without them nearly
+    //   every domain read as "never scanned". Their results are already public
+    //   via /api/cookie-banner, so nothing new is exposed.
+    // The latest *completed* scan is returned; a newer failed or still-running
+    // attempt no longer hides it (it used to: the newest row was returned
+    // whatever its status, so Home and Compliance showed nothing).
+    const scope = `(domain = $1 OR domain = 'www.' || $1) AND (organisation_id = $2 OR organisation_id IS NULL)`;
     try {
-        const { rows } = await getPool().query(
-            `SELECT domain, scanned_at, scan_duration_ms, status, transfers, cookies, error_message
-               FROM pre_consent_scans
-              WHERE domain = $1 AND organisation_id = $2
-              ORDER BY scanned_at DESC
-              LIMIT 1`,
-            [domain, organisationId]
-        );
+        const db = getPool();
+        const [{ rows }, { rows: attempts }] = await Promise.all([
+            db.query(
+                `SELECT domain, scanned_at, scan_duration_ms, status, transfers, cookies
+                   FROM pre_consent_scans
+                  WHERE ${scope} AND status = 'completed'
+                  ORDER BY scanned_at DESC
+                  LIMIT 1`,
+                [domain, organisationId]
+            ),
+            db.query(
+                `SELECT status, scanned_at, error_message
+                   FROM pre_consent_scans
+                  WHERE ${scope}
+                  ORDER BY scanned_at DESC
+                  LIMIT 1`,
+                [domain, organisationId]
+            ),
+        ]);
+
+        const attempt = attempts[0];
+        const latestAttempt = attempt ? {
+            status:     attempt.status,
+            scanned_at: attempt.scanned_at,
+            error:      attempt.error_message || null,
+        } : null;
 
         if (!rows.length) {
-            return res.status(404).json({ error: "No scan found for this domain." });
+            return res.status(404).json({ error: "No scan found for this domain.", latest_attempt: latestAttempt });
         }
 
         const row = rows[0];
@@ -204,7 +234,8 @@ export default async function handler(req, res) {
             status:                row.status,
             pre_consent_transfers: enrichedTransfers,
             pre_consent_cookies:   enrichedCookies,
-            ...(row.error_message ? { error: row.error_message } : {}),
+            // Only when a newer attempt than this completed scan exists.
+            ...(latestAttempt && latestAttempt.status !== "completed" ? { latest_attempt: latestAttempt } : {}),
         });
     } catch (err) {
         console.error("[pre-consent-transfers] DB error:", err.message);

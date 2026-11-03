@@ -287,11 +287,11 @@ export default function DomainDashbord(props) {
                             </div>
                             </>
                         ) : (
-                        <p style={{ marginTop: "12px", color: "#666" }}>No time-to-decision data for the selected region filter.</p>
+                        <p style={{ marginTop: "12px", color: "var(--color-text-muted)" }}>No time-to-decision data for the selected region filter.</p>
                         )}
                         </>
                         ) : (
-                        <p style={{ marginTop: "12px", color: "#666" }}>Time-to-decision metrics are not available for this domain or date range.</p>
+                        <p style={{ marginTop: "12px", color: "var(--color-text-muted)" }}>Time-to-decision metrics are not available for this domain or date range.</p>
                         )}
                         </> : <>
                             <div className="grid-container grid-5" style={{ gap: "20px", marginBottom: "20px" }}>
