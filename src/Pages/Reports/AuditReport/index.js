@@ -15,6 +15,7 @@ import {
 } from "../../../Functions/auditReportsStorage";
 import { useSyncDomainFromRoute } from "../../../Functions/domainPathSegments.js";
 import appStorage from '../../../Functions/storage.js';
+import { appLocale } from "../../../Functions/format.js";
 
 const useParams = window.ReactRouterDOM.useParams;
 
@@ -40,7 +41,7 @@ function formatDisplayDate(isoOrYmd) {
     try {
         const d = new Date(isoOrYmd);
         if (Number.isNaN(d.getTime())) return String(isoOrYmd);
-        return d.toLocaleDateString("de-DE", { dateStyle: "medium" });
+        return d.toLocaleDateString(appLocale(), { dateStyle: "medium" });
     } catch {
         return String(isoOrYmd);
     }

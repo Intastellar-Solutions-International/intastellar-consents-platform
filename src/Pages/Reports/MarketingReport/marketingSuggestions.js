@@ -1,3 +1,4 @@
+import { appLocale } from "../../../Functions/format.js";
 /*
  * --- Invisible-traffic suggestions registry ----------------------------
  *
@@ -82,7 +83,7 @@ export function buildInvisibleTrafficSuggestions(input) {
                 id: `blind-spot-channel:${top.row.channel}`,
                 severity: "high",
                 title: `${top.row.channel} is your biggest analytics blind spot`,
-                body: `${top.invisible.toLocaleString("de-DE")} of ${top.consents.toLocaleString("de-DE")} ${top.row.channel} consents (${top.invisiblePct.toFixed(0)}%) never reach analytics. A banner variant scoped to ${top.row.channel} visitors usually recovers 10–25 percentage points.`,
+                body: `${top.invisible.toLocaleString(appLocale())} of ${top.consents.toLocaleString(appLocale())} ${top.row.channel} consents (${top.invisiblePct.toFixed(0)}%) never reach analytics. A banner variant scoped to ${top.row.channel} visitors usually recovers 10–25 percentage points.`,
                 action: {
                     label: `Test a banner for ${top.row.channel} visitors`,
                     href: `/experiments?new=1&scope=${encodeURIComponent(`channel:${top.row.channel}`)}`,

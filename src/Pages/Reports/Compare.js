@@ -7,6 +7,7 @@ import Fetch from "../../Functions/fetch";
 import "../Dashboard/Style.css";
 import "./Style.css";
 import appStorage from '../../Functions/storage.js';
+import { appLocale } from "../../Functions/format.js";
 
 const SLOT_COUNT = 5;
 
@@ -322,7 +323,7 @@ export default function Compare({ organisations: _organisations, domains }) {
                                         <header className="compare-card__head">
                                             <h3 className="compare-card__name">{domain.name}</h3>
                                             <p className="compare-card__total">
-                                                {Intl.NumberFormat("de-DE").format(domain.Total)} interactions
+                                                {Intl.NumberFormat(appLocale()).format(domain.Total)} interactions
                                             </p>
                                             <p className="compare-card__meta">Banner: {domain.style ?? "—"}</p>
                                         </header>
@@ -367,7 +368,7 @@ export default function Compare({ organisations: _organisations, domains }) {
                                             return (
                                                 <tr key={domain.name || index}>
                                                     <td className="compare-table__domain">{domain.name}</td>
-                                                    <td>{Intl.NumberFormat("de-DE").format(domain.Total)}</td>
+                                                    <td>{Intl.NumberFormat(appLocale()).format(domain.Total)}</td>
                                                     <td>
                                                         <span className="compare-pill compare-pill--pos">{domain.Accepted}%</span>
                                                     </td>
@@ -451,7 +452,7 @@ export default function Compare({ organisations: _organisations, domains }) {
                                             ].map(([label, n]) => (
                                                 <li key={label}>
                                                     <span>{label}</span>
-                                                    <span>{n != null ? Intl.NumberFormat("de-DE").format(n) : "—"}</span>
+                                                    <span>{n != null ? Intl.NumberFormat(appLocale()).format(n) : "—"}</span>
                                                 </li>
                                             ))}
                                         </ul>

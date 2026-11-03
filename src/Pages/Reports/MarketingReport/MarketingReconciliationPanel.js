@@ -2,6 +2,7 @@ const { useCallback, useEffect, useMemo, useState } = React;
 import { ScannerHost, PrimaryHost } from "../../../API/host";
 import { toDomainsApiHeader } from "../../../Functions/domainPathSegments.js";
 import MarketingSuggestionsStrip from "./MarketingSuggestionsStrip.js";
+import { appLocale } from "../../../Functions/format.js";
 
 /*
  * MarketingReconciliationPanel
@@ -214,13 +215,13 @@ function blankPlatformValues() {
 function formatInt(n) {
     const x = Number(n);
     if (!Number.isFinite(x)) return "—";
-    return Math.round(x).toLocaleString("de-DE");
+    return Math.round(x).toLocaleString(appLocale());
 }
 
 function formatPct(n, maxFraction = 1) {
     const x = Number(n);
     if (!Number.isFinite(x)) return "—";
-    return `${x.toLocaleString("de-DE", { maximumFractionDigits: maxFraction })}%`;
+    return `${x.toLocaleString(appLocale(), { maximumFractionDigits: maxFraction })}%`;
 }
 
 /*
@@ -237,14 +238,14 @@ function formatShareOfReportedPct(n, maxFraction = 1) {
     const x = Number(n);
     if (!Number.isFinite(x)) return "—";
     if (x > 100) return "100%+";
-    return `${x.toLocaleString("de-DE", { maximumFractionDigits: maxFraction })}%`;
+    return `${x.toLocaleString(appLocale(), { maximumFractionDigits: maxFraction })}%`;
 }
 
 function formatMoney(n, currency) {
     const x = Number(n);
     if (!Number.isFinite(x)) return "—";
     const cur = currencyOrFallback(currency);
-    return `${cur.symbol} ${x.toLocaleString("de-DE", {
+    return `${cur.symbol} ${x.toLocaleString(appLocale(), {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
     })}`;
@@ -255,7 +256,7 @@ function formatTimestamp(iso) {
     try {
         const d = new Date(iso);
         if (Number.isNaN(d.getTime())) return iso;
-        return d.toLocaleString("de-DE", {
+        return d.toLocaleString(appLocale(), {
             year: "numeric",
             month: "short",
             day: "2-digit",
@@ -510,7 +511,7 @@ function TrendChart({ snapshots }) {
         : uniqueDates;
 
     function fmtDate(ts) {
-        return new Date(ts).toLocaleDateString("de-DE", { month: "short", day: "numeric" });
+        return new Date(ts).toLocaleDateString(appLocale(), { month: "short", day: "numeric" });
     }
 
     return (
@@ -1051,7 +1052,7 @@ function SnapshotComboChart({ snapshots }) {
     const linePoints = data.map((d, i) => `${toX(i)},${toYPct(d.visPct)}`).join(" ");
 
     function fmtDate(ts) {
-        return new Date(ts).toLocaleDateString("de-DE", { month: "short", day: "numeric" });
+        return new Date(ts).toLocaleDateString(appLocale(), { month: "short", day: "numeric" });
     }
 
     // Show every Nth x-label to avoid clutter
@@ -1532,7 +1533,7 @@ function NotificationBell({ domainKey, orgId, authToken }) {
                                         {ruleLabels[n.rule_type] || n.rule_type}
                                     </span>
                                     <span className="notif-item__time">
-                                        {new Date(n.created_at).toLocaleDateString("en-GB", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
+                                        {new Date(n.created_at).toLocaleDateString(appLocale(), { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
                                     </span>
                                 </div>
                                 <p className="notif-item__title">{n.title}</p>

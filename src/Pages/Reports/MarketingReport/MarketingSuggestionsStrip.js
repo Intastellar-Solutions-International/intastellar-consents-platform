@@ -1,3 +1,4 @@
+import { appLocale } from "../../../Functions/format.js";
 /*
  * --- MarketingSuggestionsStrip ----------------------------------------
  *
@@ -69,8 +70,8 @@ function formatEvidenceValue(value) {
     if (value == null) return "—";
     if (typeof value === "number") {
         return Number.isInteger(value)
-            ? value.toLocaleString("de-DE")
-            : value.toLocaleString("de-DE", { maximumFractionDigits: 2 });
+            ? value.toLocaleString(appLocale())
+            : value.toLocaleString(appLocale(), { maximumFractionDigits: 2 });
     }
     return String(value);
 }

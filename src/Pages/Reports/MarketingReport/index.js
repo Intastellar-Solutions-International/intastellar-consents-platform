@@ -21,6 +21,7 @@ import {
 import MarketingSuggestionsStrip from "./MarketingSuggestionsStrip.js";
 import { buildInvisibleTrafficSuggestions } from "./marketingSuggestions.js";
 import appStorage from '../../../Functions/storage.js';
+import { appLocale } from "../../../Functions/format.js";
 
 const useParams = window.ReactRouterDOM.useParams;
 
@@ -80,7 +81,7 @@ function consentsForAdPlatform(channelOverview, platformId) {
 function formatAdMoney(n, currency) {
     const SYMBOLS = { EUR: "€", USD: "$", GBP: "£", CHF: "CHF", DKK: "kr", SEK: "kr", NOK: "kr" };
     const sym = SYMBOLS[currency] || (currency ? currency + " " : "");
-    return `${sym}${Number(n || 0).toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    return `${sym}${Number(n || 0).toLocaleString(appLocale(), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
 /** Prefer API summary (full dataset) when rows are paginated. */
@@ -272,7 +273,7 @@ function formatPctChange(current, previous) {
     const pct = ((c - p) / p) * 100;
     const rounded = Math.round(pct * 10) / 10;
     const sign = rounded > 0 ? "+" : "";
-    return `${sign}${rounded.toLocaleString("de-DE", { maximumFractionDigits: 1 })}%`;
+    return `${sign}${rounded.toLocaleString(appLocale(), { maximumFractionDigits: 1 })}%`;
 }
 
 function formatPtsChange(current, previous) {
@@ -283,7 +284,7 @@ function formatPtsChange(current, previous) {
     const d = c - p;
     const rounded = Math.round(d * 10) / 10;
     const sign = rounded > 0 ? "+" : "";
-    return `${sign}${rounded.toLocaleString("de-DE", { maximumFractionDigits: 1 })} pts`;
+    return `${sign}${rounded.toLocaleString(appLocale(), { maximumFractionDigits: 1 })} pts`;
 }
 
 function marketingCompareVolumeClass(current, previous) {
@@ -817,13 +818,13 @@ function MarketingContextSection({ heading, rows }) {
     }
 
     const fmtPct = (p) =>
-        p != null && Number.isFinite(p) ? `${p.toLocaleString("de-DE", { maximumFractionDigits: 1 })}%` : "—";
+        p != null && Number.isFinite(p) ? `${p.toLocaleString(appLocale(), { maximumFractionDigits: 1 })}%` : "—";
 
     const miniRows = (items) =>
         items.map((row) => (
             <tr key={row.id}>
                 <td className="marketing-context__label">{row.id}</td>
-                <td className="marketing-context__num">{row.consents.toLocaleString("de-DE")}</td>
+                <td className="marketing-context__num">{row.consents.toLocaleString(appLocale())}</td>
                 <td className="marketing-context__num">{fmtPct(row.acceptPct)}</td>
                 <td className="marketing-context__split">
                     {formatChoiceCountPct(row.acceptAll, row.consents)} ·{" "}
@@ -918,7 +919,7 @@ function formatChoiceCountPct(count, consents) {
     const t = Number(consents) || 0;
     if (t <= 0) return "—";
     const pct = (c / t) * 100;
-    return `${c.toLocaleString("de-DE")} (${pct.toLocaleString("de-DE", { maximumFractionDigits: 1 })}%)`;
+    return `${c.toLocaleString(appLocale())} (${pct.toLocaleString(appLocale(), { maximumFractionDigits: 1 })}%)`;
 }
 
 /** Weighted average acceptance % by consent volume (rows without accept % are skipped). */
@@ -1372,9 +1373,9 @@ function MarketingTablePagination({ page, pageCount, totalRows, pageSize, onPage
                 Next →
             </button>
             <span className="marketing-report-pagination__meta">
-                Showing <strong>{firstRow.toLocaleString("de-DE")}</strong>
-                –<strong>{lastRow.toLocaleString("de-DE")}</strong> of{" "}
-                <strong>{totalRows.toLocaleString("de-DE")}</strong> {label}
+                Showing <strong>{firstRow.toLocaleString(appLocale())}</strong>
+                –<strong>{lastRow.toLocaleString(appLocale())}</strong> of{" "}
+                <strong>{totalRows.toLocaleString(appLocale())}</strong> {label}
             </span>
         </nav>
     );
@@ -1399,7 +1400,7 @@ function computeMarketingHighlights({
     if (selectedChannel) {
         const total = drillConsents;
         const nCamp = drilldownRows.length;
-        const headline = `${total.toLocaleString("de-DE")} consents · ${nCamp} campaign${nCamp === 1 ? "" : "s"}`;
+        const headline = `${total.toLocaleString(appLocale())} consents · ${nCamp} campaign${nCamp === 1 ? "" : "s"}`;
         const subline = `${selectedChannel} · ${periodPhrase.toLowerCase()}. Compare campaigns, then use Performance context for geography and paths.`;
         const items = [];
         if (nCamp === 0) {
@@ -1417,7 +1418,7 @@ function computeMarketingHighlights({
         items.push({
             accent: "spotlight",
             title: "Campaign carrying the load",
-            body: `"${truncateLabel(topCamp.utmCampaign, 64)}" represents about ${share}% of this channel (${topCamp.consents.toLocaleString("de-DE")} events).`,
+            body: `"${truncateLabel(topCamp.utmCampaign, 64)}" represents about ${share}% of this channel (${topCamp.consents.toLocaleString(appLocale())} events).`,
         });
 
         const minC = Math.max(5, Math.floor(total * 0.05));
@@ -1430,13 +1431,13 @@ function computeMarketingHighlights({
             items.push({
                 accent: "win",
                 title: "Strongest acceptance",
-                body: `"${truncateLabel(best.utmCampaign, 56)}" leads at ${best.acceptPct.toLocaleString("de-DE", { maximumFractionDigits: 1 })}% among campaigns with enough volume to compare.`,
+                body: `"${truncateLabel(best.utmCampaign, 56)}" leads at ${best.acceptPct.toLocaleString(appLocale(), { maximumFractionDigits: 1 })}% among campaigns with enough volume to compare.`,
             });
             if (worst.utmCampaign !== best.utmCampaign) {
                 items.push({
                     accent: "watch",
                     title: "Review next",
-                    body: `"${truncateLabel(worst.utmCampaign, 56)}" is lowest in that set (${worst.acceptPct.toLocaleString("de-DE", { maximumFractionDigits: 1 })}%)—worth checking creative, landing, or consent timing.`,
+                    body: `"${truncateLabel(worst.utmCampaign, 56)}" is lowest in that set (${worst.acceptPct.toLocaleString(appLocale(), { maximumFractionDigits: 1 })}%)—worth checking creative, landing, or consent timing.`,
                 });
             }
         } else if (withRate.length === 1) {
@@ -1444,7 +1445,7 @@ function computeMarketingHighlights({
             items.push({
                 accent: "data",
                 title: "Acceptance",
-                body: `One campaign clears the volume bar: ${only.acceptPct.toLocaleString("de-DE", { maximumFractionDigits: 1 })}% on "${truncateLabel(only.utmCampaign, 48)}".`,
+                body: `One campaign clears the volume bar: ${only.acceptPct.toLocaleString(appLocale(), { maximumFractionDigits: 1 })}% on "${truncateLabel(only.utmCampaign, 48)}".`,
             });
         }
 
@@ -1454,7 +1455,7 @@ function computeMarketingHighlights({
             items.push({
                 accent: "data",
                 title: "Top geography (merged)",
-                body: `${c.id} shows the most volume in the slices returned (${c.consents.toLocaleString("de-DE")} consents). Expand Performance context for the full list.`,
+                body: `${c.id} shows the most volume in the slices returned (${c.consents.toLocaleString(appLocale())} consents). Expand Performance context for the full list.`,
             });
         }
 
@@ -1475,7 +1476,7 @@ function computeMarketingHighlights({
         };
     }
 
-    const headline = `${totalConsents.toLocaleString("de-DE")} tagged consent events · ${channelOverview.length} channel${channelOverview.length === 1 ? "" : "s"}`;
+    const headline = `${totalConsents.toLocaleString(appLocale())} tagged consent events · ${channelOverview.length} channel${channelOverview.length === 1 ? "" : "s"}`;
     const subline = `${periodPhrase}. Scan highlights first, then open a channel to compare campaigns.`;
     const items = [];
     const topCh = channelOverview[0];
@@ -1484,7 +1485,7 @@ function computeMarketingHighlights({
         items.push({
             accent: "spotlight",
             title: "Where volume concentrates",
-            body: `${topCh.channel} drives about ${pct}% of consents (${topCh.consents.toLocaleString("de-DE")} events)—often the first place to optimize spend and messaging.`,
+            body: `${topCh.channel} drives about ${pct}% of consents (${topCh.consents.toLocaleString(appLocale())} events)—often the first place to optimize spend and messaging.`,
         });
     }
 
@@ -1498,13 +1499,13 @@ function computeMarketingHighlights({
         items.push({
             accent: "win",
             title: "Best acceptance among larger channels",
-            body: `${best.channel} leads at ${best.acceptPct.toLocaleString("de-DE", { maximumFractionDigits: 1 })}% weighted acceptance (channels above a small volume floor).`,
+            body: `${best.channel} leads at ${best.acceptPct.toLocaleString(appLocale(), { maximumFractionDigits: 1 })}% weighted acceptance (channels above a small volume floor).`,
         });
         if (worst.channel !== best.channel) {
             items.push({
                 accent: "watch",
                 title: "Softest signal in that set",
-                body: `${worst.channel} is lowest at ${worst.acceptPct.toLocaleString("de-DE", { maximumFractionDigits: 1 })}%—creative, landing page, or banner timing may deserve a pass.`,
+                body: `${worst.channel} is lowest at ${worst.acceptPct.toLocaleString(appLocale(), { maximumFractionDigits: 1 })}%—creative, landing page, or banner timing may deserve a pass.`,
             });
         }
     } else if (chWithRate.length === 1) {
@@ -1512,7 +1513,7 @@ function computeMarketingHighlights({
         items.push({
             accent: "data",
             title: "Acceptance snapshot",
-            body: `With current volume, ${only.channel} is the main comparable signal: ${only.acceptPct.toLocaleString("de-DE", { maximumFractionDigits: 1 })}% weighted acceptance.`,
+            body: `With current volume, ${only.channel} is the main comparable signal: ${only.acceptPct.toLocaleString(appLocale(), { maximumFractionDigits: 1 })}% weighted acceptance.`,
         });
     }
 
@@ -1534,7 +1535,7 @@ function computeMarketingHighlights({
         items.push({
             accent: "data",
             title: "Incomplete choice data",
-            body: `${unclassifiedConsents.toLocaleString("de-DE")} events could not be split into accept / essential / granular; consent totals still include them.`,
+            body: `${unclassifiedConsents.toLocaleString(appLocale())} events could not be split into accept / essential / granular; consent totals still include them.`,
         });
     }
 
@@ -2331,8 +2332,8 @@ export default function MarketingReport() {
                 key: "channels",
                 label: selectedChannel ? "Campaigns in channel" : "Channels",
                 value: selectedChannel
-                    ? drilldownRows.length.toLocaleString("de-DE")
-                    : channelOverview.length.toLocaleString("de-DE"),
+                    ? drilldownRows.length.toLocaleString(appLocale())
+                    : channelOverview.length.toLocaleString(appLocale()),
                 hint: null,
                 compare:
                     compareUi && selectedChannel && drillBaselineCampaignCount != null ? (
@@ -2352,7 +2353,7 @@ export default function MarketingReport() {
             {
                 key: "consents",
                 label: selectedChannel ? "Consents (this channel)" : "Consents in view",
-                value: (selectedChannel ? drillConsents : totalConsents).toLocaleString("de-DE"),
+                value: (selectedChannel ? drillConsents : totalConsents).toLocaleString(appLocale()),
                 hint: selectedChannel
                     ? null
                     : "Total includes all attributed rows for this period (not only the table page).",
@@ -2366,7 +2367,7 @@ export default function MarketingReport() {
             {
                 key: "measurement-ready",
                 label: selectedChannel ? "Full-stack consents (channel)" : "Full-stack consent events",
-                value: measurementReadyCount.toLocaleString("de-DE"),
+                value: measurementReadyCount.toLocaleString(appLocale()),
                 hint: "Accept-all choices: optional analytics & marketing categories fully on. Useful for budget discussions — not revenue or ROAS.",
                 compare:
                     compareUi && baselineMeasurementReadyCount != null ? (
@@ -2382,7 +2383,7 @@ export default function MarketingReport() {
                 label: selectedChannel ? "Full-stack share (channel)" : "Full-stack share of tagged traffic",
                 value:
                     measurementReadySharePct != null && Number.isFinite(measurementReadySharePct)
-                        ? `${measurementReadySharePct.toLocaleString("de-DE", { maximumFractionDigits: 1 })}%`
+                        ? `${measurementReadySharePct.toLocaleString(appLocale(), { maximumFractionDigits: 1 })}%`
                         : "—",
                 hint: "Share of attributed consent events in this view with accept-all. Compare periods to see if spend reaches consenting audiences.",
                 compare:
@@ -2410,10 +2411,10 @@ export default function MarketingReport() {
                 label: selectedChannel
                     ? "Analytics-invisible (channel)"
                     : "Analytics-invisible traffic",
-                value: invisibleConsents.toLocaleString("de-DE"),
+                value: invisibleConsents.toLocaleString(appLocale()),
                 hint:
                     invisibleSharePct != null
-                        ? `${invisibleSharePct.toLocaleString("de-DE", { maximumFractionDigits: 1 })}% of attributed consents chose essential-only or granular — these visits won't reach GA4, Ads Manager, or the Meta pixel.`
+                        ? `${invisibleSharePct.toLocaleString(appLocale(), { maximumFractionDigits: 1 })}% of attributed consents chose essential-only or granular — these visits won't reach GA4, Ads Manager, or the Meta pixel.`
                         : "Attributed consents that chose essential-only or granular — they won't reach GA4, Ads Manager, or the Meta pixel.",
                 variant: "warn",
                 compare:
@@ -2456,14 +2457,14 @@ export default function MarketingReport() {
                 key: "ga4-coverage",
                 label: "GA4 consent coverage",
                 value: Number.isFinite(capturePct) ? `${capturePct}%` : "—",
-                hint: `${totalConsents.toLocaleString("de-DE")} consent events from ${ga4Sess.toLocaleString("de-DE")} GA4 sessions. Sessions that did not generate a consent event are the dark zone.`,
+                hint: `${totalConsents.toLocaleString(appLocale())} consent events from ${ga4Sess.toLocaleString(appLocale())} GA4 sessions. Sessions that did not generate a consent event are the dark zone.`,
                 variant: capturePct < 15 ? "warn" : null,
                 compare: null,
             });
             cards.push({
                 key: "ga4-dark-zone",
                 label: "Session dark zone",
-                value: darkZone.toLocaleString("de-DE"),
+                value: darkZone.toLocaleString(appLocale()),
                 hint: "GA4 sessions that reached the site but generated no consent event. Includes returning visitors with prior consent, bounces before banner load, and bot traffic.",
                 variant: "warn",
                 compare: null,
@@ -2587,11 +2588,11 @@ export default function MarketingReport() {
                                                     <span className="ca-ad-perf-card__lbl">spend</span>
                                                 </span>
                                                 <span className="ca-ad-perf-card__metric">
-                                                    <span className="ca-ad-perf-card__val">{p.clicks.toLocaleString("de-DE")}</span>
+                                                    <span className="ca-ad-perf-card__val">{p.clicks.toLocaleString(appLocale())}</span>
                                                     <span className="ca-ad-perf-card__lbl">clicks</span>
                                                 </span>
                                                 <span className="ca-ad-perf-card__metric">
-                                                    <span className="ca-ad-perf-card__val">{p.impressions.toLocaleString("de-DE")}</span>
+                                                    <span className="ca-ad-perf-card__val">{p.impressions.toLocaleString(appLocale())}</span>
                                                     <span className="ca-ad-perf-card__lbl">impressions</span>
                                                 </span>
                                                 {cpc != null && (
@@ -2653,8 +2654,8 @@ export default function MarketingReport() {
                                 <span className="marketing-report-toolbar__meta">
                                     {loading ? "Loading…"
                                         : selectedChannel
-                                          ? `${drilldownRows.length} campaign${drilldownRows.length === 1 ? "" : "s"} · ${drilldownRows.reduce((s, r) => s + r.consents, 0).toLocaleString("de-DE")} consents`
-                                          : `${channelOverview.length} channel${channelOverview.length === 1 ? "" : "s"} · ${totalConsents.toLocaleString("de-DE")} consents`}
+                                          ? `${drilldownRows.length} campaign${drilldownRows.length === 1 ? "" : "s"} · ${drilldownRows.reduce((s, r) => s + r.consents, 0).toLocaleString(appLocale())} consents`
+                                          : `${channelOverview.length} channel${channelOverview.length === 1 ? "" : "s"} · ${totalConsents.toLocaleString(appLocale())} consents`}
                                 </span>
                             </div>
                         </div>
@@ -2759,7 +2760,7 @@ export default function MarketingReport() {
                                                 <td className="marketing-report-table__col-num">
                                                     <MarketingMetricStack
                                                         compareUi={compareUi}
-                                                        primary={r.consents.toLocaleString("de-DE")}
+                                                        primary={r.consents.toLocaleString(appLocale())}
                                                         current={r.consents}
                                                         previous={r.prevConsents}
                                                         kind="volume"
@@ -2770,7 +2771,7 @@ export default function MarketingReport() {
                                                         compareUi={compareUi}
                                                         primary={
                                                             r.acceptPct != null && Number.isFinite(r.acceptPct)
-                                                                ? `${r.acceptPct.toLocaleString("de-DE", { maximumFractionDigits: 1 })}%`
+                                                                ? `${r.acceptPct.toLocaleString(appLocale(), { maximumFractionDigits: 1 })}%`
                                                                 : "—"
                                                         }
                                                         current={r.acceptPct}
@@ -2904,7 +2905,7 @@ export default function MarketingReport() {
                                             <td className="marketing-report-table__col-num">
                                                 <MarketingMetricStack
                                                     compareUi={compareUi}
-                                                    primary={r.campaignCount.toLocaleString("de-DE")}
+                                                    primary={r.campaignCount.toLocaleString(appLocale())}
                                                     current={r.campaignCount}
                                                     previous={r.prevCampaignCount}
                                                     kind="volume"
@@ -2913,7 +2914,7 @@ export default function MarketingReport() {
                                             <td className="marketing-report-table__col-num">
                                                 <MarketingMetricStack
                                                     compareUi={compareUi}
-                                                    primary={r.consents.toLocaleString("de-DE")}
+                                                    primary={r.consents.toLocaleString(appLocale())}
                                                     current={r.consents}
                                                     previous={r.prevConsents}
                                                     kind="volume"
@@ -2924,7 +2925,7 @@ export default function MarketingReport() {
                                                     compareUi={compareUi}
                                                     primary={
                                                         r.acceptPct != null && Number.isFinite(r.acceptPct)
-                                                            ? `${r.acceptPct.toLocaleString("de-DE", { maximumFractionDigits: 1 })}%`
+                                                            ? `${r.acceptPct.toLocaleString(appLocale(), { maximumFractionDigits: 1 })}%`
                                                             : "—"
                                                     }
                                                     current={r.acceptPct}
@@ -2960,7 +2961,7 @@ export default function MarketingReport() {
                     </section>
                     {rows.length > 0 && unclassifiedConsents > 0 ? (
                         <p className="marketing-report-footnote" role="note">
-                            {unclassifiedConsents.toLocaleString("de-DE")} consent
+                            {unclassifiedConsents.toLocaleString(appLocale())} consent
                             {unclassifiedConsents === 1 ? "" : "s"} in this period had no classifiable choice pattern
                             (missing or legacy payload). They are included in <strong>Consents</strong> but not in the
                             three choice columns.

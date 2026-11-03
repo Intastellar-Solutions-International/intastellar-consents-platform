@@ -16,6 +16,7 @@ import appStorage from '../../Functions/storage.js';
 import { useExcludeBots } from "../../Functions/botFilter.js";
 import { preConsentCookieStat, postConsentCookieStat } from "../../Functions/cookieStats.js";
 import { Icon } from "../../Components/ui/icons.js";
+import { appLocale, formatDate } from "../../Functions/format.js";
 
 const Link = window.ReactRouterDOM.Link;
 const useParams = window.ReactRouterDOM.useParams;
@@ -453,19 +454,19 @@ export default function CompliancePage() {
                     <div className="compliance-hero__stats">
                         <div className="compliance-hero__stat">
                             <span className={"compliance-hero__stat-value" + (preStat.count == null ? " --empty" : "")}>
-                                {preStat.count != null ? preStat.count.toLocaleString("de-DE") : preStat.label}
+                                {preStat.count != null ? preStat.count.toLocaleString(appLocale()) : preStat.label}
                             </span>
                             <span className="compliance-hero__stat-label">Pre-consent cookies</span>
                             <span className="compliance-hero__stat-source">
                                 {preStat.count != null
-                                    ? `Cookie scan · ${new Date(preStat.scannedAt).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}`
+                                    ? `Cookie scan · ${formatDate(new Date(preStat.scannedAt))}`
                                     : preStat.reason}
                             </span>
                         </div>
                         <div className="compliance-hero__stat-divider" aria-hidden />
                         <div className="compliance-hero__stat">
                             <span className={"compliance-hero__stat-value" + (postStat.count == null ? " --empty" : "")}>
-                                {postStat.count != null ? postStat.count.toLocaleString("de-DE") : postStat.label}
+                                {postStat.count != null ? postStat.count.toLocaleString(appLocale()) : postStat.label}
                             </span>
                             <span className="compliance-hero__stat-label">Post-consent cookies</span>
                             <span className="compliance-hero__stat-source">
@@ -475,7 +476,7 @@ export default function CompliancePage() {
                         <div className="compliance-hero__stat-divider" aria-hidden />
                         <div className="compliance-hero__stat">
                             <span className="compliance-hero__stat-value">
-                                {activeData?.Total != null ? Number(activeData.Total).toLocaleString("de-DE") : "—"}
+                                {activeData?.Total != null ? Number(activeData.Total).toLocaleString(appLocale()) : "—"}
                             </span>
                             <span className="compliance-hero__stat-label">Consent interactions</span>
                         </div>
@@ -512,7 +513,7 @@ export default function CompliancePage() {
                                     </p>
                                     {preConsentTransfers?.scanned_at && (
                                         <span className="compliance-transfers__scan-time">
-                                            Last scanned {new Date(preConsentTransfers.scanned_at).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}
+                                            Last scanned {formatDate(new Date(preConsentTransfers.scanned_at))}
                                         </span>
                                     )}
                                 </div>
@@ -537,7 +538,7 @@ export default function CompliancePage() {
                                     <span className="compliance-transfers__history-label">Previous scans</span>
                                     {scanHistory.slice(1).map((s, i) => (
                                         <span key={s.scanned_at + i} className="compliance-transfers__history-chip">
-                                            {new Date(s.scanned_at).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}
+                                            {new Date(s.scanned_at).toLocaleDateString(appLocale(), { day: "numeric", month: "short" })}
                                             <span className="compliance-transfers__history-chip-detail">{s.transfers} transfers · {s.cookies} cookies</span>
                                         </span>
                                     ))}

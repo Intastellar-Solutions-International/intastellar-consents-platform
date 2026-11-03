@@ -1,22 +1,23 @@
 const { useEffect, useMemo, useRef, useState } = React;
 import "./Style.css";
+import { appLocale } from "../../../Functions/format.js";
 
 function formatXLabel(d, fromDate, toDate) {
     const t = new Date(d?.date);
     if (!Number.isFinite(t.getTime())) return "";
     return fromDate === toDate
-        ? new Intl.DateTimeFormat("de-DE", { hour: "numeric", minute: "numeric" }).format(t)
-        : new Intl.DateTimeFormat("de-DE").format(t);
+        ? new Intl.DateTimeFormat(appLocale(), { hour: "numeric", minute: "numeric" }).format(t)
+        : new Intl.DateTimeFormat(appLocale()).format(t);
 }
 
 function formatMetric(value) {
-    return new Intl.NumberFormat("de-DE").format(Number(value) || 0);
+    return new Intl.NumberFormat(appLocale()).format(Number(value) || 0);
 }
 
 function formatPeakDate(rawDate, fallbackLabel) {
     const t = new Date(rawDate);
     if (!Number.isFinite(t.getTime())) return fallbackLabel || "—";
-    return new Intl.DateTimeFormat("de-DE", { day: "2-digit", month: "2-digit" }).format(t);
+    return new Intl.DateTimeFormat(appLocale(), { day: "2-digit", month: "2-digit" }).format(t);
 }
 
 export default function Line({

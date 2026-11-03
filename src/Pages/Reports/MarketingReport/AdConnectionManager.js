@@ -1,5 +1,6 @@
 const { useState, useEffect, useCallback } = React;
 import { ScannerHost } from "../../../API/host";
+import { appLocale } from "../../../Functions/format.js";
 import {
     GoogleLogo, GA4Logo, SearchConsoleLogo, MetaLogo, LinkedInLogo, MicrosoftLogo, OpenAILogo,
 } from "./PlatformLogos.js";
@@ -17,7 +18,7 @@ const AD_PLATFORMS = [
 function formatDate(iso) {
     if (!iso) return "";
     try {
-        return new Date(iso).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
+        return new Date(iso).toLocaleDateString(appLocale(), { day: "2-digit", month: "short", year: "numeric" });
     } catch { return ""; }
 }
 

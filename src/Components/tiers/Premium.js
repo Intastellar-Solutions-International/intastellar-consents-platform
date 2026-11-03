@@ -3,6 +3,7 @@ import Widget from "../widget/widget";
 import ErrorBoundary from "../Error/ErrorBoundary";
 import DeviceTypeInteractions from "../Charts/DeviceTypeInteractions";
 import SectionError from "../SectionError";
+import { appLocale } from "../../Functions/format.js";
 
 export default function PremiumTier(props) {
     const loading = props.loading;
@@ -21,13 +22,13 @@ export default function PremiumTier(props) {
     }
 
     return <>
-        {(loading) ? <Loading /> : <ErrorBoundary><Widget compareOn={compareOn} totalNumber={activeData} activeUsers={activeData?.activeUsers.toLocaleString("de-DE")} fromDate={fromDate} toDate={toDate} type="Consents given" /></ErrorBoundary>}
+        {(loading) ? <Loading /> : <ErrorBoundary><Widget compareOn={compareOn} totalNumber={activeData} activeUsers={activeData?.activeUsers.toLocaleString(appLocale())} fromDate={fromDate} toDate={toDate} type="Consents given" /></ErrorBoundary>}
         <div className="grid-container grid-5">
-            {(loading) ? <Loading /> : <ErrorBoundary><Widget styleType="small" compareOn={compareOn} comparisonDelta={cmp?.accepted} comparisonRelative={cmp?.acceptedRelativeDrop} totalNumber={activeData?.Accepted.toLocaleString("de-DE") + "%"} type="Accepted all cookies" /></ErrorBoundary>}
-            {(loading) ? <Loading /> : <ErrorBoundary><Widget styleType="small" compareOn={compareOn} comparisonDelta={cmp?.declined} comparisonRelative={cmp?.declinedRelativeDrop} totalNumber={activeData?.Declined.toLocaleString("de-DE") + "%"} type="Only essential cookies accepted" /></ErrorBoundary>}
-            {(loading) ? <Loading /> : <ErrorBoundary><Widget styleType="small" compareOn={compareOn} comparisonDelta={cmp?.marketing} comparisonRelative={cmp?.marketingRelativeDrop} totalNumber={activeData?.Marketing.toLocaleString("de-DE") + "%"} type="Accepted Marketing" /></ErrorBoundary>}
-            {(loading) ? <Loading /> : <ErrorBoundary><Widget styleType="small" compareOn={compareOn} comparisonDelta={cmp?.functional} comparisonRelative={cmp?.functionalRelativeDrop} totalNumber={activeData?.Functional.toLocaleString("de-DE") + "%"} type="Accepted Functional" /></ErrorBoundary>}
-            {(loading) ? <Loading /> : <ErrorBoundary><Widget styleType="small" compareOn={compareOn} comparisonDelta={cmp?.statics} comparisonRelative={cmp?.staticsRelativeDrop} totalNumber={activeData?.Statics.toLocaleString("de-DE") + "%"} type="Accepted analytical cookies" /></ErrorBoundary >}
+            {(loading) ? <Loading /> : <ErrorBoundary><Widget styleType="small" compareOn={compareOn} comparisonDelta={cmp?.accepted} comparisonRelative={cmp?.acceptedRelativeDrop} totalNumber={activeData?.Accepted.toLocaleString(appLocale()) + "%"} type="Accepted all cookies" /></ErrorBoundary>}
+            {(loading) ? <Loading /> : <ErrorBoundary><Widget styleType="small" compareOn={compareOn} comparisonDelta={cmp?.declined} comparisonRelative={cmp?.declinedRelativeDrop} totalNumber={activeData?.Declined.toLocaleString(appLocale()) + "%"} type="Only essential cookies accepted" /></ErrorBoundary>}
+            {(loading) ? <Loading /> : <ErrorBoundary><Widget styleType="small" compareOn={compareOn} comparisonDelta={cmp?.marketing} comparisonRelative={cmp?.marketingRelativeDrop} totalNumber={activeData?.Marketing.toLocaleString(appLocale()) + "%"} type="Accepted Marketing" /></ErrorBoundary>}
+            {(loading) ? <Loading /> : <ErrorBoundary><Widget styleType="small" compareOn={compareOn} comparisonDelta={cmp?.functional} comparisonRelative={cmp?.functionalRelativeDrop} totalNumber={activeData?.Functional.toLocaleString(appLocale()) + "%"} type="Accepted Functional" /></ErrorBoundary>}
+            {(loading) ? <Loading /> : <ErrorBoundary><Widget styleType="small" compareOn={compareOn} comparisonDelta={cmp?.statics} comparisonRelative={cmp?.staticsRelativeDrop} totalNumber={activeData?.Statics.toLocaleString(appLocale()) + "%"} type="Accepted analytical cookies" /></ErrorBoundary >}
         </div>
         <p>All percentages are calculated based on the total number of consent interactions in the selected period. Category-level percentages are calculated independently and may overlap.</p>
         <div className="grid-container">

@@ -9,6 +9,7 @@ import { getChannelById } from "./marketingChannels.js";
 import { DomainContext } from "../../App.js";
 
 import "./Experiments.css";
+import { appLocale } from "../../Functions/format.js";
 
 const { useState, useEffect, useMemo, useContext } = React;
 
@@ -170,7 +171,7 @@ function formatMs(ms) {
 
 function formatInt(n) {
     if (n == null || Number.isNaN(n)) return "—";
-    return Math.round(Number(n)).toLocaleString("de-DE");
+    return Math.round(Number(n)).toLocaleString(appLocale());
 }
 
 function formatSignedPp(pp, digits = 1) {

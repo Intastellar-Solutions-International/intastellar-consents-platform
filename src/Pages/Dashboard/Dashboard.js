@@ -36,6 +36,7 @@ import { preConsentCookieStat, postConsentCookieStat } from "../../Functions/coo
 import SectionError from "../../Components/SectionError";
 import { fetchJsonWithTimeout } from "../../Functions/fetchWithTimeout.js";
 import { Icon } from "../../Components/ui/icons.js";
+import { appLocale } from "../../Functions/format.js";
 
 const { useState, useEffect, useRef, useContext, useMemo } = React;
 
@@ -414,9 +415,9 @@ export default function Dashboard(props) {
                 {/* Org-level platform stats (admin only) */}
                 {organisation != null && JSON.parse(organisation).id == 1 && !demoMode && !handle && !workspaceId ?
                     <div className="grid-container topWidget" style={{ gridTemplateColumns: "1fr 1fr 1fr", gap: "10px", marginBottom: "24px" }}>
-                        {jsLoading ? <Loading /> : <ErrorBoundary><Widget styleType="small" totalNumber={jsData.Total?.toLocaleString("de-DE")} type="Websites" /></ErrorBoundary>}
-                        {jsLoading ? <Loading /> : <ErrorBoundary><Widget styleType="small" totalNumber={jsData?.JS?.toLocaleString("de-DE") + "%"} type="JavaScript" /></ErrorBoundary>}
-                        {jsLoading ? <Loading /> : <ErrorBoundary><Widget styleType="small" totalNumber={jsData?.WP?.toLocaleString("de-DE") + "%"} type="WordPress" /></ErrorBoundary>}
+                        {jsLoading ? <Loading /> : <ErrorBoundary><Widget styleType="small" totalNumber={jsData.Total?.toLocaleString(appLocale())} type="Websites" /></ErrorBoundary>}
+                        {jsLoading ? <Loading /> : <ErrorBoundary><Widget styleType="small" totalNumber={jsData?.JS?.toLocaleString(appLocale()) + "%"} type="JavaScript" /></ErrorBoundary>}
+                        {jsLoading ? <Loading /> : <ErrorBoundary><Widget styleType="small" totalNumber={jsData?.WP?.toLocaleString(appLocale()) + "%"} type="WordPress" /></ErrorBoundary>}
                     </div> : null
                 }
 
@@ -438,7 +439,7 @@ export default function Dashboard(props) {
                                 comparisonRelative={activeData?.comaprison?.acceptedRelativeDrop ?? activeData?.comparison?.acceptedRelativeDrop}
                                 change={{ change: activeData?.changeRate?.accepted }}
                                 relativeDrop={{ relativeDrop: activeData?.relativeDrop?.accepted }}
-                                totalNumber={(activeData?.Accepted != null ? activeData.Accepted.toLocaleString("de-DE") : "—") + "%"}
+                                totalNumber={(activeData?.Accepted != null ? activeData.Accepted.toLocaleString(appLocale()) : "—") + "%"}
                                 type="Consent acceptance"
                                 fromDate={fromDate}
                                 toDate={toDate}
@@ -453,7 +454,7 @@ export default function Dashboard(props) {
                                 relativeDrop={{ relativeDrop: activeData?.relativeDrop?.declined }}
                                 explainer={{ exist: true, title: "Essential-only rate", content: "Share of users who declined analytics and marketing cookies, allowing only required cookies." }}
                                 invertSentiment={true}
-                                totalNumber={(activeData?.Declined != null ? activeData.Declined.toLocaleString("de-DE") : "—") + "%"}
+                                totalNumber={(activeData?.Declined != null ? activeData.Declined.toLocaleString(appLocale()) : "—") + "%"}
                                 type="Essential-only rate"
                                 fromDate={fromDate}
                                 toDate={toDate}
@@ -484,15 +485,15 @@ export default function Dashboard(props) {
                     {activeData && (
                         <div className="dashboard-geo-stats">
                             <div className="dashboard-geo-stat">
-                                <span className="dashboard-geo-stat__value">{activeData.euUsers != null ? activeData.euUsers.toLocaleString("de-DE") : "—"}</span>
+                                <span className="dashboard-geo-stat__value">{activeData.euUsers != null ? activeData.euUsers.toLocaleString(appLocale()) : "—"}</span>
                                 <span className="dashboard-geo-stat__label">EU visitors</span>
-                                {activeData.euAcceptedRate != null && <span className="dashboard-geo-stat__rate">{safePercent(activeData.euAcceptedRate).toLocaleString("de-DE")}% accepted</span>}
+                                {activeData.euAcceptedRate != null && <span className="dashboard-geo-stat__rate">{safePercent(activeData.euAcceptedRate).toLocaleString(appLocale())}% accepted</span>}
                             </div>
                             <div className="dashboard-geo-stat__divider" aria-hidden />
                             <div className="dashboard-geo-stat">
-                                <span className="dashboard-geo-stat__value">{activeData.noneEUUsers != null ? activeData.noneEUUsers.toLocaleString("de-DE") : "—"}</span>
+                                <span className="dashboard-geo-stat__value">{activeData.noneEUUsers != null ? activeData.noneEUUsers.toLocaleString(appLocale()) : "—"}</span>
                                 <span className="dashboard-geo-stat__label">Non-EU visitors</span>
-                                {activeData.noneEUAcceptedRate != null && <span className="dashboard-geo-stat__rate">{safePercent(activeData.noneEUAcceptedRate).toLocaleString("de-DE")}% accepted</span>}
+                                {activeData.noneEUAcceptedRate != null && <span className="dashboard-geo-stat__rate">{safePercent(activeData.noneEUAcceptedRate).toLocaleString(appLocale())}% accepted</span>}
                             </div>
                         </div>
                     )}
@@ -507,12 +508,12 @@ export default function Dashboard(props) {
                                 <span className="dashboard-behaviour-kpi__label">Median decision time</span>
                                 <span className="dashboard-behaviour-kpi__value">
                                     {globalTimeToDecision?.median > 0
-                                        ? `${globalTimeToDecision.median.toLocaleString("de-DE")}s`
+                                        ? `${globalTimeToDecision.median.toLocaleString(appLocale())}s`
                                         : "—"}
                                 </span>
                                 {globalTimeToDecision?.count > 0 && (
                                     <span className="dashboard-behaviour-kpi__sub">
-                                        {globalTimeToDecision.count.toLocaleString("de-DE")} interactions · global
+                                        {globalTimeToDecision.count.toLocaleString(appLocale())} interactions · global
                                     </span>
                                 )}
                             </div>

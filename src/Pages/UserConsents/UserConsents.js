@@ -25,6 +25,7 @@ import appStorage from '../../Functions/storage.js';
 import { parseConsentTimestamp } from "../../Functions/consentTimestamp.js";
 import BotFilterToggle from "../../Components/BotFilterToggle";
 import { useExcludeBots } from "../../Functions/botFilter.js";
+import { appLocale } from "../../Functions/format.js";
 
 const { useState, useEffect, useRef, useContext, useCallback, useMemo } = React;
 const useParams = window.ReactRouterDOM.useParams;
@@ -780,7 +781,7 @@ export default function UserConsents(props) {
                                     const urlClean = d?.url ? String(d.url).split("?")[0].split("#")[0] : "—";
                                     const parsedTime = parseConsentTimestamp(d?.consents_timestamp);
                                     const timeStr = parsedTime
-                                        ? parsedTime.toLocaleString("de-DE", { timeZone: "Europe/Copenhagen" })
+                                        ? parsedTime.toLocaleString(appLocale(), { timeZone: "Europe/Copenhagen" })
                                         : "—";
 
                                     const consentLabel = (t) => (t === "statics" ? "analytics" : t);
