@@ -78,6 +78,9 @@ const BANNER_CATEGORY = {
 
 const BANNER_CATEGORIES = ["necessary", "security", "analytics", "marketing", "functional", "unclassified"];
 
+// Same freshness window as cookie-banner-scan.js and cron-scan-domains.js.
+const RESCAN_AFTER_DAYS = 7;
+
 // Shared data-processing: turns raw transfers + cookies arrays into the
 // grouped categories object the banner consumes.
 // overrides: Record<cookieName, { bannerCategory?, vendor?, description? }>
@@ -316,10 +319,14 @@ export default async function handler(req, res) {
                 scanned_at: row.scanned_at,
                 categories: buildCategories(row.domain, row.transfers, row.cookies, overrides, definitions, scanCore),
             });
-            // Refresh the scan in the background so the next request always gets fresh data.
-            await runBackgroundScan(domain, db, scanCore).catch(err =>
-                console.error("[cookie-banner] bg-scan error:", err.message)
-            );
+            // Refresh the scan in the background once it is older than
+            // RESCAN_AFTER_DAYS — not on every request, or every CDN cache miss
+            // rescans the site and a bad run replaces the good scan.
+            if (Date.now() - new Date(row.scanned_at).getTime() > RESCAN_AFTER_DAYS * 86400000) {
+                await runBackgroundScan(domain, db, scanCore).catch(err =>
+                    console.error("[cookie-banner] bg-scan error:", err.message)
+                );
+            }
             return;
         }
 

@@ -1650,11 +1650,25 @@ export async function scanDomain(domain) {
             req.continue().catch(() => {});
         });
 
+        // A navigation timeout is tolerated below (networkidle2 often never
+        // settles), but only if the page itself answered. Otherwise the scan
+        // would be stored as "completed" with no cookies and no transfers and
+        // replace the last good scan in Compliance.
+        let documentLoaded = false;
+        page.on("response", (resp) => {
+            try {
+                if (resp.request().isNavigationRequest() && resp.frame() === page.mainFrame() && resp.status() < 400) {
+                    documentLoaded = true;
+                }
+            } catch {}
+        });
+
         try {
             await page.goto(`https://${domain}`, { waitUntil: "networkidle2", timeout: 22000 });
         } catch (e) {
             if (!e.message.includes("timeout") && !e.message.includes("Navigation")) throw e;
         }
+        if (!documentLoaded) throw new Error(`https://${domain} did not load`);
 
         // If Intastellar Consents is present, call IntaAcceptAll() so GCM v2 signals
         // flip to "granted" and analytics cookies (GA etc.) are actually written.
