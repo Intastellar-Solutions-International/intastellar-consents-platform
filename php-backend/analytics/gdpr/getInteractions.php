@@ -71,7 +71,29 @@ function botFilterSql($excludeBotsHeader, $column = "is_suspected_bot")
 // below, so every count honours it. Unqualified on purpose: the column exists
 // on both cookiebanner_tracking_settings and user_consents_tracking (the
 // active-users query rewrites these clauses for the latter).
-$botFilter = botFilterSql($_SERVER["HTTP_EXCLUDEBOTS"] ?? null);
+
+/**
+ * Whether the is_suspected_bot / bot_reason columns exist yet
+ * (php-backend/sql/2026-11-03-suspected-bots.sql). Until they do, the bot
+ * filter and flag are skipped instead of failing every query — this file can
+ * be deployed before or after the migration. Checked once per request.
+ */
+function botColumnsReady($db)
+{
+    static $ready = null;
+    if ($ready !== null) return $ready;
+    $ready = true;
+    foreach (["cookiebanner_tracking_settings", "user_consents_tracking"] as $table) {
+        try {
+            $res = mysqli_query($db, "SHOW COLUMNS FROM `$table` LIKE 'is_suspected_bot'");
+            if (!$res || mysqli_num_rows($res) === 0) $ready = false;
+        } catch (Throwable $e) {
+            $ready = false;
+        }
+    }
+    return $ready;
+}
+$botFilter = botColumnsReady($db) ? botFilterSql($_SERVER["HTTP_EXCLUDEBOTS"] ?? null) : "";
 $whereClause = "WHERE `type` != ''" . $botFilter;
 $andClause = $botFilter;
 $num_per_day = [];

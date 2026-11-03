@@ -71,7 +71,31 @@ if ($uid !== "" && strtolower($uid) !== "null") {
     $andClause .= " AND ucs.uid = '$uidEsc'";
 }
 
-$andClause .= botFilterSql($_SERVER["HTTP_EXCLUDEBOTS"] ?? null, "ucs.is_suspected_bot");
+
+/**
+ * Whether the is_suspected_bot / bot_reason columns exist yet
+ * (php-backend/sql/2026-11-03-suspected-bots.sql). Until they do, the bot
+ * filter and flag are skipped instead of failing every query — this file can
+ * be deployed before or after the migration. Checked once per request.
+ */
+function botColumnsReady($db)
+{
+    static $ready = null;
+    if ($ready !== null) return $ready;
+    $ready = true;
+    foreach (["cookiebanner_tracking_settings", "user_consents_tracking"] as $table) {
+        try {
+            $res = mysqli_query($db, "SHOW COLUMNS FROM `$table` LIKE 'is_suspected_bot'");
+            if (!$res || mysqli_num_rows($res) === 0) $ready = false;
+        } catch (Throwable $e) {
+            $ready = false;
+        }
+    }
+    return $ready;
+}
+if (botColumnsReady($db)) {
+    $andClause .= botFilterSql($_SERVER["HTTP_EXCLUDEBOTS"] ?? null, "ucs.is_suspected_bot");
+}
 
 $domainsEsc = mysqli_real_escape_string($db, $domains);
 

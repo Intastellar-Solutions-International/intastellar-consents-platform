@@ -45,3 +45,11 @@ test('getDomainStatistics uses the same filter rule', function () {
     };
     eq($extract("$root/analytics/gdpr/getDomainStatistics.php"), $extract("$root/analytics/gdpr/getInteractions.php"));
 });
+
+test('without the migration the bot columns are skipped, not queried', function () {
+    // Any failure to confirm the columns (missing table/column, a mysqli
+    // exception, no connection) must read as "not ready", so endpoints fall
+    // back to their pre-flag queries instead of returning 500.
+    load_functions($GLOBALS['ROOT'] . "/analytics/gdpr/getInteractions.php", ['botColumnsReady']);
+    eq(botColumnsReady(new stdClass()), false);
+});
