@@ -52,6 +52,7 @@ function BillingSummary() {
     const periodEnd = sub.current_period_end ? formatDate(sub.current_period_end) : null;
     const renewal = !periodEnd ? null
         : sub.cancel_at_period_end ? `Ends ${periodEnd}`
+        : sub.status === "trialing" ? `Free trial until ${periodEnd}`
         : sub.status === "past_due" ? "Payment overdue — update your card"
         : `Renews ${periodEnd}`;
 

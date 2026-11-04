@@ -1,5 +1,6 @@
 import "./Style/Plans.css";
 import { Icon, Button } from "../UI/index.js";
+import { formatDate } from "../../Functions/format.js";
 
 const { useEffect, useRef, useState } = React;
 
@@ -66,7 +67,7 @@ const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
  * must go straight to Stripe). Stripe redirects to the session's return_url
  * after payment, where App.js confirms the subscription.
  */
-export default function CheckoutForm({ clientSecret, publishableKey, plan, companyName, fullName, email, onBack }) {
+export default function CheckoutForm({ clientSecret, publishableKey, trialDays = 0, plan, companyName, fullName, email, onBack }) {
     const billingRef = useRef(null);
     const taxIdRef = useRef(null);
     const paymentRef = useRef(null);
@@ -162,8 +163,11 @@ export default function CheckoutForm({ clientSecret, publishableKey, plan, compa
         }
     };
 
-    const dueToday = session?.total?.total?.amount || plan.price;
+    const dueToday = session?.total?.total?.amount || (trialDays ? null : plan.price);
     const canSubmit = ready && session?.canConfirm && !submitting;
+    // Stripe starts the trial at confirmation, so today + trialDays is the
+    // first charge date.
+    const firstCharge = trialDays ? formatDate(new Date(Date.now() + trialDays * 86400000)) : null;
 
     return (
         <div className="checkout-page">
@@ -173,7 +177,7 @@ export default function CheckoutForm({ clientSecret, publishableKey, plan, compa
 
             <div className="checkout-layout">
                 <aside className="checkout-summary" aria-label="Order summary">
-                    <p className="checkout-summary__eyebrow">Subscribe to</p>
+                    <p className="checkout-summary__eyebrow">{trialDays ? `${trialDays}-day free trial` : "Subscribe to"}</p>
                     <h1 className="checkout-title">{plan.name}</h1>
                     <p className="checkout-price">
                         {plan.price}
@@ -190,10 +194,10 @@ export default function CheckoutForm({ clientSecret, publishableKey, plan, compa
                     <dl className="checkout-summary__totals">
                         <div>
                             <dt>Due today</dt>
-                            <dd>{dueToday}</dd>
+                            <dd>{dueToday || "…"}</dd>
                         </div>
                         <div className="checkout-summary__then">
-                            <dt>Then</dt>
+                            <dt>{firstCharge ? `From ${firstCharge}` : "Then"}</dt>
                             <dd>{plan.price}{plan.period}</dd>
                         </div>
                     </dl>
@@ -269,14 +273,16 @@ export default function CheckoutForm({ clientSecret, publishableKey, plan, compa
                     ) : null}
 
                     <Button type="submit" variant="primary" className="checkout-form__submit" disabled={!canSubmit} loading={submitting}>
-                        {submitting ? "Processing…" : `Subscribe · ${dueToday}`}
+                        {submitting ? "Processing…" : trialDays ? `Start ${trialDays}-day free trial` : `Subscribe · ${dueToday || plan.price}`}
                     </Button>
 
                     <p className="checkout-form__legal">
                         <Icon name="shield-check" />
                         <span>
-                            Payments are processed securely by Stripe — card details never reach our servers.
-                            Your subscription renews automatically; cancel any time under Settings → Manage billing.
+                            {trialDays
+                                ? `You won't be charged today. Your card is charged ${plan.price} on ${firstCharge}, then every month, unless you cancel before under Settings → Manage billing.`
+                                : "Your subscription renews automatically; cancel any time under Settings → Manage billing."}
+                            {" "}Payments are processed securely by Stripe — card details never reach our servers.
                         </span>
                     </p>
                 </form>

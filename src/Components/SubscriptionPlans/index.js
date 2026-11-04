@@ -127,7 +127,7 @@ export default function SubscriptionPlans() {
     };
 
     if (selectedPlan && checkout) {
-        return <CheckoutForm clientSecret={checkout.clientSecret} publishableKey={checkout.publishableKey} plan={selectedPlan} companyName={companyName} fullName={fullName} email={email} onBack={handleBack} />;
+        return <CheckoutForm clientSecret={checkout.clientSecret} publishableKey={checkout.publishableKey} trialDays={checkout.trialDays || 0} plan={selectedPlan} companyName={companyName} fullName={fullName} email={email} onBack={handleBack} />;
     }
 
     return (
@@ -137,7 +137,7 @@ export default function SubscriptionPlans() {
                     Choose a plan{companyName ? ` for ${companyName}` : ""}
                 </h1>
                 <p className="plans-subtitle">
-                    All plans include a free cookie consent banner. Upgrade to unlock the full analytics platform.
+                    Every plan starts with a 30-day free trial — your card is only charged when the trial ends, and you can cancel any time before.
                 </p>
             </header>
 
@@ -163,9 +163,7 @@ export default function SubscriptionPlans() {
                                 <span className="plan-card__price">{plan.price}</span>
                                 <span className="plan-card__period">{plan.period}</span>
                             </div>
-                            {plan.subtext && (
-                                <p className="plan-card__subtext">{plan.subtext}</p>
-                            )}
+                            <p className="plan-card__subtext">{plan.subtext || "30-day free trial"}</p>
                             <p className="plan-card__description">{plan.description}</p>
                         </div>
 
@@ -187,7 +185,7 @@ export default function SubscriptionPlans() {
                             disabled={initiating !== null}
                             aria-busy={initiating === plan.id}
                         >
-                            {initiating === plan.id ? "Loading…" : "Get started"}
+                            {initiating === plan.id ? "Loading…" : "Start free trial"}
                         </button>
                     </article>
                 ))}
