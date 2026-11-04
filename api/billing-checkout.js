@@ -1,6 +1,8 @@
 /**
  * POST /api/billing-checkout
- *   Starts an embedded Stripe Checkout session for the organisation.
+ *   Starts a Stripe Checkout session in elements mode for the organisation —
+ *   the platform renders the checkout window itself with Stripe Elements
+ *   (src/Components/SubscriptionPlans/CheckoutForm.js).
  *   Headers: Authorization, Organisation
  *   Body:    { planId: "personal" | "starter" | "growth" | "agency-pro", returnPath?: "/settings" }
  *   200 { clientSecret, publishableKey }
@@ -88,7 +90,7 @@ async function createSession(req, res, db, organisationId, email) {
 
     const session = await stripe("POST", "/checkout/sessions", {
         mode:                "subscription",
-        ui_mode:             "embedded",
+        ui_mode:             "elements",
         customer:            customerId,
         line_items:          [{ price: priceId, quantity: 1 }],
         client_reference_id: organisationId,

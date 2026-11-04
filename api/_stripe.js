@@ -21,7 +21,9 @@ import crypto from "crypto";
 
 // Pinned so response shapes don't change with the account's default version.
 // From 2025-03-31.basil, current_period_end lives on the subscription items.
-const STRIPE_VERSION = "2025-03-31.basil";
+// Must match the Stripe.js build the checkout loads (js.stripe.com/endive/),
+// which is what understands ui_mode "elements" sessions.
+const STRIPE_VERSION = "2026-10-28.endive";
 
 // Plans in tier order (lowest first) — keep in sync with src/Functions/tier.js.
 export const PLANS = ["personal", "starter", "growth", "agency-pro"];
