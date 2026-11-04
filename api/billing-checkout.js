@@ -7,7 +7,9 @@
  *   Body:    { planId: "personal" | "starter" | "growth" | "agency-pro", returnPath?: "/settings" }
  *   The Stripe customer is left without an email so the checkout form can
  *   set the billing email (which may differ from the login email).
- *   200 { clientSecret, publishableKey }
+ *   200 { clientSecret, publishableKey, trialDays }
+ *       trialDays is 30, or 0 when the organisation already had a
+ *       subscription (one trial per organisation).
  *   409 when the organisation already has an active subscription — plan
  *       changes go through the customer portal instead.
  *
@@ -24,6 +26,9 @@ import {
 } from "./_stripe.js";
 
 const APP_URL = "https://www.intastellarconsents.com";
+
+// Every plan starts with a free trial — once per organisation.
+const TRIAL_DAYS = 30;
 
 export default async function handler(req, res) {
     setCors(req, res, "GET, POST");
@@ -92,6 +97,8 @@ async function createSession(req, res, db, organisationId) {
         customerId = stored[0].stripe_customer_id;
     }
 
+    const trialDays = (await hadSubscription(db, organisationId, livemode, customerId)) ? 0 : TRIAL_DAYS;
+
     const origin = ALLOWED_ORIGINS.includes(req.headers.origin) ? req.headers.origin : APP_URL;
     const path   = typeof returnPath === "string" && /^\/(?!\/)[^\s?#]*$/.test(returnPath) ? returnPath : "/dashboard";
 
@@ -102,7 +109,8 @@ async function createSession(req, res, db, organisationId) {
         line_items:          [{ price: priceId, quantity: 1 }],
         client_reference_id: organisationId,
         return_url:          `${origin}${path}?session_id={CHECKOUT_SESSION_ID}`,
-        subscription_data:   { metadata: { organisation_id: organisationId } },
+        // The card is collected now and first charged when the trial ends.
+        subscription_data:   { metadata: { organisation_id: organisationId }, trial_period_days: trialDays || undefined },
         billing_address_collection: "required",
         tax_id_collection:   { enabled: true },
         // Company name comes from the platform's own field (updateBusinessName).
@@ -110,7 +118,19 @@ async function createSession(req, res, db, organisationId) {
         customer_update:     { address: "auto", name: "auto" },
     });
 
-    return res.status(200).json({ clientSecret: session.client_secret, publishableKey: publishableKey() });
+    return res.status(200).json({ clientSecret: session.client_secret, publishableKey: publishableKey(), trialDays });
+}
+
+// Any earlier subscription — ours, or one from the old pricing table under
+// another Stripe customer (backfilled) — uses up the trial.
+async function hadSubscription(db, organisationId, livemode, customerId) {
+    const { rows } = await db.query(
+        `SELECT 1 FROM billing_subscriptions WHERE organisation_id = $1 AND livemode = $2 LIMIT 1`,
+        [organisationId, livemode]
+    );
+    if (rows.length) return true;
+    const prior = await stripe("GET", "/subscriptions", { customer: customerId, status: "all", limit: 1 });
+    return prior.data.length > 0;
 }
 
 async function confirmSession(req, res, db, organisationId) {
