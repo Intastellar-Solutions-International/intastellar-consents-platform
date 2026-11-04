@@ -14,9 +14,13 @@
  *   mode             "live" | "test" (default: the platform's Stripe mode)
  *
  * 200 { subscriptions: [{ organisation_id, plan, status, current_period_end,
- *       cancel_at_period_end, amount, currency, interval, customer_email,
- *       customer_name, stripe_subscription_id, stripe_customer_id,
- *       created_at, updated_at }] }
+ *       cancel_at_period_end, amount, currency, interval, company_name,
+ *       customer_email, customer_name, stripe_subscription_id,
+ *       stripe_customer_id, created_at, updated_at }] }
+ *
+ *   company_name   the company entered at checkout (prefilled with the
+ *                  organisation's name; null when bought as an individual)
+ *   customer_name  the Stripe customer's name — the company, or the person
  */
 
 import crypto from "crypto";
@@ -74,6 +78,7 @@ export default async function handler(req, res) {
                 amount:                 r.amount,
                 currency:               r.currency,
                 interval:               r.billing_interval,
+                company_name:           r.company_name,
                 customer_email:         r.customer_email,
                 customer_name:          r.customer_name,
                 stripe_subscription_id: r.stripe_subscription_id,

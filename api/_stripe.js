@@ -226,6 +226,8 @@ export async function ensureBillingTables(db) {
         )
     `);
     await db.query(`CREATE INDEX IF NOT EXISTS billing_subscriptions_org_idx ON billing_subscriptions (organisation_id, livemode)`);
+    // Company name entered at checkout (Stripe customer.business_name).
+    await db.query(`ALTER TABLE billing_subscriptions ADD COLUMN IF NOT EXISTS company_name TEXT`);
     tablesReady = true;
 }
 
@@ -284,8 +286,8 @@ export async function syncSubscription(db, subscriptionId, { organisationId: hin
         `INSERT INTO billing_subscriptions
              (stripe_subscription_id, organisation_id, stripe_customer_id, customer_email, customer_name,
               plan, price_id, status, cancel_at_period_end, current_period_end,
-              amount, currency, billing_interval, livemode)
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, to_timestamp($10), $11, $12, $13, $14)
+              amount, currency, billing_interval, livemode, company_name)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, to_timestamp($10), $11, $12, $13, $14, $15)
          ON CONFLICT (stripe_subscription_id) DO UPDATE SET
              organisation_id      = EXCLUDED.organisation_id,
              stripe_customer_id   = EXCLUDED.stripe_customer_id,
@@ -300,12 +302,14 @@ export async function syncSubscription(db, subscriptionId, { organisationId: hin
              currency             = EXCLUDED.currency,
              billing_interval     = EXCLUDED.billing_interval,
              livemode             = EXCLUDED.livemode,
+             company_name         = EXCLUDED.company_name,
              updated_at           = NOW()
          RETURNING *`,
         [
             sub.id, organisationId, customerId, customer?.email || null, customer?.name || null,
             plan, price?.id || null, sub.status, !!sub.cancel_at_period_end, periodEnd,
             price?.unit_amount ?? null, price?.currency || null, price?.recurring?.interval || null, !!sub.livemode,
+            customer?.business_name || null,
         ]
     );
     return rows[0];
