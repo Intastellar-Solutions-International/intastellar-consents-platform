@@ -1,3 +1,17 @@
 {
-  "type": "module"
+  "name": "intastellar-consents-api",
+  "private": true,
+  "type": "module",
+  "description": "Runtime dependencies of the Vercel functions. Vercel installs from this folder, not the repo root — keep in sync with the root package.json (test/api-dependencies.test.mjs checks).",
+  "dependencies": {
+    "@sparticuz/chromium": "147.0.0",
+    "@vercel/blob": "2.6.1",
+    "maxmind": "5.0.7",
+    "node-html-parser": "9.0.1",
+    "pg": "8.22.0",
+    "puppeteer-core": "10.4.0",
+    "tar-stream": "2.2.0",
+    "terser": "5.51.2",
+    "web-push": "3.6.7"
+  }
 }
