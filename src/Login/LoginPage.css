@@ -2,38 +2,68 @@
    dark surface, so signing in looks like the product you land in. */
 
 .int-login {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
     min-height: 100dvh;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: var(--space-8);
-    padding: var(--space-12) var(--space-4) var(--space-8);
+    /* Vertical spacing shrinks with the window height, so card, selling
+       points and footer fit on a laptop screen without scrolling. */
+    gap: clamp(16px, 3vh, 32px);
+    padding: clamp(16px, 4vh, 48px) var(--space-4) clamp(12px, 3vh, 32px);
     box-sizing: border-box;
-    background:
-        radial-gradient(ellipse 70% 45% at 50% 0%, rgb(var(--c-accent) / 0.14), transparent 70%),
-        rgb(var(--c-bg-sunken));
+    background: rgb(var(--c-bg-sunken));
     color: var(--color-text-primary);
     font-family: var(--font-sans);
+}
+
+/* Background photo, softened and darkened so it sets the mood without
+   competing with the card. Scaled up a touch so the blur has no soft edge. */
+.int-login::before,
+.int-login::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+}
+
+.int-login::before {
+    background: var(--login-background) center / cover no-repeat;
+    filter: blur(20px) saturate(0.9);
+    transform: scale(1.08);
+}
+
+.int-login::after {
+    background:
+        radial-gradient(ellipse at center, rgb(var(--c-black) / 0.35) 0%, rgb(var(--c-black) / 0.75) 100%),
+        rgb(var(--c-bg-sunken) / 0.55);
 }
 
 .int-login__card {
     width: 100%;
     max-width: 400px;
     text-align: center;
-    padding: var(--space-10) var(--space-8) var(--space-8);
+    padding: clamp(24px, 4vh, 40px) var(--space-8) clamp(20px, 3.5vh, 32px);
     box-sizing: border-box;
     border-radius: var(--radius-xl);
-    border: 1px solid rgb(var(--c-white) / 0.08);
-    background: rgb(var(--c-bg-base));
+    border: 1px solid rgb(var(--c-white) / 0.1);
+    background: rgb(var(--c-bg-base) / 0.94);
+    -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(12px);
     box-shadow: 0 24px 64px rgb(var(--c-black) / 0.45);
 }
 
 .int-login__logo {
     display: block;
-    height: 28px;
+    height: 52px;
+    max-width: 100%;
     width: auto;
-    margin: 0 auto var(--space-10);
+    object-fit: contain;
+    margin: 0 auto clamp(20px, 3.5vh, 36px);
 }
 
 .int-login__headline {
@@ -45,8 +75,17 @@
     color: var(--color-text-primary);
 }
 
+.int-login__intro--pending {
+    opacity: 0;
+}
+
+.int-login__headline:not(.int-login__intro--pending),
+.int-login__lede:not(.int-login__intro--pending) {
+    transition: opacity 0.2s ease;
+}
+
 .int-login__lede {
-    margin: var(--space-2) 0 var(--space-8);
+    margin: var(--space-2) 0 clamp(16px, 3vh, 32px);
     font-size: var(--text-base);
     color: var(--color-text-muted);
 }
@@ -128,7 +167,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: 0 0 var(--space-6);
+    margin: 0 0 clamp(20px, 3.5vh, 32px);
 }
 
 .int-login__avatar {
@@ -253,6 +292,97 @@
     color: rgb(var(--c-danger));
 }
 
+/* Cross on the photo's top-right corner. The visible disc is 30px; the
+   ::before extends the click/tap area to about 38px. */
+.int-login__remove {
+    position: absolute;
+    top: -6px;
+    right: -8px;
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    border: 2px solid rgb(var(--c-bg-base));
+    border-radius: 50%;
+    background: rgb(var(--c-bg-raised));
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.int-login__remove::before {
+    content: "";
+    position: absolute;
+    inset: -4px;
+}
+
+.int-login__remove:hover {
+    background: rgb(var(--c-danger));
+    color: rgb(var(--c-text-inverse));
+}
+
+.int-login__remove:focus-visible {
+    outline: 2px solid rgb(var(--c-accent-strong));
+    outline-offset: 2px;
+}
+
+/* ── Under the main button: what it does + trust note, or popup actions ── */
+
+.int-login__hint {
+    display: flex;
+    gap: var(--space-2);
+    align-items: flex-start;
+    margin: var(--space-3) 0 0;
+    font-size: var(--text-xs);
+    line-height: 1.5;
+    text-align: left;
+    color: var(--color-text-muted);
+}
+
+.int-login__hint svg {
+    flex-shrink: 0;
+    margin-top: 1px;
+    color: rgb(var(--c-success));
+}
+
+.int-login__popup-actions {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-4);
+    margin: var(--space-3) 0 0;
+}
+
+.int-login__text-btn {
+    padding: var(--space-1) var(--space-2);
+    border: 0;
+    border-radius: var(--radius-sm);
+    background: none;
+    font: inherit;
+    font-size: var(--text-sm);
+    color: var(--color-accent-strong);
+    cursor: pointer;
+}
+
+.int-login__text-btn:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+/* Inside a sentence (the timed-out error). */
+.int-login__text-btn--inline {
+    padding: 0;
+    font-size: inherit;
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+.int-login__text-btn:focus-visible {
+    outline: 2px solid rgb(var(--c-accent-strong));
+    outline-offset: 2px;
+}
+
 /* ── Secondary links ── */
 
 .int-login__switch {
@@ -278,12 +408,130 @@
 }
 
 .int-login__signup {
-    margin: var(--space-8) 0 0;
-    padding-top: var(--space-6);
+    margin: clamp(16px, 3vh, 32px) 0 0;
+    padding-top: clamp(12px, 2.5vh, 24px);
     border-top: 1px solid rgb(var(--c-white) / 0.08);
     font-size: var(--text-sm);
     color: var(--color-text-muted);
     text-align: center;
+}
+
+/* ── Toast (e.g. "Account removed from this device") ── */
+
+.int-login__toast {
+    position: fixed;
+    left: 50%;
+    bottom: var(--space-6);
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    max-width: calc(100vw - 2 * var(--space-4));
+    padding: var(--space-3) var(--space-4);
+    box-sizing: border-box;
+    border-radius: var(--radius-lg);
+    border: 1px solid rgb(var(--c-white) / 0.12);
+    background: rgb(var(--c-bg-raised));
+    box-shadow: 0 12px 32px rgb(var(--c-black) / 0.45);
+    font-size: var(--text-sm);
+    color: var(--color-text-primary);
+    opacity: 0;
+    transform: translate(-50%, 12px);
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.int-login__toast--visible {
+    opacity: 1;
+    transform: translate(-50%, 0);
+    pointer-events: auto;
+}
+
+.int-login__toast-action {
+    margin: calc(-1 * var(--space-1)) calc(-1 * var(--space-2)) calc(-1 * var(--space-1)) var(--space-2);
+    padding: var(--space-1) var(--space-2);
+    border: 0;
+    border-radius: var(--radius-sm);
+    background: none;
+    font: inherit;
+    font-weight: 600;
+    color: var(--color-accent-strong);
+    cursor: pointer;
+}
+
+.int-login__toast-action:hover {
+    background: rgb(var(--c-accent) / 0.12);
+}
+
+.int-login__toast-action:focus-visible {
+    outline: 2px solid rgb(var(--c-accent-strong));
+    outline-offset: 2px;
+}
+
+.int-login__toast svg {
+    flex-shrink: 0;
+    color: rgb(var(--c-success));
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .int-login__toast {
+        transform: translate(-50%, 0);
+        transition: opacity 0.2s ease;
+    }
+}
+
+/* ── Selling points under the card ── */
+
+.int-login__points {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-6);
+    width: 100%;
+    max-width: 680px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    text-align: center;
+    /* These sit on the photo, not the card; keeps them readable over the
+       brighter patches of light. */
+    text-shadow: 0 1px 3px rgb(var(--c-black) / 0.7);
+}
+
+.int-login__point {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-1);
+    font-size: var(--text-sm);
+    line-height: 1.45;
+}
+
+.int-login__point-icon {
+    margin-bottom: var(--space-1);
+    color: var(--color-accent-strong);
+}
+
+.int-login__point-title {
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.int-login__point-text {
+    color: var(--color-text-secondary);
+}
+
+/* ── Language switcher (top right; LanguageMenu styles the rest) ── */
+
+.int-login__language {
+    position: absolute;
+    top: var(--space-4);
+    right: var(--space-4);
+    z-index: 5;
+}
+
+.int-login__language .lang-menu__button {
+    -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
 }
 
 /* ── Page footer ── */
@@ -307,10 +555,26 @@
     text-decoration: underline;
 }
 
+/* Short windows: keep the selling-point titles, drop their second line. */
+@media (max-height: 820px) and (min-width: 641px) {
+    .int-login__point-text {
+        display: none;
+    }
+}
+
+@media (max-width: 640px) {
+    .int-login__points {
+        grid-template-columns: 1fr;
+        max-width: 400px;
+        gap: var(--space-4);
+    }
+}
+
 @media (max-width: 480px) {
     .int-login {
         justify-content: flex-start;
-        padding-top: var(--space-8);
+        /* Room for the language switcher above the card. */
+        padding-top: 68px;
     }
 
     .int-login__card {

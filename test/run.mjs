@@ -37,5 +37,7 @@ import "./shell.test.mjs";
 import "./transfer-vendors.test.mjs";
 import "./client-reports.test.mjs";
 import "./team-insights.test.mjs";
+import "./login-translations.test.mjs";
+import "./i18n.test.mjs";
 
 await run();
