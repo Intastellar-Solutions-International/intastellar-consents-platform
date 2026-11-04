@@ -1,6 +1,8 @@
-const { useState, useEffect, useCallback } = React;
+const { useState, useEffect, useCallback, useContext } = React;
 import { ScannerHost } from "../../API/host.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
+import { WorkspaceContext } from "../../App.js";
+import { canAccess, FEATURE_TIERS } from "../../Functions/tier.js";
 import { authHeaders, useAnalyticsPageChrome, useCompareRange } from "./_shared.js";
 import "./Analytics.css";
 
@@ -28,16 +30,18 @@ const EMPTY_FORM = {
     recipients: "", label: "", enabled: true,
 };
 
-function useScheduledReports(domain) {
+// scope: { domain } for one site's reports, { workspace } for a client's.
+function useScheduledReports(scope) {
     const [reports, setReports] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error,   setError]   = useState(null);
+    const scopeKey = scope ? JSON.stringify(scope) : null;
 
     const reload = useCallback(() => {
-        if (!domain) { setReports([]); return; }
+        if (!scopeKey) { setReports([]); return; }
         setLoading(true);
         setError(null);
-        const qs = new URLSearchParams({ domain }).toString();
+        const qs = new URLSearchParams(JSON.parse(scopeKey)).toString();
         fetch(`${REPORTS_URL}?${qs}`, { headers: authHeaders() })
             .then(async r => {
                 if (!r.ok) throw new Error(r.status);
@@ -46,7 +50,7 @@ function useScheduledReports(domain) {
             })
             .catch(() => setError("Could not load scheduled reports."))
             .finally(() => setLoading(false));
-    }, [domain]);
+    }, [scopeKey]);
 
     useEffect(() => { reload(); }, [reload]);
 
@@ -67,7 +71,24 @@ function scheduleLabel(cfg) {
     return `Weekly on ${DAY_OF_WEEK_LABELS[Number(cfg.day_of_week)] || "—"}`;
 }
 
-function ReportRow({ cfg, domain, onToggle, onDelete }) {
+// The email exactly as recipients get it, in a new tab.
+async function openPreview(scope, id) {
+    const tab = window.open("", "_blank");
+    if (!tab) return "Allow pop-ups to preview the report.";
+    const qs = new URLSearchParams({ ...scope, id, preview: "1" }).toString();
+    const r = await fetch(`${REPORTS_URL}?${qs}`, { headers: authHeaders() }).catch(() => null);
+    const json = r ? await r.json().catch(() => null) : null;
+    if (!r?.ok || !json?.html) {
+        tab.close();
+        return json?.error || "Couldn't build the preview.";
+    }
+    tab.document.write(json.html);
+    tab.document.title = json.subject || "Report preview";
+    tab.document.close();
+    return null;
+}
+
+function ReportRow({ cfg, scope, onToggle, onDelete }) {
     const [busy, setBusy] = useState(false);
     const [testMsg, setTestMsg] = useState(null);
     const [editing, setEditing] = useState(false);
@@ -100,7 +121,7 @@ function ReportRow({ cfg, domain, onToggle, onDelete }) {
         if (invalid) { setEditError(`"${invalid}" is not a valid email address.`); return; }
 
         setBusy(true);
-        const qs = new URLSearchParams({ domain, id: cfg.id }).toString();
+        const qs = new URLSearchParams({ ...scope, id: cfg.id }).toString();
         const body = {
             label:        editForm.label,
             frequency:    editForm.frequency,
@@ -121,7 +142,7 @@ function ReportRow({ cfg, domain, onToggle, onDelete }) {
 
     async function toggle() {
         setBusy(true);
-        const qs = new URLSearchParams({ domain, id: cfg.id }).toString();
+        const qs = new URLSearchParams({ ...scope, id: cfg.id }).toString();
         await fetch(`${REPORTS_URL}?${qs}`, {
             method: "PUT",
             headers: authHeaders(),
@@ -134,7 +155,7 @@ function ReportRow({ cfg, domain, onToggle, onDelete }) {
     async function remove() {
         if (!window.confirm(`Delete report "${cfg.label || scheduleLabel(cfg)}"?`)) return;
         setBusy(true);
-        const qs = new URLSearchParams({ domain, id: cfg.id }).toString();
+        const qs = new URLSearchParams({ ...scope, id: cfg.id }).toString();
         await fetch(`${REPORTS_URL}?${qs}`, { method: "DELETE", headers: authHeaders() }).catch(() => {});
         onDelete();
         setBusy(false);
@@ -143,11 +164,17 @@ function ReportRow({ cfg, domain, onToggle, onDelete }) {
     async function sendTest() {
         setBusy(true);
         setTestMsg(null);
-        const qs = new URLSearchParams({ domain, id: cfg.id, test: "1" }).toString();
+        const qs = new URLSearchParams({ ...scope, id: cfg.id, test: "1" }).toString();
         const r = await fetch(`${REPORTS_URL}?${qs}`, { method: "POST", headers: authHeaders() }).catch(() => null);
-        setTestMsg(r && r.ok ? "Test email sent!" : "Failed to send test email.");
+        const json = r && !r.ok ? await r.json().catch(() => null) : null;
+        setTestMsg(r && r.ok ? "Test email sent!" : json?.error || "Failed to send test email.");
         setBusy(false);
         setTimeout(() => setTestMsg(null), 4000);
+    }
+
+    async function preview() {
+        const failure = await openPreview(scope, cfg.id);
+        if (failure) { setTestMsg(failure); setTimeout(() => setTestMsg(null), 4000); }
     }
 
     return (
@@ -157,10 +184,18 @@ function ReportRow({ cfg, domain, onToggle, onDelete }) {
                 <span className="sa-alert-row__rule">
                     {scheduleLabel(cfg)} — {(cfg.recipients || []).length} recipient{(cfg.recipients || []).length === 1 ? "" : "s"}
                 </span>
+                {cfg.workspace_id && (
+                    <span className="sa-alert-row__last">
+                        Covers {(cfg.domains || []).length} domain{(cfg.domains || []).length === 1 ? "" : "s"}: {(cfg.domains || []).join(", ")}
+                    </span>
+                )}
                 <span className="sa-alert-row__last">Last sent: {fmtDate(cfg.last_sent_at)}</span>
                 {testMsg && <span className="sa-alert-row__last">{testMsg}</span>}
             </div>
             <div className="sa-alert-row__actions">
+                <button className="sa-btn sa-btn--sm" onClick={preview} disabled={busy}>
+                    Preview
+                </button>
                 <button className="sa-btn sa-btn--sm" onClick={sendTest} disabled={busy}>
                     Send test now
                 </button>
@@ -248,7 +283,7 @@ function ReportRow({ cfg, domain, onToggle, onDelete }) {
     );
 }
 
-function NewReportForm({ domain, onCreated }) {
+function NewReportForm({ scope, extraBody, title = "New Scheduled Report", description, onCreated }) {
     const [form, setForm] = useState({ ...EMPTY_FORM });
     const [busy, setBusy] = useState(false);
     const [formError, setFormError] = useState(null);
@@ -268,8 +303,9 @@ function NewReportForm({ domain, onCreated }) {
         if (invalid) { setFormError(`"${invalid}" is not a valid email address.`); return; }
 
         setBusy(true);
-        const qs = new URLSearchParams({ domain }).toString();
+        const qs = new URLSearchParams(scope).toString();
         const body = {
+            ...extraBody,
             frequency: form.frequency,
             day_of_week: form.frequency === "weekly" ? Number(form.day_of_week) : undefined,
             day_of_month: form.frequency === "monthly" ? Number(form.day_of_month) : undefined,
@@ -283,15 +319,19 @@ function NewReportForm({ domain, onCreated }) {
             body: JSON.stringify(body),
         }).catch(() => null);
         setBusy(false);
-        if (!r || !r.ok) { setFormError("Failed to create scheduled report."); return; }
+        if (!r || !r.ok) {
+            const json = r ? await r.json().catch(() => null) : null;
+            setFormError(json?.error || "Failed to create scheduled report.");
+            return;
+        }
         setForm({ ...EMPTY_FORM });
         onCreated();
     }
 
     return (
         <div className="sa-panel sa-alert-form">
-            <h3 className="sa-panel__title">New Scheduled Report</h3>
-            <p className="sa-panel__sub">Email a condensed performance summary to any address(es), weekly or monthly.</p>
+            <h3 className="sa-panel__title">{title}</h3>
+            <p className="sa-panel__sub">{description || "Email a condensed performance summary to any address(es), weekly or monthly."}</p>
             <form className="sa-alert-form__fields" onSubmit={submit}>
                 <label className="sa-form-label">
                     Frequency
@@ -359,14 +399,79 @@ function NewReportForm({ domain, onCreated }) {
     );
 }
 
+// The domains a workspace covers, in the form stored on its client reports.
+function workspaceDomains(workspace) {
+    return [...new Set((workspace?.domains || []).map(d => String(d?.domain ?? d ?? "").trim().toLowerCase()).filter(Boolean))].sort();
+}
+
+function ReportsSection({ scope, title, emptyText, formProps }) {
+    const { reports, loading, error, reload } = useScheduledReports(scope);
+    return (
+        <>
+            {loading && <p className="sa-notice">Loading&hellip;</p>}
+            {error && <p className="sa-notice sa-notice--error">{error}</p>}
+            {!loading && (
+                <div className="sa-alerts-grid">
+                    <div className="sa-panel">
+                        <h3 className="sa-panel__title">{title}</h3>
+                        {reports.length === 0 && (
+                            <p className="sa-notice" style={{ margin: "16px 0" }}>{emptyText}</p>
+                        )}
+                        <div className="sa-alert-list">
+                            {reports.map(cfg => (
+                                <ReportRow key={cfg.id} cfg={cfg} scope={scope}
+                                    onToggle={reload} onDelete={reload} />
+                            ))}
+                        </div>
+                        <p className="sa-panel__sub" style={{ marginTop: 16 }}>
+                            Reports are sent daily at 08:00 UTC on their scheduled day.
+                        </p>
+                    </div>
+
+                    <NewReportForm scope={scope} onCreated={reload} {...formProps} />
+                </div>
+            )}
+            <ClientReportSync scope={scope} onSynced={reload} />
+        </>
+    );
+}
+
+// Client reports keep their own copy of the workspace's name and domains
+// (the cron can't read workspaces), so bring those copies up to date when
+// the workspace has changed since.
+function ClientReportSync({ scope, onSynced }) {
+    const [workspace] = useContext(WorkspaceContext);
+    useEffect(() => {
+        if (!scope.workspace || !workspace) return;
+        const domains = workspaceDomains(workspace);
+        if (!domains.length) return;
+        const qs = new URLSearchParams(scope).toString();
+        fetch(`${REPORTS_URL}?${qs}`, { headers: authHeaders() })
+            .then(r => (r.ok ? r.json() : { reports: [] }))
+            .then(({ reports = [] }) => Promise.all(reports
+                .filter(cfg => JSON.stringify([...(cfg.domains || [])].sort()) !== JSON.stringify(domains) || cfg.workspace_name !== workspace.name)
+                .map(cfg => fetch(`${REPORTS_URL}?${new URLSearchParams({ ...scope, id: cfg.id })}`, {
+                    method: "PUT",
+                    headers: authHeaders(),
+                    body: JSON.stringify({ domains, workspace_name: workspace.name }),
+                }))))
+            .then(updated => { if (updated.length) onSynced(); })
+            .catch(() => { /* retried on the next visit */ });
+    }, [scope.workspace, workspace]);
+    return null;
+}
+
 export default function AnalyticsScheduledReports() {
     document.title = "Scheduled Reports | Site Analytics";
 
     const {
         domain, getLastDays, setLastDays, fromDate, setFromDate, toDate, setToDate,
     } = useAnalyticsPageChrome();
+    const [workspace] = useContext(WorkspaceContext);
 
-    const { reports, loading, error, reload } = useScheduledReports(domain);
+    // Agency Pro: reports for the active client workspace as a whole.
+    const clientScope = workspace?.id && canAccess(FEATURE_TIERS.client_level_reporting) ? { workspace: String(workspace.id) } : null;
+    const clientDomains = workspaceDomains(workspace);
 
     // Compare-to-previous-period header wiring (Phase 3, docs/design-audit-plan.md).
     const compare = useCompareRange();
@@ -391,34 +496,28 @@ export default function AnalyticsScheduledReports() {
             />
             <div className="dashboard-content">
                 <div className="sa-page">
-                    {!domain && (
+                    {clientScope && (
+                        <ReportsSection
+                            scope={clientScope}
+                            title={`Client reports — ${workspace.name || "this client"}`}
+                            emptyText={`No client reports yet. Create one to send ${workspace.name || "this client"} a summary across all ${clientDomains.length} of their domains.`}
+                            formProps={{
+                                title: "New Client Report",
+                                description: `One email covering all of ${workspace.name || "this client"}'s domains (${clientDomains.join(", ") || "none yet"}): combined totals plus a breakdown per domain. Follows the workspace when you add or remove domains.`,
+                                extraBody: { workspace_name: workspace.name, domains: clientDomains },
+                            }}
+                        />
+                    )}
+
+                    {!domain && !clientScope && (
                         <p className="sa-notice">Select a domain in the header to manage scheduled reports.</p>
                     )}
-                    {domain && loading && <p className="sa-notice">Loading&hellip;</p>}
-                    {domain && error && <p className="sa-notice sa-notice--error">{error}</p>}
-
-                    {domain && !loading && (
-                        <div className="sa-alerts-grid">
-                            <div className="sa-panel">
-                                <h3 className="sa-panel__title">Active Reports</h3>
-                                {reports.length === 0 && (
-                                    <p className="sa-notice" style={{ margin: "16px 0" }}>
-                                        No scheduled reports yet. Create one below.
-                                    </p>
-                                )}
-                                <div className="sa-alert-list">
-                                    {reports.map(cfg => (
-                                        <ReportRow key={cfg.id} cfg={cfg} domain={domain}
-                                            onToggle={reload} onDelete={reload} />
-                                    ))}
-                                </div>
-                                <p className="sa-panel__sub" style={{ marginTop: 16 }}>
-                                    Reports are sent daily at 08:00 UTC on their scheduled day.
-                                </p>
-                            </div>
-
-                            <NewReportForm domain={domain} onCreated={reload} />
-                        </div>
+                    {domain && (
+                        <ReportsSection
+                            scope={{ domain }}
+                            title={clientScope ? `Reports for ${domain}` : "Active Reports"}
+                            emptyText="No scheduled reports yet. Create one below."
+                        />
                     )}
                 </div>
             </div>

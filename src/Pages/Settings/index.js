@@ -27,6 +27,7 @@ const SETTINGS_HUB_COPY = {
     "https://intastellaraccounts.com/settings/org-privacy": "Set organisation-wide privacy defaults — marketing, telemetry, data sharing, and visibility — and lock what members can't override themselves. Managed on IntastellarAccounts.com.",
     "/settings/blacklist-ip": "Exclude specific IP addresses from analytics and reporting.",
     "/settings/workspaces": "Manage client workspaces for your agency. Create and organize client domains.",
+    "/settings/team-insights": "See who on your team uses the platform, how often, and which sections and domains they work on.",
 };
 
 

@@ -1,19 +1,17 @@
-import "./Login.css";
+import "./LoginPage.css";
 import logo from "../Components/Header/logo.svg";
-import logoBlack from "../Components/Header/logo-black.svg";
-import { LPFooter } from "../Components/Footer";
 import API from "../API/api.js";
 import { useIntastellar } from "@intastellar/signin-sdk-react";
 import appStorage from '../Functions/storage.js';
+import { Icon } from "../Components/UI/icons.js";
 
+const { useState, useRef } = React;
+
+// Looks up the account's organisations, stores the session and opens the
+// dashboard. Rejects when the account can't be signed in, so the page can
+// say so instead of sitting on the loading state.
 function handleLogin(account) {
-
-    console.log("Receiving the user");
-
-    console.log("User account:", account);
-
-    if (!account) return;
-    fetch(API.OrganisationData.url, {
+    return fetch(API.OrganisationData.url, {
             withCredentials: false,
             method: "POST",
             headers: {
@@ -26,9 +24,8 @@ function handleLogin(account) {
         })
     .then((response) => response.json())
     .then((response) => {
-        if (response === "Err_Logon_Fail") {
-            console.error("Login failed: organisation lookup rejected");
-            return;
+        if (response === "Err_Logon_Fail" || !Array.isArray(response)) {
+            throw new Error("organisation lookup rejected");
         }
         localStorage.setItem("platform", "gdpr");
         appStorage.setItem("organisation", JSON.stringify(response[0]));
@@ -54,194 +51,157 @@ function handleLogin(account) {
         } else {
             window.location.href = `/${platform}/dashboard`;
         }
-    })
-    .catch((error) => {
-        console.error("Error during login:", error);
     });
+}
+
+function fullNameOf(user) {
+    return [user?.name?.first, user?.name?.last].filter(Boolean).join(" ");
+}
+
+function initialsOf(user) {
+    const name = fullNameOf(user) || user?.email || "";
+    return name.split(/[\s@.]+/).filter(Boolean).slice(0, 2).map((part) => part[0].toUpperCase()).join("");
+}
+
+// Photo, name and email of the account being signed in. `state`:
+//   "idle"     — recognised account, waiting for Continue
+//   "checking" — shimmering placeholder while the SDK looks for an account
+//   "signing"  — gold arc circling the photo while the dashboard loads
+function AccountIdentity({ user, state = "idle" }) {
+    if (state === "checking") {
+        return (
+            <div className="int-login__account int-login__account--checking" aria-hidden="true">
+                <span className="int-login__avatar int-login__skeleton" />
+                <span className="int-login__skeleton int-login__skeleton-line" />
+                <span className="int-login__skeleton int-login__skeleton-line int-login__skeleton-line--email" />
+            </div>
+        );
+    }
+    const name = fullNameOf(user);
+    return (
+        <div className={`int-login__account${state === "signing" ? " int-login__account--signing" : ""}`}>
+            <span className="int-login__avatar">
+                {/* The name below says who it is, so the photo is decorative. */}
+                {user?.image
+                    ? <img src={user.image} alt="" className="int-login__avatar-image" />
+                    : <span className="int-login__avatar-initials" aria-hidden="true">{initialsOf(user)}</span>}
+            </span>
+            <p className="int-login__account-name">{name || user?.email}</p>
+            {name && <p className="int-login__account-email">{user.email}</p>}
+        </div>
+    );
 }
 
 export default function Login() {
     document.title = "Log in to Intastellar Consents — Intastellar Solutions International";
-    const { isLoading, signin, users } = useIntastellar({
+    // The account being signed in (after the Intastellar popup), and why the
+    // last attempt failed.
+    const [signingIn, setSigningIn] = useState(null);
+    const [loginError, setLoginError] = useState(null);
+
+    // The SDK keeps the first loginCallback it's given, so route through a ref.
+    const onLogin = useRef(null);
+    onLogin.current = (account) => {
+        if (!account) return;
+        setLoginError(null);
+        setSigningIn(account);
+        handleLogin(account).catch((error) => {
+            console.error("Error during login:", error);
+            setSigningIn(null);
+            setLoginError("We couldn't find an organisation for this account. Try another account, or contact us if this keeps happening.");
+        });
+    };
+
+    const { isLoading, signin, users, error: sdkError } = useIntastellar({
         clientId: "d2eefd7f1564fa4c9714000456183a6b0f51e8c9519e1089ec41ce905ffc0c453dfac91ae8645c41ebae9c59e7a6e5233b1339e41a15723a9ba6d934bbb3e92d",
         appName: "Intastellar Consents",
-        loginCallback: handleLogin,
+        loginCallback: (account) => onLogin.current(account),
         scopes: "profile",
         type: "signin",
     });
 
+    const firstUser = users.length === 1 ? users[0] : null;
+    const errorMessage = loginError || sdkError;
+
     return (
-        <>
-            <div className="int-login">
-                <div className="int-login__split">
-                    <main className="int-login__panel int-login__panel--form">
-                        <div
-                            className="int-login__card"
-                            role="region"
-                            aria-labelledby="int-login-heading"
+        <main className="int-login">
+            <section className="int-login__card" aria-labelledby="int-login-heading">
+                <img src={logo} alt="Intastellar Solutions" className="int-login__logo" decoding="async" />
+
+                <h1 id="int-login-heading" className="int-login__headline">Welcome back</h1>
+                {/* Announced to screen readers when it changes to "Signing you in…". */}
+                <p className="int-login__lede" aria-live="polite">
+                    {signingIn ? "Signing you in…" : "Sign in to Intastellar Consents"}
+                </p>
+
+                {signingIn ? (
+                    <AccountIdentity user={signingIn.user} state="signing" />
+                ) : isLoading ? (
+                    <AccountIdentity state="checking" />
+                ) : firstUser ? (
+                    <AccountIdentity user={firstUser} />
+                ) : null}
+
+                {errorMessage && !signingIn && (
+                    <p className="int-login__error" role="alert">
+                        <Icon name="alert-triangle" size={16} />
+                        <span>{errorMessage}</span>
+                    </p>
+                )}
+
+                {!signingIn && (
+                    <>
+                        <button
+                            type="button"
+                            className="int-login__signin-btn"
+                            onClick={() => signin()}
+                            disabled={isLoading}
                         >
-                            <div className="int-login__brand">
-                                <img
-                                    src={logoBlack}
-                                    alt="Intastellar Solutions"
-                                    className="int-login__logo"
-                                    decoding="async"
-                                />
-                            </div>
+                            {isLoading ? (
+                                <span className="int-login__signin-btn-inner">
+                                    <span className="int-login__signin-spinner" aria-hidden="true" />
+                                    Checking your account…
+                                </span>
+                            ) : firstUser ? (
+                                <span className="int-login__signin-btn-inner">
+                                    Continue
+                                    <Icon name="chevron-right" size={18} className="int-login__signin-btn-arrow" />
+                                </span>
+                            ) : (
+                                <span className="int-login__signin-btn-inner">
+                                    {users.length > 1 ? "Choose your account" : "Sign in with Intastellar Accounts"}
+                                </span>
+                            )}
+                        </button>
 
-                            <h1 id="int-login-heading" className="int-login__headline">
-                                Welcome back
-                            </h1>
-                            <p className="int-login__lede">
-                                Continue to Intastellar Consents
-                            </p>
-
-                            <div className="int-login__sso">
-                                <button
-                                    type="button"
-                                    className="int-login__signin-btn"
-                                    onClick={() => signin()}
-                                    disabled={isLoading}
-                                >
-                                    {isLoading ? (
-                                        <span className="int-login__signin-btn-inner">
-                                            <span className="int-login__signin-spinner" aria-hidden="true" />
-                                            Checking user...
-                                        </span>
-                                    ) : users.length == 1 ? (
-                                        <span className="int-login__signin-btn-inner">
-                                            <img src={users[0].image} className="int-login__signin-btn-inner-image" />
-                                            <span className="int-login__signin-btn-inner-text">
-                                                Continue as {users[0].name.first}
-                                                <span className="int-login__signin-btn-inner-text-email">{users[0].email}</span>
-                                            </span>
-                                        </span>
-                                    ) : users.length > 1 ? (
-                                        <span className="int-login__signin-btn-inner">
-                                            Choose your account
-                                        </span>
-                                    ) : (
-                                        <span className="int-login__signin-btn-inner">
-                                            Sign in with Intastellar Accounts
-                                        </span>
-                                    )}
-                                </button>
-                            </div>
-
-                            <div className="int-login__divider" role="separator" aria-label="or">
-                                <span>or</span>
-                            </div>
-
-                            <div className="int-login__new-here">
-                                <h2 className="int-login__new-here-title">New here?</h2>
-                                <p className="int-login__new-here-copy">
-                                    Create an account and get your cookie banner live on your site in minutes.
-                                </p>
-                                <a href="https://intastellar.eu/#get-started" className="int-login__new-here-btn">
-                                    Create an account
-                                </a>
-                            </div>
-
-                            <p className="int-login__not-you">
+                        {users.length > 0 && !isLoading && (
+                            <p className="int-login__switch">
                                 <a
                                     href={`https://www.intastellaraccounts.com/signin/v2/ws/identifier?service=Intastellar+Consents+%7C+CMP&continue=${window.location.host}&authuser=1&entryFlow=cHJvZmlsZQ%3D%3D&key=d2eefd7f1564fa4c9714000456183a6b0f51e8c9519e1089ec41ce905ffc0c453dfac91ae8645c41ebae9c59e7a6e5233b1339e41a15723a9ba6d934bbb3e92d&access_id=${window.location.hostname}&passive=true&flowName=GeneralOAuthFlow&Entry=webauthsignin&scope=profile`}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="int-login__not-you-link"
+                                    className="int-login__link"
                                 >
-                                    Not you? Switch account
+                                    Use another account
                                 </a>
                             </p>
-                        </div>
-                    </main>
+                        )}
 
-                    <aside className="int-login__panel int-login__panel--features" aria-label="Product features">
-                        <div className="int-login__features-inner">
-                            <div className="int-login__features-brand">
-                                <img src={logo} alt="Intastellar Solutions" className="int-login__features-logo" decoding="async" />
-                            </div>
-                            <h2 className="int-login__features-headline">
-                                Consent intelligence<br />for the modern web
-                            </h2>
-                            <p className="int-login__features-lede">
-                                GDPR-grade consent management, real-time analytics, and multi-client workspaces.
-                            </p>
-                            <ul className="int-login__features-list" aria-label="Key features">
-                                <li className="int-login__feature">
-                                    <span className="int-login__feature-icon" aria-hidden="true">
-                                        <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" width="18" height="18">
-                                            <circle cx="10" cy="10" r="3" fill="currentColor" opacity="0.9" />
-                                            <circle cx="10" cy="10" r="7.5" stroke="currentColor" strokeWidth="1.25" opacity="0.35" />
-                                            <circle cx="10" cy="10" r="5" stroke="currentColor" strokeWidth="1" opacity="0.55" strokeDasharray="2 2" />
-                                        </svg>
-                                    </span>
-                                    <div className="int-login__feature-copy">
-                                        <strong className="int-login__feature-title">Real-time consent monitoring</strong>
-                                        <span className="int-login__feature-desc">Live interaction feed with a 30-minute rolling window and country-level breakdown.</span>
-                                    </div>
-                                </li>
-                                <li className="int-login__feature">
-                                    <span className="int-login__feature-icon" aria-hidden="true">
-                                        <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" width="18" height="18">
-                                            <path d="M10 2L3.5 4.5v5c0 4.2 2.9 8.1 6.5 9.5C13.6 17.6 16.5 13.7 16.5 9.5v-5L10 2z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" fill="rgba(192,159,83,0.12)" />
-                                            <path d="m7 10 2 2 4-4" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
-                                        </svg>
-                                    </span>
-                                    <div className="int-login__feature-copy">
-                                        <strong className="int-login__feature-title">GDPR &amp; ePrivacy compliance</strong>
-                                        <span className="int-login__feature-desc">Acceptance rates, essential-only breakdown, and EU vs non-EU visitor analysis.</span>
-                                    </div>
-                                </li>
-                                <li className="int-login__feature">
-                                    <span className="int-login__feature-icon" aria-hidden="true">
-                                        <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" width="18" height="18">
-                                            <rect x="2" y="13" width="3" height="5" rx="1" fill="currentColor" opacity="0.9" />
-                                            <rect x="7" y="9" width="3" height="9" rx="1" fill="currentColor" opacity="0.65" />
-                                            <rect x="12" y="5" width="3" height="13" rx="1" fill="currentColor" opacity="0.4" />
-                                            <path d="M3.5 12 8.5 8l5 3 3.5-5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
-                                        </svg>
-                                    </span>
-                                    <div className="int-login__feature-copy">
-                                        <strong className="int-login__feature-title">Marketing recoil analysis</strong>
-                                        <span className="int-login__feature-desc">Reconcile Google Ads, Meta, and GA4 click counts against consent-visible traffic — see exactly how opt-in rates hit your analytics.</span>
-                                    </div>
-                                </li>
-                                <li className="int-login__feature">
-                                    <span className="int-login__feature-icon" aria-hidden="true">
-                                        <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" width="18" height="18">
-                                            <rect x="2" y="2" width="7" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.25" opacity="0.6" />
-                                            <rect x="11" y="2" width="7" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.25" opacity="0.6" />
-                                            <rect x="2" y="11" width="7" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.25" opacity="0.6" />
-                                            <rect x="11" y="11" width="7" height="7" rx="1.5" fill="rgba(192,159,83,0.18)" stroke="currentColor" strokeWidth="1.25" />
-                                        </svg>
-                                    </span>
-                                    <div className="int-login__feature-copy">
-                                        <strong className="int-login__feature-title">Agency workspaces</strong>
-                                        <span className="int-login__feature-desc">Manage multiple clients with isolated reporting environments and workspace-level domain filtering.</span>
-                                    </div>
-                                </li>
-                            </ul>
-                            <div className="int-login__features-stats">
-                                <div className="int-login__features-stat">
-                                    <span className="int-login__features-stat-value">30 min</span>
-                                    <span className="int-login__features-stat-label">live window</span>
-                                </div>
-                                <div className="int-login__features-stat-divider" aria-hidden />
-                                <div className="int-login__features-stat">
-                                    <span className="int-login__features-stat-value">Multi</span>
-                                    <span className="int-login__features-stat-label">domain support</span>
-                                </div>
-                                <div className="int-login__features-stat-divider" aria-hidden />
-                                <div className="int-login__features-stat">
-                                    <span className="int-login__features-stat-value">GDPR</span>
-                                    <span className="int-login__features-stat-label">compliant</span>
-                                </div>
-                            </div>
-                        </div>
-                    </aside>
-                </div>
-            </div>
-            <LPFooter />
-        </>
+                        <p className="int-login__signup">
+                            New to Intastellar Consents?{" "}
+                            <a href="https://intastellar.eu/#get-started" className="int-login__link">Create an account</a>
+                        </p>
+                    </>
+                )}
+            </section>
+
+            <footer className="int-login__footer">
+                <span>© {new Date().getFullYear()} Intastellar Solutions</span>
+                <a href="https://intastellar.eu/legal/privacy" target="_blank" rel="noopener noreferrer">Privacy</a>
+                <a href="https://intastellar.eu/legal/terms" target="_blank" rel="noopener noreferrer">Terms</a>
+                <a href="https://intastellar.eu/legal/imprint" target="_blank" rel="noopener noreferrer">Legal notice</a>
+                <a href="https://www.intastellarsolutions.com/contact" target="_blank" rel="noopener noreferrer">Contact</a>
+            </footer>
+        </main>
     );
 }

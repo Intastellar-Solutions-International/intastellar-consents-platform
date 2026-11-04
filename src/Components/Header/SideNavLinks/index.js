@@ -88,6 +88,12 @@ export const reportsLinks = [
         path: "/settings/workspaces",
         view: ["admin", "super-admin"],
         requiresTier: 'agency-pro',
+    },
+    {
+        name: "Team Insights",
+        path: "/settings/team-insights",
+        view: ["admin", "super-admin"],
+        requiresTier: 'growth',
     }
 ]
 

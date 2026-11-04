@@ -35,5 +35,7 @@ import "./cookie-stats.test.mjs";
 import "./fetch-with-timeout.test.mjs";
 import "./shell.test.mjs";
 import "./transfer-vendors.test.mjs";
+import "./client-reports.test.mjs";
+import "./team-insights.test.mjs";
 
 await run();

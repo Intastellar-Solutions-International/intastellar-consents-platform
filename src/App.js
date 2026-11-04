@@ -44,6 +44,8 @@ import ReconcilePage from "./Pages/Reports/MarketingReport/ReconcilePage";
 import CompliancePage from "./Pages/Compliance";
 import LoadingSpinner from "./Components/LoadingSpinner/LoadingSpinner";
 import Workspaces from "./Pages/Settings/Workspaces";
+import TeamInsights from "./Pages/Settings/TeamInsights";
+import TeamActivityTracker from "./Functions/teamActivity.js";
 import JurisdictionConfig from "./Pages/Settings/Jurisdiction";
 import LegalBasis from "./Pages/Settings/LegalBasis";
 import ROPA from "./Pages/Settings/ROPA";
@@ -85,7 +87,7 @@ import Styleguide from "./Pages/Styleguide/index.js";
 import CookieDatabase from "./Pages/CookieDatabase";
 import TierGate from "./Components/TierGate";
 import DevTierSwitcher from "./Components/DevTierSwitcher";
-import { canAccess } from "./Functions/tier.js";
+import { canAccess, FEATURE_TIERS } from "./Functions/tier.js";
 import appStorage, { getOrg } from './Functions/storage.js';
 import ShellRail from "./Components/Shell/ShellRail.js";
 import { isNewShell } from "./Functions/featureFlags.js";
@@ -285,6 +287,7 @@ export default function App() {
                                 <ErrorBoundary>
                                     {id && window.location.pathname != "/" || window.location.pathname != "/login" ? <>
                                         <Header id={id} />
+                                        <TeamActivityTracker />
                                         <BugReport />
                                     </> : null}
                                 </ErrorBoundary>
@@ -784,6 +787,13 @@ export default function App() {
                                         <Route path="/settings/blacklist-ip">
                                             <ErrorBoundary>
                                                 {Authentication.getOrganisationAccessStatusForOrganisation(getOrg()?.id) === "admin" || Authentication.getOrganisationAccessStatusForOrganisation(getOrg()?.id) === "super-admin" ? <BlacklistIp /> : null}
+                                            </ErrorBoundary>
+                                        </Route>
+                                        <Route path="/settings/team-insights">
+                                            <ErrorBoundary>
+                                                {!canAccess(FEATURE_TIERS.team_insights) ? <TierGate minTier={FEATURE_TIERS.team_insights} featureName="Team Insights" fullPage />
+                                                    : ["admin", "super-admin"].includes(Authentication.getCurrentOrganisationRole()) ? <TeamInsights />
+                                                    : <p style={{ padding: "40px", color: "var(--color-text-muted)" }}>Admin access required.</p>}
                                             </ErrorBoundary>
                                         </Route>
                                         <Route path="/settings/workspaces">
