@@ -13,15 +13,15 @@ const API = {
         url: `${LoginHost}/consents/signup/v1/signup`,
     },
     Subscription: {
-        url: `${LoginHost}/rest/getSubscription.php`,
-        method: "POST",
+        url: `${ScannerHost}/api/billing-subscription`,
+        method: "GET",
         headers: {
             "Authorization": Authentication.getToken(),
-            "Content-Type": "application/json"
+            "Organisation": Authentication.getOrganisation(),
         }
     },
     CreateCheckoutSession: {
-        url: `${PrimaryHost}/payment/subscription/v1/create-checkout-session`,
+        url: `${ScannerHost}/api/billing-checkout`,
         method: "POST",
         headers: {
             "Authorization": Authentication.getToken(),

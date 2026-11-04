@@ -187,15 +187,25 @@ export default function App() {
                 setOrganisations(data);
             });
 
-            Fetch(API.Subscription.url, API.Subscription.method, API.Subscription.headers, JSON.stringify({
-                user: Authentication.getUserId(),
-                org_id: getOrg()?.id
-            })).then((data) => {
+            // Back from Stripe Checkout: confirm the session so the new plan
+            // unlocks now rather than when the webhook arrives.
+            const checkoutSessionId = new URLSearchParams(window.location.search).get("session_id");
+            const subscriptionUrl = checkoutSessionId
+                ? `${API.CreateCheckoutSession.url}?session_id=${encodeURIComponent(checkoutSessionId)}`
+                : API.Subscription.url;
+            Fetch(subscriptionUrl, "GET", { ...API.Subscription.headers, Organisation: getOrg()?.id }).then((data) => {
                 if (data === "Err_Login_Expired") {
                     appStorage.removeItem("globals");
                     navigate.push("/login");
                     return;
                 }
+                if (checkoutSessionId) {
+                    const url = new URL(window.location.href);
+                    url.searchParams.delete("session_id");
+                    window.history.replaceState(window.history.state, "", url.pathname + url.search + url.hash);
+                }
+                // Keep the cached plan on a server error rather than locking the user out.
+                if (!data || typeof data !== "object" || typeof data.subscription !== "string") return;
                 setSubscriptionStatus(data);
                 appStorage.setItem("subscription", JSON.stringify(data));
             });
