@@ -2,7 +2,10 @@
  * /api/team-activity — Team insights (Growth plan and up)
  *
  * POST  records that the signed-in member opened a platform section.
- *       body: { section, path, domain, name }   (email comes from the token)
+ *       body: { section, path, domain, name, email }
+ *       The member is the token's email when it carries one, else body.email
+ *       (Intastellar tokens don't reliably include it). Tokens are decoded,
+ *       not signature-verified, on this platform either way.
  *       Sent by src/Functions/teamActivity.js on every route change; the
  *       same member + section + domain is only stored once per 10 minutes.
  *
@@ -22,6 +25,7 @@ import { setCors, requestOrganisation, organisationHasPlan } from "./_stripe.js"
 const RETENTION_DAYS = 365;
 const DEDUPE_MINUTES = 10;
 const SECTION_RE = /^[a-z0-9][a-z0-9/-]{0,63}$/;
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 async function ensureTables(db) {
     await db.query(`
@@ -59,7 +63,7 @@ export default async function handler(req, res) {
     res.setHeader("Cache-Control", "no-store");
 
     const auth = requestOrganisation(req);
-    if (auth.error === 401 || (!auth.error && !auth.email)) return res.status(401).json({ error: "Unauthorized" });
+    if (auth.error === 401) return res.status(401).json({ error: "Unauthorized" });
     if (auth.error) return res.status(400).json({ error: "Organisation header required" });
     const { organisationId, email } = auth;
 
@@ -77,6 +81,8 @@ export default async function handler(req, res) {
 
 async function record(db, req, res, organisationId, email) {
     const body = typeof req.body === "string" ? JSON.parse(req.body || "{}") : req.body || {};
+    const member = (email || clip(body.email, 255) || "").toLowerCase();
+    if (!EMAIL_RE.test(member)) return res.status(400).json({ error: "Member email required" });
     const section = clip(body.section, 64);
     if (!section || !SECTION_RE.test(section)) return res.status(400).json({ error: "Invalid section" });
     const domain = clip(body.domain, 255)?.toLowerCase() || null;
@@ -90,7 +96,7 @@ async function record(db, req, res, organisationId, email) {
                AND domain IS NOT DISTINCT FROM $6
                AND created_at > NOW() - INTERVAL '${DEDUPE_MINUTES} minutes'
          )`,
-        [organisationId, email.toLowerCase(), clip(body.name, 120), section, clip(body.path, 255), domain]
+        [organisationId, member, clip(body.name, 120), section, clip(body.path, 255), domain]
     );
 
     // Cheap retention: roughly one write in a hundred prunes old rows.
