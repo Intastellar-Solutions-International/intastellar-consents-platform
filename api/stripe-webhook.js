@@ -1,21 +1,27 @@
 /**
  * POST /api/stripe-webhook
  *
- * Receives Stripe webhook events and mirrors paid subscription invoices
- * into Dinero as booked invoices, creating the contact if they don't exist.
+ * Receives Stripe webhook events:
+ *   - keeps billing_subscriptions in sync (see _stripe.js), and
+ *   - mirrors paid subscription invoices into Dinero as booked invoices,
+ *     creating the contact if they don't exist.
  *
  * Required env vars:
  *   STRIPE_WEBHOOK_SECRET   — signing secret from Stripe Dashboard → Webhooks
+ *   STRIPE_WEBHOOK_SECRET_TEST — optional, for a test-mode webhook
+ *   STRIPE_SECRET_KEY_LIVE / _TEST — subscription sync re-reads from Stripe
  *   DINERO_CLIENT_ID        — from Dinero Developer → API Applications
  *   DINERO_CLIENT_SECRET
  *   DINERO_ORGANIZATION_ID  — numeric org ID visible in Dinero URL
  *   DINERO_ACCOUNT_NUMBER   — chart of accounts number for subscription revenue (default: 1000)
  *
- * Stripe event handled: invoice.payment_succeeded
- * All other event types are acknowledged and ignored.
+ * Stripe events handled: checkout.session.completed,
+ * customer.subscription.{created,updated,deleted,paused,resumed},
+ * invoice.payment_succeeded. All other event types are acknowledged and ignored.
  */
 
-import crypto from "crypto";
+import { verifyStripeSignature, syncSubscription } from "./_stripe.js";
+import { getPool } from "./_db.js";
 
 // Disable Vercel's body parser so we can verify the raw Stripe signature.
 export const config = { api: { bodyParser: false } };
@@ -31,45 +37,6 @@ function readRawBody(req) {
         req.on("data", c => chunks.push(Buffer.isBuffer(c) ? c : Buffer.from(c)));
         req.on("end",  () => resolve(Buffer.concat(chunks)));
         req.on("error", reject);
-    });
-}
-
-// ── Stripe signature verification ─────────────────────────────────────────────
-
-function verifyStripeSignature(rawBody, sigHeader, secret) {
-    // Header format: t=<timestamp>,v1=<sig>[,v1=<sig2>]
-    const parts = {};
-    for (const chunk of sigHeader.split(",")) {
-        const eq = chunk.indexOf("=");
-        const key = chunk.slice(0, eq);
-        const val = chunk.slice(eq + 1);
-        if (key === "v1") {
-            (parts.v1 = parts.v1 || []).push(val);
-        } else {
-            parts[key] = val;
-        }
-    }
-
-    const { t, v1 = [] } = parts;
-    if (!t || !v1.length) return false;
-
-    // Reject events older than 5 minutes to prevent replay attacks.
-    if (Math.abs(Date.now() / 1000 - parseInt(t, 10)) > 300) return false;
-
-    const expected = crypto
-        .createHmac("sha256", secret)
-        .update(`${t}.${rawBody}`)
-        .digest("hex");
-
-    return v1.some(candidate => {
-        try {
-            return crypto.timingSafeEqual(
-                Buffer.from(expected, "hex"),
-                Buffer.from(candidate, "hex")
-            );
-        } catch {
-            return false;
-        }
     });
 }
 
@@ -174,14 +141,33 @@ async function createAndBookInvoice(token, orgId, {
     return Guid;
 }
 
+// ── Subscriptions ─────────────────────────────────────────────────────────────
+
+export function subscriptionIdFromEvent(event) {
+    const obj = event?.data?.object;
+    switch (event?.type) {
+        case "checkout.session.completed":
+            return obj?.mode === "subscription" ? obj.subscription || null : null;
+        case "customer.subscription.created":
+        case "customer.subscription.updated":
+        case "customer.subscription.deleted":
+        case "customer.subscription.paused":
+        case "customer.subscription.resumed":
+            return obj?.id || null;
+        default:
+            return null;
+    }
+}
+
 // ── Handler ───────────────────────────────────────────────────────────────────
 
 export default async function handler(req, res) {
     if (req.method !== "POST") return res.status(405).end();
 
     const sigHeader    = req.headers["stripe-signature"];
-    const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
-    if (!sigHeader || !webhookSecret) {
+    // Live and test mode webhooks are signed with different secrets.
+    const webhookSecrets = [process.env.STRIPE_WEBHOOK_SECRET, process.env.STRIPE_WEBHOOK_SECRET_TEST].filter(Boolean);
+    if (!sigHeader || !webhookSecrets.length) {
         return res.status(400).json({ error: "Missing stripe-signature or webhook secret" });
     }
 
@@ -192,7 +178,7 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: "Could not read request body" });
     }
 
-    if (!verifyStripeSignature(rawBody.toString(), sigHeader, webhookSecret)) {
+    if (!webhookSecrets.some(secret => verifyStripeSignature(rawBody.toString(), sigHeader, secret))) {
         return res.status(400).json({ error: "Invalid Stripe signature" });
     }
 
@@ -201,6 +187,21 @@ export default async function handler(req, res) {
         event = JSON.parse(rawBody.toString());
     } catch {
         return res.status(400).json({ error: "Invalid JSON" });
+    }
+
+    // Subscription changes update billing_subscriptions. Errors return 500 so
+    // Stripe retries — a missed update would leave a customer locked out or
+    // keep a cancelled plan unlocked.
+    const subscriptionId = subscriptionIdFromEvent(event);
+    if (subscriptionId) {
+        try {
+            const hint = event.type === "checkout.session.completed" ? event.data.object.client_reference_id : undefined;
+            await syncSubscription(getPool(), subscriptionId, { organisationId: hint, livemode: !!event.livemode });
+            return res.status(200).json({ received: true, subscription: subscriptionId });
+        } catch (err) {
+            console.error(`[stripe-webhook] ${event.type} sync failed for ${subscriptionId}:`, err.message);
+            return res.status(500).json({ error: "Subscription sync failed" });
+        }
     }
 
     // Only process paid invoices; acknowledge everything else.

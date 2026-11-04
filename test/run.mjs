@@ -28,6 +28,7 @@ import "./consent-timestamp.test.mjs";
 import "./scanner-consent-block.test.mjs";
 import "./consent-phase.test.mjs";
 import "./own-cdn-classification.test.mjs";
+import "./billing.test.mjs";
 import "./bot-filter.test.mjs";
 import "./cookie-stats.test.mjs";
 import "./fetch-with-timeout.test.mjs";
