@@ -58,6 +58,7 @@
 }
 
 .int-login__logo {
+    animation: int-login-fade-in 0.25s ease;
     display: block;
     height: 52px;
     max-width: 100%;
@@ -707,6 +708,7 @@
         animation-duration: 2.4s;
     }
 
+    .int-login__logo,
     .int-login__point,
     .int-login__skeleton,
     .int-login__account--signing .int-login__avatar-image,

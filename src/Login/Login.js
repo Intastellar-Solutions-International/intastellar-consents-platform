@@ -1,5 +1,8 @@
 import "./LoginPage.css";
 import logo from "../Components/Header/logo.svg";
+// Same brand lockup as logo.svg ("Intastellar Consents") with ANALYTICS
+// as the product name; the header shows it in Analytics mode too.
+import logoAnalytics from "../Components/Header/logo-analytics.svg";
 // "Abstract golden bokeh lights on dark background" by Philipp Hubert,
 // Unsplash License (free, no attribution required). Cropped and compressed.
 import background from "./login-background.jpg";
@@ -340,7 +343,15 @@ export default function Login() {
             <LanguageMenu value={lang} onChange={changeLanguage} label={t.language} className="int-login__language" />
 
             <section className="int-login__card" aria-labelledby="int-login-heading">
-                <img src={logo} alt="Intastellar Solutions" className="int-login__logo" decoding="async" />
+                {/* Follows the product choice, like the header does; the key
+                    remounts it so the swap fades in. */}
+                <img
+                    key={product}
+                    src={product === "analytics" ? logoAnalytics : logo}
+                    alt={product === "analytics" ? "Intastellar Analytics" : "Intastellar Consents"}
+                    className="int-login__logo"
+                    decoding="async"
+                />
 
                 <h1 id="int-login-heading" className={`int-login__headline${headingPending ? " int-login__intro--pending" : ""}`}>
                     {knownUser ? t.welcomeBack : t.signIn}

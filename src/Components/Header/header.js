@@ -549,7 +549,7 @@ export default function Header(props) {
                                 <div className="menu-bar"></div>
                                 <div className="menu-bar"></div>
                             </button>
-                            <img className="dashboard-logo" src={dashboardMode === "analytics" ? logoAnalytics : logo} alt={dashboardMode === "analytics" ? "Intastellar Analytics" : "Intastellar Solutions Logo"} />
+                            <img className="dashboard-logo" src={dashboardMode === "analytics" ? logoAnalytics : logo} alt={dashboardMode === "analytics" ? "Intastellar Analytics" : "Intastellar Consents"} />
                         </section>
                         <section className="company_container">
                             {(domains && currentDomain && allOrganisations && Organisation) ? (
