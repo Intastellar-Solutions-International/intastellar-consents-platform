@@ -5,6 +5,8 @@
  *   (src/Components/SubscriptionPlans/CheckoutForm.js).
  *   Headers: Authorization, Organisation
  *   Body:    { planId: "personal" | "starter" | "growth" | "agency-pro", returnPath?: "/settings" }
+ *   The Stripe customer is left without an email so the checkout form can
+ *   set the billing email (which may differ from the login email).
  *   200 { clientSecret, publishableKey }
  *   409 when the organisation already has an active subscription — plan
  *       changes go through the customer portal instead.
@@ -31,12 +33,12 @@ export default async function handler(req, res) {
     const auth = requestOrganisation(req);
     if (auth.error === 401) return res.status(401).json({ error: "Unauthorized" });
     if (auth.error) return res.status(400).json({ error: "Missing Organisation header" });
-    const { organisationId, email } = auth;
+    const { organisationId } = auth;
 
     const db = getPool();
     try {
         await ensureBillingTables(db);
-        if (req.method === "POST") return await createSession(req, res, db, organisationId, email);
+        if (req.method === "POST") return await createSession(req, res, db, organisationId);
         if (req.method === "GET")  return await confirmSession(req, res, db, organisationId);
         res.setHeader("Allow", "GET, POST, OPTIONS");
         return res.status(405).json({ error: "Method not allowed" });
@@ -46,7 +48,7 @@ export default async function handler(req, res) {
     }
 }
 
-async function createSession(req, res, db, organisationId, email) {
+async function createSession(req, res, db, organisationId) {
     const { planId, returnPath } = req.body || {};
     if (!PLANS.includes(planId)) return res.status(400).json({ error: "Unknown plan" });
     const priceId = priceIdForPlan(planId);
@@ -65,10 +67,15 @@ async function createSession(req, res, db, organisationId, email) {
         `SELECT stripe_customer_id FROM billing_customers WHERE organisation_id = $1 AND livemode = $2`,
         [organisationId, livemode]
     );
+    // The customer must have no email: Checkout only lets the billing email
+    // be set in the form when the customer has none, and then saves it on
+    // the customer. Clearing it here is safe — the organisation has no active
+    // subscription (checked above), so nothing is being invoiced to it.
     let customerId = rows[0]?.stripe_customer_id;
-    if (!customerId) {
+    if (customerId) {
+        await stripe("POST", `/customers/${customerId}`, { email: "" });
+    } else {
         const customer = await stripe("POST", "/customers", {
-            email:    email || undefined,
             metadata: { organisation_id: organisationId },
         });
         customerId = customer.id;
@@ -98,6 +105,8 @@ async function createSession(req, res, db, organisationId, email) {
         subscription_data:   { metadata: { organisation_id: organisationId } },
         billing_address_collection: "required",
         tax_id_collection:   { enabled: true },
+        // Company name comes from the platform's own field (updateBusinessName).
+        name_collection:     { business: { enabled: true, optional: true } },
         customer_update:     { address: "auto", name: "auto" },
     });
 
