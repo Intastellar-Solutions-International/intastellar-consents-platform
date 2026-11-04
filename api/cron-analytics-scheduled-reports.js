@@ -1,13 +1,17 @@
 import { getPool } from "./_db.js";
-import { buildReportData, buildReportEmailHtml, sendReportEmail } from "./_scheduled-report.js";
+import { renderScheduledReport, sendReportEmail } from "./_scheduled-report.js";
+import { organisationHasPlan } from "./_stripe.js";
 /**
  * Cron: /api/cron-analytics-scheduled-reports  (runs daily at 08:00 UTC per vercel.json)
  *
  * For each enabled scheduled report config whose weekly/monthly cadence
  * matches today (UTC), builds a condensed KPI summary and emails it to the
- * config's recipients. Dedup guard: a weekly config won't re-fire within 6
- * days of its last send, monthly within 27 days — same style as the
- * 23-hour re-fire guard in cron-analytics-alerts.js, sized for each cadence.
+ * config's recipients. Client (workspace) reports cover all of the client's
+ * domains and are skipped while the organisation isn't on Agency Pro.
+ *
+ * Dedup guard: a weekly config won't re-fire within 6 days of its last send,
+ * monthly within 27 days — same style as the 23-hour re-fire guard in
+ * cron-analytics-alerts.js, sized for each cadence.
  */
 export default async function handler(req, res) {
     if (req.method !== "GET" && req.method !== "POST") return res.status(405).end();
@@ -15,9 +19,8 @@ export default async function handler(req, res) {
     const db = getPool();
 
     const { rows: configs } = await db.query(`
-        SELECT asr.*, aos.domain
+        SELECT asr.*
         FROM analytics_scheduled_reports asr
-        JOIN analytics_sites aos ON aos.id = asr.site_id
         WHERE asr.enabled = true
           AND (
             (asr.frequency = 'weekly'
@@ -34,16 +37,11 @@ export default async function handler(req, res) {
     let sent = 0;
 
     for (const cfg of configs) {
-        const periodDays = cfg.frequency === "monthly" ? 30 : 7;
-        const data = await buildReportData(db, cfg.site_id, periodDays).catch(() => null);
-        if (!data) continue;
+        if (cfg.workspace_id && !(await organisationHasPlan(db, cfg.organisation_id, "agency-pro").catch(() => false))) continue;
+        const report = await renderScheduledReport(db, cfg).catch(() => null);
+        if (!report) continue;
 
-        const html = buildReportEmailHtml({ domain: cfg.domain, frequency: cfg.frequency, label: cfg.label, data });
-        const result = await sendReportEmail({
-            recipients: cfg.recipients,
-            subject: `${cfg.label || "Performance report"} — ${cfg.domain}`,
-            html,
-        });
+        const result = await sendReportEmail({ recipients: cfg.recipients, ...report });
 
         if (result.ok) {
             await db.query(

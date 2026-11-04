@@ -1,5 +1,6 @@
 import { getPool } from "./_db.js";
-import { buildReportData, buildReportEmailHtml, sendReportEmail } from "./_scheduled-report.js";
+import { renderScheduledReport, sendReportEmail } from "./_scheduled-report.js";
+import { organisationHasPlan } from "./_stripe.js";
 /**
  * GET/POST/PUT/DELETE /api/analytics-scheduled-reports
  *
@@ -11,6 +12,13 @@ import { buildReportData, buildReportEmailHtml, sendReportEmail } from "./_sched
  * POST with ?id=<id>&test=1 sends an immediate one-off email to the
  * config's current recipients without touching last_sent_at or requiring
  * the schedule to match — used by the "Send test now" button.
+ * GET with ?id=<id>&preview=1 returns that email as { html, subject }.
+ *
+ * Scope: ?domain=<domain> for one site's reports, or ?workspace=<id> for an
+ * Agency Pro client report covering a whole client workspace. Workspaces live
+ * on the Intastellar API, which the cron can't query, so client reports store
+ * the workspace's name and domains (body: workspace_name, domains) and the
+ * Scheduled Reports page re-sends them whenever the workspace has changed.
  *
  * Requires Authorization: Bearer <token>   Organisation: <org_id>
  */
@@ -64,10 +72,27 @@ async function ensureTables(db) {
         );
         CREATE INDEX IF NOT EXISTS idx_asr2_site ON analytics_scheduled_reports (site_id);
     `).catch(() => {});
+    await db.query(`
+        ALTER TABLE analytics_scheduled_reports ALTER COLUMN site_id DROP NOT NULL;
+        ALTER TABLE analytics_scheduled_reports ADD COLUMN IF NOT EXISTS workspace_id   VARCHAR(64);
+        ALTER TABLE analytics_scheduled_reports ADD COLUMN IF NOT EXISTS workspace_name VARCHAR(120);
+        ALTER TABLE analytics_scheduled_reports ADD COLUMN IF NOT EXISTS domains        JSONB;
+        CREATE INDEX IF NOT EXISTS idx_asr2_workspace ON analytics_scheduled_reports (organisation_id, workspace_id);
+    `).catch(() => {});
 }
 
 const VALID_FREQUENCIES = new Set(["weekly", "monthly"]);
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+// A client's domains as sent by the page (strings or { domain } objects).
+// Stored as given, lowercased; resolveReportSites only ever reports on the
+// ones that are this organisation's active analytics sites.
+function normalizeDomains(raw) {
+    if (!Array.isArray(raw)) return null;
+    const cleaned = [...new Set(raw.map(d => String(d?.domain ?? d ?? "").trim().toLowerCase()).filter(Boolean))];
+    if (!cleaned.length || cleaned.length > 50 || !cleaned.every(d => d.length <= 255)) return null;
+    return cleaned;
+}
 
 function normalizeRecipients(raw) {
     if (!Array.isArray(raw)) return null;
@@ -100,19 +125,46 @@ async function _handler(req, res) {
     await ensureTables(db);
 
     const domain = (req.query.domain || "").trim().toLowerCase();
+    const workspaceId = String(req.query.workspace || "").trim().slice(0, 64) || null;
+
+    const clientReportsAllowed = () => organisationHasPlan(db, orgId, "agency-pro").catch(() => false);
+    const PLAN_REQUIRED = { error: "Client reports require the Agency Pro plan", code: "plan_required" };
 
     let siteId = null;
-    let siteDomain = domain;
     if (domain) {
         const { rows } = await db.query(
             `SELECT id FROM analytics_sites WHERE organisation_id = $1 AND LOWER(domain) = LOWER($2) AND active = true LIMIT 1`,
             [orgId, domain]
         ).catch(() => ({ rows: [] }));
-        if (!rows.length) return res.status(200).json({ noSiteKey: true });
-        siteId = rows[0].id;
+        if (!rows.length && !workspaceId) return res.status(200).json({ noSiteKey: true });
+        siteId = rows[0]?.id || null;
+    }
+
+    // ── PREVIEW ───────────────────────────────────────────────────────────────
+    if (req.method === "GET" && req.query.preview === "1") {
+        const id = parseInt(req.query.id, 10);
+        if (!id) return res.status(400).json({ error: "id required" });
+        const { rows } = await db.query(
+            `SELECT * FROM analytics_scheduled_reports WHERE id = $1 AND organisation_id = $2 LIMIT 1`,
+            [id, orgId]
+        ).catch(() => ({ rows: [] }));
+        if (!rows.length) return res.status(404).json({ error: "Not found" });
+        if (rows[0].workspace_id && !(await clientReportsAllowed())) return res.status(402).json(PLAN_REQUIRED);
+        const report = await renderScheduledReport(db, rows[0]);
+        if (!report) return res.status(422).json({ error: "None of this report's domains have analytics data yet." });
+        return res.status(200).json(report);
     }
 
     // ── LIST ──────────────────────────────────────────────────────────────────
+    if (req.method === "GET" && workspaceId) {
+        const { rows } = await db.query(
+            `SELECT * FROM analytics_scheduled_reports
+             WHERE workspace_id = $1 AND organisation_id = $2
+             ORDER BY created_at DESC`,
+            [workspaceId, orgId]
+        ).catch(() => ({ rows: [] }));
+        return res.status(200).json({ reports: rows });
+    }
     if (req.method === "GET") {
         if (!siteId) return res.status(400).json({ error: "domain required" });
         const { rows } = await db.query(
@@ -134,19 +186,14 @@ async function _handler(req, res) {
         ).catch(() => ({ rows: [] }));
         if (!rows.length) return res.status(404).json({ error: "Not found" });
         const cfg = rows[0];
+        if (cfg.workspace_id && !(await clientReportsAllowed())) return res.status(402).json(PLAN_REQUIRED);
 
-        const { rows: siteRows } = await db.query(
-            `SELECT domain FROM analytics_sites WHERE id = $1 LIMIT 1`, [cfg.site_id]
-        ).catch(() => ({ rows: [] }));
-        const reportDomain = siteRows[0]?.domain || siteDomain || "your site";
-
-        const periodDays = cfg.frequency === "monthly" ? 30 : 7;
-        const data = await buildReportData(db, cfg.site_id, periodDays);
-        const html = buildReportEmailHtml({ domain: reportDomain, frequency: cfg.frequency, label: cfg.label, data });
+        const report = await renderScheduledReport(db, cfg);
+        if (!report) return res.status(422).json({ error: "None of this report's domains have analytics data yet." });
         const result = await sendReportEmail({
             recipients: cfg.recipients,
-            subject: `[Test] ${cfg.label || "Performance report"} — ${reportDomain}`,
-            html,
+            subject: `[Test] ${report.subject}`,
+            html: report.html,
         });
         if (!result.ok) return res.status(502).json({ error: "Failed to send test email", reason: result.reason });
         return res.status(200).json({ sent: true });
@@ -154,8 +201,14 @@ async function _handler(req, res) {
 
     // ── CREATE ────────────────────────────────────────────────────────────────
     if (req.method === "POST") {
-        if (!siteId) return res.status(400).json({ error: "domain required" });
-        const { frequency, day_of_week, day_of_month, recipients, label, enabled } = req.body || {};
+        if (!siteId && !workspaceId) return res.status(400).json({ error: "domain or workspace required" });
+        const { frequency, day_of_week, day_of_month, recipients, label, enabled, workspace_name, domains } = req.body || {};
+        let clientDomains = null;
+        if (workspaceId) {
+            if (!(await clientReportsAllowed())) return res.status(402).json(PLAN_REQUIRED);
+            clientDomains = normalizeDomains(domains);
+            if (!clientDomains) return res.status(400).json({ error: "domains must list 1-50 of the client's domains" });
+        }
         if (!VALID_FREQUENCIES.has(frequency)) return res.status(400).json({ error: "Invalid frequency" });
 
         const dow = frequency === "weekly" ? parseInt(day_of_week, 10) : null;
@@ -170,12 +223,16 @@ async function _handler(req, res) {
 
         const { rows } = await db.query(
             `INSERT INTO analytics_scheduled_reports
-             (site_id, organisation_id, frequency, day_of_week, day_of_month, recipients, label, enabled)
-             VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING *`,
-            [siteId, orgId, frequency, dow, dom,
+             (site_id, organisation_id, frequency, day_of_week, day_of_month, recipients, label, enabled,
+              workspace_id, workspace_name, domains)
+             VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11) RETURNING *`,
+            [workspaceId ? null : siteId, orgId, frequency, dow, dom,
              JSON.stringify(cleanRecipients),
              (label || "").slice(0, 120) || null,
-             enabled !== false]
+             enabled !== false,
+             workspaceId,
+             workspaceId ? String(workspace_name || "").slice(0, 120) || null : null,
+             clientDomains ? JSON.stringify(clientDomains) : null]
         );
         return res.status(201).json(rows[0]);
     }
@@ -184,7 +241,16 @@ async function _handler(req, res) {
     if (req.method === "PUT") {
         const id = parseInt(req.query.id, 10);
         if (!id) return res.status(400).json({ error: "id required" });
-        const { frequency, day_of_week, day_of_month, recipients, label, enabled } = req.body || {};
+        const { frequency, day_of_week, day_of_month, recipients, label, enabled, workspace_name, domains } = req.body || {};
+
+        let clientDomains = null;
+        if (domains != null || workspace_name != null) {
+            if (!(await clientReportsAllowed())) return res.status(402).json(PLAN_REQUIRED);
+            if (domains != null) {
+                clientDomains = normalizeDomains(domains);
+                if (!clientDomains) return res.status(400).json({ error: "domains must list 1-50 of the client's domains" });
+            }
+        }
 
         if (frequency && !VALID_FREQUENCIES.has(frequency)) return res.status(400).json({ error: "Invalid frequency" });
 
@@ -211,13 +277,17 @@ async function _handler(req, res) {
                  recipients   = COALESCE($6, recipients),
                  label        = COALESCE($7, label),
                  enabled      = COALESCE($8, enabled),
+                 domains        = CASE WHEN workspace_id IS NOT NULL THEN COALESCE($9::jsonb, domains) ELSE domains END,
+                 workspace_name = CASE WHEN workspace_id IS NOT NULL THEN COALESCE($10, workspace_name) ELSE workspace_name END,
                  updated_at   = NOW()
              WHERE id = $1 AND organisation_id = $2
              RETURNING *`,
             [id, orgId, frequency || null, dow, dom,
              cleanRecipients ? JSON.stringify(cleanRecipients) : null,
              label != null ? (label || "").slice(0, 120) : null,
-             enabled != null ? enabled : null]
+             enabled != null ? enabled : null,
+             clientDomains ? JSON.stringify(clientDomains) : null,
+             workspace_name != null ? String(workspace_name).slice(0, 120) || null : null]
         );
         if (!rows.length) return res.status(404).json({ error: "Not found" });
         return res.status(200).json(rows[0]);

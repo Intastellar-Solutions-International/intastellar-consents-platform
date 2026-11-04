@@ -343,3 +343,12 @@ export async function organisationSubscription(db, organisationId) {
         portal_url:           current ? process.env.STRIPE_PORTAL_LOGIN_URL || null : null,
     };
 }
+
+// Server-side twin of canAccess() in src/Functions/tier.js, for features
+// that must not rely on the frontend gate alone. Organisation 1 is
+// Intastellar's own and has every feature, as in the frontend.
+export async function organisationHasPlan(db, organisationId, minPlan) {
+    if (Number(organisationId) === 1) return true;
+    const { subscription } = await organisationSubscription(db, organisationId);
+    return PLANS.indexOf(subscription) >= PLANS.indexOf(minPlan);
+}

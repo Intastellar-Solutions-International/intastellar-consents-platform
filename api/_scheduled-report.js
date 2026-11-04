@@ -3,12 +3,17 @@
  * (manual "send test" trigger) and cron-analytics-scheduled-reports.js
  * (automatic weekly/monthly send).
  *
- * Exported: buildReportData(db, siteId, periodDays)
- *           buildReportEmailHtml({ domain, frequency, label, data })
+ * Exported: buildReportData(db, siteIds, periodDays)
+ *           resolveReportSites(db, cfg)
+ *           buildReportEmailHtml({ domain, frequency, label, data, clientName })
+ *           renderScheduledReport(db, cfg) — the above combined, for one config
  *           sendReportEmail({ recipients, subject, html })
+ *
+ * A report covers one site (site_id) or, for an Agency Pro client report, all
+ * domains of one client workspace (workspace_id + a stored domains list).
  */
 
-import { selfReferralClause, noiseReferralClause, getApprovedDomains } from "./_self-referral.js";
+import { selfReferralClause, noiseReferralClause, getApprovedDomainsForSites } from "./_self-referral.js";
 import { isHeadlineConversionSql } from "./_conversions.js";
 
 function pctChange(cur, prev) {
@@ -18,7 +23,25 @@ function pctChange(cur, prev) {
 
 // ── Report data ───────────────────────────────────────────────────────────────
 
-export async function buildReportData(db, siteId, periodDays) {
+// The sites a scheduled-report config covers: its one site, or the domains
+// stored on a client report — only those that still belong to the config's
+// organisation and are active.
+export async function resolveReportSites(db, cfg) {
+    const { rows } = cfg.workspace_id
+        ? await db.query(
+            `SELECT id, domain FROM analytics_sites
+             WHERE organisation_id = $1 AND LOWER(domain) = ANY($2) AND active = true
+             ORDER BY domain`,
+            [cfg.organisation_id, (cfg.domains || []).map(d => String(d).toLowerCase())]
+        ).catch(() => ({ rows: [] }))
+        : await db.query(
+            `SELECT id, domain FROM analytics_sites WHERE id = $1 LIMIT 1`, [cfg.site_id]
+        ).catch(() => ({ rows: [] }));
+    return { siteIds: rows.map(r => r.id), domains: rows.map(r => r.domain) };
+}
+
+export async function buildReportData(db, siteIds, periodDays) {
+    siteIds = [].concat(siteIds);
     const now = new Date();
     const toDateExclusive   = now.toISOString().slice(0, 10);
     const fromDate          = new Date(now - periodDays * 86400000).toISOString().slice(0, 10);
@@ -30,10 +53,10 @@ export async function buildReportData(db, siteId, periodDays) {
     // weekly/monthly emailed report doesn't show the site's own domain as a
     // top "referrer".
     const [{ rows: siteDomainRows }, approvedDomains] = await Promise.all([
-        db.query(`SELECT domain FROM analytics_sites WHERE id = $1 LIMIT 1`, [siteId]).catch(() => ({ rows: [] })),
-        getApprovedDomains(db, siteId),
+        db.query(`SELECT id, domain FROM analytics_sites WHERE id = ANY($1)`, [siteIds]).catch(() => ({ rows: [] })),
+        getApprovedDomainsForSites(db, siteIds),
     ]);
-    const SELF_REFERRAL = selfReferralClause(siteDomainRows[0]?.domain, approvedDomains);
+    const SELF_REFERRAL = selfReferralClause(siteDomainRows.map(r => r.domain), approvedDomains);
     const NOISE_REFERRAL = noiseReferralClause();
 
     const totalsQuery = (from, to) => db.query(`
@@ -42,15 +65,15 @@ export async function buildReportData(db, siteId, periodDays) {
             COUNT(*) FILTER (WHERE consent_level = 'full')                    AS full_count,
             COUNT(DISTINCT session_id) FILTER (WHERE session_id IS NOT NULL)  AS unique_sessions
         FROM analytics_events
-        WHERE site_id = $1 AND received_at >= $2 AND received_at < $3`,
-        [siteId, from, to]
+        WHERE site_id = ANY($1) AND received_at >= $2 AND received_at < $3`,
+        [siteIds, from, to]
     ).catch(() => ({ rows: [] }));
 
     const engagedQuery = (from, to) => db.query(`
         WITH session_stats AS (
             SELECT session_id, MAX(duration_sec) AS max_duration, COUNT(*) AS pageviews
             FROM analytics_events
-            WHERE site_id = $1 AND consent_level = 'full'
+            WHERE site_id = ANY($1) AND consent_level = 'full'
               AND received_at >= $2 AND received_at < $3
               AND session_id IS NOT NULL
             GROUP BY session_id
@@ -61,10 +84,10 @@ export async function buildReportData(db, siteId, periodDays) {
            OR s.pageviews > 1
            OR EXISTS (
                 SELECT 1 FROM analytics_clicks c
-                WHERE c.site_id = $1 AND c.session_id = s.session_id
+                WHERE c.site_id = ANY($1) AND c.session_id = s.session_id
                   AND c.received_at >= $2 AND c.received_at < $3
            )`,
-        [siteId, from, to]
+        [siteIds, from, to]
     ).catch(() => ({ rows: [] }));
 
     // "Conversion" here means headline tier (lead/sale) per api/_conversions.js
@@ -74,15 +97,16 @@ export async function buildReportData(db, siteId, periodDays) {
     const conversionsTotalQuery = (from, to) => db.query(`
         SELECT COUNT(*) AS total FROM analytics_custom_events ace
         LEFT JOIN analytics_event_defs d ON d.site_id = ace.site_id AND d.name = ace.name
-        WHERE ace.site_id = $1 AND ace.received_at >= $2 AND ace.received_at < $3
+        WHERE ace.site_id = ANY($1) AND ace.received_at >= $2 AND ace.received_at < $3
           AND ${isHeadlineConversionSql("ace", "d")}`,
-        [siteId, from, to]
+        [siteIds, from, to]
     ).catch(() => ({ rows: [] }));
 
     const [
         totalsRes, prevTotalsRes, engagedRes, prevEngagedRes,
         pagesRes, countriesRes, referrersRes, conversionsRes, revenueRes,
         conversionsTotalRes, prevConversionsTotalRes,
+        perSiteRes, perSiteConversionsRes,
     ] = await Promise.all([
         totalsQuery(fromDate, toDateExclusive),
         totalsQuery(prevFrom, prevToExclusive),
@@ -90,22 +114,22 @@ export async function buildReportData(db, siteId, periodDays) {
         engagedQuery(prevFrom, prevToExclusive),
 
         db.query(`
-            SELECT pathname, COUNT(*) AS views
+            SELECT site_id, pathname, COUNT(*) AS views
             FROM analytics_events
-            WHERE site_id = $1 AND received_at >= $2 AND received_at < $3
+            WHERE site_id = ANY($1) AND received_at >= $2 AND received_at < $3
               AND pathname !~* '^/api/'
               AND pathname !~* '\\.(js|css|json|xml|txt|map|png|jpe?g|gif|svg|webp|ico|woff2?|ttf|eot|pdf)$'
-            GROUP BY pathname ORDER BY views DESC LIMIT 5`,
-            [siteId, fromDate, toDateExclusive]
+            GROUP BY site_id, pathname ORDER BY views DESC LIMIT 5`,
+            [siteIds, fromDate, toDateExclusive]
         ).catch(() => ({ rows: [] })),
 
         db.query(`
             SELECT country_code, COUNT(*) AS events
             FROM analytics_events
-            WHERE site_id = $1 AND received_at >= $2 AND received_at < $3
+            WHERE site_id = ANY($1) AND received_at >= $2 AND received_at < $3
               AND country_code IS NOT NULL
             GROUP BY country_code ORDER BY events DESC LIMIT 5`,
-            [siteId, fromDate, toDateExclusive]
+            [siteIds, fromDate, toDateExclusive]
         ).catch(() => ({ rows: [] })),
 
         db.query(`
@@ -113,20 +137,20 @@ export async function buildReportData(db, siteId, periodDays) {
                         THEN '(direct)' ELSE referrer_host END AS referrer,
                    COUNT(*) AS events
             FROM analytics_events
-            WHERE site_id = $1 AND consent_level = 'full'
+            WHERE site_id = ANY($1) AND consent_level = 'full'
               AND received_at >= $2 AND received_at < $3
             GROUP BY referrer ORDER BY events DESC LIMIT 5`,
-            [siteId, fromDate, toDateExclusive]
+            [siteIds, fromDate, toDateExclusive]
         ).catch(() => ({ rows: [] })),
 
         db.query(`
             SELECT ace.name, COUNT(*) AS count
             FROM analytics_custom_events ace
             LEFT JOIN analytics_event_defs d ON d.site_id = ace.site_id AND d.name = ace.name
-            WHERE ace.site_id = $1 AND ace.received_at >= $2 AND ace.received_at < $3
+            WHERE ace.site_id = ANY($1) AND ace.received_at >= $2 AND ace.received_at < $3
               AND ${isHeadlineConversionSql("ace", "d")}
             GROUP BY ace.name ORDER BY count DESC LIMIT 1`,
-            [siteId, fromDate, toDateExclusive]
+            [siteIds, fromDate, toDateExclusive]
         ).catch(() => ({ rows: [] })),
 
         db.query(`
@@ -134,18 +158,41 @@ export async function buildReportData(db, siteId, periodDays) {
                    COUNT(*)                       AS transactions,
                    (ARRAY_AGG(currency) FILTER (WHERE currency IS NOT NULL))[1] AS currency
             FROM analytics_custom_events
-            WHERE site_id = $1 AND received_at >= $2 AND received_at < $3
+            WHERE site_id = ANY($1) AND received_at >= $2 AND received_at < $3
               AND value_cents IS NOT NULL
               AND (name = 'purchase' OR name IN (
-                    SELECT name FROM analytics_event_defs WHERE site_id = $1 AND kind = 'purchase'
+                    SELECT d.name FROM analytics_event_defs d
+                    WHERE d.site_id = analytics_custom_events.site_id AND d.kind = 'purchase'
               ))`,
-            [siteId, fromDate, toDateExclusive]
+            [siteIds, fromDate, toDateExclusive]
         ).catch(() => ({ rows: [] })),
 
         // Total conversion events, computed separately from the "top named event"
         // query above (which caps at 1 row) so the summary count isn't limited by it.
         conversionsTotalQuery(fromDate, toDateExclusive),
         conversionsTotalQuery(prevFrom, prevToExclusive),
+
+        // Per-domain breakdown — only for client reports covering several sites.
+        siteIds.length > 1 ? db.query(`
+            SELECT site_id,
+                   COUNT(*) FILTER (WHERE received_at >= $2)                                          AS total,
+                   COUNT(*) FILTER (WHERE received_at >= $2 AND consent_level = 'full')               AS full_count,
+                   COUNT(DISTINCT session_id) FILTER (WHERE session_id IS NOT NULL AND received_at >= $2) AS sessions,
+                   COUNT(DISTINCT session_id) FILTER (WHERE session_id IS NOT NULL AND received_at <  $2) AS prev_sessions
+            FROM analytics_events
+            WHERE site_id = ANY($1) AND received_at >= $3 AND received_at < $4
+            GROUP BY site_id`,
+            [siteIds, fromDate, prevFrom, toDateExclusive]
+        ).catch(() => ({ rows: [] })) : { rows: [] },
+        siteIds.length > 1 ? db.query(`
+            SELECT ace.site_id, COUNT(*) AS conversions
+            FROM analytics_custom_events ace
+            LEFT JOIN analytics_event_defs d ON d.site_id = ace.site_id AND d.name = ace.name
+            WHERE ace.site_id = ANY($1) AND ace.received_at >= $2 AND ace.received_at < $3
+              AND ${isHeadlineConversionSql("ace", "d")}
+            GROUP BY ace.site_id`,
+            [siteIds, fromDate, toDateExclusive]
+        ).catch(() => ({ rows: [] })) : { rows: [] },
     ]);
 
     const t     = totalsRes.rows[0] || {};
@@ -158,6 +205,23 @@ export async function buildReportData(db, siteId, periodDays) {
     const conversionsTotal     = Number(conversionsTotalRes.rows[0]?.total || 0);
     const prevConversionsTotal = Number(prevConversionsTotalRes.rows[0]?.total || 0);
     const revenueCents = Number(revenueRes.rows[0]?.total_cents || 0);
+
+    const perSite = new Map(perSiteRes.rows.map(r => [String(r.site_id), r]));
+    const perSiteConversions = new Map(perSiteConversionsRes.rows.map(r => [String(r.site_id), Number(r.conversions || 0)]));
+    const perDomain = siteIds.length > 1
+        ? siteDomainRows.map(({ id, domain }) => {
+            const r = perSite.get(String(id)) || {};
+            const siteTotal = Number(r.total || 0);
+            const sessions = Number(r.sessions || 0);
+            return {
+                domain,
+                sessions,
+                sessionsTrend: pctChange(sessions, Number(r.prev_sessions || 0)),
+                consentRate:   siteTotal > 0 ? (Number(r.full_count || 0) / siteTotal) * 100 : null,
+                conversions:   perSiteConversions.get(String(id)) || 0,
+            };
+        }).sort((a, b) => b.sessions - a.sessions)
+        : [];
 
     return {
         periodDays,
@@ -177,12 +241,17 @@ export async function buildReportData(db, siteId, periodDays) {
             consentRate:  consentRate - prevConsentRate, // percentage-point delta, not a ratio
             conversions:  pctChange(conversionsTotal, prevConversionsTotal),
         },
-        topPages:     pagesRes.rows.map(r => ({ pathname: r.pathname, views: Number(r.views || 0) })),
+        // A client report spans several domains, so its paths name the domain.
+        topPages:     pagesRes.rows.map(r => ({
+            pathname: siteIds.length > 1 ? (siteDomainRows.find(d => String(d.id) === String(r.site_id))?.domain || "") + r.pathname : r.pathname,
+            views: Number(r.views || 0),
+        })),
         topCountries: countriesRes.rows.map(r => ({ code: r.country_code, events: Number(r.events || 0) })),
         topReferrers: referrersRes.rows.map(r => ({ referrer: r.referrer, events: Number(r.events || 0) })),
         topConversion: conversionsRes.rows[0]
             ? { name: conversionsRes.rows[0].name, count: Number(conversionsRes.rows[0].count || 0) }
             : null,
+        perDomain,
         revenue: revenueCents > 0
             ? { total: revenueCents / 100, currency: revenueRes.rows[0]?.currency || null, transactions: Number(revenueRes.rows[0]?.transactions || 0) }
             : null,
@@ -190,6 +259,12 @@ export async function buildReportData(db, siteId, periodDays) {
 }
 
 // ── Email ─────────────────────────────────────────────────────────────────────
+
+// Labels, client names and visitor-supplied paths/referrers all end up in
+// the email body.
+function esc(value) {
+    return String(value ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
 
 function fmtPct(n, decimals = 1) {
     return typeof n === "number" && Number.isFinite(n) ? n.toFixed(decimals) + "%" : "—";
@@ -214,7 +289,7 @@ function miniTable(title, rows, keyLabel, valueFmt) {
     if (!rows.length) return "";
     const body = rows.map(r => `
         <tr>
-            <td style="padding:6px 0;font-size:13px;color:#c8cfe0;border-top:1px solid #262a38">${r[keyLabel]}</td>
+            <td style="padding:6px 0;font-size:13px;color:#c8cfe0;border-top:1px solid #262a38">${esc(r[keyLabel])}</td>
             <td style="padding:6px 0;font-size:13px;color:#a0aec0;text-align:right;border-top:1px solid #262a38">${valueFmt(r)}</td>
         </tr>`).join("");
     return `
@@ -224,9 +299,37 @@ function miniTable(title, rows, keyLabel, valueFmt) {
     </div>`;
 }
 
-export function buildReportEmailHtml({ domain, frequency, label, data }) {
+function domainTable(rows) {
+    if (!rows?.length) return "";
+    const th = (text, align = "right") =>
+        `<th style="padding:6px 0;font-size:11px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:#7c8299;text-align:${align}">${text}</th>`;
+    const td = (html, align = "right") =>
+        `<td style="padding:6px 0;font-size:13px;color:${align === "left" ? "#c8cfe0" : "#a0aec0"};text-align:${align};border-top:1px solid #262a38">${html}</td>`;
+    const body = rows.map(r => `<tr>
+            ${td(esc(r.domain), "left")}
+            ${td(`${r.sessions.toLocaleString("en-US")} ${fmtTrend(r.sessionsTrend)}`)}
+            ${td(fmtPct(r.consentRate))}
+            ${td(r.conversions.toLocaleString("en-US"))}
+        </tr>`).join("");
+    return `
+    <div style="margin-top:20px">
+        <p style="margin:0 0 6px;font-size:12px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:#7c8299">By domain</p>
+        <table style="width:100%;border-collapse:collapse">
+            <tr>${th("Domain", "left")}${th("Sessions")}${th("Consent")}${th("Conversions")}</tr>
+            ${body}
+        </table>
+    </div>`;
+}
+
+// clientName: set for a client (workspace) report — the header then names the
+// client and how many domains the numbers cover instead of one domain.
+export function buildReportEmailHtml({ domain, frequency, label, data, clientName }) {
     const periodLabel = frequency === "monthly" ? "Last 30 days" : "Last 7 days";
     const title = label || `${frequency === "monthly" ? "Monthly" : "Weekly"} performance report`;
+    const domainCount = data.perDomain?.length || 1;
+    const scopeLabel = clientName
+        ? `${esc(clientName)} · ${domainCount} domain${domainCount === 1 ? "" : "s"}`
+        : esc(domain);
 
     const revenueCell = data.revenue
         ? kpiCell("Revenue", (data.revenue.currency === "USD" ? "$" : data.revenue.currency === "GBP" ? "£" : "€") + data.revenue.total.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }))
@@ -244,11 +347,11 @@ export function buildReportEmailHtml({ domain, frequency, label, data }) {
       </div>
       <div style="padding:4px 20px;background:#c09f5322;border-bottom:2px solid #c09f53">
         <p style="margin:8px 0;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#c09f53">
-          ${domain} · ${periodLabel}
+          ${scopeLabel} · ${periodLabel}
         </p>
       </div>
       <div style="padding:20px">
-        <h2 style="margin:0 0 4px;font-size:18px;font-weight:700;color:#e8ecf8;line-height:1.3">${title}</h2>
+        <h2 style="margin:0 0 4px;font-size:18px;font-weight:700;color:#e8ecf8;line-height:1.3">${esc(title)}</h2>
         <p style="margin:0 0 12px;font-size:12px;color:#606880">${data.from} — ${data.to}</p>
 
         <table style="width:100%;border-collapse:collapse;margin-top:8px">
@@ -263,8 +366,9 @@ export function buildReportEmailHtml({ domain, frequency, label, data }) {
           ${revenueCell ? `<tr>${revenueCell}<td></td></tr>` : ""}
         </table>
 
-        ${data.topConversion ? `<p style="margin:16px 0 0;font-size:12px;color:#7c8299">Top conversion: <strong style="color:#c8cfe0">${data.topConversion.name}</strong> (${data.topConversion.count.toLocaleString("en-US")})</p>` : ""}
+        ${data.topConversion ? `<p style="margin:16px 0 0;font-size:12px;color:#7c8299">Top conversion: <strong style="color:#c8cfe0">${esc(data.topConversion.name)}</strong> (${data.topConversion.count.toLocaleString("en-US")})</p>` : ""}
 
+        ${domainTable(data.perDomain)}
         ${miniTable("Top pages", data.topPages, "pathname", r => r.views.toLocaleString("en-US"))}
         ${miniTable("Top countries", data.topCountries, "code", r => r.events.toLocaleString("en-US"))}
         ${miniTable("Top traffic sources", data.topReferrers, "referrer", r => r.events.toLocaleString("en-US"))}
@@ -276,6 +380,17 @@ export function buildReportEmailHtml({ domain, frequency, label, data }) {
     </div>
   </div>
 </body></html>`;
+}
+
+// One config's email: { html, subject }, or null when none of its sites
+// resolve (e.g. a client whose domains don't have analytics installed yet).
+export async function renderScheduledReport(db, cfg) {
+    const { siteIds, domains } = await resolveReportSites(db, cfg);
+    if (!siteIds.length) return null;
+    const data = await buildReportData(db, siteIds, cfg.frequency === "monthly" ? 30 : 7);
+    const clientName = cfg.workspace_id ? cfg.workspace_name || "Client" : undefined;
+    const html = buildReportEmailHtml({ domain: domains[0], frequency: cfg.frequency, label: cfg.label, data, clientName });
+    return { html, subject: `${cfg.label || "Performance report"} — ${clientName || domains[0]}` };
 }
 
 export async function sendReportEmail({ recipients, subject, html }) {
