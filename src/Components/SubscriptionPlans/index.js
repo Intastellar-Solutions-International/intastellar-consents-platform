@@ -3,6 +3,7 @@ import CheckoutForm from "./CheckoutForm";
 import "./Style/Plans.css";
 import API from "../../API/api";
 import appStorage from '../../Functions/storage.js';
+import { TIERS, FEATURE_TIERS } from '../../Functions/tier.js';
 
 const { useState } = React;
 
@@ -126,6 +127,12 @@ export default function SubscriptionPlans() {
         setError(null);
     };
 
+    // In the Analytics area, only offer plans that include Intastellar
+    // Analytics (Starter and up) — the same rule the tier gates use.
+    const inAnalytics = window.location.pathname.startsWith("/analytics");
+    const minTier = inAnalytics ? FEATURE_TIERS.analytics_dashboard : null;
+    const visiblePlans = minTier ? PLANS.filter(plan => TIERS[plan.id] >= TIERS[minTier]) : PLANS;
+
     if (selectedPlan && checkout) {
         return <CheckoutForm clientSecret={checkout.clientSecret} publishableKey={checkout.publishableKey} trialDays={checkout.trialDays || 0} plan={selectedPlan} companyName={companyName} fullName={fullName} email={email} onBack={handleBack} />;
     }
@@ -137,14 +144,14 @@ export default function SubscriptionPlans() {
                     Choose a plan{companyName ? ` for ${companyName}` : ""}
                 </h1>
                 <p className="plans-subtitle">
-                    Every plan starts with a 30-day free trial — your card is only charged when the trial ends, and you can cancel any time before.
+                    {inAnalytics ? "Intastellar Analytics is included from Starter. " : ""}Every plan starts with a 30-day free trial — your card is only charged when the trial ends, and you can cancel any time before.
                 </p>
             </header>
 
             {error && <p className="plans-error" role="alert">{error}</p>}
 
-            <div className="plans-grid">
-                {PLANS.map(plan => (
+            <div className="plans-grid" style={{ "--plans-columns": visiblePlans.length }}>
+                {visiblePlans.map(plan => (
                     <article
                         key={plan.id}
                         className={`plan-card${plan.highlighted ? " plan-card--highlighted" : ""}`}
