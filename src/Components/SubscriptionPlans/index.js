@@ -1,7 +1,7 @@
 import Authentication from "../../Authentication/Auth";
 import CheckoutForm from "./CheckoutForm";
 import "./Style/Plans.css";
-import { PrimaryHost } from "../../API/host";
+import API from "../../API/api";
 import appStorage from '../../Functions/storage.js';
 
 const { useState } = React;
@@ -34,6 +34,7 @@ const PLANS = [
             "Cookie scanner (automatic)",
             "Google Consent Mode",
             "Email support",
+            "Intastellar Analytics",
         ],
     },
     {
@@ -56,7 +57,7 @@ const PLANS = [
     {
         id: "agency-pro",
         name: "Agency Pro",
-        price: "€39",
+        price: "€79",
         period: "/month",
         description: "Multi-client management for agencies and consultancies.",
         features: [
@@ -74,34 +75,44 @@ export default function SubscriptionPlans() {
     document.title = "Choose your Plan | Intastellar Consents";
 
     const [selectedPlan, setSelectedPlan] = useState(null);
-    const [clientSecret, setClientSecret] = useState(null);
+    const [checkout, setCheckout] = useState(null);
     const [error, setError] = useState(null);
     const [initiating, setInitiating] = useState(null);
 
     const companyName = (() => { try { return JSON.parse(appStorage.getItem("organisation"))?.name; } catch { return null; } })();
     const email = Authentication.getUserId();
+    const fullName = (() => {
+        try {
+            const name = JSON.parse(appStorage.getItem("globals"))?.profile?.name;
+            return [name?.first_name, name?.last_name].filter(Boolean).join(" ") || null;
+        } catch { return null; }
+    })();
 
     const handleSelectPlan = async (plan) => {
         setError(null);
         setInitiating(plan.id);
         try {
-            const res = await fetch(`${PrimaryHost}/payment/subscription/v1/create-checkout-session`, {
+            const res = await fetch(API.CreateCheckoutSession.url, {
                 method: "POST",
                 headers: {
                     "Authorization": Authentication.getToken(),
+                    "Organisation": Authentication.getOrganisation(),
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
                     planId: plan.id,
-                    organisationId: Authentication.getOrganisation(),
-                    email,
+                    returnPath: window.location.pathname,
                 }),
             });
+            if (res.status === 409) {
+                setError("This organisation already has a subscription. Reload the page, or manage it under Settings.");
+                return;
+            }
             if (!res.ok) throw new Error("Server error");
             const data = await res.json();
-            if (!data.clientSecret) throw new Error("Invalid response");
+            if (!data.clientSecret || !data.publishableKey) throw new Error("Invalid response");
             setSelectedPlan(plan);
-            setClientSecret(data.clientSecret);
+            setCheckout(data);
         } catch {
             setError("Unable to start checkout. Please try again or contact support.");
         } finally {
@@ -111,12 +122,12 @@ export default function SubscriptionPlans() {
 
     const handleBack = () => {
         setSelectedPlan(null);
-        setClientSecret(null);
+        setCheckout(null);
         setError(null);
     };
 
-    if (selectedPlan && clientSecret) {
-        return <CheckoutForm clientSecret={clientSecret} plan={selectedPlan} onBack={handleBack} />;
+    if (selectedPlan && checkout) {
+        return <CheckoutForm clientSecret={checkout.clientSecret} publishableKey={checkout.publishableKey} plan={selectedPlan} companyName={companyName} fullName={fullName} email={email} onBack={handleBack} />;
     }
 
     return (

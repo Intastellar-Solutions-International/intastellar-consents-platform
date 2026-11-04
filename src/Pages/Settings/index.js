@@ -3,7 +3,9 @@ import SideNav from "../../Components/Header/SideNav";
 import { reportsLinks as settingsSidebarLinks } from "../../Components/Header/SideNavLinks";
 import StickyPageTitle from "../../Components/Header/Sticky";
 import Authentication from "../../Authentication/Auth";
-import { canAccess } from "../../Functions/tier.js";
+import { canAccess, getTier, TIER_LABELS } from "../../Functions/tier.js";
+import { formatDate } from "../../Functions/format.js";
+import Button from "../../Components/UI/Button.js";
 import appStorage from '../../Functions/storage.js';
 
 const Link = window.ReactRouterDOM.Link;
@@ -33,6 +35,38 @@ function userCanSeeSidebarLink(link) {
     const role = Authentication.getCurrentOrganisationRole();
     if (role == null || role === "") return false;
     return link.view.indexOf(role) !== -1;
+}
+
+// Plan, renewal and a link to Stripe's customer portal (cancel, change card,
+// invoices). The portal is Stripe's email-verified login, so the link is safe
+// to show; only admins see it because only they manage billing.
+function BillingSummary() {
+    const role = Authentication.getCurrentOrganisationRole();
+    if (role !== "admin" && role !== "super-admin") return null;
+
+    let sub = {};
+    try { sub = JSON.parse(appStorage.getItem("subscription") || "{}") || {}; } catch { /* ignore */ }
+    const tier = getTier();
+    if (tier === "none") return null;
+
+    const periodEnd = sub.current_period_end ? formatDate(sub.current_period_end) : null;
+    const renewal = !periodEnd ? null
+        : sub.cancel_at_period_end ? `Ends ${periodEnd}`
+        : sub.status === "past_due" ? "Payment overdue — update your card"
+        : `Renews ${periodEnd}`;
+
+    return (
+        <div className="settings-hub__billing">
+            <span className="settings-hub__scope-label">Plan</span>
+            <span className="settings-hub__scope-value">{TIER_LABELS[tier]}</span>
+            {renewal && <span className="settings-hub__billing-renewal">{renewal}</span>}
+            {sub.portal_url && (
+                <Button size="sm" href={sub.portal_url} target="_blank" rel="noopener noreferrer" iconRight="external-link">
+                    Manage billing
+                </Button>
+            )}
+        </div>
+    );
 }
 
 function canOpenBlacklistRoute() {
@@ -77,6 +111,7 @@ export default function Settings() {
                         <span className="settings-hub__scope-label">Organisation</span>
                         <span className="settings-hub__scope-value">{scopeLine}</span>
                     </div>
+                    <BillingSummary />
                     {visibleItems.length === 0 ? (
                         <p className="settings-hub__empty">No settings sections are available for your current role.</p>
                     ) : (

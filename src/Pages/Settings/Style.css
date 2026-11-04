@@ -41,6 +41,30 @@
     color: rgb(var(--c-text-secondary) / 0.88);
 }
 
+.settings-hub__billing {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+    margin: 0 0 var(--space-7) var(--space-3);
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-lg);
+    border: 1px solid rgb(var(--c-white) / 0.1);
+    background: rgb(var(--c-black) / 0.2);
+    font-size: var(--text-xs);
+    color: rgb(var(--c-text-secondary) / 0.88);
+}
+
+.settings-hub__billing-renewal {
+    color: rgb(var(--c-text-muted) / 0.9);
+}
+
+@media (max-width: 640px) {
+    .settings-hub__billing {
+        margin-left: 0;
+    }
+}
+
 .settings-hub__scope-label {
     font-weight: 600;
     letter-spacing: 0.06em;
