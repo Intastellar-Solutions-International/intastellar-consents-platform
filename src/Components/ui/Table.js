@@ -2,6 +2,7 @@ import { Icon } from "./icons.js";
 import EmptyState from "./EmptyState.js";
 import ErrorState from "./ErrorState.js";
 import { SkeletonTableRows } from "./Skeleton.js";
+import { t } from "../../i18n/index.js";
 
 /**
  * Table — dense data table.
@@ -16,11 +17,11 @@ import { SkeletonTableRows } from "./Skeleton.js";
  */
 export default function Table({
     columns, rows = [], getRowKey = (r, i) => i, sort, onSortChange, onRowClick, selectedKey,
-    loading = false, error, empty = { title: "No results", message: "Nothing matches the current filters." },
+    loading = false, error, empty = { title: t("No results"), message: t("Nothing matches the current filters.") },
     caption, stickyHeader = true, className = "",
 }) {
     if (loading) return <SkeletonTableRows columns={Math.min(columns.length, 6)} />;
-    if (error) return <ErrorState title={error.title || "Couldn't load the table"} message={error.message} onRetry={error.onRetry} />;
+    if (error) return <ErrorState title={error.title || t("Couldn't load the table")} message={error.message} onRetry={error.onRetry} />;
     if (!rows.length) return <EmptyState compact title={empty.title} message={empty.message} action={empty.action} />;
 
     const ariaSort = (col) => (sort && sort.key === col.key ? (sort.direction === "asc" ? "ascending" : "descending") : col.sortable ? "none" : undefined);

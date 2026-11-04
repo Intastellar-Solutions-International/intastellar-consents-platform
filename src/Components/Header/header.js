@@ -7,6 +7,7 @@ import API from "../../API/api";
 import Authentication from "../../Authentication/Auth";
 import IntastellarAccounts from "../IntastellarAccounts/IntastellarAccounts";
 import PropertySelector from "./PropertySelector.js";
+import { t } from "../../i18n/index.js";
 import {
     parseHandleFromPath,
     decodeDomainPathSegment,
@@ -104,8 +105,8 @@ function NotificationCenter() {
             <button
                 className="notif-bell"
                 onClick={() => { setOpen(o => !o); if (!open) fetchNotifications(); }}
-                aria-label="Notifications"
-                title="Notifications"
+                aria-label={t("Notifications")}
+                title={t("Notifications")}
             >
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
@@ -119,7 +120,7 @@ function NotificationCenter() {
             {open && (
                 <div className="notif-dropdown">
                     <div className="notif-dropdown__header">
-                        <span className="notif-dropdown__title">Notifications</span>
+                        <span className="notif-dropdown__title">{t("Notifications")}</span>
                         {unread > 0 && (
                             <button className="notif-dropdown__mark-all" onClick={markAllRead}>
                                 Mark all read
@@ -129,10 +130,10 @@ function NotificationCenter() {
 
                     <div className="notif-dropdown__list">
                         {loading && (
-                            <p className="notif-dropdown__empty">Loading…</p>
+                            <p className="notif-dropdown__empty">{t("Loading…")}</p>
                         )}
                         {!loading && notifications.length === 0 && (
-                            <p className="notif-dropdown__empty">No notifications yet</p>
+                            <p className="notif-dropdown__empty">{t("No notifications yet")}</p>
                         )}
                         {notifications.map(n => (
                             <div
@@ -540,7 +541,7 @@ export default function Header(props) {
                 <div className={"dashboard-profile" + (newShell ? " shell-profile" : "")}>
                     <section className="logo-selector-container">
                         <section className="logo_container">
-                            <button className="menu" aria-label="Toggle navigation" onClick={() => {
+                            <button className="menu" aria-label={t("Toggle navigation")} onClick={() => {
                                 if (newShell) window.dispatchEvent(new Event("shell:toggle-rail"));
                                 else document.querySelector(".navOverlay")?.classList.toggle("expand");
                             }}>

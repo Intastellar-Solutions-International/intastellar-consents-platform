@@ -12,7 +12,9 @@ const read = (p) => fs.readFileSync(path.join(__dirname, "..", p), "utf8");
 
 const healthSrc = read("src/Components/Shell/useDomainHealth.js");
 const fnSrc = healthSrc.slice(healthSrc.indexOf("const HOUR"), healthSrc.indexOf("export default function useDomainHealth")).replace(/^export /gm, "");
-const ctx = vm.createContext({ Math, Date });
+// t() stands in for src/i18n's: English text with {placeholders} filled.
+const t = (text, vars) => (vars ? text.replace(/\{(\w+)\}/g, (m, k) => (k in vars ? String(vars[k]) : m)) : text);
+const ctx = vm.createContext({ Math, Date, t });
 vm.runInContext(fnSrc, ctx);
 const NOW = Date.parse("2026-11-03T12:00:00Z");
 const at = (h) => new Date(NOW - h * 3600e3);

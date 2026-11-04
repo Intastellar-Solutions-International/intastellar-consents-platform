@@ -3,6 +3,7 @@ import { LoadingBar } from "../../../Components/widget/Loading";
 import Button from "../../Button/Button.js";
 import SideCart from "../../SideCart/SideCart.js";
 import { isNewShell } from "../../../Functions/featureFlags.js";
+import { t } from "../../../i18n/index.js";
 
 // Added showInfoButton and infoType props
 export default function StickyPageTitle({
@@ -66,7 +67,8 @@ export default function StickyPageTitle({
                         {titleLogo && (
                             <img src={titleLogo} alt="" aria-hidden="true" style={{ height: 28, width: 28, objectFit: "contain", verticalAlign: "middle", marginRight: 10, flexShrink: 0 }} />
                         )}
-                        {title}
+                        {/* Fixed page titles are translated here; names (domains etc.) pass through. */}
+                        {typeof title === "string" ? t(title) : title}
                         {showInfoButton && (
                             <Button className="secondary" onClick={openSideCart}>i</Button>
                         )}

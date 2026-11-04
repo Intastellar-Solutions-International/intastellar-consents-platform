@@ -2,6 +2,7 @@ import "./header.css";
 import Authentication from "../../Authentication/Auth";
 import { DomainContext } from "../../App.js";
 import { dashboardPath, reportsPath, detectDashboardMode } from "../../Functions/domainPathSegments.js";
+import { t } from "../../i18n/index.js";
 const Link = window.ReactRouterDOM.Link;
 const useLocation = window.ReactRouterDOM.useLocation;
 const useContext = React.useContext;
@@ -54,34 +55,34 @@ export default function Nav() {
                     <nav className="collapsed">
                         <Link className={"navItems" + (homeActive ? " --active" : "")} to={homePath}><i className="dashboard-icons home" style={{
                             backgroundImage: `url(${home})`
-                        }} data-icon={home}></i> <span className="hiddenCollapsed">Home</span></Link>
+                        }} data-icon={home}></i> <span className="hiddenCollapsed">{t("Home")}</span></Link>
                         <Link className={"navItems" + (path.indexOf("/compliance") > -1 ? " --active" : "")} to={compliancePath}><i className="dashboard-icons compliance" style={{
                             backgroundImage: `url(${compliance})`
-                        }} data-icon={compliance}></i> <span className="hiddenCollapsed">Compliance</span></Link>
+                        }} data-icon={compliance}></i> <span className="hiddenCollapsed">{t("Compliance")}</span></Link>
                         <Link className={"navItems" + (path.indexOf("/reports") > -1 && path.indexOf("/compliance") === -1 ? " --active" : "")} to={reportsPathResolved}><i className="dashboard-icons reports" style={{
                             backgroundImage: `url(${reports})`
-                        }} data-icon={reports}></i> <span className="hiddenCollapsed">Reports</span></Link>
+                        }} data-icon={reports}></i> <span className="hiddenCollapsed">{t("Reports")}</span></Link>
                         <Link className={"navItems" + (path.indexOf("/compare") > -1 ? " --active" : "")} to={"/" + localStorage.getItem("platform") + "/compare"}><i className="dashboard-icons compare" style={{
                             backgroundImage: `url(${benchmark})`
-                        }} data-icon={benchmark}></i> <span className="hiddenCollapsed">Portfolio Benchmark</span></Link>
+                        }} data-icon={benchmark}></i> <span className="hiddenCollapsed">{t("Portfolio Benchmark")}</span></Link>
                         <Link className={"navItems" + (path.indexOf("/experiments") > -1 ? " --active" : "")} to={"/experiments"}>
                             <i className="dashboard-icons experiments" style={{
                                 backgroundImage: `url(${experiments})`
-                            }} data-icon={experiments}></i> <span className="hiddenCollapsed">A/B Testing</span>
+                            }} data-icon={experiments}></i> <span className="hiddenCollapsed">{t("A/B Testing")}</span>
                         </Link>
                         <section className="navItems--bottom">
                             {isAdminOrg && (
                                 <Link className={"navItems" + (path === "/cookie-database" ? " --active" : "")} to="/cookie-database">
                                     <i className="dashboard-icons cookies" style={{ backgroundImage: `url(${cookies})` }} data-icon={cookies}></i>
-                                    <span className="hiddenCollapsed">Cookie DB</span>
+                                    <span className="hiddenCollapsed">{t("Cookie DB")}</span>
                                 </Link>
                             )}
                             <Link className={"navItems" + (path.indexOf("/settings") > -1 ? " --active" : "")} to={"/settings"}><i className="dashboard-icons settings" style={{
                                 backgroundImage: `url(${settings})`
-                            }} data-icon={settings}></i> <span className="hiddenCollapsed">Settings</span></Link>
+                            }} data-icon={settings}></i> <span className="hiddenCollapsed">{t("Settings")}</span></Link>
                             <button className="navLogout" onClick={() => Authentication.Logout()}><i className="dashboard-icons logout" style={{
                                 backgroundImage: `url(${logout})`
-                            }}></i> <span className="hiddenCollapsed" data-icon={logout}>Logout</span></button>
+                            }}></i> <span className="hiddenCollapsed" data-icon={logout}>{t("Logout")}</span></button>
                         </section>
                     </nav>
                 </aside>

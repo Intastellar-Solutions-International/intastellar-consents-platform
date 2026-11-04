@@ -1,6 +1,7 @@
 import "./Style/Plans.css";
 import { Icon, Button } from "../UI/index.js";
 import { formatDate } from "../../Functions/format.js";
+import { t, getLanguage } from "../../i18n/index.js";
 
 const { useEffect, useRef, useState } = React;
 
@@ -90,7 +91,8 @@ export default function CheckoutForm({ clientSecret, publishableKey, trialDays =
         loadStripeJs()
             .then((Stripe) => {
                 if (destroyed) return null;
-                const checkout = Stripe(publishableKey).initCheckoutElementsSdk({
+                // Stripe's own fields (address, card, errors) in the platform language.
+                const checkout = Stripe(publishableKey, { locale: getLanguage() }).initCheckoutElementsSdk({
                     clientSecret,
                     elementsOptions: { appearance: elementsAppearance(), fonts: FONTS },
                     defaultValues: {
@@ -118,7 +120,7 @@ export default function CheckoutForm({ clientSecret, publishableKey, trialDays =
                 setReady(true);
             })
             .catch((err) => {
-                if (!destroyed) setLoadError(err?.message || "The payment form could not be loaded.");
+                if (!destroyed) setLoadError(err?.message || t("The payment form could not be loaded."));
             });
 
         return () => {
@@ -136,7 +138,7 @@ export default function CheckoutForm({ clientSecret, publishableKey, trialDays =
         if (!actions) return;
         const emailValue = billingEmail.trim();
         if (!EMAIL_PATTERN.test(emailValue)) {
-            setMessage("Enter a valid billing email address.");
+            setMessage(t("Enter a valid billing email address."));
             return;
         }
         setSubmitting(true);
@@ -148,16 +150,16 @@ export default function CheckoutForm({ clientSecret, publishableKey, trialDays =
             ]) {
                 const updated = await update();
                 if (updated?.type === "error") {
-                    setMessage(updated.error?.message || "Please check your billing details.");
+                    setMessage(updated.error?.message || t("Please check your billing details."));
                     return;
                 }
             }
             // Only returns on an immediate error (e.g. declined card); on
             // success Stripe redirects to the return URL.
             const result = await actions.confirm();
-            if (result?.type === "error") setMessage(result.error?.message || "Payment failed. Please try again.");
+            if (result?.type === "error") setMessage(result.error?.message || t("Payment failed. Please try again."));
         } catch (err) {
-            setMessage(err?.message || "Payment failed. Please try again.");
+            setMessage(err?.message || t("Payment failed. Please try again."));
         } finally {
             setSubmitting(false);
         }
@@ -168,16 +170,18 @@ export default function CheckoutForm({ clientSecret, publishableKey, trialDays =
     // Stripe starts the trial at confirmation, so today + trialDays is the
     // first charge date.
     const firstCharge = trialDays ? formatDate(new Date(Date.now() + trialDays * 86400000)) : null;
+    // Split at {company} so the name stays bold in every language.
+    const [billedBefore, billedAfter] = t("Billed to {company}").split("{company}");
 
     return (
         <div className="checkout-page">
             <button className="checkout-back" onClick={onBack} type="button">
-                <Icon name="chevron-left" /> Back to plans
+                <Icon name="chevron-left" /> {t("Back to plans")}
             </button>
 
             <div className="checkout-layout">
-                <aside className="checkout-summary" aria-label="Order summary">
-                    <p className="checkout-summary__eyebrow">{trialDays ? `${trialDays}-day free trial` : "Subscribe to"}</p>
+                <aside className="checkout-summary" aria-label={t("Order summary")}>
+                    <p className="checkout-summary__eyebrow">{trialDays ? t("{n}-day free trial", { n: trialDays }) : t("Subscribe to")}</p>
                     <h1 className="checkout-title">{plan.name}</h1>
                     <p className="checkout-price">
                         {plan.price}
@@ -193,18 +197,18 @@ export default function CheckoutForm({ clientSecret, publishableKey, trialDays =
 
                     <dl className="checkout-summary__totals">
                         <div>
-                            <dt>Due today</dt>
+                            <dt>{t("Due today")}</dt>
                             <dd>{dueToday || "…"}</dd>
                         </div>
                         <div className="checkout-summary__then">
-                            <dt>{firstCharge ? `From ${firstCharge}` : "Then"}</dt>
+                            <dt>{firstCharge ? t("From {date}", { date: firstCharge }) : t("Then")}</dt>
                             <dd>{plan.price}{plan.period}</dd>
                         </div>
                     </dl>
 
                     <p className="checkout-summary__billed">
-                        Billed to <strong>{companyName || "your organisation"}</strong>
-                        {billingEmail.trim() ? <> · invoices sent to {billingEmail.trim()}</> : null}
+                        {billedBefore}<strong>{companyName || t("your organisation")}</strong>{billedAfter}
+                        {billingEmail.trim() ? <> · {t("invoices sent to {email}", { email: billingEmail.trim() })}</> : null}
                     </p>
                 </aside>
 
@@ -217,21 +221,21 @@ export default function CheckoutForm({ clientSecret, publishableKey, trialDays =
                     ) : null}
 
                     <section className="checkout-form__section">
-                        <h2 className="checkout-form__heading">Billing details</h2>
+                        <h2 className="checkout-form__heading">{t("Billing details")}</h2>
                         <div className="checkout-form__fields">
                             <label className="checkout-form__field">
-                                <span className="checkout-form__label">Company name</span>
+                                <span className="checkout-form__label">{t("Company name")}</span>
                                 <input
                                     className="checkout-form__input"
                                     type="text"
                                     autoComplete="organization"
                                     value={businessName}
                                     onChange={(e) => setBusinessName(e.target.value)}
-                                    placeholder="Leave empty if you're buying as an individual"
+                                    placeholder={t("Leave empty if you're buying as an individual")}
                                 />
                             </label>
                             <label className="checkout-form__field">
-                                <span className="checkout-form__label">Billing email</span>
+                                <span className="checkout-form__label">{t("Billing email")}</span>
                                 <input
                                     className="checkout-form__input"
                                     type="email"
@@ -242,28 +246,28 @@ export default function CheckoutForm({ clientSecret, publishableKey, trialDays =
                                     aria-describedby="billing-email-hint"
                                 />
                                 <span id="billing-email-hint" className="checkout-form__hint">
-                                    Invoices and receipts go here — e.g. your accounts team. Can differ from your login.
+                                    {t("Invoices and receipts go here — e.g. your accounts team. Can differ from your login.")}
                                 </span>
                             </label>
                         </div>
                     </section>
 
                     <section className="checkout-form__section">
-                        <h2 className="checkout-form__heading">Billing address</h2>
+                        <h2 className="checkout-form__heading">{t("Billing address")}</h2>
                         <div ref={billingRef} />
                     </section>
 
                     <section className="checkout-form__section">
-                        <h2 className="checkout-form__heading">Business tax ID <span className="checkout-form__optional">optional</span></h2>
+                        <h2 className="checkout-form__heading">{t("Business tax ID")} <span className="checkout-form__optional">{t("optional")}</span></h2>
                         <div ref={taxIdRef} />
                     </section>
 
                     <section className="checkout-form__section">
-                        <h2 className="checkout-form__heading">Payment method</h2>
+                        <h2 className="checkout-form__heading">{t("Payment method")}</h2>
                         <div ref={paymentRef} />
                     </section>
 
-                    {!ready && !loadError ? <p className="checkout-form__loading" aria-live="polite">Loading secure payment form…</p> : null}
+                    {!ready && !loadError ? <p className="checkout-form__loading" aria-live="polite">{t("Loading secure payment form…")}</p> : null}
 
                     {message ? (
                         <div className="checkout-form__alert" role="alert">
@@ -273,16 +277,16 @@ export default function CheckoutForm({ clientSecret, publishableKey, trialDays =
                     ) : null}
 
                     <Button type="submit" variant="primary" className="checkout-form__submit" disabled={!canSubmit} loading={submitting}>
-                        {submitting ? "Processing…" : trialDays ? `Start ${trialDays}-day free trial` : `Subscribe · ${dueToday || plan.price}`}
+                        {submitting ? t("Processing…") : trialDays ? t("Start {n}-day free trial", { n: trialDays }) : t("Subscribe · {price}", { price: dueToday || plan.price })}
                     </Button>
 
                     <p className="checkout-form__legal">
                         <Icon name="shield-check" />
                         <span>
                             {trialDays
-                                ? `You won't be charged today. Your card is charged ${plan.price} on ${firstCharge}, then every month, unless you cancel before under Settings → Manage billing.`
-                                : "Your subscription renews automatically; cancel any time under Settings → Manage billing."}
-                            {" "}Payments are processed securely by Stripe — card details never reach our servers.
+                                ? t("You won't be charged today. Your card is charged {price} on {date}, then every month, unless you cancel before under Settings → Manage billing.", { price: plan.price, date: firstCharge })
+                                : t("Your subscription renews automatically; cancel any time under Settings → Manage billing.")}
+                            {" "}{t("Payments are processed securely by Stripe — card details never reach our servers.")}
                         </span>
                     </p>
                 </form>

@@ -3,14 +3,15 @@ import API from "../../API/api";
 import { fetchJsonWithTimeout } from "../../Functions/fetchWithTimeout.js";
 import { parseConsentTimestamp } from "../../Functions/consentTimestamp.js";
 import { isCombinedOrClearDomain } from "../../Functions/domainPathSegments.js";
+import { t } from "../../i18n/index.js";
 
 const { useState, useEffect } = React;
 const HOUR = 3600e3, DAY = 24 * HOUR;
 
 function ago(ms) {
-    if (ms < HOUR) return `${Math.max(1, Math.round(ms / 60000))} min ago`;
-    if (ms < DAY) return `${Math.round(ms / HOUR)} h ago`;
-    return `${Math.round(ms / DAY)} days ago`;
+    if (ms < HOUR) return t("{n} min ago", { n: Math.max(1, Math.round(ms / 60000)) });
+    if (ms < DAY) return t("{n} h ago", { n: Math.round(ms / HOUR) });
+    return t("{n} days ago", { n: Math.round(ms / DAY) });
 }
 
 /**
@@ -22,17 +23,17 @@ function ago(ms) {
  */
 export function buildHealthChecks({ lastConsentAt, lastScanAt, consentFailed, scanFailed, now = Date.now() }) {
     const checks = [];
-    if (consentFailed) checks.push({ label: "Logging", status: "unknown", detail: "couldn't check" });
-    else if (!lastConsentAt) checks.push({ label: "Logging", status: "error", detail: "no consent recorded in 30 days" });
+    if (consentFailed) checks.push({ label: t("Logging"), status: "unknown", detail: t("couldn't check") });
+    else if (!lastConsentAt) checks.push({ label: t("Logging"), status: "error", detail: t("no consent recorded in 30 days") });
     else {
         const age = now - lastConsentAt.getTime();
-        checks.push({ label: "Logging", status: age <= DAY ? "ok" : age <= 7 * DAY ? "warning" : "error", detail: `last consent ${ago(age)}` });
+        checks.push({ label: t("Logging"), status: age <= DAY ? "ok" : age <= 7 * DAY ? "warning" : "error", detail: t("last consent {ago}", { ago: ago(age) }) });
     }
-    if (scanFailed) checks.push({ label: "Last scan", status: "unknown", detail: "couldn't check" });
-    else if (!lastScanAt) checks.push({ label: "Last scan", status: "warning", detail: "not scanned yet" });
+    if (scanFailed) checks.push({ label: t("Last scan"), status: "unknown", detail: t("couldn't check") });
+    else if (!lastScanAt) checks.push({ label: t("Last scan"), status: "warning", detail: t("not scanned yet") });
     else {
         const age = now - lastScanAt.getTime();
-        checks.push({ label: "Last scan", status: age <= 14 * DAY ? "ok" : "warning", detail: ago(age) });
+        checks.push({ label: t("Last scan"), status: age <= 14 * DAY ? "ok" : "warning", detail: ago(age) });
     }
     return checks;
 }

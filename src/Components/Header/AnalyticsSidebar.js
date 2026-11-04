@@ -4,6 +4,7 @@ const useParams = window.ReactRouterDOM.useParams;
 import Authentication from "../../Authentication/Auth";
 import { lockBodyScroll, unlockBodyScroll } from "../../Functions/bodyScrollLock.js";
 import { canAccess } from "../../Functions/tier.js";
+import { t } from "../../i18n/index.js";
 
 /**
  * docs/design-audit-plan.md Phase 3 item 2 — the root structural fix for
@@ -77,7 +78,7 @@ export default function AnalyticsSidebar(props) {
                 <span className="ia-sidebar-toggle__bar" />
                 <span className="ia-sidebar-toggle__bar" />
             </span>
-            <span className="ia-sidebar-toggle__label">Menu</span>
+            <span className="ia-sidebar-toggle__label">{t("Menu")}</span>
         </button>
 
         <div
@@ -90,14 +91,14 @@ export default function AnalyticsSidebar(props) {
             id="ia-analytics-sidebar"
             className={"ia-sidebar" + (mobileOpen ? " ia-sidebar--open" : "")}
         >
-            <nav className="ia-sidebar__nav" aria-label={props?.title || "Analytics navigation"}>
+            <nav className="ia-sidebar__nav" aria-label={props?.title ? t(props.title) : t("Analytics navigation")}>
                 <div className="ia-sidebar__top">
                     {props?.title ? <h2 className="ia-sidebar__heading">{props?.title}</h2> : null}
                     <button
                         type="button"
                         className="ia-sidebar__close"
                         onClick={closeMobile}
-                        aria-label="Close menu"
+                        aria-label={t("Close menu")}
                     >
                         ×
                     </button>
@@ -109,7 +110,7 @@ export default function AnalyticsSidebar(props) {
                             if (link.requiresTier && !canAccess(link.requiresTier)) return null;
                             return (
                                 <li key={key} className="ia-sidebar__group-label" aria-hidden="true">
-                                    <span className="ia-sidebar__group-label-text">{link.label}</span>
+                                    <span className="ia-sidebar__group-label-text">{t(link.label)}</span>
                                 </li>
                             );
                         }
@@ -135,7 +136,7 @@ export default function AnalyticsSidebar(props) {
                                         rel="noopener noreferrer"
                                         onClick={closeMobile}
                                     >
-                                        <span className="ia-sidebar__link-label">{link?.name} ↗</span>
+                                        <span className="ia-sidebar__link-label">{t(link?.name)} ↗</span>
                                     </a>
                                 </li>
                             );
@@ -169,7 +170,7 @@ export default function AnalyticsSidebar(props) {
                                         : link?.icon
                                             ? <i className={"dashboard-icons " + link?.icon} aria-hidden="true"></i>
                                             : null}{" "}
-                                    <span className="ia-sidebar__link-label">{link?.name}</span>
+                                    <span className="ia-sidebar__link-label">{t(link?.name)}</span>
                                 </Link>
                             </li>
                         );

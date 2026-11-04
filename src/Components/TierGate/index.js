@@ -1,5 +1,6 @@
 import { canAccess, TIER_LABELS, TIER_PRICES } from '../../Functions/tier.js';
 import './Style.css';
+import { t } from "../../i18n/index.js";
 
 const Link = window.ReactRouterDOM.Link;
 
@@ -9,6 +10,11 @@ export default function TierGate({ minTier, featureName, children, fullPage }) {
     if (canAccess(minTier)) return children ?? null;
 
     const tierLabel = TIER_LABELS[minTier];
+    // Translated as whole sentences, then split at {plan} so the plan name
+    // keeps its highlight wherever the language puts it.
+    const feature = featureName ? t(featureName) : t("This feature");
+    const [pageBefore, pageAfter] = t("{feature} requires the {plan} plan", { feature }).split("{plan}");
+    const [inlineBefore, inlineAfter] = t("{feature} requires {plan}", { feature }).split("{plan}");
     const tierPrice = TIER_PRICES[minTier];
 
     const lockIcon = (
@@ -23,15 +29,15 @@ export default function TierGate({ minTier, featureName, children, fullPage }) {
             <div className="tier-gate tier-gate--page">
                 {lockIcon}
                 <h2 className="tier-gate__heading">
-                    {featureName ? `${featureName} requires ` : 'Requires the '}
+                    {pageBefore}
                     <span className="tier-gate__tier-name">{tierLabel}</span>
-                    {featureName ? ' plan' : ' plan'}
+                    {pageAfter}
                 </h2>
                 <p className="tier-gate__sub">
-                    Upgrade to {tierLabel} starting at {tierPrice} to unlock this feature.
+                    {t("Upgrade to {plan} starting at {price} to unlock this feature.", { plan: tierLabel, price: tierPrice })}
                 </p>
                 <Link to="/settings/plans" className="tier-gate__btn">
-                    View Plans
+                    {t("View Plans")}
                 </Link>
             </div>
         );
@@ -43,11 +49,12 @@ export default function TierGate({ minTier, featureName, children, fullPage }) {
             <div className="tier-gate__overlay">
                 {lockIcon}
                 <p className="tier-gate__heading">
-                    {featureName ?? 'This feature'} requires{' '}
+                    {inlineBefore}
                     <span className="tier-gate__tier-name">{tierLabel}</span>
+                    {inlineAfter}
                 </p>
                 <p className="tier-gate__sub">
-                    {tierPrice} — <Link to="/settings/plans" className="tier-gate__link">View Plans</Link>
+                    {tierPrice} — <Link to="/settings/plans" className="tier-gate__link">{t("View Plans")}</Link>
                 </p>
             </div>
         </div>

@@ -1,6 +1,7 @@
 import { Icon } from "./icons.js";
 import ErrorState from "./ErrorState.js";
 import { SkeletonKpiTile } from "./Skeleton.js";
+import { t } from "../../i18n/index.js";
 
 /**
  * KpiTile — one headline number.
@@ -11,7 +12,7 @@ import { SkeletonKpiTile } from "./Skeleton.js";
  * states: loading (shaped skeleton), error ({ message, onRetry })
  */
 export default function KpiTile({ label, value, hint, delta, loading = false, error, className = "" }) {
-    if (loading) return <SkeletonKpiTile label={`Loading ${label}`} />;
+    if (loading) return <SkeletonKpiTile label={t("Loading {label}", { label })} />;
     if (error) return <ErrorState compact title={`${label} unavailable`} message={error.message} onRetry={error.onRetry} />;
     let deltaEl = null;
     if (delta && Number.isFinite(delta.value)) {

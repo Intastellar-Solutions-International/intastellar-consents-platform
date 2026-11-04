@@ -1,4 +1,5 @@
 import Button from "./Button.js";
+import { t } from "../../i18n/index.js";
 const { useEffect, useRef, useId } = React;
 
 /**
@@ -45,7 +46,7 @@ export default function Drawer({ open, onClose, title, children, footer, width =
             >
                 <header className="tw-flex tw-items-start tw-justify-between tw-gap-4 tw-p-5 tw-border-0 tw-border-b tw-border-solid tw-border-border-subtle">
                     <h2 id={titleId} className="tw-m-0 tw-text-lg tw-font-semibold tw-text-text-primary">{title}</h2>
-                    <Button variant="ghost" size="sm" icon="x" iconOnly aria-label="Close" onClick={onClose} />
+                    <Button variant="ghost" size="sm" icon="x" iconOnly aria-label={t("Close")} onClick={onClose} />
                 </header>
                 <div className="tw-flex-1 tw-overflow-y-auto tw-p-5 tw-text-sm tw-text-text-secondary">{children}</div>
                 {footer && <footer className="tw-flex tw-justify-end tw-gap-2 tw-p-4 tw-border-0 tw-border-t tw-border-solid tw-border-border-subtle">{footer}</footer>}

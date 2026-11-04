@@ -1,4 +1,5 @@
 import { Icon } from "./icons.js";
+import { t } from "../../i18n/index.js";
 import Button from "./Button.js";
 
 /**
@@ -6,13 +7,13 @@ import Button from "./Button.js";
  * children: FilterSelect / FilterSearch / FilterChip; activeCount + onClear add
  * "Clear filters"; resultCount shows "N results" (announced politely).
  */
-export default function FilterBar({ children, activeCount = 0, onClear, resultCount, label = "Filters", className = "" }) {
+export default function FilterBar({ children, activeCount = 0, onClear, resultCount, label = t("Filters"), className = "" }) {
     return (
         <div role="group" aria-label={label} className={`tw-flex tw-flex-wrap tw-items-end tw-gap-3 tw-py-3 ${className}`}>
             {children}
             <div className="tw-flex tw-items-center tw-gap-3 tw-ml-auto">
                 {resultCount != null && <span aria-live="polite" className="tw-text-sm tw-text-text-muted tw-tabular-nums">{resultCount} {resultCount === 1 ? "result" : "results"}</span>}
-                {activeCount > 0 && onClear && <Button variant="ghost" size="sm" icon="x" onClick={onClear}>Clear filters ({activeCount})</Button>}
+                {activeCount > 0 && onClear && <Button variant="ghost" size="sm" icon="x" onClick={onClear}>{t("Clear filters ({n})", { n: activeCount })}</Button>}
             </div>
         </div>
     );

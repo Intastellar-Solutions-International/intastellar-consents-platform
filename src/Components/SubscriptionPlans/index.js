@@ -4,6 +4,7 @@ import "./Style/Plans.css";
 import API from "../../API/api";
 import appStorage from '../../Functions/storage.js';
 import { TIERS, FEATURE_TIERS } from '../../Functions/tier.js';
+import { t } from "../../i18n/index.js";
 
 const { useState } = React;
 
@@ -12,46 +13,46 @@ const PLANS = [
         id: "personal",
         name: "Personal",
         price: "€5",
-        period: "/month",
-        description: "Essential consent tracking for individuals and small sites.",
+        period: t("/month"),
+        description: t("Essential consent tracking for individuals and small sites."),
         features: [
-            "Consent audit log",
-            "CSV export",
-            "GDPR & CCPA compliance",
-            "Cookie consent banner",
-            "Email support",
+            t("Consent audit log"),
+            t("CSV export"),
+            t("GDPR & CCPA compliance"),
+            t("Cookie consent banner"),
+            t("Email support"),
         ],
     },
     {
         id: "starter",
         name: "Starter",
         price: "€15",
-        period: "/month",
-        description: "Full analytics platform for growing businesses.",
+        period: t("/month"),
+        description: t("Full analytics platform for growing businesses."),
         features: [
-            "Everything in Personal",
-            "Consent analytics dashboard",
-            "Reporting + CSV export",
-            "Cookie scanner (automatic)",
-            "Google Consent Mode",
-            "Email support",
-            "Intastellar Analytics",
+            t("Everything in Personal"),
+            t("Consent analytics dashboard"),
+            t("Reporting + CSV export"),
+            t("Cookie scanner (automatic)"),
+            t("Google Consent Mode"),
+            t("Email support"),
+            t("Intastellar Analytics"),
         ],
     },
     {
         id: "growth",
         name: "Growth",
         price: "€30",
-        period: "/month",
-        description: "Advanced insights for teams that need deeper analytics.",
+        period: t("/month"),
+        description: t("Advanced insights for teams that need deeper analytics."),
         features: [
-            "Everything in Starter",
-            "Advanced reporting",
-            "Team insights",
-            "Ad platform reconciliation",
-            "Analytics blind spot detection",
-            "Cost per visible consent by channel",
-            "Priority support",
+            t("Everything in Starter"),
+            t("Advanced reporting"),
+            t("Team insights"),
+            t("Ad platform reconciliation"),
+            t("Analytics blind spot detection"),
+            t("Cost per visible consent by channel"),
+            t("Priority support"),
         ],
         highlighted: true,
     },
@@ -59,21 +60,21 @@ const PLANS = [
         id: "agency-pro",
         name: "Agency Pro",
         price: "€79",
-        period: "/month",
-        description: "Multi-client management for agencies and consultancies.",
+        period: t("/month"),
+        description: t("Multi-client management for agencies and consultancies."),
         features: [
-            "Everything in Growth",
-            "Multi-client management",
-            "Client-level reporting",
-            "Unlimited domains",
-            "Client workspaces",
-            "Dedicated support",
+            t("Everything in Growth"),
+            t("Multi-client management"),
+            t("Client-level reporting"),
+            t("Unlimited domains"),
+            t("Client workspaces"),
+            t("Dedicated support"),
         ],
     },
 ];
 
 export default function SubscriptionPlans() {
-    document.title = "Choose your Plan | Intastellar Consents";
+    document.title = t("Choose your plan") + " | Intastellar Consents";
 
     const [selectedPlan, setSelectedPlan] = useState(null);
     const [checkout, setCheckout] = useState(null);
@@ -106,7 +107,7 @@ export default function SubscriptionPlans() {
                 }),
             });
             if (res.status === 409) {
-                setError("This organisation already has a subscription. Reload the page, or manage it under Settings.");
+                setError(t("This organisation already has a subscription. Reload the page, or manage it under Settings."));
                 return;
             }
             if (!res.ok) throw new Error("Server error");
@@ -115,7 +116,7 @@ export default function SubscriptionPlans() {
             setSelectedPlan(plan);
             setCheckout(data);
         } catch {
-            setError("Unable to start checkout. Please try again or contact support.");
+            setError(t("Unable to start checkout. Please try again or contact support."));
         } finally {
             setInitiating(null);
         }
@@ -132,6 +133,8 @@ export default function SubscriptionPlans() {
     const inAnalytics = window.location.pathname.startsWith("/analytics");
     const minTier = inAnalytics ? FEATURE_TIERS.analytics_dashboard : null;
     const visiblePlans = minTier ? PLANS.filter(plan => TIERS[plan.id] >= TIERS[minTier]) : PLANS;
+    // Split at {company} so the company name stays bold in every language.
+    const [issuedBefore, issuedAfter] = t("Subscriptions and invoices issued to {company}.").split("{company}");
 
     if (selectedPlan && checkout) {
         return <CheckoutForm clientSecret={checkout.clientSecret} publishableKey={checkout.publishableKey} trialDays={checkout.trialDays || 0} plan={selectedPlan} companyName={companyName} fullName={fullName} email={email} onBack={handleBack} />;
@@ -141,10 +144,10 @@ export default function SubscriptionPlans() {
         <div className="plans-page">
             <header className="plans-header">
                 <h1 className="plans-title">
-                    Choose a plan{companyName ? ` for ${companyName}` : ""}
+                    {companyName ? t("Choose a plan for {company}", { company: companyName }) : t("Choose a plan")}
                 </h1>
                 <p className="plans-subtitle">
-                    {inAnalytics ? "Intastellar Analytics is included from Starter. " : ""}Every plan starts with a 30-day free trial — your card is only charged when the trial ends, and you can cancel any time before.
+                    {inAnalytics ? t("Intastellar Analytics is included from Starter.") + " " : ""}{t("Every plan starts with a 30-day free trial — your card is only charged when the trial ends, and you can cancel any time before.")}
                 </p>
             </header>
 
@@ -159,7 +162,7 @@ export default function SubscriptionPlans() {
                         <div className="plan-card__top">
                             <div className="plan-card__labels">
                                 {plan.highlighted && (
-                                    <span className="plan-card__popular">Most popular</span>
+                                    <span className="plan-card__popular">{t("Most popular")}</span>
                                 )}
                                 {plan.badge && (
                                     <span className="plan-card__badge">{plan.badge}</span>
@@ -170,7 +173,7 @@ export default function SubscriptionPlans() {
                                 <span className="plan-card__price">{plan.price}</span>
                                 <span className="plan-card__period">{plan.period}</span>
                             </div>
-                            <p className="plan-card__subtext">{plan.subtext || "30-day free trial"}</p>
+                            <p className="plan-card__subtext">{plan.subtext || t("30-day free trial")}</p>
                             <p className="plan-card__description">{plan.description}</p>
                         </div>
 
@@ -192,15 +195,15 @@ export default function SubscriptionPlans() {
                             disabled={initiating !== null}
                             aria-busy={initiating === plan.id}
                         >
-                            {initiating === plan.id ? "Loading…" : "Start free trial"}
+                            {initiating === plan.id ? t("Loading…") : t("Start free trial")}
                         </button>
                     </article>
                 ))}
             </div>
 
             <footer className="plans-footer">
-                Subscriptions and invoices issued to <strong>{companyName || "your company"}</strong>.
-                {email ? <> Billing contact: {email}.</> : null}
+                {issuedBefore}<strong>{companyName || t("your company")}</strong>{issuedAfter}
+                {email ? <> {t("Billing contact: {email}.", { email })}</> : null}
             </footer>
         </div>
     );

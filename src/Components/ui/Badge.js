@@ -1,4 +1,5 @@
 import { Icon } from "./icons.js";
+import { t } from "../../i18n/index.js";
 
 /**
  * Badge — compact status/metadata label.
@@ -29,10 +30,10 @@ export default function Badge({ tone = "neutral", icon, className = "", children
 
 /** Risk level — always icon + text, never colour alone. level: high | medium | low | none */
 const RISK = {
-    high: { tone: "danger", icon: "alert-octagon", label: "High risk" },
-    medium: { tone: "warning", icon: "alert-triangle", label: "Medium risk" },
-    low: { tone: "success", icon: "check-circle", label: "Low risk" },
-    none: { tone: "neutral", icon: "minus-circle", label: "No risk" },
+    high: { tone: "danger", icon: "alert-octagon", label: t("High risk") },
+    medium: { tone: "warning", icon: "alert-triangle", label: t("Medium risk") },
+    low: { tone: "success", icon: "check-circle", label: t("Low risk") },
+    none: { tone: "neutral", icon: "minus-circle", label: t("No risk") },
 };
 export function RiskBadge({ level = "medium", label, ...rest }) {
     const r = RISK[level] || RISK.medium;
@@ -48,7 +49,7 @@ export function Tag({ children, onRemove, className = "" }) {
                 <button
                     type="button"
                     onClick={onRemove}
-                    aria-label={`Remove ${typeof children === "string" ? children : "tag"}`}
+                    aria-label={t("Remove {name}", { name: typeof children === "string" ? children : t("tag") })}
                     className="tw-inline-flex tw-items-center tw-justify-center tw-p-0 tw-ml-0.5 tw-border-0 tw-bg-transparent tw-text-text-muted tw-rounded-full tw-cursor-pointer hover:tw-text-text-primary focus-visible:tw-outline-none focus-visible:tw-shadow-focus"
                 >
                     <Icon name="x" size={12} />

@@ -7,27 +7,28 @@ import { canAccess, getTier, TIER_LABELS } from "../../Functions/tier.js";
 import { formatDate } from "../../Functions/format.js";
 import Button from "../../Components/UI/Button.js";
 import appStorage from '../../Functions/storage.js';
+import { t } from "../../i18n/index.js";
 
 const Link = window.ReactRouterDOM.Link;
 const { useMemo } = React;
 
 const SETTINGS_HUB_COPY = {
-    "/settings/preferences": "Profile, notifications, and personal defaults for your account.",
-    "https://intastellaraccounts.com/settings/privacy": "Your own marketing, telemetry, data sharing, and visibility preferences — plus requesting an export or deletion of your data. Managed on IntastellarAccounts.com.",
-    "/settings/add-user": "Invite teammates to this organisation and assign a role.",
-    "/settings/view-users": "See who has access, edit members, or create new platform users from here.",
-    "/settings/view-organisations": "Browse organisations, edit them, or create a new one from here.",
-    "/settings/add-domain": "Connect a new site or hostname for the consent platform.",
-    "/settings/view-domains": "Inspect domains linked to this organisation.",
-    "/settings/config-gdpr": "Configure which regulations apply to your visitors and set the banner type per jurisdiction.",
-    "/settings/legal-basis": "Assign a legal basis to each processing purpose under each active regulation for audit and DSR responses.",
-    "/settings/ropa": "Maintain your Article 30 Record of Processing Activities. Auto-populate from pre-consent scan data.",
-    "/settings/ad-connections": "Connect Google Ads, Meta, LinkedIn, and Microsoft Ads to auto-import clicks and spend for each domain.",
-    "/settings/analytics-script": "Embed a consent-gated first-party analytics script on your website to collect privacy-safe pageview data.",
-    "https://intastellaraccounts.com/settings/org-privacy": "Set organisation-wide privacy defaults — marketing, telemetry, data sharing, and visibility — and lock what members can't override themselves. Managed on IntastellarAccounts.com.",
-    "/settings/blacklist-ip": "Exclude specific IP addresses from analytics and reporting.",
-    "/settings/workspaces": "Manage client workspaces for your agency. Create and organize client domains.",
-    "/settings/team-insights": "See who on your team uses the platform, how often, and which sections and domains they work on.",
+    "/settings/preferences": t("Profile, notifications, and personal defaults for your account."),
+    "https://intastellaraccounts.com/settings/privacy": t("Your own marketing, telemetry, data sharing, and visibility preferences — plus requesting an export or deletion of your data. Managed on IntastellarAccounts.com."),
+    "/settings/add-user": t("Invite teammates to this organisation and assign a role."),
+    "/settings/view-users": t("See who has access, edit members, or create new platform users from here."),
+    "/settings/view-organisations": t("Browse organisations, edit them, or create a new one from here."),
+    "/settings/add-domain": t("Connect a new site or hostname for the consent platform."),
+    "/settings/view-domains": t("Inspect domains linked to this organisation."),
+    "/settings/config-gdpr": t("Configure which regulations apply to your visitors and set the banner type per jurisdiction."),
+    "/settings/legal-basis": t("Assign a legal basis to each processing purpose under each active regulation for audit and DSR responses."),
+    "/settings/ropa": t("Maintain your Article 30 Record of Processing Activities. Auto-populate from pre-consent scan data."),
+    "/settings/ad-connections": t("Connect Google Ads, Meta, LinkedIn, and Microsoft Ads to auto-import clicks and spend for each domain."),
+    "/settings/analytics-script": t("Embed a consent-gated first-party analytics script on your website to collect privacy-safe pageview data."),
+    "https://intastellaraccounts.com/settings/org-privacy": t("Set organisation-wide privacy defaults — marketing, telemetry, data sharing, and visibility — and lock what members can't override themselves. Managed on IntastellarAccounts.com."),
+    "/settings/blacklist-ip": t("Exclude specific IP addresses from analytics and reporting."),
+    "/settings/workspaces": t("Manage client workspaces for your agency. Create and organize client domains."),
+    "/settings/team-insights": t("See who on your team uses the platform, how often, and which sections and domains they work on."),
 };
 
 
@@ -52,19 +53,19 @@ function BillingSummary() {
 
     const periodEnd = sub.current_period_end ? formatDate(sub.current_period_end) : null;
     const renewal = !periodEnd ? null
-        : sub.cancel_at_period_end ? `Ends ${periodEnd}`
-        : sub.status === "trialing" ? `Free trial until ${periodEnd}`
-        : sub.status === "past_due" ? "Payment overdue — update your card"
-        : `Renews ${periodEnd}`;
+        : sub.cancel_at_period_end ? t("Ends {date}", { date: periodEnd })
+        : sub.status === "trialing" ? t("Free trial until {date}", { date: periodEnd })
+        : sub.status === "past_due" ? t("Payment overdue — update your card")
+        : t("Renews {date}", { date: periodEnd });
 
     return (
         <div className="settings-hub__billing">
-            <span className="settings-hub__scope-label">Plan</span>
+            <span className="settings-hub__scope-label">{t("Plan")}</span>
             <span className="settings-hub__scope-value">{TIER_LABELS[tier]}</span>
             {renewal && <span className="settings-hub__billing-renewal">{renewal}</span>}
             {sub.portal_url && (
                 <Button size="sm" href={sub.portal_url} target="_blank" rel="noopener noreferrer" iconRight="external-link">
-                    Manage billing
+                    {t("Manage billing")}
                 </Button>
             )}
         </div>
@@ -96,26 +97,25 @@ export default function Settings() {
         } catch {
             /* ignore */
         }
-        return "Current organisation";
+        return t("Current organisation");
     }, []);
 
     return (
         <>
             <SideNav links={settingsSidebarLinks} title="Settings" />
             <main className="dashboard-content">
-                <StickyPageTitle title="Settings" />
+                <StickyPageTitle title={t("Settings")} />
                 <div className="settings-hub">
                     <p className="settings-hub__intro">
-                        Configure your account, organisation, and domains. Use the sidebar for quick access, or
-                        choose a section below. Your role controls which actions are available.
+                        {t("Configure your account, organisation, and domains. Use the sidebar for quick access, or choose a section below. Your role controls which actions are available.")}
                     </p>
                     <div className="settings-hub__scope" aria-live="polite">
-                        <span className="settings-hub__scope-label">Organisation</span>
+                        <span className="settings-hub__scope-label">{t("Organisation")}</span>
                         <span className="settings-hub__scope-value">{scopeLine}</span>
                     </div>
                     <BillingSummary />
                     {visibleItems.length === 0 ? (
-                        <p className="settings-hub__empty">No settings sections are available for your current role.</p>
+                        <p className="settings-hub__empty">{t("No settings sections are available for your current role.")}</p>
                     ) : (
                         <div className="settings-hub__grid">
                             {visibleItems.map((link) => {
@@ -126,12 +126,12 @@ export default function Settings() {
                                 return (
                                     <CardTag key={link.path} className="settings-hub__card" {...cardProps}>
                                         <span className="settings-hub__card-title">
-                                            {link.name}{link.external ? " ↗" : ""}
+                                            {t(link.name)}{link.external ? " ↗" : ""}
                                             <span className="settings-hub__card-arrow" aria-hidden="true" />
                                         </span>
                                         <p className="settings-hub__card-desc">
                                             {SETTINGS_HUB_COPY[link.path] ||
-                                                "Open this section to manage related options."}
+                                                t("Open this section to manage related options.")}
                                         </p>
                                     </CardTag>
                                 );

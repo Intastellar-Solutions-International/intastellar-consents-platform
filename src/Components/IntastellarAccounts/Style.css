@@ -439,3 +439,16 @@
         right: 10px;
     }
 }
+
+/* Language switcher — kicker label above a full-width LanguageMenu that
+   opens inside the menu. */
+.ia-menu__language {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    margin-top: var(--space-4);
+    padding: var(--space-3);
+    border-radius: var(--radius-lg);
+    border: 1px solid rgb(var(--c-white) / 0.1);
+    text-align: left;
+}

@@ -4,6 +4,7 @@ import { dashboardPath, reportsPath, detectDashboardMode } from "../../Functions
 import { canAccess } from "../../Functions/tier.js";
 import { getOrg } from "../../Functions/storage.js";
 import { setNewShell } from "../../Functions/featureFlags.js";
+import { t } from "../../i18n/index.js";
 import { Icon } from "../ui/icons.js";
 import "./Shell.css";
 
@@ -24,31 +25,31 @@ const COLLAPSED_KEY = "shell:railCollapsed";
 function buildGroups(platform, domain, isAdminOrg) {
     const r = (leaf) => reportsPath(platform, domain, leaf);
     return [
-        { label: "Overview", items: [{ name: "Home", icon: "home", to: dashboardPath(platform, domain), match: (p) => /\/[^/]+\/dashboard(\/|$)/.test(p) || /^\/[^/]+\/view\//.test(p) }] },
+        { label: t("Overview"), items: [{ name: t("Home"), icon: "home", to: dashboardPath(platform, domain), match: (p) => /\/[^/]+\/dashboard(\/|$)/.test(p) || /^\/[^/]+\/view\//.test(p) }] },
         {
-            label: "Compliance", items: [
-                { name: "Compliance overview", icon: "shield-check", to: r("/compliance"), match: (p) => p.includes("/compliance"), tier: "starter" },
-                { name: "Audit log", icon: "file-text", to: r("/user-consents"), match: (p) => p.includes("/user-consents"), tier: "personal" },
-                { name: "Audit reports", icon: "file-text", to: r("/audit-report"), match: (p) => p.includes("/audit-report"), tier: "personal" },
-                { name: "DSR portal", icon: "inbox", to: r("/dsr"), match: (p) => p.includes("/dsr"), tier: "personal" },
+            label: t("Compliance"), items: [
+                { name: t("Compliance overview"), icon: "shield-check", to: r("/compliance"), match: (p) => p.includes("/compliance"), tier: "starter" },
+                { name: t("Audit log"), icon: "file-text", to: r("/user-consents"), match: (p) => p.includes("/user-consents"), tier: "personal" },
+                { name: t("Audit reports"), icon: "file-text", to: r("/audit-report"), match: (p) => p.includes("/audit-report"), tier: "personal" },
+                { name: t("DSR portal"), icon: "inbox", to: r("/dsr"), match: (p) => p.includes("/dsr"), tier: "personal" },
             ],
         },
         {
-            label: "Reports", items: [
-                { name: "Reports", icon: "bar-chart", to: r(""), match: (p) => /\/reports\/?$/.test(p) || /\/reports\/view\/[^/]+\/?$/.test(p) },
-                { name: "Ad reconciliation", icon: "trending-up", to: r("/reconcile"), match: (p) => p.includes("/reconcile"), tier: "growth" },
+            label: t("Reports"), items: [
+                { name: t("Reports"), icon: "bar-chart", to: r(""), match: (p) => /\/reports\/?$/.test(p) || /\/reports\/view\/[^/]+\/?$/.test(p) },
+                { name: t("Ad reconciliation"), icon: "trending-up", to: r("/reconcile"), match: (p) => p.includes("/reconcile"), tier: "growth" },
             ],
         },
         {
-            label: "Optimise", items: [
-                { name: "Portfolio benchmark", icon: "globe", to: `/${platform}/compare`, match: (p) => p.includes("/compare") },
-                { name: "A/B testing", icon: "flask", to: "/experiments", match: (p) => p.startsWith("/experiments") },
+            label: t("Optimise"), items: [
+                { name: t("Portfolio benchmark"), icon: "globe", to: `/${platform}/compare`, match: (p) => p.includes("/compare") },
+                { name: t("A/B testing"), icon: "flask", to: "/experiments", match: (p) => p.startsWith("/experiments") },
             ],
         },
         {
-            label: "Settings", items: [
-                { name: "Settings", icon: "settings", to: "/settings", match: (p) => p.startsWith("/settings") },
-                ...(isAdminOrg ? [{ name: "Cookie database", icon: "database", to: "/cookie-database", match: (p) => p === "/cookie-database" }] : []),
+            label: t("Settings"), items: [
+                { name: t("Settings"), icon: "settings", to: "/settings", match: (p) => p.startsWith("/settings") },
+                ...(isAdminOrg ? [{ name: t("Cookie database"), icon: "database", to: "/cookie-database", match: (p) => p === "/cookie-database" }] : []),
             ],
         },
     ];
@@ -88,17 +89,17 @@ export default function ShellRail() {
 
     return (
         <aside className="shell-rail tw-bg-bg-sunken tw-border-0 tw-border-r tw-border-solid tw-border-border-subtle" style={{ width: "var(--shell-rail-width, var(--size-rail))" }}>
-            <nav aria-label="Main navigation" className="tw-flex tw-flex-col tw-h-full tw-gap-1 tw-p-2 tw-overflow-y-auto">
+            <nav aria-label={t("Main navigation")} className="tw-flex tw-flex-col tw-h-full tw-gap-1 tw-p-2 tw-overflow-y-auto">
                 <button
                     type="button"
                     onClick={() => setCollapsed((c) => !c)}
                     aria-expanded={!collapsed}
-                    aria-label={collapsed ? "Expand navigation" : "Collapse navigation"}
-                    title={collapsed ? "Expand navigation" : "Collapse navigation"}
+                    aria-label={collapsed ? t("Expand navigation") : t("Collapse navigation")}
+                    title={collapsed ? t("Expand navigation") : t("Collapse navigation")}
                     className={`${ITEM} tw-text-text-muted hover:tw-text-text-primary hover:tw-bg-white/5 ${collapsed ? "tw-justify-center tw-px-0" : ""}`}
                 >
                     <Icon name="panel-left" size={18} />
-                    {!collapsed && <span>Collapse</span>}
+                    {!collapsed && <span>{t("Collapse")}</span>}
                 </button>
                 {groups.map((g) => (
                     <div key={g.label} role="group" aria-labelledby={`rail-${g.label}`} className="tw-flex tw-flex-col tw-gap-0.5 tw-pt-3">
@@ -129,13 +130,13 @@ export default function ShellRail() {
                     </div>
                 ))}
                 <div className="tw-mt-auto tw-flex tw-flex-col tw-gap-0.5 tw-pt-3">
-                    <button type="button" onClick={() => { setNewShell(false); window.location.reload(); }} title="Switch back to the previous layout" className={`${ITEM} tw-text-text-muted hover:tw-text-text-primary hover:tw-bg-white/5 ${collapsed ? "tw-justify-center tw-px-0" : ""}`} aria-label={collapsed ? "Use classic layout" : undefined}>
+                    <button type="button" onClick={() => { setNewShell(false); window.location.reload(); }} title={t("Switch back to the previous layout")} className={`${ITEM} tw-text-text-muted hover:tw-text-text-primary hover:tw-bg-white/5 ${collapsed ? "tw-justify-center tw-px-0" : ""}`} aria-label={collapsed ? t("Use classic layout") : undefined}>
                         <Icon name="refresh" size={18} />
-                        {!collapsed && <span>Classic layout</span>}
+                        {!collapsed && <span>{t("Classic layout")}</span>}
                     </button>
-                    <button type="button" onClick={() => Authentication.Logout()} className={`${ITEM} tw-text-text-muted hover:tw-text-text-primary hover:tw-bg-white/5 ${collapsed ? "tw-justify-center tw-px-0" : ""}`} aria-label={collapsed ? "Log out" : undefined} title={collapsed ? "Log out" : undefined}>
+                    <button type="button" onClick={() => Authentication.Logout()} className={`${ITEM} tw-text-text-muted hover:tw-text-text-primary hover:tw-bg-white/5 ${collapsed ? "tw-justify-center tw-px-0" : ""}`} aria-label={collapsed ? t("Log out") : undefined} title={collapsed ? t("Log out") : undefined}>
                         <Icon name="external-link" size={18} />
-                        {!collapsed && <span>Log out</span>}
+                        {!collapsed && <span>{t("Log out")}</span>}
                     </button>
                 </div>
             </nav>

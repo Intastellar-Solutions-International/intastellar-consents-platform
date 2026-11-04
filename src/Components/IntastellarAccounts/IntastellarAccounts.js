@@ -1,5 +1,7 @@
 import Authentication from "../../Authentication/Auth";
 import "./Style.css";
+import { t, getLanguage, setLanguage } from "../../i18n/index.js";
+import LanguageMenu from "../UI/LanguageMenu.js";
 const { useState, useEffect } = window.React;
 
 export default function Account(props) {
@@ -27,7 +29,7 @@ export default function Account(props) {
                 </div>
 
                 <div className="ia-menu__identity">
-                    <p className="ia-menu__greeting">Hi, {props.profile.name}!</p>
+                    <p className="ia-menu__greeting">{t("Hi, {name}!", { name: props.profile.name })}</p>
                     <p className="ia-menu__email">{props.profile.email}</p>
                     <a
                         href="https://my.intastellaraccounts.com"
@@ -42,14 +44,14 @@ export default function Account(props) {
                             width={32}
                             height={32}
                         />
-                        <span>Manage your Intastellar account</span>
+                        <span>{t("Manage your Intastellar account")}</span>
                     </a>
                 </div>
 
                 {props.workspaces?.length > 0 && (
                     <div className="ia-menu__workspace-panel ia-menu__workspace-panel--switcher" role="group" aria-labelledby="ia-ws-label">
                         <span className="ia-menu__workspace-kicker" id="ia-ws-label">
-                            Client Workspaces
+                            {t("Client Workspaces")}
                         </span>
                         <ul className="ia-menu__ws-list" role="list">
                             {props.workspaces.map((ws) => {
@@ -85,7 +87,7 @@ export default function Account(props) {
                                 className="ia-menu__ws-clear"
                                 onClick={props.onWorkspaceClear}
                             >
-                                Exit workspace
+                                {t("Exit workspace")}
                             </button>
                         )}
                     </div>
@@ -96,10 +98,10 @@ export default function Account(props) {
                         <div className="ia-menu__workspace-row">
                             <div className="ia-menu__workspace-copy">
                                 <span className="ia-menu__workspace-kicker" id="ia-workspace-section">
-                                    Workspace
+                                    {t("Workspace")}
                                 </span>
                                 <span className="ia-menu__demo-label" id="ia-demo-label">
-                                    Demo mode
+                                    {t("Demo mode")}
                                 </span>
                             </div>
                             <label className="ia-menu__switch">
@@ -112,9 +114,22 @@ export default function Account(props) {
                                 <span className="ia-menu__switch-slider" />
                             </label>
                         </div>
-                        <p className="ia-menu__demo-hint">Masks live data across dashboards.</p>
+                        <p className="ia-menu__demo-hint">{t("Masks live data across dashboards.")}</p>
                     </div>
                 ) : null}
+
+                <div className="ia-menu__language">
+                    <span className="ia-menu__workspace-kicker" aria-hidden="true">{t("Language")}</span>
+                    {/* Opens inside the menu (which scrolls and would clip a
+                        floating list). Reloads, so every page picks up the
+                        new language. */}
+                    <LanguageMenu
+                        inline
+                        value={getLanguage()}
+                        onChange={(code) => setLanguage(code, { reload: true })}
+                        label={t("Language")}
+                    />
+                </div>
             </div>
 
             <div className="ia-menu__footer">
@@ -125,7 +140,7 @@ export default function Account(props) {
                             d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"
                         />
                     </svg>
-                    Sign out
+                    {t("Sign out")}
                 </button>
             </div>
         </div>

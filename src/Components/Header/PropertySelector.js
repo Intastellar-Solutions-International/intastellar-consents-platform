@@ -13,12 +13,13 @@ import dashboardIcon from "./icons/dashboard.svg";
 import reportsIcon from "./icons/reports.svg";
 import Authentication from "../../Authentication/Auth.js";
 import { ScannerHost } from "../../API/host.js";
+import { t } from "../../i18n/index.js";
 
 const { useState, useEffect, useMemo, useRef } = React;
 
 const MODES = [
-    { id: "cmp", label: "CMP Dashboard", icon: dashboardIcon },
-    { id: "analytics", label: "Site Analytics", icon: reportsIcon },
+    { id: "cmp", label: t("CMP Dashboard"), icon: dashboardIcon },
+    { id: "analytics", label: t("Site Analytics"), icon: reportsIcon },
 ];
 
 function getDomainVerificationStatus(domain, orgId) {
@@ -47,7 +48,7 @@ function verifyBadge(status) {
 function analyticsBadge(hasAnalytics) {
     if (!hasAnalytics) return null;
     return (
-        <span className="property-selector__analytics-badge" title="Analytics installed">
+        <span className="property-selector__analytics-badge" title={t("Analytics installed")}>
             ●
         </span>
     );
@@ -131,14 +132,14 @@ export default function PropertySelector(props) {
 
     const orgLabel = useMemo(() => {
         try {
-            return JSON.parse(organisation?.current)?.name || "Organisation";
+            return JSON.parse(organisation?.current)?.name || t("Organisation");
         } catch {
-            return "Organisation";
+            return t("Organisation");
         }
     }, [organisation?.current]);
 
     const workspaceItems = useMemo(() => {
-        const items = [{ key: "__all__", type: "all", name: "All domains" }];
+        const items = [{ key: "__all__", type: "all", name: "All domains", label: t("All domains") }];
         if (hasAgency && agencyWorkspaces?.length > 0) {
             agencyWorkspaces.forEach((ws) => {
                 const primaryDomain = getPrimaryDomainFromWorkspace(ws);
@@ -149,7 +150,7 @@ export default function PropertySelector(props) {
                     id: ws.id,
                     name: primaryDomain || ws.name,
                     label: ws.name,
-                    sublabel: domainCount > 1 ? `${domainCount} domains` : primaryDomain,
+                    sublabel: domainCount > 1 ? t("{n} domains", { n: domainCount }) : primaryDomain,
                     workspaceData: ws,
                 });
             });
@@ -171,7 +172,7 @@ export default function PropertySelector(props) {
                 key: "__workspace_combined__",
                 type: "workspace-combined",
                 name: "combined view",
-                label: "All domains (combined)",
+                label: t("All domains (combined)"),
                 workspaceId: activeWorkspace.id,
                 workspaceDomains: activeWorkspace.domains?.map((d) => punycode.toUnicode(d.domain)) || [],
             };
@@ -255,7 +256,7 @@ export default function PropertySelector(props) {
     }
 
     const currentModeMeta = MODES.find((m) => m.id === mode) || MODES[0];
-    const domainLabel = currentDomain === "combined view" ? "All domains" : currentDomain;
+    const domainLabel = currentDomain === "combined view" ? t("All domains") : currentDomain;
 
     return (
         <div ref={containerRef} className="property-selector">
@@ -340,7 +341,7 @@ export default function PropertySelector(props) {
                         <input
                             type="search"
                             className="property-selector__search"
-                            placeholder="Search workspaces & domains"
+                            placeholder={t("Search workspaces & domains")}
                             value={query}
                             onChange={(e) => setQuery(e.target.value)}
                             autoComplete="off"
@@ -349,10 +350,10 @@ export default function PropertySelector(props) {
 
                     <div className="property-selector__tabs">
                         {[
-                            { id: "all", label: "All" },
-                            ...(mode === "analytics" ? [{ id: "with-analytics", label: "With analytics" }] : []),
-                            { id: "favourites", label: "Favourites" },
-                            { id: "recent", label: "Recent" },
+                            { id: "all", label: t("All") },
+                            ...(mode === "analytics" ? [{ id: "with-analytics", label: t("With analytics") }] : []),
+                            { id: "favourites", label: t("Favourites") },
+                            { id: "recent", label: t("Recent") },
                         ].map((tab) => (
                             <button
                                 key={tab.id}
@@ -370,7 +371,7 @@ export default function PropertySelector(props) {
 
                     <div className="property-selector__columns">
                         <div className="property-selector__col">
-                            <div className="property-selector__col-title">Workspaces</div>
+                            <div className="property-selector__col-title">{t("Workspaces")}</div>
                             <ul className="property-selector__list">
                                 {filteredWorkspaces.map((item) => {
                                     const active =
@@ -405,14 +406,14 @@ export default function PropertySelector(props) {
                                     );
                                 })}
                                 {filteredWorkspaces.length === 0 && (
-                                    <li className="property-selector__empty">No matches</li>
+                                    <li className="property-selector__empty">{t("No matches")}</li>
                                 )}
                             </ul>
                         </div>
 
                         <div className="property-selector__col">
                             <div className="property-selector__col-title">
-                                {activeWorkspace ? "Domains & Apps" : "Domains"}
+                                {activeWorkspace ? t("Domains & Apps") : t("Domains")}
                             </div>
                             <ul className="property-selector__list">
                                 {filteredDomains.map((item) => {
@@ -441,7 +442,7 @@ export default function PropertySelector(props) {
                                                 {mode === "analytics" && isRealDomain && analyticsBadge(item.hasAnalytics)}
                                                 {verifyBadge(item.verificationStatus)}
                                                 {item.isPrimary && (
-                                                    <span className="property-selector__primary-tag">Primary</span>
+                                                    <span className="property-selector__primary-tag">{t("Primary")}</span>
                                                 )}
                                                 {item.type !== "workspace-combined" && item.name !== "combined view" && (
                                                     <button
@@ -451,8 +452,8 @@ export default function PropertySelector(props) {
                                                             (isFav ? " property-selector__star--active" : "")
                                                         }
                                                         onClick={(e) => handleToggleFavourite(e, item.name)}
-                                                        aria-label={isFav ? "Remove favourite" : "Add favourite"}
-                                                        title={isFav ? "Remove favourite" : "Add favourite"}
+                                                        aria-label={isFav ? t("Remove favourite") : t("Add favourite")}
+                                                        title={isFav ? t("Remove favourite") : t("Add favourite")}
                                                     >
                                                         {isFav ? "★" : "☆"}
                                                     </button>
@@ -464,10 +465,10 @@ export default function PropertySelector(props) {
                                 {filteredDomains.length === 0 && (
                                     <li className="property-selector__empty">
                                         {activeTab === "with-analytics" && analyticsDomainsLoading
-                                            ? "Loading…"
+                                            ? t("Loading…")
                                             : activeTab === "with-analytics"
-                                                ? "No domains have analytics set up yet"
-                                                : "No matches"}
+                                                ? t("No domains have analytics set up yet")
+                                                : t("No matches")}
                                     </li>
                                 )}
                             </ul>

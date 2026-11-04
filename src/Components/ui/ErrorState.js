@@ -1,12 +1,13 @@
 import { Icon } from "./icons.js";
 import Button from "./Button.js";
+import { t } from "../../i18n/index.js";
 
 /**
  * ErrorState — a section couldn't load. Says what failed and offers Retry.
  * compact: one-line variant for small sections. Announced via role="alert".
  * In narrow containers the Retry button wraps below the text.
  */
-export default function ErrorState({ title = "Couldn't load this section", message, onRetry, compact = false, className = "" }) {
+export default function ErrorState({ title = t("Couldn't load this section"), message, onRetry, compact = false, className = "" }) {
     return (
         <div
             role="alert"
@@ -17,7 +18,7 @@ export default function ErrorState({ title = "Couldn't load this section", messa
                 <p className={`tw-m-0 tw-font-semibold ${compact ? "tw-text-sm" : "tw-text-base"}`}>{title}</p>
                 {message && <p className="tw-m-0 tw-text-sm tw-text-text-secondary">{message}</p>}
             </div>
-            {onRetry && <Button variant="secondary" size="sm" icon="refresh" onClick={onRetry} className="tw-ml-auto">Retry</Button>}
+            {onRetry && <Button variant="secondary" size="sm" icon="refresh" onClick={onRetry} className="tw-ml-auto">{t("Retry")}</Button>}
         </div>
     );
 }

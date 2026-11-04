@@ -5,6 +5,7 @@ import Authentication from "../../Authentication/Auth";
 import { lockBodyScroll, unlockBodyScroll } from "../../Functions/bodyScrollLock.js";
 import { canAccess } from "../../Functions/tier.js";
 import { isNewShell } from "../../Functions/featureFlags.js";
+import { t } from "../../i18n/index.js";
 
 export default function SideNav(props) {
     // New shell: every Reports destination (incl. Compliance) is in the rail,
@@ -56,7 +57,7 @@ export default function SideNav(props) {
                 <span className="sidebar-mobile-toggle__bar" />
                 <span className="sidebar-mobile-toggle__bar" />
             </span>
-            <span className="sidebar-mobile-toggle__label">Menu</span>
+            <span className="sidebar-mobile-toggle__label">{t("Menu")}</span>
         </button>
 
         <div
@@ -68,16 +69,16 @@ export default function SideNav(props) {
         <aside
             id="app-sidebar-nav"
             className={"sidebar expand" + (mobileOpen ? " sidebar--open" : "")}
-            aria-label={props?.title ? undefined : "Sidebar navigation"}
+            aria-label={props?.title ? undefined : t("Sidebar navigation")}
         >
-            <nav className="collapsed expand" aria-label={props?.title || "Navigation"}>
+            <nav className="collapsed expand" aria-label={props?.title ? t(props.title) : t("Navigation")}>
                 <div className="sidebar__top">
                     {props?.title ? <h2 className="sidebar__heading">{props?.title}</h2> : null}
                     <button
                         type="button"
                         className="sidebar-mobile-close"
                         onClick={closeMobile}
-                        aria-label="Close menu"
+                        aria-label={t("Close menu")}
                     >
                         ×
                     </button>
@@ -89,7 +90,7 @@ export default function SideNav(props) {
                             if (link.requiresTier && !canAccess(link.requiresTier)) return null;
                             return (
                                 <li key={key} className="sidebar__group-label" aria-hidden="true">
-                                    <span className="sidebar__group-label-text">{link.label}</span>
+                                    <span className="sidebar__group-label-text">{t(link.label)}</span>
                                 </li>
                             );
                         }
@@ -115,7 +116,7 @@ export default function SideNav(props) {
                                         rel="noopener noreferrer"
                                         onClick={closeMobile}
                                     >
-                                        <span className="hiddenCollapsed">{link?.name} ↗</span>
+                                        <span className="hiddenCollapsed">{t(link?.name)} ↗</span>
                                     </a>
                                 </li>
                             );
@@ -149,7 +150,7 @@ export default function SideNav(props) {
                                         : link?.icon
                                             ? <i className={"dashboard-icons " + link?.icon} aria-hidden="true"></i>
                                             : null}{" "}
-                                    <span className="hiddenCollapsed">{link?.name}</span>
+                                    <span className="hiddenCollapsed">{t(link?.name)}</span>
                                 </Link>
                             </li>
                         );
