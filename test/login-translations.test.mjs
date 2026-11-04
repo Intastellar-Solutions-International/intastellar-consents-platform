@@ -21,9 +21,10 @@ test("every login language has every key, with the same number of selling points
         const t = ctx.TRANSLATIONS[code];
         assert.ok(t, `${code} missing`);
         assert.deepStrictEqual(Object.keys(t).sort(), Object.keys(en).sort(), code);
-        assert.strictEqual(t.points.length, en.points.length, code);
         for (const [key, value] of Object.entries(t)) {
-            if (key !== "points") assert.ok(typeof value === "string" && value.trim(), `${code}.${key} empty`);
+            // Selling points: one list per product (points, points_analytics).
+            if (key.startsWith("points") && Array.isArray(value)) assert.strictEqual(value.length, en[key].length, `${code}.${key}`);
+            else assert.ok(typeof value === "string" && value.trim(), `${code}.${key} empty`);
         }
     }
 });

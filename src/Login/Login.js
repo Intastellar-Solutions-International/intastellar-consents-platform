@@ -46,11 +46,26 @@ const SIGN_IN_TIMEOUT_MS = 30000;
 // How long to wait on the popup before offering to try again.
 const POPUP_STALL_MS = 90000;
 
+// The two products the login page can open; the last choice is remembered
+// on this device.
+const PRODUCTS = [
+    { id: "cmp", icon: "shield-check" },
+    { id: "analytics", icon: "bar-chart" },
+];
+const PRODUCT_KEY = "login_product";
+
+function readProduct() {
+    try {
+        const saved = localStorage.getItem(PRODUCT_KEY);
+        return PRODUCTS.some((p) => p.id === saved) ? saved : "cmp";
+    } catch { return "cmp"; }
+}
+
 // Looks up the account's organisations, stores the session and opens the
-// dashboard. Rejects when the account can't be signed in — with
+// chosen product (CMP dashboard or Analytics). Rejects when the account can't be signed in — with
 // err.name "AbortError" when it took longer than SIGN_IN_TIMEOUT_MS — so the
 // page can say so instead of sitting on the loading state.
-function handleLogin(account) {
+function handleLogin(account, product = "cmp") {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), SIGN_IN_TIMEOUT_MS);
     return fetch(API.OrganisationData.url, {
@@ -89,7 +104,9 @@ function handleLogin(account) {
         );
 
         const platform = localStorage.getItem("platform");
-        if (platform == null || platform === undefined) {
+        if (product === "analytics") {
+            window.location.href = "/analytics";
+        } else if (platform == null || platform === undefined) {
             window.location.href = "/dashboard";
         } else {
             window.location.href = `/${platform}/dashboard`;
@@ -99,7 +116,10 @@ function handleLogin(account) {
 }
 
 // Icons for the three selling points; their text is in loginTranslations.js.
-const POINT_ICONS = ["shield-check", "bar-chart", "share"];
+const POINT_ICONS = {
+    cmp: ["shield-check", "bar-chart", "share"],
+    analytics: ["fingerprint", "trending-up", "bar-chart"],
+};
 
 function fullNameOf(user) {
     return [user?.name?.first, user?.name?.last].filter(Boolean).join(" ");
@@ -158,16 +178,24 @@ export default function Login() {
     const lang = useLanguage();
     const t = TRANSLATIONS[lang];
 
-    useEffect(() => {
-        document.title = t.documentTitle;
-    }, [lang]);
-
     const changeLanguage = (code) => setLanguage(code);
     // The account being signed in (after the Intastellar popup), and why the
     // last attempt failed.
     const [signingIn, setSigningIn] = useState(null);
     const [loginError, setLoginError] = useState(null);
     const [hiddenAccounts, setHiddenAccounts] = useState(readHiddenAccounts);
+    const [product, setProduct] = useState(readProduct);
+    const chooseProduct = (id) => {
+        setProduct(id);
+        try { localStorage.setItem(PRODUCT_KEY, id); } catch { /* private mode */ }
+    };
+    // The page speaks about the chosen product: "<key>_analytics" texts
+    // replace "<key>" when Analytics is selected.
+    const tp = (key) => (product === "analytics" && t[`${key}_analytics`]) || t[key];
+
+    useEffect(() => {
+        document.title = tp("documentTitle");
+    }, [lang, product]);
     const signinButton = useRef(null);
     // Confirmation after removing an account: { message: translation key,
     // email: the removed account, for Undo }.
@@ -209,7 +237,7 @@ export default function Login() {
         // Signing in with a removed account brings it back.
         const signedIn = emailKey(account.user?.email);
         if (hiddenAccounts.includes(signedIn)) writeHiddenAccounts(hiddenAccounts.filter((e) => e !== signedIn));
-        handleLogin(account).catch((error) => {
+        handleLogin(account, product).catch((error) => {
             console.error("Error during login:", error);
             setSigningIn(null);
             setLoginError(error?.name === "AbortError" ? "signInTimedOut" : "lookupFailed");
@@ -319,7 +347,7 @@ export default function Login() {
                 </h1>
                 {/* Announced to screen readers when it changes to "Signing you in…". */}
                 <p className={`int-login__lede${headingPending ? " int-login__intro--pending" : ""}`} aria-live="polite">
-                    {signingIn ? t.signingIn : popupStalled ? t.popupStalled : popupOpen ? t.finishInWindow : knownUser ? t.ledeKnown : t.ledeNew}
+                    {signingIn ? t.signingIn : popupStalled ? t.popupStalled : popupOpen ? t.finishInWindow : knownUser ? tp("ledeKnown") : t.ledeNew}
                 </p>
 
                 {signingIn ? (
@@ -352,6 +380,32 @@ export default function Login() {
 
                 {!signingIn && (
                     <>
+                        {/* Where to go after signing in. Locked once the popup is open. */}
+                        <fieldset className="int-login__product" disabled={popupOpen}>
+                            {/* The descriptions are for screen readers; the selling
+                                points below describe each product. */}
+                            <legend className="int-login__product-label">{t.productLabel}</legend>
+                            <div className="int-login__product-options">
+                                {PRODUCTS.map((p) => (
+                                    <label
+                                        key={p.id}
+                                        className={`int-login__product-option${product === p.id ? " int-login__product-option--selected" : ""}`}
+                                    >
+                                        <input
+                                            type="radio"
+                                            name="login-product"
+                                            value={p.id}
+                                            checked={product === p.id}
+                                            onChange={() => chooseProduct(p.id)}
+                                        />
+                                        <Icon name={p.icon} size={16} className="int-login__product-icon" />
+                                        <span className="int-login__product-name">{t[`product_${p.id}`]}</span>
+                                        <span className="int-login__sr-only">{t[`product_${p.id}Hint`]}</span>
+                                    </label>
+                                ))}
+                            </div>
+                        </fieldset>
+
                         <button
                             type="button"
                             ref={signinButton}
@@ -419,17 +473,17 @@ export default function Login() {
                         )}
 
                         <p className="int-login__signup">
-                            {t.newHere}{" "}
+                            {tp("newHere")}{" "}
                             <a href="https://intastellar.eu/#get-started" className="int-login__link">{t.createAccount}</a>
                         </p>
                     </>
                 )}
             </section>
 
-            <ul className="int-login__points" aria-label={t.pointsLabel}>
-                {t.points.map((point, i) => (
-                    <li key={POINT_ICONS[i]} className="int-login__point">
-                        <Icon name={POINT_ICONS[i]} size={18} className="int-login__point-icon" />
+            <ul className="int-login__points" aria-label={tp("pointsLabel")}>
+                {tp("points").map((point, i) => (
+                    <li key={`${product}-${i}`} className="int-login__point">
+                        <Icon name={POINT_ICONS[product][i]} size={18} className="int-login__point-icon" />
                         <span className="int-login__point-title">{point.title}</span>
                         <span className="int-login__point-text">{point.text}</span>
                     </li>

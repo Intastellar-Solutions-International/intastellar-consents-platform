@@ -63,7 +63,7 @@
     max-width: 100%;
     width: auto;
     object-fit: contain;
-    margin: 0 auto clamp(20px, 3.5vh, 36px);
+    margin: 0 auto clamp(16px, 2.5vh, 28px);
 }
 
 .int-login__headline {
@@ -157,6 +157,11 @@
     animation: int-login-spin 0.65s linear infinite;
 }
 
+@keyframes int-login-fade-in {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: none; }
+}
+
 @keyframes int-login-spin {
     to { transform: rotate(360deg); }
 }
@@ -167,15 +172,15 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: 0 0 clamp(20px, 3.5vh, 32px);
+    margin: 0 0 clamp(16px, 2.5vh, 24px);
 }
 
 .int-login__avatar {
     position: relative;
     display: grid;
     place-items: center;
-    width: 72px;
-    height: 72px;
+    width: 64px;
+    height: 64px;
     margin-bottom: var(--space-3);
     border-radius: 50%;
     background: rgb(var(--c-bg-raised));
@@ -327,6 +332,113 @@
     outline-offset: 2px;
 }
 
+/* ── Product choice (CMP or Analytics): a slim two-part toggle ── */
+
+.int-login__product {
+    min-width: 0;
+    margin: 0 0 var(--space-3);
+    padding: 0;
+    border: 0;
+}
+
+/* Legends ignore the card's text-align; auto margins centre it. */
+.int-login__product-label {
+    margin: 0 auto var(--space-2);
+    padding: 0;
+    font-size: var(--text-xs);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+}
+
+.int-login__product-options {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2px;
+    padding: 3px;
+    border: 1px solid rgb(var(--c-white) / 0.12);
+    border-radius: var(--radius-lg);
+    background: rgb(var(--c-bg-sunken) / 0.6);
+}
+
+.int-login__product-option {
+    position: relative;
+    display: flex;
+    gap: var(--space-2);
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    padding: var(--space-2) var(--space-2);
+    border: 1px solid transparent;
+    border-radius: calc(var(--radius-lg) - 3px);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.int-login__product-option:hover {
+    color: var(--color-text-primary);
+}
+
+.int-login__product-option--selected {
+    border-color: rgb(var(--c-accent) / 0.6);
+    background: rgb(var(--c-accent) / 0.16);
+    color: var(--color-text-primary);
+}
+
+/* The radio stays in the page for keyboard and screen readers; the
+   segment is its visible form. */
+.int-login__product-option input {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.int-login__product-option:has(input:focus-visible) {
+    outline: 2px solid rgb(var(--c-accent-strong));
+    outline-offset: 2px;
+}
+
+.int-login__product[disabled] .int-login__product-option {
+    opacity: 0.6;
+    cursor: default;
+}
+
+.int-login__product-icon {
+    flex-shrink: 0;
+    color: var(--color-text-muted);
+}
+
+.int-login__product-option--selected .int-login__product-icon {
+    color: var(--color-accent-strong);
+}
+
+/* Product names (Consents, Analytics) are short in every language. */
+.int-login__product-name {
+    white-space: nowrap;
+}
+
+.int-login__sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .int-login__product-option { transition: none; }
+}
+
 /* ── Under the main button: what it does + trust note, or popup actions ── */
 
 .int-login__hint {
@@ -408,8 +520,8 @@
 }
 
 .int-login__signup {
-    margin: clamp(16px, 3vh, 32px) 0 0;
-    padding-top: clamp(12px, 2.5vh, 24px);
+    margin: clamp(12px, 2vh, 24px) 0 0;
+    padding-top: clamp(10px, 2vh, 18px);
     border-top: 1px solid rgb(var(--c-white) / 0.08);
     font-size: var(--text-sm);
     color: var(--color-text-muted);
@@ -497,7 +609,9 @@
     text-shadow: 0 1px 3px rgb(var(--c-black) / 0.7);
 }
 
+/* Fades in when the product choice swaps the points (new keys remount). */
 .int-login__point {
+    animation: int-login-fade-in 0.25s ease;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -593,6 +707,7 @@
         animation-duration: 2.4s;
     }
 
+    .int-login__point,
     .int-login__skeleton,
     .int-login__account--signing .int-login__avatar-image,
     .int-login__account--signing .int-login__avatar-initials {
