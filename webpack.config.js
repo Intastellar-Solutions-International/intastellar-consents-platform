@@ -129,7 +129,17 @@ module.exports = (env, argv) => {
   }
 
   if (argv.mode === 'production') {
-    //...
+    // Strip console.log from production bundles (warn/error stay, so real
+    // problems still reach the console). pure_funcs drops the call but keeps
+    // any side effects in its arguments. `passes: 2` is webpack's own default.
+    const optimization = {
+      minimizeOptions: {
+        javascript: { compress: { passes: 2, pure_funcs: ['console.log'] } },
+      },
+    };
+    client.optimization = optimization;
+    recorder.optimization = optimization;
+
     client.mode = "production";
     client.output.filename = "bundle.js";
     client.plugins = [
