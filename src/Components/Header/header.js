@@ -553,7 +553,11 @@ export default function Header(props) {
                             <img className="dashboard-logo" src={dashboardMode === "analytics" ? logoAnalytics : logo} alt={dashboardMode === "analytics" ? "Intastellar Analytics" : "Intastellar Consents"} />
                         </section>
                         <section className="company_container">
-                            {(domains && currentDomain && allOrganisations && Organisation) ? (
+                            {/* Users outside an organisation still need the CMP/Analytics
+                                switch and domain picker — only the org switcher depends
+                                on organisation data, and PropertySelector hides it when
+                                `organisation` is null. */}
+                            {(domains && currentDomain) ? (
                                 <PropertySelector
                                     mode={dashboardMode}
                                     onModeChange={handleModeChange}
@@ -563,7 +567,7 @@ export default function Header(props) {
                                     agencyWorkspaces={agencyWorkspaces}
                                     hasAgency={hasAgencySubscription()}
                                     orgId={orgId}
-                                    organisation={{
+                                    organisation={(allOrganisations && Organisation) ? {
                                         current: Organisation,
                                         all: allOrganisations,
                                         onChange: (e) => {
@@ -571,7 +575,7 @@ export default function Header(props) {
                                             appStorage.setItem("organisation", e);
                                             window.location.reload();
                                         },
-                                    }}
+                                    } : null}
                                     onSelect={handlePropertySelect}
                                 />
                             ) : (

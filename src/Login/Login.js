@@ -9,6 +9,7 @@ import background from "./login-background.jpg";
 import API from "../API/api.js";
 import { useIntastellar } from "@intastellar/signin-sdk-react";
 import appStorage from '../Functions/storage.js';
+import { fetchUserOrganisations, storeUserOrganisations } from "../Functions/organisations.js";
 import { Icon } from "../Components/UI/icons.js";
 import { TRANSLATIONS } from "./loginTranslations.js";
 import { useLanguage, setLanguage } from "../i18n/index.js";
@@ -71,40 +72,11 @@ function readProduct() {
 function handleLogin(account, product = "cmp") {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), SIGN_IN_TIMEOUT_MS);
-    return fetch(API.OrganisationData.url, {
-            signal: controller.signal,
-            withCredentials: false,
-            method: "POST",
-            headers: {
-                LoginType: "oauth",
-                "Content-Type": "application/json; charset=utf-8",
-            },
-            body: JSON.stringify({
-                organisationMember: account?.user?.email,
-            }),
-        })
-    .then((response) => response.json())
-    .then((response) => {
-        if (response === "Err_Logon_Fail" || !Array.isArray(response)) {
-            throw new Error("organisation lookup rejected");
-        }
+    return fetchUserOrganisations(account?.user?.email, controller.signal)
+    .then((organisations) => {
         localStorage.setItem("platform", "gdpr");
-        appStorage.setItem("organisation", JSON.stringify(response[0]));
-
-        localStorage.setItem(
-            "globals",
-            JSON.stringify({
-                ...account,
-                organisation_access:
-                    response.map((organisation) => ({
-                        organisation_id: organisation.id,
-                        organisation_name: organisation.name,
-                        organisation_access: organisation.users.find(
-                            (user) => user.email === account?.user?.email
-                        )?.role,
-                    })) || [],
-            })
-        );
+        // No organisation yet is fine — App shows the first-run setup.
+        storeUserOrganisations(account, organisations);
 
         const platform = localStorage.getItem("platform");
         if (product === "analytics") {

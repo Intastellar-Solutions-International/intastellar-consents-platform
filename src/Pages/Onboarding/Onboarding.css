@@ -1,0 +1,209 @@
+/* First-run organisation setup (CreateFirstOrganisation.js) — one centred
+   card inside the app shell, below the header. Colours come from the
+   design tokens in src/Styles/tokens.css. */
+.onboarding {
+    flex: 1 1 100%;
+    min-height: calc(100vh - var(--space-16) - 120px);
+    display: grid;
+    place-items: center;
+    padding: var(--space-10) 16px;
+    box-sizing: border-box;
+}
+
+.onboarding__card {
+    width: 100%;
+    max-width: 460px;
+    display: flex;
+    flex-direction: column;
+    padding: var(--space-8);
+    border-radius: var(--radius-2xl);
+    border: 1px solid var(--color-border);
+    background: linear-gradient(165deg, rgba(52, 52, 56, 0.6) 0%, rgba(28, 28, 32, 0.78) 100%);
+    box-shadow: var(--shadow-lg), var(--shadow-inset);
+    box-sizing: border-box;
+}
+
+.onboarding__badge {
+    display: inline-grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    margin-bottom: var(--space-5);
+    border-radius: var(--radius-lg);
+    border: 1px solid rgb(var(--c-accent) / 0.35);
+    background: rgb(var(--c-accent) / 0.12);
+    color: rgb(var(--c-accent-strong));
+}
+
+.onboarding__title {
+    margin: 0 0 var(--space-2);
+    font-size: var(--text-2xl);
+    font-weight: 600;
+    line-height: 1.25;
+    color: var(--color-text-primary);
+}
+
+.onboarding__intro {
+    margin: 0 0 var(--space-6);
+    font-size: var(--text-sm);
+    line-height: 1.6;
+    color: var(--color-text-secondary);
+}
+
+.onboarding__error {
+    margin: 0 0 var(--space-5);
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-md);
+    border: 1px solid rgb(var(--c-danger) / 0.35);
+    background: rgb(var(--c-danger) / 0.12);
+    color: rgb(var(--c-danger-text));
+    font-size: var(--text-sm);
+}
+
+.onboarding__label {
+    margin-bottom: var(--space-2);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.onboarding__input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border-strong);
+    background: rgb(var(--c-bg-sunken));
+    color: var(--color-text-primary);
+    font-family: inherit;
+    font-size: var(--text-base);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.onboarding__input::placeholder {
+    color: var(--color-text-muted);
+}
+
+.onboarding__input:hover {
+    border-color: rgb(var(--c-white) / 0.28);
+}
+
+.onboarding__input:focus {
+    outline: none;
+    border-color: rgb(var(--c-accent));
+    box-shadow: 0 0 0 3px rgb(var(--c-accent) / 0.2);
+}
+
+.onboarding__admin {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-width: 0;
+    margin: var(--space-4) 0 0;
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-md);
+    background: rgb(var(--c-white) / 0.04);
+    border: 1px solid var(--color-border-subtle);
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+}
+
+.onboarding__admin-role {
+    flex: none;
+    padding: 2px var(--space-2);
+    border-radius: var(--radius-full);
+    background: rgb(var(--c-accent) / 0.16);
+    color: rgb(var(--c-accent-strong));
+    font-size: var(--text-xs);
+    font-weight: 600;
+}
+
+.onboarding__admin-email {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Primary action — solid gold; #1b1b1b on --c-accent is 6.8:1. */
+.onboarding__submit {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    width: 100%;
+    margin-top: var(--space-6);
+    padding: var(--space-3) var(--space-5);
+    min-height: 46px;
+    border: 1px solid transparent;
+    border-radius: var(--radius-md);
+    background: rgb(var(--c-accent));
+    color: #1b1b1b;
+    font-family: inherit;
+    font-size: var(--text-base);
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+}
+
+.onboarding__submit:hover:not(:disabled) {
+    background: rgb(var(--c-accent-strong));
+    box-shadow: 0 6px 18px rgb(var(--c-accent) / 0.25);
+}
+
+.onboarding__submit:active:not(:disabled) {
+    transform: translateY(1px);
+}
+
+.onboarding__submit:focus-visible {
+    outline: 2px solid rgb(var(--c-accent-strong));
+    outline-offset: 3px;
+}
+
+.onboarding__submit:disabled {
+    background: rgb(var(--c-white) / 0.08);
+    color: var(--color-text-muted);
+    cursor: not-allowed;
+}
+
+.onboarding__submit[aria-busy="true"] {
+    background: rgb(var(--c-accent) / 0.7);
+    color: #1b1b1b;
+    cursor: progress;
+}
+
+.onboarding__spinner {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid rgb(27 27 27 / 0.3);
+    border-top-color: #1b1b1b;
+    animation: onboarding-spin 0.7s linear infinite;
+}
+
+@keyframes onboarding-spin {
+    to { transform: rotate(360deg); }
+}
+
+.onboarding__switch {
+    align-self: center;
+    margin-top: var(--space-4);
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    text-decoration: none;
+}
+
+.onboarding__switch:hover {
+    color: var(--color-text-primary);
+    text-decoration: underline;
+}
+
+@media (max-width: 480px) {
+    .onboarding__card {
+        padding: var(--space-6) var(--space-5);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .onboarding__spinner { animation-duration: 2s; }
+    .onboarding__submit { transition: none; }
+}

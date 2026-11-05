@@ -33,13 +33,16 @@ export default function StickyPageTitle({
     showInfoButton = false,
     infoType = "information"
 }) {
-    window.addEventListener("scroll", (e) => {
-        if (window.scrollY > 0) {
-            document.querySelector(".infoHeader").classList.add("sticky");
-        } else {
-            document.querySelector(".infoHeader").classList.remove("sticky");
-        }
-    })
+    // One listener per mounted title, removed on unmount — it used to be added
+    // on every render and never removed, so after navigating away the stale
+    // listeners threw on the missing .infoHeader.
+    const headerRef = React.useRef(null);
+    React.useEffect(() => {
+        const onScroll = () => headerRef.current?.classList.toggle("sticky", window.scrollY > 0);
+        onScroll();
+        window.addEventListener("scroll", onScroll, { passive: true });
+        return () => window.removeEventListener("scroll", onScroll);
+    }, []);
     
     // New shell: the date range lives in the top bar. The page still owns the
     // range state — the control is just rendered into the bar's slot.
@@ -56,7 +59,7 @@ export default function StickyPageTitle({
 
     if (!children) {
         return <>
-            <div className={"infoHeader" + (className ? " " + className : "")} style={{ padding: "10px 0" }}>
+            <div ref={headerRef} className={"infoHeader" + (className ? " " + className : "")} style={{ padding: "10px 0" }}>
                 {loadingUpdated || finalLoaded ? <LoadingBar /> : null}
                 <div className="dashboard-content" style={{
                     display: "grid",
@@ -100,7 +103,7 @@ export default function StickyPageTitle({
     } else {
         // With children
         return <>
-            <div className="infoHeader" style={{ padding: "10px 0" }}>
+            <div ref={headerRef} className="infoHeader" style={{ padding: "10px 0" }}>
                 {loadingUpdated || finalLoaded ? <LoadingBar /> : null}
                 <div className="dashboard-content" style={{
                     display: "grid",

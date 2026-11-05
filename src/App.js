@@ -91,6 +91,8 @@ import TierGate from "./Components/TierGate";
 import DevTierSwitcher from "./Components/DevTierSwitcher";
 import { canAccess, FEATURE_TIERS } from "./Functions/tier.js";
 import appStorage, { getOrg } from './Functions/storage.js';
+import { fetchUserOrganisations, storeUserOrganisations } from './Functions/organisations.js';
+import CreateFirstOrganisation from "./Pages/Onboarding/CreateFirstOrganisation.js";
 import ShellRail from "./Components/Shell/ShellRail.js";
 import { isNewShell } from "./Functions/featureFlags.js";
 
@@ -152,6 +154,8 @@ export default function App() {
         return { status: "loading", loading: true, subscription: null };
     });
     const [id, setId] = useState((localStorage.getItem("platform")) ? localStorage.getItem("platform") : null);
+    // "none" = signed in but not part of any organisation yet → first-run setup.
+    const [orgSetup, setOrgSetup] = useState(() => (getOrg() ? "ready" : "checking"));
     const navigate = window.ReactRouterDOM.useHistory();
 
     useEffect(() => {
@@ -161,6 +165,25 @@ export default function App() {
         if (!globals && path !== "/login" && path !== "/" && !isApiRoute && !isStyleguideRoute()) {
             window.location.replace("/login");
         }
+    }, []);
+
+    // No stored organisation: ask the API before deciding. The account may
+    // have been invited to (or created) one since it signed in — store it
+    // and reload so the API headers built at module load pick it up.
+    // Otherwise the account is new and gets the first-run setup.
+    useEffect(() => {
+        if (orgSetup !== "checking") return;
+        let account;
+        try { account = JSON.parse(appStorage.getItem("globals")); } catch { /* handled below */ }
+        if (!account) return;
+        fetchUserOrganisations(account?.user?.email)
+            .then((organisations) => {
+                if (organisations.length === 0) { setOrgSetup("none"); return; }
+                storeUserOrganisations(account, organisations);
+                window.location.reload();
+            })
+            // Lookup failed — fall through to the app rather than trapping the user.
+            .catch(() => setOrgSetup("ready"));
     }, []);
 
     // Component styleguide — development builds only, no login needed.
@@ -271,6 +294,7 @@ export default function App() {
         const subscriptionLoading = !isDevOrg && !hasNoSubscription && subscriptionStatus?.subscription == null;
         const needsPayment = !isDevOrg && !subscriptionLoading && hasNoSubscription;
 
+        if (orgSetup === "checking") return <LoadingSpinner />;
         if (id === null && organisations) {
             return (
                 <>
@@ -295,7 +319,7 @@ export default function App() {
                                 </ErrorBoundary>
                                 <div className={"main-grid" + (newShell ? " shell-new" : "")}>
                                     {
-                                        id && window.location.pathname != "/" || window.location.pathname != "/login" ? <>
+                                        orgSetup !== "none" && (id && window.location.pathname != "/" || window.location.pathname != "/login") ? <>
                                             {newShell ? <ShellRail /> : <Nav />}
                                             <AnalyticsSideNav />
                                         </> : null
@@ -304,7 +328,7 @@ export default function App() {
                                         pages that return a bare fragment (Benchmark, A/B testing)
                                         used to wrap to x = 0 underneath the fixed rail. */}
                                     <div className="main-content">
-                                    <Switch>
+                                    {orgSetup === "none" ? <CreateFirstOrganisation /> : <Switch>
                                         <Route path="/:id/dashboard" exact>
                                             <div style={{ flex: "1" }}>
                                                 {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Analytics Dashboard" fullPage /> : <>
@@ -878,7 +902,7 @@ export default function App() {
                                         </Route>
                                         <Route path="/api" render={() => null} />
                                         <Redirect to="/login" />
-                                    </Switch>
+                                    </Switch>}
                                     </div>
                                 </div>
                                 <ErrorBoundary>
