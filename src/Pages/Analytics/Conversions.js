@@ -2,7 +2,7 @@ const { useState, useEffect, useCallback, useMemo } = React;
 const useHistory = window.ReactRouterDOM.useHistory;
 import { ScannerHost } from "../../API/host.js";
 import Authentication from "../../Authentication/Auth.js";
-import { analyticsConversionsPath } from "../../Functions/domainPathSegments.js";
+import { analyticsConversionsPath, analyticsEventDetailPath } from "../../Functions/domainPathSegments.js";
 import { MiniBar, formatCurrency } from "./_shared.js";
 import {
     IconCash, IconCursorClick, IconTarget, IconPlus, IconTrash, IconFunnel,
@@ -573,7 +573,11 @@ export function EventsGlancePanel({ domain, conversions, onDefsChanged, maxRows 
                     <tbody>
                         {visible.map(r => (
                             <tr key={r.name}>
-                                <td>{r.label}</td>
+                                <td>
+                                    <a href="#" onClick={e => { e.preventDefault(); history.push(analyticsEventDetailPath(domain, r.name)); }}>
+                                        {r.label}
+                                    </a>
+                                </td>
                                 <td className="sa-table__num">{r.count.toLocaleString("de-DE")}</td>
                                 <td className="sa-table__bar"><MiniBar value={r.count} max={maxCount} /></td>
                             </tr>

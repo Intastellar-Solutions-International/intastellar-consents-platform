@@ -14,7 +14,7 @@ import {
     analyticsCohortPath, analyticsAlertsPath, analyticsScheduledReportsPath,
     analyticsReportsPath, analyticsReportBuilderPath,
     analyticsPerformancePath, analyticsPageWeightPath, analyticsDigestPath,
-    analyticsEventDebuggerPath,
+    analyticsEventDebuggerPath, analyticsAudiencesPath,
 } from "../../../Functions/domainPathSegments.js";
 
 export const reportsLinks = [
@@ -237,6 +237,10 @@ export function buildAnalyticsLinks(domain) {
         {
             name: "Cohorts",
             path: analyticsCohortPath(domain),
+        },
+        {
+            name: "Audiences",
+            path: analyticsAudiencesPath(domain),
         },
         {
             name: "Alerts",

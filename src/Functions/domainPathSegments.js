@@ -234,6 +234,23 @@ export function analyticsCohortPath(domainUnicode) {
     return `/analytics/${seg}/cohorts`;
 }
 
+/** Drill-down from an events list (Conversions.js) — no sidebar entry. */
+export function analyticsEventDetailPath(domainUnicode, eventName) {
+    const seg = encodeDomainPathSegment(domainUnicode);
+    const ev  = encodeURIComponent(eventName || "");
+    if (!seg) return `/analytics/event/${ev}`;
+    return `/analytics/${seg}/event/${ev}`;
+}
+
+/** Rule-based saved-segment builder — deliberately "audiences" (plural) to
+ *  avoid colliding with the existing singular "/audience" demographics page
+ *  (Audience.js) — a different feature. */
+export function analyticsAudiencesPath(domainUnicode) {
+    const seg = encodeDomainPathSegment(domainUnicode);
+    if (!seg) return "/analytics/audiences";
+    return `/analytics/${seg}/audiences`;
+}
+
 /** Portfolio-level channel digest — not domain-scoped, always returns the same path. */
 export function analyticsEventDebuggerPath(domainUnicode) {
     const seg = encodeDomainPathSegment(domainUnicode);

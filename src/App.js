@@ -73,6 +73,8 @@ import AnalyticsSettings from "./Pages/Analytics/AnalyticsSettings.js";
 import AnalyticsGoogleAnalytics from "./Pages/Analytics/GoogleAnalytics.js";
 import AnalyticsSearchConsole from "./Pages/Analytics/SearchConsole.js";
 import AnalyticsCohorts from "./Pages/Analytics/Cohorts.js";
+import AnalyticsEventDetail from "./Pages/Analytics/EventDetail.js";
+import AnalyticsAudiences from "./Pages/Analytics/Audiences.js";
 import AnalyticsAlerts from "./Pages/Analytics/AlertConfigs.js";
 import AnalyticsScheduledReports from "./Pages/Analytics/ScheduledReports.js";
 import AnalyticsForms from "./Pages/Analytics/Forms.js";
@@ -407,6 +409,16 @@ export default function App() {
                                                 <AnalyticsConversionsOverview />
                                             </ErrorBoundary>}
                                         </Route>
+                                        <Route path="/analytics/:handle/event/:eventName" exact>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Event Details" fullPage /> : <ErrorBoundary>
+                                                <AnalyticsEventDetail />
+                                            </ErrorBoundary>}
+                                        </Route>
+                                        <Route path="/analytics/event/:eventName" exact>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Event Details" fullPage /> : <ErrorBoundary>
+                                                <AnalyticsEventDetail />
+                                            </ErrorBoundary>}
+                                        </Route>
                                         <Route path="/analytics/:handle/page-experiments" exact>
                                             {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('growth') ? <TierGate minTier="growth" featureName="Page Experiments" fullPage /> : <ErrorBoundary>
                                                 <PageExperiments />
@@ -545,6 +557,16 @@ export default function App() {
                                         <Route path="/analytics/cohorts" exact>
                                             {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Retention Cohorts" fullPage /> : <ErrorBoundary>
                                                 <AnalyticsCohorts />
+                                            </ErrorBoundary>}
+                                        </Route>
+                                        <Route path="/analytics/:handle/audiences" exact>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Audiences" fullPage /> : <ErrorBoundary>
+                                                <AnalyticsAudiences />
+                                            </ErrorBoundary>}
+                                        </Route>
+                                        <Route path="/analytics/audiences" exact>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Audiences" fullPage /> : <ErrorBoundary>
+                                                <AnalyticsAudiences />
                                             </ErrorBoundary>}
                                         </Route>
                                         <Route path="/analytics/:handle/alerts" exact>
