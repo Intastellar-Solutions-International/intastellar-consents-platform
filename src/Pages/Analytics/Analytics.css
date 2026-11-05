@@ -12,6 +12,10 @@
 
     /* Brand accent (gold) — used at varying opacity via rgba(var(--sa-accent), X) */
     --sa-accent:     192, 159, 83;
+    /* Lighter gold for the active/selected state of an accent element, and
+       the pale gold used for text sitting on an accent-tinted background. */
+    --sa-accent-bright: 240, 205, 120;
+    --sa-accent-text:   230, 210, 160;
 
     /* Gray text ladder (RGB triplets, no alpha — call sites vary opacity).
        Consolidated from ~34 near-duplicate one-off grays that had organically
@@ -22,6 +26,7 @@
     --sa-text-muted:     160, 160, 160;
     --sa-text-secondary: 180, 180, 180;
     --sa-text:           210, 210, 210;
+    --sa-text-bright:    240, 235, 225;  /* warm near-white for labels on dark diagram nodes */
 
     /* Per-channel accent palette */
     --sa-c-green:    #4ade80;
@@ -2646,7 +2651,7 @@
 
 .sa-flow-tab.--active {
     background: rgba(var(--sa-accent), 0.18);
-    color: rgba(230, 210, 160, 0.95);
+    color: rgba(var(--sa-accent-text), 0.95);
 }
 
 .sa-flow-clear {
@@ -2658,7 +2663,7 @@
     background: rgba(var(--sa-accent), 0.14);
     border: 1px solid rgba(var(--sa-accent), 0.35);
     border-radius: 999px;
-    color: rgba(230, 210, 160, 0.95);
+    color: rgba(var(--sa-accent-text), 0.95);
     font-size: 0.75rem;
     font-weight: 600;
     cursor: pointer;
@@ -2669,11 +2674,165 @@
 }
 
 .sa-flow-trace-loading {
-    display: inline-block;
-    margin-bottom: 10px;
-    margin-left: 8px;
     font-size: 0.75rem;
     color: rgba(var(--sa-text-secondary),0.6);
+}
+
+.sa-flow-toolbar {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--sa-space-2, 8px) var(--sa-space-3, 12px);
+    margin-bottom: var(--sa-space-2, 8px);
+}
+
+.sa-flow-toolbar:empty {
+    display: none;
+}
+
+.sa-flow-toolbar .sa-flow-clear {
+    margin-bottom: 0;
+}
+
+.sa-flow-compare-note {
+    margin-left: auto;
+    font-size: 0.75rem;
+    color: rgba(var(--sa-text-muted), 0.8);
+}
+
+/* Diagram canvas: positioning context for the hover card, plus fades on
+   whichever side has more diagram hidden behind the sideways scroll. */
+.sa-flow-canvas {
+    position: relative;
+}
+
+.sa-flow-canvas::before,
+.sa-flow-canvas::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 4px;
+    width: 32px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s;
+    z-index: 1;
+}
+
+.sa-flow-canvas::before {
+    left: 0;
+    background: linear-gradient(to right, var(--sa-surface), transparent);
+}
+
+.sa-flow-canvas::after {
+    right: 0;
+    background: linear-gradient(to left, var(--sa-surface), transparent);
+}
+
+.sa-flow-canvas.--fade-left::before,
+.sa-flow-canvas.--fade-right::after {
+    opacity: 1;
+}
+
+.sa-flow-colhead {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.sa-flow-node {
+    cursor: pointer;
+    outline: none;
+}
+
+.sa-flow-node:focus-visible rect {
+    stroke: rgb(var(--sa-accent-bright));
+    stroke-width: 2;
+}
+
+.sa-flow-scroll-hint {
+    margin: var(--sa-space-2, 8px) 0 0;
+    font-size: var(--sa-font-xs, 13px);
+    color: rgba(var(--sa-text-muted), 0.7);
+}
+
+/* Node/ribbon details — the same markup renders as the hover card (mouse)
+   and as the selection panel above the diagram (touch, keyboard). */
+.sa-flow-detail {
+    background: var(--sa-surface-3);
+    border: 1px solid rgba(var(--sa-accent), 0.3);
+    border-radius: var(--sa-radius-sm, 8px);
+    padding: var(--sa-space-2, 8px) var(--sa-space-3, 12px);
+    color: rgba(var(--sa-text), 0.95);
+    font-size: 0.78rem;
+}
+
+.sa-flow-detail__title {
+    font-weight: 600;
+    color: rgba(var(--sa-text-bright), 0.95);
+    margin-bottom: 6px;
+    overflow-wrap: anywhere;
+}
+
+.sa-flow-detail__rows {
+    display: grid;
+    gap: 4px var(--sa-space-4, 16px);
+    margin: 0;
+}
+
+.sa-flow-detail__row {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--sa-space-3, 12px);
+    align-items: baseline;
+}
+
+.sa-flow-detail__row dt {
+    color: rgba(var(--sa-text-muted), 0.85);
+}
+
+.sa-flow-detail__row dd {
+    margin: 0;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    overflow-wrap: anywhere;
+}
+
+.sa-flow-detail__hint {
+    margin-top: 6px;
+    font-size: 0.7rem;
+    color: rgba(var(--sa-text-dim), 0.9);
+}
+
+.sa-flow-detail--panel {
+    margin-bottom: var(--sa-space-3, 12px);
+}
+
+/* The panel has room for its rows side by side instead of one long stack. */
+.sa-flow-detail--panel .sa-flow-detail__rows {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+.sa-flow-detail--panel .sa-flow-detail__row {
+    grid-template-columns: 1fr;
+    gap: 2px;
+}
+
+.sa-flow-detail--panel .sa-flow-detail__row dd {
+    text-align: left;
+}
+
+.sa-flow-tip {
+    position: absolute;
+    z-index: 2;
+    pointer-events: none;
+    width: max-content;
+    max-width: 280px;
+}
+
+.sa-flow-detail--tip {
+    box-shadow: var(--sa-shadow-panel);
 }
 
 /* ── Google Analytics sub-page stack ─────────────────────────────────────────── */

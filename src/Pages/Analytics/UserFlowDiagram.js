@@ -1,16 +1,38 @@
 const { useState, useMemo, useRef, useEffect, useLayoutEffect } = React;
 import { ScannerHost } from "../../API/host.js";
+import { t } from "../../i18n/index.js";
 import { authHeaders } from "./_shared.js";
 
 // Layout constants — tuned for readability, not data-driven. COL_WIDTH/
 // COL_GAP are floors, not fixed values — see the column-width calc in the
-// component body for how spare container width grows them.
+// component body for how spare container width grows them. Below
+// COMPACT_BREAKPOINT (phones, narrow panels) the floors drop to the COMPACT_
+// values so far more of the flow fits before the sideways scroll kicks in.
 const MIN_COL_WIDTH = 168;
 const MAX_COL_WIDTH = 168 * 1.6;
 const MIN_COL_GAP   = 96;
+const COMPACT_BREAKPOINT = 720;
+const COMPACT_COL_WIDTH  = 124;
+const COMPACT_COL_GAP    = 48;
 const NODE_GAP    = 6;
 const MIN_NODE_H  = 26;
 const MAX_TOTAL_H = 560;
+// Column header row drawn above the nodes, inside the SVG so it scrolls
+// sideways together with the columns it labels.
+const HEADER_H = 22;
+const PAD      = 12;
+const TOP      = PAD + HEADER_H;
+// Barycenter passes for crossing reduction — see reduceCrossings().
+const ORDER_SWEEPS = 6;
+
+const fmt = n => n.toLocaleString("de-DE");
+
+// Colors come from the Analytics.css tokens (RGB triplets) so the diagram
+// follows the same palette as every other Analytics page. SVG presentation
+// attributes (fill="…") don't resolve var(), so these go through `style`.
+function tone(token, alpha) {
+    return `rgba(var(--${token}),${alpha.toFixed(2)})`;
+}
 
 function truncate(s, n) {
     return s.length > n ? s.slice(0, n - 1) + "…" : s;
@@ -18,6 +40,10 @@ function truncate(s, n) {
 
 function nodeKey(col, id) {
     return `${col}|${id}`;
+}
+
+function boundaryEdges(data, c) {
+    return c === 0 ? data.channelEdges : data.transitionEdges.filter(e => e.depth === c);
 }
 
 // Builds one node list per column (channel, then FLOW_DEPTH+1 page columns)
@@ -62,42 +88,165 @@ function buildColumns(data) {
     return columns;
 }
 
+// Normalized vertical centre (0..1) of every node in a column, weighted by
+// population — what a node's on-screen position actually tracks, since
+// heights are population-proportional.
+function centres(col) {
+    const total = col.reduce((s, n) => s + n.population, 0) || 1;
+    const m = new Map();
+    let acc = 0;
+    for (const n of col) {
+        m.set(n.id, (acc + n.population / 2) / total);
+        acc += n.population;
+    }
+    return m;
+}
+
+// Re-sorts one column by the session-weighted average position of the
+// nodes it's connected to on the other side. "(other)" always stays at the
+// bottom — it's a catch-all, and moving it around reads as if it were a
+// real page.
+function sortByBarycenter(col, edges, selfOf, otherCentre) {
+    const sum = new Map();
+    const weight = new Map();
+    for (const e of edges) {
+        const p = otherCentre(e);
+        if (p == null) continue;
+        const id = selfOf(e);
+        sum.set(id, (sum.get(id) || 0) + p * e.sessions);
+        weight.set(id, (weight.get(id) || 0) + e.sessions);
+    }
+    const current = centres(col);
+    const bary = id => weight.get(id) ? sum.get(id) / weight.get(id) : current.get(id);
+    col.sort((a, b) =>
+        (a.id === "(other)") - (b.id === "(other)")
+        || bary(a.id) - bary(b.id)
+        || b.population - a.population);
+}
+
+// Session-weighted crossing count across every column boundary: two
+// ribbons cross when their order flips between the left and right side.
+// Edge counts per boundary are capped by the API (TOP_N_PER_COLUMN), so the
+// pairwise loop stays small.
+function countCrossings(columns, edgesByBoundary) {
+    let total = 0;
+    for (let c = 0; c < columns.length - 1; c++) {
+        const fromIdx = new Map(columns[c].map((n, i) => [n.id, i]));
+        const toIdx   = new Map(columns[c + 1].map((n, i) => [n.id, i]));
+        const edges = edgesByBoundary[c].filter(e => fromIdx.has(e.from) && toIdx.has(e.to));
+        for (let i = 0; i < edges.length; i++) {
+            for (let j = i + 1; j < edges.length; j++) {
+                const a = edges[i], b = edges[j];
+                const df = fromIdx.get(a.from) - fromIdx.get(b.from);
+                const dt = toIdx.get(a.to) - toIdx.get(b.to);
+                if (df * dt < 0) total += a.sessions * b.sessions;
+            }
+        }
+    }
+    return total;
+}
+
+// Classic layered-graph barycenter heuristic: alternate forward sweeps
+// (order each column by where its incoming ribbons come from) and backward
+// sweeps (by where its outgoing ribbons go), keeping whichever ordering had
+// the fewest weighted crossings. Starting from the population sort and only
+// ever accepting improvements means the result is never more tangled than
+// the plain biggest-first layout this replaced.
+function reduceCrossings(columns, data) {
+    if (columns.length < 2) return columns;
+    const edgesByBoundary = columns.slice(0, -1).map((_, c) => boundaryEdges(data, c));
+    const snapshot = () => columns.map(col => col.slice());
+    let best = snapshot();
+    let bestScore = countCrossings(columns, edgesByBoundary);
+
+    for (let s = 0; s < ORDER_SWEEPS && bestScore > 0; s++) {
+        for (let c = 1; c < columns.length; c++) {
+            const pos = centres(columns[c - 1]);
+            sortByBarycenter(columns[c], edgesByBoundary[c - 1], e => e.to, e => pos.get(e.from));
+        }
+        for (let c = columns.length - 2; c >= 0; c--) {
+            const pos = centres(columns[c + 1]);
+            sortByBarycenter(columns[c], edgesByBoundary[c], e => e.from, e => pos.get(e.to));
+        }
+        const score = countCrossings(columns, edgesByBoundary);
+        if (score < bestScore) { bestScore = score; best = snapshot(); }
+    }
+    return best;
+}
+
+// What each column means — differs by mode. Forward (all traffic or
+// "Forward, filtered"): channel, then pages in session order. Backward from
+// goal: columns count down the pages before converting and end in the
+// synthetic goal node (see api/analytics-user-flow.js's direction=to doc).
+function columnLabels(data, count) {
+    const reverse = data.goal && data.direction !== "from";
+    const R = (data.flowDepth || 4) + 1;
+    return Array.from({ length: count }, (_, c) => {
+        if (reverse) {
+            const before = R - c;
+            if (before <= 0) return t("Goal");
+            return before === 1 ? t("1 page before") : t("{n} pages before", { n: before });
+        }
+        if (c === 0) return t("Channel");
+        if (c === 1) return t("Landing page");
+        return t("Page {n}", { n: c });
+    });
+}
+
+// "+12%", "−3.4%", "new" — a node or path that had no sessions in the
+// previous period has no meaningful percentage.
+function formatDelta(cur, prev) {
+    if (!prev) return cur > 0 ? { text: t("new"), sign: 1 } : null;
+    const pct = (cur - prev) / prev * 100;
+    const abs = Math.abs(pct);
+    if (abs < 0.5) return { text: "±0%", sign: 0 };
+    return {
+        text: `${pct > 0 ? "+" : "−"}${abs >= 10 ? Math.round(abs) : abs.toFixed(1)}%`,
+        sign: Math.sign(pct),
+    };
+}
+
+function deltaToken(delta) {
+    return !delta || delta.sign === 0 ? "sa-neutral" : delta.sign > 0 ? "sa-good" : "sa-bad";
+}
+
 // Sub-band positions for every edge crossing one column boundary — each
 // node's height is divided among its edges (proportional to session share),
 // stacked in the order that minimizes crossing (sorted by the position of
-// the node on the other side). Real Sankey layouts iterate this a few times
-// to further reduce crossings; one deterministic pass is enough for the
-// shallow, capped-branching diagrams this endpoint produces.
+// the node on the other side).
 function layoutBoundary(fromCol, toCol, edges, fromY, toY) {
     const fromIndex = new Map(fromCol.map((n, i) => [n.id, i]));
     const toIndex   = new Map(toCol.map((n, i) => [n.id, i]));
 
-    const byFrom = new Map();
-    const byTo   = new Map();
-    for (const e of edges) {
-        if (!byFrom.has(e.from)) byFrom.set(e.from, []);
-        byFrom.get(e.from).push(e);
-        if (!byTo.has(e.to)) byTo.set(e.to, []);
-        byTo.get(e.to).push(e);
-    }
-    for (const list of byFrom.values()) list.sort((a, b) => (toIndex.get(a.to) ?? 0) - (toIndex.get(b.to) ?? 0));
-    for (const list of byTo.values())   list.sort((a, b) => (fromIndex.get(a.from) ?? 0) - (fromIndex.get(b.from) ?? 0));
+    const sorted = edges.slice().sort((a, b) =>
+        (fromIndex.get(a.from) ?? 0) - (fromIndex.get(b.from) ?? 0)
+        || (toIndex.get(a.to) ?? 0) - (toIndex.get(b.to) ?? 0));
 
     const fromCursor = new Map();
     const toCursor   = new Map();
+    // Incoming bands are stacked by source position, so allocate the
+    // arriving side in that order rather than the leaving side's order.
+    const toOffset = new Map();
+    for (const e of edges.slice().sort((a, b) =>
+        (toIndex.get(a.to) ?? 0) - (toIndex.get(b.to) ?? 0)
+        || (fromIndex.get(a.from) ?? 0) - (fromIndex.get(b.from) ?? 0))) {
+        const toNode = toY.get(e.to);
+        if (!toNode) continue;
+        const toShare = toNode.population > 0 ? (e.sessions / toNode.population) * toNode.height : toNode.height;
+        const tCursor = toCursor.get(e.to) || 0;
+        toCursor.set(e.to, tCursor + toShare);
+        toOffset.set(e, { offset: tCursor, share: toShare });
+    }
 
-    return edges.map(e => {
+    return sorted.map(e => {
         const fromNode = fromY.get(e.from);
         const toNode   = toY.get(e.to);
         if (!fromNode || !toNode) return null;
 
         const fromShare = fromNode.population > 0 ? (e.sessions / fromNode.population) * fromNode.height : fromNode.height;
-        const toShare   = toNode.population   > 0 ? (e.sessions / toNode.population)   * toNode.height   : toNode.height;
-
         const fCursor = fromCursor.get(e.from) || 0;
-        const tCursor = toCursor.get(e.to) || 0;
         fromCursor.set(e.from, fCursor + fromShare);
-        toCursor.set(e.to, tCursor + toShare);
+        const { offset: tCursor, share: toShare } = toOffset.get(e);
 
         return {
             edge: e,
@@ -147,10 +296,32 @@ function traceFlow(selectedKey, ribbonIndex) {
     return { edges, nodes };
 }
 
-const DEFAULT_ARIA_LABEL = "Visitor flow from acquisition channel through subsequent pages — click a page to trace its full path";
+// One title + label/value rows — rendered both as the hover card (mouse)
+// and as the selection panel above the diagram (touch and keyboard users,
+// who never get a hover).
+function FlowDetail({ detail, className }) {
+    return (
+        <div className={className}>
+            <div className="sa-flow-detail__title">{detail.title}</div>
+            <dl className="sa-flow-detail__rows">
+                {detail.rows.map(row => (
+                    <div key={row.label} className="sa-flow-detail__row">
+                        <dt>{row.label}</dt>
+                        <dd style={row.token ? { color: tone(row.token, 0.95) } : undefined}>{row.value}</dd>
+                    </div>
+                ))}
+            </dl>
+            {detail.hint && <div className="sa-flow-detail__hint">{detail.hint}</div>}
+        </div>
+    );
+}
 
-export default function UserFlowDiagram({ data, conversionNode = null, ariaLabel = DEFAULT_ARIA_LABEL }) {
+export default function UserFlowDiagram({ data, compareData = null, conversionNode = null, ariaLabel }) {
     const [selected, setSelected] = useState(null); // nodeKey(col, id) or null
+    // Mouse hover / keyboard focus. `x`/`y` (container-relative pixels) are
+    // only set for a real pointer — focus previews the path without a card,
+    // since the selection panel is the keyboard-accessible version.
+    const [hover, setHover] = useState(null); // { kind: "node"|"ribbon", key|index, x?, y? } | null
 
     // Exact full-path attribution for the selected node, fetched from
     // api/analytics-user-flow.js's traceCol/traceNode mode — see that file's
@@ -162,6 +333,10 @@ export default function UserFlowDiagram({ data, conversionNode = null, ariaLabel
     // the first fetch resolves would otherwise let either one win the race.
     const [trace, setTrace] = useState(null); // { key, channelEdges, transitionEdges } | null
     const [traceLoading, setTraceLoading] = useState(false);
+
+    // A new data set (date range, goal, direction) re-lays-out every column,
+    // so any key pointing into the previous layout is meaningless.
+    useEffect(() => { setSelected(null); setHover(null); }, [data]);
 
     useEffect(() => {
         // Only the all-traffic diagram has per-session paths to trace back
@@ -202,31 +377,50 @@ export default function UserFlowDiagram({ data, conversionNode = null, ariaLabel
     // their nodes). Recomputing the actual layout in real pixels instead —
     // wider columns, wider gaps — keeps a 1:1 SVG-unit-to-CSS-pixel mapping
     // so text and strokes render exactly as authored regardless of size.
-    const containerRef = useRef(null);
+    const canvasRef = useRef(null);
+    const scrollRef = useRef(null);
     const [containerWidth, setContainerWidth] = useState(0);
+    // Which edges have more diagram hidden behind the sideways scroll —
+    // drives the fade shown on that side so it's obvious there's more.
+    const [overflow, setOverflow] = useState({ left: false, right: false });
+
+    function measureOverflow() {
+        const el = scrollRef.current;
+        if (!el) return;
+        const left = el.scrollLeft > 2;
+        const right = el.scrollLeft + el.clientWidth < el.scrollWidth - 2;
+        setOverflow(prev => prev.left === left && prev.right === right ? prev : { left, right });
+    }
 
     useLayoutEffect(() => {
         function measure() {
-            setContainerWidth(containerRef.current?.clientWidth || 0);
+            setContainerWidth(scrollRef.current?.clientWidth || 0);
+            measureOverflow();
         }
         measure();
         window.addEventListener("resize", measure);
         return () => window.removeEventListener("resize", measure);
     }, []);
 
-    const columns = useMemo(() => buildColumns(data), [data]);
+    const columns = useMemo(() => reduceCrossings(buildColumns(data), data), [data]);
+    const headers = useMemo(() => columnLabels(data, columns.length), [data, columns.length]);
 
     // Grow column width and gap together (capped, so boxes don't balloon on
     // an ultra-wide panel) when the container has more room than the
     // minimum layout needs; never shrink below the floor — narrower than
     // that falls back to the container's horizontal scroll instead.
+    const compact = containerWidth > 0 && containerWidth < COMPACT_BREAKPOINT;
     const { colWidth, colGap } = useMemo(() => {
+        const minW = compact ? COMPACT_COL_WIDTH : MIN_COL_WIDTH;
+        const minG = compact ? COMPACT_COL_GAP : MIN_COL_GAP;
         const n = Math.max(1, columns.length);
-        const naturalWidth = n * MIN_COL_WIDTH + Math.max(0, n - 1) * MIN_COL_GAP + 24;
+        const naturalWidth = n * minW + Math.max(0, n - 1) * minG + PAD * 2;
         const rawScale = containerWidth > naturalWidth ? containerWidth / naturalWidth : 1;
-        const scale = Math.min(rawScale, MAX_COL_WIDTH / MIN_COL_WIDTH);
-        return { colWidth: MIN_COL_WIDTH * scale, colGap: MIN_COL_GAP * scale };
-    }, [containerWidth, columns.length]);
+        const scale = Math.min(rawScale, MAX_COL_WIDTH / minW);
+        return { colWidth: minW * scale, colGap: minG * scale };
+    }, [containerWidth, columns.length, compact]);
+
+    useLayoutEffect(measureOverflow, [colWidth, colGap, columns.length]);
 
     const maxPopulation = useMemo(
         () => Math.max(1, ...columns.flatMap(c => c.map(n => n.population))),
@@ -274,25 +468,25 @@ export default function UserFlowDiagram({ data, conversionNode = null, ariaLabel
     }), [columns, maxPopulation, scale]);
 
     const totalHeight = Math.max(...columnLayouts.map(c => c.totalHeight), 40);
-    const svgWidth = columns.length * colWidth + Math.max(0, columns.length - 1) * colGap + 24;
+    const svgWidth = columns.length * colWidth + Math.max(0, columns.length - 1) * colGap + PAD * 2;
     // Extra bottom padding so exit-drop ribbons (which extend ~22px below nodes)
     // don't get clipped — without this, the last row of nodes only has ~12px of
     // breathing room below them in the SVG canvas.
-    const svgHeight = totalHeight + 24 + (data.exitCounts?.length > 0 ? 22 : 0);
+    const svgHeight = totalHeight + TOP + PAD + (data.exitCounts?.length > 0 ? 22 : 0);
+    const colX = c => PAD + c * (colWidth + colGap);
 
     // How many characters fit a node label before truncating — scales with
     // the actual box width now that it's no longer a fixed 168px, so wider
     // columns show more of a long pathname instead of cutting off at the
     // same point regardless of how much room there actually is.
     const labelChars = Math.max(8, Math.floor((colWidth - 16) / 6));
+    // Reserve ~44px on the right for the exit badge when present
+    const exitLabelChars = Math.max(8, Math.floor((colWidth - 52) / 6));
 
     const ribbons = useMemo(() => {
         const out = [];
         for (let c = 0; c < columns.length - 1; c++) {
-            const edges = c === 0
-                ? data.channelEdges
-                : data.transitionEdges.filter(e => e.depth === c);
-            const laid = layoutBoundary(columns[c], columns[c + 1], edges, columnLayouts[c].yMap, columnLayouts[c + 1].yMap);
+            const laid = layoutBoundary(columns[c], columns[c + 1], boundaryEdges(data, c), columnLayouts[c].yMap, columnLayouts[c + 1].yMap);
             for (const r of laid) out.push({ ...r, col: c });
         }
         return out;
@@ -314,9 +508,14 @@ export default function UserFlowDiagram({ data, conversionNode = null, ariaLabel
         return { outgoing, incoming };
     }, [ribbons]);
 
+    // A click selection wins; otherwise hovering (or focusing) a node
+    // previews its path. Only a selection switches node labels to per-path
+    // counts and fetches the exact trace — a hover is just a quick look.
+    const hoveredNodeKey = hover?.kind === "node" ? hover.key : null;
+    const pathKey = selected ?? hoveredNodeKey;
     const highlight = useMemo(
-        () => selected ? traceFlow(selected, ribbonIndex) : null,
-        [selected, ribbonIndex]
+        () => pathKey ? traceFlow(pathKey, ribbonIndex) : null,
+        [pathKey, ribbonIndex]
     );
 
     // When a node is selected, compute the session count each highlighted node
@@ -445,6 +644,33 @@ export default function UserFlowDiagram({ data, conversionNode = null, ariaLabel
         return map;
     }, [traceEdgeSessions]);
 
+    // Previous-period populations for the compare header control, keyed the
+    // same way as the current layout. Matched by (column, id) — "(other)" is
+    // left out since it's a different mix of long-tail pages in each period
+    // and a delta between two unrelated buckets would mean nothing.
+    const prevNodeMap = useMemo(() => {
+        if (!compareData || compareData.noSiteKey || !compareData.channelEdges) return null;
+        const m = new Map();
+        buildColumns(compareData).forEach((col, c) => {
+            for (const n of col) m.set(nodeKey(c, n.id), n.population);
+        });
+        return m;
+    }, [compareData]);
+
+    const prevEdgeMap = useMemo(() => {
+        if (!prevNodeMap) return null;
+        const m = new Map(); // JSON.stringify([col, from, to]) -> sessions
+        for (const e of compareData.channelEdges) m.set(JSON.stringify([0, e.from, e.to]), e.sessions);
+        for (const e of compareData.transitionEdges) m.set(JSON.stringify([e.depth, e.from, e.to]), e.sessions);
+        return m;
+    }, [prevNodeMap, compareData]);
+
+    function nodeDelta(key, id, population) {
+        if (!prevNodeMap || id === "(other)") return null;
+        const prev = prevNodeMap.get(key) || 0;
+        return { prev, delta: formatDelta(population, prev) };
+    }
+
     const maxEdgeSessions = Math.max(1, ...ribbons.map(r => r.edge.sessions));
 
     // exitCount.depth from the API maps directly to the frontend column index:
@@ -472,7 +698,7 @@ export default function UserFlowDiagram({ data, conversionNode = null, ariaLabel
     // session split — a bare pathname like "/" is ambiguous once a site key
     // is shared across a root domain and a booking/white-label subdomain
     // (see api/analytics-user-flow.js's doc comment on this field), so
-    // tooltips show which host(s) a node's traffic actually came from.
+    // the detail card shows which host(s) a node's traffic actually came from.
     // Empty (host breakdown is only computed in all-traffic mode) rather
     // than missing for goal/reverse views, so lookups below stay unconditional.
     const hostMap = useMemo(() => {
@@ -489,257 +715,428 @@ export default function UserFlowDiagram({ data, conversionNode = null, ariaLabel
     // "example.com" for a single-host node, "example.com: 80, sub.example.com: 20"
     // once a node's traffic actually splits across hosts — the common case
     // (one host) stays terse rather than always showing a redundant count.
-    function hostSuffix(key) {
+    function hostList(key) {
         const hosts = hostMap.get(key);
-        if (!hosts || !hosts.length) return "";
-        if (hosts.length === 1) return ` [${hosts[0].host}]`;
-        return ` [${hosts.map(h => `${h.host}: ${h.sessions.toLocaleString("de-DE")}`).join(", ")}]`;
+        if (!hosts || !hosts.length) return null;
+        if (hosts.length === 1) return hosts[0].host;
+        return hosts.map(h => `${h.host}: ${fmt(h.sessions)}`).join(", ");
     }
 
-    // Reserve ~44px on the right for the exit badge when present
-    const exitLabelChars = Math.max(8, Math.floor((colWidth - 52) / 6));
+    // Everything the diagram knows about one node, computed once and shared
+    // by the SVG rendering, its aria-label and the detail card.
+    function nodeInfo(c, node) {
+        const key = nodeKey(c, node.id);
+        const layout = columnLayouts[c].yMap.get(node.id);
+        const isSelected = selected === key;
+        // Same "dropped, not dimmed" treatment as the ribbons — a node the
+        // selection only reaches via a rounds-to-0 proportional estimate (or,
+        // once exact data has loaded, zero real attributed sessions) isn't
+        // really part of this flow, so it shouldn't get the gold highlight
+        // (or a misleading session count) either.
+        const isOn = highlight
+            ? key === pathKey || (exactPopMap
+                ? (exactPopMap.get(key) ?? 0) > 0
+                : highlight.nodes.has(key) && !zeroFilteredKeys?.has(key))
+            : true;
+
+        // Drop-off: sessions that arrived at this node but didn't continue.
+        // Suppress on the last rendered column — those exits mean "end of
+        // tracking depth", not a real bounce signal.
+        const exitSessions = c < columns.length - 1 ? exitMap.get(key) : undefined;
+        const exitPct = exitSessions != null && node.population > 0
+            ? exitSessions / node.population * 100 : null;
+        const exitPctStr = exitPct == null ? null
+            : exitPct < 1 ? "<1%"
+            : exitPct >= 99.5 ? "100%"
+            : exitPct.toFixed(1) + "%";
+
+        // With a selection active, how many of the selected sessions passed
+        // through here — exact once the trace has resolved, the proportional
+        // estimate until then.
+        const filteredPop = selected
+            ? (exactPopMap ? (exactPopMap.get(key) ?? 0) : (filteredPopMap?.get(key) ?? null))
+            : null;
+        const displayPop = filteredPop !== null ? filteredPop : node.population;
+
+        // Validation errors for this page node (page columns only — col 0 is
+        // acquisition channels, not real pathnames). "(other)" nodes are
+        // skipped since they're a heterogeneous bucket with no single page to
+        // attribute errors to.
+        const err = c > 0 && node.id !== "(other)" ? validationErrorMap.get(node.id) ?? null : null;
+
+        return {
+            key, layout, isSelected, isOn, exitSessions, exitPctStr, filteredPop, displayPop, err,
+            compare: nodeDelta(key, node.id, node.population),
+        };
+    }
+
+    function nodeDetail(c, node) {
+        const info = nodeInfo(c, node);
+        const rows = [];
+        if (selected && info.isOn && !info.isSelected && info.filteredPop !== null) {
+            rows.push({
+                label: t("Selected flow"),
+                value: t("{n} of {total} sessions", { n: fmt(info.displayPop), total: fmt(node.population) }),
+            });
+        } else {
+            rows.push({ label: t("Sessions"), value: fmt(node.population) });
+        }
+        if (info.compare) {
+            rows.push({
+                label: t("Previous period"),
+                value: `${fmt(info.compare.prev)} (${info.compare.delta?.text ?? "±0%"})`,
+                token: deltaToken(info.compare.delta),
+            });
+        }
+        if (info.exitPctStr) {
+            rows.push({
+                label: t("Drop-off"),
+                value: t("{pct} ({n} left)", { pct: info.exitPctStr, n: fmt(info.exitSessions) }),
+                token: "sa-bad",
+            });
+        }
+        if (info.err) {
+            rows.push({
+                label: t("Validation errors"),
+                value: t("{sessions} sessions · {total} total", { sessions: fmt(info.err.sessions), total: fmt(info.err.occurrences) }),
+                token: "sa-warn",
+            });
+        }
+        const hosts = hostList(info.key);
+        if (hosts) rows.push({ label: t("Hosts"), value: hosts });
+        return {
+            title: `${headers[c]} · ${node.id}`,
+            rows,
+            hint: info.isSelected ? t("Click again to clear the selection") : t("Click to trace every path through this step"),
+        };
+    }
+
+    function ribbonDetail(r) {
+        const fromPop = columnLayouts[r.col].yMap.get(r.edge.from)?.population || 0;
+        const rows = [
+            { label: t("Sessions"), value: fmt(r.edge.sessions) },
+        ];
+        if (fromPop > 0) {
+            rows.push({
+                label: t("Share of {node}", { node: truncate(r.edge.from, 28) }),
+                value: `${(r.edge.sessions / fromPop * 100).toFixed(1)}%`,
+            });
+        }
+        if (prevEdgeMap && r.edge.from !== "(other)" && r.edge.to !== "(other)") {
+            const prev = prevEdgeMap.get(JSON.stringify([r.col, r.edge.from, r.edge.to])) || 0;
+            const delta = formatDelta(r.edge.sessions, prev);
+            rows.push({ label: t("Previous period"), value: `${fmt(prev)} (${delta?.text ?? "±0%"})`, token: deltaToken(delta) });
+        }
+        const hosts = hostList(nodeKey(r.col + 1, r.edge.to));
+        if (hosts) rows.push({ label: t("Hosts"), value: hosts });
+        return { title: `${r.edge.from} → ${r.edge.to}`, rows };
+    }
 
     function toggleNode(col, id) {
         const key = nodeKey(col, id);
         setSelected(prev => prev === key ? null : key);
     }
 
+    function pointerAt(e) {
+        const rect = canvasRef.current?.getBoundingClientRect();
+        return rect ? { x: e.clientX - rect.left, y: e.clientY - rect.top } : {};
+    }
+
+    // Touch has no hover — a tap is a click (selection), and the selection
+    // panel shows the same details, so touch pointers never open the card.
+    function hoverHandlers(target) {
+        return {
+            onPointerEnter: e => { if (e.pointerType !== "touch") setHover({ ...target, ...pointerAt(e) }); },
+            onPointerMove:  e => { if (e.pointerType !== "touch") setHover({ ...target, ...pointerAt(e) }); },
+            onPointerLeave: () => setHover(null),
+        };
+    }
+
+    const selectedNode = useMemo(() => {
+        if (!selected) return null;
+        const sep = selected.indexOf("|");
+        const c = parseInt(selected.slice(0, sep), 10);
+        const node = columns[c]?.find(n => n.id === selected.slice(sep + 1));
+        return node ? { c, node } : null;
+    }, [selected, columns]);
+
+    let hoverCard = null;
+    if (hover && hover.x != null) {
+        let detail = null;
+        if (hover.kind === "node") {
+            const sep = hover.key.indexOf("|");
+            const c = parseInt(hover.key.slice(0, sep), 10);
+            const node = columns[c]?.find(n => n.id === hover.key.slice(sep + 1));
+            if (node) detail = nodeDetail(c, node);
+        } else if (ribbons[hover.index]) {
+            detail = ribbonDetail(ribbons[hover.index]);
+        }
+        if (detail) {
+            // Flip to the pointer's left/top near the far edges so the card
+            // never runs off the panel.
+            const width = canvasRef.current?.clientWidth || 0;
+            const flipX = hover.x > width - 300;
+            const flipY = hover.y > svgHeight - 120;
+            hoverCard = (
+                <div
+                    className="sa-flow-tip"
+                    style={{
+                        left: hover.x,
+                        top: hover.y,
+                        transform: `translate(${flipX ? "calc(-100% - 14px)" : "14px"}, ${flipY ? "calc(-100% - 14px)" : "14px"})`,
+                    }}
+                    aria-hidden="true"
+                >
+                    <FlowDetail detail={detail} className="sa-flow-detail sa-flow-detail--tip" />
+                </div>
+            );
+        }
+    }
+
+    const defaultAria = t("Visitor flow from acquisition channel through subsequent pages — click a page to trace its full path");
+
     return (
         <div>
-            {selected && (
-                <button type="button" className="sa-flow-clear" onClick={() => setSelected(null)}>
-                    &times; Clear selection
-                </button>
-            )}
-            {traceLoading && <span className="sa-flow-trace-loading">Computing exact path counts&hellip;</span>}
-            <div className="sa-flow-scroll" ref={containerRef}>
-                <svg
-                    width={svgWidth}
-                    height={svgHeight}
-                    viewBox={`0 0 ${svgWidth} ${svgHeight}`}
-                    role="img"
-                    aria-label={ariaLabel}
-                >
-                    {ribbons.map((r, i) => {
-                        const wouldBeOn = highlight?.edges.has(r);
-                        // Whether a "highlighted" ribbon actually gets drawn: exact
-                        // attribution when the trace for this selection has resolved
-                        // (a real edge among qualifying sessions, or it simply isn't
-                        // in traceEdgeSessions at all — no rounding involved), else
-                        // the proportional estimate's own 0-drop as an immediate
-                        // fallback while the trace is loading. Dropped outright rather
-                        // than dimmed either way — it's not "less emphasized
-                        // background traffic" like a genuinely off-path ribbon, it's a
-                        // link the selection didn't actually produce any visitors on.
-                        if (wouldBeOn) {
-                            if (traceEdgeSessions) {
-                                const key = JSON.stringify([r.col, r.edge.from, r.edge.to]);
-                                if (!traceEdgeSessions.get(key)) return null;
-                            } else if (zeroFilteredKeys?.has(nodeKey(r.col + 1, r.edge.to))) {
-                                return null;
-                            }
-                        }
-                        const x0 = 12 + r.col * (colWidth + colGap) + colWidth;
-                        const x1 = x0 + colGap;
-                        const y0 = 12 + r.y0;
-                        const y1 = 12 + r.y1;
-                        const midX = (x0 + x1) / 2;
-                        const baseOpacity = 0.12 + 0.35 * (r.edge.sessions / maxEdgeSessions);
-                        const isOn = wouldBeOn;
-                        const opacity = !highlight ? baseOpacity : (isOn ? Math.min(1, baseOpacity + 0.5) : baseOpacity * 0.15);
-                        const stroke = isOn ? `rgba(240,205,120,${opacity.toFixed(2)})` : `rgba(192,159,83,${opacity.toFixed(2)})`;
-                        return (
-                            <path
-                                key={i}
-                                d={`M${x0},${y0} C${midX},${y0} ${midX},${y1} ${x1},${y1}`}
-                                stroke={stroke}
-                                strokeWidth={r.width}
-                                fill="none"
-                            >
-                                <title>{`${r.edge.from} → ${r.edge.to}${hostSuffix(nodeKey(r.col + 1, r.edge.to))}: ${r.edge.sessions.toLocaleString("de-DE")} sessions`}</title>
-                            </path>
-                        );
-                    })}
-
-                    {columnLayouts.map((col, c) => (
-                        <g key={c}>
-                            {col.nodes.map(node => {
-                                const layout = col.yMap.get(node.id);
-                                const x = 12 + c * (colWidth + colGap);
-                                const y = 12 + layout.y;
-                                const key = nodeKey(c, node.id);
-                                const isSelected = selected === key;
-                                // Same "dropped, not dimmed" treatment as the ribbons
-                                // above — a node the selection only reaches via a
-                                // rounds-to-0 proportional estimate (or, once exact
-                                // data has loaded, zero real attributed sessions) isn't
-                                // really part of this flow, so it shouldn't get the
-                                // gold highlight (or a misleading session count) either.
-                                const isOn = highlight
-                                    ? isSelected || (exactPopMap
-                                        ? (exactPopMap.get(key) ?? 0) > 0
-                                        : highlight.nodes.has(key) && !zeroFilteredKeys?.has(key))
-                                    : true;
-                                const isGoal = conversionNode != null && node.id === conversionNode;
-                                const fillOpacity = isOn ? (isSelected ? 0.36 : 0.16) : 0.05;
-                                const strokeOpacity = isOn ? (isSelected ? 0.9 : 0.4) : 0.12;
-                                const textOpacity = isOn ? 0.9 : 0.25;
-                                // Goal node uses the same green already used for
-                                // "success"/consent-yes states elsewhere in this
-                                // dashboard (rgba(74,222,128,...)) — distinct from
-                                // the gold used for every real page node, and from
-                                // the brighter gold used for the active selection.
-                                const rgb = isGoal ? "74,222,128" : isSelected ? "240,205,120" : "192,159,83";
-
-                                // Drop-off: sessions that arrived at this node but didn't continue.
-                                // Suppress on the last rendered column — those exits mean "end of
-                                // tracking depth", not a real bounce signal.
-                                const exitSessions = c < columns.length - 1 ? exitMap.get(key) : undefined;
-                                const exitPct = exitSessions != null && node.population > 0
-                                    ? exitSessions / node.population * 100 : null;
-                                const exitPctStr = exitPct == null ? null
-                                    : exitPct < 1 ? "<1%"
-                                    : exitPct >= 99.5 ? "100%"
-                                    : exitPct.toFixed(1) + "%";
-
-                                // When a selection is active, display the filtered session
-                                // count for this node (how many of the selected sessions
-                                // passed through here) instead of the total population —
-                                // exact once the trace has resolved, the proportional
-                                // estimate until then.
-                                const filteredPop = exactPopMap ? (exactPopMap.get(key) ?? 0) : (filteredPopMap?.get(key) ?? null);
-                                const displayPop  = filteredPop !== null ? filteredPop : node.population;
-
-                                // Right-side label: filtered session count while a selection
-                                // is active (replaces exit %, which isn't meaningful on a
-                                // filtered sub-graph); exit % when nothing is selected.
-                                const rightLabel = highlight && isOn
-                                    ? displayPop.toLocaleString("de-DE")
-                                    : exitPctStr ? `↓ ${exitPctStr}` : null;
-                                const rightLabelColor = highlight && isOn
-                                    ? `rgba(240,235,225,${textOpacity * 0.75})`
-                                    : `rgba(248,113,113,${isOn ? 0.9 : 0.2})`;
-
-                                // Validation errors for this page node (page columns only —
-                                // col 0 is acquisition channels, not real pathnames).
-                                // "(other)" nodes are skipped since they're a heterogeneous
-                                // bucket with no single page to attribute errors to.
-                                const errData = c > 0 && node.id !== "(other)"
-                                    ? validationErrorMap.get(node.id) ?? null
-                                    : null;
-                                const errSessions = errData?.sessions ?? 0;
-
-                                const nodeLabel = `${node.id}${hostSuffix(key)}`;
-                                const errSuffix = errData
-                                    ? ` · ⚠ ${errData.sessions.toLocaleString("de-DE")} error session${errData.sessions !== 1 ? "s" : ""} (${errData.occurrences.toLocaleString("de-DE")} total)`
-                                    : "";
-                                const tooltipText = highlight && isOn
-                                    ? `${nodeLabel}: ${displayPop.toLocaleString("de-DE")} of ${node.population.toLocaleString("de-DE")} sessions${errSuffix}`
-                                    : exitPctStr
-                                        ? `${nodeLabel}: ${node.population.toLocaleString("de-DE")} sessions · ↓ ${exitPctStr} drop-off (${exitSessions.toLocaleString("de-DE")} left)${errSuffix}`
-                                        : `${nodeLabel}: ${node.population.toLocaleString("de-DE")} sessions${errSuffix}`;
-
-                                // Drop-off ribbon: a closed "fin" shape that starts from the
-                                // exit portion of the node's right edge (bottom fraction),
-                                // curves right and down, then back to the node edge. Using
-                                // a filled closed path instead of a thick stroke avoids the
-                                // blob effect you get when strokeWidth is proportional to
-                                // a large exit height on a short bezier curve.
-                                //
-                                // Shape: two quadratic beziers forming a sideways D:
-                                //   top edge: (xRight, yExitTop) → curves right → (xRight+spread, yEnd)
-                                //   bottom edge: (xRight+spread, yEnd+endH) → curves back → (xRight, yExitBot)
-                                //   closed by a straight line up the node right edge.
-                                const exitRibbon = exitPctStr ? (() => {
-                                    const exitRatio = exitSessions / node.population;
-                                    const exitH = Math.max(3, exitRatio * layout.height);
-                                    const yExitTop = y + layout.height - exitH;
-                                    const yExitBot = y + layout.height;
-                                    const spread = Math.min(14, exitH * 0.25 + 4);
-                                    const drop   = Math.max(6,  exitH * 0.2  + 4);
-                                    const yEnd   = yExitBot + drop;
-                                    const endH   = Math.max(2,  exitH * 0.08);
-                                    const yMid   = (yExitTop + yEnd) / 2;
-                                    const xRight = x + colWidth;
-                                    const fOpacity = isOn ? 0.22 : 0.05;
-                                    const sOpacity = isOn ? 0.6  : 0.12;
-                                    return (
-                                        <path
-                                            d={[
-                                                `M ${xRight} ${yExitTop}`,
-                                                `Q ${xRight + spread} ${yMid} ${xRight + spread} ${yEnd}`,
-                                                `L ${xRight + spread} ${yEnd + endH}`,
-                                                `Q ${xRight + spread} ${yMid + endH} ${xRight} ${yExitBot}`,
-                                                "Z",
-                                            ].join(" ")}
-                                            fill={`rgba(248,113,113,${fOpacity})`}
-                                            stroke={`rgba(248,113,113,${sOpacity})`}
-                                            strokeWidth="0.8"
-                                        />
-                                    );
-                                })() : null;
-
-                                return (
-                                    <g
-                                        key={node.id}
-                                        onClick={() => toggleNode(c, node.id)}
-                                        style={{ cursor: "pointer" }}
-                                        tabIndex={0}
-                                        role="button"
-                                        aria-pressed={isSelected}
-                                        aria-label={`${node.id}, ${displayPop.toLocaleString("de-DE")} sessions${!highlight && exitPctStr ? `, ${exitPctStr} drop-off` : ""}${errSessions > 0 ? `, ${errSessions.toLocaleString("de-DE")} error sessions` : ""}`}
-                                        onKeyDown={e => {
-                                            if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggleNode(c, node.id); }
-                                        }}
-                                    >
-                                        {exitRibbon}
-                                        <rect
-                                            x={x} y={y} width={colWidth} height={layout.height}
-                                            rx="4"
-                                            fill={`rgba(${rgb},${fillOpacity})`}
-                                            stroke={`rgba(${rgb},${strokeOpacity})`}
-                                            strokeWidth={isSelected || isGoal ? 1.6 : 1}
-                                        >
-                                            <title>{tooltipText}</title>
-                                        </rect>
-                                        <text
-                                            x={x + 8} y={y + layout.height / 2}
-                                            dominantBaseline="middle"
-                                            fontSize="10.5"
-                                            fill={`rgba(240,235,225,${textOpacity})`}
-                                        >
-                                            {truncate(node.id, rightLabel ? exitLabelChars : labelChars)}
-                                        </text>
-                                        {rightLabel && (
-                                            <text
-                                                x={x + colWidth - 6}
-                                                y={y + layout.height / 2}
-                                                textAnchor="end"
-                                                dominantBaseline="middle"
-                                                fontSize="9"
-                                                fill={rightLabelColor}
-                                            >
-                                                {rightLabel}
-                                            </text>
-                                        )}
-                                        {errSessions > 0 && layout.height >= 38 && (
-                                            <text
-                                                x={x + 8}
-                                                y={y + layout.height - 5}
-                                                dominantBaseline="auto"
-                                                fontSize="8"
-                                                fill={`rgba(251,146,60,${isOn ? 0.9 : 0.3})`}
-                                            >
-                                                {`⚠ ${errSessions.toLocaleString("de-DE")}`}
-                                            </text>
-                                        )}
-                                    </g>
-                                );
-                            })}
-                        </g>
-                    ))}
-                </svg>
+            <div className="sa-flow-toolbar">
+                {selected && (
+                    <button type="button" className="sa-flow-clear" onClick={() => setSelected(null)}>
+                        &times; {t("Clear selection")}
+                    </button>
+                )}
+                {traceLoading && <span className="sa-flow-trace-loading">{t("Computing exact path counts…")}</span>}
+                {prevNodeMap && (
+                    <span className="sa-flow-compare-note">
+                        {t("Compared with {from} – {to}", { from: compareData.from, to: compareData.to })}
+                    </span>
+                )}
             </div>
+            {selectedNode && (
+                <FlowDetail
+                    detail={{ ...nodeDetail(selectedNode.c, selectedNode.node), hint: null }}
+                    className="sa-flow-detail sa-flow-detail--panel"
+                />
+            )}
+            <div
+                ref={canvasRef}
+                className={"sa-flow-canvas" + (overflow.left ? " --fade-left" : "") + (overflow.right ? " --fade-right" : "")}
+            >
+                <div className="sa-flow-scroll" ref={scrollRef} onScroll={measureOverflow}>
+                    <svg
+                        width={svgWidth}
+                        height={svgHeight}
+                        viewBox={`0 0 ${svgWidth} ${svgHeight}`}
+                        role="img"
+                        aria-label={ariaLabel || defaultAria}
+                    >
+                        {headers.map((label, c) => (
+                            <text
+                                key={`h${c}`}
+                                className="sa-flow-colhead"
+                                x={colX(c)}
+                                y={PAD + 8}
+                                dominantBaseline="middle"
+                                style={{ fill: tone("sa-text-muted", 0.8) }}
+                            >
+                                {truncate(label, labelChars)}
+                            </text>
+                        ))}
+
+                        {ribbons.map((r, i) => {
+                            const wouldBeOn = highlight?.edges.has(r);
+                            // Whether a "highlighted" ribbon actually gets drawn: exact
+                            // attribution when the trace for this selection has resolved
+                            // (a real edge among qualifying sessions, or it simply isn't
+                            // in traceEdgeSessions at all — no rounding involved), else
+                            // the proportional estimate's own 0-drop as an immediate
+                            // fallback while the trace is loading. Dropped outright rather
+                            // than dimmed either way — it's not "less emphasized
+                            // background traffic" like a genuinely off-path ribbon, it's a
+                            // link the selection didn't actually produce any visitors on.
+                            if (wouldBeOn) {
+                                if (traceEdgeSessions) {
+                                    const key = JSON.stringify([r.col, r.edge.from, r.edge.to]);
+                                    if (!traceEdgeSessions.get(key)) return null;
+                                } else if (zeroFilteredKeys?.has(nodeKey(r.col + 1, r.edge.to))) {
+                                    return null;
+                                }
+                            }
+                            const x0 = colX(r.col) + colWidth;
+                            const x1 = x0 + colGap;
+                            const y0 = TOP + r.y0;
+                            const y1 = TOP + r.y1;
+                            const midX = (x0 + x1) / 2;
+                            const isHovered = hover?.kind === "ribbon" && hover.index === i;
+                            const baseOpacity = 0.12 + 0.35 * (r.edge.sessions / maxEdgeSessions);
+                            const opacity = isHovered ? Math.min(1, baseOpacity + 0.4)
+                                : !highlight ? baseOpacity
+                                : wouldBeOn ? Math.min(1, baseOpacity + 0.5)
+                                : baseOpacity * 0.15;
+                            return (
+                                <path
+                                    key={i}
+                                    d={`M${x0},${y0} C${midX},${y0} ${midX},${y1} ${x1},${y1}`}
+                                    style={{ stroke: tone(wouldBeOn || isHovered ? "sa-accent-bright" : "sa-accent", opacity) }}
+                                    strokeWidth={r.width}
+                                    fill="none"
+                                    {...hoverHandlers({ kind: "ribbon", index: i })}
+                                />
+                            );
+                        })}
+
+                        {columnLayouts.map((col, c) => (
+                            <g key={c}>
+                                {col.nodes.map(node => {
+                                    const info = nodeInfo(c, node);
+                                    const { key, layout, isSelected, isOn, exitSessions, exitPctStr, displayPop, err } = info;
+                                    const x = colX(c);
+                                    const y = TOP + layout.y;
+                                    const isGoal = conversionNode != null && node.id === conversionNode;
+                                    const fillOpacity = isOn ? (isSelected ? 0.36 : 0.16) : 0.05;
+                                    const strokeOpacity = isOn ? (isSelected ? 0.9 : 0.4) : 0.12;
+                                    const textOpacity = isOn ? 0.9 : 0.25;
+                                    // Goal node uses the "good" status green — distinct
+                                    // from the gold used for every real page node, and
+                                    // from the brighter gold of the active selection.
+                                    const nodeToken = isGoal ? "sa-good" : isSelected ? "sa-accent-bright" : "sa-accent";
+
+                                    // Right-side label: per-path session count while a
+                                    // selection is active (replaces exit %, which isn't
+                                    // meaningful on a filtered sub-graph); exit % otherwise.
+                                    const counting = selected && isOn;
+                                    const rightLabel = counting
+                                        ? fmt(displayPop)
+                                        : exitPctStr ? `↓ ${exitPctStr}` : null;
+                                    const rightLabelStyle = counting
+                                        ? { fill: tone("sa-text-bright", textOpacity * 0.75) }
+                                        : { fill: tone("sa-bad", isOn ? 0.9 : 0.2) };
+
+                                    // Compare delta in the bottom-right corner — only on
+                                    // nodes tall enough for a second line, same rule as
+                                    // the validation-error badge on the left.
+                                    const delta = info.compare?.delta;
+                                    const showDelta = delta && layout.height >= 38;
+
+                                    // Drop-off ribbon: a closed "fin" shape that starts from the
+                                    // exit portion of the node's right edge (bottom fraction),
+                                    // curves right and down, then back to the node edge. Using
+                                    // a filled closed path instead of a thick stroke avoids the
+                                    // blob effect you get when strokeWidth is proportional to
+                                    // a large exit height on a short bezier curve.
+                                    //
+                                    // Shape: two quadratic beziers forming a sideways D:
+                                    //   top edge: (xRight, yExitTop) → curves right → (xRight+spread, yEnd)
+                                    //   bottom edge: (xRight+spread, yEnd+endH) → curves back → (xRight, yExitBot)
+                                    //   closed by a straight line up the node right edge.
+                                    const exitRibbon = exitPctStr ? (() => {
+                                        const exitRatio = exitSessions / node.population;
+                                        const exitH = Math.max(3, exitRatio * layout.height);
+                                        const yExitTop = y + layout.height - exitH;
+                                        const yExitBot = y + layout.height;
+                                        const spread = Math.min(14, exitH * 0.25 + 4);
+                                        const drop   = Math.max(6,  exitH * 0.2  + 4);
+                                        const yEnd   = yExitBot + drop;
+                                        const endH   = Math.max(2,  exitH * 0.08);
+                                        const yMid   = (yExitTop + yEnd) / 2;
+                                        const xRight = x + colWidth;
+                                        return (
+                                            <path
+                                                d={[
+                                                    `M ${xRight} ${yExitTop}`,
+                                                    `Q ${xRight + spread} ${yMid} ${xRight + spread} ${yEnd}`,
+                                                    `L ${xRight + spread} ${yEnd + endH}`,
+                                                    `Q ${xRight + spread} ${yMid + endH} ${xRight} ${yExitBot}`,
+                                                    "Z",
+                                                ].join(" ")}
+                                                style={{ fill: tone("sa-bad", isOn ? 0.22 : 0.05), stroke: tone("sa-bad", isOn ? 0.6 : 0.12) }}
+                                                strokeWidth="0.8"
+                                            />
+                                        );
+                                    })() : null;
+
+                                    const ariaParts = [node.id, t("{n} sessions", { n: fmt(displayPop) })];
+                                    if (!selected && exitPctStr) ariaParts.push(t("{pct} drop-off", { pct: exitPctStr }));
+                                    if (err) ariaParts.push(t("{n} error sessions", { n: fmt(err.sessions) }));
+                                    if (delta) ariaParts.push(t("{delta} vs. previous period", { delta: delta.text }));
+
+                                    return (
+                                        <g
+                                            key={node.id}
+                                            className="sa-flow-node"
+                                            onClick={() => toggleNode(c, node.id)}
+                                            tabIndex={0}
+                                            role="button"
+                                            aria-pressed={isSelected}
+                                            aria-label={ariaParts.join(", ")}
+                                            onKeyDown={e => {
+                                                if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggleNode(c, node.id); }
+                                                if (e.key === "Escape") setSelected(null);
+                                            }}
+                                            onFocus={() => setHover(h => h?.key === key ? h : { kind: "node", key })}
+                                            onBlur={() => setHover(null)}
+                                            {...hoverHandlers({ kind: "node", key })}
+                                        >
+                                            {exitRibbon}
+                                            <rect
+                                                x={x} y={y} width={colWidth} height={layout.height}
+                                                rx="4"
+                                                style={{ fill: tone(nodeToken, fillOpacity), stroke: tone(nodeToken, strokeOpacity) }}
+                                                strokeWidth={isSelected || isGoal ? 1.6 : 1}
+                                            />
+                                            <text
+                                                x={x + 8} y={y + layout.height / 2}
+                                                dominantBaseline="middle"
+                                                fontSize="10.5"
+                                                style={{ fill: tone("sa-text-bright", textOpacity) }}
+                                            >
+                                                {truncate(node.id, rightLabel ? exitLabelChars : labelChars)}
+                                            </text>
+                                            {rightLabel && (
+                                                <text
+                                                    x={x + colWidth - 6}
+                                                    y={y + layout.height / 2}
+                                                    textAnchor="end"
+                                                    dominantBaseline="middle"
+                                                    fontSize="9"
+                                                    style={rightLabelStyle}
+                                                >
+                                                    {rightLabel}
+                                                </text>
+                                            )}
+                                            {err && layout.height >= 38 && (
+                                                <text
+                                                    x={x + 8}
+                                                    y={y + layout.height - 5}
+                                                    dominantBaseline="auto"
+                                                    fontSize="8"
+                                                    style={{ fill: tone("sa-warn", isOn ? 0.9 : 0.3) }}
+                                                >
+                                                    {`⚠ ${fmt(err.sessions)}`}
+                                                </text>
+                                            )}
+                                            {showDelta && (
+                                                <text
+                                                    x={x + colWidth - 6}
+                                                    y={y + layout.height - 5}
+                                                    textAnchor="end"
+                                                    dominantBaseline="auto"
+                                                    fontSize="8"
+                                                    style={{ fill: tone(deltaToken(delta), isOn ? 0.9 : 0.3) }}
+                                                >
+                                                    {delta.text}
+                                                </text>
+                                            )}
+                                        </g>
+                                    );
+                                })}
+                            </g>
+                        ))}
+                    </svg>
+                </div>
+                {hoverCard}
+            </div>
+            {compact && overflow.right && (
+                <p className="sa-flow-scroll-hint">{t("Scroll sideways to see every step")}</p>
+            )}
         </div>
     );
 }
