@@ -283,7 +283,9 @@ export default function ConversionAttribution() {
     async function pushPending(ids) {
         setPushing(true); setPushResult(null);
         try {
-            const body = ids?.length ? { domain, ids } : { domain, statuses: ["pending", "failed"] };
+            const body = ids?.length
+                ? { domain, ids }
+                : { domain, statuses: ["pending", "failed"], limit: unsentCountThisClick };
             const r = await fetch(PUSH_URL, {
                 method: "POST",
                 headers: authHeaders(),

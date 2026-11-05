@@ -2458,15 +2458,30 @@ export default async function handler(req, res) {
             if (cleanGclid)   pushRows.push(["google_ads",      cleanGclid]);
             if (cleanMsclkid) pushRows.push(["microsoft_ads",   cleanMsclkid]);
             if (cleanFbclid)  pushRows.push(["meta_ads",        cleanFbclid]);
-            for (const [platform, clickId] of pushRows) {
-                await db.query(
-                    `INSERT INTO analytics_conversion_pushes
-                     (organisation_id, site_id, custom_event_id, platform, click_id, event_name,
-                      value_usd, currency, utm_campaign, utm_content)
-                     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)`,
-                    [orgId, siteId, evId, platform, clickId, String(eventName).slice(0, 64),
-                     valueUsd, cur, cleanUtmCampaign, cleanUtmContent]
-                ).catch(() => {});
+            if (pushRows.length) {
+                // Only queue a push for platforms the org has actually connected —
+                // otherwise a click ID that merely passed through (e.g. a visitor
+                // arriving with a msclkid when Microsoft Ads was never connected)
+                // queues a row that can never succeed and piles up in "failed"
+                // forever (processPendingPushes' cron sweep never auto-retries
+                // failed rows, by design — see api/ad-conversion-push.js).
+                const { rows: connectedRows } = await db.query(
+                    `SELECT DISTINCT platform FROM ad_platform_connections
+                     WHERE organisation_id=$1 AND platform = ANY($2) AND access_token IS NOT NULL`,
+                    [orgId, pushRows.map(([platform]) => platform)]
+                ).catch(() => ({ rows: [] }));
+                const connectedPlatforms = new Set(connectedRows.map(r => r.platform));
+                for (const [platform, clickId] of pushRows) {
+                    if (!connectedPlatforms.has(platform)) continue;
+                    await db.query(
+                        `INSERT INTO analytics_conversion_pushes
+                         (organisation_id, site_id, custom_event_id, platform, click_id, event_name,
+                          value_usd, currency, utm_campaign, utm_content)
+                         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)`,
+                        [orgId, siteId, evId, platform, clickId, String(eventName).slice(0, 64),
+                         valueUsd, cur, cleanUtmCampaign, cleanUtmContent]
+                    ).catch(() => {});
+                }
             }
         }
 
