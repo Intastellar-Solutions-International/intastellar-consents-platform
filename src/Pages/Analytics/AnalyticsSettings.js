@@ -123,8 +123,9 @@ function ConversionActionPicker({ domain, platform, draft, onChange }) {
                         <div style={{ padding: "12px 14px", fontSize: 13, color: "rgba(130,130,130,0.5)", lineHeight: 1.5 }}>
                             {platform === "google_ads" ? (
                                 <>
-                                    No website conversion action found in this account. Create one in
-                                    Google Ads: <strong>Tools &amp; Settings → Conversions → New conversion action → Website</strong>.
+                                    No "Import clicks" conversion action found in this account. The usual
+                                    tag-tracked website conversions aren't valid for this — create one in
+                                    Google Ads: <strong>Tools &amp; Settings → Conversions → New conversion action → Import → Clicks</strong>.
                                 </>
                             ) : (
                                 `No ${noun}s found in this account.`
