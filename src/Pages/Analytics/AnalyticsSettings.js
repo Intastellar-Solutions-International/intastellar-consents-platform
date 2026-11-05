@@ -184,6 +184,7 @@ function ConversionActionsSection({ domain }) {
     const [drafts,      setDrafts]      = useState({});   // platform → value
     const [saving,      setSaving]      = useState({});   // platform → bool
     const [saved,       setSaved]       = useState({});   // platform → bool
+    const [saveError,   setSaveError]   = useState({});   // platform → message|null
 
     const load = useCallback(() => {
         if (!domain) { setConnections([]); setLoading(false); return; }
@@ -205,6 +206,7 @@ function ConversionActionsSection({ domain }) {
 
     async function save(platform) {
         setSaving(s => ({ ...s, [platform]: true }));
+        setSaveError(s => ({ ...s, [platform]: null }));
         const r = await fetch(
             `${AD_CONNECTIONS_URL}?platform=${encodeURIComponent(platform)}&domain=${encodeURIComponent(domain)}`,
             {
@@ -217,6 +219,9 @@ function ConversionActionsSection({ domain }) {
         if (r?.ok) {
             setSaved(s => ({ ...s, [platform]: true }));
             setTimeout(() => setSaved(s => ({ ...s, [platform]: false })), 2000);
+        } else {
+            const msg = await r?.json().then(d => d.error).catch(() => null);
+            setSaveError(s => ({ ...s, [platform]: msg || "Save failed — try again." }));
         }
     }
 
@@ -280,6 +285,11 @@ function ConversionActionsSection({ domain }) {
                                         {saving[platform] ? "Saving…" : saved[platform] ? "Saved!" : "Save"}
                                     </button>
                                 </div>
+                                {saveError[platform] && (
+                                    <p style={{ fontSize: 11, color: "rgba(239,68,68,0.75)", textAlign: "right", margin: 0 }}>
+                                        {saveError[platform]}
+                                    </p>
+                                )}
                             </div>
                         ) : (
                             /* Microsoft Ads etc: plain text input */
@@ -307,6 +317,11 @@ function ConversionActionsSection({ domain }) {
                                         {saving[platform] ? "Saving…" : saved[platform] ? "Saved!" : "Save"}
                                     </button>
                                 </div>
+                                {saveError[platform] && (
+                                    <p style={{ fontSize: 11, color: "rgba(239,68,68,0.75)", margin: "6px 0 0" }}>
+                                        {saveError[platform]}
+                                    </p>
+                                )}
                             </Field>
                         )}
                     </div>
