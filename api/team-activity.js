@@ -87,13 +87,19 @@ async function record(db, req, res, organisationId, email) {
     if (!section || !SECTION_RE.test(section)) return res.status(400).json({ error: "Invalid section" });
     const domain = clip(body.domain, 255)?.toLowerCase() || null;
 
+    // Each of $2/$4/$6 appears twice: once in the INSERT target list (typed
+    // varchar by the column it's inserted into) and once in the dedupe
+    // subquery's WHERE clause (typed text by plain `=`/IS NOT DISTINCT FROM
+    // operator resolution). Postgres won't unify those into one type for a
+    // single bind parameter and throws 42P08 "inconsistent types deduced for
+    // parameter $N" — explicit casts make both occurrences agree.
     await db.query(
         `INSERT INTO team_activity (organisation_id, user_email, user_name, section, path, domain)
-         SELECT $1, $2, $3, $4, $5, $6
+         SELECT $1, $2::text, $3, $4::text, $5, $6::text
          WHERE NOT EXISTS (
              SELECT 1 FROM team_activity
-             WHERE organisation_id = $1 AND user_email = $2 AND section = $4
-               AND domain IS NOT DISTINCT FROM $6
+             WHERE organisation_id = $1 AND user_email = $2::text AND section = $4::text
+               AND domain IS NOT DISTINCT FROM $6::text
                AND created_at > NOW() - INTERVAL '${DEDUPE_MINUTES} minutes'
          )`,
         [organisationId, member, clip(body.name, 120), section, clip(body.path, 255), domain]
