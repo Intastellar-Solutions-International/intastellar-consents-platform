@@ -7,6 +7,7 @@ import API from "../../API/api";
 import Authentication from "../../Authentication/Auth";
 import IntastellarAccounts from "../IntastellarAccounts/IntastellarAccounts";
 import PropertySelector from "./PropertySelector.js";
+import AnalyticsHeaderSearch from "./AnalyticsHeaderSearch.js";
 import { t } from "../../i18n/index.js";
 import {
     parseHandleFromPath,
@@ -577,6 +578,11 @@ export default function Header(props) {
                                 <div className="selector selector--placeholder" aria-hidden="true" />
                             )}
                         </section>
+                        {dashboardMode === "analytics" && (
+                            <section className="analytics-header-search">
+                                <AnalyticsHeaderSearch />
+                            </section>
+                        )}
                     </section>
                     {newShell && (
                         <div className="shell-topbar-tools">

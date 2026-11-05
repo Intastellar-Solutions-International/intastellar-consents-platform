@@ -9,7 +9,6 @@ import Login from "./Login/Login";
 import Signup from "./Login/Signup";
 import Nav from "./Components/Header/Nav";
 import AnalyticsSideNav from "./Components/Header/AnalyticsSideNav";
-import AnalyticsCommandPalette from "./Components/Header/AnalyticsCommandPalette";
 import API from "./API/api";
 import Dashboard from "./Pages/Dashboard/Dashboard.js";
 import FerryDashboard from "./Pages/Dashboard/ferry/Dashboard.js";
@@ -299,7 +298,6 @@ export default function App() {
                                         id && window.location.pathname != "/" || window.location.pathname != "/login" ? <>
                                             {newShell ? <ShellRail /> : <Nav />}
                                             <AnalyticsSideNav />
-                                            <AnalyticsCommandPalette />
                                         </> : null
                                     }
                                     {/* Pages lay out inside this column, never under the rail —

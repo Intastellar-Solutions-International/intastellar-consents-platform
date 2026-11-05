@@ -11,15 +11,14 @@ const useHistory  = window.ReactRouterDOM.useHistory;
 const SAVED_REPORTS_URL = `${ScannerHost}/api/analytics-saved-reports`;
 const MAX_RESULTS = 8;
 
-/** Global "jump to" search for the Analytics section — ⌘K / Ctrl+K opens
- *  it from anywhere while in analytics mode. Indexes the same static page
- *  list the sidebar already builds (buildAnalyticsLinks — so it never
- *  drifts out of sync with what's actually in the nav) plus the domain's
- *  saved reports (fetched lazily, only while the palette is open). Does
- *  NOT index event names or audiences in v1 — scoped to "any Analytics
- *  sub-page, saved report, or setting" per the brief; adding more sources
- *  later just means pushing another group into `results` below. */
-export default function AnalyticsCommandPalette() {
+/** Visible "jump to" search box, embedded directly in the header while in
+ *  analytics mode — ⌘K / Ctrl+K also focuses it from anywhere. Indexes the
+ *  same static page list the sidebar already builds (buildAnalyticsLinks —
+ *  so it never drifts out of sync with what's actually in the nav) plus the
+ *  domain's saved reports (fetched lazily, once per domain while open).
+ *  Does NOT index event names or audiences in v1, and does not answer
+ *  free-form questions about the data — it only jumps to pages/reports. */
+export default function AnalyticsHeaderSearch() {
     const location = useLocation();
     const history = useHistory();
     const [globalDomain] = useContext(DomainContext);
@@ -29,37 +28,37 @@ export default function AnalyticsCommandPalette() {
     const [selected, setSelected] = useState(0);
     const [reports, setReports] = useState([]);
     const inputRef = useRef(null);
+    const wrapperRef = useRef(null);
 
     const inAnalytics = detectDashboardMode(location.pathname) === "analytics";
 
     useEffect(() => {
         function onKeyDown(e) {
             const meta = e.metaKey || e.ctrlKey;
-            if (meta && e.key.toLowerCase() === "k") {
-                if (!inAnalytics) return;
+            if (meta && e.key.toLowerCase() === "k" && inAnalytics) {
                 e.preventDefault();
-                setOpen(o => !o);
-            } else if (e.key === "Escape" && open) {
-                setOpen(false);
+                inputRef.current?.focus();
+                inputRef.current?.select();
             }
         }
         window.addEventListener("keydown", onKeyDown);
         return () => window.removeEventListener("keydown", onKeyDown);
-    }, [inAnalytics, open]);
+    }, [inAnalytics]);
 
     useEffect(() => {
-        if (!open) return;
-        setQuery(""); setSelected(0);
-        setTimeout(() => inputRef.current?.focus(), 0);
-
-        if (!isCombinedOrClearDomain(globalDomain)) {
-            fetch(`${SAVED_REPORTS_URL}?domain=${encodeURIComponent(globalDomain)}`, { headers: authHeaders() })
-                .then(r => r.ok ? r.json() : { reports: [] })
-                .then(d => setReports(d.reports || []))
-                .catch(() => setReports([]));
-        } else {
-            setReports([]);
+        function onClickOutside(e) {
+            if (wrapperRef.current && !wrapperRef.current.contains(e.target)) setOpen(false);
         }
+        document.addEventListener("mousedown", onClickOutside);
+        return () => document.removeEventListener("mousedown", onClickOutside);
+    }, []);
+
+    useEffect(() => {
+        if (!open || isCombinedOrClearDomain(globalDomain)) { setReports([]); return; }
+        fetch(`${SAVED_REPORTS_URL}?domain=${encodeURIComponent(globalDomain)}`, { headers: authHeaders() })
+            .then(r => r.ok ? r.json() : { reports: [] })
+            .then(d => setReports(d.reports || []))
+            .catch(() => setReports([]));
     }, [open, globalDomain]);
 
     const pageItems = useMemo(() => {
@@ -86,10 +85,12 @@ export default function AnalyticsCommandPalette() {
     function go(item) {
         if (!item) return;
         setOpen(false);
+        setQuery("");
+        inputRef.current?.blur();
         history.push(item.path);
     }
 
-    function onInputKeyDown(e) {
+    function onKeyDownInput(e) {
         if (e.key === "ArrowDown") {
             e.preventDefault();
             setSelected(i => Math.min(i + 1, results.length - 1));
@@ -99,48 +100,42 @@ export default function AnalyticsCommandPalette() {
         } else if (e.key === "Enter") {
             e.preventDefault();
             go(results[selected]);
+        } else if (e.key === "Escape") {
+            setOpen(false);
+            inputRef.current?.blur();
         }
     }
 
-    if (!inAnalytics || !open) return null;
+    if (!inAnalytics) return null;
 
     let lastGroup = null;
+    const showDropdown = open;
 
     return (
-        <div
-            style={{
-                position: "fixed", inset: 0, zIndex: 2000,
-                background: "rgba(0,0,0,0.5)",
-                display: "flex", alignItems: "flex-start", justifyContent: "center",
-                paddingTop: "12vh",
-            }}
-            onClick={() => setOpen(false)}
-        >
-            <div
+        <div ref={wrapperRef} style={{ position: "relative", minWidth: 220 }}>
+            <input
+                ref={inputRef}
+                type="text"
+                value={query}
+                onFocus={() => setOpen(true)}
+                onChange={e => { setQuery(e.target.value); setSelected(0); setOpen(true); }}
+                onKeyDown={onKeyDownInput}
+                placeholder="Search pages & reports… (⌘K)"
                 style={{
-                    width: "min(560px, 92vw)", maxHeight: "60vh", overflow: "hidden",
-                    background: "#1b1b1f", border: "1px solid rgba(255,255,255,0.1)",
-                    borderRadius: 10, boxShadow: "0 20px 60px rgba(0,0,0,0.4)",
-                    display: "flex", flexDirection: "column",
+                    width: "100%", padding: "7px 12px", fontSize: 13, borderRadius: 7,
+                    border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.05)",
+                    color: "rgba(230,230,230,0.95)", outline: "none",
                 }}
-                onClick={e => e.stopPropagation()}
-            >
-                <input
-                    ref={inputRef}
-                    type="text"
-                    value={query}
-                    onChange={e => { setQuery(e.target.value); setSelected(0); }}
-                    onKeyDown={onInputKeyDown}
-                    placeholder="Search Analytics pages and reports…"
-                    style={{
-                        padding: "14px 16px", fontSize: 15, border: "none",
-                        borderBottom: "1px solid rgba(255,255,255,0.08)",
-                        background: "transparent", color: "rgba(230,230,230,0.95)", outline: "none",
-                    }}
-                />
-                <div style={{ overflowY: "auto" }}>
+            />
+            {showDropdown && (
+                <div style={{
+                    position: "absolute", top: "calc(100% + 6px)", left: 0, right: 0,
+                    minWidth: 260, zIndex: 1000, maxHeight: "60vh", overflowY: "auto",
+                    background: "#1b1b1f", border: "1px solid rgba(255,255,255,0.1)",
+                    borderRadius: 8, boxShadow: "0 12px 32px rgba(0,0,0,0.4)",
+                }}>
                     {results.length === 0 && (
-                        <p style={{ padding: "16px", fontSize: 13, color: "rgba(130,130,130,0.6)" }}>
+                        <p style={{ padding: "12px 14px", fontSize: 13, color: "rgba(130,130,130,0.6)" }}>
                             No matches.
                         </p>
                     )}
@@ -151,7 +146,7 @@ export default function AnalyticsCommandPalette() {
                             <div key={`${item.group}:${item.path}:${i}`}>
                                 {showGroupLabel && (
                                     <div style={{
-                                        padding: "8px 16px 4px", fontSize: 11, fontWeight: 600,
+                                        padding: "8px 14px 4px", fontSize: 11, fontWeight: 600,
                                         textTransform: "uppercase", letterSpacing: "0.04em",
                                         color: "rgba(130,130,130,0.6)",
                                     }}>
@@ -160,9 +155,9 @@ export default function AnalyticsCommandPalette() {
                                 )}
                                 <div
                                     onMouseEnter={() => setSelected(i)}
-                                    onClick={() => go(item)}
+                                    onMouseDown={e => { e.preventDefault(); go(item); }}
                                     style={{
-                                        padding: "10px 16px", cursor: "pointer", fontSize: 14,
+                                        padding: "9px 14px", cursor: "pointer", fontSize: 13,
                                         color: i === selected ? "rgba(192,159,83,0.95)" : "rgba(210,210,210,0.9)",
                                         background: i === selected ? "rgba(192,159,83,0.08)" : "transparent",
                                     }}
@@ -173,13 +168,7 @@ export default function AnalyticsCommandPalette() {
                         );
                     })}
                 </div>
-                <div style={{
-                    padding: "8px 16px", fontSize: 11, color: "rgba(130,130,130,0.5)",
-                    borderTop: "1px solid rgba(255,255,255,0.08)",
-                }}>
-                    ↑↓ to navigate · Enter to open · Esc to close
-                </div>
-            </div>
+            )}
         </div>
     );
 }

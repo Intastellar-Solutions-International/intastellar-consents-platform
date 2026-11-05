@@ -574,7 +574,11 @@ export function EventsGlancePanel({ domain, conversions, onDefsChanged, maxRows 
                         {visible.map(r => (
                             <tr key={r.name}>
                                 <td>
-                                    <a href="#" onClick={e => { e.preventDefault(); history.push(analyticsEventDetailPath(domain, r.name)); }}>
+                                    <a
+                                        href="#"
+                                        style={{ color: "inherit", textDecoration: "none" }}
+                                        onClick={e => { e.preventDefault(); history.push(analyticsEventDetailPath(domain, r.name)); }}
+                                    >
                                         {r.label}
                                     </a>
                                 </td>

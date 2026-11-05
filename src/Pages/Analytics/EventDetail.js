@@ -82,7 +82,11 @@ export default function EventDetail() {
             <div className="dashboard-content">
                 <div className="sa-page">
                     <p className="sa-panel__sub" style={{ marginBottom: 14 }}>
-                        <a href="#" onClick={e => { e.preventDefault(); history.push(analyticsConversionsPath(domain)); }}>
+                        <a
+                            href="#"
+                            style={{ color: "rgba(192,159,83,0.85)", textDecoration: "none" }}
+                            onClick={e => { e.preventDefault(); history.push(analyticsConversionsPath(domain)); }}
+                        >
                             ← Back to Conversions
                         </a>
                     </p>
