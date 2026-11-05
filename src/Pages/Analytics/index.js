@@ -200,7 +200,7 @@ function AreaChart({ daily }) {
                             <line x1={PAD.l} y1={y} x2={W - PAD.r} y2={y}
                                 stroke="rgba(255,255,255,0.05)" strokeWidth="1" />
                             <text x={PAD.l - 6} y={y + 4} textAnchor="end"
-                                fontSize="9" fill="rgba(150,150,175,0.5)">
+                                fontSize="13" fill="rgba(170,170,195,0.75)">
                                 {fmtN(v)}
                             </text>
                         </g>
@@ -214,7 +214,7 @@ function AreaChart({ daily }) {
 
                 {labelIdxs.map(i => (
                     <text key={daily[i].date} x={xOf(i)} y={H - PAD.b + 18}
-                        textAnchor="middle" fontSize="9" fill="rgba(150,150,175,0.55)">
+                        textAnchor="middle" fontSize="13" fill="rgba(170,170,195,0.75)">
                         {daily[i].date.slice(5)}
                     </text>
                 ))}
@@ -275,7 +275,7 @@ function SingleValueChart({ daily, valueOf, color, fillFrom, fillTo, formatValue
                             <line x1={PAD.l} y1={y} x2={W - PAD.r} y2={y}
                                 stroke="rgba(255,255,255,0.05)" strokeWidth="1" />
                             <text x={PAD.l - 6} y={y + 4} textAnchor="end"
-                                fontSize="9" fill="rgba(150,150,175,0.5)">
+                                fontSize="13" fill="rgba(170,170,195,0.75)">
                                 {fmt(v)}
                             </text>
                         </g>
@@ -287,7 +287,7 @@ function SingleValueChart({ daily, valueOf, color, fillFrom, fillTo, formatValue
 
                 {labelIdxs.map(i => (
                     <text key={daily[i].date} x={xOf(i)} y={H - PAD.b + 18}
-                        textAnchor="middle" fontSize="9" fill="rgba(150,150,175,0.55)">
+                        textAnchor="middle" fontSize="13" fill="rgba(170,170,195,0.75)">
                         {daily[i].date.slice(5)}
                     </text>
                 ))}
