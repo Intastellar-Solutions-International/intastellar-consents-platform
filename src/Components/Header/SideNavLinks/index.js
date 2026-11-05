@@ -276,5 +276,9 @@ export function buildAnalyticsLinks(domain) {
             name: "Event Debugger",
             path: analyticsEventDebuggerPath(domain),
         },
+        {
+            name: "Global Settings",
+            path: "/settings",
+        },
     ];
 }
