@@ -618,6 +618,8 @@ export const COOKIE_NAME_PATTERNS = [
     // Cloudflare (bot management / security)
     { prefix: "__cf",             bannerCategory: "security"   },
     { exact:  "cf_clearance",     bannerCategory: "security"   },
+    // Google reCAPTCHA (bot protection)
+    { exact:  "_GRECAPTCHA",      bannerCategory: "security"   },
     // Pinterest
     { prefix: "_pin_",            bannerCategory: "marketing"  },
     { prefix: "_pinterest_",      bannerCategory: "marketing"  },
@@ -893,6 +895,7 @@ export const COOKIE_VENDOR_HINTS = [
     { exact:  "__cf_bm",               service: "Cloudflare"              },
     { exact:  "cf_clearance",          service: "Cloudflare"              },
     { prefix: "__cf",                   service: "Cloudflare"              },
+    { exact:  "_GRECAPTCHA",           service: "Google reCAPTCHA"        },
     { prefix: "_vcrr_",                service: "Vercel"                  },
     { prefix: "barometric",        service: "Barometric"          },
     { prefix: "TapAd_",            service: "Tapad"               },
@@ -1217,6 +1220,8 @@ export const COOKIE_META = [
     { exact:  "__cf_bm",                description: "Cloudflare bot management cookie — distinguishes human visitors from automated bots. Expires after 30 minutes." },
     { exact:  "cf_clearance",           description: "Cloudflare challenge clearance cookie — proves a visitor has passed a Cloudflare security challenge. Expires after 1 day." },
     { prefix: "__cf",                   description: "Cloudflare security cookie — used for DDoS protection and bot detection." },
+    // Google reCAPTCHA
+    { exact:  "_GRECAPTCHA",            description: "Google reCAPTCHA risk-analysis cookie — set by reCAPTCHA to tell humans apart from bots and protect forms against spam and abuse. Expires after 6 months." },
     // Klaviyo
     { exact:  "__kla_id",               description: "Klaviyo visitor ID — tracks website visitors for email marketing attribution. Expires after 2 years." },
     // Omnisend
