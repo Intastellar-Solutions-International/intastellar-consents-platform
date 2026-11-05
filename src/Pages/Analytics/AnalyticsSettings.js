@@ -271,17 +271,15 @@ function ConversionActionsSection({ domain }) {
                                     draft={drafts[platform] || ""}
                                     onChange={val => setDrafts(d => ({ ...d, [platform]: val }))}
                                 />
-                                {drafts[platform] !== (conn.conversion_action || "") && (
-                                    <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
-                                        <button
-                                            className="sa-btn"
-                                            onClick={() => save(platform)}
-                                            disabled={saving[platform]}
-                                        >
-                                            {saving[platform] ? "Saving…" : saved[platform] ? "Saved!" : "Save"}
-                                        </button>
-                                    </div>
-                                )}
+                                <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
+                                    <button
+                                        className="sa-btn"
+                                        onClick={() => save(platform)}
+                                        disabled={saving[platform]}
+                                    >
+                                        {saving[platform] ? "Saving…" : saved[platform] ? "Saved!" : "Save"}
+                                    </button>
+                                </div>
                             </div>
                         ) : (
                             /* Microsoft Ads etc: plain text input */
