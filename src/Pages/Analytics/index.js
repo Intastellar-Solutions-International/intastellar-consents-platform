@@ -489,6 +489,15 @@ function kpiDefaultOrder({ data, siteConfig }) {
             if (hasLeads)   defaultOrder.push("leads");
             if (hasRevenue) defaultOrder.push("revenue");
     }
+
+    // Active users, Bounce rate, and Consent rate are core engagement
+    // metrics that belong together in the hero's first 4 tabs (heroIds =
+    // kpiOrder.slice(0,4)) — always, regardless of which vertical-specific
+    // metric a business type otherwise leads with. Forced to the front in
+    // this fixed order; whatever was each vertical's own top pick (revenue,
+    // leads, events, ...) becomes the 4th hero tab instead of the 1st.
+    const CORE_HERO = ["users", "bounce", "consent"];
+    defaultOrder = [...CORE_HERO, ...defaultOrder.filter(id => !CORE_HERO.includes(id))];
     return defaultOrder;
 }
 
