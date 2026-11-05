@@ -7,7 +7,7 @@
 
 import { INDUSTRY_BENCHMARKS } from "./_industry-benchmarks.js";
 import { getPool } from "./_db.js";
-import { selfReferralClause, noiseReferralClause, getApprovedDomains } from "./_self-referral.js";
+import { selfReferralClause, noiseReferralClause, getApprovedDomains, isValidHostname } from "./_self-referral.js";
 import { isHeadlineConversionSql, classifyTier } from "./_conversions.js";
 const ALLOWED_ORIGINS = [
     "https://www.intastellarconsents.com",
@@ -198,6 +198,26 @@ async function _handler(req, res) {
     const embedClause = embeddedClause(includeEmbedded);
     const EMBED_FILTER = embedClause ? `AND ${embedClause}` : "";
 
+    // A site's own analytics also pick up direct traffic to any *approved*
+    // foreign domain (api/_self-referral.js's analytics_foreign_domains) —
+    // e.g. a booking widget on its own subdomain, legitimately tracked
+    // under the same site key. That's real traffic, but it's a DIFFERENT
+    // property: blending its pageviews into this site's "Top pages" /
+    // bounce / engagement numbers under the same pathname silently
+    // conflates two properties and corrupts the baseline (the Hosts panel
+    // below already surfaces this traffic separately for exactly this
+    // reason — "shows up here as separate cross-site traffic under the
+    // same site key, which referrer_host/topPages alone wouldn't
+    // surface"). Session/page-level aggregates below default to the
+    // site's own host (and its www. variant) only; ?includeForeignHosts=1
+    // opts back into the blended view, same escape-hatch shape as
+    // includeEmbedded above.
+    const includeForeignHosts = req.query.includeForeignHosts === "1";
+    const ownHostClause = (!includeForeignHosts && isValidHostname(domain))
+        ? `(page_host = '${domain}' OR page_host = 'www.${domain}')`
+        : null;
+    const OWN_HOST_FILTER = ownHostClause ? `AND ${ownHostClause}` : "";
+
     // Extra WHERE clauses injected into analytics_events queries.
     const segClauses = [
         segDevice  ? `device_type = '${segDevice}'`   : null,
@@ -205,6 +225,7 @@ async function _handler(req, res) {
         segConsent ? `consent_level = '${segConsent}'` : null,
         segChannel ? CHANNEL_SQL[segChannel]           : null,
         embedClause,
+        ownHostClause,
     ].filter(Boolean);
     const segAnd = segClauses.length ? "AND " + segClauses.join(" AND ") : "";
 
@@ -458,7 +479,7 @@ async function _handler(req, res) {
                 SELECT session_id, MAX(duration_sec) AS max_duration, COUNT(*) AS pageviews
                 FROM analytics_events
                 WHERE site_id = $1 AND consent_level = 'full'
-                  AND received_at >= $2 AND received_at < $3 ${EMBED_FILTER}
+                  AND received_at >= $2 AND received_at < $3 ${EMBED_FILTER} ${OWN_HOST_FILTER}
                   AND session_id IS NOT NULL
                 GROUP BY session_id
             )
@@ -490,7 +511,7 @@ async function _handler(req, res) {
                     SELECT session_id, MAX(duration_sec) AS max_duration, COUNT(*) AS pageviews
                     FROM analytics_events
                     WHERE site_id = $1 AND consent_level = 'full'
-                      AND received_at >= $2 AND received_at < $3 ${EMBED_FILTER}
+                      AND received_at >= $2 AND received_at < $3 ${EMBED_FILTER} ${OWN_HOST_FILTER}
                       AND session_id IS NOT NULL
                     GROUP BY session_id
                 )
@@ -526,25 +547,52 @@ async function _handler(req, res) {
         // there's no way to tell whether one was the only page a visitor saw
         // (bounce) or the last one before they left (exit) without a session
         // to reconstruct that sequence from.
+        //
+        // bounce_sessions used to mean ONLY "session had exactly one
+        // pageview" — a different, narrower definition than engagedRes'
+        // sitewide "engaged" criteria (>=10s OR >1 pageview OR a click).
+        // That mismatch is exactly why Overview's "no engagement" % and a
+        // page's own "bounce rate" could read as contradictory for the
+        // same traffic (a 45s single-pageview session with a click counted
+        // as "engaged" sitewide but "bounced" on its page). bounce_sessions
+        // here is now literally 1 - engaged (same session-level criteria as
+        // engagedRes, same methodology GA4 itself uses for "bounce rate"
+        // post-2023), so the two numbers are directly comparable.
         db.query(`
-            WITH session_pageviews AS (
+            WITH session_stats AS (
+                SELECT session_id, MAX(duration_sec) AS max_duration, COUNT(*) AS pageviews
+                FROM analytics_events
+                WHERE site_id = $1 AND received_at >= $2 AND received_at < $3 ${EMBED_FILTER} ${OWN_HOST_FILTER}
+                  AND session_id IS NOT NULL
+                GROUP BY session_id
+            ),
+            session_engaged AS (
+                SELECT s.session_id,
+                       (s.max_duration >= 10 OR s.pageviews > 1 OR EXISTS (
+                           SELECT 1 FROM analytics_clicks c
+                           WHERE c.site_id = $1 AND c.session_id = s.session_id
+                             AND c.received_at >= $2 AND c.received_at < $3
+                       )) AS engaged
+                FROM session_stats s
+            ),
+            session_pageviews AS (
                 SELECT session_id, pathname, duration_sec,
-                       COUNT(*) OVER (PARTITION BY session_id)                                    AS session_pageview_count,
-                       ROW_NUMBER() OVER (PARTITION BY session_id ORDER BY received_at DESC)      AS rn_from_end
+                       ROW_NUMBER() OVER (PARTITION BY session_id ORDER BY received_at DESC) AS rn_from_end
                 FROM analytics_events
                 WHERE site_id = $1 AND session_id IS NOT NULL
-                  AND received_at >= $2 AND received_at < $3 ${EMBED_FILTER}
+                  AND received_at >= $2 AND received_at < $3 ${EMBED_FILTER} ${OWN_HOST_FILTER}
                   AND pathname !~* '^/api/'
                   AND pathname !~* '\\.(js|css|json|xml|txt|map|png|jpe?g|gif|svg|webp|ico|woff2?|ttf|eot|pdf)$'
             )
             SELECT
-                pathname,
-                COUNT(DISTINCT session_id)                                                AS sessions,
-                COUNT(DISTINCT session_id) FILTER (WHERE session_pageview_count = 1)      AS bounce_sessions,
-                COUNT(DISTINCT session_id) FILTER (WHERE rn_from_end = 1)                 AS exit_sessions,
-                AVG(duration_sec) FILTER (WHERE duration_sec IS NOT NULL AND duration_sec > 0) AS avg_duration_sec
-            FROM session_pageviews
-            GROUP BY pathname`,
+                sp.pathname,
+                COUNT(DISTINCT sp.session_id)                                       AS sessions,
+                COUNT(DISTINCT sp.session_id) FILTER (WHERE NOT se.engaged)         AS bounce_sessions,
+                COUNT(DISTINCT sp.session_id) FILTER (WHERE sp.rn_from_end = 1)      AS exit_sessions,
+                AVG(sp.duration_sec) FILTER (WHERE sp.duration_sec IS NOT NULL AND sp.duration_sec > 0) AS avg_duration_sec
+            FROM session_pageviews sp
+            JOIN session_engaged se ON se.session_id = sp.session_id
+            GROUP BY sp.pathname`,
             [siteId, fromDate, toDateExclusive]
         ).catch((err) => {
             if (err?.message?.includes("does not exist")) return { rows: [] };
@@ -641,7 +689,7 @@ async function _handler(req, res) {
                        COUNT(*) AS pageviews
                 FROM analytics_events
                 WHERE site_id = $1 AND consent_level = 'full'
-                  AND received_at >= $2 AND received_at < $3 ${EMBED_FILTER}
+                  AND received_at >= $2 AND received_at < $3 ${EMBED_FILTER} ${OWN_HOST_FILTER}
                   AND session_id IS NOT NULL
                 GROUP BY session_id
             )
