@@ -442,8 +442,8 @@ function kpiDefaultOrder({ data, siteConfig }) {
             break;
         case "aviation":
             defaultOrder = hasRevenue
-                ? ["revenue", "countries", "users", "sessions", "consent"]
-                : ["countries", "users", "sessions", "consent", "events"];
+                ? ["revenue", "users", "bounce", "countries", "sessions", "consent"]
+                : ["countries", "users", "bounce", "sessions", "consent", "events"];
             break;
         case "tourism":
             defaultOrder = hasRevenue
@@ -531,7 +531,17 @@ function buildKpiCardMeta({ data, siteConfig, trendEngaged, trendEvents, trendSe
             value: bounceRate != null ? formatPercent(bounceRate) : "—",
             sub: "sessions with no engagement",
             variant: bounceRate != null && bounceRate > 60 ? "warn" : "blue",
-            trend: trendBounce != null ? -trendBounce : undefined, hasDaily: false,
+            trend: trendBounce != null ? -trendBounce : undefined,
+            // Same uniqueSessions/engaged columns the "users"/"sessions" tabs
+            // already chart per day (api/analytics-report.js's daily series) —
+            // just divided the same way the aggregate bounceRate above is.
+            hasDaily: true,
+            renderChart: (daily) => (
+                <SingleValueChart daily={daily}
+                    valueOf={d => d.uniqueSessions > 0 ? ((d.uniqueSessions - d.engaged) / d.uniqueSessions) * 100 : 0}
+                    color="rgba(239,68,68,0.75)" fillFrom="rgba(239,68,68,0.4)" fillTo="rgba(239,68,68,0.02)"
+                    formatValue={v => formatPercent(v, 0)} yMax={100} gradientId="sa-grad-bounce" />
+            ),
         },
         events: {
             icon: <IconBarChart />, label: bt === "media" ? "Page views" : "Total events",
