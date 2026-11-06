@@ -20,7 +20,7 @@ export const TIER_PRICES = {
     personal: '€5/mo',
     starter: '€15/mo',
     growth: '€30/mo',
-    'agency-pro': '€39/mo',
+    'agency-pro': '€79/mo',
 };
 
 export const TIERS_ORDER = ['none', 'personal', 'starter', 'growth', 'agency-pro'];
