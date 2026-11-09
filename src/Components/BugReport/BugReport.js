@@ -136,7 +136,7 @@ export default function BugReport() {
 
     return (
         <>
-            <Drawer open={open} onClose={handleClose} title="Send feedback" footer={footer} zIndex={300}>
+            <Drawer open={open} onClose={handleClose} title="Send feedback" footer={footer}>
                 {sent ? (
                     <div className="tw-flex tw-flex-col tw-items-center tw-gap-2 tw-py-12 tw-text-center">
                         <span className="tw-text-success"><Icon name="check-circle" size={32} /></span>

@@ -1,7 +1,7 @@
 // PDF reports: what the findings claim, and that scan strings cannot inject HTML.
 import assert from "node:assert/strict";
 import { test } from "./_harness.mjs";
-import { buildReportHtml, dailySeries, summarizeScan, scanFindings, auditFindings, decisionMix, regionTotals, dataChecks } from "../api/_report-html.js";
+import { buildReportHtml, dailySeries, summarizeScan, scanFindings, auditFindings, decisionMix, regionTotals, dataChecks, chapterVReport } from "../api/_report-html.js";
 
 const NOW = new Date("2026-11-09T12:00:00Z");
 const scan = (over = {}) => ({
@@ -179,4 +179,42 @@ test("reject pass: untested, failing and passing results are each reported", () 
     const good = scanFindings(scanOf([], [], { reject_pass: { available: true, firstLayerReject: true, rejectAsProminent: true, bannerShownAgain: false, transfers: [], cookies: [] } }));
     assert.strictEqual(titled(good, /first layer/).severity, "ok");
     assert.strictEqual(titled(good, /after reject/).severity, "ok");
+});
+
+const titledIn = (list, re) => list.find((f) => re.test(f.title));
+
+test("chapter V report: hosts of one vendor are one row and our own CMP is left out", () => {
+    const s = scanOf([pre({ service: "Meta", host: "a.net", category: "advertising" }), pre({ service: "Meta", host: "b.net", category: "advertising" }), pre({ service: "Intastellar Consents", host: "cdn.intastellar.eu", category: "cmp" })]);
+    assert.deepStrictEqual(s.chapterV.rows.map((r) => r.vendor), ["Meta"]);
+});
+
+test("chapter V report: vendors loaded only after consent are still included", () => {
+    const s = scanOf([pre({ service: "Late", host: "l.net", category: "analytics", consentPhase: "post" })]);
+    assert.strictEqual(s.chapterV.rows.length, 1);
+    assert.strictEqual(s.transfers.length, 0);
+});
+
+test("chapter V report: no mechanism is Action needed, naming the vendor", () => {
+    const f = titledIn(scanFindings(scanOf([pre({ service: "Unknown Co", host: "u.net", category: "third-party" })])), /no transfer mechanism/);
+    assert.strictEqual(f.severity, "danger");
+    assert.match(f.detail, /Unknown Co/);
+});
+
+test("chapter V report: a catalogue value is reported as unconfirmed and DPAs are not assumed", () => {
+    const list = scanFindings(scanOf([pre({ service: "Meta", host: "m.net", category: "advertising", transferMechanism: "EU-US Data Privacy Framework" })]));
+    assert.strictEqual(titledIn(list, /not yet confirmed/).severity, "warning");
+    assert.match(titledIn(list, /confirmed data processing agreement/).detail, /Meta/);
+});
+
+test("chapter V report: recorded answers clear the findings", () => {
+    const s = scanOf([pre({ service: "Meta", host: "m.net", category: "advertising" })], [], { vendor_records: { Meta: { mechanism: "sccs", dpa_status: "signed" } } });
+    assert.strictEqual(titledIn(scanFindings(s), /documented transfer basis/).severity, "ok");
+    assert.strictEqual(s.chapterV.rows[0].labels.transfer, "Standard Contractual Clauses");
+});
+
+test("chapter V report: the table is in both scan reports, and absent without a scan", () => {
+    const data = { ...base, consent: { dailyNum: 0 }, scan: scan() };
+    for (const type of ["audit", "snapshot"]) assert.match(buildReportHtml(type, data), /International transfers \(GDPR Chapter V\)/);
+    assert.doesNotMatch(buildReportHtml("snapshot", { ...base, consent: null, scan: null }), /International transfers/);
+    assert.strictEqual(chapterVReport([]).rows.length, 0);
 });

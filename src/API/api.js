@@ -246,6 +246,14 @@ const API = {
                 "Content-Type": "application/json"
             }
         },
+        vendorCompliance: {
+            url: `${ScannerHost}/api/vendor-compliance`,
+            headers: {
+                "Authorization": Authentication.getToken(),
+                "Organisation": Authentication.getOrganisation(),
+                "Content-Type": "application/json"
+            }
+        },
         listPreConsentScans: {
             url: `${ScannerHost}/api/pre-consent-scans`,
             method: "POST",

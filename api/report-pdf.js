@@ -17,6 +17,7 @@ import { buildReportHtml, REPORT_TYPES, esc } from "./_report-html.js";
 
 const CONSENT_API = "https://apis.intastellarsolutions.com/analytics/gdpr";
 const SCAN_API = "https://www.intastellarconsents.com/api/pre-consent-transfers";
+const VENDOR_RECORDS_API = "https://www.intastellarconsents.com/api/vendor-compliance";
 const YMD = /^\d{4}-\d{2}-\d{2}$/;
 const ALLOWED_ORIGINS = [
     "https://www.intastellarconsents.com",
@@ -92,6 +93,16 @@ async function fetchScan(req, domain) {
     return response.json();
 }
 
+/** What the organisation has recorded per vendor, for the Chapter V findings. */
+async function fetchVendorRecords(req) {
+    const response = await fetch(VENDOR_RECORDS_API, {
+        headers: { Authorization: req.headers.authorization, Organisation: req.headers.organisation },
+    });
+    if (response.status === 401) throw new ReportError(401, "Unauthorized");
+    if (!response.ok) throw new ReportError(502, "Vendor records could not be loaded.");
+    return (await response.json()).records || {};
+}
+
 async function renderPdf(html, title, domain) {
     let browser;
     try {
@@ -146,9 +157,10 @@ export default async function handler(req, res) {
     try {
         const needsConsent = reportType !== "snapshot";
         const needsScan = reportType !== "summary";
-        const [consent, scan] = await Promise.all([
+        const [consent, scan, vendorRecords] = await Promise.all([
             needsConsent ? fetchConsentApi("getInteractions", req, domain, fromDate, toDate) : null,
             needsScan ? fetchScan(req, domain) : null,
+            needsScan ? fetchVendorRecords(req) : null,
         ]);
         // countryBreakdown is counted over the same rows as the headline. The
         // separate endpoint is only for a PHP deployment that lacks it yet.
@@ -162,7 +174,7 @@ export default async function handler(req, res) {
             excludeBots: req.headers.excludebots !== "0",
             consent,
             countries: consent?.countryBreakdown || legacyCountries?.data?.Countries || [],
-            scan,
+            scan: scan ? { ...scan, vendor_records: vendorRecords } : null,
         });
         const pdf = await renderPdf(html, type.title, domain);
         res.setHeader("Content-Type", "application/pdf");

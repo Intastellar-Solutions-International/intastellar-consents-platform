@@ -18,6 +18,7 @@ import { preConsentCookieStat, postConsentCookieStat } from "../../Functions/coo
 import { Icon } from "../../Components/ui/icons.js";
 import { appLocale, formatDate, formatNumber } from "../../Functions/format.js";
 import TransferVendors from "./TransferVendors.js";
+import { chapterVLabels } from "../../Functions/transferCompliance.js";
 import { KpiTile, Button, Tabs, TabPanel, EmptyState } from "../../Components/ui";
 
 const Link = window.ReactRouterDOM.Link;
@@ -135,6 +136,7 @@ export default function CompliancePage() {
     const [observedCookies, setObservedCookies] = useState(null);
     const [excludeBots] = useExcludeBots();
     const [preConsentTransfers, setPreConsentTransfers] = useState(null);
+    const [vendorRecords, setVendorRecords] = useState({});
     const [scanLoading, setScanLoading] = useState(false);
     const [activeTab, setActiveTab] = useState("transfers");
     const [loading, setLoading] = useState(false);
@@ -262,6 +264,27 @@ export default function CompliancePage() {
         }
     }, [id, domainsForApi, fromDate, toDate, compareRange, previousPeriod, previousPeriod2, workspaceId, excludeBots, scanId]);
 
+    useEffect(() => {
+        const api = API[id]?.vendorCompliance;
+        if (!api) return;
+        fetch(api.url, { headers: { ...api.headers } })
+            .then((r) => (r.ok ? r.json() : null))
+            .then((data) => { if (data?.records) setVendorRecords(data.records); })
+            .catch(() => {});
+    }, [id]);
+
+    const saveVendorRecord = async (vendor, values) => {
+        const api = API[id].vendorCompliance;
+        const response = await fetch(api.url, { method: "POST", headers: { ...api.headers }, body: JSON.stringify({ vendor, ...values }) });
+        if (!response.ok) throw new Error("save failed");
+        const { record } = await response.json();
+        setVendorRecords((all) => {
+            const next = { ...all };
+            if (record) next[vendor] = record; else delete next[vendor];
+            return next;
+        });
+    };
+
     const triggerScan = () => {
         const domain = handle || currentDomain;
         if (!domain || domain === "combined view" || !API[id]) return;
@@ -366,8 +389,11 @@ export default function CompliancePage() {
         if (activeTab === "transfers") {
             const items = preConsentTransfers?.pre_consent_transfers || [];
             const rows = [
-                ["Service", "Host", "Category", "Resource Type", "Region", "Data Country"],
-                ...items.map(t => [t.service || t.host, t.host, t.category || "", t.resourceType || "", t.dataRegion || "", t.dataCountry || ""]),
+                ["Service", "Host", "Category", "Resource Type", "Region", "Data Country", "Transfer Mechanism", "DPA"],
+                ...items.map(t => {
+                    const chapterV = chapterVLabels({ region: t.dataRegion === "eu" ? "eu" : "non-eu", transferMechanism: t.transferMechanism }, vendorRecords[t.service || t.host]);
+                    return [t.service || t.host, t.host, t.category || "", t.resourceType || "", t.dataRegion || "", t.dataCountry || "", chapterV.transfer, chapterV.dpa];
+                }),
             ];
             downloadCSV(rows, `pre-consent-transfers-${scanDomain}.csv`);
         } else {
@@ -572,6 +598,8 @@ export default function CompliancePage() {
                                         resourceLabels={RESOURCE_LABELS}
                                         categoryOrder={CAT_ORDER}
                                         phaseKnown={preConsentTransfers.consent_phase_known === true}
+                                        records={vendorRecords}
+                                        onSaveRecord={saveVendorRecord}
                                     />
                                     {/* Map: secondary to the table — smaller, collapsed by default. */}
                                     {dataFlowCountries.length > 0 && (

@@ -12,6 +12,7 @@
  */
 
 import { LOGO_DATA_URI } from "./_report-logo.js";
+import { vendorChapterV, chapterVSummary, chapterVLabels } from "./_transfer-compliance.js";
 
 export const REPORT_TYPES = {
     audit: { title: "Consent audit", filename: "Consent_Audit" },
@@ -90,7 +91,38 @@ export function summarizeScan(scan, now = Date.now()) {
         otherCookies: byCookie("functional", "unclassified"),
         staleCookies: cookies.filter((c) => STALE_TAG_COOKIE.test(c.name)),
         rejectPass: scan.reject_pass || null,
+        chapterV: chapterVReport((scan.pre_consent_transfers || []).filter((t) => !ownCmp(t)), scan.vendor_records || {}),
     };
+}
+
+/** One row per vendor, from every host the scan saw, before or after consent. */
+export function chapterVReport(transfers, records = {}) {
+    const byVendor = new Map();
+    for (const t of transfers) {
+        const key = t.service || t.host;
+        if (!byVendor.has(key)) byVendor.set(key, []);
+        byVendor.get(key).push(t);
+    }
+    const vendors = [...byVendor].map(([vendor, hosts]) => {
+        const eu = hosts.filter((h) => h.dataRegion === "eu").length;
+        return { vendor, region: eu === hosts.length ? "eu" : eu === 0 ? "non-eu" : "mixed", transferMechanism: hosts.find((h) => h.transferMechanism)?.transferMechanism || null };
+    });
+    const rows = vendors.map((v) => ({ ...v, chapter: vendorChapterV(v, records[v.vendor]), labels: chapterVLabels(v, records[v.vendor]) }));
+    return { rows, ...chapterVSummary(vendors, records) };
+}
+
+function chapterVFindings(report) {
+    if (!report.rows.length) return [];
+    const names = (rows) => rows.map((r) => r.vendor).join(", ");
+    const out = [];
+    const problems = report.rows.filter((r) => r.chapter.status === "problem");
+    const unconfirmed = report.rows.filter((r) => r.chapter.status === "unconfirmed");
+    const noDpa = report.rows.filter((r) => r.chapter.needsDpa);
+    if (problems.length) out.push({ severity: "danger", title: `${plural(problems.length, "vendor")} outside the EU with no transfer mechanism`, detail: `${names(problems)}. GDPR Chapter V requires a documented basis for these transfers.` });
+    if (unconfirmed.length) out.push({ severity: "warning", title: `${plural(unconfirmed.length, "transfer mechanism")} not yet confirmed`, detail: `${names(unconfirmed)}. These are suggestions from our vendor catalogue until your organisation confirms them.` });
+    if (noDpa.length) out.push({ severity: "warning", title: `${plural(noDpa.length, "vendor")} without a confirmed data processing agreement`, detail: names(noDpa) });
+    if (!out.length) out.push({ severity: "ok", title: "Every vendor has a documented transfer basis and DPA", detail: "As recorded by your organisation." });
+    return out;
 }
 
 function vendorFinding(label, vendors, cookies, scan) {
@@ -129,6 +161,7 @@ export function scanFindings(scan, periodEnd = null) {
         out.push({ severity: scan.phaseKnown ? "danger" : "warning", title: "Cookies that are not strictly necessary were set before consent", detail: scan.otherCookies.map((c) => c.name).join(", ") });
     }
     out.push(...rejectFindings(scan.rejectPass));
+    out.push(...chapterVFindings(scan.chapterV));
     if (scan.ipTransfers.length) out.push({ severity: "warning", title: "Third-party requests share visitor IP addresses before consent", detail: `${scan.ipTransfers.join(", ")}. These are not tracking vendors, but each request sends the visitor's IP address to the provider.` });
     if (scan.otherCmps.length) out.push({ severity: "warning", title: "A second consent banner loads on the page", detail: `${scan.otherCmps.join(", ")}. Two consent tools can conflict and record different choices.` });
     if (scan.staleCookies.length) out.push({ severity: "warning", title: "Outdated tracking tags are still present", detail: `${scan.staleCookies.map((c) => c.name).join(", ")}. Universal Analytics stopped processing data in 2024, so these can be removed.` });
@@ -360,6 +393,16 @@ function scanBlock(scan, domain) {
         ${scan.cmpInfrastructure.length ? `<p class="note">CMP infrastructure, not counted above: ${esc([...new Set(scan.cmpInfrastructure.map((t) => t.host))].join(", "))}.</p>` : ""}`;
 }
 
+function chapterVTable(scan) {
+    if (!scan?.chapterV.rows.length) return "";
+    const region = { eu: "EU", "non-eu": "Outside the EU", mixed: "EU and outside" };
+    return `<h3 class="table-title">International transfers (GDPR Chapter V)</h3>
+        <table><thead><tr><th>Vendor</th><th>Region</th><th>Transfer mechanism</th><th>DPA</th></tr></thead><tbody>
+            ${scan.chapterV.rows.map((r) => `<tr><td>${esc(r.vendor)}</td><td>${region[r.region]}</td><td>${esc(r.labels.transfer)}</td><td>${esc(r.labels.dpa)}</td></tr>`).join("")}
+        </tbody></table>
+        <p class="note">Covers every vendor in the scan, before or after consent. Confirmed values are as recorded by your organisation; “unconfirmed” values are suggestions from our vendor catalogue.</p>`;
+}
+
 const SCAN_METHOD = "Cookie and vendor results come from an automated browser visit to the site. A scan is a point-in-time check of the pages it reached from one location, so content shown only to certain regions, logged-in users or later in a visit may not appear.";
 
 // ── Reports ──────────────────────────────────────────────────────────────────
@@ -403,7 +446,7 @@ function snapshotBody(data) {
     return `${masthead("Compliance snapshot", "What the latest cookie scan found on this domain, and what to act on.", facts)}
         <section class="block"><div class="block-head"><h2>Findings</h2>${scan ? `<p class="legend">Scan date: ${esc(dateLong(scan.scannedAt))}</p>` : ""}</div>${findingsList(scanFindings(scan))}</section>
         <section class="fine keep"><p>${SCAN_METHOD} This snapshot supports a compliance review. It does not assess legal adequacy, and the data controller remains responsible for how the site processes personal data.</p></section>
-        <section class="block"><div class="block-head"><h2>Scan results</h2></div>${scanBlock(scan, data.domain)}</section>`;
+        <section class="block"><div class="block-head"><h2>Scan results</h2></div>${scanBlock(scan, data.domain)}${chapterVTable(scan)}</section>`;
 }
 
 function auditBody(data) {
@@ -430,7 +473,7 @@ function auditBody(data) {
             ${series.map((d) => `<tr><td>${esc(dateLong(utc(d.key)))}</td><td class="r">${num(d.num)}</td><td class="r">${d.rate == null ? "—" : pct(d.rate)}</td></tr>`).join("")}
             </tbody></table></section>
         <section class="appendix"><h2>Appendix B: Countries</h2>${regions(data.countries)}${rankedCountries(data.countries, data.consent)}</section>
-        <section class="appendix"><h2>Appendix C: Cookie scan</h2>${scanBlock(scan, data.domain)}</section>`;
+        <section class="appendix"><h2>Appendix C: Cookie scan</h2>${scanBlock(scan, data.domain)}${chapterVTable(scan)}</section>`;
 }
 
 const STYLES = `
@@ -455,7 +498,7 @@ dd { margin-top: .5mm; overflow-wrap: anywhere; }
 .delta { font-size: 8.5pt; } .delta span { color: #5f5f5f; }
 .delta.good { color: #1f7a4d; } .delta.bad { color: #b42318; }
 .block { margin-top: 8mm; }
-.keep, .kpis, .cat, .findings li, .device, tr, svg { break-inside: avoid; }
+.keep, .kpis, .cat, .findings li, .device, .pair, tr, svg { break-inside: avoid; }
 .block-head { display: flex; align-items: baseline; justify-content: space-between; gap: 4mm; margin-bottom: 3mm; break-after: avoid; }
 h2 { font-size: 15pt; line-height: 1.25; }
 h3 { font-size: 10.5pt; font-weight: 600; }

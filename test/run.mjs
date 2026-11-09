@@ -47,5 +47,6 @@ import "./live-view.test.mjs";
 import "./platform-stats.test.mjs";
 import "./scan-notifications.test.mjs";
 import "./onboarding-steps.test.mjs";
+import "./transfer-compliance.test.mjs";
 
 await run();

@@ -1,7 +1,8 @@
 import { Icon } from "../../Components/ui/icons.js";
-import { Badge, RiskBadge, Card, Table, FilterBar, FilterSelect, FilterSearch, Drawer, Pagination } from "../../Components/ui";
+import { Badge, Button, RiskBadge, Card, Table, FilterBar, FilterSelect, FilterSearch, Drawer, Pagination } from "../../Components/ui";
 import { ListTemplate } from "../../Components/templates";
 import { formatNumber } from "../../Functions/format.js";
+import { MECHANISMS, DPA_STATES, vendorChapterV, chapterVSummary } from "../../Functions/transferCompliance.js";
 
 const { useState, useMemo, useEffect } = React;
 
@@ -57,6 +58,84 @@ function PhaseBadge({ phase }) {
     return <Badge tone={phase === "pre" ? "danger" : "neutral"} icon={phase === "pre" ? "alert-triangle" : "check-circle"}>{PHASE_LABEL[phase]}</Badge>;
 }
 
+const DPF_LIST_URL = "https://www.dataprivacyframework.gov/list";
+const SELECT = "tw-h-10 tw-w-full tw-px-2 tw-bg-bg-sunken tw-text-text-primary tw-border tw-border-solid tw-border-border-strong tw-rounded-md tw-font-sans tw-text-sm focus-visible:tw-outline-none focus-visible:tw-shadow-focus";
+const FIELD_LABEL = "tw-flex tw-flex-col tw-gap-1 tw-text-xs tw-text-text-muted tw-min-w-0";
+
+function TransferBadge({ chapter }) {
+    const short = chapter.mechanism?.short;
+    if (chapter.status === "ok") return <Badge tone="success" icon="check-circle">{short}</Badge>;
+    if (chapter.status === "unconfirmed") return <Badge tone="warning" icon="alert-triangle">{short} · unconfirmed</Badge>;
+    if (chapter.status === "problem") return <Badge tone="danger" icon="alert-octagon">{short === "None" ? "None" : "Not documented"}</Badge>;
+    return <Badge tone="neutral">Not required</Badge>;
+}
+
+function DpaBadge({ status }) {
+    if (status === "signed") return <Badge tone="success" icon="check-circle">In place</Badge>;
+    if (status === "missing") return <Badge tone="danger" icon="alert-octagon">Not in place</Badge>;
+    return <Badge tone="warning" icon="alert-triangle">Unknown</Badge>;
+}
+
+/** Records the vendor's transfer mechanism and DPA for this organisation. */
+function ChapterVForm({ vendor, record, onSave }) {
+    const chapter = vendorChapterV(vendor, record);
+    const [mechanism, setMechanism] = useState(record?.mechanism || "");
+    const [dpa, setDpa] = useState(record?.dpa_status || "");
+    const [notes, setNotes] = useState(record?.notes || "");
+    const [state, setState] = useState(null); // null | "saving" | "saved" | "error"
+
+    async function save() {
+        setState("saving");
+        try {
+            await onSave(vendor.vendor, { mechanism, dpa_status: dpa, notes });
+            setState("saved");
+        } catch {
+            setState("error");
+        }
+    }
+
+    return (
+        <section aria-labelledby="vendor-chapter-v" className="tw-flex tw-flex-col tw-gap-3 tw-p-4 tw-bg-bg-sunken tw-rounded-lg">
+            <div>
+                <h3 id="vendor-chapter-v" className="tw-m-0 tw-text-sm tw-font-semibold tw-text-text-primary">GDPR Chapter V</h3>
+                <p className="tw-m-0 tw-text-xs tw-text-text-muted">{chapter.required ? "This vendor receives data outside the EU, so it needs a transfer mechanism." : "This vendor stays in the EU, so no transfer mechanism is needed. It may still need a DPA."}</p>
+            </div>
+            <div className="tw-flex tw-flex-wrap tw-gap-2"><TransferBadge chapter={chapter} /><span className="tw-flex tw-items-center tw-gap-1 tw-text-xs tw-text-text-muted">DPA <DpaBadge status={chapter.dpa} /></span></div>
+            {chapter.status === "unconfirmed" && (
+                <p className="tw-m-0 tw-text-xs tw-text-text-secondary">
+                    Our catalogue suggests {chapter.suggested.label}. Check it applies to this vendor, then select it below.
+                    {chapter.suggested.id === "dpf" && <> <a href={DPF_LIST_URL} target="_blank" rel="noopener noreferrer" className="tw-text-accent-strong">Search the DPF list</a></>}
+                </p>
+            )}
+            <div className="tw-grid tw-gap-3" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))" }}>
+                <label className={FIELD_LABEL}>
+                    Transfer mechanism
+                    <select className={SELECT} value={mechanism} onChange={(e) => { setMechanism(e.target.value); setState(null); }} style={{ colorScheme: "dark" }}>
+                        <option value="">Not confirmed</option>
+                        {MECHANISMS.map((m) => <option key={m.id} value={m.id}>{m.label}</option>)}
+                    </select>
+                </label>
+                <label className={FIELD_LABEL}>
+                    Data processing agreement
+                    <select className={SELECT} value={dpa} onChange={(e) => { setDpa(e.target.value); setState(null); }} style={{ colorScheme: "dark" }}>
+                        <option value="">Unknown</option>
+                        {DPA_STATES.map((d) => <option key={d.id} value={d.id}>{d.label}</option>)}
+                    </select>
+                </label>
+            </div>
+            <label className={FIELD_LABEL}>
+                Notes, such as where the signed DPA is kept
+                <textarea className={`${SELECT} tw-h-auto tw-py-2`} rows={2} maxLength={1000} value={notes} onChange={(e) => { setNotes(e.target.value); setState(null); }} style={{ colorScheme: "dark", resize: "vertical" }} />
+            </label>
+            <div className="tw-flex tw-flex-wrap tw-items-center tw-gap-3">
+                <Button variant="primary" size="sm" loading={state === "saving"} onClick={save}>Save</Button>
+                {state === "saved" && <span role="status" className="tw-text-xs tw-text-success">Saved for your organisation</span>}
+                {state === "error" && <span role="alert" className="tw-text-xs tw-text-danger-text">That couldn't be saved. Please try again.</span>}
+            </div>
+        </section>
+    );
+}
+
 function Fact({ label, children }) {
     if (children == null || children === "" || (Array.isArray(children) && !children.length)) return null;
     return (
@@ -75,16 +154,17 @@ function Fact({ label, children }) {
  * phaseKnown: the scan tagged each host pre/post consent, so the
  * "Loaded" column and filter are shown (older scans can't tell).
  */
-export default function TransferVendors({ transfers, categoryMeta, bannerMeta, resourceLabels, categoryOrder, phaseKnown = false }) {
+export default function TransferVendors({ transfers, categoryMeta, bannerMeta, resourceLabels, categoryOrder, phaseKnown = false, records = {}, onSaveRecord }) {
     const vendors = useMemo(() => groupTransfersByVendor(transfers, categoryMeta), [transfers, categoryMeta]);
     const [category, setCategory] = useState(null);
     const [region, setRegion] = useState("all");
     const [phase, setPhase] = useState("all");
+    const [chapter, setChapter] = useState("all");
     const [query, setQuery] = useState("");
     const [sort, setSort] = useState({ key: "risk", direction: "desc" });
     const [page, setPage] = useState(0);
     const [selected, setSelected] = useState(null);
-    useEffect(() => setPage(0), [category, region, phase, query, sort]);
+    useEffect(() => setPage(0), [category, region, phase, chapter, query, sort]);
 
     const byCategory = useMemo(() => {
         const acc = {};
@@ -98,6 +178,7 @@ export default function TransferVendors({ transfers, categoryMeta, bannerMeta, r
             .filter((v) => !category || v.category === category)
             .filter((v) => region === "all" || (region === "eu" ? v.region === "eu" : v.region !== "eu"))
             .filter((v) => !phaseKnown || phase === "all" || v.consentPhase === phase)
+            .filter((v) => chapter === "all" || vendorChapterV(v, records[v.vendor]).needsAction)
             .filter((v) => !q || v.vendor.toLowerCase().includes(q) || v.hosts.some((h) => h.host.toLowerCase().includes(q)))
             .sort((a, b) => {
                 const dir = sort.direction === "asc" ? 1 : -1;
@@ -105,13 +186,14 @@ export default function TransferVendors({ transfers, categoryMeta, bannerMeta, r
                 if (sort.key === "risk") return (RISK_RANK[a.risk] - RISK_RANK[b.risk] || a.hosts.length - b.hosts.length) * dir;
                 return a.vendor.localeCompare(b.vendor) * dir;
             });
-    }, [vendors, category, region, phase, phaseKnown, query, sort]);
+    }, [vendors, category, region, phase, chapter, records, phaseKnown, query, sort]);
 
     const hostCount = vendors.reduce((n, v) => n + v.hosts.length, 0);
     const nonEu = vendors.filter((v) => v.region !== "eu").length;
     const preConsent = vendors.filter((v) => v.consentPhase === "pre").length;
-    const activeFilters = (category ? 1 : 0) + (region !== "all" ? 1 : 0) + (phaseKnown && phase !== "all" ? 1 : 0) + (query ? 1 : 0);
-    const clear = () => { setCategory(null); setRegion("all"); setPhase("all"); setQuery(""); };
+    const chapterCounts = useMemo(() => chapterVSummary(vendors, records), [vendors, records]);
+    const activeFilters = (category ? 1 : 0) + (region !== "all" ? 1 : 0) + (phaseKnown && phase !== "all" ? 1 : 0) + (chapter !== "all" ? 1 : 0) + (query ? 1 : 0);
+    const clear = () => { setCategory(null); setRegion("all"); setPhase("all"); setChapter("all"); setQuery(""); };
     const pageRows = filtered.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
 
     const columns = [
@@ -132,14 +214,16 @@ export default function TransferVendors({ transfers, categoryMeta, bannerMeta, r
                 );
             },
         },
-        { key: "category", header: "Category", render: (v) => categoryMeta[v.category]?.label || v.category },
-        { key: "risk", header: "Risk", sortable: true, render: (v) => <RiskBadge level={v.risk} /> },
+        { key: "transfer", header: "Transfer mechanism", render: (v) => <TransferBadge chapter={vendorChapterV(v, records[v.vendor])} /> },
+        { key: "dpa", header: "DPA", render: (v) => <DpaBadge status={records[v.vendor]?.dpa_status} /> },
+        { key: "category", header: "Category", hideOnMobile: true, render: (v) => categoryMeta[v.category]?.label || v.category },
+        { key: "risk", header: "Risk", sortable: true, hideOnMobile: true, render: (v) => <RiskBadge level={v.risk} /> },
         {
-            key: "region", header: "Region",
+            key: "region", header: "Region", hideOnMobile: true,
             render: (v) => <Badge tone={v.region === "eu" ? "neutral" : "warning"} icon="globe">{REGION_LABEL[v.region]}</Badge>,
         },
-        ...(phaseKnown ? [{ key: "phase", header: "Loaded", render: (v) => <PhaseBadge phase={v.consentPhase} /> }] : []),
-        { key: "hosts", header: "Hosts", align: "right", sortable: true, render: (v) => formatNumber(v.hosts.length) },
+        ...(phaseKnown ? [{ key: "phase", header: "Loaded", hideOnMobile: true, render: (v) => <PhaseBadge phase={v.consentPhase} /> }] : []),
+        { key: "hosts", header: "Hosts", align: "right", sortable: true, hideOnMobile: true, render: (v) => formatNumber(v.hosts.length) },
     ];
 
     return (
@@ -150,6 +234,9 @@ export default function TransferVendors({ transfers, categoryMeta, bannerMeta, r
                     <strong className="tw-text-text-primary">{formatNumber(hostCount)}</strong> hosts ·{" "}
                     <strong className="tw-text-text-primary">{formatNumber(nonEu)}</strong> outside the EU
                     {phaseKnown && <> · <strong className="tw-text-text-primary">{formatNumber(preConsent)}</strong> before consent</>}
+                    {" · "}<strong className="tw-text-text-primary">{formatNumber(chapterCounts.problem)}</strong> with no transfer mechanism
+                    {" · "}<strong className="tw-text-text-primary">{formatNumber(chapterCounts.unconfirmed)}</strong> unconfirmed
+                    {" · "}<strong className="tw-text-text-primary">{formatNumber(chapterCounts.withoutDpa)}</strong> without a confirmed DPA
                 </span>
             }
             filters={
@@ -193,6 +280,7 @@ export default function TransferVendors({ transfers, categoryMeta, bannerMeta, r
                                 options={[{ value: "all", label: "Before or after consent" }, { value: "pre", label: "Pre-consent only" }, { value: "post", label: "After consent only" }]}
                             />
                         )}
+                        <FilterSelect label="Chapter V" value={chapter} onChange={setChapter} options={[{ value: "all", label: "All vendors" }, { value: "action", label: "Needs action" }]} />
                     </FilterBar>
                 </>
             }
@@ -206,12 +294,12 @@ export default function TransferVendors({ transfers, categoryMeta, bannerMeta, r
                                 <Badge icon="globe" tone={selected.region === "eu" ? "neutral" : "warning"}>{REGION_LABEL[selected.region]}</Badge>
                                 {phaseKnown && <PhaseBadge phase={selected.consentPhase} />}
                             </div>
+                            {onSaveRecord && <ChapterVForm key={selected.vendor} vendor={selected} record={records[selected.vendor]} onSave={onSaveRecord} />}
                             <dl className="tw-m-0 tw-flex tw-flex-col tw-gap-2">
                                 <Fact label="Category">{categoryMeta[selected.category]?.label || selected.category}</Fact>
                                 <Fact label="Consent category">{selected.bannerCategory && (bannerMeta[selected.bannerCategory]?.label || selected.bannerCategory)}</Fact>
                                 <Fact label="Data country">{selected.dataCountries.join(", ")}</Fact>
                                 <Fact label="Legal basis">{selected.legalBasis}</Fact>
-                                <Fact label="Transfer mechanism">{selected.transferMechanism}</Fact>
                                 <Fact label="Purposes">{selected.purposes.join(", ")}</Fact>
                                 <Fact label="About">{selected.description}</Fact>
                                 <Fact label="Privacy policy">
