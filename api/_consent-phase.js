@@ -6,6 +6,17 @@
  */
 const hasPhase = (x) => x?.consentPhase === "pre" || x?.consentPhase === "post";
 
+/**
+ * Whether the scanner's accept step shows in the results: "accepted" when
+ * something appeared after it, "none" when everything is pre-consent (the
+ * scanner found no Intastellar banner to accept), "unknown" for untagged scans.
+ */
+export function scanConsentStep(transfers = [], cookies = []) {
+    const items = [...transfers, ...cookies];
+    if (!items.length || !items.every(hasPhase)) return "unknown";
+    return items.some((x) => x.consentPhase === "post") ? "accepted" : "none";
+}
+
 export function summarizeConsentPhase(transfers = [], cookies = []) {
     const items = [...transfers, ...cookies];
     const known = items.length > 0 && items.every(hasPhase);

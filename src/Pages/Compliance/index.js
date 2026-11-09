@@ -20,6 +20,7 @@ import { appLocale, formatDate, formatNumber } from "../../Functions/format.js";
 import TransferVendors from "./TransferVendors.js";
 import { chapterVLabels } from "../../Functions/transferCompliance.js";
 import { COMPLIANCE_CHANGED_EVENT } from "../../Components/Shell/useDomainCompliance.js";
+import { scanConsentStep } from "../../Functions/scanHistory.js";
 import { KpiTile, Button, Tabs, TabPanel, EmptyState } from "../../Components/ui";
 
 const Link = window.ReactRouterDOM.Link;
@@ -58,6 +59,12 @@ const RESOURCE_LABELS = {
     document:   "Doc",
     websocket:  "WS",
     other:      "Other",
+};
+
+const CONSENT_STEP_NOTE = {
+    accepted: "The scanner then accepted the Intastellar banner; anything first seen after that counts as after consent.",
+    none: "No accept step showed in this scan, so everything it saw counts as before consent.",
+    unknown: "This scan is too old to tell what loaded before consent.",
 };
 
 const RISK_ORDER = { high: 0, medium: 1, low: 2, none: 3 };
@@ -531,6 +538,18 @@ export default function CompliancePage() {
                                         e.g. analytics scripts, social pixels, advertising trackers.
                                         Each represents a potential Chapter V transfer under GDPR.
                                     </p>
+                                    <p className="compliance-transfers__note">
+                                        Loading analytics or advertising before consent is a consent issue under ePrivacy Art. 5(3) and the GDPR,
+                                        wherever the vendor is based. Chapter V is a separate question about where the data goes, and it applies even with consent.
+                                    </p>
+                                    {preConsentTransfers?.scanned_at && (
+                                        <p className="compliance-transfers__note">
+                                            <strong>Scan mode:</strong> simulated script blocking: <strong>No</strong>.
+                                            {" "}A real browser loads the live site from the US, the homepage and up to 4 subpages, so only what the site itself blocks is blocked.
+                                            {" "}{CONSENT_STEP_NOTE[scanConsentStep(preConsentTransfers.pre_consent_transfers, preConsentTransfers.pre_consent_cookies)]}
+                                            {" "}A site that decides by visitor location can behave differently for EU visitors.
+                                        </p>
+                                    )}
                                     {preConsentTransfers?.scanned_at && (
                                         <span className="compliance-transfers__scan-time">
                                             {scanId ? "Scan from" : "Last scanned"} {formatDate(new Date(preConsentTransfers.scanned_at))}

@@ -1420,3 +1420,12 @@
 
 /* Clears the sticky header when the top-bar status scrolls here. */
 .compliance-top-fixes { scroll-margin-top: calc(var(--header-height, 64px) + 96px); }
+
+.compliance-transfers__note {
+    margin: var(--space-2) 0 0;
+    font-size: var(--text-sm);
+    line-height: 1.5;
+    color: var(--color-text-muted);
+    max-width: 720px;
+}
+.compliance-transfers__note strong { color: var(--color-text-secondary); }

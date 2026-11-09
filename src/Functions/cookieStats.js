@@ -5,7 +5,8 @@
  * - Pre-consent: the latest completed cookie scan (/api/pre-consent-transfers,
  *   `pre_consent_cookies`). Compliance used to read the banner's
  *   observed-cookies report here instead, and showed "—" while Home showed
- *   the scan's count.
+ *   the scan's count. Despite its name that list also holds cookies set after
+ *   the scanner accepted, so only those tagged "pre" count once a scan has tags.
  * - Post-consent: the banner's observed-cookies report (`consent.count`) — a
  *   scan only sees the page before consent, so it can't provide this one.
  *
@@ -16,7 +17,9 @@
 export function preConsentCookieStat(scan) {
     if (scan && !scan.error && scan.scanned_at && Array.isArray(scan.pre_consent_cookies)) {
         return {
-            count: scan.pre_consent_cookies.length,
+            count: scan.consent_phase_known === true
+                ? scan.pre_consent_cookies.filter((c) => c.consentPhase === "pre").length
+                : scan.pre_consent_cookies.length,
             label: null,
             reason: null,
             source: "Cookie scan",
