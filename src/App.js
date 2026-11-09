@@ -88,6 +88,7 @@ import AnalyticsDigest from "./Pages/Analytics/Digest.js";
 import EventDebugger from "./Pages/Analytics/EventDebugger.js";
 import Styleguide from "./Pages/Styleguide/index.js";
 import CookieDatabase from "./Pages/CookieDatabase";
+import PlatformPage from "./Pages/Platform";
 import TierGate from "./Components/TierGate";
 import DevTierSwitcher from "./Components/DevTierSwitcher";
 import { canAccess, FEATURE_TIERS } from "./Functions/tier.js";
@@ -904,6 +905,11 @@ export default function App() {
                                         <Route path="/cookie-database" exact>
                                             <ErrorBoundary>
                                                 {Number(getOrg()?.id) === 1 ? <CookieDatabase /> : <p style={{ padding: "40px", color: "var(--color-text-muted)" }}>Admin access required.</p>}
+                                            </ErrorBoundary>
+                                        </Route>
+                                        <Route path="/platform" exact>
+                                            <ErrorBoundary>
+                                                {Number(getOrg()?.id) === 1 ? <PlatformPage /> : <p style={{ padding: "40px", color: "var(--color-text-muted)" }}>Admin access required.</p>}
                                             </ErrorBoundary>
                                         </Route>
                                         <Route path="/api" render={() => null} />

@@ -1,9 +1,9 @@
 import useFetch from "../../Functions/FetchHook";
 import API from "../../API/api";
-import { Loading, LoadingBar } from "../../Components/widget/Loading";
+import { LoadingBar } from "../../Components/widget/Loading";
 
 import "./Style.css";
-import { DomainContext, OrganisationContext, WorkspaceContext } from "../../App.js";
+import { DomainContext, WorkspaceContext } from "../../App.js";
 import {
     reportsPath,
     analyticsMarketingPath,
@@ -24,7 +24,6 @@ import { LiveView } from "../../Components/LiveView/index.js";
 import { DecisionBehaviourDrawer } from "../../Components/DecisionBehaviourDrawer/index.js";
 import { BasicTier, ProTier } from "../../Components/tiers/index.js";
 import Pie from "../../Components/Charts/Pie/index.js";
-import Widget from "../../Components/widget/widget.js";
 import ErrorBoundary from "../../Components/Error/ErrorBoundary.js";
 import Authentication from "../../Authentication/Auth";
 import punycode from "punycode";
@@ -35,7 +34,7 @@ import { preConsentCookieStat, postConsentCookieStat } from "../../Functions/coo
 import SectionError from "../../Components/SectionError";
 import { fetchJsonWithTimeout } from "../../Functions/fetchWithTimeout.js";
 import { Icon } from "../../Components/ui/icons.js";
-import { appLocale, formatNumber, formatPercent } from "../../Functions/format.js";
+import { formatNumber, formatPercent } from "../../Functions/format.js";
 import { OverviewTemplate, AttentionPanel } from "../../Components/templates";
 import { KpiTile, Card, SkeletonCard } from "../../Components/ui";
 import { t } from "../../i18n/index.js";
@@ -51,7 +50,6 @@ const Link = window.ReactRouterDOM.Link;
 export default function Dashboard(props) {
     document.title = "Home | Intastellar Consents | CMP";
     const [currentDomain, setCurrentDomain] = useContext(DomainContext);
-    const [organisation, setOrganisation] = useContext(OrganisationContext);
     const [activeWorkspace] = useContext(WorkspaceContext);
     const subscriptionStatus = JSON.parse(appStorage.getItem("subscription"));
     const userProfile = JSON.parse(appStorage.getItem("globals")).user.avatar;
@@ -138,16 +136,11 @@ export default function Dashboard(props) {
     API[id].getInteractions.headers["X-Compare-Range"] =
         compareRange === 0 || compareRange == null ? "" : String(compareRange);
 
-    const APIUrl = API[id].getTotalNumber.url;
-    const APIMethod = API[id].getTotalNumber.method;
-    const APIHeader = API[id].getTotalNumber.headers;
-
     const StyleAPIUrl = API[id].getStyle.url;
     const StyleAPIMethod = API[id].getStyle.method;
     const StyleAPIHeader = API[id].getStyle.headers;
 
     const [styleLoading, styleData, styleError, styleUpdated] = useFetch(30, StyleAPIUrl, StyleAPIMethod, StyleAPIHeader);
-    const [jsLoading, jsData, error, updated] = useFetch(30, APIUrl, APIMethod, APIHeader);
 
     const hasTimeToDecision =
         activeData != null &&
@@ -470,14 +463,6 @@ export default function Dashboard(props) {
                             </Card>
                             <QuickReport platformId={id} domain={hasDomain ? selectedDomain : null} fromDate={fromDate} toDate={toDate} />
                         </div>
-                        {/* Org-level platform stats (admin only) */}
-                        {organisation != null && JSON.parse(organisation).id == 1 && !demoMode && !handle && !workspaceId ?
-                            <div className="grid-container topWidget" style={{ gridTemplateColumns: "1fr 1fr 1fr", gap: "10px" }}>
-                                {jsLoading ? <Loading /> : <ErrorBoundary><Widget styleType="small" totalNumber={jsData.Total?.toLocaleString(appLocale())} type="Websites" /></ErrorBoundary>}
-                                {jsLoading ? <Loading /> : <ErrorBoundary><Widget styleType="small" totalNumber={jsData?.JS?.toLocaleString(appLocale()) + "%"} type="JavaScript" /></ErrorBoundary>}
-                                {jsLoading ? <Loading /> : <ErrorBoundary><Widget styleType="small" totalNumber={jsData?.WP?.toLocaleString(appLocale()) + "%"} type="WordPress" /></ErrorBoundary>}
-                            </div> : null
-                        }
                     </>}
                     main={interactionsError ? (
                         <SectionError

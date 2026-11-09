@@ -18,6 +18,7 @@ import experiments from "./icons/experiment.svg";
 import benchmark from "./icons/benchmark.svg";
 import compliance from "./icons/compliance.svg";
 import cookies from "./icons/cookies.svg";
+import platformIcon from "./icons/platform.svg";
 import { getOrg } from "../../Functions/storage.js";
 
 export default function Nav() {
@@ -75,6 +76,12 @@ export default function Nav() {
                                 <Link className={"navItems" + (path === "/cookie-database" ? " --active" : "")} to="/cookie-database">
                                     <i className="dashboard-icons cookies" style={{ backgroundImage: `url(${cookies})` }} data-icon={cookies}></i>
                                     <span className="hiddenCollapsed">{t("Cookie DB")}</span>
+                                </Link>
+                            )}
+                            {isAdminOrg && (
+                                <Link className={"navItems" + (path === "/platform" ? " --active" : "")} to="/platform">
+                                    <i className="dashboard-icons" style={{ backgroundImage: `url(${platformIcon})` }} data-icon={platformIcon}></i>
+                                    <span className="hiddenCollapsed">Platform</span>
                                 </Link>
                             )}
                             <Link className={"navItems" + (path.indexOf("/settings") > -1 ? " --active" : "")} to={"/settings"}><i className="dashboard-icons settings" style={{
