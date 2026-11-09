@@ -99,6 +99,13 @@ test("Seora is an EU vendor, including in scans stored before the fix", () => {
     assert.strictEqual(classifyHost("app.seora.dk").dataRegion, "eu");
     const stored = reclassifyStoredTransfer({ host: "app.seora.dk", service: "Seora", category: "analytics", dataRegion: "non-eu", transferMechanism: "EEA" });
     assert.strictEqual(stored.dataRegion, "eu");
+    assert.strictEqual(stored.dataCountry, "DK");
     assert.strictEqual(group([stored])[0].region, "eu");
     assert.strictEqual(reclassifyStoredTransfer({ host: "a", service: "Meta Pixel", category: "advertising", dataRegion: "non-eu" }).dataRegion, "non-eu");
+});
+
+test("Reddit Ads is a US vendor, including in stored scans", () => {
+    const stored = reclassifyStoredTransfer({ host: "a", service: "Reddit Ads", category: "advertising", dataRegion: "non-eu", dataCountry: null });
+    assert.strictEqual(stored.dataCountry, "US");
+    assert.strictEqual(stored.dataRegion, "non-eu");
 });

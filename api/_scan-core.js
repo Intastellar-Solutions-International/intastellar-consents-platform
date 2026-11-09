@@ -251,6 +251,7 @@ export const DATA_COUNTRIES = {
     "iubenda": "IT", "Axeptio": "FR", "CookieFirst": "NL",
     "Termly": "US", "Didomi": "FR", "Quantcast Choice": "US", "CookieHub": "IS",
     "Intastellar Analytics": "DK",
+    "Seora": "DK",
     "Intastellar Consents": "DK",
 };
 
@@ -1524,6 +1525,7 @@ function withCatalogueFacts(t) {
     const facts = {};
     if (meta?.transferMechanism && !t.transferMechanism) Object.assign(facts, { transferMechanism: meta.transferMechanism, privacyUrl: t.privacyUrl || meta.privacyUrl || null });
     if (DATA_REGIONS[t.service] === "eu" && t.dataRegion !== "eu") facts.dataRegion = "eu";
+    if (DATA_COUNTRIES[t.service] && !t.dataCountry) facts.dataCountry = DATA_COUNTRIES[t.service];
     return Object.keys(facts).length ? { ...t, ...facts } : t;
 }
 
