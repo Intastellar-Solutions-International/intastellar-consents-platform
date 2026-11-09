@@ -19,6 +19,20 @@ export function worstStatus(checks) {
     return checks.reduce((w, c) => (RANK[c.status] > RANK[w] ? c.status : w), "ok");
 }
 
+const PILL = "tw-inline-flex tw-items-center tw-gap-2 tw-h-8 tw-px-3 tw-rounded-full tw-border tw-border-solid tw-text-sm tw-font-semibold tw-whitespace-nowrap";
+
+/** One labelled status: icon + the caller's words. With `to`, a link. */
+export function StatusPill({ status, word, title, to, onClick, className = "" }) {
+    const s = STATUS[status] || STATUS.unknown;
+    const Tag = to ? window.ReactRouterDOM.Link : "span";
+    return (
+        <Tag to={to} onClick={onClick} title={title} className={`${PILL} tw-no-underline ${s.cls} ${to ? "focus-visible:tw-outline-none focus-visible:tw-shadow-focus" : ""} ${className}`}>
+            <Icon name={s.icon} size={14} />
+            <span>{word}</span>
+        </Tag>
+    );
+}
+
 export default function HealthPill({ checks = [], onClick, className = "" }) {
     const overall = checks.length ? worstStatus(checks) : "unknown";
     const s = STATUS[overall];
@@ -30,7 +44,7 @@ export default function HealthPill({ checks = [], onClick, className = "" }) {
             onClick={onClick}
             title={summary}
             aria-label={t("Domain health: {status}. {summary}", { status: s.word, summary })}
-            className={`tw-inline-flex tw-items-center tw-gap-2 tw-h-8 tw-px-3 tw-rounded-full tw-border tw-border-solid tw-text-sm tw-font-semibold tw-whitespace-nowrap ${s.cls} ${onClick ? "tw-cursor-pointer focus-visible:tw-outline-none focus-visible:tw-shadow-focus" : ""} ${className}`}
+            className={`${PILL} ${s.cls} ${onClick ? "tw-cursor-pointer focus-visible:tw-outline-none focus-visible:tw-shadow-focus" : ""} ${className}`}
         >
             <Icon name={s.icon} size={14} />
             <span>{s.word}</span>

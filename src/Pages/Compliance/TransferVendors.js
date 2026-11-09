@@ -2,9 +2,9 @@ import { Icon } from "../../Components/ui/icons.js";
 import { Badge, Button, RiskBadge, Card, Table, FilterBar, FilterSelect, FilterSearch, Drawer, Pagination } from "../../Components/ui";
 import { ListTemplate } from "../../Components/templates";
 import { formatNumber } from "../../Functions/format.js";
-import { MECHANISMS, DPA_STATES, RISK_RANK, hostRegion, groupTransfersByVendor, vendorTotals, vendorChapterV, chapterVSummary } from "../../Functions/transferCompliance.js";
+import { MECHANISMS, DPA_STATES, RISK_RANK, hostRegion, groupTransfersByVendor, vendorTotals, vendorChapterV, chapterVSummary, complianceFindings } from "../../Functions/transferCompliance.js";
 
-const { useState, useMemo, useEffect } = React;
+const { useState, useMemo, useEffect, useRef } = React;
 
 const PAGE_SIZE = 25;
 
@@ -95,6 +95,45 @@ function ChapterVForm({ vendor, record, onSave }) {
     );
 }
 
+const CHAPTER_FILTER = {
+    action: (c) => c.needsAction,
+    no_mechanism: (c) => c.status === "problem",
+    no_dpa: (c) => c.needsDpa,
+    unconfirmed: (c) => c.status === "unconfirmed",
+};
+const FIX_KIND = {
+    consent: { tone: "danger", icon: "alert-octagon", label: "Consent issue", chapter: "all", phase: "pre" },
+    mechanism: { tone: "danger", icon: "alert-octagon", label: "Chapter V transfer", chapter: "no_mechanism" },
+    dpa: { tone: "warning", icon: "alert-triangle", label: "DPA", chapter: "no_dpa" },
+    unconfirmed: { tone: "warning", icon: "alert-triangle", label: "Chapter V transfer", chapter: "unconfirmed" },
+};
+
+/** The three findings to fix first; each button narrows the table to that finding. */
+function TopFixes({ findings, onApply }) {
+    if (!findings.length) return null;
+    return (
+        <section id="open-issues" aria-labelledby="top-fixes-title" className="compliance-top-fixes tw-flex tw-flex-col tw-gap-3 tw-mb-4">
+            <div className="tw-flex tw-flex-wrap tw-items-baseline tw-gap-2">
+                <h3 id="top-fixes-title" className="tw-m-0 tw-text-base tw-font-semibold tw-text-text-primary">Top fixes</h3>
+                <span className="tw-text-sm tw-text-text-muted">{Math.min(3, findings.length)} of {formatNumber(findings.length)} open issue{findings.length === 1 ? "" : "s"}</span>
+            </div>
+            <ol className="tw-m-0 tw-p-0 tw-list-none tw-grid tw-gap-3" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 240px), 1fr))" }}>
+                {findings.slice(0, 3).map((f) => {
+                    const kind = FIX_KIND[f.kind];
+                    return (
+                        <li key={f.kind + f.vendor} className="tw-flex tw-flex-col tw-items-start tw-gap-2 tw-p-4 tw-bg-bg-raised tw-border tw-border-solid tw-border-border-subtle tw-rounded-lg">
+                            <Badge tone={kind.tone} icon={kind.icon}>{kind.label}</Badge>
+                            <p className="tw-m-0 tw-text-sm tw-font-semibold tw-text-text-primary">{f.title}</p>
+                            <p className="tw-m-0 tw-text-xs tw-text-text-muted">Vendor: {f.vendor}</p>
+                            <Button size="sm" variant="secondary" className="tw-mt-auto" onClick={() => onApply(f)}>Show in table</Button>
+                        </li>
+                    );
+                })}
+            </ol>
+        </section>
+    );
+}
+
 function Fact({ label, children }) {
     if (children == null || children === "" || (Array.isArray(children) && !children.length)) return null;
     return (
@@ -137,7 +176,7 @@ export default function TransferVendors({ transfers, categoryMeta, bannerMeta, r
             .filter((v) => !category || v.category === category)
             .filter((v) => region === "all" || (region === "non-eu" ? v.region === "non-eu" || v.region === "mixed" : v.region === region))
             .filter((v) => !phaseKnown || phase === "all" || v.consentPhase === phase)
-            .filter((v) => chapter === "all" || vendorChapterV(v, records[v.vendor]).needsAction)
+            .filter((v) => chapter === "all" || CHAPTER_FILTER[chapter](vendorChapterV(v, records[v.vendor])))
             .filter((v) => !q || v.vendor.toLowerCase().includes(q) || v.hosts.some((h) => h.host.toLowerCase().includes(q)))
             .sort((a, b) => {
                 const dir = sort.direction === "asc" ? 1 : -1;
@@ -150,6 +189,15 @@ export default function TransferVendors({ transfers, categoryMeta, bannerMeta, r
     const chapterCounts = useMemo(() => chapterVSummary(vendors, records), [vendors, records]);
     const activeFilters = (category ? 1 : 0) + (region !== "all" ? 1 : 0) + (phaseKnown && phase !== "all" ? 1 : 0) + (chapter !== "all" ? 1 : 0) + (query ? 1 : 0);
     const clear = () => { setCategory(null); setRegion("all"); setPhase("all"); setChapter("all"); setQuery(""); };
+    const findings = useMemo(() => complianceFindings(vendors, records, { phaseKnown }), [vendors, records, phaseKnown]);
+    const tableRef = useRef(null);
+    const applyFix = (finding) => {
+        clear();
+        setChapter(FIX_KIND[finding.kind].chapter);
+        if (FIX_KIND[finding.kind].phase) setPhase(FIX_KIND[finding.kind].phase);
+        setQuery(finding.vendor);
+        tableRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    };
     const pageRows = filtered.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
 
     const columns = [
@@ -183,6 +231,8 @@ export default function TransferVendors({ transfers, categoryMeta, bannerMeta, r
     ];
 
     return (
+        <>
+        <TopFixes findings={findings} onApply={applyFix} />
         <ListTemplate
             summary={
                 <span className="tw-text-text-secondary">
@@ -236,7 +286,7 @@ export default function TransferVendors({ transfers, categoryMeta, bannerMeta, r
                                 options={[{ value: "all", label: "Before or after consent" }, { value: "pre", label: "Pre-consent only" }, { value: "post", label: "After consent only" }]}
                             />
                         )}
-                        <FilterSelect label="Chapter V" value={chapter} onChange={setChapter} options={[{ value: "all", label: "All vendors" }, { value: "action", label: "Needs action" }]} />
+                        <FilterSelect label="Chapter V" value={chapter} onChange={setChapter} options={[{ value: "all", label: "All vendors" }, { value: "action", label: "Needs action" }, { value: "no_mechanism", label: "No transfer mechanism" }, { value: "unconfirmed", label: "Mechanism unconfirmed" }, { value: "no_dpa", label: "No confirmed DPA" }]} />
                     </FilterBar>
                 </>
             }
@@ -296,6 +346,7 @@ export default function TransferVendors({ transfers, categoryMeta, bannerMeta, r
                 </Drawer>
             }
         >
+            <div ref={tableRef} className="tw-min-w-0">
             <Card padding="none">
                 <Table
                     caption="Vendors receiving data, grouped from the scanned hosts"
@@ -309,6 +360,8 @@ export default function TransferVendors({ transfers, categoryMeta, bannerMeta, r
                     empty={{ title: "No vendors match", message: "No vendor matches the current filters.", action: activeFilters ? { label: "Clear filters", onClick: clear } : undefined }}
                 />
             </Card>
+            </div>
         </ListTemplate>
+        </>
     );
 }

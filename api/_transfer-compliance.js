@@ -122,6 +122,58 @@ export function chapterVSummary(vendors, records) {
     };
 }
 
+// Advertising here is the same group the PDF reports use.
+const CONSENT_RISK_CATEGORIES = ["advertising", "fingerprinting", "social", "analytics"];
+const FINDING_RANK = { consent: 0, mechanism: 1, dpa: 2, unconfirmed: 3 };
+
+/**
+ * Open findings per vendor, highest impact first: tracking before consent,
+ * then no transfer mechanism, then no confirmed DPA, then a mechanism that is
+ * only a catalogue suggestion. Within a kind, the vendor with most hosts leads.
+ * Consent findings need a scan with phase tags; older scans can't tell.
+ */
+export function complianceFindings(vendors, records, { phaseKnown = false } = {}) {
+    const findings = [];
+    for (const v of vendors) {
+        const chapter = vendorChapterV(v, records?.[v.vendor]);
+        const add = (kind, title, hosts = v.hosts.length) => findings.push({ kind, vendor: v.vendor, category: v.category, hosts, title });
+        if (phaseKnown && v.consentPhase === "pre" && CONSENT_RISK_CATEGORIES.includes(v.category)) {
+            const hosts = v.hosts.filter((h) => h.consentPhase === "pre").length;
+            add("consent", `${v.vendor} loads ${hosts} host${hosts === 1 ? "" : "s"} before consent`, hosts);
+        }
+        if (chapter.status === "problem") add("mechanism", `${v.vendor} has no transfer mechanism`);
+        if (chapter.needsDpa) add("dpa", `No confirmed DPA with ${v.vendor}`);
+        if (chapter.status === "unconfirmed") add("unconfirmed", `${v.vendor}'s transfer mechanism is not confirmed`);
+    }
+    return findings.sort((a, b) => FINDING_RANK[a.kind] - FINDING_RANK[b.kind] || b.hosts - a.hosts || a.vendor.localeCompare(b.vendor));
+}
+
+/**
+ * level: "critical" tracking before consent · "attention" other open findings ·
+ * "healthy" none · "unknown" no scan, or a scan too old to say what loaded
+ * before consent. Healthy is never claimed on missing data.
+ */
+export function complianceStatus(findings, { scanned = true, phaseKnown = true } = {}) {
+    const breakdown = { consent: 0, mechanism: 0, dpa: 0, unconfirmed: 0 };
+    for (const f of findings) breakdown[f.kind] += 1;
+    const count = findings.length;
+    let level = "healthy";
+    if (!scanned) level = "unknown";
+    else if (breakdown.consent) level = "critical";
+    else if (count) level = "attention";
+    else if (!phaseKnown) level = "unknown";
+    return { level, count, breakdown, scanned };
+}
+
+/** Status and findings for one scan response from /api/pre-consent-transfers. */
+export function scanCompliance(scan, records) {
+    const scanned = Boolean(scan && !scan.error && scan.scanned_at);
+    const vendors = scanned ? groupTransfersByVendor(scan.pre_consent_transfers) : [];
+    const phaseKnown = scan?.consent_phase_known === true;
+    const findings = complianceFindings(vendors, records, { phaseKnown });
+    return { ...complianceStatus(findings, { scanned, phaseKnown: phaseKnown || !vendors.length }), findings };
+}
+
 /** Plain-text values for the CSV export. */
 export function chapterVLabels(vendor, record) {
     const c = vendorChapterV(vendor, record);

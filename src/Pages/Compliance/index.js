@@ -19,6 +19,7 @@ import { Icon } from "../../Components/ui/icons.js";
 import { appLocale, formatDate, formatNumber } from "../../Functions/format.js";
 import TransferVendors from "./TransferVendors.js";
 import { chapterVLabels } from "../../Functions/transferCompliance.js";
+import { COMPLIANCE_CHANGED_EVENT } from "../../Components/Shell/useDomainCompliance.js";
 import { KpiTile, Button, Tabs, TabPanel, EmptyState } from "../../Components/ui";
 
 const Link = window.ReactRouterDOM.Link;
@@ -99,7 +100,8 @@ export default function CompliancePage() {
     const [activeWorkspace] = useContext(WorkspaceContext);
     const [demoMode, setDemoMode] = useState(Authentication.DemoMode);
     // Set when this page was opened from the Cookie scans list.
-    const scanId = new URLSearchParams(useLocation().search).get("scan");
+    const location = useLocation();
+    const scanId = new URLSearchParams(location.search).get("scan");
 
     useSyncDomainFromRoute(handle, setCurrentDomain);
 
@@ -283,7 +285,16 @@ export default function CompliancePage() {
             if (record) next[vendor] = record; else delete next[vendor];
             return next;
         });
+        window.dispatchEvent(new Event(COMPLIANCE_CHANGED_EVENT));
     };
+
+    // The header status links here (#open-issues); the block only exists on this tab.
+    useEffect(() => {
+        if (location.hash !== "#open-issues" || !preConsentTransfers) return undefined;
+        setActiveTab("transfers");
+        const timer = setTimeout(() => document.getElementById("open-issues")?.scrollIntoView({ behavior: "smooth" }), 100);
+        return () => clearTimeout(timer);
+    }, [location.hash, preConsentTransfers]);
 
     const triggerScan = () => {
         const domain = handle || currentDomain;
@@ -295,7 +306,10 @@ export default function CompliancePage() {
             body: JSON.stringify({ domain, workspaceId }),
         })
             .then((r) => r.json())
-            .then((data) => setPreConsentTransfers(data))
+            .then((data) => {
+                setPreConsentTransfers(data);
+                window.dispatchEvent(new Event(COMPLIANCE_CHANGED_EVENT));
+            })
             .catch(console.error)
             .finally(() => setScanLoading(false));
     };

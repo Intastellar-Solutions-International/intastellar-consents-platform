@@ -1417,3 +1417,6 @@
     border-radius: var(--radius-lg);
     overflow: hidden;
 }
+
+/* Clears the sticky header when the top-bar status scrolls here. */
+.compliance-top-fixes { scroll-margin-top: calc(var(--header-height, 64px) + 96px); }
