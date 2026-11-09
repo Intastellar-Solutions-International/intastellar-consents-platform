@@ -825,7 +825,9 @@ export default function CompliancePage() {
                                                         : <span className="compliance-cookies__row-vendor">{eff.vendor}</span>
                                                 )}
                                                                 <span className="compliance-cookies__row-domain">{eff.domains.join(", ")}</span>
-                                                                {cookiePhaseKnown && c.consentPhase === "pre" && <Badge tone="danger" icon="alert-triangle" className="compliance-cookies__row-phase">Before consent</Badge>}
+                                                                {cookiePhaseKnown && c.consentPhase === "pre" && (["marketing", "analytics"].includes(eff.bannerCategory)
+                                                                    ? <Badge tone="danger" icon="alert-triangle" className="compliance-cookies__row-phase">Before consent</Badge>
+                                                                    : <Badge tone="neutral" icon="info" className="compliance-cookies__row-phase">Before consent</Badge>)}
                                                                 {cookiePhaseKnown && c.consentPhase === "post" && <Badge tone="neutral" icon="check-circle" className="compliance-cookies__row-phase">After consent</Badge>}
                                                                 {eff.description && (
                                                                     <span className="compliance-cookies__row-desc">{eff.description}</span>

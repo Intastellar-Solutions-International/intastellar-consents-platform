@@ -50,6 +50,7 @@ test("tiles and the summary line add up to the table", () => {
     assert.strictEqual(t.hosts, 12);
     assert.strictEqual(t.outsideEu, 2);
     assert.strictEqual(t.preConsent, 1);
+    assert.strictEqual(t.preConsentTracking, 1);
 });
 
 test("a vendor takes its riskiest host's category; hosts without a service stand alone", () => {
@@ -85,4 +86,11 @@ test("one company reads the same across its products, including scans stored bef
     }
     assert.strictEqual(reclassifyStoredTransfer({ host: "a", service: "HubSpot Cookie Banner", category: "cmp" }).transferMechanism, "EU-US Data Privacy Framework");
     assert.strictEqual(reclassifyStoredTransfer({ host: "a", service: "Unknown Co", category: "third-party" }).transferMechanism, undefined);
+});
+
+test("before consent: CMPs, fonts and CDNs are counted apart from tracking", () => {
+    const pre = (service, category) => ({ host: service, service, category, consentPhase: "pre" });
+    const t = vendorTotals(group([pre("Ads", "advertising"), pre("GA", "analytics"), pre("CMP", "cmp"), pre("Fonts", "cdn"), pre("Static", "functional")]));
+    assert.strictEqual(t.preConsent, 5);
+    assert.strictEqual(t.preConsentTracking, 2);
 });

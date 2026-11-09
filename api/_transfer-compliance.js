@@ -11,6 +11,11 @@ const CATEGORY_RISK = {
     fingerprinting: { risk: "high" }, advertising: { risk: "high" }, analytics: { risk: "medium" }, social: { risk: "medium" },
     functional: { risk: "low" }, cdn: { risk: "low" }, cmp: { risk: "none" }, "third-party": { risk: "medium" },
 };
+// Advertising here is the same group the PDF reports use. CMPs, fonts, CDNs and
+// functional services can load early without being a consent issue in the same way.
+const CONSENT_RISK_CATEGORIES = ["advertising", "fingerprinting", "social", "analytics"];
+export const isTrackingCategory = (category) => CONSENT_RISK_CATEGORIES.includes(category);
+
 export const RISK_RANK = { high: 3, medium: 2, low: 1, none: 0 };
 
 /** "eu-hosted": a non-EU company serving this host from the EU. */
@@ -73,6 +78,7 @@ export function vendorTotals(vendors) {
         hosts: vendors.reduce((n, v) => n + v.hosts.length, 0),
         outsideEu: vendors.filter((v) => v.region === "non-eu" || v.region === "mixed").length,
         preConsent: vendors.filter((v) => v.consentPhase === "pre").length,
+        preConsentTracking: vendors.filter((v) => v.consentPhase === "pre" && isTrackingCategory(v.category)).length,
         byCategory,
     };
 }
@@ -127,8 +133,6 @@ export function chapterVSummary(vendors, records) {
     };
 }
 
-// Advertising here is the same group the PDF reports use.
-const CONSENT_RISK_CATEGORIES = ["advertising", "fingerprinting", "social", "analytics"];
 const FINDING_RANK = { consent: 0, mechanism: 1, dpa: 2, unconfirmed: 3 };
 
 /**
@@ -142,7 +146,7 @@ export function complianceFindings(vendors, records, { phaseKnown = false } = {}
     for (const v of vendors) {
         const chapter = vendorChapterV(v, records?.[v.vendor]);
         const add = (kind, title, hosts = v.hosts.length) => findings.push({ kind, vendor: v.vendor, category: v.category, hosts, title });
-        if (phaseKnown && v.consentPhase === "pre" && CONSENT_RISK_CATEGORIES.includes(v.category)) {
+        if (phaseKnown && v.consentPhase === "pre" && isTrackingCategory(v.category)) {
             const hosts = v.hosts.filter((h) => h.consentPhase === "pre").length;
             add("consent", `${v.vendor} loads ${hosts} host${hosts === 1 ? "" : "s"} before consent`, hosts);
         }

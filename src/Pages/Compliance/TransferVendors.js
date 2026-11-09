@@ -2,7 +2,7 @@ import { Icon } from "../../Components/ui/icons.js";
 import { Badge, Button, RiskBadge, Card, Table, FilterBar, FilterSelect, FilterSearch, Drawer, Pagination } from "../../Components/ui";
 import { ListTemplate } from "../../Components/templates";
 import { formatNumber } from "../../Functions/format.js";
-import { MECHANISMS, DPA_STATES, RISK_RANK, hostRegion, groupTransfersByVendor, vendorTotals, vendorChapterV, chapterVSummary, complianceFindings, complianceStatus, issueBreakdownText } from "../../Functions/transferCompliance.js";
+import { MECHANISMS, DPA_STATES, RISK_RANK, isTrackingCategory, hostRegion, groupTransfersByVendor, vendorTotals, vendorChapterV, chapterVSummary, complianceFindings, complianceStatus, issueBreakdownText } from "../../Functions/transferCompliance.js";
 
 const { useState, useMemo, useEffect, useRef } = React;
 
@@ -12,9 +12,11 @@ const REGION_LABEL = { eu: "EU", "non-eu": "Non-EU", mixed: "EU + non-EU", "eu-h
 const REGION_TITLE = { "eu-hosted": "Served from the EU by a company based outside the EU, so a transfer mechanism is still expected." };
 const PHASE_LABEL = { pre: "Before consent", post: "After consent" };
 
-function PhaseBadge({ phase }) {
+/** Red only for tracking: a CMP or font loading early isn't the same kind of problem. */
+function PhaseBadge({ phase, category }) {
     if (!PHASE_LABEL[phase]) return null;
-    return <Badge tone={phase === "pre" ? "danger" : "neutral"} icon={phase === "pre" ? "alert-triangle" : "check-circle"}>{PHASE_LABEL[phase]}</Badge>;
+    const tracking = phase === "pre" && isTrackingCategory(category);
+    return <Badge tone={tracking ? "danger" : "neutral"} icon={tracking ? "alert-triangle" : phase === "pre" ? "info" : "check-circle"}>{PHASE_LABEL[phase]}</Badge>;
 }
 
 const DPF_LIST_URL = "https://www.dataprivacyframework.gov/list";
@@ -152,7 +154,7 @@ const CHAPTER_FILTER = {
     unconfirmed: (c) => c.status === "unconfirmed" || c.dateMissing,
 };
 const FIX_KIND = {
-    consent: { tone: "danger", icon: "alert-octagon", label: "Consent issue", chapter: "all", phase: "pre" },
+    consent: { tone: "danger", icon: "alert-octagon", label: "Consent issue", chapter: "all", phase: "tracking" },
     mechanism: { tone: "warning", icon: "alert-triangle", label: "Chapter V transfer", chapter: "no_mechanism" },
     dpa: { tone: "warning", icon: "alert-triangle", label: "DPA", chapter: "no_dpa" },
     unconfirmed: { tone: "warning", icon: "alert-triangle", label: "Chapter V transfer", chapter: "unconfirmed" },
@@ -229,7 +231,7 @@ export default function TransferVendors({ transfers, categoryMeta, bannerMeta, r
         return vendors
             .filter((v) => !category || v.category === category)
             .filter((v) => region === "all" || (region === "non-eu" ? v.region === "non-eu" || v.region === "mixed" : v.region === region))
-            .filter((v) => !phaseKnown || phase === "all" || v.consentPhase === phase)
+            .filter((v) => !phaseKnown || phase === "all" || (phase === "tracking" ? v.consentPhase === "pre" && isTrackingCategory(v.category) : v.consentPhase === phase))
             .filter((v) => chapter === "all" || CHAPTER_FILTER[chapter](vendorChapterV(v, records[v.vendor])))
             .filter((v) => !q || v.vendor.toLowerCase().includes(q) || v.hosts.some((h) => h.host.toLowerCase().includes(q)))
             .sort((a, b) => {
@@ -285,7 +287,7 @@ export default function TransferVendors({ transfers, categoryMeta, bannerMeta, r
             key: "region", header: "Region", hideOnMobile: true,
             render: (v) => <span title={REGION_TITLE[v.region]}><Badge tone={v.region === "eu" ? "neutral" : "warning"} icon="globe">{REGION_LABEL[v.region]}</Badge></span>,
         },
-        ...(phaseKnown ? [{ key: "phase", header: "Loaded", hideOnMobile: true, render: (v) => <PhaseBadge phase={v.consentPhase} /> }] : []),
+        ...(phaseKnown ? [{ key: "phase", header: "Loaded", hideOnMobile: true, render: (v) => <PhaseBadge phase={v.consentPhase} category={v.category} /> }] : []),
         { key: "hosts", header: "Hosts", align: "right", sortable: true, hideOnMobile: true, render: (v) => formatNumber(v.hosts.length) },
     ];
 
@@ -298,7 +300,8 @@ export default function TransferVendors({ transfers, categoryMeta, bannerMeta, r
                     <strong className="tw-text-text-primary">{formatNumber(totals.vendors)}</strong> vendors ·{" "}
                     <strong className="tw-text-text-primary">{formatNumber(totals.hosts)}</strong> hosts ·{" "}
                     <strong className="tw-text-text-primary">{formatNumber(totals.outsideEu)}</strong> outside the EU
-                    {phaseKnown && <> · <strong className="tw-text-text-primary">{formatNumber(totals.preConsent)}</strong> before consent{breakdown.consent !== totals.preConsent && <> (<strong className="tw-text-text-primary">{formatNumber(breakdown.consent)}</strong> tracking)</>}</>}
+                    {phaseKnown && <> · <strong className="tw-text-text-primary">{formatNumber(totals.preConsentTracking)}</strong> tracking before consent</>}
+                    {phaseKnown && totals.preConsent > totals.preConsentTracking && <span title="CMPs, fonts, CDNs and other non-tracking services. They load early without being a consent issue in the way ads and analytics are."> · <strong className="tw-text-text-primary">{formatNumber(totals.preConsent - totals.preConsentTracking)}</strong> other services before consent</span>}
                     {" · "}<strong className="tw-text-text-primary">{formatNumber(chapterCounts.problem)}</strong> with no mechanism on record
                     {" · "}<strong className="tw-text-text-primary">{formatNumber(chapterCounts.unconfirmed)}</strong> unconfirmed
                     {" · "}<strong className="tw-text-text-primary">{formatNumber(chapterCounts.withoutDpa)}</strong> without a confirmed DPA
@@ -343,7 +346,7 @@ export default function TransferVendors({ transfers, categoryMeta, bannerMeta, r
                                 label="Loaded"
                                 value={phase}
                                 onChange={setPhase}
-                                options={[{ value: "all", label: "Before or after consent" }, { value: "pre", label: "Pre-consent only" }, { value: "post", label: "After consent only" }]}
+                                options={[{ value: "all", label: "Before or after consent" }, { value: "tracking", label: "Tracking before consent" }, { value: "pre", label: "Anything before consent" }, { value: "post", label: "After consent only" }]}
                             />
                         )}
                         <FilterSelect label="Chapter V" value={chapter} onChange={setChapter} options={[{ value: "all", label: "All vendors" }, { value: "action", label: "Needs action" }, { value: "no_mechanism", label: "No mechanism on record" }, { value: "unconfirmed", label: "Mechanism unconfirmed" }, { value: "no_dpa", label: "No confirmed DPA" }]} />
@@ -358,7 +361,7 @@ export default function TransferVendors({ transfers, categoryMeta, bannerMeta, r
                             <div className="tw-flex tw-flex-wrap tw-gap-2">
                                 <RiskBadge level={selected.risk} />
                                 <Badge icon="globe" tone={selected.region === "eu" ? "neutral" : "warning"}>{REGION_LABEL[selected.region]}</Badge>
-                                {phaseKnown && <PhaseBadge phase={selected.consentPhase} />}
+                                {phaseKnown && <PhaseBadge phase={selected.consentPhase} category={selected.category} />}
                             </div>
                             {onSaveRecord && <ChapterVForm key={selected.vendor} vendor={selected} record={records[selected.vendor]} onSave={onSaveRecord} onUploadEvidence={evidence.upload} onRemoveEvidence={evidence.remove} onOpenEvidence={evidence.open} />}
                             <dl className="tw-m-0 tw-flex tw-flex-col tw-gap-2">
