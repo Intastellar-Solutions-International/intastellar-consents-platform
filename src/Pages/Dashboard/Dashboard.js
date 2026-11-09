@@ -539,9 +539,7 @@ export default function Dashboard(props) {
                                 onRetry={() => setCountryAttempt((n) => n + 1)}
                             />
                         ) : <CountryRanking countries={activeDataCountry?.data?.Countries} activeData={activeData} demoMode={demoMode} />}
-                        <div className="widget no-padding">
-                            <LiveView currentDomain={handle ? handle : currentDomain} demoMode={demoMode} />
-                        </div>
+                        <LiveView currentDomain={handle ? handle : currentDomain} demoMode={demoMode} />
                     </div>
 
                     <div className="home-grid-3">

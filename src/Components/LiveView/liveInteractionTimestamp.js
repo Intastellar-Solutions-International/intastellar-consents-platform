@@ -37,3 +37,17 @@ export function getApproxLastInteractionIsoFromLiveData(liveData) {
 
     return new Date(Date.now() - bestMinutes * 60 * 1000).toISOString();
 }
+
+/**
+ * Interactions per minute for the last 30 minutes, oldest first, so the newest
+ * minute sits next to "Now". `minutes` on an event is how long ago it happened.
+ */
+export function liveMinuteBuckets(visitsOverTime) {
+    const counts = Array(30).fill(0);
+    if (!Array.isArray(visitsOverTime)) return counts;
+    for (const ev of visitsOverTime) {
+        const m = Number.isFinite(Number(ev?.minutes)) && ev?.minutes != null ? Number(ev.minutes) : Number(ev?.seconds) / 60;
+        if (Number.isFinite(m) && m >= 0 && m < 30) counts[29 - Math.floor(m)] += 1;
+    }
+    return counts;
+}

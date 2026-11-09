@@ -351,9 +351,7 @@ export default function DomainDashbord(props) {
                                             />
                                         ) : null
                                     } */ />}
-                        <div className={["widget no-padding"]}>
                             <LiveView currentDomain={punycode.toUnicode(handle)} demoMode={demoMode} />
-                        </div>
                     </div>
                 </div>
                 <PremiumTier loading={loading} activeData={activeData} fromDate={fromDate} toDate={toDate} demoMode={demoMode} />

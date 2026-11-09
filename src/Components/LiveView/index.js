@@ -3,6 +3,10 @@ import { lockBodyScroll, unlockBodyScroll } from "../../Functions/bodyScrollLock
 import API from "../../API/api";
 import "../Charts/WorldMap/Style.css";
 import "./Style.css";
+import Card from "../ui/Card.js";
+import Button from "../ui/Button.js";
+import { SkeletonText } from "../ui/Skeleton.js";
+import { liveMinuteBuckets } from "./liveInteractionTimestamp.js";
 
 const useState = window.React.useState;
 const useEffect = window.React.useEffect;
@@ -342,9 +346,7 @@ export function LiveView(props) {
     const DOMAIN_SHOW_LIMIT = 4;
     const [countryPage, setCountryPage] = useState(0);
     const [expandedCountries, setExpandedCountries] = useState(new Set());
-    const [barRenderKey, setBarRenderKey] = useState(0);
     useEffect(() => {
-        setBarRenderKey((prev) => prev + 1);
         setCountryPage(0);
         setExpandedCountries(new Set());
     }, [liveData]);
@@ -358,162 +360,107 @@ export function LiveView(props) {
     const closeDomainDrawer = () =>
         setDomainLiveView({ domain: "", country: "", open: false });
 
+    const failed = Boolean(error) || (!loading && (liveData == null || typeof liveData !== "object"));
+    const total = Number(liveData?.count) || 0;
+    const minutes = liveMinuteBuckets(liveData?.visitsOverTime);
+    const peak = Math.max(1, ...minutes);
+    const countryKeys = Object.keys(liveData?.country || {});
+    const totalPages = Math.ceil(countryKeys.length / COUNTRY_PAGE_SIZE);
+    const visibleCountries = countryKeys.slice(countryPage * COUNTRY_PAGE_SIZE, (countryPage + 1) * COUNTRY_PAGE_SIZE);
+    const domainsIn = (country) => Object.keys(liveData?.domains || {}).filter((d) => {
+        const list = liveData.domains[d]?.country;
+        return Array.isArray(list) && list.includes(country);
+    });
+
     return (
         <>
-            {!loading ? (
-                <div className="liveView">
-                    <div className="liveView-content">
-                        <p className="liveView-content-title">
-                            INTERACTIONS IN LAST 30 MINUTES {demoMode ? "(DEMO MODE IS ON)" : ""}
-                        </p>
-                        <div className="liveView-content-data">
-                            <div className="liveView-content-data-1">
-                                <p className="liveView-content-data-1-number">{liveData?.count}</p>
-                            </div>
-                            <div
-                                className="liveView-container"
-                                key={barRenderKey}
-                                style={{
-                                    gap: "1px",
-                                    display: "flex",
-                                    alignItems: "flex-end",
-                                    width: "100%",
-                                    borderBottom: "1px solid var(--color-accent)",
-                                    marginBottom: "10px",
-                                }}
-                            >
-                                {(() => {
-                                    const counts = Array(30).fill(0);
-                                    if (liveData?.visitsOverTime && Array.isArray(liveData.visitsOverTime)) {
-                                        liveData.visitsOverTime.forEach((event) => {
-                                            const idx = Math.round(event.minutes) - 1;
-                                            if (idx >= 0 && idx < 30) counts[idx]++;
-                                        });
-                                    }
-                                    const maxCount = Math.max(1, ...counts);
-                                    return counts.map((count, index) => {
-                                        const barHeight =
-                                            count > 0 ? Math.round((count / maxCount) * 60) : 2;
-                                        return (
+            <Card
+                title="Live view"
+                description={demoMode ? "Demo mode is on" : undefined}
+                className="tw-h-full"
+                actions={(
+                    <span className="tw-flex tw-items-center tw-gap-1 tw-text-xs tw-text-success">
+                        <span className="tw-w-2 tw-h-2 tw-rounded-full tw-bg-success" aria-hidden="true" />Live
+                    </span>
+                )}
+            >
+                {loading && !liveData ? <SkeletonText lines={5} label="Loading live view…" /> : failed ? (
+                    <p className="tw-m-0 tw-text-sm tw-text-text-muted">Live data couldn't be loaded. It will retry automatically.</p>
+                ) : (
+                    <div className="tw-flex tw-flex-col tw-gap-4">
+                        <div>
+                            <p className="tw-m-0 tw-text-4xl tw-text-text-primary tw-tabular-nums tw-leading-none">{fmtDemoCount(total, demoMode)}</p>
+                            <p className="tw-m-0 tw-mt-1 tw-text-xs tw-text-text-muted">Interactions in the last 30 minutes</p>
+                        </div>
+                        {total === 0 ? (
+                            <p className="tw-m-0 tw-text-sm tw-text-text-muted">No interactions right now. New decisions appear here automatically.</p>
+                        ) : (
+                            <>
+                                <div>
+                                    <div className="tw-flex tw-items-end tw-gap-px" style={{ height: 56 }} role="img" aria-label={`${total} interactions in the last 30 minutes`}>
+                                        {minutes.map((count, index) => (
                                             <div
                                                 key={index}
-                                                className="liveView-container-bar"
-                                                style={{
-                                                    width: "calc(100% / 30)",
-                                                    height: `${barHeight}px`,
-                                                    backgroundColor: "var(--color-accent)",
-                                                    transition: "height 0.5s ease-in-out",
-                                                    opacity: count > 0 ? "1" : "0.3",
-                                                }}
-                                                title={count > 0 ? `${count} interactions` : "0 interactions"}
+                                                title={`${29 - index === 0 ? "This minute" : `${29 - index} min ago`}: ${count}`}
+                                                className={`tw-flex-1 tw-rounded-t-xs ${count > 0 ? "tw-bg-data" : "tw-bg-white/10"}`}
+                                                style={{ height: count > 0 ? `${Math.max(8, (count / peak) * 100)}%` : 2, transition: "height 0.5s ease-in-out" }}
                                             />
-                                        );
-                                    });
-                                })()}
-                            </div>
-                            <div className="liveView-content-data-2">
-                                {(() => {
-                                    const allCountryKeys = Object.keys(liveData?.country || {});
-                                    const totalPages = Math.ceil(allCountryKeys.length / COUNTRY_PAGE_SIZE);
-                                    const visibleKeys = allCountryKeys.slice(
-                                        countryPage * COUNTRY_PAGE_SIZE,
-                                        (countryPage + 1) * COUNTRY_PAGE_SIZE
-                                    );
-                                    const totalCount = liveData?.count || 1;
-                                    return (
-                                        <>
-                                            {visibleKeys.map((key, idx) => {
-                                                const countryCount = liveData?.country[key]?.count ?? 0;
-                                                const isLast = idx === visibleKeys.length - 1;
-                                                const allDomains = Object.keys(liveData?.domains || {}).filter((d) => {
-                                                    const dc = liveData.domains[d]?.country;
-                                                    return Array.isArray(dc) && dc.includes(key);
-                                                });
-                                                const isExpanded = expandedCountries.has(key);
-                                                const visibleDomains = isExpanded ? allDomains : allDomains.slice(0, DOMAIN_SHOW_LIMIT);
-                                                const hiddenCount = allDomains.length - DOMAIN_SHOW_LIMIT;
-
-                                                return (
-                                                    <div key={key} className="liveView-content-country" style={{ marginBottom: isLast ? "0" : "28px" }}>
-                                                        <div className="liveView-content-flex">
-                                                            <p className="liveView-content-data-1-text">{key}</p>
-                                                            <p className="liveView-content-data-1-text">{countryCount}</p>
-                                                        </div>
-                                                        <div style={{ width: "100%", height: "2px", backgroundColor: "#c4c4c4", marginBottom: "10px" }}>
-                                                            <div style={{ width: `${(countryCount / totalCount) * 100}%`, height: "2px", backgroundColor: "var(--color-accent-strong)" }} />
-                                                        </div>
-                                                        {!demoMode && (
-                                                            <>
-                                                                {visibleDomains.map((domain) => {
-                                                                    const domainCountryCount = (liveData.domains[domain]?.country || []).filter((c) => c === key).length;
-                                                                    const barWidthPercent = totalCount > 0 ? (domainCountryCount / totalCount) * 100 : 0;
-                                                                    return (
-                                                                        <div key={`${key}-${domain}`} className="liveView-domain-block">
-                                                                            <button
-                                                                                type="button"
-                                                                                className="liveView-domain-row"
-                                                                                onClick={() => setDomainLiveView({ domain, country: key, open: true })}
-                                                                            >
-                                                                                <span className="liveView-content-data-1-text liveView-domain-row__name">{domain}</span>
-                                                                                <span className="liveView-content-data-1-text liveView-domain-row__count">{domainCountryCount}</span>
-                                                                            </button>
-                                                                            <div className="liveView-domain-bar-track" aria-hidden>
-                                                                                <div className="liveView-domain-bar-fill" style={{ width: `${barWidthPercent}%` }} />
-                                                                            </div>
-                                                                        </div>
-                                                                    );
-                                                                })}
-                                                                {allDomains.length > DOMAIN_SHOW_LIMIT && (
-                                                                    <button
-                                                                        type="button"
-                                                                        className="liveView-show-more-btn"
-                                                                        onClick={() => setExpandedCountries((prev) => {
-                                                                            const next = new Set(prev);
-                                                                            if (next.has(key)) next.delete(key); else next.add(key);
-                                                                            return next;
-                                                                        })}
-                                                                    >
-                                                                        {isExpanded ? "Show less" : `+${hiddenCount} more domain${hiddenCount !== 1 ? "s" : ""}`}
-                                                                    </button>
-                                                                )}
-                                                            </>
-                                                        )}
-                                                    </div>
-                                                );
-                                            })}
-                                            {totalPages > 1 && (
-                                                <div className="liveView-pagination">
-                                                    <button
-                                                        type="button"
-                                                        className="liveView-pagination-btn"
-                                                        onClick={() => setCountryPage((p) => p - 1)}
-                                                        disabled={countryPage === 0}
-                                                        aria-label="Previous countries"
-                                                    >
-                                                        ←
-                                                    </button>
-                                                    <span className="liveView-pagination-info">
-                                                        {countryPage + 1} / {totalPages}
-                                                    </span>
-                                                    <button
-                                                        type="button"
-                                                        className="liveView-pagination-btn"
-                                                        onClick={() => setCountryPage((p) => p + 1)}
-                                                        disabled={countryPage >= totalPages - 1}
-                                                        aria-label="Next countries"
-                                                    >
-                                                        →
-                                                    </button>
+                                        ))}
+                                    </div>
+                                    <div className="tw-flex tw-justify-between tw-mt-1 tw-text-xs tw-text-text-muted"><span>30 min ago</span><span>Now</span></div>
+                                </div>
+                                <ul className="tw-m-0 tw-p-0 tw-list-none tw-flex tw-flex-col tw-gap-3">
+                                    {visibleCountries.map((key) => {
+                                        const countryCount = liveData.country[key]?.count ?? 0;
+                                        const allDomains = domainsIn(key);
+                                        const expanded = expandedCountries.has(key);
+                                        const shownDomains = expanded ? allDomains : allDomains.slice(0, DOMAIN_SHOW_LIMIT);
+                                        const hiddenCount = allDomains.length - DOMAIN_SHOW_LIMIT;
+                                        return (
+                                            <li key={key}>
+                                                <div className="tw-flex tw-justify-between tw-gap-3 tw-text-sm tw-text-text-primary">
+                                                    <span className="tw-truncate">{key}</span>
+                                                    <span className="tw-tabular-nums">{fmtDemoCount(countryCount, demoMode)}</span>
                                                 </div>
-                                            )}
-                                        </>
-                                    );
-                                })()}
-                            </div>
-                        </div>
+                                                <div className="tw-h-1 tw-mt-1 tw-bg-white/10 tw-rounded-full" aria-hidden="true">
+                                                    <div className="tw-h-full tw-bg-data tw-rounded-full" style={{ width: `${Math.min(100, (countryCount / Math.max(1, total)) * 100)}%` }} />
+                                                </div>
+                                                {!demoMode && shownDomains.map((domain) => (
+                                                    <button
+                                                        key={domain}
+                                                        type="button"
+                                                        onClick={() => setDomainLiveView({ domain, country: key, open: true })}
+                                                        className="tw-flex tw-w-full tw-justify-between tw-gap-3 tw-h-8 tw-items-center tw-px-1 tw-border-0 tw-bg-transparent tw-rounded-sm tw-font-sans tw-text-sm tw-text-text-secondary tw-cursor-pointer hover:tw-bg-white/5 hover:tw-text-text-primary focus-visible:tw-outline-none focus-visible:tw-shadow-focus"
+                                                    >
+                                                        <span className="tw-truncate">{domain}</span>
+                                                        <span className="tw-tabular-nums">{(liveData.domains[domain].country || []).filter((c) => c === key).length}</span>
+                                                    </button>
+                                                ))}
+                                                {!demoMode && hiddenCount > 0 && (
+                                                    <Button size="sm" variant="ghost" onClick={() => setExpandedCountries((prev) => {
+                                                        const next = new Set(prev);
+                                                        if (next.has(key)) next.delete(key); else next.add(key);
+                                                        return next;
+                                                    })}>
+                                                        {expanded ? "Show less" : `+${hiddenCount} more domain${hiddenCount !== 1 ? "s" : ""}`}
+                                                    </Button>
+                                                )}
+                                            </li>
+                                        );
+                                    })}
+                                </ul>
+                                {totalPages > 1 && (
+                                    <div className="tw-flex tw-items-center tw-justify-between tw-gap-2 tw-text-xs tw-text-text-muted">
+                                        <Button size="sm" variant="ghost" iconOnly icon="chevron-left" aria-label="Previous countries" disabled={countryPage === 0} onClick={() => setCountryPage((p) => p - 1)} />
+                                        <span className="tw-tabular-nums">{countryPage + 1} / {totalPages}</span>
+                                        <Button size="sm" variant="ghost" iconOnly icon="chevron-right" aria-label="Next countries" disabled={countryPage >= totalPages - 1} onClick={() => setCountryPage((p) => p + 1)} />
+                                    </div>
+                                )}
+                            </>
+                        )}
                     </div>
-                </div>
-            ) : null}
+                )}
+            </Card>
 
             {domainLiveView.open && liveData ? (
                 <DomainConsentDrawer
