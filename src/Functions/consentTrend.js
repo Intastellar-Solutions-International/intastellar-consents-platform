@@ -53,3 +53,23 @@ export function linePath(values, x, y) {
     if (run === 1) d += ` L${x(values.length - 1).toFixed(2)} ${y(values[values.length - 1]).toFixed(2)}`;
     return d;
 }
+
+/**
+ * Accepted, custom and denied as shares of every decision. Custom is what is
+ * left of the total, so the three always cover it.
+ */
+export function decisionSplit(consent) {
+    const total = Number(consent?.Total) || 0;
+    const accepted = Number(consent?.interactions_number?.accept) || 0;
+    const denied = Number(consent?.interactions_number?.decline) || 0;
+    const custom = Math.max(0, total - accepted - denied);
+    const share = (n) => (total > 0 ? (n / total) * 100 : 0);
+    return {
+        total,
+        segments: [
+            { key: "accepted", label: "Accepted", count: accepted, percent: share(accepted) },
+            { key: "custom", label: "Custom", count: custom, percent: share(custom) },
+            { key: "denied", label: "Denied", count: denied, percent: share(denied) },
+        ],
+    };
+}

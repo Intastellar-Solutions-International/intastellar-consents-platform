@@ -40,7 +40,7 @@ import { OverviewTemplate, AttentionPanel } from "../../Components/templates";
 import { KpiTile, Card, SkeletonCard } from "../../Components/ui";
 import { t } from "../../i18n/index.js";
 import QuickReport from "./QuickReport.js";
-import { ComplianceChecks, PerformanceBand, CategoryOptIn, CountryRanking, DeviceShare, DecisionTime, LatestScan, periodChangePercent } from "./HomeSections.js";
+import { ComplianceChecks, PerformanceBand, CategoryOptIn, DecisionSplit, CountryRanking, DeviceShare, DecisionTime, LatestScan, periodChangePercent } from "./HomeSections.js";
 import useDomainHealth from "../../Components/Shell/useDomainHealth.js";
 
 const { useState, useEffect, useRef, useContext, useMemo } = React;
@@ -512,20 +512,24 @@ export default function Dashboard(props) {
                         </PerformanceBand>
                     )}
                 >
-                    {!interactionsError && (
+                    {!interactionsError && (<>
                         <div className="home-grid">
                             {activeData == null ? <SkeletonCard height={360} label="Loading consent trend…" /> : (
                                 <ErrorBoundary>
                                     <ConsentTrend daily={activeData.dailyNum} granularity={activeData.granularity} fromDate={fromDate} toDate={toDate} compareOn={compareOn} />
                                 </ErrorBoundary>
                             )}
+                            <DecisionSplit activeData={activeData} demoMode={demoMode} />
+                        </div>
+                        <div className="home-grid">
                             <CategoryOptIn
                                 activeData={activeData}
                                 compareOn={compareOn}
                                 footer={<Link to={analyticsMarketingPath(currentDomain)} className="tw-text-sm tw-font-semibold tw-text-accent-strong focus-visible:tw-outline-none focus-visible:tw-shadow-focus tw-rounded-sm">Marketing recoil analysis</Link>}
                             />
+                            <DeviceShare activeData={activeData} />
                         </div>
-                    )}
+                    </>)}
 
                     <div className="home-grid">
                         {loadingCountry ? <SkeletonCard height={360} label="Loading countries…" /> : countryError ? (
@@ -541,13 +545,15 @@ export default function Dashboard(props) {
                     </div>
 
                     <div className="home-grid-3">
-                        {!interactionsError && <DeviceShare activeData={activeData} />}
                         {hasTimeToDecision && <DecisionTime timeToDecision={globalTimeToDecision} onOpen={() => setBehaviourDrawerOpen(true)} />}
                         <LatestScan
                             domain={hasDomain ? selectedDomain : null}
                             scanSummary={scanSummary}
                             scanResult={scanResult}
                             compliancePath={hasDomain ? reportsPath(id, selectedDomain, "/compliance") : null}
+                            allScansPath={`/${id}/reports/scans`}
+                            platformId={id}
+                            workspace={activeWorkspace}
                             scanLoading={scanLoading}
                             onScan={triggerOverviewScan}
                         />

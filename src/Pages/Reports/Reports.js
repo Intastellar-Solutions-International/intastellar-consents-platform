@@ -45,6 +45,11 @@ export const reportsLinks = [
         path: "/reports/compliance",
         requiresTier: 'starter',
     },
+    {
+        name: "Cookie scans",
+        path: "/reports/scans",
+        requiresTier: 'starter',
+    },
 ];
 
 const HUB_CARDS = [

@@ -1,4 +1,3 @@
-import punycode from "punycode";
 import Card from "../../Components/ui/Card.js";
 import Button from "../../Components/ui/Button.js";
 import { Icon } from "../../Components/ui/icons.js";
@@ -6,6 +5,7 @@ import Authentication from "../../Authentication/Auth";
 import { loadAuditReportIndex, addAuditReportEntry } from "../../Functions/auditReportsStorage";
 import { REPORTS, reportTypeOf, requestReportPdf, downloadBlob, reportFilename, newReportEntry } from "../../Functions/auditReportPdf.js";
 import { formatDate } from "../../Functions/format.js";
+import { readCachedDomains } from "../../Functions/cachedDomains.js";
 
 const { useState, useEffect, useMemo } = React;
 
@@ -21,16 +21,6 @@ const LABEL = "tw-flex tw-flex-col tw-gap-1 tw-text-xs tw-text-text-muted tw-min
 
 function toYmd(d) {
     return d.toISOString().split("T")[0];
-}
-
-function readDomains() {
-    try {
-        const names = JSON.parse(localStorage.getItem("domains"));
-        if (!Array.isArray(names)) return [];
-        return names.filter((n) => typeof n === "string" && n && n !== "combined view").map((n) => punycode.toUnicode(n));
-    } catch {
-        return [];
-    }
 }
 
 function periodRange(period, fromDate, toDate) {
@@ -64,7 +54,7 @@ export default function QuickReport({ platformId, domain, fromDate, toDate }) {
     }, [orgId, chosenDomain]);
 
     const domains = useMemo(() => {
-        const list = readDomains();
+        const list = readCachedDomains();
         return domain && !list.includes(domain) ? [domain, ...list] : list;
     }, [domain]);
 

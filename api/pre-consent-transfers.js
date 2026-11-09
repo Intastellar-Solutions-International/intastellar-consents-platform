@@ -117,6 +117,9 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: "Missing domain query parameter" });
     }
 
+    // ?scan=<id> opens one stored scan from the scan list instead of the latest.
+    const scanId = /^\d+$/.test(String(req.query.scan || "")) ? req.query.scan : null;
+
     // Which scans count for this domain:
     // - the canonical domain and its "www." form — the banner stores scans
     //   under the bare domain, dashboard scans may carry the "www.";
@@ -136,10 +139,10 @@ export default async function handler(req, res) {
                 `SELECT domain, scanned_at, scan_duration_ms, status, transfers, cookies,
                         to_jsonb(pre_consent_scans) -> 'reject_pass' AS reject_pass
                    FROM pre_consent_scans
-                  WHERE ${scope} AND status = 'completed'
+                  WHERE ${scope} AND status = 'completed'${scanId ? " AND id = $3" : ""}
                   ORDER BY scanned_at DESC
                   LIMIT 1`,
-                [domain, organisationId]
+                scanId ? [domain, organisationId, scanId] : [domain, organisationId]
             ),
             db.query(
                 `SELECT status, scanned_at, error_message
@@ -181,7 +184,7 @@ export default async function handler(req, res) {
             // the lists include post-consent items. See api/_consent-phase.js.
             ...summarizeConsentPhase(enrichedTransfers, enrichedCookies),
             // Only when a newer attempt than this completed scan exists.
-            ...(latestAttempt && latestAttempt.status !== "completed" ? { latest_attempt: latestAttempt } : {}),
+            ...(!scanId && latestAttempt && latestAttempt.status !== "completed" ? { latest_attempt: latestAttempt } : {}),
         });
     } catch (err) {
         console.error("[pre-consent-transfers] DB error:", err.message);

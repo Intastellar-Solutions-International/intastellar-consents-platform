@@ -42,5 +42,6 @@ import "./i18n.test.mjs";
 import "./consent-trend.test.mjs";
 import "./report-html.test.mjs";
 import "./cookie-classification.test.mjs";
+import "./scan-history.test.mjs";
 
 await run();

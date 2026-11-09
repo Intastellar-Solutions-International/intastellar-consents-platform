@@ -29,6 +29,7 @@ function buildGroups(platform, domain, isAdminOrg) {
         {
             label: t("Compliance"), items: [
                 { name: t("Compliance overview"), icon: "shield-check", to: r("/compliance"), match: (p) => p.includes("/compliance"), tier: "starter" },
+                { name: "Cookie scans", icon: "search", to: `/${platform}/reports/scans`, match: (p) => p.includes("/reports/scans"), tier: "starter" },
                 { name: t("Audit log"), icon: "file-text", to: r("/user-consents"), match: (p) => p.includes("/user-consents"), tier: "personal" },
                 { name: t("Audit reports"), icon: "file-text", to: r("/audit-report"), match: (p) => p.includes("/audit-report"), tier: "personal" },
                 { name: t("DSR portal"), icon: "inbox", to: r("/dsr"), match: (p) => p.includes("/dsr"), tier: "personal" },

@@ -1,15 +1,20 @@
 import Card from "../../Components/ui/Card.js";
 import Button from "../../Components/ui/Button.js";
 import { Icon } from "../../Components/ui/icons.js";
-import { SkeletonCard } from "../../Components/ui/Skeleton.js";
+import { SkeletonCard, SkeletonText } from "../../Components/ui/Skeleton.js";
 import { KpiDelta } from "../../Components/ui/KpiTile.js";
 import CountryDetailDrawer from "../../Components/Charts/WorldMap/CountryDetailDrawer.js";
 import { countryCodes } from "../../Components/Charts/WorldMap/countryCodes.js";
 import { normalizeShares } from "../../Components/Charts/DeviceTypeInteractions/index.js";
 import { preConsentCookieStat } from "../../Functions/cookieStats.js";
 import { formatNumber, formatPercent } from "../../Functions/format.js";
+import { decisionSplit } from "../../Functions/consentTrend.js";
+import API from "../../API/api";
+import { fetchJsonWithTimeout } from "../../Functions/fetchWithTimeout.js";
+import { reportsPath } from "../../Functions/domainPathSegments.js";
+import { readCachedDomains, toUnicodeDomain } from "../../Functions/cachedDomains.js";
 
-const { useState, useMemo } = React;
+const { useState, useMemo, useEffect } = React;
 const Link = window.ReactRouterDOM.Link;
 
 const COUNTRIES_SHOWN = 8;
@@ -126,6 +131,57 @@ export function CategoryOptIn({ activeData, compareOn, footer }) {
     );
 }
 
+const SPLIT_COLORS = { accepted: "rgb(var(--c-data))", custom: "rgb(var(--c-data-2))", denied: "rgb(var(--c-data-3))" };
+const SPLIT_GAP = 0.8;
+const SPLIT_MIN_ARC = 0.6; // keeps a very small share visible
+
+/** Donut of how visitors decided. The legend carries the exact figures. */
+export function DecisionSplit({ activeData, demoMode }) {
+    const [hovered, setHovered] = useState(null);
+    if (activeData == null) return <SkeletonCard height={320} label="Loading decision split…" />;
+    const { total, segments } = decisionSplit(activeData);
+    const present = segments.filter((s) => s.count > 0);
+    const center = segments.find((s) => s.key === hovered) || segments[0];
+    let offset = 0;
+    return (
+        <Card title="How visitors decided">
+            {total === 0 ? <p className="tw-m-0 tw-text-sm tw-text-text-muted">No decisions recorded in this period.</p> : (
+                <div className="tw-flex tw-flex-col tw-items-center tw-gap-4">
+                    <div className="tw-relative" style={{ width: 200, height: 200 }}>
+                        <svg viewBox="0 0 42 42" role="img" aria-label={segments.map((s) => `${s.label} ${formatPercent(s.percent)}`).join(", ")} style={{ width: "100%", height: "100%", transform: "rotate(-90deg)" }}>
+                            {present.map((s) => {
+                                const gap = present.length > 1 ? SPLIT_GAP : 0;
+                                const arc = Math.max(s.percent - gap, SPLIT_MIN_ARC);
+                                const dashOffset = -offset;
+                                offset += s.percent;
+                                return (
+                                    <circle key={s.key} cx="21" cy="21" r="15.915" fill="none" stroke={SPLIT_COLORS[s.key]} strokeWidth={hovered === s.key ? 6.5 : 5}
+                                        strokeDasharray={`${arc} ${100 - arc}`} strokeDashoffset={dashOffset} style={{ cursor: "default" }}
+                                        onMouseEnter={() => setHovered(s.key)} onMouseLeave={() => setHovered(null)} />
+                                );
+                            })}
+                        </svg>
+                        <div className="tw-absolute tw-inset-0 tw-flex tw-flex-col tw-items-center tw-justify-center tw-pointer-events-none">
+                            <span className="tw-text-3xl tw-text-text-primary tw-tabular-nums">{formatPercent(center.percent)}</span>
+                            <span className="tw-text-xs tw-text-text-muted">{center.label}</span>
+                        </div>
+                    </div>
+                    <ul className="tw-m-0 tw-p-0 tw-list-none tw-w-full tw-flex tw-flex-col tw-gap-2">
+                        {segments.map((s) => (
+                            <li key={s.key} className="tw-flex tw-items-center tw-gap-2 tw-text-sm tw-text-text-secondary">
+                                <span className="tw-w-3 tw-h-3 tw-rounded-xs" style={{ background: SPLIT_COLORS[s.key] }} aria-hidden="true" />
+                                <span className="tw-flex-1">{s.label}</span>
+                                <span className="tw-tabular-nums tw-text-text-muted">{demoCount(s.count, demoMode)}</span>
+                                <span className="tw-tabular-nums tw-text-text-primary" style={{ minWidth: 56, textAlign: "right" }}>{formatPercent(s.percent)}</span>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            )}
+        </Card>
+    );
+}
+
 function demoCount(n, demoMode) {
     if (!demoMode || !Number.isFinite(n)) return formatNumber(n);
     const s = String(Math.round(n));
@@ -235,11 +291,57 @@ export function DecisionTime({ timeToDecision, onOpen }) {
     );
 }
 
-export function LatestScan({ domain, scanSummary, scanResult, compliancePath, scanLoading, onScan }) {
+const RECENT_SCANS = 3;
+
+/** The newest scans across all domains. Hides itself if there is nothing to show. */
+function RecentScans({ platformId, workspace }) {
+    const [scans, setScans] = useState(null);
+    useEffect(() => {
+        const api = API[platformId]?.listPreConsentScans;
+        const domains = workspace?.domains?.length ? workspace.domains.map((d) => d.domain) : readCachedDomains();
+        if (!api || !domains.length) { setScans([]); return undefined; }
+        const ac = new AbortController();
+        setScans(null);
+        fetchJsonWithTimeout(api.url, { method: api.method, headers: api.headers, body: JSON.stringify({ domains, pageSize: RECENT_SCANS }) }, { signal: ac.signal })
+            .then((data) => { if (!ac.signal.aborted) setScans(Array.isArray(data?.scans) ? data.scans : []); })
+            .catch((err) => { if (err.kind !== "aborted" && !ac.signal.aborted) setScans([]); });
+        return () => ac.abort();
+    }, [platformId, workspace]);
+
+    if (scans && scans.length === 0) return null;
+    return (
+        <div className="tw-w-full tw-pt-3 tw-border-0 tw-border-t tw-border-solid tw-border-border-subtle">
+            <p className="tw-m-0 tw-text-xs tw-text-text-muted">Recent scans</p>
+            {scans == null ? <SkeletonText lines={RECENT_SCANS} label="Loading recent scans…" /> : (
+                <ul className="tw-m-0 tw-p-0 tw-list-none">
+                    {scans.map((s) => (
+                        <li key={s.id}>
+                            <Link
+                                to={`${reportsPath(platformId, toUnicodeDomain(s.domain), "/compliance")}?scan=${encodeURIComponent(s.id)}`}
+                                className="tw-flex tw-items-center tw-justify-between tw-gap-3 tw-h-10 tw-text-sm tw-no-underline tw-text-text-secondary hover:tw-text-text-primary focus-visible:tw-outline-none focus-visible:tw-shadow-focus tw-rounded-sm"
+                            >
+                                <span className="tw-truncate">{toUnicodeDomain(s.domain)}</span>
+                                <span className="tw-shrink-0 tw-tabular-nums">{formatNumber(s.cookies_found)} cookie{s.cookies_found === 1 ? "" : "s"}</span>
+                            </Link>
+                        </li>
+                    ))}
+                </ul>
+            )}
+        </div>
+    );
+}
+
+export function LatestScan({ domain, scanSummary, scanResult, compliancePath, allScansPath, scanLoading, onScan, platformId, workspace }) {
+    const recent = <RecentScans platformId={platformId} workspace={workspace} />;
+    const LINK = "tw-text-sm tw-font-semibold tw-text-accent-strong focus-visible:tw-outline-none focus-visible:tw-shadow-focus tw-rounded-sm";
     if (!domain) {
         return (
             <Card title="Latest cookie scan">
-                <p className="tw-m-0 tw-text-sm tw-text-text-secondary">Scans run per domain. Choose a domain to see its pre-consent transfers and cookies.</p>
+                <div className="tw-flex tw-flex-col tw-items-start tw-gap-3">
+                    <p className="tw-m-0 tw-text-sm tw-text-text-secondary">Scans run per domain. Choose a domain to see its pre-consent transfers and cookies, or browse every scan.</p>
+                    <Link to={allScansPath} className={LINK}>View all scans</Link>
+                    {recent}
+                </div>
             </Card>
         );
     }
@@ -276,8 +378,10 @@ export function LatestScan({ domain, scanSummary, scanResult, compliancePath, sc
                 </div>
                 <div className="tw-flex tw-flex-wrap tw-items-center tw-gap-3">
                     <Button size="md" loading={scanLoading} onClick={onScan}>{scanLoading ? "Scanning…" : "Scan now"}</Button>
-                    <Link to={compliancePath} className="tw-text-sm tw-font-semibold tw-text-accent-strong focus-visible:tw-outline-none focus-visible:tw-shadow-focus tw-rounded-sm">Review in Compliance</Link>
+                    <Link to={compliancePath} className={LINK}>Review in Compliance</Link>
+                    <Link to={allScansPath} className={LINK}>View all scans</Link>
                 </div>
+                {recent}
             </div>
         </Card>
     );

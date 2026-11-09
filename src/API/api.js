@@ -246,6 +246,15 @@ const API = {
                 "Content-Type": "application/json"
             }
         },
+        listPreConsentScans: {
+            url: `${ScannerHost}/api/pre-consent-scans`,
+            method: "POST",
+            headers: {
+                "Authorization": Authentication.getToken(),
+                "Organisation": Authentication.getOrganisation(),
+                "Content-Type": "application/json"
+            }
+        },
         getPreConsentTransfers: {
             url: `${ScannerHost}/api/pre-consent-transfers`,
             method: "GET",

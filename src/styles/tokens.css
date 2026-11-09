@@ -66,6 +66,9 @@
     /* Chart marks that measure something (not good/bad, so not --c-success). */
     --c-data: 109 187 139;      /* #6dbb8b — ≥3:1 on all layers */
     --color-data: rgb(var(--c-data));
+    /* Further series beside --c-data (validated together for colour-blind separation). */
+    --c-data-2: 127 140 240;    /* #7f8cf0 */
+    --c-data-3: 232 149 92;     /* #e8955c */
 
     /* Risk levels — always rendered with an icon or label, never colour alone. */
     --color-risk-high:   var(--color-danger);

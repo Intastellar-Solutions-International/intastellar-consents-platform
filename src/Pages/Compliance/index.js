@@ -22,6 +22,7 @@ import { KpiTile, Button, Tabs, TabPanel, EmptyState } from "../../Components/ui
 
 const Link = window.ReactRouterDOM.Link;
 const useParams = window.ReactRouterDOM.useParams;
+const useLocation = window.ReactRouterDOM.useLocation;
 
 const CATEGORY_META = {
     // icon: name in src/Components/ui/icons.js (was Unicode glyphs ◆ ◈ ◉ ◎ ◌ ○ ✓ ◇)
@@ -96,6 +97,8 @@ export default function CompliancePage() {
     const [currentDomain, setCurrentDomain] = useContext(DomainContext);
     const [activeWorkspace] = useContext(WorkspaceContext);
     const [demoMode, setDemoMode] = useState(Authentication.DemoMode);
+    // Set when this page was opened from the Cookie scans list.
+    const scanId = new URLSearchParams(useLocation().search).get("scan");
 
     useSyncDomainFromRoute(handle, setCurrentDomain);
 
@@ -242,7 +245,7 @@ export default function CompliancePage() {
 
         const domain = handle || currentDomain;
         if (domain && domain !== "combined view") {
-            fetch(`${API[id].getPreConsentTransfers.url}?domain=${encodeURIComponent(domain)}`, {
+            fetch(`${API[id].getPreConsentTransfers.url}?domain=${encodeURIComponent(domain)}${scanId ? `&scan=${encodeURIComponent(scanId)}` : ""}`, {
                 method: API[id].getPreConsentTransfers.method,
                 headers: { ...API[id].getPreConsentTransfers.headers },
             })
@@ -257,7 +260,7 @@ export default function CompliancePage() {
                 })
                 .catch(() => setPreConsentTransfers(null));
         }
-    }, [id, domainsForApi, fromDate, toDate, compareRange, previousPeriod, previousPeriod2, workspaceId, excludeBots]);
+    }, [id, domainsForApi, fromDate, toDate, compareRange, previousPeriod, previousPeriod2, workspaceId, excludeBots, scanId]);
 
     const triggerScan = () => {
         const domain = handle || currentDomain;
@@ -311,7 +314,7 @@ export default function CompliancePage() {
     }, [handle, currentDomain, id]);
 
     useEffect(() => {
-        if (!preConsentTransfers?.scanned_at) return;
+        if (!preConsentTransfers?.scanned_at || scanId) return;
         const domain = handle || currentDomain;
         if (!domain || domain === "combined view") return;
         const entry = {
@@ -325,7 +328,7 @@ export default function CompliancePage() {
             try { localStorage.setItem(`scanHistory_${domain}`, JSON.stringify(next)); } catch {}
             return next;
         });
-    }, [preConsentTransfers, handle, currentDomain]);
+    }, [preConsentTransfers, handle, currentDomain, scanId]);
 
     function downloadCSV(rows, filename) {
         const csv = rows.map(r => r.map(cell => `"${String(cell ?? "").replace(/"/g, '""')}"`).join(",")).join("\n");
@@ -490,7 +493,8 @@ export default function CompliancePage() {
                                     </p>
                                     {preConsentTransfers?.scanned_at && (
                                         <span className="compliance-transfers__scan-time">
-                                            Last scanned {formatDate(new Date(preConsentTransfers.scanned_at))}
+                                            {scanId ? "Scan from" : "Last scanned"} {formatDate(new Date(preConsentTransfers.scanned_at))}
+                                            {" · "}<Link to={`/${id}/reports/scans`}>All scans</Link>
                                         </span>
                                     )}
                                 </div>

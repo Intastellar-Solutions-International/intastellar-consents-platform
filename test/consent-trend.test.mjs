@@ -10,7 +10,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const SRC = fs.readFileSync(path.join(__dirname, "..", "src", "Functions", "consentTrend.js"), "utf8").replace(/^export /gm, "");
 const ctx = vm.createContext({});
 vm.runInContext(SRC, ctx);
-const { buildTrendPoints, linePath } = ctx;
+const { buildTrendPoints, linePath, decisionSplit } = ctx;
 
 // Arrays from the vm context have another prototype than this file's.
 const list = (points, field) => Array.from(points, (p) => p[field]);
@@ -44,4 +44,19 @@ test("trend: a null breaks the line, and an isolated value still draws", () => {
     const same = (v) => v;
     assert.strictEqual(linePath([1, 2, null, 3], same, same), "M0.00 1.00 L1.00 2.00 M3.00 3.00 L3.00 3.00");
     assert.strictEqual(linePath([null, 2, null], same, same), "M1.00 2.00 L1.00 2.00");
+});
+
+const splitOf = (consent) => Object.fromEntries(Array.from(decisionSplit(consent).segments, (s) => [s.key, s]));
+
+test("decision split: accepted, custom and denied cover every decision", () => {
+    const s = splitOf({ Total: 820, interactions_number: { accept: 625, decline: 193 } });
+    assert.strictEqual(s.custom.count, 2);
+    assert.ok(Math.abs(s.accepted.percent + s.custom.percent + s.denied.percent - 100) < 1e-9);
+});
+
+test("decision split: custom is never negative and no data is all zeros", () => {
+    assert.strictEqual(splitOf({ Total: 5, interactions_number: { accept: 4, decline: 4 } }).custom.count, 0);
+    const empty = decisionSplit({ Total: 0 });
+    assert.strictEqual(empty.total, 0);
+    assert.deepStrictEqual(Array.from(empty.segments, (s) => s.percent), [0, 0, 0]);
 });

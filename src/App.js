@@ -42,6 +42,7 @@ import AuditReport from "./Pages/Reports/AuditReport";
 import MarketingReport from "./Pages/Reports/MarketingReport";
 import ReconcilePage from "./Pages/Reports/MarketingReport/ReconcilePage";
 import CompliancePage from "./Pages/Compliance";
+import ScanHistory from "./Pages/Compliance/ScanHistory.js";
 import LoadingSpinner from "./Components/LoadingSpinner/LoadingSpinner";
 import Workspaces from "./Pages/Settings/Workspaces";
 import TeamInsights from "./Pages/Settings/TeamInsights";
@@ -756,6 +757,11 @@ export default function App() {
                                         <Route path="/:id/reports/view/:handle/compliance" exact>
                                             {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Compliance Reports" fullPage /> : <ErrorBoundary>
                                                 {domainError ? <AddDomain /> : <CompliancePage />}
+                                            </ErrorBoundary>}
+                                        </Route>
+                                        <Route path="/:id/reports/scans" exact>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Cookie scans" fullPage /> : <ErrorBoundary>
+                                                {domainError ? <AddDomain /> : <ScanHistory />}
                                             </ErrorBoundary>}
                                         </Route>
                                         <Route path="/:id/reports/compliance" exact>
