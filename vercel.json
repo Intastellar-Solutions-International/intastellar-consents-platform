@@ -187,10 +187,6 @@
       "memory": 512,
       "maxDuration": 30
     },
-    "api/pre-consent-scans.js": {
-      "memory": 512,
-      "maxDuration": 20
-    },
     "api/report-pdf.js": {
       "memory": 1536,
       "maxDuration": 45

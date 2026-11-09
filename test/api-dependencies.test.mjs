@@ -44,3 +44,8 @@ test("api/package.json keeps the functions on ES modules", () => {
     assert.equal(apiPkg.type, "module");
     assert.ok(fs.existsSync(path.join(API, "package-lock.json")), "api/package-lock.json is missing");
 });
+
+test("vercel.json stays within Vercel's limit of 50 function entries", () => {
+    const config = JSON.parse(fs.readFileSync(new URL("../vercel.json", import.meta.url), "utf8"));
+    assert.ok(Object.keys(config.functions).length <= 50, "over 50 entries fails every deployment before it builds");
+});
