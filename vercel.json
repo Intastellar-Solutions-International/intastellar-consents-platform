@@ -187,6 +187,10 @@
       "memory": 512,
       "maxDuration": 30
     },
+    "api/report-pdf.js": {
+      "memory": 1536,
+      "maxDuration": 45
+    },
     "api/analytics-screenshot.js": {
       "memory": 1536,
       "maxDuration": 45,
