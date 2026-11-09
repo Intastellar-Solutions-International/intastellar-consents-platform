@@ -1,6 +1,5 @@
 const { useState, useEffect, useMemo } = React;
 import API from "../../API/api.js";
-import { isJson } from "../../Functions/isJson.js";
 import {
     reportsPath,
     consentsDomainFromRoute,
@@ -16,53 +15,11 @@ import { parseConsentTimestamp } from "../../Functions/consentTimestamp.js";
 import { useExcludeBots } from "../../Functions/botFilter.js";
 import { preConsentCookieStat, postConsentCookieStat } from "../../Functions/cookieStats.js";
 import { Icon } from "../ui/icons.js";
+import { auditRowChoiceSummary, auditRowChoices, consentIdOf, matchesConsentId, sortNewestFirst } from "./auditRows.js";
 
 const Link = window.ReactRouterDOM.Link;
-
-const NECESSARY_TYPES = new Set(["necessary", "essential"]);
-
-function parseConsentEntries(row) {
-    let c = row?.consent;
-    if (c == null) return null;
-    if (typeof c === "string") {
-        if (isJson(c)) {
-            try {
-                c = JSON.parse(c);
-            } catch {
-                return null;
-            }
-        } else {
-            return null;
-        }
-    }
-    if (Array.isArray(c)) return c;
-    if (typeof c === "object" && (c.consent_type != null || c.type != null)) return [c];
-    return null;
-}
-
-function consentChecked(v) {
-    return v === "checked" || v === "1" || v === true || v === 1;
-}
-
-function auditRowChoiceSummary(row) {
-    const reg = String(row?.regulation_applied ?? "").toUpperCase();
-    const isCcpa = reg.includes("CCPA") || reg.includes("CPRA");
-    const arr = parseConsentEntries(row);
-    if (!arr || arr.length === 0) return "—";
-    const first = arr[0];
-    if (arr.length === 1 && first?.consent_type != null) {
-        const accepted = consentChecked(first?.consent_value);
-        if (isCcpa) return accepted ? "Opt-in all" : "Opt-out";
-        return accepted ? "Accepted all" : "Essential only";
-    }
-    const optional = arr.filter((x) => !NECESSARY_TYPES.has(String(x?.type || "").toLowerCase()));
-    if (optional.length === 0) return isCcpa ? "Opt-out" : "Essential only";
-    const allOn = optional.every((x) => consentChecked(x?.checked));
-    const allOff = optional.every((x) => !consentChecked(x?.checked));
-    if (allOn) return isCcpa ? "Opt-in all" : "Accepted all";
-    if (allOff) return isCcpa ? "Opt-out" : "Essential only";
-    return "Mixed choices";
-}
+const useHistory = window.ReactRouterDOM.useHistory;
+const DEFAULT_ROWS = 11;
 
 function shortenFramework(reg) {
     const u = String(reg || "").toUpperCase();
@@ -72,10 +29,13 @@ function shortenFramework(reg) {
     return String(reg).length > 14 ? `${String(reg).slice(0, 12)}…` : String(reg);
 }
 
-function formatAuditRowClock(ts, locale) {
+function formatAuditRowDateTime(ts, locale) {
     const d = parseConsentTimestamp(ts);
     if (!d) return "—";
-    return d.toLocaleTimeString(locale, {
+    return d.toLocaleString(locale, {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
         hour: "2-digit",
         minute: "2-digit",
         hour12: false,
@@ -202,6 +162,8 @@ export default function AuditSnapshotCard(props) {
         return toDomainsApiHeader(label);
     }, [handle, currentDomain]);
 
+    const history = useHistory();
+    const [consentSearch, setConsentSearch] = useState("");
     const [auditPreview, setAuditPreview] = useState([]);
     const [excludeBots] = useExcludeBots();
     const [auditPreviewLoading, setAuditPreviewLoading] = useState(false);
@@ -430,7 +392,7 @@ export default function AuditSnapshotCard(props) {
         mapDetailSelection?.kind === "country" ? mapDetailSelection.code : null;
 
     const auditSnapshotMeta = useMemo(() => {
-        const rows = Array.isArray(auditPreview) ? auditPreview : [];
+        const rows = sortNewestFirst(Array.isArray(auditPreview) ? auditPreview : [], parseConsentTimestamp);
         const liveIso = getApproxLastInteractionIsoFromLiveData(liveData);
         const auditTs =
             rows[0]?.consents_timestamp ??
@@ -455,19 +417,22 @@ export default function AuditSnapshotCard(props) {
             rows.find((r) => r?.code_version)?.code_version ??
             activeData?.code_version ??
             activeData?.codeVersion;
-        let displayRows = rows.slice(0, 11).map((r) => ({
+        const matching = consentSearch.trim() ? rows.filter((r) => matchesConsentId(r, consentSearch)) : rows.slice(0, DEFAULT_ROWS);
+        let displayRows = matching.map((r) => ({
             key: String(r?.uid ?? r?.shopify_consent_id ?? `${r?.consents_timestamp}-${r?.country_code}`),
+            id: consentIdOf(r),
             country: String(r?.country_code ?? "—").toUpperCase(),
             framework: shortenFramework(r?.regulation_applied),
             summary: auditRowChoiceSummary(r),
-            time: formatAuditRowClock(r?.consents_timestamp, locale),
+            ...auditRowChoices(r),
+            time: formatAuditRowDateTime(r?.consents_timestamp, locale),
         }));
-        const isDemoFeed = displayRows.length === 0 && demoMode;
+        const isDemoFeed = displayRows.length === 0 && demoMode && !consentSearch.trim();
         if (isDemoFeed) {
             displayRows = [
-                { key: "demo-1", country: "DE", framework: "GDPR", summary: "Accepted all", time: "12:47" },
-                { key: "demo-2", country: "DK", framework: "GDPR", summary: "Essential only", time: "11:36" },
-                { key: "demo-3", country: "US", framework: "CCPA", summary: "Opt-out", time: "10:45" },
+                { key: "demo-1", id: "demo-100001", country: "DE", framework: "GDPR", summary: "Accepted all", accepted: ["Marketing", "Statistics", "Functional"], declined: [], time: "3 Nov 2026, 12:47" },
+                { key: "demo-2", id: "demo-100002", country: "DK", framework: "GDPR", summary: "Essential only", accepted: [], declined: ["Marketing", "Statistics", "Functional"], time: "3 Nov 2026, 11:36" },
+                { key: "demo-3", id: "demo-100003", country: "US", framework: "CCPA", summary: "Opt-out", accepted: [], declined: ["Marketing"], time: "3 Nov 2026, 10:45" },
             ];
         }
         if (!lastConsentPhrase && isDemoFeed) {
@@ -486,7 +451,7 @@ export default function AuditSnapshotCard(props) {
             isDemoFeed,
             showLastLoading,
         };
-    }, [auditPreview, activeData, demoMode, liveData, auditPreviewLoading, locale]);
+    }, [auditPreview, activeData, demoMode, liveData, auditPreviewLoading, locale, consentSearch]);
 
     if (!platformId) return null;
 
@@ -498,13 +463,13 @@ export default function AuditSnapshotCard(props) {
         return undefined;
     })();
 
+    const fullLogSearchPath = `${auditLogPath}/${encodeURIComponent(consentSearch.trim())}`;
     const cardStatusClass = `audit-snapshot-card--health-${systemHealth.level}`;
 
     return (
-        <Link
+        <section
             className={`audit-snapshot-card ${cardStatusClass}`}
-            to={auditLogPath}
-            aria-label={`Open audit log. System status: ${systemHealth.label}. ${systemHealth.sub}`}
+            aria-label={`Audit log. System status: ${systemHealth.label}. ${systemHealth.sub}`}
         >
             <div className="audit-snapshot-card__body">
                 <div className="audit-snapshot-card__text">
@@ -546,6 +511,17 @@ export default function AuditSnapshotCard(props) {
                     </div>
                     <div className="audit-snapshot-card__feed-map-row">
                         <div className="audit-snapshot-card__feed-col">
+                            <input
+                                type="search"
+                                className="audit-snapshot-card__search"
+                                aria-label="Search by consent ID"
+                                placeholder="Search by consent ID"
+                                value={consentSearch}
+                                onChange={(e) => setConsentSearch(e.target.value)}
+                                onKeyDown={(e) => {
+                                    if (e.key === "Enter" && consentSearch.trim()) history.push(fullLogSearchPath);
+                                }}
+                            />
                             {auditSnapshotMeta.displayRows.length > 0 ? (
                                 <ul
                                     className={
@@ -622,17 +598,23 @@ export default function AuditSnapshotCard(props) {
                                                 ·
                                             </span>
                                             <span className="audit-snapshot-card__feed-time">{row.time}</span>
+                                            <span className="audit-snapshot-card__feed-detail">
+                                                {row.id && <code className="audit-snapshot-card__feed-id">{row.id}</code>}
+                                                {row.accepted.length > 0 && <span>Accepted: {row.accepted.join(", ")}</span>}
+                                                {row.declined.length > 0 && <span>Declined: {row.declined.join(", ")}</span>}
+                                            </span>
                                         </li>
                                         );
                                     })}
                                 </ul>
                             ) : !auditPreviewLoading ? (
-                                <p className="audit-snapshot-card__hint">No sample rows for this period yet.</p>
+                                <p className="audit-snapshot-card__hint">{consentSearch.trim() ? "No consent with that ID in this sample." : "No sample rows for this period yet."}</p>
                             ) : (
                                 <p className="audit-snapshot-card__hint" aria-hidden>
                                     …
                                 </p>
                             )}
+                            {consentSearch.trim() && <Link className="audit-snapshot-card__full-search" to={fullLogSearchPath}>Search the full audit log for this ID</Link>}
                         </div>
                         <div className="audit-snapshot-card__map-col">
                             <AuditComplianceMiniMap
@@ -701,10 +683,10 @@ export default function AuditSnapshotCard(props) {
                         </dl>
                     ) : null}
                     <div className="audit-snapshot-card__cta-wrap">
-                        <span className="audit-snapshot-card__cta">Open audit log</span>
+                        <Link className="audit-snapshot-card__cta" to={auditLogPath}>Open audit log</Link>
                     </div>
                 </div>
             </div>
-        </Link>
+        </section>
     );
 }

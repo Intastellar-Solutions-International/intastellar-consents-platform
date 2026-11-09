@@ -401,3 +401,28 @@
     font-size: var(--text-sm);
     color: var(--color-text-muted);
 }
+
+.audit-snapshot-card__cta { text-decoration: none; }
+.audit-snapshot-card__search {
+    width: 100%;
+    box-sizing: border-box;
+    height: 36px;
+    margin-bottom: var(--space-2);
+    padding: 0 var(--space-2);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border-strong, rgb(var(--c-white) / 0.15));
+    background: var(--color-bg-sunken);
+    color: var(--color-text-primary);
+    font: inherit;
+    font-size: var(--text-sm);
+}
+.audit-snapshot-card__search:focus-visible { outline: none; box-shadow: var(--shadow-focus); }
+.audit-snapshot-card__feed-detail {
+    flex-basis: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1) var(--space-3);
+    color: var(--color-text-muted);
+}
+.audit-snapshot-card__feed-id { font-size: var(--text-xs); color: var(--color-text-secondary); overflow-wrap: anywhere; }
+.audit-snapshot-card__full-search { display: inline-block; margin-top: var(--space-2); font-size: var(--text-sm); color: var(--color-accent-strong); }

@@ -1,4 +1,5 @@
 import { run } from "./_harness.mjs";
+import "./audit-rows.test.mjs";
 import "./compliance-status.test.mjs";
 import "./tracker-embedded.test.mjs";
 import "./analytics-report-embed-filter.test.mjs";
