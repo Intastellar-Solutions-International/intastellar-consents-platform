@@ -10,16 +10,23 @@
  * - Post-consent: the banner's observed-cookies report (`consent.count`) — a
  *   scan only sees the page before consent, so it can't provide this one.
  *
+ * Pre-consent also carries `total` (every cookie the scan listed) and
+ * `afterConsent` (total - count, null on scans without before/after tags).
+ *
  * Returns { count, label, reason, source } per stat: `count` is a number when
  * known (0 is a real answer, not "missing"); otherwise `count` is null and
  * `label` + `reason` say why there is no number.
  */
 export function preConsentCookieStat(scan) {
     if (scan && !scan.error && scan.scanned_at && Array.isArray(scan.pre_consent_cookies)) {
+        const total = scan.pre_consent_cookies.length;
+        const count = scan.consent_phase_known === true
+            ? scan.pre_consent_cookies.filter((c) => c.consentPhase === "pre").length
+            : total;
         return {
-            count: scan.consent_phase_known === true
-                ? scan.pre_consent_cookies.filter((c) => c.consentPhase === "pre").length
-                : scan.pre_consent_cookies.length,
+            count,
+            total,
+            afterConsent: scan.consent_phase_known === true ? total - count : null,
             label: null,
             reason: null,
             source: "Cookie scan",

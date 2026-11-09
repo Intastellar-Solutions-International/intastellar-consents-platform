@@ -349,8 +349,10 @@ export function LatestScan({ domain, scanSummary, scanResult, compliancePath, al
     const cookies = scanSummary?.pre_consent_cookies || [];
     const nonEU = transfers.filter((t) => t.dataRegion !== "eu").length;
     const bareDomain = domain.replace(/^www\./, "");
-    const thirdParty = cookies.filter((c) => !c.domain?.replace(/^\./, "").endsWith(bareDomain)).length;
     const preStat = preConsentCookieStat(scanResult);
+    // The party split sits under the pre-consent number, so it has to add up to it.
+    const preCookies = preStat.afterConsent != null ? cookies.filter((c) => c.consentPhase === "pre") : cookies;
+    const thirdParty = preCookies.filter((c) => !c.domain?.replace(/^\./, "").endsWith(bareDomain)).length;
     const ageDays = scanSummary?.scanned_at ? Math.floor((Date.now() - new Date(scanSummary.scanned_at).getTime()) / 86400000) : null;
     const stale = ageDays != null && ageDays >= 14;
     const age = ageDays == null ? "No scan yet" : ageDays === 0 ? "Scanned today" : `Scanned ${ageDays} day${ageDays !== 1 ? "s" : ""} ago`;
@@ -371,9 +373,10 @@ export function LatestScan({ domain, scanSummary, scanResult, compliancePath, al
                         <p className="tw-m-0 tw-text-sm tw-text-text-secondary">Pre-consent cookies</p>
                         <p className="tw-m-0 tw-text-xs tw-text-text-muted">
                             {preStat.count != null
-                                ? (thirdParty > 0 ? `${thirdParty} third-party · ${cookies.length - thirdParty} first-party` : "All first-party")
+                                ? (thirdParty > 0 ? `${thirdParty} third-party · ${preCookies.length - thirdParty} first-party` : "All first-party")
                                 : preStat.reason}
                         </p>
+                        {preStat.afterConsent != null && <p className="tw-m-0 tw-text-xs tw-text-text-muted">of {preStat.total} found · {preStat.afterConsent} set after accepting</p>}
                     </div>
                 </div>
                 <div className="tw-flex tw-flex-wrap tw-items-center tw-gap-3">

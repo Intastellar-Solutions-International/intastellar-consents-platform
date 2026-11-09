@@ -25,6 +25,10 @@ test("cookies set after the scanner accepted are not pre-consent cookies", () =>
     const pre_consent_cookies = [{ consentPhase: "pre" }, { consentPhase: "post" }, { consentPhase: "post" }];
     assert.strictEqual(preConsentCookieStat(scan(0, { pre_consent_cookies, consent_phase_known: true })).count, 1);
     assert.strictEqual(preConsentCookieStat(scan(3)).count, 3); // older scan without tags
+    const split = preConsentCookieStat(scan(0, { pre_consent_cookies, consent_phase_known: true }));
+    assert.strictEqual(split.total, 3);
+    assert.strictEqual(split.afterConsent, 2);
+    assert.strictEqual(preConsentCookieStat(scan(3)).afterConsent, null);
 });
 
 test("zero pre-consent cookies is a real answer, not a dash", () => {

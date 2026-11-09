@@ -547,7 +547,12 @@ export default function CompliancePage() {
                     label="Pre-consent cookies"
                     value={preStat.count != null ? formatNumber(preStat.count) : preStat.label}
                     noData={preStat.count == null ? preStat.reason : undefined}
-                    hint={preStat.count != null ? `Cookie scan · ${formatDate(preStat.scannedAt)}` : preStat.reason}
+                    hint={preStat.count != null ? (
+                        <>
+                            {preStat.afterConsent != null && <span className="tw-block">of {formatNumber(preStat.total)} found · {formatNumber(preStat.afterConsent)} set after accepting</span>}
+                            Cookie scan · {formatDate(preStat.scannedAt)}
+                        </>
+                    ) : preStat.reason}
                 />
                 <KpiTile
                     label="Post-consent cookies"
