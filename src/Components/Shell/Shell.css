@@ -3,13 +3,32 @@
    The right gutter keeps the docked Feedback tab (BugReport) from covering
    right-aligned controls (e.g. Dismiss on /cookie-database). */
 .main-content {
+    --page-gutter: var(--size-feedback-gutter);
+    --page-side: var(--space-5);
     flex: 1 1 0;
     min-width: 0;
     display: flex;
     flex-wrap: wrap;
     align-content: flex-start;
-    padding-right: var(--size-feedback-gutter);
+    padding-right: var(--page-gutter);
     box-sizing: border-box;
+}
+
+/* The page title bar runs to the screen edge, through the gutter; its content
+   stays lined up with the page below. */
+.main-content .infoHeader,
+.main-content .infoHeader.sticky {
+    box-sizing: border-box;
+    width: calc(100% + var(--page-gutter));
+    margin-right: calc(-1 * var(--page-gutter));
+    padding-right: var(--page-gutter) !important;
+}
+/* Some pages put the title inside their padded content area. */
+.main-content .dashboard-content > .infoHeader {
+    width: calc(100% + 2 * var(--page-side) + var(--page-gutter));
+    max-width: none;
+    margin-left: calc(-1 * var(--page-side));
+    margin-right: calc(-1 * (var(--page-side) + var(--page-gutter)));
 }
 
 /* ── New shell (feature flag newShell) ───────────────────────────────────── */
@@ -32,7 +51,7 @@
     /* Phones and small tablets: the page uses the full width and the rail
        becomes a drawer, opened from the header's menu button. */
     .main-grid.shell-new { display: block; }
-    .main-content { padding-right: 0; }
+    .main-content { --page-gutter: 0px; --page-side: var(--space-4); }
     .main-content .dashboard-content { padding-left: var(--space-4); padding-right: var(--space-4); }
     .shell-rail {
         position: fixed;
