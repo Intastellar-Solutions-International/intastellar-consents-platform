@@ -13,28 +13,11 @@ import {
     addAuditReportEntry,
     removeAuditReportEntry,
 } from "../../../Functions/auditReportsStorage";
+import { requestReportPdf, downloadBlob, reportFilename, newReportEntry, isAuditEntry } from "../../../Functions/auditReportPdf.js";
 import { useSyncDomainFromRoute } from "../../../Functions/domainPathSegments.js";
-import appStorage from '../../../Functions/storage.js';
 import { appLocale } from "../../../Functions/format.js";
 
 const useParams = window.ReactRouterDOM.useParams;
-
-function downloadBlob(blob, filename) {
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.style.display = "none";
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    window.URL.revokeObjectURL(url);
-    document.body.removeChild(a);
-}
-
-function newReportId() {
-    if (typeof crypto !== "undefined" && crypto.randomUUID) return crypto.randomUUID();
-    return `r-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
-}
 
 function formatDisplayDate(isoOrYmd) {
     if (!isoOrYmd) return "—";
@@ -116,8 +99,9 @@ export default function AuditReport() {
 
     const filteredReports = useMemo(() => {
         const q = search.trim().toLowerCase();
-        if (!q) return reports;
-        return reports.filter((r) => {
+        const audits = reports.filter(isAuditEntry);
+        if (!q) return audits;
+        return audits.filter((r) => {
             const blob = [
                 r.title,
                 r.fromDate,
@@ -135,48 +119,7 @@ export default function AuditReport() {
         });
     }, [reports, search]);
 
-    async function requestAuditPdf(fromYmd, toYmd) {
-        if (!API[id]?.exportPDF) throw new Error("Export not configured");
-        API[id].exportPDF.headers.FromDate = fromYmd;
-        API[id].exportPDF.headers.ToDate = toYmd;
-
-        const response = await fetch(API[id].exportPDF.url, {
-            method: API[id].exportPDF.method,
-            headers: {
-                ...API[id].exportPDF.headers,
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                domains: [currentDomain],
-                reportType: "portfolio_audit",
-            }),
-        });
-
-        if (response.status === 401 || response.status === 403) {
-            appStorage.removeItem("globals");
-            window.location.href = "/login";
-            return { ok: false };
-        }
-
-        if (response.headers.get("content-type")?.includes("application/pdf")) {
-            const blob = await response.blob();
-            return { ok: true, blob };
-        }
-
-        let msg = "Unknown error";
-        try {
-            const data = await response.json();
-            if (data === "Err_Login_Expired") {
-                appStorage.removeItem("globals");
-                window.location.href = "/login";
-                return { ok: false };
-            }
-            msg = data?.error || JSON.stringify(data);
-        } catch {
-            msg = await response.text();
-        }
-        return { ok: false, error: msg };
-    }
+    const requestPdf = (fromYmd, toYmd) => requestReportPdf(id, "audit", currentDomain, fromYmd, toYmd);
 
     async function handleGenerateNew() {
         if (combinedView) {
@@ -192,25 +135,16 @@ export default function AuditReport() {
 
         setGenerating(true);
         try {
-            const result = await requestAuditPdf(fromYmd, toYmdVal);
+            const result = await requestPdf(fromYmd, toYmdVal);
             if (!result.ok) {
                 if (result.error) window.alert("Failed to generate PDF: " + result.error);
                 return;
             }
             downloadBlob(
                 result.blob,
-                `Consent_Audit_${currentDomain}_${fromYmd}_to_${toYmdVal}.pdf`
+                reportFilename("audit", currentDomain, fromYmd, toYmdVal)
             );
-            const entry = {
-                id: newReportId(),
-                domain: currentDomain,
-                fromDate: fromYmd,
-                toDate: toYmdVal,
-                createdAt: new Date().toISOString(),
-                reportType: "portfolio_audit",
-                title: `Consent audit · ${currentDomain}`,
-            };
-            const next = addAuditReportEntry(orgId, currentDomain, entry);
+            const next = addAuditReportEntry(orgId, currentDomain, newReportEntry("audit", currentDomain, fromYmd, toYmdVal));
             setReports(next);
         } catch {
             window.alert("An error occurred while generating the PDF.");
@@ -223,7 +157,7 @@ export default function AuditReport() {
         if (combinedView) return;
         setRegeneratingId(entry.id);
         try {
-            const result = await requestAuditPdf(entry.fromDate, entry.toDate);
+            const result = await requestPdf(entry.fromDate, entry.toDate);
             if (!result.ok) {
                 if (result.error) window.alert("Failed to download: " + result.error);
                 return;

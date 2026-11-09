@@ -38,6 +38,7 @@ module.exports = {
             warning: rgb("warning"),
             danger: { DEFAULT: rgb("danger"), text: rgb("danger-text") },
             info: { DEFAULT: rgb("info"), text: rgb("info-text") },
+            data: rgb("data"),
             risk: { high: "var(--color-risk-high)", medium: "var(--color-risk-medium)", low: "var(--color-risk-low)" },
         },
         spacing: {

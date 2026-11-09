@@ -816,8 +816,8 @@ function consentTotalsSql($condition, $euCountryNamesList)
         COALESCE(SUM(`type` = 'marketing'  AND `value` = '1'), 0)        AS marketing,
         COALESCE(SUM(`type` = 'functional' AND `value` = '1'), 0)        AS functional,
         COALESCE(SUM(`type` = 'statics'    AND `value` = '1'), 0)        AS statics,
-        COALESCE(SUM(`type` = 'all' AND `value` = '1' AND country IN ($euCountryNamesList)), 0)     AS eu_accepted,
-        COALESCE(SUM(`type` = 'all' AND `value` = '1' AND country NOT IN ($euCountryNamesList)), 0) AS non_eu_accepted
+        COALESCE(SUM(`type` = 'all' AND `value` = '1' AND (country IN ($euCountryNamesList) OR country LIKE 'EU')), 0) AS eu_accepted,
+        COALESCE(SUM(`type` = 'all' AND `value` = '1' AND country NOT IN ($euCountryNamesList) AND country NOT LIKE 'EU' AND country != ''), 0) AS non_eu_accepted
     FROM cookiebanner_tracking_settings
     WHERE `type` IN ('all', 'marketing', 'functional', 'statics') " . $condition;
 }
@@ -837,6 +837,49 @@ function fetchConsentTotals($db, $sql)
     $res = mysqli_query($db, $sql);
     if (!$res) return null;
     return array_map('intval', mysqli_fetch_assoc($res) ?: []);
+}
+
+/**
+ * Acceptance per day, as a share of the same rows the Home "Accepted" KPI
+ * divides by. $condition starts with WHERE.
+ */
+function dailyAcceptanceSql($condition)
+{
+    return "SELECT DATE(consentsGiving) AS d,
+        COALESCE(SUM(`type` = 'all' AND `value` = '1'), 0) AS accepted,
+        COUNT(*) AS total
+    FROM cookiebanner_tracking_settings " . $condition . "
+    GROUP BY DATE(consentsGiving)";
+}
+
+function fetchDailyAcceptance($db, $sql)
+{
+    $res = mysqli_query($db, $sql);
+    if (!$res) return [];
+    $rates = [];
+    while ($row = mysqli_fetch_assoc($res)) {
+        if ((int) $row["total"] > 0) {
+            $rates[$row["d"]] = round((float) $row["accepted"] / (float) $row["total"] * 100, 1);
+        }
+    }
+    return $rates;
+}
+
+/** Adds `accepted` (%) to dailyNum rows, the same field hourly buckets carry. */
+function addDailyAcceptance(array $rows, array $current, array $previous)
+{
+    foreach ($rows as &$row) {
+        $day = date("Y-m-d", strtotime($row["date"]));
+        if (isset($current[$day])) {
+            $row["accepted"] = $current[$day];
+        }
+        $previousDay = $row["previousPeriod"]["date"] ?? null;
+        if ($previousDay !== null && isset($previous[$previousDay])) {
+            $row["previousPeriod"]["accepted"] = $previous[$previousDay];
+        }
+    }
+    unset($row);
+    return $rows;
 }
 
 $currentTotals = fetchConsentTotals($db, consentTotalsSql($andClause, $euCountryNamesList));
@@ -863,6 +906,14 @@ $compareRange = isset($_SERVER["HTTP_X_COMPARE_RANGE"]) ? $_SERVER["HTTP_X_COMPA
 
 $previousTotals = fetchConsentTotals($db, consentTotalsSql($previousAndClause, $euCountryNamesList));
 $previousAllTotal = $previousTotals["accepted"] ?? 0;
+
+if ($fromDate != $toDate && is_array($num_per_day) && count($num_per_day) > 0) {
+    $num_per_day = addDailyAcceptance(
+        $num_per_day,
+        fetchDailyAcceptance($db, dailyAcceptanceSql($whereClause . " " . $andClause)),
+        fetchDailyAcceptance($db, dailyAcceptanceSql($whereClause . " " . $previousAndClause))
+    );
+}
 
 if ($currentTotals !== null) {
     $previousTotals = $previousTotals ?? [];
@@ -1281,7 +1332,7 @@ if ($currentTotals !== null) {
             ],
             "euUsers" => $euNoneEUNum,
             "noneEUUsers" => $noneEUNum,
-            "euAcceptedRate" => ($allTotal > 0) ? (((float) $euAcceptedNum / (float) $euNoneEUNum * 100 < 0.1) ? round((float) $euAcceptedNum / (float) $euNoneEUNum * 100, 2) : round((float) $euAcceptedNum / (float) $euNoneEUNum * 100, 1)) : null,
+            "euAcceptedRate" => ($euNoneEUNum > 0) ? (((float) $euAcceptedNum / (float) $euNoneEUNum * 100 < 0.1) ? round((float) $euAcceptedNum / (float) $euNoneEUNum * 100, 2) : round((float) $euAcceptedNum / (float) $euNoneEUNum * 100, 1)) : null,
             "noneEUAcceptedRate" => ($noneEUNum > 0) ? (((float) $noneEUAcceptedNum / (float) $noneEUNum * 100 < 0.1) ? round((float) $noneEUAcceptedNum / (float) $noneEUNum * 100, 2) : round((float) $noneEUAcceptedNum / (float) $noneEUNum * 100, 1)) : null,
             "Accepted" => ($allTotal > 0) ? (((float) $accepted / (float) $allTotal * 100 < 0.1) ? round((float) $accepted / (float) $allTotal * 100, 2) : round((float) $accepted / (float) $allTotal * 100, 1)) : null,
             "Declined" => ($allTotal > 0) ? (((float) $declined / (float) $allTotal * 100 < 0.1) ? round((float) $declined / (float) $allTotal * 100, 2) : round((float) $declined / (float) $allTotal * 100, 1)) : null,

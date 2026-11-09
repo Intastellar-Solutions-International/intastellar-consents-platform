@@ -27,7 +27,7 @@ function pct(num) {
     return Number.isFinite(n) ? Math.max(0, n) : 0;
 }
 
-function normalizeShares(deviceType) {
+export function normalizeShares(deviceType) {
     const m = pct(deviceType?.mobile);
     const d = pct(deviceType?.desktop);
     const t = pct(deviceType?.tablet);

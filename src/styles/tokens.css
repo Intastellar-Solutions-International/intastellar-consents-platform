@@ -63,6 +63,10 @@
     --color-info:    rgb(var(--c-info));
     --color-info-text: rgb(var(--c-info-text));
 
+    /* Chart marks that measure something (not good/bad, so not --c-success). */
+    --c-data: 109 187 139;      /* #6dbb8b — ≥3:1 on all layers */
+    --color-data: rgb(var(--c-data));
+
     /* Risk levels — always rendered with an icon or label, never colour alone. */
     --color-risk-high:   var(--color-danger);
     --color-risk-medium: var(--color-warning);

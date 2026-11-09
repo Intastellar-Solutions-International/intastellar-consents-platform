@@ -13,6 +13,8 @@ up Tailwind rules, and no global reset changes existing pages.
   for framing cards, tags or panels. Gold *text* uses `accent-strong`.
 - **Risk levels** (high/medium/low → danger/warning/success) are always paired
   with an icon or a text label — never colour alone.
+- **`data` is for chart marks that measure something** (bars, lines). It does
+  not mean "good"; use `success` for that.
 - **Minimum text size 13px** (`--text-xs`).
 - Semantic `danger` / `info` base colours are for icons, borders and fills;
   use `danger-text` / `info-text` for text.

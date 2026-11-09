@@ -191,6 +191,16 @@ const API = {
                 "Content-Type": "application/json",
             }
         },
+        reportPdf: {
+            url: `${ScannerHost}/api/report-pdf`,
+            method: "POST",
+            headers: {
+                "Authorization": Authentication.getToken(),
+                "Organisation": Authentication.getOrganisation(),
+                "Content-Type": "application/json",
+                get ExcludeBots() { return excludeBotsHeader(); },
+            }
+        },
         exportPDF: {
             url: `${PrimaryHost}/analytics/gdpr/generatePDF`,
             method: "POST",

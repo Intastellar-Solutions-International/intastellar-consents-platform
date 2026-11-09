@@ -151,6 +151,54 @@
     text-decoration: underline;
 }
 
+/* ── Home layout ── */
+.home-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    gap: var(--space-5);
+}
+
+.home-grid-3 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+    gap: var(--space-5);
+}
+
+@media (max-width: 1100px) {
+    .home-grid { grid-template-columns: minmax(0, 1fr); }
+}
+
+.home-checks {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 170px), 1fr));
+    gap: var(--space-2);
+}
+
+.home-performance {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--space-4) var(--space-8);
+}
+
+.home-performance__intro { flex: 1 1 280px; min-width: 0; }
+
+.home-performance__stats {
+    flex: 2 1 560px;
+    min-width: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: var(--space-4);
+}
+
+.home-country-row {
+    display: grid;
+    grid-template-columns: minmax(90px, 1fr) 2.4fr 72px 62px;
+    align-items: center;
+    gap: var(--space-3);
+}
+
 /* ── Dashboard section wrapper ── */
 .dashboard-section {
     padding-top: var(--space-8);

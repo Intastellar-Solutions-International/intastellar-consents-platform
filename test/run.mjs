@@ -39,5 +39,7 @@ import "./client-reports.test.mjs";
 import "./team-insights.test.mjs";
 import "./login-translations.test.mjs";
 import "./i18n.test.mjs";
+import "./consent-trend.test.mjs";
+import "./report-html.test.mjs";
 
 await run();

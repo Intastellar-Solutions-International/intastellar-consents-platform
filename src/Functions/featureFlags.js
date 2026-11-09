@@ -3,7 +3,7 @@
  * back without a deploy.
  *
  * newShell: the Stage 3 app shell (labelled, grouped rail; top bar with
- *   date range and health pill). Off by default.
+ *   date range and health pill). On by default.
  *   Turn on/off: add ?shell=new or ?shell=classic to any URL (remembered),
  *   or Settings → Preferences.
  */
@@ -21,9 +21,9 @@ readUrlOverride();
 
 export function isNewShell() {
     try {
-        return localStorage.getItem(KEY) === "1";
+        return localStorage.getItem(KEY) !== "0";
     } catch {
-        return false;
+        return true;
     }
 }
 

@@ -11,6 +11,8 @@
  * its data (legal adequacy, banner wording) is out of scope and says so.
  */
 
+import { LOGO_DATA_URI } from "./_report-logo.js";
+
 export const REPORT_TYPES = {
     audit: { title: "Consent audit", filename: "Consent_Audit" },
     summary: { title: "Consent summary", filename: "Consent_Summary" },
@@ -117,7 +119,7 @@ function periodFacts(data) {
 
 function masthead(title, purpose, facts) {
     return `<header class="masthead">
-        <p class="brand">Intastellar Consents</p>
+        <img class="brand" src="${LOGO_DATA_URI}" alt="Intastellar Consents">
         <h1>${esc(title)}</h1>
         <p class="lead">${esc(purpose)}</p>
         <dl class="facts">${facts.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>
@@ -303,13 +305,13 @@ const STYLES = `
 html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 body { margin: 0; color: #1f1f1f; font: 10pt/1.5 Inter, Arial, Helvetica, sans-serif; font-variant-numeric: tabular-nums; }
 h1, h2, h3, p, dl, dd, ul { margin: 0; padding: 0; }
-h1, h2, .brand { font-family: Questrial, Inter, Arial, sans-serif; font-weight: 400; }
+h1, h2 { font-family: Questrial, Inter, Arial, sans-serif; font-weight: 400; }
 ul { list-style: none; }
 .fine { margin-top: 6mm; padding-top: 3mm; border-top: 1px solid #e3e3e3; font-size: 8.5pt; color: #4a4a4a; }
 .stack .pair { grid-template-columns: 1fr; gap: 3mm; }
 .masthead { padding-bottom: 7mm; border-bottom: 2px solid #c09f53; }
-.brand { font-size: 10pt; color: #7a5f24; }
-h1 { font-size: 30pt; line-height: 1.15; margin-top: 2mm; }
+.brand { display: block; height: 9mm; width: auto; margin-left: -2.3mm; }
+h1 { font-size: 30pt; line-height: 1.15; margin-top: 5mm; }
 .lead { margin-top: 1mm; font-size: 11pt; color: #4a4a4a; }
 .facts { display: grid; grid-template-columns: 1.1fr 2fr 1.1fr 1fr; gap: 5mm; margin-top: 7mm; }
 dt, .label { font-size: 8.5pt; color: #5f5f5f; }

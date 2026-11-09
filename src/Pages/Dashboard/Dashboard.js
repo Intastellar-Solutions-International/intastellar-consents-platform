@@ -3,7 +3,6 @@ import API from "../../API/api";
 import { Loading, LoadingBar } from "../../Components/widget/Loading";
 
 import "./Style.css";
-import Map from "../../Components/Charts/WorldMap/WorldMap.js";
 import { DomainContext, OrganisationContext, WorkspaceContext } from "../../App.js";
 import {
     reportsPath,
@@ -18,12 +17,12 @@ import {
 } from "../../Functions/domainVerification.js";
 import { isJson } from "../../Functions/isJson.js";
 import Crawler from "../../Components/Crawler";
-import Line from "../../Components/Charts/Line"
+import ConsentTrend from "../../Components/Charts/ConsentTrend/index.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import { defaultCompareWindowForPrimary } from "../../Components/Filter/filterDatePresets.js";
 import { LiveView } from "../../Components/LiveView/index.js";
 import { DecisionBehaviourDrawer } from "../../Components/DecisionBehaviourDrawer/index.js";
-import { PremiumTier, BasicTier, ProTier } from "../../Components/tiers/index.js";
+import { BasicTier, ProTier } from "../../Components/tiers/index.js";
 import Pie from "../../Components/Charts/Pie/index.js";
 import Widget from "../../Components/widget/widget.js";
 import ErrorBoundary from "../../Components/Error/ErrorBoundary.js";
@@ -38,22 +37,14 @@ import { fetchJsonWithTimeout } from "../../Functions/fetchWithTimeout.js";
 import { Icon } from "../../Components/ui/icons.js";
 import { appLocale, formatNumber, formatPercent } from "../../Functions/format.js";
 import { OverviewTemplate, AttentionPanel } from "../../Components/templates";
-import { KpiTile } from "../../Components/ui";
+import { KpiTile, Card, SkeletonCard } from "../../Components/ui";
+import { t } from "../../i18n/index.js";
+import QuickReport from "./QuickReport.js";
+import { ComplianceChecks, PerformanceBand, CategoryOptIn, CountryRanking, DeviceShare, DecisionTime, LatestScan, periodChangePercent } from "./HomeSections.js";
 import useDomainHealth from "../../Components/Shell/useDomainHealth.js";
 
 const { useState, useEffect, useRef, useContext, useMemo } = React;
 
-// Guard against backend calculation bugs that produce percentages outside
-// the valid [0, 100] range (e.g. stale/mismatched denominators). Clamps
-// the value and logs a warning so the issue is visible in the console.
-function safePercent(v) {
-    const n = Number(v);
-    if (!isFinite(n)) return v;
-    if (n < 0 || n > 100) {
-        console.warn("[Intastellar] Acceptance rate out of bounds:", n, "— clamped to [0, 100]");
-    }
-    return Math.min(100, Math.max(0, Math.round(n * 10) / 10));
-}
 const useParams = window.ReactRouterDOM.useParams;
 const Link = window.ReactRouterDOM.Link;
 
@@ -349,6 +340,18 @@ export default function Dashboard(props) {
     const selectedDomain = handle || currentDomain;
     const hasDomain = Boolean(selectedDomain) && selectedDomain !== "combined view";
     const healthChecks = useDomainHealth(hasDomain ? selectedDomain : null);
+    // Scans since consent-phase tagging say which vendors loaded before the
+    // scanner accepted consent; only those are a problem. Older scans
+    // can't tell, so they keep the neutral "found in the scan" wording.
+    const phaseKnown = scanSummary?.consent_phase_known === true;
+    const trackers = useMemo(() => [...new Set((scanSummary?.pre_consent_transfers || [])
+        .filter((t) => ["advertising", "fingerprinting", "social"].includes(t.category))
+        .filter((t) => !phaseKnown || t.consentPhase === "pre")
+        .map((t) => t.service || t.host))], [scanSummary, phaseKnown]);
+    // buildHealthChecks always returns [logging, last scan]; their labels are translated.
+    const logging = healthChecks?.[0];
+    const scan = healthChecks?.[1];
+    const consentsChange = useMemo(() => periodChangePercent(activeData?.dailyNum), [activeData]);
     const attentionItems = useMemo(() => {
         if (!hasDomain) return [];
         const items = [];
@@ -363,14 +366,6 @@ export default function Dashboard(props) {
                 action: { label: verificationStatus.isExpired ? "Re-verify" : "See token", to: "/settings/workspaces" },
             });
         }
-        // Scans since consent-phase tagging say which vendors loaded before the
-        // scanner accepted consent; only those are a problem. Older scans
-        // can't tell, so they keep the neutral "found in the scan" wording.
-        const phaseKnown = scanSummary?.consent_phase_known === true;
-        const trackers = [...new Set((scanSummary?.pre_consent_transfers || [])
-            .filter((t) => ["advertising", "fingerprinting", "social"].includes(t.category))
-            .filter((t) => !phaseKnown || t.consentPhase === "pre")
-            .map((t) => t.service || t.host))];
         if (trackers.length) {
             const vendors = `${trackers.length} advertising or tracking vendor${trackers.length === 1 ? "" : "s"}`;
             items.push({
@@ -383,7 +378,6 @@ export default function Dashboard(props) {
                 action: { label: "Review in Compliance", to: reportsPath(id, selectedDomain, "/compliance") },
             });
         }
-        const logging = healthChecks?.find((c) => c.label === "Logging");
         if (logging && (logging.status === "warning" || logging.status === "error")) {
             items.push({
                 id: "logging",
@@ -393,18 +387,37 @@ export default function Dashboard(props) {
                 action: { label: "Open audit log", to: reportsPath(id, selectedDomain, "/user-consents") },
             });
         }
-        const scan = healthChecks?.find((c) => c.label === "Last scan");
         if (scan && scan.status === "warning") {
             items.push({
                 id: "scan",
                 severity: "warning",
-                title: scan.detail === "not scanned yet" ? "No cookie scan yet" : "Cookie scan is out of date",
-                description: scan.detail === "not scanned yet" ? "Run a scan to see which cookies and vendors load on this domain." : `Last scan ${scan.detail}.`,
+                title: scan.detail === t("not scanned yet") ? "No cookie scan yet" : "Cookie scan is out of date",
+                description: scan.detail === t("not scanned yet") ? "Run a scan to see which cookies and vendors load on this domain." : `Last scan ${scan.detail}.`,
                 action: { label: "Scan now", onClick: triggerOverviewScan },
             });
         }
         return items;
-    }, [hasDomain, verificationStatus, scanSummary, healthChecks, id, selectedDomain]);
+    }, [hasDomain, verificationStatus, phaseKnown, trackers, logging, scan, id, selectedDomain]);
+
+    const healthCheckRow = (label, check) => ({
+        label,
+        status: !check ? "unknown" : check.status === "error" ? "danger" : check.status,
+        text: check ? check.detail : "Checking…",
+    });
+    const complianceChecks = [
+        {
+            label: "Domain verification",
+            status: verificationStatus.show ? "danger" : "ok",
+            text: verificationStatus.show ? (verificationStatus.isExpired ? "Lapsed" : "Not verified") : "Verified",
+        },
+        healthCheckRow("Consent logging", logging),
+        healthCheckRow("Cookie scan", scan),
+        {
+            label: "Before consent",
+            status: !scanSummary ? "unknown" : !trackers.length ? "ok" : phaseKnown ? "danger" : "warning",
+            text: !scanSummary ? "No scan yet" : trackers.length ? `${trackers.length} vendor${trackers.length === 1 ? "" : "s"}` : "No trackers",
+        },
+    ];
 
     return (
         <>
@@ -444,7 +457,19 @@ export default function Dashboard(props) {
                 </div> */}
                 <OverviewTemplate
                     attention={<>
-                        {hasDomain && <AttentionPanel items={attentionItems} loading={!healthChecks && !verificationStatus.show} />}
+                        <div className="home-grid">
+                            <Card>
+                                {hasDomain ? (
+                                    <div className="tw-flex tw-flex-col tw-gap-4">
+                                        <AttentionPanel items={attentionItems} loading={!healthChecks && !verificationStatus.show} />
+                                        <ComplianceChecks checks={complianceChecks} />
+                                    </div>
+                                ) : (
+                                    <p className="tw-m-0 tw-text-sm tw-text-text-secondary">Choose a domain to see what needs attention.</p>
+                                )}
+                            </Card>
+                            <QuickReport platformId={id} domain={hasDomain ? selectedDomain : null} fromDate={fromDate} toDate={toDate} />
+                        </div>
                         {/* Org-level platform stats (admin only) */}
                         {organisation != null && JSON.parse(organisation).id == 1 && !demoMode && !handle && !workspaceId ?
                             <div className="grid-container topWidget" style={{ gridTemplateColumns: "1fr 1fr 1fr", gap: "10px" }}>
@@ -454,94 +479,81 @@ export default function Dashboard(props) {
                             </div> : null
                         }
                     </>}
-                    kpis={interactionsError ? [
+                    main={interactionsError ? (
                         <SectionError
-                            key="error"
                             title="Consent statistics couldn't be loaded"
                             message={interactionsError}
                             onRetry={() => setInteractionsAttempt((n) => n + 1)}
-                        />,
-                    ] : [
-                        <KpiTile key="consents" label="Consents" loading={activeData == null} value={formatNumber(activeData?.Total)} hint="Consent interactions in the period" />,
-                        <KpiTile
-                            key="acceptance"
-                            label="Consent acceptance"
-                            loading={activeData == null}
-                            value={formatPercent(activeData?.Accepted)}
-                            delta={compareOn && Number.isFinite(activeData?.changeRate?.accepted) ? { value: activeData.changeRate.accepted, formatted: formatPercent(activeData.changeRate.accepted), goodWhen: "up", label: "vs comparison" } : undefined}
-                        />,
-                        <KpiTile
-                            key="essential"
-                            label="Essential-only rate"
-                            loading={activeData == null}
-                            value={formatPercent(activeData?.Declined)}
-                            hint="Declined analytics and marketing; only required cookies"
-                            delta={compareOn && Number.isFinite(activeData?.changeRate?.declined) ? { value: activeData.changeRate.declined, formatted: formatPercent(activeData.changeRate.declined), goodWhen: "down", label: "vs comparison" } : undefined}
-                        />,
-                        <KpiTile key="users" label="Active users" loading={activeData == null} value={formatNumber(activeData?.activeUsers)} hint="Distinct visitors with a recorded decision" />,
-                    ]}
-                    main={
-                        // No .dashboard-section here: its top padding stacked on the template gap.
-                        <div>
-                    <div className="grid-container grid-2" style={{ gridTemplateColumns: "1fr .5fr", gap: "20px" }}>
-                        {loadingCountry ? <Loading /> : countryError ? (
+                        />
+                    ) : (
+                        <PerformanceBand>
+                            <KpiTile
+                                plain
+                                label="Acceptance"
+                                loading={activeData == null}
+                                value={formatPercent(activeData?.Accepted)}
+                                delta={compareOn && Number.isFinite(activeData?.changeRate?.accepted) ? { value: activeData.changeRate.accepted, formatted: formatPercent(activeData.changeRate.accepted), goodWhen: "up", label: "vs comparison" } : undefined}
+                            />
+                            <KpiTile
+                                plain
+                                label="Essential-only"
+                                loading={activeData == null}
+                                value={formatPercent(activeData?.Declined)}
+                                delta={compareOn && Number.isFinite(activeData?.changeRate?.declined) ? { value: activeData.changeRate.declined, formatted: formatPercent(activeData.changeRate.declined), goodWhen: "down", label: "vs comparison" } : undefined}
+                            />
+                            <KpiTile
+                                plain
+                                label="Consent decisions"
+                                loading={activeData == null}
+                                value={formatNumber(activeData?.Total)}
+                                delta={compareOn && consentsChange != null ? { value: consentsChange, formatted: formatPercent(consentsChange), goodWhen: "up", label: "vs comparison" } : undefined}
+                            />
+                            <KpiTile plain label="Active users" loading={activeData == null} value={formatNumber(activeData?.activeUsers)} />
+                        </PerformanceBand>
+                    )}
+                >
+                    {!interactionsError && (
+                        <div className="home-grid">
+                            {activeData == null ? <SkeletonCard height={360} label="Loading consent trend…" /> : (
+                                <ErrorBoundary>
+                                    <ConsentTrend daily={activeData.dailyNum} granularity={activeData.granularity} fromDate={fromDate} toDate={toDate} compareOn={compareOn} />
+                                </ErrorBoundary>
+                            )}
+                            <CategoryOptIn
+                                activeData={activeData}
+                                compareOn={compareOn}
+                                footer={<Link to={analyticsMarketingPath(currentDomain)} className="tw-text-sm tw-font-semibold tw-text-accent-strong focus-visible:tw-outline-none focus-visible:tw-shadow-focus tw-rounded-sm">Marketing recoil analysis</Link>}
+                            />
+                        </div>
+                    )}
+
+                    <div className="home-grid">
+                        {loadingCountry ? <SkeletonCard height={360} label="Loading countries…" /> : countryError ? (
                             <SectionError
-                                title="The country map couldn't be loaded"
+                                title="Country data couldn't be loaded"
                                 message={countryError}
                                 onRetry={() => setCountryAttempt((n) => n + 1)}
                             />
-                        ) : <Map demoMode={demoMode} data={{ Countries: activeDataCountry?.data?.Countries, total: activeData?.Total }} />}
+                        ) : <CountryRanking countries={activeDataCountry?.data?.Countries} activeData={activeData} demoMode={demoMode} />}
                         <div className="widget no-padding">
                             <LiveView currentDomain={handle ? handle : currentDomain} demoMode={demoMode} />
                         </div>
                     </div>
-                    {activeData && (
-                        <div className="dashboard-geo-stats">
-                            <div className="dashboard-geo-stat">
-                                <span className="dashboard-geo-stat__value">{activeData.euUsers != null ? activeData.euUsers.toLocaleString(appLocale()) : "—"}</span>
-                                <span className="dashboard-geo-stat__label">EU visitors</span>
-                                {activeData.euAcceptedRate != null && <span className="dashboard-geo-stat__rate">{safePercent(activeData.euAcceptedRate).toLocaleString(appLocale())}% accepted</span>}
-                            </div>
-                            <div className="dashboard-geo-stat__divider" aria-hidden />
-                            <div className="dashboard-geo-stat">
-                                <span className="dashboard-geo-stat__value">{activeData.noneEUUsers != null ? activeData.noneEUUsers.toLocaleString(appLocale()) : "—"}</span>
-                                <span className="dashboard-geo-stat__label">Non-EU visitors</span>
-                                {activeData.noneEUAcceptedRate != null && <span className="dashboard-geo-stat__rate">{safePercent(activeData.noneEUAcceptedRate).toLocaleString(appLocale())}% accepted</span>}
-                            </div>
-                        </div>
-                    )}
-                </div>
-                    }
-                />
 
-                {/* ── 4. Decision behaviour ── */}
-                {hasTimeToDecision && (
-                    <div className="dashboard-section">
-                        <h2 className="dashboard-section-label">Decision behaviour</h2>
-                        <div className="dashboard-behaviour-kpi">
-                            <div className="dashboard-behaviour-kpi__content">
-                                <span className="dashboard-behaviour-kpi__label">Median decision time</span>
-                                <span className="dashboard-behaviour-kpi__value">
-                                    {globalTimeToDecision?.median > 0
-                                        ? `${globalTimeToDecision.median.toLocaleString(appLocale())}s`
-                                        : "—"}
-                                </span>
-                                {globalTimeToDecision?.count > 0 && (
-                                    <span className="dashboard-behaviour-kpi__sub">
-                                        {globalTimeToDecision.count.toLocaleString(appLocale())} interactions · global
-                                    </span>
-                                )}
-                            </div>
-                            <button
-                                type="button"
-                                className="dashboard-behaviour-kpi__btn"
-                                onClick={() => setBehaviourDrawerOpen(true)}
-                            >
-                                See breakdown
-                            </button>
-                        </div>
+                    <div className="home-grid-3">
+                        {!interactionsError && <DeviceShare activeData={activeData} />}
+                        {hasTimeToDecision && <DecisionTime timeToDecision={globalTimeToDecision} onOpen={() => setBehaviourDrawerOpen(true)} />}
+                        <LatestScan
+                            domain={hasDomain ? selectedDomain : null}
+                            scanSummary={scanSummary}
+                            scanResult={scanResult}
+                            compliancePath={hasDomain ? reportsPath(id, selectedDomain, "/compliance") : null}
+                            scanLoading={scanLoading}
+                            onScan={triggerOverviewScan}
+                        />
                     </div>
-                )}
+                </OverviewTemplate>
+
                 {hasTimeToDecision && (
                     <DecisionBehaviourDrawer
                         isOpen={behaviourDrawerOpen}
@@ -553,102 +565,6 @@ export default function Dashboard(props) {
                         toDate={toDate}
                     />
                 )}
-
-                {/* ── 5. Compliance ── */}
-                {id && (
-                    <div className="dashboard-section">
-                        <h2 className="dashboard-section-label">Compliance</h2>
-
-                        {/* Pre-consent scan summary cards — only when a specific domain is selected */}
-                        {(handle || currentDomain) && (handle || currentDomain) !== "combined view" && (
-                            <div className="dash-scan-cards">
-                                {(() => {
-                                    const compliancePath = reportsPath(id, handle || currentDomain, "/compliance");
-                                    const transfers = scanSummary?.pre_consent_transfers || [];
-                                    const cookies   = scanSummary?.pre_consent_cookies   || [];
-                                    const nonEU     = transfers.filter(t => t.dataRegion !== "eu").length;
-                                    const thirdParty = cookies.filter(c => {
-                                        const domain = (handle || currentDomain || "").replace(/^www\./, "");
-                                        return !c.domain?.replace(/^\./, "").endsWith(domain);
-                                    }).length;
-
-                                    const preStat = preConsentCookieStat(scanResult);
-                                    const scanAgeDays = scanSummary?.scanned_at
-                                        ? Math.floor((Date.now() - new Date(scanSummary.scanned_at).getTime()) / 86400000)
-                                        : null;
-                                    const isStale = scanAgeDays != null && scanAgeDays >= 14;
-
-                                    return (
-                                        <>
-                                            <div className="dash-scan-cards__header">
-                                                <span className={"dash-scan-cards__age" + (isStale ? " --stale" : "")}>
-                                                    {scanSummary
-                                                        ? isStale
-                                                            ? `Scan outdated · ${scanAgeDays} days ago — rescan recommended`
-                                                            : scanAgeDays === 0
-                                                                ? "Scanned today"
-                                                                : `Scanned ${scanAgeDays} day${scanAgeDays !== 1 ? "s" : ""} ago`
-                                                        : null}
-                                                </span>
-                                                <button
-                                                    type="button"
-                                                    className={"dash-scan-cards__scan-btn" + (scanLoading ? " --loading" : "")}
-                                                    onClick={triggerOverviewScan}
-                                                    disabled={scanLoading}
-                                                >
-                                                    {scanLoading ? "Scanning…" : "Scan now"}
-                                                </button>
-                                            </div>
-
-                                            <Link to={compliancePath} className={"dash-scan-card" + (!scanSummary ? " --empty" : isStale ? " --stale" : nonEU > 0 ? " --warn" : "")}>
-                                                <div className="dash-scan-card__top">
-                                                    <span className="dash-scan-card__count">
-                                                        {scanSummary ? transfers.length : "—"}
-                                                    </span>
-                                                    <span className="dash-scan-card__icon"><Icon name="globe" size={18} /></span>
-                                                </div>
-                                                <span className="dash-scan-card__label">Pre-consent transfers</span>
-                                                <span className="dash-scan-card__sub">
-                                                    {scanSummary
-                                                        ? nonEU > 0 ? `${nonEU} non-EU · ${transfers.length - nonEU} EU` : "All within EU"
-                                                        : "No scan yet"}
-                                                </span>
-                                            </Link>
-
-                                            <Link to={compliancePath} className={"dash-scan-card" + (!scanSummary ? " --empty" : isStale ? " --stale" : thirdParty > 0 ? " --warn" : "")}>
-                                                <div className="dash-scan-card__top">
-                                                    <span className="dash-scan-card__count">
-                                                        {preStat.count != null ? preStat.count : preStat.label}
-                                                    </span>
-                                                    <span className="dash-scan-card__icon"><Icon name="cookie" size={18} /></span>
-                                                </div>
-                                                <span className="dash-scan-card__label">Pre-consent cookies (scan)</span>
-                                                <span className="dash-scan-card__sub">
-                                                    {preStat.count != null
-                                                        ? thirdParty > 0 ? `${thirdParty} third-party · ${cookies.length - thirdParty} first-party` : "All first-party"
-                                                        : preStat.reason}
-                                                </span>
-                                            </Link>
-                                        </>
-                                    );
-                                })()}
-                            </div>
-                        )}
-
-                        <div className="dashboard-compliance-links">
-                            {/* Compliance itself is in the main navigation (and in "Needs attention" when relevant). */}
-                            <Link
-                                to={analyticsMarketingPath(currentDomain)}
-                                className="dashboard-compliance-link"
-                            >
-                                <span className="dashboard-compliance-link__label">Marketing recoil analysis</span>
-                                <span className="dashboard-compliance-link__arrow">→</span>
-                            </Link>
-                        </div>
-                    </div>
-                )}
-
-                <PremiumTier loading={loading} error={interactionsError} onRetry={() => setInteractionsAttempt((n) => n + 1)} activeData={activeData} fromDate={fromDate} toDate={toDate} demoMode={demoMode} compareOn={compareOn} />
             </div>
         </>
     )

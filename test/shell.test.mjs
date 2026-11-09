@@ -39,7 +39,7 @@ test("health: stale or missing scan is a warning; failed checks are unknown, not
     assert.deepStrictEqual(Array.from(failed, (x) => x.status), ["unknown", "unknown"]);
 });
 
-test("feature flag: off by default, ?shell=new / ?shell=classic switch and persist", () => {
+test("feature flag: on by default, ?shell=new / ?shell=classic switch and persist", () => {
     const flagSrc = read("src/Functions/featureFlags.js").replace(/^export /gm, "");
     const run = (search, store = new Map()) => {
         const c = vm.createContext({
@@ -49,7 +49,7 @@ test("feature flag: off by default, ?shell=new / ?shell=classic switch and persi
         vm.runInContext(flagSrc, c);
         return { on: c.isNewShell(), store };
     };
-    assert.strictEqual(run("").on, false);
+    assert.strictEqual(run("").on, true);
     const { on, store } = run("?shell=new");
     assert.strictEqual(on, true);
     assert.strictEqual(run("", store).on, true, "remembered");
