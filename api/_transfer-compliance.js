@@ -169,6 +169,17 @@ export function complianceStatus(findings, { scanned = true, phaseKnown = true }
     return { level, count, breakdown, scanned };
 }
 
+/** What an issue count is made of, for tooltips. Only tracking vendors count as a consent issue. */
+export function issueBreakdownText(breakdown) {
+    const parts = [
+        [breakdown.consent, "tracking before consent"],
+        [breakdown.mechanism, "no transfer mechanism"],
+        [breakdown.unconfirmed, "mechanism unconfirmed"],
+        [breakdown.dpa, "no confirmed DPA"],
+    ].filter(([n]) => n).map(([n, label]) => `${n} ${label}`);
+    return parts.length ? `${parts.join(" + ")}. One vendor can have several issues.` : "No open issues in the latest scan.";
+}
+
 /** Status and findings for one scan response from /api/pre-consent-transfers. */
 export function scanCompliance(scan, records) {
     const scanned = Boolean(scan && !scan.error && scan.scanned_at);

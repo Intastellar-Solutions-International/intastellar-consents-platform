@@ -4,6 +4,7 @@ import HealthPill, { StatusPill } from "../ui/HealthPill.js";
 import useDomainHealth from "./useDomainHealth.js";
 import useDomainCompliance from "./useDomainCompliance.js";
 import { isCombinedOrClearDomain, reportsPath } from "../../Functions/domainPathSegments.js";
+import { issueBreakdownText } from "../../Functions/transferCompliance.js";
 
 const { useContext } = React;
 
@@ -17,13 +18,7 @@ const LOGGING_WORD = { ok: "active", warning: "delayed", error: "no recent conse
 
 function issueSummary({ scanned, breakdown }) {
     if (!scanned) return "No cookie scan for this domain yet.";
-    const parts = [
-        [breakdown.consent, "tracking before consent"],
-        [breakdown.mechanism, "no transfer mechanism"],
-        [breakdown.dpa, "no confirmed DPA"],
-        [breakdown.unconfirmed, "unconfirmed mechanism"],
-    ].filter(([n]) => n).map(([n, label]) => `${n} ${label}`);
-    return parts.length ? parts.join(", ") : "No open issues in the latest scan.";
+    return issueBreakdownText(breakdown);
 }
 
 /** Top-bar status for the selected domain: compliance, and consent logging on its own (new shell only). */

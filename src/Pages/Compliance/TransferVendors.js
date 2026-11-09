@@ -2,7 +2,7 @@ import { Icon } from "../../Components/ui/icons.js";
 import { Badge, Button, RiskBadge, Card, Table, FilterBar, FilterSelect, FilterSearch, Drawer, Pagination } from "../../Components/ui";
 import { ListTemplate } from "../../Components/templates";
 import { formatNumber } from "../../Functions/format.js";
-import { MECHANISMS, DPA_STATES, RISK_RANK, hostRegion, groupTransfersByVendor, vendorTotals, vendorChapterV, chapterVSummary, complianceFindings } from "../../Functions/transferCompliance.js";
+import { MECHANISMS, DPA_STATES, RISK_RANK, hostRegion, groupTransfersByVendor, vendorTotals, vendorChapterV, chapterVSummary, complianceFindings, complianceStatus, issueBreakdownText } from "../../Functions/transferCompliance.js";
 
 const { useState, useMemo, useEffect, useRef } = React;
 
@@ -152,13 +152,17 @@ const FIX_KIND = {
 };
 
 /** The three findings to fix first; each button narrows the table to that finding. */
-function TopFixes({ findings, onApply }) {
+function TopFixes({ findings, breakdown, onApply }) {
     if (!findings.length) return null;
+    const makeup = issueBreakdownText(breakdown);
     return (
         <section id="open-issues" aria-labelledby="top-fixes-title" className="compliance-top-fixes tw-flex tw-flex-col tw-gap-3 tw-mb-4">
             <div className="tw-flex tw-flex-wrap tw-items-baseline tw-gap-2">
                 <h3 id="top-fixes-title" className="tw-m-0 tw-text-base tw-font-semibold tw-text-text-primary">Top fixes</h3>
-                <span className="tw-text-sm tw-text-text-muted">{Math.min(3, findings.length)} of {formatNumber(findings.length)} open issue{findings.length === 1 ? "" : "s"}</span>
+                <span className="tw-inline-flex tw-items-center tw-gap-1 tw-text-sm tw-text-text-muted" title={makeup} tabIndex={0} aria-label={`${formatNumber(findings.length)} open issues: ${makeup}`}>
+                    {Math.min(3, findings.length)} of {formatNumber(findings.length)} open issue{findings.length === 1 ? "" : "s"}
+                    <Icon name="info" size={14} />
+                </span>
             </div>
             <ol className="tw-m-0 tw-p-0 tw-list-none tw-grid tw-gap-3" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 240px), 1fr))" }}>
                 {findings.slice(0, 3).map((f) => {
@@ -233,6 +237,7 @@ export default function TransferVendors({ transfers, categoryMeta, bannerMeta, r
     const activeFilters = (category ? 1 : 0) + (region !== "all" ? 1 : 0) + (phaseKnown && phase !== "all" ? 1 : 0) + (chapter !== "all" ? 1 : 0) + (query ? 1 : 0);
     const clear = () => { setCategory(null); setRegion("all"); setPhase("all"); setChapter("all"); setQuery(""); };
     const findings = useMemo(() => complianceFindings(vendors, records, { phaseKnown }), [vendors, records, phaseKnown]);
+    const breakdown = useMemo(() => complianceStatus(findings).breakdown, [findings]);
     const tableRef = useRef(null);
     const applyFix = (finding) => {
         clear();
@@ -276,14 +281,14 @@ export default function TransferVendors({ transfers, categoryMeta, bannerMeta, r
 
     return (
         <>
-        <TopFixes findings={findings} onApply={applyFix} />
+        <TopFixes findings={findings} breakdown={breakdown} onApply={applyFix} />
         <ListTemplate
             summary={
                 <span className="tw-text-text-secondary">
                     <strong className="tw-text-text-primary">{formatNumber(totals.vendors)}</strong> vendors ·{" "}
                     <strong className="tw-text-text-primary">{formatNumber(totals.hosts)}</strong> hosts ·{" "}
                     <strong className="tw-text-text-primary">{formatNumber(totals.outsideEu)}</strong> outside the EU
-                    {phaseKnown && <> · <strong className="tw-text-text-primary">{formatNumber(totals.preConsent)}</strong> before consent</>}
+                    {phaseKnown && <> · <strong className="tw-text-text-primary">{formatNumber(totals.preConsent)}</strong> before consent{breakdown.consent !== totals.preConsent && <> (<strong className="tw-text-text-primary">{formatNumber(breakdown.consent)}</strong> tracking)</>}</>}
                     {" · "}<strong className="tw-text-text-primary">{formatNumber(chapterCounts.problem)}</strong> with no transfer mechanism
                     {" · "}<strong className="tw-text-text-primary">{formatNumber(chapterCounts.unconfirmed)}</strong> unconfirmed
                     {" · "}<strong className="tw-text-text-primary">{formatNumber(chapterCounts.withoutDpa)}</strong> without a confirmed DPA
