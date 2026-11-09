@@ -6,7 +6,7 @@
  *
  * Not intended for direct public use. Secured via CRON_SECRET.
  *
- * Body: { domain: string, companyName?: string }
+ * Body: { domain: string, companyName?: string, scanType?: "accept_all" | "first_visit" }
  *
  * Returns a scan summary once complete (called by the cron dispatcher which
  * awaits the response before moving to the next batch).
@@ -15,6 +15,7 @@
 import { createHash } from "crypto";
 import { scanDomain, describeCookie, vendorFromCookieName, categoryFromCookieName } from "./_scan-core.js";
 import { getPool } from "./_db.js";
+import { ACCEPT_ALL, FIRST_VISIT, SCAN_TYPE, scanRegion, ensureScanColumns, dispatchFirstVisitScan } from "./_scan-schema.js";
 
 function fingerprint(transfers, cookies) {
     const t = transfers.map(x => x.host).sort();
@@ -91,11 +92,14 @@ export default async function handler(req, res) {
         return res.status(405).json({ error: "Method not allowed" });
     }
 
-    const { domain: rawDomain, companyName = "", pendingId = null } = req.body || {};
+    const { domain: rawDomain, companyName = "", pendingId = null, scanType: rawType } = req.body || {};
+    const scanType = rawType === FIRST_VISIT ? FIRST_VISIT : ACCEPT_ALL;
     if (!rawDomain) return res.status(400).json({ error: "domain is required" });
 
     const domain = rawDomain.trim().toLowerCase().replace(/^https?:\/\//, "").split("/")[0];
     const db = getPool();
+    await ensureScanColumns(db);
+    const region = scanRegion();
 
     let rowId = null;
 
@@ -103,8 +107,8 @@ export default async function handler(req, res) {
         // Called from pre-consent-scan-public — reuse the pending row it already created
         try {
             await db.query(
-                `UPDATE pre_consent_scans SET status = 'in_progress' WHERE id = $1`,
-                [pendingId]
+                `UPDATE pre_consent_scans SET status = 'in_progress', scan_region = $2 WHERE id = $1`,
+                [pendingId, region]
             );
             rowId = pendingId;
         } catch (dbErr) {
@@ -116,9 +120,10 @@ export default async function handler(req, res) {
             `SELECT 1 FROM pre_consent_scans
               WHERE domain    = $1
                 AND status    = 'in_progress'
+                AND ${SCAN_TYPE} = $2
                 AND scanned_at > NOW() - INTERVAL '10 minutes'
               LIMIT 1`,
-            [domain]
+            [domain, scanType]
         );
         if (inProg.length) {
             return res.status(200).json({ domain, status: "already_in_progress" });
@@ -139,10 +144,10 @@ export default async function handler(req, res) {
         try {
             const { rows: ins } = await db.query(
                 `INSERT INTO pre_consent_scans
-                    (domain, organisation_id, scanned_at, status, transfers, cookies)
-                 VALUES ($1, $2, $3, 'in_progress', '[]', '[]')
+                    (domain, organisation_id, scanned_at, status, transfers, cookies, scan_type, scan_region)
+                 VALUES ($1, $2, $3, 'in_progress', '[]', '[]', $4, $5)
                  RETURNING id`,
-                [domain, organisationId, startTs]
+                [domain, organisationId, startTs, scanType, region]
             );
             rowId = ins[0]?.id ?? null;
         } catch (dbErr) {
@@ -152,7 +157,7 @@ export default async function handler(req, res) {
 
     // Run the scan
     console.log(`[scan-domain-task] scanning ${domain}${companyName ? ` (${companyName})` : ""}`);
-    const { transfers, cookies, durationMs, error } = await scanDomain(domain);
+    const { transfers, cookies, durationMs, error } = await scanDomain(domain, { acceptBanner: scanType !== FIRST_VISIT });
     const status    = error ? "failed" : "completed";
     const scannedAt = new Date().toISOString().slice(0, 19).replace("T", " ");
 
@@ -164,9 +169,10 @@ export default async function handler(req, res) {
                 `SELECT id, transfers, cookies
                    FROM pre_consent_scans
                   WHERE domain = $1 AND status = 'completed'
+                    AND ${SCAN_TYPE} = $2 AND scan_region IS NOT DISTINCT FROM $3
                   ORDER BY scanned_at DESC
                   LIMIT 1`,
-                [domain]
+                [domain, scanType, region]
             );
             if (prev.length) {
                 const newFp  = fingerprint(transfers, cookies);
@@ -209,11 +215,11 @@ export default async function handler(req, res) {
             await db.query(
                 `INSERT INTO pre_consent_scans
                     (domain, organisation_id, scanned_at, scan_duration_ms,
-                     status, transfers, cookies, error_message)
-                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+                     status, transfers, cookies, error_message, scan_type, scan_region)
+                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
                 [domain, organisationId, scannedAt, durationMs,
                  status, JSON.stringify(transfers), JSON.stringify(cookies),
-                 error || null]
+                 error || null, scanType, region]
             );
         }
     } catch (dbErr) {
@@ -224,11 +230,15 @@ export default async function handler(req, res) {
     console.log(`[scan-domain-task] done ${domain} — ${finalStatus} in ${durationMs}ms, ${transfers.length} transfers, ${cookies.length} cookies`);
 
     // Record unknown cookies for the discovery database (only on actual changes)
-    if (!error && !unchanged && cookies.length) {
+    if (scanType === ACCEPT_ALL && !error && !unchanged && cookies.length) {
         recordDiscoveries(db, domain, cookies).catch(err =>
             console.error(`[scan-domain-task] discovery recording failed for ${domain}:`, err.message)
         );
     }
+
+    // Each scheduled accept-all scan brings its first-visit scan along. The cron
+    // only has 90 seconds, so it can't wait for both itself.
+    if (scanType === ACCEPT_ALL && pendingId === null) await dispatchFirstVisitScan(domain);
 
     return res.status(200).json({
         domain,

@@ -17,6 +17,7 @@
 import { scanDomain } from "./_scan-core.js";
 import { summarizeConsentPhase } from "./_consent-phase.js";
 import { getPool } from "./_db.js";
+import { ACCEPT_ALL, scanRegion, ensureScanColumns, dispatchFirstVisitScan } from "./_scan-schema.js";
 
 // ── DB pool (reused across warm invocations) ──────────────────────────────────
 // ── JWT validation (mirrors PHP — checks claims only, no signature) ────────────
@@ -82,7 +83,9 @@ export default async function handler(req, res) {
     }
 
     const cleanDomain = domain.trim().toLowerCase().replace(/^https?:\/\//, "").split("/")[0];
+    const firstVisit = dispatchFirstVisitScan(cleanDomain);
     const { transfers, cookies, rejectPass, durationMs, error } = await scanDomain(cleanDomain, { rejectPass: true });
+    await firstVisit;
 
     const status    = error ? "failed" : "completed";
     const scannedAt = new Date().toISOString().slice(0, 19).replace("T", " ");
@@ -90,12 +93,13 @@ export default async function handler(req, res) {
     let id = null;
     try {
         await getPool().query(`ALTER TABLE pre_consent_scans ADD COLUMN IF NOT EXISTS reject_pass JSONB DEFAULT NULL`);
+        await ensureScanColumns(getPool());
         const { rows } = await getPool().query(
             `INSERT INTO pre_consent_scans
-                (domain, organisation_id, workspace_id, scanned_at, scan_duration_ms, status, transfers, cookies, error_message, reject_pass)
-             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+                (domain, organisation_id, workspace_id, scanned_at, scan_duration_ms, status, transfers, cookies, error_message, reject_pass, scan_type, scan_region)
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
              RETURNING id`,
-            [cleanDomain, organisationId, workspaceId || null, scannedAt, durationMs, status, JSON.stringify(transfers), JSON.stringify(cookies), error || null, rejectPass ? JSON.stringify(rejectPass) : null]
+            [cleanDomain, organisationId, workspaceId || null, scannedAt, durationMs, status, JSON.stringify(transfers), JSON.stringify(cookies), error || null, rejectPass ? JSON.stringify(rejectPass) : null, ACCEPT_ALL, scanRegion()]
         );
         id = rows[0]?.id ?? null;
     } catch (dbErr) {

@@ -1,4 +1,5 @@
 import { getPool } from "./_db.js";
+import { NOT_FIRST_VISIT, ensureScanColumns } from "./_scan-schema.js";
 /**
  * GET  /api/ropa              — list entries (org-wide + domain-specific if ?domain= provided)
  * GET  /api/ropa?id=123       — get a single entry
@@ -148,6 +149,7 @@ async function handleAutoPopulate(db, organisationId, body, res) {
         `SELECT DISTINCT ON (domain) domain, transfers
            FROM pre_consent_scans
           WHERE organisation_id = $1 ${domainFilter}
+            AND ${NOT_FIRST_VISIT}
             AND scanned_at > NOW() - INTERVAL '30 days'
           ORDER BY domain, scanned_at DESC`,
         scanParams
@@ -218,6 +220,7 @@ export default async function handler(req, res) {
 
     try {
         await ensureTable(db);
+        await ensureScanColumns(db);
 
         if (req.method === "GET") {
             const id = req.query.id ? parseInt(req.query.id, 10) : null;

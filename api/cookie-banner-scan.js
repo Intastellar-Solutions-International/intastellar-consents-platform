@@ -25,6 +25,7 @@
 
 import { scanDomain, BANNER_CATEGORY, categoryFromCookieName, describeCookie, vendorFromCookieName, reclassifyStoredTransfer } from "./_scan-core.js";
 import { getPool } from "./_db.js";
+import { NOT_FIRST_VISIT, scanRegion, ensureScanColumns } from "./_scan-schema.js";
 import { normalizeBannerDomain, originMatchesDomain } from "./_banner-domain.js";
 let tableReady = false;
 async function ensureTable(db) {
@@ -99,6 +100,7 @@ export default async function handler(req, res) {
 
     try {
         await ensureTable(db);
+        await ensureScanColumns(db);
 
         // 1. Return cached scan if recent enough
         const { rows: cached } = await db.query(
@@ -106,6 +108,7 @@ export default async function handler(req, res) {
                FROM pre_consent_scans
               WHERE domain = $1
                 AND status = 'completed'
+                AND ${NOT_FIRST_VISIT}
                 AND scanned_at > NOW() - INTERVAL '${SCAN_MAX_AGE_DAYS} days'
               ORDER BY scanned_at DESC
               LIMIT 1`,
@@ -122,6 +125,7 @@ export default async function handler(req, res) {
             `SELECT 1 FROM pre_consent_scans
               WHERE domain = $1
                 AND status = 'in_progress'
+                AND ${NOT_FIRST_VISIT}
                 AND scanned_at > NOW() - INTERVAL '10 minutes'
               LIMIT 1`,
             [domain]
@@ -140,10 +144,10 @@ export default async function handler(req, res) {
         try {
             const { rows: ins } = await db.query(
                 `INSERT INTO pre_consent_scans
-                    (domain, organisation_id, scanned_at, status, transfers, cookies)
-                 VALUES ($1, NULL, $2, 'in_progress', '[]', '[]')
+                    (domain, organisation_id, scanned_at, status, transfers, cookies, scan_region)
+                 VALUES ($1, NULL, $2, 'in_progress', '[]', '[]', $3)
                  RETURNING id`,
-                [domain, startTs]
+                [domain, startTs, scanRegion()]
             );
             rowId = ins[0]?.id ?? null;
         } catch (dbErr) {
@@ -170,9 +174,9 @@ export default async function handler(req, res) {
             } else {
                 await db.query(
                     `INSERT INTO pre_consent_scans
-                        (domain, organisation_id, scanned_at, scan_duration_ms, status, transfers, cookies, error_message)
-                     VALUES ($1, NULL, $2, $3, $4, $5, $6, $7)`,
-                    [domain, scannedAt, durationMs, status, JSON.stringify(transfers), JSON.stringify(cookies), error || null]
+                        (domain, organisation_id, scanned_at, scan_duration_ms, status, transfers, cookies, error_message, scan_region)
+                     VALUES ($1, NULL, $2, $3, $4, $5, $6, $7, $8)`,
+                    [domain, scannedAt, durationMs, status, JSON.stringify(transfers), JSON.stringify(cookies), error || null, scanRegion()]
                 );
             }
         } catch (dbErr) {

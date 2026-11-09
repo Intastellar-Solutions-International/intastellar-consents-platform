@@ -1,3 +1,4 @@
+import { SCAN_TYPE, ensureScanColumns } from "./_scan-schema.js";
 import { getPool } from "./_db.js";
 /**
  * GET /api/cron-cleanup-scans  (invoked by Vercel Cron, daily at 03:30 UTC)
@@ -15,15 +16,16 @@ export default async function handler(req, res) {
     const db = getPool();
 
     try {
+        await ensureScanColumns(db);
         // Keep the 3 most recent completed and the 3 most recent failed rows per
-        // domain. Ranked separately so a run of failed scans can't push out the
+        // domain and scan type. Ranked separately so a run of failed scans can't push out the
         // last completed scan, which Compliance and the banner still serve.
         const { rowCount: oldScans } = await db.query(`
             DELETE FROM pre_consent_scans
             WHERE id IN (
                 SELECT id FROM (
                     SELECT id,
-                           ROW_NUMBER() OVER (PARTITION BY domain, status ORDER BY scanned_at DESC) AS rn
+                           ROW_NUMBER() OVER (PARTITION BY domain, status, ${SCAN_TYPE} ORDER BY scanned_at DESC) AS rn
                     FROM   pre_consent_scans
                     WHERE  status IN ('completed', 'failed')
                 ) ranked

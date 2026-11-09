@@ -1,3 +1,4 @@
+import { NOT_FIRST_VISIT, ensureScanColumns } from "./_scan-schema.js";
 import { getPool } from "./_db.js";
 /**
  * POST /api/pre-consent-scan-public
@@ -101,10 +102,11 @@ export default async function handler(req, res) {
     let rows;
     try {
         await ensureTable(db);
+        await ensureScanColumns(db);
         const result = await db.query(
             `SELECT id, organisation_id, status, scanned_at
                FROM pre_consent_scans
-              WHERE domain = $1
+              WHERE domain = $1 AND ${NOT_FIRST_VISIT}
               ORDER BY scanned_at DESC
               LIMIT 1`,
             [cleanDomain]

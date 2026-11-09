@@ -10,6 +10,7 @@ import { reclassifyStoredTransfer } from "./_scan-core.js";
 import { summarizeConsentPhase } from "./_consent-phase.js";
 import { summarizeScan } from "./_report-html.js";
 import { normalizeBannerDomain } from "./_banner-domain.js";
+import { NOT_FIRST_VISIT, ensureScanColumns } from "./_scan-schema.js";
 
 export const NOTIFICATION_TYPES = [
     { id: "trackers_before_consent", label: "Trackers before consent", description: "A new advertising or analytics vendor loads before visitors have consented." },
@@ -138,6 +139,7 @@ export function groupScans(rows) {
 export async function syncScanNotifications(db, orgId, rawDomains, now = Date.now()) {
     const clean = [...new Set((Array.isArray(rawDomains) ? rawDomains : []).map(normalizeBannerDomain).filter(Boolean))].slice(0, MAX_DOMAINS);
     if (!clean.length) return 0;
+    await ensureScanColumns(db);
     const { rows: due } = await db.query(
         `INSERT INTO notification_sync (organisation_id) VALUES ($1)
          ON CONFLICT (organisation_id) DO UPDATE SET synced_at = NOW()
@@ -152,7 +154,7 @@ export async function syncScanNotifications(db, orgId, rawDomains, now = Date.no
             SELECT id, domain, scanned_at, status, transfers, cookies, to_jsonb(s) -> 'reject_pass' AS reject_pass,
                    ROW_NUMBER() OVER (PARTITION BY regexp_replace(domain, '^www\\.', ''), status ORDER BY scanned_at DESC) AS rn
               FROM pre_consent_scans s
-             WHERE domain = ANY($1) AND (organisation_id = $2 OR organisation_id IS NULL) AND status IN ('completed', 'failed')
+             WHERE domain = ANY($1) AND (organisation_id = $2 OR organisation_id IS NULL) AND ${NOT_FIRST_VISIT} AND status IN ('completed', 'failed')
          ) ranked WHERE rn <= 2`,
         [clean.flatMap((d) => [d, `www.${d}`]), orgId]
     );

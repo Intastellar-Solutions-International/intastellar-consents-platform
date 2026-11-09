@@ -14,6 +14,7 @@ import { getPool } from "./_db.js";
 import { normalizeBannerDomain } from "./_banner-domain.js";
 import { summarizeConsentPhase, scanConsentStep } from "./_consent-phase.js";
 import { summarizeScan } from "./_report-html.js";
+import { NOT_FIRST_VISIT, ensureScanColumns } from "./_scan-schema.js";
 
 const MAX_DOMAINS = 5000;
 const MAX_PAGE_SIZE = 100;
@@ -57,19 +58,19 @@ export function scanDomainList(domains) {
     return clean.flatMap((d) => [d, `www.${d}`]);
 }
 
-export async function listScans(db, { organisationId, domains, page = 0, pageSize = 25, search = "", sort = "scanned_at", direction = "desc" }) {
+export async function listScans(db, { organisationId, domains, page = 0, pageSize = 25, search = "", sort = "scanned_at", direction = "desc", includeFirstVisit = false }) {
     const column = SORT_COLUMNS[sort] || SORT_COLUMNS.scanned_at;
     const order = direction === "asc" ? "ASC" : "DESC";
     const size = Math.min(MAX_PAGE_SIZE, Math.max(1, parseInt(pageSize, 10) || 25));
     const offset = Math.max(0, parseInt(page, 10) || 0) * size;
     const term = `%${String(search).trim().toLowerCase().replace(/[\\%_]/g, "\\$&")}%`;
-    const where = `domain = ANY($1) AND (organisation_id = $2 OR organisation_id IS NULL) AND status = 'completed' AND LOWER(domain) LIKE $3`;
+    const where = `domain = ANY($1) AND (organisation_id = $2 OR organisation_id IS NULL) AND status = 'completed' AND LOWER(domain) LIKE $3${includeFirstVisit ? "" : ` AND ${NOT_FIRST_VISIT}`}`;
     const params = [domains, organisationId, term];
     const [{ rows: counted }, { rows }] = await Promise.all([
         db.query(`SELECT COUNT(*)::int AS total FROM pre_consent_scans WHERE ${where}`, params),
         db.query(
             // Only "Scan now" runs the reject pass, so it is what tells the two apart.
-            `SELECT id, domain, scanned_at, transfers, cookies,
+            `SELECT id, domain, scanned_at, transfers, cookies, scan_type, scan_region,
                     jsonb_typeof(to_jsonb(pre_consent_scans) -> 'reject_pass') = 'object' AS has_reject_pass
                FROM pre_consent_scans WHERE ${where}
               ORDER BY ${column} ${order}, id DESC LIMIT $4 OFFSET $5`,
@@ -99,6 +100,8 @@ function toListRow(row) {
         vendors_found: new Set(transfers.map((t) => t.service || t.host)).size,
         consent_step: scanConsentStep(transfers, cookies),
         source: row.has_reject_pass ? "dashboard" : "automatic",
+        scan_type: row.scan_type || "accept_all",
+        scan_region: row.scan_region || null,
         trackers: new Set([...scan.trackers, ...scan.analytics]).size,
     };
 }
@@ -114,13 +117,14 @@ export default async function handler(req, res) {
     const organisationId = parseInt(req.headers.organisation || "0", 10);
     if (!organisationId) return res.status(400).json({ error: "Missing Organisation header" });
 
-    const { domains, page, pageSize, search, sort, direction } = req.body || {};
+    const { domains, page, pageSize, search, sort, direction, includeFirstVisit } = req.body || {};
     const list = scanDomainList(domains);
     if (list.length > MAX_DOMAINS * 2) return res.status(400).json({ error: "Too many domains" });
     if (!list.length) return res.json({ total: 0, scans: [] });
 
     try {
-        return res.json(await listScans(getPool(), { organisationId, domains: list, page, pageSize, search, sort, direction }));
+        await ensureScanColumns(getPool());
+        return res.json(await listScans(getPool(), { organisationId, domains: list, page, pageSize, search, sort, direction, includeFirstVisit: includeFirstVisit === true }));
     } catch (err) {
         console.error("[pre-consent-scans] DB error:", err.message);
         return res.status(500).json({ error: "Internal server error" });

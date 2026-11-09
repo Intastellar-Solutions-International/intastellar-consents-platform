@@ -23,6 +23,7 @@
  */
 
 import { getPool } from "./_db.js";
+import { NOT_FIRST_VISIT, scanRegion, ensureScanColumns } from "./_scan-schema.js";
 import { normalizeBannerDomain } from "./_banner-domain.js";
 // _scan-core.js (which bundles Chromium/Puppeteer) is loaded dynamically so
 // it doesn't bloat the cold-start module graph for the common happy path.
@@ -224,7 +225,7 @@ async function runBackgroundScan(domain, db, scanCore) {
     // Skip if a scan is already running for this domain
     const { rows: active } = await db.query(
         `SELECT id FROM pre_consent_scans
-          WHERE domain = $1 AND status IN ('pending', 'in_progress')
+          WHERE domain = $1 AND status IN ('pending', 'in_progress') AND ${NOT_FIRST_VISIT}
             -- A scan that died mid-run (function timeout/crash) stays
             -- in_progress until the daily cleanup cron; don't let it block
             -- rescans for up to a day. Same 10-minute window as
@@ -240,9 +241,9 @@ async function runBackgroundScan(domain, db, scanCore) {
     try {
         const { rows } = await db.query(
             `INSERT INTO pre_consent_scans
-                 (domain, organisation_id, scanned_at, status, transfers, cookies)
-              VALUES ($1, NULL, NOW(), 'in_progress', '[]', '[]') RETURNING id`,
-            [domain]
+                 (domain, organisation_id, scanned_at, status, transfers, cookies, scan_region)
+              VALUES ($1, NULL, NOW(), 'in_progress', '[]', '[]', $2) RETURNING id`,
+            [domain, scanRegion()]
         );
         scanId = rows[0].id;
     } catch (err) {
@@ -291,6 +292,7 @@ export default async function handler(req, res) {
 
         // Auto-create the table if this is a fresh database deployment
         await ensureTable(db);
+        await ensureScanColumns(db);
 
         // Load scan-core and query for a completed scan in parallel. scan-core
         // (Chromium + Puppeteer) is cached after the first dynamic import so this
@@ -300,7 +302,7 @@ export default async function handler(req, res) {
             db.query(
                 `SELECT domain, scanned_at, transfers, cookies
                    FROM pre_consent_scans
-                  WHERE domain = $1 AND status = 'completed'
+                  WHERE domain = $1 AND status = 'completed' AND ${NOT_FIRST_VISIT}
                   ORDER BY scanned_at DESC
                   LIMIT 1`,
                 [domain]
@@ -336,7 +338,7 @@ export default async function handler(req, res) {
         // cleanup cron removes it.
         const { rows: pending } = await db.query(
             `SELECT id FROM pre_consent_scans
-              WHERE domain = $1 AND status IN ('pending', 'in_progress')
+              WHERE domain = $1 AND status IN ('pending', 'in_progress') AND ${NOT_FIRST_VISIT}
                 AND scanned_at > NOW() - INTERVAL '10 minutes'
               LIMIT 1`,
             [domain]
@@ -359,9 +361,9 @@ export default async function handler(req, res) {
         try {
             await db.query(
                 `INSERT INTO pre_consent_scans
-                     (domain, organisation_id, scanned_at, scan_duration_ms, status, transfers, cookies, error_message)
-                  VALUES ($1, NULL, $2, $3, $4, $5, $6, $7)`,
-                [domain, finalAt, durationMs, finalStatus, JSON.stringify(transfers), JSON.stringify(rawCookies), error || null]
+                     (domain, organisation_id, scanned_at, scan_duration_ms, status, transfers, cookies, error_message, scan_region)
+                  VALUES ($1, NULL, $2, $3, $4, $5, $6, $7, $8)`,
+                [domain, finalAt, durationMs, finalStatus, JSON.stringify(transfers), JSON.stringify(rawCookies), error || null, scanRegion()]
             );
         } catch (insErr) {
             console.error("[cookie-banner] auto-scan save failed:", insErr.message);

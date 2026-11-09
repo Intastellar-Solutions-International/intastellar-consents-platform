@@ -1,14 +1,19 @@
 /**
  * Comparing a domain's stored scans. A scan where the banner was accepted sees
- * far more than one where it wasn't, so only scans with the same accept step
- * are compared.
+ * far more than one where it wasn't, and sites behave differently by region, so
+ * only scans of the same type, region and accept step are compared.
  */
 const DAY_MS = 86400000;
+const REGION_LABEL = { iad1: "US East", fra1: "EU (Frankfurt)", sin1: "Singapore" };
+
+export const scanRegionLabel = (region) => REGION_LABEL[region] || region || "region not recorded";
+
+const comparable = (a, b) => a.consent_step === b.consent_step && a.scan_type === b.scan_type && a.scan_region === b.scan_region;
 
 /** scans: newest first. Adds `delta` against the next older comparable scan, or null. */
 export function addScanDeltas(scans) {
     return scans.map((scan, i) => {
-        const previous = scans.slice(i + 1).find((s) => s.consent_step === scan.consent_step);
+        const previous = scans.slice(i + 1).find((s) => comparable(s, scan));
         return {
             ...scan,
             delta: previous ? { vendors: scan.vendors_found - previous.vendors_found, cookies: scan.cookies_found - previous.cookies_found } : null,

@@ -1681,7 +1681,7 @@ export function cookieKey(c) {
     return `${c.name}|${c.domain}|${c.path}`;
 }
 
-export async function scanDomain(domain, { rejectPass: runRejectPass = false } = {}) {
+export async function scanDomain(domain, { rejectPass: runRejectPass = false, acceptBanner = true } = {}) {
     const startMs = Date.now();
     let browser;
     try {
@@ -1783,7 +1783,7 @@ export async function scanDomain(domain, { rejectPass: runRejectPass = false } =
         // flips to "post" (and the pre-consent cookie jar is snapshotted) before
         // any request IntaAcceptAll() triggers.
         let preConsentCookieKeys = null;
-        const clicked = await new Promise(resolve => {
+        const clicked = acceptBanner && await new Promise(resolve => {
             const deadline = Date.now() + 5000;
             let busy = false;
             const interval = setInterval(async () => {

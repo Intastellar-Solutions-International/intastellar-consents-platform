@@ -1,4 +1,5 @@
 import { getPool } from "./_db.js";
+import { NOT_FIRST_VISIT, ensureScanColumns } from "./_scan-schema.js";
 /**
  * GET /api/cron-scan-domains
  *
@@ -78,11 +79,13 @@ export default async function handler(req, res) {
 
     // ── 2. Filter out recently-scanned domains ────────────────────────────────
     const db = getPool();
+    await ensureScanColumns(db);
     const { rows: fresh } = await db.query(
         `SELECT DISTINCT domain
            FROM pre_consent_scans
           WHERE domain = ANY($1)
             AND status  = 'completed'
+            AND ${NOT_FIRST_VISIT}
             AND scanned_at > NOW() - INTERVAL '${FRESHNESS_DAYS} days'`,
         [allEntries.map(e => e.domain)]
     );

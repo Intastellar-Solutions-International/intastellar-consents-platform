@@ -19,7 +19,8 @@
 import { vendorFromCookieName, cookieCategory, isEuHostedHost, VENDOR_META, reclassifyStoredTransfer } from "./_scan-core.js";
 import { getPool } from "./_db.js";
 import { normalizeBannerDomain } from "./_banner-domain.js";
-import { summarizeConsentPhase } from "./_consent-phase.js";
+import { summarizeConsentPhase, applyFirstVisit, firstVisitApplies } from "./_consent-phase.js";
+import { FIRST_VISIT, NOT_FIRST_VISIT, ensureScanColumns } from "./_scan-schema.js";
 
 const BANNER_CATEGORY = {
     advertising:    "marketing",
@@ -134,12 +135,13 @@ export default async function handler(req, res) {
     const scope = `(domain = $1 OR domain = 'www.' || $1) AND (organisation_id = $2 OR organisation_id IS NULL)`;
     try {
         const db = getPool();
-        const [{ rows }, { rows: attempts }] = await Promise.all([
+        await ensureScanColumns(db);
+        const [{ rows }, { rows: attempts }, { rows: visits }] = await Promise.all([
             db.query(
-                `SELECT id, domain, scanned_at, scan_duration_ms, status, transfers, cookies,
+                `SELECT id, domain, scanned_at, scan_duration_ms, status, transfers, cookies, scan_type, scan_region,
                         to_jsonb(pre_consent_scans) -> 'reject_pass' AS reject_pass
                    FROM pre_consent_scans
-                  WHERE ${scope} AND status = 'completed'${scanId ? " AND id = $3" : ""}
+                  WHERE ${scope} AND status = 'completed'${scanId ? " AND id = $3" : ` AND ${NOT_FIRST_VISIT}`}
                   ORDER BY scanned_at DESC
                   LIMIT 1`,
                 scanId ? [domain, organisationId, scanId] : [domain, organisationId]
@@ -147,7 +149,15 @@ export default async function handler(req, res) {
             db.query(
                 `SELECT status, scanned_at, error_message
                    FROM pre_consent_scans
-                  WHERE ${scope}
+                  WHERE ${scope} AND ${NOT_FIRST_VISIT}
+                  ORDER BY scanned_at DESC
+                  LIMIT 1`,
+                [domain, organisationId]
+            ),
+            scanId ? { rows: [] } : db.query(
+                `SELECT id, scanned_at, scan_region, transfers, cookies
+                   FROM pre_consent_scans
+                  WHERE ${scope} AND status = 'completed' AND scan_type = '${FIRST_VISIT}'
                   ORDER BY scanned_at DESC
                   LIMIT 1`,
                 [domain, organisationId]
@@ -166,13 +176,26 @@ export default async function handler(req, res) {
         }
 
         const row = rows[0];
+        const visit = firstVisitApplies(row.scanned_at, visits[0]) ? visits[0] : null;
+        const merged = visit
+            ? applyFirstVisit(row.transfers || [], row.cookies || [], visit)
+            : { transfers: row.transfers || [], cookies: row.cookies || [] };
         const { enrichedTransfers, enrichedCookies } = enrichWithBannerCategory(
-            row.transfers || [],
-            row.cookies   || [],
+            merged.transfers,
+            merged.cookies,
             row.domain,
         );
         res.json({
             id:                    row.id,
+            scan_type:             row.scan_type || "accept_all",
+            scan_region:           row.scan_region || null,
+            first_visit:           visit ? {
+                id:          visit.id,
+                scanned_at:  visit.scanned_at,
+                scan_region: visit.scan_region || null,
+                transfers:   (visit.transfers || []).length,
+                cookies:     (visit.cookies || []).length,
+            } : null,
             domain:                row.domain,
             scanned_at:            row.scanned_at,
             scan_duration_ms:      row.scan_duration_ms,

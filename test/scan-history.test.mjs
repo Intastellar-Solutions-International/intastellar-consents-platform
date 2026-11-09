@@ -3,7 +3,8 @@ import assert from "node:assert/strict";
 import { test } from "./_harness.mjs";
 import { listScans, scanDomainList } from "../api/pre-consent-scans.js";
 import { addScanDeltas, formatScanDelta, staleScanDays } from "../api/_scan-history.js";
-import { scanConsentStep } from "../api/_consent-phase.js";
+import { scanConsentStep, applyFirstVisit, firstVisitApplies } from "../api/_consent-phase.js";
+import fs from "node:fs";
 
 function fakeDb(rows = [], total = rows.length) {
     const calls = [];
@@ -56,7 +57,7 @@ test("scan list: rows count what loaded before consent and leave out our own CMP
     }]);
     const { total, scans } = await run(db);
     assert.strictEqual(total, 1);
-    assert.deepStrictEqual({ ...scans[0], scanned_at: undefined }, { id: 9, domain: "a.com", scanned_at: undefined, vendors_found: 3, consent_step: "accepted", source: "automatic", phase_known: true, transfers: 1, cookies: 1, cookies_found: 2, trackers: 1 });
+    assert.deepStrictEqual({ ...scans[0], scanned_at: undefined }, { id: 9, domain: "a.com", scanned_at: undefined, vendors_found: 3, consent_step: "accepted", source: "automatic", scan_type: "accept_all", scan_region: null, phase_known: true, transfers: 1, cookies: 1, cookies_found: 2, trackers: 1 });
 });
 
 test("scan list: a scan without stored results still gets a row", async () => {
@@ -102,4 +103,43 @@ test("the stale warning needs a 30-day range and a scan over 3 days old", () => 
     assert.strictEqual(staleScanDays("2026-11-03T12:00:00Z", 30, now), 6);
     assert.strictEqual(staleScanDays("2026-11-07T12:00:00Z", 30, now), null);
     assert.strictEqual(staleScanDays("2026-11-03T12:00:00Z", 7, now), null);
+});
+
+test("deltas only compare scans of the same type and region", () => {
+    const row = (id, scan_type, scan_region, n) => ({ id, scan_type, scan_region, consent_step: "none", vendors_found: n, cookies_found: n });
+    const rows = addScanDeltas([row(3, "first_visit", "fra1", 5), row(2, "accept_all", "iad1", 20), row(1, "first_visit", "iad1", 9)]);
+    assert.strictEqual(rows[0].delta, null);
+    assert.strictEqual(rows[1].delta, null);
+});
+
+test("first visit: its results decide what loaded before consent", () => {
+    const out = applyFirstVisit(
+        [{ host: "a", consentPhase: "pre" }, { host: "b", consentPhase: "pre" }],
+        [{ name: "x", domain: "d", consentPhase: "pre" }],
+        { transfers: [{ host: "a" }, { host: "only-visit" }], cookies: [{ name: "y", domain: "d" }] },
+    );
+    assert.deepStrictEqual(out.transfers.map((t) => `${t.host}:${t.consentPhase}`), ["a:pre", "b:post", "only-visit:pre"]);
+    assert.deepStrictEqual(out.cookies.map((c) => `${c.name}:${c.consentPhase}`), ["x:post", "y:pre"]);
+});
+
+test("first visit: an old one doesn't speak for a newer scan", () => {
+    assert.ok(firstVisitApplies("2026-11-09", { scanned_at: "2026-11-05" }));
+    assert.ok(!firstVisitApplies("2026-11-09", { scanned_at: "2026-10-01" }));
+    assert.ok(!firstVisitApplies("2026-11-09", undefined));
+});
+
+test("first visit: the scan list leaves it out unless asked", async () => {
+    const hidden = fakeDb();
+    await run(hidden);
+    assert.match(hidden.calls[0].sql, /first_visit/);
+    const shown = fakeDb();
+    await run(shown, { includeFirstVisit: true });
+    assert.doesNotMatch(shown.calls[0].sql, /first_visit/);
+});
+
+test("first visit: every reader of the scan table excludes it", () => {
+    for (const file of ["cookie-banner", "cookie-banner-scan", "cron-scan-domains", "pre-consent-transfers", "pre-consent-scans", "pre-consent-scan-public", "_scan-notifications", "ropa"]) {
+        assert.match(fs.readFileSync(new URL(`../api/${file}.js`, import.meta.url), "utf8"), /\$\{NOT_FIRST_VISIT\}/, file);
+    }
+    assert.match(fs.readFileSync(new URL("../api/cron-cleanup-scans.js", import.meta.url), "utf8"), /PARTITION BY domain, status, \$\{SCAN_TYPE\}/);
 });

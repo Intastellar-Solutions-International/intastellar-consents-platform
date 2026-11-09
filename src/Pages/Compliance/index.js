@@ -16,11 +16,11 @@ import appStorage from '../../Functions/storage.js';
 import { useExcludeBots } from "../../Functions/botFilter.js";
 import { preConsentCookieStat, postConsentCookieStat } from "../../Functions/cookieStats.js";
 import { Icon } from "../../Components/ui/icons.js";
-import { formatDate, formatNumber } from "../../Functions/format.js";
+import { formatDate, formatDateTime, formatNumber } from "../../Functions/format.js";
 import TransferVendors from "./TransferVendors.js";
 import { chapterVLabels } from "../../Functions/transferCompliance.js";
 import { COMPLIANCE_CHANGED_EVENT } from "../../Components/Shell/useDomainCompliance.js";
-import { scanConsentStep, staleScanDays } from "../../Functions/scanHistory.js";
+import { scanConsentStep, staleScanDays, scanRegionLabel } from "../../Functions/scanHistory.js";
 import ScanHistoryPanel from "./ScanHistoryPanel.js";
 import DsrSummaryCard from "./DsrSummaryCard.js";
 import { KpiTile, Button, Tabs, TabPanel, EmptyState } from "../../Components/ui";
@@ -362,7 +362,11 @@ export default function CompliancePage() {
             .then((data) => {
                 setPreConsentTransfers(data);
                 // The stored scan carries what this response lacks, such as EU-hosted hosts.
-                if (!data.error) loadScan(null);
+                if (!data.error) {
+                    loadScan(null);
+                    // The first-visit scan runs alongside and can finish a little later.
+                    setTimeout(() => { loadScan(null); window.dispatchEvent(new Event(COMPLIANCE_CHANGED_EVENT)); }, 30000);
+                }
                 window.dispatchEvent(new Event(COMPLIANCE_CHANGED_EVENT));
             })
             .catch(console.error)
@@ -375,12 +379,12 @@ export default function CompliancePage() {
         const api = API[id]?.listPreConsentScans;
         if (!api || !domain || domain === "combined view") { setScanHistory([]); return undefined; }
         const ac = new AbortController();
-        fetch(api.url, { method: api.method, headers: api.headers, signal: ac.signal, body: JSON.stringify({ domains: [domain], pageSize: 10 }) })
+        fetch(api.url, { method: api.method, headers: api.headers, signal: ac.signal, body: JSON.stringify({ domains: [domain], pageSize: 10, includeFirstVisit: true }) })
             .then((r) => (r.ok ? r.json() : null))
             .then((data) => setScanHistory(Array.isArray(data?.scans) ? data.scans : []))
             .catch((e) => { if (e.name !== "AbortError") setScanHistory([]); });
         return () => ac.abort();
-    }, [id, handle, currentDomain, latestScanAt]);
+    }, [id, handle, currentDomain, latestScanAt, preConsentTransfers?.first_visit?.id]);
 
     useEffect(() => {
         const d = handle || currentDomain || "";
@@ -585,9 +589,19 @@ export default function CompliancePage() {
                                     {preConsentTransfers?.scanned_at && (
                                         <p className="compliance-transfers__note">
                                             <strong>Scan mode:</strong> simulated script blocking: <strong>No</strong>.
-                                            {" "}A real browser loads the live site from the US, the homepage and up to 4 subpages, so only what the site itself blocks is blocked.
-                                            {" "}{CONSENT_STEP_NOTE[scanConsentStep(preConsentTransfers.pre_consent_transfers, preConsentTransfers.pre_consent_cookies)]}
-                                            {" "}A site that decides by visitor location can behave differently for EU visitors.
+                                            {" "}A real browser loads the live site, the homepage and up to 4 subpages, so only what the site itself blocks is blocked.
+                                            {preConsentTransfers.first_visit ? (
+                                                <>
+                                                    {" "}Before-consent results come from a first-visit scan that never accepts the banner
+                                                    ({scanRegionLabel(preConsentTransfers.first_visit.scan_region)}, {formatDateTime(preConsentTransfers.first_visit.scanned_at)}).
+                                                    {" "}The cookie list comes from a scan that accepts it.
+                                                </>
+                                            ) : (
+                                                <>
+                                                    {" "}{CONSENT_STEP_NOTE[scanConsentStep(preConsentTransfers.pre_consent_transfers, preConsentTransfers.pre_consent_cookies)]}
+                                                    {" "}This scan ran from the US, and a site that decides by visitor location can behave differently for EU visitors.
+                                                </>
+                                            )}
                                         </p>
                                     )}
                                     {preConsentTransfers?.scanned_at && (
@@ -620,7 +634,7 @@ export default function CompliancePage() {
                                     <Button size="sm" variant="secondary" onClick={triggerScan} loading={scanLoading}>Scan now</Button>
                                 </div>
                             )}
-                            <ScanHistoryPanel scans={scanHistory} currentId={preConsentTransfers?.id} basePath={location.pathname} />
+                            <ScanHistoryPanel scans={scanHistory} currentId={preConsentTransfers?.id} firstVisitId={preConsentTransfers?.first_visit?.id} basePath={location.pathname} />
 
                             {/* ── Tabs (shown once a scan exists) ── */}
                             {preConsentTransfers && !scanLoading && !preConsentTransfers.error && (
