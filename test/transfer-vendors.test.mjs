@@ -77,3 +77,12 @@ test("vendor consent phase: pre if any host loaded before consent, post if all a
     assert.strictEqual(phaseOf(undefined), null);       // scan made before phase tagging
     assert.strictEqual(phaseOf("post", undefined), null);
 });
+
+test("one company reads the same across its products, including scans stored before the fix", () => {
+    for (const service of ["Google Marketing Platform", "Google Inc.", "Google LLC", "Google Reviews"]) {
+        const t = reclassifyStoredTransfer({ host: "x.example", service, category: "advertising", transferMechanism: null });
+        assert.strictEqual(t.transferMechanism, "EU-US Data Privacy Framework", service);
+    }
+    assert.strictEqual(reclassifyStoredTransfer({ host: "a", service: "HubSpot Cookie Banner", category: "cmp" }).transferMechanism, "EU-US Data Privacy Framework");
+    assert.strictEqual(reclassifyStoredTransfer({ host: "a", service: "Unknown Co", category: "third-party" }).transferMechanism, undefined);
+});

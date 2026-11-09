@@ -146,7 +146,9 @@ export function complianceFindings(vendors, records, { phaseKnown = false } = {}
             const hosts = v.hosts.filter((h) => h.consentPhase === "pre").length;
             add("consent", `${v.vendor} loads ${hosts} host${hosts === 1 ? "" : "s"} before consent`, hosts);
         }
-        if (chapter.status === "problem") add("mechanism", `${v.vendor} has no transfer mechanism`);
+        // "None" is what someone recorded; otherwise we just have nothing on file,
+        // which isn't the same as the transfer being unlawful.
+        if (chapter.status === "problem") add("mechanism", chapter.mechanism?.id === "none" ? `${v.vendor} has no transfer mechanism` : `No transfer mechanism on record for ${v.vendor}`);
         if (chapter.needsDpa) add("dpa", `No confirmed DPA with ${v.vendor}`);
         if (chapter.status === "unconfirmed" || chapter.dateMissing) add("unconfirmed", `${v.vendor}'s transfer mechanism is not confirmed`);
     }
@@ -174,7 +176,7 @@ export function complianceStatus(findings, { scanned = true, phaseKnown = true }
 export function issueBreakdownText(breakdown) {
     const parts = [
         [breakdown.consent, "tracking before consent"],
-        [breakdown.mechanism, "no transfer mechanism"],
+        [breakdown.mechanism, "no mechanism on record"],
         [breakdown.unconfirmed, "mechanism unconfirmed"],
         [breakdown.dpa, "no confirmed DPA"],
     ].filter(([n]) => n).map(([n, label]) => `${n} ${label}`);
@@ -194,6 +196,6 @@ export function scanCompliance(scan, records) {
 export function chapterVLabels(vendor, record) {
     const c = vendorChapterV(vendor, record);
     const name = c.mechanism?.label || "";
-    const transfer = c.status === "not_required" ? (name || "Not required (EU)") : c.status === "unconfirmed" ? `${name} (unconfirmed)` : c.status === "problem" ? "None documented" : name;
+    const transfer = c.status === "not_required" ? (name || "Not required (EU)") : c.status === "unconfirmed" ? `${name} (unconfirmed)` : c.status === "problem" ? (c.mechanism?.id === "none" ? "None" : "Not documented") : name;
     return { transfer, dpa: DPA_STATES.find((d) => d.id === c.dpa)?.label || "Unknown" };
 }

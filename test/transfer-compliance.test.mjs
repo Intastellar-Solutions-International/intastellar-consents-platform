@@ -48,7 +48,8 @@ test("chapter V: the summary counts each state", () => {
 
 test("chapter V: the CSV says when a value is unconfirmed", () => {
     assert.strictEqual(chapterVLabels(us("Standard Contractual Clauses"), undefined).transfer, "Standard Contractual Clauses (unconfirmed)");
-    assert.strictEqual(chapterVLabels(us(null), undefined).transfer, "None documented");
+    assert.strictEqual(chapterVLabels(us(null), undefined).transfer, "Not documented");
+    assert.strictEqual(chapterVLabels(us(null), { mechanism: "none" }).transfer, "None");
 });
 
 test("vendor records: only known values are accepted", () => {

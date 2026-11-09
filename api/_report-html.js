@@ -118,7 +118,7 @@ function chapterVFindings(report) {
     const problems = report.rows.filter((r) => r.chapter.status === "problem");
     const unconfirmed = report.rows.filter((r) => r.chapter.status === "unconfirmed");
     const noDpa = report.rows.filter((r) => r.chapter.needsDpa);
-    if (problems.length) out.push({ severity: "danger", title: `${plural(problems.length, "vendor")} outside the EU with no transfer mechanism`, detail: `${names(problems)}. GDPR Chapter V requires a documented basis for these transfers.` });
+    if (problems.length) out.push({ severity: "danger", title: `${plural(problems.length, "vendor")} outside the EU with no transfer mechanism on record`, detail: `${names(problems)}. GDPR Chapter V requires a documented basis for these transfers.` });
     if (unconfirmed.length) out.push({ severity: "warning", title: `${plural(unconfirmed.length, "transfer mechanism")} not yet confirmed`, detail: `${names(unconfirmed)}. These are suggestions from our vendor catalogue until your organisation confirms them.` });
     if (noDpa.length) out.push({ severity: "warning", title: `${plural(noDpa.length, "vendor")} without a confirmed data processing agreement`, detail: names(noDpa) });
     if (!out.length) out.push({ severity: "ok", title: "Every vendor has a documented transfer basis and DPA", detail: "As recorded by your organisation." });

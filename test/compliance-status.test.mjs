@@ -75,6 +75,12 @@ test("the issue count reconciles with the summary line", () => {
 });
 
 test("the tooltip spells out the sum", () => {
-    assert.strictEqual(issueBreakdownText({ consent: 10, mechanism: 5, unconfirmed: 12, dpa: 18 }), "10 tracking before consent + 5 no transfer mechanism + 12 mechanism unconfirmed + 18 no confirmed DPA. One vendor can have several issues.");
+    assert.strictEqual(issueBreakdownText({ consent: 10, mechanism: 5, unconfirmed: 12, dpa: 18 }), "10 tracking before consent + 5 no mechanism on record + 12 mechanism unconfirmed + 18 no confirmed DPA. One vendor can have several issues.");
     assert.strictEqual(issueBreakdownText({ consent: 0, mechanism: 0, unconfirmed: 0, dpa: 0 }), "No open issues in the latest scan.");
+});
+
+test("a gap in the record doesn't read as a recorded None", () => {
+    const vendors = groupTransfersByVendor([host("Gap", "cdn", "post", { transferMechanism: null })]);
+    assert.strictEqual(complianceFindings(vendors, {}).find((f) => f.kind === "mechanism").title, "No transfer mechanism on record for Gap");
+    assert.strictEqual(complianceFindings(vendors, { Gap: { mechanism: "none" } }).find((f) => f.kind === "mechanism").title, "Gap has no transfer mechanism");
 });

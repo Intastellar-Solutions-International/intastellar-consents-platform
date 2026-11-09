@@ -490,6 +490,21 @@ export const VENDOR_META = {
     "OpenAI":               { description: "AI platform operator; sets a first-party conversion identity cookie and a consent-preference cookie for its advertising pixel integration", privacyUrl: "https://openai.com/policies/privacy-policy", legalBasis: "consent", transferMechanism: "Standard Contractual Clauses" },
 };
 
+// Other products or names of a company already in the catalogue share its
+// transfer basis, so one company doesn't read as both certified and undocumented.
+const SAME_COMPANY = {
+    "Google Marketing Platform": "Google Ads",
+    "Google Reviews": "Google Ads",
+    "Google Inc.": "Google Ads",
+    "Google LLC": "Google Ads",
+    "HubSpot Cookie Banner": "HubSpot",
+    "Twitter / X CDN": "Twitter / X Pixel",
+};
+for (const [name, company] of Object.entries(SAME_COMPANY)) {
+    const { privacyUrl, transferMechanism } = VENDOR_META[company];
+    VENDOR_META[name] = { privacyUrl, transferMechanism, ...VENDOR_META[name] };
+}
+
 export const CATEGORY_ORDER = { advertising: 0, fingerprinting: 1, analytics: 2, social: 3, functional: 4, cdn: 5, "third-party": 6 };
 
 export const BANNER_CATEGORY = {
@@ -1501,10 +1516,16 @@ export function classifyHost(hostname) {
 // unclassified then ("third-party") but is in TRACKERS now — e.g.
 // cdn.intastellar.eu, Intastellar Consents' CDN — is reclassified on read,
 // so existing scans don't need a rescan. Classified hosts are left as stored.
+function withCatalogueMechanism(t) {
+    const meta = VENDOR_META[t?.service];
+    if (!meta?.transferMechanism || t.transferMechanism) return t;
+    return { ...t, transferMechanism: meta.transferMechanism, privacyUrl: t.privacyUrl || meta.privacyUrl || null };
+}
+
 export function reclassifyStoredTransfer(t) {
-    if (!t?.host || (t.category && t.category !== "third-party")) return t;
+    if (!t?.host || (t.category && t.category !== "third-party")) return withCatalogueMechanism(t);
     const match = classifyHost(t.host);
-    if (!match) return t;
+    if (!match) return withCatalogueMechanism(t);
     const meta = VENDOR_META[match.service] || {};
     return {
         ...t,

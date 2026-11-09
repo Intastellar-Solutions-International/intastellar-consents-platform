@@ -26,7 +26,8 @@ function TransferBadge({ chapter }) {
     if (chapter.status === "ok" && chapter.dateMissing) return <Badge tone="warning" icon="alert-triangle">{short} · no date</Badge>;
     if (chapter.status === "ok") return <Badge tone="success" icon="check-circle">{short}</Badge>;
     if (chapter.status === "unconfirmed") return <Badge tone="warning" icon="alert-triangle">{short} · unconfirmed</Badge>;
-    if (chapter.status === "problem") return <Badge tone="danger" icon="alert-octagon">{short === "None" ? "None" : "Not documented"}</Badge>;
+    if (chapter.status === "problem" && short === "None") return <Badge tone="danger" icon="alert-octagon">None</Badge>;
+    if (chapter.status === "problem") return <span title="Nothing on record yet. This doesn't mean the vendor has no safeguard, so check and record it."><Badge tone="warning" icon="alert-triangle">Not documented</Badge></span>;
     return <Badge tone="neutral">Not required</Badge>;
 }
 
@@ -152,7 +153,7 @@ const CHAPTER_FILTER = {
 };
 const FIX_KIND = {
     consent: { tone: "danger", icon: "alert-octagon", label: "Consent issue", chapter: "all", phase: "pre" },
-    mechanism: { tone: "danger", icon: "alert-octagon", label: "Chapter V transfer", chapter: "no_mechanism" },
+    mechanism: { tone: "warning", icon: "alert-triangle", label: "Chapter V transfer", chapter: "no_mechanism" },
     dpa: { tone: "warning", icon: "alert-triangle", label: "DPA", chapter: "no_dpa" },
     unconfirmed: { tone: "warning", icon: "alert-triangle", label: "Chapter V transfer", chapter: "unconfirmed" },
 };
@@ -298,7 +299,7 @@ export default function TransferVendors({ transfers, categoryMeta, bannerMeta, r
                     <strong className="tw-text-text-primary">{formatNumber(totals.hosts)}</strong> hosts ·{" "}
                     <strong className="tw-text-text-primary">{formatNumber(totals.outsideEu)}</strong> outside the EU
                     {phaseKnown && <> · <strong className="tw-text-text-primary">{formatNumber(totals.preConsent)}</strong> before consent{breakdown.consent !== totals.preConsent && <> (<strong className="tw-text-text-primary">{formatNumber(breakdown.consent)}</strong> tracking)</>}</>}
-                    {" · "}<strong className="tw-text-text-primary">{formatNumber(chapterCounts.problem)}</strong> with no transfer mechanism
+                    {" · "}<strong className="tw-text-text-primary">{formatNumber(chapterCounts.problem)}</strong> with no mechanism on record
                     {" · "}<strong className="tw-text-text-primary">{formatNumber(chapterCounts.unconfirmed)}</strong> unconfirmed
                     {" · "}<strong className="tw-text-text-primary">{formatNumber(chapterCounts.withoutDpa)}</strong> without a confirmed DPA
                     {onSaveRecord && <span className="tw-block tw-mt-1 tw-text-text-muted">Select Edit on a vendor to set its DPA status, mechanism date, owner, notes and evidence.</span>}
@@ -345,7 +346,7 @@ export default function TransferVendors({ transfers, categoryMeta, bannerMeta, r
                                 options={[{ value: "all", label: "Before or after consent" }, { value: "pre", label: "Pre-consent only" }, { value: "post", label: "After consent only" }]}
                             />
                         )}
-                        <FilterSelect label="Chapter V" value={chapter} onChange={setChapter} options={[{ value: "all", label: "All vendors" }, { value: "action", label: "Needs action" }, { value: "no_mechanism", label: "No transfer mechanism" }, { value: "unconfirmed", label: "Mechanism unconfirmed" }, { value: "no_dpa", label: "No confirmed DPA" }]} />
+                        <FilterSelect label="Chapter V" value={chapter} onChange={setChapter} options={[{ value: "all", label: "All vendors" }, { value: "action", label: "Needs action" }, { value: "no_mechanism", label: "No mechanism on record" }, { value: "unconfirmed", label: "Mechanism unconfirmed" }, { value: "no_dpa", label: "No confirmed DPA" }]} />
                     </FilterBar>
                 </>
             }
