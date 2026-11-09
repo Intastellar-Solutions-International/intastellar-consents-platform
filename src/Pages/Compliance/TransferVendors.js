@@ -350,6 +350,7 @@ export default function TransferVendors({ transfers, categoryMeta, bannerMeta, r
             <Card padding="none">
                 <Table
                     caption="Vendors receiving data, grouped from the scanned hosts"
+                    className="transfers-table"
                     columns={columns}
                     rows={pageRows}
                     getRowKey={(v) => v.vendor}

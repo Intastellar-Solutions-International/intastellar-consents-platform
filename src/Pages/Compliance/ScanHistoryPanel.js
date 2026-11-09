@@ -22,11 +22,13 @@ export default function ScanHistoryPanel({ scans, currentId, basePath }) {
                     return (
                         <li key={s.id}>
                             <Link to={`${basePath}?scan=${s.id}`} className={"compliance-scan-history__row" + (isCurrent ? " --current" : "")} aria-current={isCurrent ? "true" : undefined}>
-                                <span className="compliance-scan-history__time">{formatDateTime(s.scanned_at)}</span>
+                                <span className="compliance-scan-history__when">
+                                    <span className="compliance-scan-history__time">{formatDateTime(s.scanned_at)}</span>
+                                    {isCurrent && <Badge tone="info" icon="check-circle">Current (used for this page)</Badge>}
+                                </span>
                                 <span>{SOURCE[s.source]} · {STEP[s.consent_step]} · {s.domain}</span>
                                 <span>{formatNumber(s.vendors_found)} vendors · {formatNumber(s.cookies_found)} cookies</span>
                                 <span>{formatScanDelta(s.delta)}</span>
-                                {isCurrent && <span><Badge tone="info" icon="check-circle">Current (used for this page)</Badge></span>}
                             </Link>
                         </li>
                     );

@@ -144,3 +144,8 @@
 @media (max-width: 480px) {
     .help-trigger { display: none; }
 }
+
+/* Where the top bar is tight, the status pill stays; the audit card still shows logging. */
+@media (max-width: 1180px) {
+    .shell-logging-pill { display: none; }
+}

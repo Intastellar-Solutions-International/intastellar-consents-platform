@@ -1452,7 +1452,7 @@
 .compliance-scan-history__list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-1); }
 .compliance-scan-history__row {
     display: grid;
-    grid-template-columns: minmax(170px, 1fr) minmax(0, 1.6fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, auto);
+    grid-template-columns: minmax(200px, 1.2fr) minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1fr);
     align-items: center;
     gap: var(--space-3);
     padding: var(--space-2) var(--space-3);
@@ -1468,4 +1468,19 @@
 .compliance-scan-history__time { color: var(--color-text-primary); font-variant-numeric: tabular-nums; }
 @media (max-width: 900px) {
     .compliance-scan-history__row { grid-template-columns: minmax(0, 1fr); gap: var(--space-1); }
+}
+
+.compliance-scan-history__when { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-1); }
+
+/* Wide vendor tables scroll sideways with the vendor name kept in view. */
+.transfers-table tr > :first-child {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    background: var(--color-bg-raised);
+    box-shadow: 1px 0 0 var(--color-border-subtle);
+}
+.transfers-table thead tr > :first-child { z-index: 11; }
+@media (max-width: 640px) {
+    .transfers-table td:first-child > span { max-width: 150px; }
 }
