@@ -110,7 +110,7 @@ export default function QuickReport({ platformId, domain, fromDate, toDate }) {
                     <label className={LABEL}>
                         Period
                         <select className={FIELD} value={period} onChange={(e) => { setPeriod(e.target.value); setResult(null); }} style={{ colorScheme: "dark" }}>
-                            <option value="page">Selected on this page</option>
+                            <option value="page">Same as page</option>
                             {PERIODS.map(([value, label]) => <option key={value} value={value}>{label}</option>)}
                         </select>
                     </label>

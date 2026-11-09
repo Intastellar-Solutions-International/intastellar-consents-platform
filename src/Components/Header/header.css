@@ -30,7 +30,7 @@
 }
 
 .profileImage {
-    width: 80px;
+    width: max-content;
 }
 
 .clock {
@@ -529,7 +529,7 @@
     }
 
     .main-grid {
-        padding-top: 121px;
+        padding-top: var(--header-height, 121px);
     }
 
     .menu {
@@ -669,11 +669,12 @@
     }
 
     .infoHeader.sticky {
-        top: 121px;
+        top: var(--header-height, 121px);
     }
 
     .infoHeader .dashboard-content {
-        grid-template-columns: .5fr 1fr !important;
+        grid-template-columns: minmax(0, 1fr) !important;
+        row-gap: var(--space-2);
     }
 
     .infoHeader .crawl-cta {
@@ -843,7 +844,7 @@
     }
 
     /* Shift the sticky page title clear of the fixed sidebar toggle */
-    .infoHeader .dashboard-content {
+    .main-content:has(.sidebar-mobile-toggle) .infoHeader .dashboard-content {
         padding-left: var(--space-14);
     }
 }

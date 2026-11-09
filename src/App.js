@@ -89,6 +89,7 @@ import EventDebugger from "./Pages/Analytics/EventDebugger.js";
 import Styleguide from "./Pages/Styleguide/index.js";
 import CookieDatabase from "./Pages/CookieDatabase";
 import PlatformPage from "./Pages/Platform";
+import GettingStarted from "./Pages/Onboarding/GettingStarted.js";
 import TierGate from "./Components/TierGate";
 import DevTierSwitcher from "./Components/DevTierSwitcher";
 import { canAccess, FEATURE_TIERS } from "./Functions/tier.js";
@@ -683,6 +684,9 @@ export default function App() {
                                             <ErrorBoundary>
                                                 <Signup />
                                             </ErrorBoundary>
+                                        </Route>
+                                        <Route path="/:id/onboarding" exact>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : <ErrorBoundary><GettingStarted /></ErrorBoundary>}
                                         </Route>
                                         <Route path="/:id/domains" exact>
                                             {

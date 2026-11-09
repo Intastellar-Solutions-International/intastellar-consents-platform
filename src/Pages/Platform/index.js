@@ -86,8 +86,8 @@ export default function PlatformPage() {
     const dateCell = (d) => (d ? formatDate(d) : "—");
     const columns = [
         { key: "domain", header: "Site", sortable: true, render: (s) => <span className="tw-text-text-primary">{toUnicodeDomain(s.domain)}</span> },
-        { key: "company", header: "Company", render: (s) => s.company || "—" },
-        { key: "installed", header: "Installed", sortable: true, render: (s) => dateCell(s.installed) },
+        { key: "company", header: "Company", hideOnMobile: true, render: (s) => s.company || "—" },
+        { key: "installed", header: "Installed", sortable: true, hideOnMobile: true, render: (s) => dateCell(s.installed) },
         { key: "lastSeen", header: "Last seen", sortable: true, render: (s) => dateCell(s.lastSeen) },
         { key: "status", header: "Status", render: (s) => <Badge tone={STATUS[s.status].tone} icon={STATUS[s.status].icon}>{STATUS[s.status].label}</Badge> },
     ];
@@ -98,10 +98,10 @@ export default function PlatformPage() {
     }
 
     return (
-        <div className="dashboard-content">
+        <>
             <StickyPageTitle title="Platform" />
-            <div className="tw-flex tw-flex-col tw-gap-5">
-                <section aria-label="Install figures" className="tw-grid tw-gap-4" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))" }}>
+            <div className="dashboard-content tw-flex tw-flex-col tw-gap-5">
+                <section aria-label="Install figures" className="tw-grid tw-gap-4" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))" }}>
                     <KpiTile label="Websites" loading={statsLoading} error={tileError} value={formatNumber(stats?.Total)} />
                     <KpiTile label="JavaScript" loading={statsLoading} error={tileError} value={formatPercent(shares.javascript, 2)} />
                     <KpiTile label="WordPress" loading={statsLoading} error={tileError} value={formatPercent(shares.wordpress, 2)} />
@@ -113,7 +113,7 @@ export default function PlatformPage() {
                 <ListTemplate
                     summary={rows ? `${formatNumber(sites.length)} sites. ${formatNumber(inactive)} without activity for more than 30 days.` : null}
                     filters={(
-                        <FilterBar resultCount={rows ? `${formatNumber(visible.length)} shown` : null}>
+                        <FilterBar resultCount={rows ? formatNumber(visible.length) : null}>
                             <FilterSearch label="Site or company" value={search} onChange={(v) => { setSearch(v); setPage(0); }} placeholder="Search" />
                         </FilterBar>
                     )}
@@ -134,6 +134,6 @@ export default function PlatformPage() {
                     </Card>
                 </ListTemplate>
             </div>
-        </div>
+        </>
     );
 }

@@ -494,7 +494,7 @@ export default function CompliancePage() {
                                     {preConsentTransfers?.scanned_at && (
                                         <span className="compliance-transfers__scan-time">
                                             {scanId ? "Scan from" : "Last scanned"} {formatDate(new Date(preConsentTransfers.scanned_at))}
-                                            {" · "}<Link to={`/${id}/reports/scans`}>All scans</Link>
+                                            {" · "}<Link to={`/${id}/reports/scans`} style={{ color: "var(--color-accent-strong)" }}>All scans</Link>
                                         </span>
                                     )}
                                 </div>

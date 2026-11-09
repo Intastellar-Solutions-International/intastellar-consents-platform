@@ -5,6 +5,8 @@ const { useEffect, useRef, useId } = React;
 /**
  * Drawer — side panel for details (e.g. one audit-log record).
  * open, onClose, title, children, footer, width: "sm" | "md" | "lg"
+ * flush: no body padding or scrolling, for content that fills the panel.
+ * zIndex: for drawers rendered outside the header, which would otherwise sit under it.
  * Accessibility: role="dialog" + aria-modal, labelled by its title; focus
  * moves into the drawer on open, Tab stays inside, Esc closes, and focus
  * returns to the element that opened it.
@@ -12,7 +14,7 @@ const { useEffect, useRef, useId } = React;
 const WIDTHS = { sm: "tw-w-drawer-sm", md: "tw-w-drawer-md", lg: "tw-w-drawer-lg" };
 const FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
-export default function Drawer({ open, onClose, title, children, footer, width = "md" }) {
+export default function Drawer({ open, onClose, title, children, footer, width = "md", flush = false, zIndex }) {
     const panel = useRef(null);
     const titleId = useId();
     useEffect(() => {
@@ -34,7 +36,7 @@ export default function Drawer({ open, onClose, title, children, footer, width =
     }, [open, onClose]);
     if (!open) return null;
     return (
-        <div className="tw-fixed tw-inset-0 tw-z-50 tw-flex tw-justify-end">
+        <div className="tw-fixed tw-inset-0 tw-z-50 tw-flex tw-justify-end" style={zIndex ? { zIndex } : undefined}>
             <div className="tw-absolute tw-inset-0 tw-bg-black/50" onClick={onClose} aria-hidden="true" />
             <aside
                 ref={panel}
@@ -48,7 +50,7 @@ export default function Drawer({ open, onClose, title, children, footer, width =
                     <h2 id={titleId} className="tw-m-0 tw-text-lg tw-font-semibold tw-text-text-primary">{title}</h2>
                     <Button variant="ghost" size="sm" icon="x" iconOnly aria-label={t("Close")} onClick={onClose} />
                 </header>
-                <div className="tw-flex-1 tw-overflow-y-auto tw-p-5 tw-text-sm tw-text-text-secondary">{children}</div>
+                <div className={`tw-flex-1 tw-min-h-0 tw-text-sm tw-text-text-secondary ${flush ? "tw-overflow-hidden" : "tw-overflow-y-auto tw-p-5"}`}>{children}</div>
                 {footer && <footer className="tw-flex tw-justify-end tw-gap-2 tw-p-4 tw-border-0 tw-border-t tw-border-solid tw-border-border-subtle">{footer}</footer>}
             </aside>
         </div>

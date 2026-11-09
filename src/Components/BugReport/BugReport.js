@@ -1,13 +1,16 @@
 import "./BugReport.css";
 import API from "../../API/api";
 import appStorage from "../../Functions/storage.js";
+import Drawer from "../ui/Drawer.js";
+import Button from "../ui/Button.js";
+import { Icon } from "../ui/icons.js";
 
-const { useState, useEffect, useRef } = React;
+const { useState, useEffect } = React;
 
 const TYPES = [
-    { value: "bug",      label: "Bug",     icon: "🐛", githubLabel: "bug" },
-    { value: "feature",  label: "Feature", icon: "✨", githubLabel: "enhancement" },
-    { value: "question", label: "Question",icon: "💬", githubLabel: "question" },
+    { value: "bug",      label: "Bug",     icon: "alert-triangle", githubLabel: "bug" },
+    { value: "feature",  label: "Feature", icon: "trending-up", githubLabel: "enhancement" },
+    { value: "question", label: "Question",icon: "help-circle", githubLabel: "question" },
 ];
 
 function buildIssueBody({ type, description, steps, expected, email, orgName, url, ua }) {
@@ -34,6 +37,20 @@ function buildIssueBody({ type, description, steps, expected, email, orgName, ur
     return lines.join("\n");
 }
 
+const FORM_ID = "feedback-form";
+const CONTROL = "tw-block tw-w-full tw-px-3 tw-py-2 tw-bg-bg-sunken tw-text-text-primary tw-border tw-border-solid tw-border-border tw-rounded-md tw-font-sans tw-text-sm tw-box-border placeholder:tw-text-text-muted focus-visible:tw-outline-none focus-visible:tw-shadow-focus";
+
+function Field({ id, label, optional = false, children }) {
+    return (
+        <div className="tw-flex tw-flex-col tw-gap-1">
+            <label htmlFor={id} className="tw-text-sm tw-text-text-primary">
+                {label}{optional && <span className="tw-ml-2 tw-text-xs tw-text-text-muted">Optional</span>}
+            </label>
+            {children}
+        </div>
+    );
+}
+
 export default function BugReport() {
     const [open, setOpen]         = useState(false);
     const [type, setType]         = useState("bug");
@@ -41,26 +58,14 @@ export default function BugReport() {
     const [description, setDesc]  = useState("");
     const [steps, setSteps]       = useState("");
     const [expected, setExpected] = useState("");
+    const [showDetails, setShowDetails] = useState(false);
     const [status, setStatus]     = useState(null); // null | "sending" | "success" | "error"
-    const panelRef = useRef(null);
 
     // Lock body scroll when open
     useEffect(() => {
-        if (open) {
-            document.body.style.overflow = "hidden";
-        } else {
-            document.body.style.overflow = "";
-        }
+        document.body.style.overflow = open ? "hidden" : "";
         return () => { document.body.style.overflow = ""; };
     }, [open]);
-
-    // Escape to close
-    useEffect(() => {
-        if (!open) return;
-        const onKey = (e) => { if (e.key === "Escape") handleClose(); };
-        window.addEventListener("keydown", onKey);
-        return () => window.removeEventListener("keydown", onKey);
-    }, [open, status]);
 
     function reset() {
         setType("bug");
@@ -68,16 +73,13 @@ export default function BugReport() {
         setDesc("");
         setSteps("");
         setExpected("");
+        setShowDetails(false);
         setStatus(null);
     }
 
     function handleClose() {
         setOpen(false);
         if (status === "success") reset();
-    }
-
-    function handleBackdropClick(e) {
-        if (e.target === e.currentTarget) handleClose();
     }
 
     async function handleSubmit(e) {
@@ -115,158 +117,90 @@ export default function BugReport() {
     }
 
     const isBug     = type === "bug";
+    const sent      = status === "success";
     const canSubmit = title.trim().length > 0 && description.trim().length > 0 && status !== "sending";
+
+    const footer = sent ? (
+        <>
+            <Button onClick={handleClose}>Close</Button>
+            <Button variant="primary" onClick={reset}>Send another</Button>
+        </>
+    ) : (
+        <>
+            <Button onClick={handleClose}>Cancel</Button>
+            <Button variant="primary" type="submit" form={FORM_ID} disabled={!canSubmit} loading={status === "sending"}>
+                {status === "sending" ? "Sending…" : "Send feedback"}
+            </Button>
+        </>
+    );
 
     return (
         <>
-            {/* Backdrop + centered panel — rendered at document level via sibling, avoids stacking issues */}
-            {open && (
-                <div className="br-backdrop" onClick={handleBackdropClick} role="presentation">
-                    <div
-                        className="br-panel"
-                        ref={panelRef}
-                        role="dialog"
-                        aria-modal="true"
-                        aria-label="Send feedback"
-                    >
-                        <div className="br-panel__header">
-                            <div className="br-panel__heading">
-                                <svg className="br-panel__heading-icon" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                                    <path d="M3 4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H7l-4 3V4Z" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round"/>
-                                </svg>
-                                <h2 className="br-panel__title">Send feedback</h2>
-                            </div>
-                            <button className="br-panel__close" onClick={handleClose} aria-label="Close">×</button>
+            <Drawer open={open} onClose={handleClose} title="Send feedback" footer={footer} zIndex={300}>
+                {sent ? (
+                    <div className="tw-flex tw-flex-col tw-items-center tw-gap-2 tw-py-12 tw-text-center">
+                        <span className="tw-text-success"><Icon name="check-circle" size={32} /></span>
+                        <p className="tw-m-0 tw-text-base tw-font-semibold tw-text-text-primary">Thanks, we've got it</p>
+                        <p className="tw-m-0 tw-text-sm tw-text-text-secondary">Your feedback has been sent to the team.</p>
+                    </div>
+                ) : (
+                    <form id={FORM_ID} onSubmit={handleSubmit} noValidate className="tw-flex tw-flex-col tw-gap-4">
+                        <div role="group" aria-label="Feedback type" className="tw-grid tw-grid-cols-3 tw-gap-0.5 tw-p-0.5 tw-bg-bg-sunken tw-rounded-md">
+                            {TYPES.map((t) => (
+                                <button
+                                    key={t.value}
+                                    type="button"
+                                    aria-pressed={type === t.value}
+                                    onClick={() => setType(t.value)}
+                                    className={`tw-flex tw-items-center tw-justify-center tw-gap-2 tw-h-10 tw-border-0 tw-rounded-sm tw-font-sans tw-text-sm tw-cursor-pointer focus-visible:tw-outline-none focus-visible:tw-shadow-focus ${type === t.value ? "tw-bg-accent-subtle tw-text-text-primary" : "tw-bg-transparent tw-text-text-secondary hover:tw-bg-white/5"}`}
+                                >
+                                    <Icon name={t.icon} size={16} />{t.label}
+                                </button>
+                            ))}
                         </div>
 
-                        {status === "success" ? (
-                            <div className="br-success">
-                                <div className="br-success__ring">
-                                    <svg className="br-success__icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                                        <path d="M5 13l4 4L19 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                                    </svg>
-                                </div>
-                                <p className="br-success__msg">Issue submitted — thank you!</p>
-                                <p className="br-success__sub">It's logged in GitHub and someone from the team will pick it up.</p>
-                                <div className="br-actions" style={{ justifyContent: "center", paddingTop: 0 }}>
-                                    <button className="br-btn" onClick={handleClose}>Close</button>
-                                    <button className="br-btn br-btn--primary" onClick={reset}>Submit another</button>
-                                </div>
-                            </div>
-                        ) : (
-                            <form className="br-form" onSubmit={handleSubmit} noValidate>
+                        <Field id="br-title" label="Title">
+                            <input id="br-title" className={CONTROL} type="text" required maxLength={120} value={title} onChange={(e) => setTitle(e.target.value)}
+                                placeholder={isBug ? "Short summary of the bug" : type === "feature" ? "What would you like to see?" : "What do you need help with?"} />
+                        </Field>
 
-                                <div className="br-field">
-                                    <span className="br-label">Type</span>
-                                    <div className="br-type-row">
-                                        {TYPES.map(t => (
-                                            <button
-                                                key={t.value}
-                                                type="button"
-                                                className={`br-type-btn${type === t.value ? " br-type-btn--active" : ""}`}
-                                                onClick={() => setType(t.value)}
-                                            >
-                                                <span className="br-type-btn__icon" aria-hidden="true">{t.icon}</span>
-                                                {t.label}
-                                            </button>
-                                        ))}
-                                    </div>
-                                </div>
+                        <Field id="br-desc" label={isBug ? "What happened?" : "Description"}>
+                            <textarea id="br-desc" className={CONTROL} rows={5} required value={description} onChange={(e) => setDesc(e.target.value)} style={{ resize: "vertical" }}
+                                placeholder={isBug ? "Describe what you saw" : "Tell us a bit more"} />
+                        </Field>
 
-                                <div className="br-field">
-                                    <label className="br-label" htmlFor="br-title">Title</label>
-                                    <input
-                                        id="br-title"
-                                        className="br-input"
-                                        type="text"
-                                        placeholder={isBug ? "Short summary of the bug" : "What would you like to request?"}
-                                        value={title}
-                                        onChange={e => setTitle(e.target.value)}
-                                        maxLength={120}
-                                        required
-                                        autoFocus
-                                    />
-                                </div>
-
-                                <div className="br-field">
-                                    <label className="br-label" htmlFor="br-desc">
-                                        {isBug ? "What happened?" : "Description"}
-                                    </label>
-                                    <textarea
-                                        id="br-desc"
-                                        className="br-input br-input--textarea"
-                                        placeholder={isBug ? "Describe the issue in detail…" : "Tell us more about your request…"}
-                                        value={description}
-                                        onChange={e => setDesc(e.target.value)}
-                                        rows={4}
-                                        required
-                                    />
-                                </div>
-
-                                {isBug && (
-                                    <>
-                                        <div className="br-field">
-                                            <label className="br-label" htmlFor="br-steps">
-                                                Steps to reproduce <span className="br-label--opt">optional</span>
-                                            </label>
-                                            <textarea
-                                                id="br-steps"
-                                                className="br-input br-input--textarea"
-                                                placeholder={"1. Go to…\n2. Click…\n3. See error"}
-                                                value={steps}
-                                                onChange={e => setSteps(e.target.value)}
-                                                rows={3}
-                                            />
-                                        </div>
-                                        <div className="br-field">
-                                            <label className="br-label" htmlFor="br-expected">
-                                                Expected behaviour <span className="br-label--opt">optional</span>
-                                            </label>
-                                            <input
-                                                id="br-expected"
-                                                className="br-input"
-                                                type="text"
-                                                placeholder="What should have happened instead?"
-                                                value={expected}
-                                                onChange={e => setExpected(e.target.value)}
-                                            />
-                                        </div>
-                                    </>
-                                )}
-
-                                <div className="br-divider" />
-
-                                <p className="br-meta">
-                                    Current page URL, browser info, and your account email will be attached automatically.
-                                </p>
-
-                                {status === "error" && (
-                                    <p className="br-error" role="alert">
-                                        Something went wrong — please try again or reach us directly.
-                                    </p>
-                                )}
-
-                                <div className="br-actions">
-                                    <button type="button" className="br-btn" onClick={handleClose}>Cancel</button>
-                                    <button
-                                        type="submit"
-                                        className="br-btn br-btn--primary"
-                                        disabled={!canSubmit}
-                                        aria-busy={status === "sending"}
-                                    >
-                                        {status === "sending" ? "Submitting…" : "Submit"}
-                                    </button>
-                                </div>
-                            </form>
+                        {isBug && !showDetails && (
+                            <div><Button size="sm" variant="ghost" icon="chevron-down" onClick={() => setShowDetails(true)}>Add steps to reproduce</Button></div>
                         )}
-                    </div>
-                </div>
-            )}
+                        {isBug && showDetails && (
+                            <>
+                                <Field id="br-steps" label="Steps to reproduce" optional>
+                                    <textarea id="br-steps" className={CONTROL} rows={3} value={steps} onChange={(e) => setSteps(e.target.value)} style={{ resize: "vertical" }} placeholder={"1. Go to…\n2. Click…\n3. See the error"} />
+                                </Field>
+                                <Field id="br-expected" label="What should have happened?" optional>
+                                    <input id="br-expected" className={CONTROL} type="text" value={expected} onChange={(e) => setExpected(e.target.value)} />
+                                </Field>
+                            </>
+                        )}
+
+                        <p className="tw-m-0 tw-flex tw-gap-2 tw-text-xs tw-text-text-muted">
+                            <span className="tw-shrink-0"><Icon name="info" size={14} /></span>
+                            We'll include this page's address, your browser details and your account email.
+                        </p>
+
+                        {status === "error" && (
+                            <p role="alert" className="tw-m-0 tw-flex tw-items-center tw-gap-2 tw-text-sm tw-text-danger-text">
+                                <Icon name="alert-octagon" size={16} />Your feedback couldn't be sent. Please try again.
+                            </p>
+                        )}
+                    </form>
+                )}
+            </Drawer>
 
             {/* Docked edge tab — right edge, vertically centered. See
                 BugReport.css for why this replaced the old floating pill
                 (docs/design-audit-plan.md Phase 2 item 2). */}
-            <div className="br-root">
+            <div className="br-root" style={open ? { visibility: "hidden" } : undefined}>
                 <button
                     className={`br-trigger${open ? " br-trigger--active" : ""}`}
                     onClick={() => setOpen(o => !o)}

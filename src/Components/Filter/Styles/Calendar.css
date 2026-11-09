@@ -387,7 +387,7 @@
 }
 
 @media screen and (max-width: 600px) {
-    .calendar button{
+    .calendar button:not(.filter-calendar-trigger){
         flex-direction: column;
     }
 

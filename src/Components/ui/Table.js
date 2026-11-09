@@ -7,7 +7,7 @@ import { t } from "../../i18n/index.js";
 /**
  * Table — dense data table.
  *
- * columns: [{ key, header, align: "left"|"right", width, sortable, render(row) }]
+ * columns: [{ key, header, align: "left"|"right", width, sortable, hideOnMobile, render(row) }]
  * rows, getRowKey(row)
  * sort: { key, direction: "asc"|"desc" } + onSortChange(key) — headers get aria-sort
  * onRowClick(row): rows become focusable; Enter/Space activate (e.g. open a Drawer)
@@ -37,7 +37,7 @@ export default function Table({
                                 scope="col"
                                 aria-sort={ariaSort(col)}
                                 style={col.width ? { width: col.width } : undefined}
-                                className={`${stickyHeader ? "tw-sticky tw-top-0 tw-z-10" : ""} tw-bg-bg-raised tw-px-3 tw-py-2 tw-text-xs tw-font-semibold tw-uppercase tw-tracking-wide tw-text-text-muted tw-border-0 tw-border-b tw-border-solid tw-border-border ${col.align === "right" ? "tw-text-right" : "tw-text-left"}`}
+                                className={`${col.hideOnMobile ? "col-hide-mobile " : ""}${stickyHeader ? "tw-sticky tw-top-0 tw-z-10" : ""} tw-bg-bg-raised tw-px-3 tw-py-2 tw-text-xs tw-font-semibold tw-uppercase tw-tracking-wide tw-text-text-muted tw-border-0 tw-border-b tw-border-solid tw-border-border ${col.align === "right" ? "tw-text-right" : "tw-text-left"}`}
                             >
                                 {col.sortable && onSortChange ? (
                                     <button
@@ -70,7 +70,7 @@ export default function Table({
                                 className={`tw-border-0 tw-border-b tw-border-solid tw-border-border-subtle ${interactive ? "tw-cursor-pointer hover:tw-bg-white/5 focus-visible:tw-outline-none focus-visible:tw-shadow-focus" : ""} ${selected ? "tw-bg-accent-subtle" : ""}`}
                             >
                                 {columns.map((col) => (
-                                    <td key={col.key} className={`tw-px-3 tw-py-2 tw-align-middle ${col.align === "right" ? "tw-text-right tw-tabular-nums" : ""}`}>
+                                    <td key={col.key} className={`${col.hideOnMobile ? "col-hide-mobile " : ""}tw-px-3 tw-py-2 tw-align-middle ${col.align === "right" ? "tw-text-right tw-tabular-nums" : ""}`}>
                                         {col.render ? col.render(row) : row[col.key] ?? "—"}
                                     </td>
                                 ))}

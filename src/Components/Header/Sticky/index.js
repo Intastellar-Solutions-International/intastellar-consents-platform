@@ -46,10 +46,19 @@ export default function StickyPageTitle({
     
     // New shell: the date range lives in the top bar. The page still owns the
     // range state — the control is just rendered into the bar's slot.
+    // On phones there is no room in the bar, so it stays with the page title.
     const [dateSlot, setDateSlot] = React.useState(null);
+    const [phone, setPhone] = React.useState(() => window.matchMedia("(max-width: 900px)").matches);
+    const dateInTopBar = isNewShell() && !phone;
     React.useEffect(() => {
-        if (isNewShell()) setDateSlot(document.getElementById("shell-daterange-slot"));
+        const query = window.matchMedia("(max-width: 900px)");
+        const onChange = () => setPhone(query.matches);
+        query.addEventListener("change", onChange);
+        return () => query.removeEventListener("change", onChange);
     }, []);
+    React.useEffect(() => {
+        setDateSlot(dateInTopBar ? document.getElementById("shell-daterange-slot") : null);
+    }, [dateInTopBar]);
 
     function openSideCart() {
         document.querySelector(".sideCart").classList.add("open");
@@ -77,7 +86,7 @@ export default function StickyPageTitle({
                         )}
                     </h1>
                     {
-                        (numberofDays && !(isNewShell() && !dateSlot)) ?
+                        (numberofDays && !(dateInTopBar && !dateSlot)) ?
                             wrapDate(<Filter
                                 numberOfDays={getLastDays}
                                 setNumberOfDays={numberofDays}

@@ -24,6 +24,7 @@ import appStorage from '../../Functions/storage.js';
 import { ScannerHost } from "../../API/host";
 import DomainHealthPill from "../Shell/DomainHealthPill.js";
 import NotificationCenter from "../Notifications/index.js";
+import HelpCenter from "../Help/index.js";
 import { isNewShell } from "../../Functions/featureFlags.js";
 
 const { useState, useEffect, useContext, useMemo, useRef, useCallback } = React;
@@ -230,6 +231,18 @@ function resolveDomainsPlatformKey(API) {
 const newShell = isNewShell();
 
 export default function Header(props) {
+    // Phone headers wrap to a height CSS can't know; the page offset and the
+    // sticky title follow the real height so no gap shows between them.
+    useEffect(() => {
+        const header = document.querySelector(".dashboard-header");
+        if (!header || !window.ResizeObserver) return undefined;
+        const publish = () => document.documentElement.style.setProperty("--header-height", `${Math.ceil(header.getBoundingClientRect().height)}px`);
+        publish();
+        const observer = new ResizeObserver(publish);
+        observer.observe(header);
+        return () => observer.disconnect();
+    }, []);
+
 
     const [Organisation, setOrganisation] = useContext(OrganisationContext);
     const [globalDomain, setGlobalDomain] = useContext(DomainContext);
@@ -465,6 +478,7 @@ export default function Header(props) {
                         </div>
                     )}
                     <div className="flex profileImage" style={{ gap: "12px" }}>
+                        <HelpCenter />
                         <NotificationCenter />
                         <img src={profileImage} className="content-img" onClick={() => setViewUserProfile(!viewUserProfile)} />
                     </div>

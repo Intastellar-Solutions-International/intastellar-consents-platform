@@ -6,12 +6,15 @@ import { getOrg } from "../../Functions/storage.js";
 import { setNewShell } from "../../Functions/featureFlags.js";
 import { t } from "../../i18n/index.js";
 import { Icon } from "../ui/icons.js";
+import { lockBodyScroll, unlockBodyScroll } from "../../Functions/bodyScrollLock.js";
+import { OPEN_HELP_EVENT } from "../Help/index.js";
 import "./Shell.css";
 
 const Link = window.ReactRouterDOM.Link;
 const useLocation = window.ReactRouterDOM.useLocation;
 const { useContext, useState, useEffect } = React;
 const COLLAPSED_KEY = "shell:railCollapsed";
+const MOBILE_QUERY = "(max-width: 900px)";
 
 /**
  * Left rail for the new shell (feature flag newShell). Labels are shown by
@@ -25,7 +28,7 @@ const COLLAPSED_KEY = "shell:railCollapsed";
 function buildGroups(platform, domain, isAdminOrg) {
     const r = (leaf) => reportsPath(platform, domain, leaf);
     return [
-        { label: t("Overview"), items: [{ name: t("Home"), icon: "home", to: dashboardPath(platform, domain), match: (p) => /\/[^/]+\/dashboard(\/|$)/.test(p) || /^\/[^/]+\/view\//.test(p) }] },
+        { label: t("Overview"), items: [{ name: t("Home"), icon: "home", to: dashboardPath(platform, domain), match: (p) => /\/[^/]+\/dashboard(\/|$)/.test(p) || /^\/[^/]+\/view\//.test(p) }, { name: "Getting started", icon: "check-circle", to: `/${platform}/onboarding`, match: (p) => p.endsWith("/onboarding") }] },
         {
             label: t("Compliance"), items: [
                 { name: t("Compliance overview"), icon: "shield-check", to: r("/compliance"), match: (p) => p.includes("/compliance"), tier: "starter" },
@@ -63,20 +66,42 @@ export default function ShellRail() {
     const [currentDomain] = useContext(DomainContext);
     const path = useLocation().pathname;
     const platform = localStorage.getItem("platform") || "gdpr";
-    const [collapsed, setCollapsed] = useState(() => {
+    // Phones get a drawer opened from the header's menu button; the rail's
+    // remembered collapsed state only applies on larger screens.
+    const [mobile, setMobile] = useState(() => window.matchMedia(MOBILE_QUERY).matches);
+    const [drawerOpen, setDrawerOpen] = useState(false);
+    const [collapsedPreference, setCollapsed] = useState(() => {
         try {
             const saved = localStorage.getItem(COLLAPSED_KEY);
             if (saved != null) return saved === "1";
         } catch { /* ignore */ }
         return window.innerWidth < 1100;   // no saved choice: icons only on narrow screens
     });
+    const collapsed = collapsedPreference && !mobile;
     useEffect(() => {
-        try { localStorage.setItem(COLLAPSED_KEY, collapsed ? "1" : "0"); } catch { /* ignore */ }
-        document.documentElement.style.setProperty("--shell-rail-width", collapsed ? "var(--size-rail-collapsed)" : "var(--size-rail)");
-    }, [collapsed]);
+        try { localStorage.setItem(COLLAPSED_KEY, collapsedPreference ? "1" : "0"); } catch { /* ignore */ }
+        document.documentElement.style.setProperty("--shell-rail-width", collapsedPreference ? "var(--size-rail-collapsed)" : "var(--size-rail)");
+    }, [collapsedPreference]);
+    useEffect(() => {
+        const query = window.matchMedia(MOBILE_QUERY);
+        const onChange = () => { setMobile(query.matches); if (!query.matches) setDrawerOpen(false); };
+        query.addEventListener("change", onChange);
+        return () => query.removeEventListener("change", onChange);
+    }, []);
+    useEffect(() => { setDrawerOpen(false); }, [path]);
+    useEffect(() => {
+        if (!drawerOpen) return undefined;
+        const onKey = (e) => { if (e.key === "Escape") setDrawerOpen(false); };
+        window.addEventListener("keydown", onKey);
+        lockBodyScroll();
+        return () => { window.removeEventListener("keydown", onKey); unlockBodyScroll(); };
+    }, [drawerOpen]);
     // The header's menu button toggles the rail too (small screens).
     useEffect(() => {
-        const toggle = () => setCollapsed((c) => !c);
+        const toggle = () => {
+            if (window.matchMedia(MOBILE_QUERY).matches) setDrawerOpen((o) => !o);
+            else setCollapsed((c) => !c);
+        };
         window.addEventListener("shell:toggle-rail", toggle);
         return () => window.removeEventListener("shell:toggle-rail", toggle);
     }, []);
@@ -88,19 +113,20 @@ export default function ShellRail() {
         .map((g) => ({ ...g, items: g.items.filter((i) => !i.tier || canAccess(i.tier)) }))
         .filter((g) => g.items.length);
 
-    return (
-        <aside className="shell-rail tw-bg-bg-sunken tw-border-0 tw-border-r tw-border-solid tw-border-border-subtle" style={{ width: "var(--shell-rail-width, var(--size-rail))" }}>
+    return (<>
+        {mobile && drawerOpen && <div className="shell-rail-backdrop" onClick={() => setDrawerOpen(false)} aria-hidden="true" />}
+        <aside className={`shell-rail${drawerOpen ? " shell-rail--open" : ""} tw-bg-bg-sunken tw-border-0 tw-border-r tw-border-solid tw-border-border-subtle`} style={{ width: "var(--shell-rail-width, var(--size-rail))" }}>
             <nav aria-label={t("Main navigation")} className="tw-flex tw-flex-col tw-h-full tw-gap-1 tw-p-2 tw-overflow-y-auto">
                 <button
                     type="button"
-                    onClick={() => setCollapsed((c) => !c)}
+                    onClick={() => (mobile ? setDrawerOpen(false) : setCollapsed((c) => !c))}
                     aria-expanded={!collapsed}
-                    aria-label={collapsed ? t("Expand navigation") : t("Collapse navigation")}
-                    title={collapsed ? t("Expand navigation") : t("Collapse navigation")}
+                    aria-label={mobile ? "Close menu" : collapsed ? t("Expand navigation") : t("Collapse navigation")}
+                    title={mobile ? "Close menu" : collapsed ? t("Expand navigation") : t("Collapse navigation")}
                     className={`${ITEM} tw-text-text-muted hover:tw-text-text-primary hover:tw-bg-white/5 ${collapsed ? "tw-justify-center tw-px-0" : ""}`}
                 >
-                    <Icon name="panel-left" size={18} />
-                    {!collapsed && <span>{t("Collapse")}</span>}
+                    <Icon name={mobile ? "x" : "panel-left"} size={18} />
+                    {!collapsed && <span>{mobile ? "Close" : t("Collapse")}</span>}
                 </button>
                 {groups.map((g) => (
                     <div key={g.label} role="group" aria-labelledby={`rail-${g.label}`} className="tw-flex tw-flex-col tw-gap-0.5 tw-pt-3">
@@ -116,6 +142,7 @@ export default function ShellRail() {
                                 <Link
                                     key={item.name}
                                     to={item.to}
+                                    onClick={() => setDrawerOpen(false)}
                                     aria-current={active ? "page" : undefined}
                                     aria-label={collapsed ? item.name : undefined}
                                     title={collapsed ? item.name : undefined}
@@ -131,6 +158,10 @@ export default function ShellRail() {
                     </div>
                 ))}
                 <div className="tw-mt-auto tw-flex tw-flex-col tw-gap-0.5 tw-pt-3">
+                    <button type="button" onClick={() => { setDrawerOpen(false); window.dispatchEvent(new Event(OPEN_HELP_EVENT)); }} title="Help" aria-label={collapsed ? "Help" : undefined} className={`${ITEM} tw-text-text-secondary hover:tw-text-text-primary hover:tw-bg-white/5 ${collapsed ? "tw-justify-center tw-px-0" : ""}`}>
+                        <Icon name="help-circle" size={18} />
+                        {!collapsed && <span>Help</span>}
+                    </button>
                     <button type="button" onClick={() => { setNewShell(false); window.location.reload(); }} title={t("Switch back to the previous layout")} className={`${ITEM} tw-text-text-muted hover:tw-text-text-primary hover:tw-bg-white/5 ${collapsed ? "tw-justify-center tw-px-0" : ""}`} aria-label={collapsed ? t("Use classic layout") : undefined}>
                         <Icon name="refresh" size={18} />
                         {!collapsed && <span>{t("Classic layout")}</span>}
@@ -142,5 +173,5 @@ export default function ShellRail() {
                 </div>
             </nav>
         </aside>
-    );
+    </>);
 }

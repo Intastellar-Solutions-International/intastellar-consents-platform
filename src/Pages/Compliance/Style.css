@@ -141,6 +141,12 @@
 }
 
 /* ── Pre-consent data transfer section ── */
+.compliance-transfers,
+.compliance-transfers__card {
+    min-width: 0;
+    max-width: 100%;
+}
+
 .compliance-transfers__card {
     padding: var(--space-5) var(--space-5);
     border-radius: var(--radius-lg);

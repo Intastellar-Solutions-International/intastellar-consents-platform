@@ -113,7 +113,7 @@ export default function NotificationCenter() {
                 <div
                     role="dialog"
                     aria-label={t("Notifications")}
-                    className="tw-absolute tw-right-0 tw-flex tw-flex-col tw-bg-bg-raised tw-border tw-border-solid tw-border-border tw-rounded-xl tw-shadow-overlay tw-overflow-hidden"
+                    className="notif-panel tw-absolute tw-right-0 tw-flex tw-flex-col tw-bg-bg-raised tw-border tw-border-solid tw-border-border tw-rounded-xl tw-shadow-overlay tw-overflow-hidden"
                     style={{ top: "calc(100% + 8px)", width: 380, maxWidth: "calc(100vw - 32px)", maxHeight: "min(560px, 80vh)", zIndex: 200 }}
                 >
                     <div className="tw-flex tw-items-center tw-justify-between tw-gap-3 tw-px-4 tw-py-3 tw-border-0 tw-border-b tw-border-solid tw-border-border-subtle">

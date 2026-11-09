@@ -77,19 +77,20 @@ export default function ScanHistory() {
 
     const columns = [
         { key: "domain", header: "Domain", sortable: true, render: (s) => <span className="tw-text-text-primary">{toUnicodeDomain(s.domain)}</span> },
-        { key: "scanned_at", header: "Scanned", sortable: true, render: (s) => formatDateTime(new Date(s.scanned_at)) },
+        { key: "scanned_at", header: "Scanned", sortable: true, hideOnMobile: true, render: (s) => formatDateTime(new Date(s.scanned_at)) },
         { key: "trackers", header: "Advertising and analytics", render: (s) => <TrackerBadge scan={s} /> },
-        { key: "transfers", header: "Transfers", align: "right", render: (s) => formatNumber(s.transfers) },
-        { key: "cookies", header: "Cookies", align: "right", render: (s) => formatNumber(s.cookies) },
+        { key: "transfers", header: "Transfers", align: "right", hideOnMobile: true, render: (s) => formatNumber(s.transfers) },
+        { key: "cookies", header: "Cookies", align: "right", hideOnMobile: true, render: (s) => formatNumber(s.cookies) },
     ];
 
     return (
-        <div className="dashboard-content">
+        <>
             <StickyPageTitle title="Cookie scans" />
+            <div className="dashboard-content">
             <ListTemplate
                 summary="The most recent scans for each of your domains. Counts show what loaded before consent where the scan can tell."
                 filters={(
-                    <FilterBar resultCount={result ? `${formatNumber(result.total)} scans` : null}>
+                    <FilterBar resultCount={result ? formatNumber(result.total) : null}>
                         <FilterSearch label="Domain" value={search} onChange={setSearch} placeholder="Search domains" />
                     </FilterBar>
                 )}
@@ -112,6 +113,7 @@ export default function ScanHistory() {
                     />
                 </Card>
             </ListTemplate>
-        </div>
+            </div>
+        </>
     );
 }

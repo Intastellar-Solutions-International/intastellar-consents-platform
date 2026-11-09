@@ -17,7 +17,7 @@ export default function Card({ title, description, actions, padding = "md", as: 
             {...rest}
         >
             {(title || actions) && (
-                <header className={`tw-flex tw-items-start tw-justify-between tw-gap-4 ${padding === "none" ? "tw-p-5 tw-pb-3" : PADDING[padding] + " tw-pb-0"}`}>
+                <header className={`tw-flex tw-flex-wrap tw-items-start tw-justify-between tw-gap-4 ${padding === "none" ? "tw-p-5 tw-pb-3" : PADDING[padding] + " tw-pb-0"}`}>
                     <div className="tw-min-w-0">
                         {title && <h2 id={titleId} className="tw-m-0 tw-text-base tw-font-semibold tw-text-text-primary">{title}</h2>}
                         {description && <p className="tw-m-0 tw-mt-1 tw-text-sm tw-text-text-muted">{description}</p>}
