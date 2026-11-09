@@ -7,6 +7,76 @@
  * counts as unconfirmed until the organisation records it. Whether a DPA
  * exists can only ever come from the organisation.
  */
+const CATEGORY_RISK = {
+    fingerprinting: { risk: "high" }, advertising: { risk: "high" }, analytics: { risk: "medium" }, social: { risk: "medium" },
+    functional: { risk: "low" }, cdn: { risk: "low" }, cmp: { risk: "none" }, "third-party": { risk: "medium" },
+};
+export const RISK_RANK = { high: 3, medium: 2, low: 1, none: 0 };
+
+/** "eu-hosted": a non-EU company serving this host from the EU. */
+export function hostRegion(host) {
+    if ((host.dataRegion || "non-eu") === "eu") return "eu";
+    return host.hostedInEU ? "eu-hosted" : "non-eu";
+}
+
+function vendorRegion(hosts) {
+    const regions = new Set(hosts.map(hostRegion));
+    if (regions.size === 1) return [...regions][0];
+    return regions.has("non-eu") ? "mixed" : "eu-hosted";
+}
+
+/**
+ * Group scanned transfers (one per host) into vendors: every *.clarity.ms host
+ * becomes one "Microsoft Clarity" row.
+ * region: "eu", "non-eu", "eu-hosted", or "mixed" when the hosts disagree.
+ * consentPhase: "pre" when any host was contacted before the scanner granted
+ * consent, "post" when all were after, null when the scan has no phase tags.
+ */
+export function groupTransfersByVendor(transfers, categoryMeta = CATEGORY_RISK) {
+    const byVendor = new Map();
+    for (const t of transfers || []) {
+        const key = t.service || t.host;
+        if (!byVendor.has(key)) byVendor.set(key, { vendor: key, hosts: [] });
+        byVendor.get(key).hosts.push(t);
+    }
+    return [...byVendor.values()].map((v) => {
+        // A vendor's category is its riskiest host's category (hosts of one vendor rarely differ).
+        const category = v.hosts
+            .map((h) => h.category || "third-party")
+            .sort((a, b) => (RISK_RANK[categoryMeta[b]?.risk] ?? 2) - (RISK_RANK[categoryMeta[a]?.risk] ?? 2))[0];
+        const phases = v.hosts.map((h) => h.consentPhase);
+        const consentPhase = phases.includes("pre") ? "pre" : phases.every((p) => p === "post") ? "post" : null;
+        const first = (field) => v.hosts.find((h) => h[field])?.[field] || null;
+        return {
+            ...v,
+            category,
+            risk: categoryMeta[category]?.risk || "medium",
+            region: vendorRegion(v.hosts),
+            consentPhase,
+            dataCountries: [...new Set(v.hosts.map((h) => h.dataCountry).filter(Boolean))],
+            description: first("description"),
+            privacyUrl: first("privacyUrl"),
+            bannerCategory: first("bannerCategory"),
+            legalBasis: first("legalBasis"),
+            transferMechanism: first("transferMechanism"),
+            purposes: [...new Set(v.hosts.flatMap((h) => h.purposes || []))],
+        };
+    });
+}
+
+/** The counts above the vendor table, all from the same grouped list as the table. */
+export function vendorTotals(vendors) {
+    const byCategory = {};
+    for (const v of vendors) byCategory[v.category] = (byCategory[v.category] || 0) + 1;
+    return {
+        vendors: vendors.length,
+        hosts: vendors.reduce((n, v) => n + v.hosts.length, 0),
+        outsideEu: vendors.filter((v) => v.region === "non-eu" || v.region === "mixed").length,
+        preConsent: vendors.filter((v) => v.consentPhase === "pre").length,
+        byCategory,
+    };
+}
+
 export const MECHANISMS = [
     { id: "dpf", label: "EU-US Data Privacy Framework", short: "DPF" },
     { id: "sccs", label: "Standard Contractual Clauses", short: "SCCs" },

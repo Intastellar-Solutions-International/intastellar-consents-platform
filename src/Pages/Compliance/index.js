@@ -389,10 +389,10 @@ export default function CompliancePage() {
         if (activeTab === "transfers") {
             const items = preConsentTransfers?.pre_consent_transfers || [];
             const rows = [
-                ["Service", "Host", "Category", "Resource Type", "Region", "Data Country", "Transfer Mechanism", "DPA"],
+                ["Service", "Host", "Category", "Resource Type", "Region", "Data Country", "Transfer Mechanism", "DPA", "Hosted in EU"],
                 ...items.map(t => {
                     const chapterV = chapterVLabels({ region: t.dataRegion === "eu" ? "eu" : "non-eu", transferMechanism: t.transferMechanism }, vendorRecords[t.service || t.host]);
-                    return [t.service || t.host, t.host, t.category || "", t.resourceType || "", t.dataRegion || "", t.dataCountry || "", chapterV.transfer, chapterV.dpa];
+                    return [t.service || t.host, t.host, t.category || "", t.resourceType || "", t.dataRegion || "", t.dataCountry || "", chapterV.transfer, chapterV.dpa, t.dataRegion === "eu" || t.hostedInEU ? "Yes" : "No"];
                 }),
             ];
             downloadCSV(rows, `pre-consent-transfers-${scanDomain}.csv`);

@@ -2,55 +2,14 @@ import { Icon } from "../../Components/ui/icons.js";
 import { Badge, Button, RiskBadge, Card, Table, FilterBar, FilterSelect, FilterSearch, Drawer, Pagination } from "../../Components/ui";
 import { ListTemplate } from "../../Components/templates";
 import { formatNumber } from "../../Functions/format.js";
-import { MECHANISMS, DPA_STATES, vendorChapterV, chapterVSummary } from "../../Functions/transferCompliance.js";
+import { MECHANISMS, DPA_STATES, RISK_RANK, hostRegion, groupTransfersByVendor, vendorTotals, vendorChapterV, chapterVSummary } from "../../Functions/transferCompliance.js";
 
 const { useState, useMemo, useEffect } = React;
 
 const PAGE_SIZE = 25;
-const RISK_RANK = { high: 3, medium: 2, low: 1, none: 0 };
 
-/**
- * Group scanned transfers (one per host) into vendors: every *.clarity.ms host
- * becomes one "Microsoft Clarity" row. Pure — exported for tests.
- * region: "eu" when all hosts are EU, "non-eu" when none are, else "mixed".
- * consentPhase: "pre" when any host was contacted before the scanner granted
- * consent, "post" when all were after, null when the scan has no phase tags.
- */
-export function groupTransfersByVendor(transfers, categoryMeta = {}) {
-    const byVendor = new Map();
-    for (const t of transfers || []) {
-        const key = t.service || t.host;
-        if (!byVendor.has(key)) byVendor.set(key, { vendor: key, hosts: [] });
-        byVendor.get(key).hosts.push(t);
-    }
-    return [...byVendor.values()].map((v) => {
-        // A vendor's category is its riskiest host's category (hosts of one vendor rarely differ).
-        const category = v.hosts
-            .map((h) => h.category || "third-party")
-            .sort((a, b) => (RISK_RANK[categoryMeta[b]?.risk] ?? 2) - (RISK_RANK[categoryMeta[a]?.risk] ?? 2))[0];
-        const eu = v.hosts.filter((h) => (h.dataRegion || "non-eu") === "eu").length;
-        const region = eu === v.hosts.length ? "eu" : eu === 0 ? "non-eu" : "mixed";
-        const phases = v.hosts.map((h) => h.consentPhase);
-        const consentPhase = phases.includes("pre") ? "pre" : phases.every((p) => p === "post") ? "post" : null;
-        const first = (field) => v.hosts.find((h) => h[field])?.[field] || null;
-        return {
-            ...v,
-            category,
-            risk: categoryMeta[category]?.risk || "medium",
-            region,
-            consentPhase,
-            dataCountries: [...new Set(v.hosts.map((h) => h.dataCountry).filter(Boolean))],
-            description: first("description"),
-            privacyUrl: first("privacyUrl"),
-            bannerCategory: first("bannerCategory"),
-            legalBasis: first("legalBasis"),
-            transferMechanism: first("transferMechanism"),
-            purposes: [...new Set(v.hosts.flatMap((h) => h.purposes || []))],
-        };
-    });
-}
-
-const REGION_LABEL = { eu: "EU", "non-eu": "Non-EU", mixed: "EU + non-EU" };
+const REGION_LABEL = { eu: "EU", "non-eu": "Non-EU", mixed: "EU + non-EU", "eu-hosted": "EU-hosted" };
+const REGION_TITLE = { "eu-hosted": "Served from the EU by a company based outside the EU, so a transfer mechanism is still expected." };
 const PHASE_LABEL = { pre: "Before consent", post: "After consent" };
 
 function PhaseBadge({ phase }) {
@@ -98,7 +57,7 @@ function ChapterVForm({ vendor, record, onSave }) {
         <section aria-labelledby="vendor-chapter-v" className="tw-flex tw-flex-col tw-gap-3 tw-p-4 tw-bg-bg-sunken tw-rounded-lg">
             <div>
                 <h3 id="vendor-chapter-v" className="tw-m-0 tw-text-sm tw-font-semibold tw-text-text-primary">GDPR Chapter V</h3>
-                <p className="tw-m-0 tw-text-xs tw-text-text-muted">{chapter.required ? "This vendor receives data outside the EU, so it needs a transfer mechanism." : "This vendor stays in the EU, so no transfer mechanism is needed. It may still need a DPA."}</p>
+                <p className="tw-m-0 tw-text-xs tw-text-text-muted">{vendor.region === "eu-hosted" ? "This vendor serves this data from the EU but is based outside it, so a transfer mechanism is still expected." : chapter.required ? "This vendor receives data outside the EU, so it needs a transfer mechanism." : "This vendor stays in the EU, so no transfer mechanism is needed. It may still need a DPA."}</p>
             </div>
             <div className="tw-flex tw-flex-wrap tw-gap-2"><TransferBadge chapter={chapter} /><span className="tw-flex tw-items-center tw-gap-1 tw-text-xs tw-text-text-muted">DPA <DpaBadge status={chapter.dpa} /></span></div>
             {chapter.status === "unconfirmed" && (
@@ -166,17 +125,17 @@ export default function TransferVendors({ transfers, categoryMeta, bannerMeta, r
     const [selected, setSelected] = useState(null);
     useEffect(() => setPage(0), [category, region, phase, chapter, query, sort]);
 
-    const byCategory = useMemo(() => {
-        const acc = {};
-        for (const v of vendors) acc[v.category] = (acc[v.category] || 0) + 1;
-        return Object.entries(acc).sort(([a], [b]) => (categoryOrder[a] ?? 99) - (categoryOrder[b] ?? 99));
-    }, [vendors, categoryOrder]);
+    const totals = useMemo(() => vendorTotals(vendors), [vendors]);
+    const byCategory = useMemo(
+        () => Object.entries(totals.byCategory).sort(([a], [b]) => (categoryOrder[a] ?? 99) - (categoryOrder[b] ?? 99)),
+        [totals, categoryOrder]
+    );
 
     const filtered = useMemo(() => {
         const q = query.trim().toLowerCase();
         return vendors
             .filter((v) => !category || v.category === category)
-            .filter((v) => region === "all" || (region === "eu" ? v.region === "eu" : v.region !== "eu"))
+            .filter((v) => region === "all" || (region === "non-eu" ? v.region === "non-eu" || v.region === "mixed" : v.region === region))
             .filter((v) => !phaseKnown || phase === "all" || v.consentPhase === phase)
             .filter((v) => chapter === "all" || vendorChapterV(v, records[v.vendor]).needsAction)
             .filter((v) => !q || v.vendor.toLowerCase().includes(q) || v.hosts.some((h) => h.host.toLowerCase().includes(q)))
@@ -188,9 +147,6 @@ export default function TransferVendors({ transfers, categoryMeta, bannerMeta, r
             });
     }, [vendors, category, region, phase, chapter, records, phaseKnown, query, sort]);
 
-    const hostCount = vendors.reduce((n, v) => n + v.hosts.length, 0);
-    const nonEu = vendors.filter((v) => v.region !== "eu").length;
-    const preConsent = vendors.filter((v) => v.consentPhase === "pre").length;
     const chapterCounts = useMemo(() => chapterVSummary(vendors, records), [vendors, records]);
     const activeFilters = (category ? 1 : 0) + (region !== "all" ? 1 : 0) + (phaseKnown && phase !== "all" ? 1 : 0) + (chapter !== "all" ? 1 : 0) + (query ? 1 : 0);
     const clear = () => { setCategory(null); setRegion("all"); setPhase("all"); setChapter("all"); setQuery(""); };
@@ -220,7 +176,7 @@ export default function TransferVendors({ transfers, categoryMeta, bannerMeta, r
         { key: "risk", header: "Risk", sortable: true, hideOnMobile: true, render: (v) => <RiskBadge level={v.risk} /> },
         {
             key: "region", header: "Region", hideOnMobile: true,
-            render: (v) => <Badge tone={v.region === "eu" ? "neutral" : "warning"} icon="globe">{REGION_LABEL[v.region]}</Badge>,
+            render: (v) => <span title={REGION_TITLE[v.region]}><Badge tone={v.region === "eu" ? "neutral" : "warning"} icon="globe">{REGION_LABEL[v.region]}</Badge></span>,
         },
         ...(phaseKnown ? [{ key: "phase", header: "Loaded", hideOnMobile: true, render: (v) => <PhaseBadge phase={v.consentPhase} /> }] : []),
         { key: "hosts", header: "Hosts", align: "right", sortable: true, hideOnMobile: true, render: (v) => formatNumber(v.hosts.length) },
@@ -230,10 +186,10 @@ export default function TransferVendors({ transfers, categoryMeta, bannerMeta, r
         <ListTemplate
             summary={
                 <span className="tw-text-text-secondary">
-                    <strong className="tw-text-text-primary">{formatNumber(vendors.length)}</strong> vendors ·{" "}
-                    <strong className="tw-text-text-primary">{formatNumber(hostCount)}</strong> hosts ·{" "}
-                    <strong className="tw-text-text-primary">{formatNumber(nonEu)}</strong> outside the EU
-                    {phaseKnown && <> · <strong className="tw-text-text-primary">{formatNumber(preConsent)}</strong> before consent</>}
+                    <strong className="tw-text-text-primary">{formatNumber(totals.vendors)}</strong> vendors ·{" "}
+                    <strong className="tw-text-text-primary">{formatNumber(totals.hosts)}</strong> hosts ·{" "}
+                    <strong className="tw-text-text-primary">{formatNumber(totals.outsideEu)}</strong> outside the EU
+                    {phaseKnown && <> · <strong className="tw-text-text-primary">{formatNumber(totals.preConsent)}</strong> before consent</>}
                     {" · "}<strong className="tw-text-text-primary">{formatNumber(chapterCounts.problem)}</strong> with no transfer mechanism
                     {" · "}<strong className="tw-text-text-primary">{formatNumber(chapterCounts.unconfirmed)}</strong> unconfirmed
                     {" · "}<strong className="tw-text-text-primary">{formatNumber(chapterCounts.withoutDpa)}</strong> without a confirmed DPA
@@ -270,7 +226,7 @@ export default function TransferVendors({ transfers, categoryMeta, bannerMeta, r
                             label="Region"
                             value={region}
                             onChange={setRegion}
-                            options={[{ value: "all", label: "All regions" }, { value: "eu", label: "EU only" }, { value: "non-eu", label: "Outside the EU" }]}
+                            options={[{ value: "all", label: "All regions" }, { value: "eu", label: "EU only" }, { value: "eu-hosted", label: "EU-hosted, non-EU company" }, { value: "non-eu", label: "Outside the EU" }]}
                         />
                         {phaseKnown && (
                             <FilterSelect
@@ -318,7 +274,7 @@ export default function TransferVendors({ transfers, categoryMeta, bannerMeta, r
                                     columns={[
                                         { key: "host", header: "Host", render: (h) => <code className="tw-text-xs">{h.host}</code> },
                                         { key: "type", header: "Type", render: (h) => resourceLabels[h.resourceType] || h.resourceType || "Other" },
-                                        { key: "region", header: "Region", render: (h) => REGION_LABEL[h.dataRegion === "eu" ? "eu" : "non-eu"] },
+                                        { key: "region", header: "Region", render: (h) => REGION_LABEL[hostRegion(h)] },
                                         ...(phaseKnown ? [{ key: "phase", header: "Loaded", render: (h) => PHASE_LABEL[h.consentPhase] || "—" }] : []),
                                     ]}
                                     rows={selected.hosts}

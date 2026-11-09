@@ -36,7 +36,7 @@ export const TRACKERS = [
     { domains: ["optimizely.com"],                                service: "Optimizely",              category: "analytics"    },
     { domains: ["abtasty.com"],                                   service: "AB Tasty",                category: "analytics"    },
     { domains: ["kameleoon.com", "kameleoon.eu"],                 service: "Kameleoon",               category: "analytics"    },
-    { domains: ["vwo.com", "dev.visualwebsiteoptimizer.com", "wingify.com"], service: "VWO",          category: "analytics"    },
+    { domains: ["vwo.com", "visualwebsiteoptimizer.com", "wingify.com"], service: "VWO",         category: "analytics"    },
     { domains: ["app.posthog.com", "posthog.com", "eu.posthog.com"], service: "PostHog",           category: "analytics"    },
     { domains: ["datadoghq.com", "browser-intake-datadoghq.com"],   service: "Datadog",             category: "analytics"    },
     { domains: ["mc.yandex.ru", "mc.yandex.com", "yandex.ru"],      service: "Yandex Metrica",      category: "analytics"    },
@@ -1471,9 +1471,14 @@ export function describeCookie(name) {
     return null;
 }
 
-// HubSpot serves EU accounts from "-eu1" hosts. The company is still American,
-// so this says where the data goes first, not who the vendor is.
-const EU_HOSTED_HOSTS = [/(^|\.)(js|api|track|forms|cta|app|perf)-eu1\.(hubspot|hs-[a-z]+|hsforms|hscollectedforms|hsadspixel|hubapi)\.[a-z]+$/, /(^|\.)[a-z0-9-]+-eu1\.hubspot(usercontent)?\.[a-z]+$/];
+// HubSpot serves EU accounts from "-eu1" hosts, VWO from "r1eu01"-style hosts.
+// Neither company is based in the EU, so this says where the data goes first,
+// not who the vendor is, and a transfer mechanism is still expected.
+const EU_HOSTED_HOSTS = [
+    /(^|\.)(js|api|track|forms|cta|app|perf)-eu1\.(hubspot|hs-[a-z]+|hsforms|hscollectedforms|hsadspixel|hsleadflows|hscta|usemessages|hubapi)\.[a-z]+$/,
+    /(^|\.)[a-z0-9-]+-eu1\.hubspot(usercontent)?\.[a-z]+$/,
+    /(^|\.)r\d+eu\d+\.visualwebsiteoptimizer\.com$/,
+];
 export const isEuHostedHost = (host) => EU_HOSTED_HOSTS.some((re) => re.test(String(host || "")));
 
 export function classifyHost(hostname) {

@@ -1,17 +1,10 @@
 // Stage 4 / Compliance: scanned hosts are grouped into vendors for the table.
 import assert from "node:assert/strict";
-import vm from "node:vm";
-import fs from "node:fs";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
 import { test } from "./_harness.mjs";
+import { groupTransfersByVendor, vendorTotals } from "../api/_transfer-compliance.js";
+import { classifyHost, isEuHostedHost, reclassifyStoredTransfer } from "../api/_scan-core.js";
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const SRC = fs.readFileSync(path.join(__dirname, "..", "src", "Pages", "Compliance", "TransferVendors.js"), "utf8");
-const fnSrc = SRC.slice(SRC.indexOf("const RISK_RANK"), SRC.indexOf("const REGION_LABEL")).replace(/^export /gm, "");
-const ctx = vm.createContext({ Map, Set });
-vm.runInContext(fnSrc, ctx);
-const group = (t, meta) => JSON.parse(JSON.stringify(ctx.groupTransfersByVendor(t, meta)));
+const group = (t, meta) => groupTransfersByVendor(t, meta);
 
 const META = { analytics: { risk: "medium" }, advertising: { risk: "high" }, cdn: { risk: "low" } };
 const clarity = ["u", "a", "r", "t", "f", "e", "b", "n", "q"].map((s) => ({ host: `${s}.clarity.ms`, service: "Microsoft Clarity", category: "analytics", dataRegion: "non-eu" }));
@@ -29,6 +22,34 @@ test("vendor region: all EU, none EU, or mixed", () => {
     const [mixed] = group([{ host: "a", service: "S", dataRegion: "eu" }, { host: "b", service: "S", dataRegion: "non-eu" }], META);
     const [none] = group([{ host: "a", service: "S" }], META);
     assert.deepStrictEqual([eu.region, mixed.region, none.region], ["eu", "mixed", "non-eu"]);
+});
+
+test("VWO's numbered hosts roll up into one vendor, including scans stored before the fix", () => {
+    const stored = ["r1eu01", "r3eu01"].map((s) => ({ host: `${s}.visualwebsiteoptimizer.com`, service: `${s}.visualwebsiteoptimizer.com`, category: "third-party" }));
+    const [vwo, ...rest] = group(stored.map(reclassifyStoredTransfer));
+    assert.strictEqual(rest.length, 0);
+    assert.strictEqual(vwo.vendor, "VWO");
+    assert.strictEqual(vwo.category, "analytics");
+    assert.strictEqual(classifyHost("dev.visualwebsiteoptimizer.com").service, "VWO");
+});
+
+test("a non-EU company serving from the EU is EU-hosted, unless another host leaves the EU", () => {
+    for (const host of ["r1eu01.visualwebsiteoptimizer.com", "js-eu1.hs-banner.com", "js-eu1.hsleadflows.net"]) assert.ok(isEuHostedHost(host), host);
+    for (const host of ["dev.visualwebsiteoptimizer.com", "r1.visualwebsiteoptimizer.com"]) assert.ok(!isEuHostedHost(host), host);
+    const host = (dataRegion, hostedInEU) => ({ host: `h${dataRegion}${hostedInEU}`, service: "S", dataRegion, hostedInEU });
+    assert.strictEqual(group([host("non-eu", true)])[0].region, "eu-hosted");
+    assert.strictEqual(group([host("non-eu", true), host("eu", false)])[0].region, "eu-hosted");
+    assert.strictEqual(group([host("non-eu", true), host("non-eu", false)])[0].region, "mixed");
+});
+
+test("tiles and the summary line add up to the table", () => {
+    const vendors = group([...clarity, { host: "x", service: "Ads", category: "advertising", dataRegion: "non-eu", consentPhase: "pre" }, { host: "e", service: "EU", category: "cdn", dataRegion: "eu" }, { host: "h", service: "H", category: "analytics", hostedInEU: true }], META);
+    const t = vendorTotals(vendors);
+    assert.strictEqual(t.vendors, vendors.length);
+    assert.strictEqual(Object.values(t.byCategory).reduce((a, b) => a + b, 0), vendors.length);
+    assert.strictEqual(t.hosts, 12);
+    assert.strictEqual(t.outsideEu, 2);
+    assert.strictEqual(t.preConsent, 1);
 });
 
 test("a vendor takes its riskiest host's category; hosts without a service stand alone", () => {
