@@ -138,6 +138,12 @@ function ChapterVForm({ vendor, record, onSave, onUploadEvidence, onRemoveEviden
     );
 }
 
+function evidenceLabel(record) {
+    if (record?.evidence_blob_path && record?.evidence_url) return "File + link";
+    if (record?.evidence_blob_path) return "File";
+    return record?.evidence_url ? "Link" : <span className="tw-text-text-muted">None</span>;
+}
+
 const CHAPTER_FILTER = {
     action: (c) => c.needsAction,
     no_mechanism: (c) => c.status === "problem",
@@ -262,13 +268,16 @@ export default function TransferVendors({ transfers, categoryMeta, bannerMeta, r
                                 {v.hosts[0].host}{v.hosts.length > 1 ? ` +${v.hosts.length - 1} more` : ""}
                             </span>
                         </span>
+                        {/* The row's click opens the drawer; this makes that discoverable. */}
+                        {onSaveRecord && <Button size="sm" variant="ghost" className="tw-ml-auto tw-flex-shrink-0" aria-label={`Edit ${v.vendor}`}>Edit</Button>}
                     </span>
                 );
             },
         },
         { key: "transfer", header: "Transfer mechanism", render: (v) => <TransferBadge chapter={vendorChapterV(v, records[v.vendor])} /> },
         { key: "dpa", header: "DPA", render: (v) => <DpaBadge status={records[v.vendor]?.dpa_status} /> },
-        { key: "owner", header: "Owner", hideOnMobile: true, render: (v) => records[v.vendor]?.owner || "—" },
+        { key: "owner", header: "Owner", hideOnMobile: true, render: (v) => records[v.vendor]?.owner || <span className="tw-text-text-muted">Unassigned</span> },
+        { key: "evidence", header: "Evidence", hideOnMobile: true, render: (v) => evidenceLabel(records[v.vendor]) },
         { key: "category", header: "Category", hideOnMobile: true, render: (v) => categoryMeta[v.category]?.label || v.category },
         { key: "risk", header: "Risk", sortable: true, hideOnMobile: true, render: (v) => <RiskBadge level={v.risk} /> },
         {
@@ -292,6 +301,7 @@ export default function TransferVendors({ transfers, categoryMeta, bannerMeta, r
                     {" · "}<strong className="tw-text-text-primary">{formatNumber(chapterCounts.problem)}</strong> with no transfer mechanism
                     {" · "}<strong className="tw-text-text-primary">{formatNumber(chapterCounts.unconfirmed)}</strong> unconfirmed
                     {" · "}<strong className="tw-text-text-primary">{formatNumber(chapterCounts.withoutDpa)}</strong> without a confirmed DPA
+                    {onSaveRecord && <span className="tw-block tw-mt-1 tw-text-text-muted">Select Edit on a vendor to set its DPA status, mechanism date, owner, notes and evidence.</span>}
                 </span>
             }
             filters={

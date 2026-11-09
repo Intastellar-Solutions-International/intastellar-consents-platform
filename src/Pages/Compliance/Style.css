@@ -353,10 +353,19 @@
 /* ── Side-by-side grid ───────────────────────────────────────────────────────── */
 .compliance-bottom-grid {
     display: grid;
-    grid-template-columns: 3fr 2fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: var(--space-6);
     align-items: start;
 }
+
+/* The vendor table takes the full width; the audit log and DSR card share a row below it. */
+.compliance-page__audit {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(280px, 1fr);
+    gap: var(--space-5);
+    align-items: start;
+}
+.compliance-page__audit .audit-snapshot-card { margin-bottom: 0; }
 
 /* When the transfers card is absent (combined view), audit takes full width */
 .compliance-bottom-grid > .compliance-page__audit:first-child {
@@ -364,8 +373,8 @@
 }
 
 @media (max-width: 900px) {
-    .compliance-bottom-grid {
-        grid-template-columns: 1fr;
+    .compliance-page__audit {
+        grid-template-columns: minmax(0, 1fr);
     }
 }
 
@@ -1481,8 +1490,9 @@
     box-shadow: 1px 0 0 var(--color-border-subtle);
 }
 .transfers-table thead tr > :first-child { z-index: 11; }
+.transfers-table td:first-child > span { max-width: 300px; }
 @media (max-width: 640px) {
-    .transfers-table td:first-child > span { max-width: 150px; }
+    .transfers-table td:first-child > span { max-width: 170px; }
 }
 
 .compliance-cookies__row-phase { align-self: flex-start; margin-top: var(--space-1); }
