@@ -87,19 +87,23 @@ export default async function handler(req, res) {
     const status    = error ? "failed" : "completed";
     const scannedAt = new Date().toISOString().slice(0, 19).replace("T", " ");
 
+    let id = null;
     try {
         await getPool().query(`ALTER TABLE pre_consent_scans ADD COLUMN IF NOT EXISTS reject_pass JSONB DEFAULT NULL`);
-        await getPool().query(
+        const { rows } = await getPool().query(
             `INSERT INTO pre_consent_scans
                 (domain, organisation_id, workspace_id, scanned_at, scan_duration_ms, status, transfers, cookies, error_message, reject_pass)
-             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+             RETURNING id`,
             [cleanDomain, organisationId, workspaceId || null, scannedAt, durationMs, status, JSON.stringify(transfers), JSON.stringify(cookies), error || null, rejectPass ? JSON.stringify(rejectPass) : null]
         );
+        id = rows[0]?.id ?? null;
     } catch (dbErr) {
         console.error("[pre-consent-scan] DB write failed:", dbErr.message);
     }
 
     res.json({
+        id,
         domain:                cleanDomain,
         scanned_at:            scannedAt,
         scan_duration_ms:      durationMs,

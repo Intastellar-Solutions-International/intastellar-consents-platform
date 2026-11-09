@@ -136,7 +136,7 @@ export default async function handler(req, res) {
         const db = getPool();
         const [{ rows }, { rows: attempts }] = await Promise.all([
             db.query(
-                `SELECT domain, scanned_at, scan_duration_ms, status, transfers, cookies,
+                `SELECT id, domain, scanned_at, scan_duration_ms, status, transfers, cookies,
                         to_jsonb(pre_consent_scans) -> 'reject_pass' AS reject_pass
                    FROM pre_consent_scans
                   WHERE ${scope} AND status = 'completed'${scanId ? " AND id = $3" : ""}
@@ -172,6 +172,7 @@ export default async function handler(req, res) {
             row.domain,
         );
         res.json({
+            id:                    row.id,
             domain:                row.domain,
             scanned_at:            row.scanned_at,
             scan_duration_ms:      row.scan_duration_ms,

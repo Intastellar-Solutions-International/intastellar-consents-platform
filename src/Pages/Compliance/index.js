@@ -16,11 +16,12 @@ import appStorage from '../../Functions/storage.js';
 import { useExcludeBots } from "../../Functions/botFilter.js";
 import { preConsentCookieStat, postConsentCookieStat } from "../../Functions/cookieStats.js";
 import { Icon } from "../../Components/ui/icons.js";
-import { appLocale, formatDate, formatNumber } from "../../Functions/format.js";
+import { formatDate, formatNumber } from "../../Functions/format.js";
 import TransferVendors from "./TransferVendors.js";
 import { chapterVLabels } from "../../Functions/transferCompliance.js";
 import { COMPLIANCE_CHANGED_EVENT } from "../../Components/Shell/useDomainCompliance.js";
-import { scanConsentStep } from "../../Functions/scanHistory.js";
+import { scanConsentStep, staleScanDays } from "../../Functions/scanHistory.js";
+import ScanHistoryPanel from "./ScanHistoryPanel.js";
 import { KpiTile, Button, Tabs, TabPanel, EmptyState } from "../../Components/ui";
 
 const Link = window.ReactRouterDOM.Link;
@@ -184,6 +185,25 @@ export default function CompliancePage() {
         return unsubscribe;
     }, []);
 
+    const loadScan = (scan) => {
+        const domain = handle || currentDomain;
+        if (!domain || domain === "combined view") return;
+        fetch(`${API[id].getPreConsentTransfers.url}?domain=${encodeURIComponent(domain)}${scan ? `&scan=${encodeURIComponent(scan)}` : ""}`, {
+            method: API[id].getPreConsentTransfers.method,
+            headers: { ...API[id].getPreConsentTransfers.headers },
+        })
+            .then((r) => r.json())
+            .then((data) => {
+                if (data === "Err_Login_Expired") {
+                    appStorage.removeItem("globals");
+                    window.location.href = "/login";
+                    return;
+                }
+                setPreConsentTransfers(data);
+            })
+            .catch(() => setPreConsentTransfers(null));
+    };
+
     useEffect(() => {
         if (!id || !API[id]) return;
         setLoading(true);
@@ -254,23 +274,7 @@ export default function CompliancePage() {
             })
             .catch(console.error);
 
-        const domain = handle || currentDomain;
-        if (domain && domain !== "combined view") {
-            fetch(`${API[id].getPreConsentTransfers.url}?domain=${encodeURIComponent(domain)}${scanId ? `&scan=${encodeURIComponent(scanId)}` : ""}`, {
-                method: API[id].getPreConsentTransfers.method,
-                headers: { ...API[id].getPreConsentTransfers.headers },
-            })
-                .then((r) => r.json())
-                .then((data) => {
-                    if (data === "Err_Login_Expired") {
-                        appStorage.removeItem("globals");
-                        window.location.href = "/login";
-                        return;
-                    }
-                    setPreConsentTransfers(data);
-                })
-                .catch(() => setPreConsentTransfers(null));
-        }
+        loadScan(scanId);
     }, [id, domainsForApi, fromDate, toDate, compareRange, previousPeriod, previousPeriod2, workspaceId, excludeBots, scanId]);
 
     useEffect(() => {
@@ -315,20 +319,26 @@ export default function CompliancePage() {
             .then((r) => r.json())
             .then((data) => {
                 setPreConsentTransfers(data);
+                // The stored scan carries what this response lacks, such as EU-hosted hosts.
+                if (!data.error) loadScan(null);
                 window.dispatchEvent(new Event(COMPLIANCE_CHANGED_EVENT));
             })
             .catch(console.error)
             .finally(() => setScanLoading(false));
     };
 
+    const latestScanAt = preConsentTransfers?.scanned_at;
     useEffect(() => {
         const domain = handle || currentDomain;
-        if (!domain || domain === "combined view") return;
-        try {
-            const stored = JSON.parse(localStorage.getItem(`scanHistory_${domain}`) || "[]");
-            setScanHistory(Array.isArray(stored) ? stored : []);
-        } catch { setScanHistory([]); }
-    }, [handle, currentDomain]);
+        const api = API[id]?.listPreConsentScans;
+        if (!api || !domain || domain === "combined view") { setScanHistory([]); return undefined; }
+        const ac = new AbortController();
+        fetch(api.url, { method: api.method, headers: api.headers, signal: ac.signal, body: JSON.stringify({ domains: [domain], pageSize: 10 }) })
+            .then((r) => (r.ok ? r.json() : null))
+            .then((data) => setScanHistory(Array.isArray(data?.scans) ? data.scans : []))
+            .catch((e) => { if (e.name !== "AbortError") setScanHistory([]); });
+        return () => ac.abort();
+    }, [id, handle, currentDomain, latestScanAt]);
 
     useEffect(() => {
         const d = handle || currentDomain || "";
@@ -356,23 +366,6 @@ export default function CompliancePage() {
             })
             .catch(() => {});
     }, [handle, currentDomain, id]);
-
-    useEffect(() => {
-        if (!preConsentTransfers?.scanned_at || scanId) return;
-        const domain = handle || currentDomain;
-        if (!domain || domain === "combined view") return;
-        const entry = {
-            scanned_at: preConsentTransfers.scanned_at,
-            transfers: preConsentTransfers.pre_consent_transfers?.length ?? 0,
-            cookies: preConsentTransfers.pre_consent_cookies?.length ?? 0,
-        };
-        setScanHistory(prev => {
-            if (prev[0]?.scanned_at === entry.scanned_at) return prev;
-            const next = [entry, ...prev].slice(0, 5);
-            try { localStorage.setItem(`scanHistory_${domain}`, JSON.stringify(next)); } catch {}
-            return next;
-        });
-    }, [preConsentTransfers, handle, currentDomain, scanId]);
 
     function downloadCSV(rows, filename) {
         const csv = rows.map(r => r.map(cell => `"${String(cell ?? "").replace(/"/g, '""')}"`).join(",")).join("\n");
@@ -472,6 +465,8 @@ export default function CompliancePage() {
     const preStat = preConsentCookieStat(preConsentTransfers);
     const postStat = postConsentCookieStat(observedCookies);
     const auditLogPath = reportsPath(id, currentDomain, "/user-consents");
+    const rangeDays = Math.round((toDate - fromDate) / 86400000) + 1;
+    const staleDays = latestScanAt && !scanId ? staleScanDays(latestScanAt, rangeDays) : null;
 
     return (
         <div style={{ flex: "1", minWidth: 0 }}>
@@ -573,17 +568,14 @@ export default function CompliancePage() {
                                     </button>
                                 </div>
                             </div>
-                            {scanHistory.length > 1 && (
-                                <div className="compliance-transfers__history">
-                                    <span className="compliance-transfers__history-label">Previous scans</span>
-                                    {scanHistory.slice(1).map((s, i) => (
-                                        <span key={s.scanned_at + i} className="compliance-transfers__history-chip">
-                                            {new Date(s.scanned_at).toLocaleDateString(appLocale(), { day: "numeric", month: "short" })}
-                                            <span className="compliance-transfers__history-chip-detail">{s.transfers} transfers · {s.cookies} cookies</span>
-                                        </span>
-                                    ))}
+                            {staleDays != null && (
+                                <div role="status" className="compliance-transfers__stale">
+                                    <Icon name="clock" size={16} />
+                                    <span>Scan is {staleDays} days old, and this report covers {rangeDays} days.</span>
+                                    <Button size="sm" variant="secondary" onClick={triggerScan} loading={scanLoading}>Scan now</Button>
                                 </div>
                             )}
+                            <ScanHistoryPanel scans={scanHistory} currentId={preConsentTransfers?.id} basePath={location.pathname} />
 
                             {/* ── Tabs (shown once a scan exists) ── */}
                             {preConsentTransfers && !scanLoading && !preConsentTransfers.error && (

@@ -12,7 +12,7 @@
 import { reclassifyStoredTransfer } from "./_scan-core.js";
 import { getPool } from "./_db.js";
 import { normalizeBannerDomain } from "./_banner-domain.js";
-import { summarizeConsentPhase } from "./_consent-phase.js";
+import { summarizeConsentPhase, scanConsentStep } from "./_consent-phase.js";
 import { summarizeScan } from "./_report-html.js";
 
 const MAX_DOMAINS = 5000;
@@ -68,7 +68,10 @@ export async function listScans(db, { organisationId, domains, page = 0, pageSiz
     const [{ rows: counted }, { rows }] = await Promise.all([
         db.query(`SELECT COUNT(*)::int AS total FROM pre_consent_scans WHERE ${where}`, params),
         db.query(
-            `SELECT id, domain, scanned_at, transfers, cookies FROM pre_consent_scans WHERE ${where}
+            // Only "Scan now" runs the reject pass, so it is what tells the two apart.
+            `SELECT id, domain, scanned_at, transfers, cookies,
+                    jsonb_typeof(to_jsonb(pre_consent_scans) -> 'reject_pass') = 'object' AS has_reject_pass
+               FROM pre_consent_scans WHERE ${where}
               ORDER BY ${column} ${order}, id DESC LIMIT $4 OFFSET $5`,
             [...params, size, offset]
         ),
@@ -93,6 +96,9 @@ function toListRow(row) {
         transfers: scan.transfers.length,
         cookies: scan.cookies.length,
         cookies_found: cookies.length,
+        vendors_found: new Set(transfers.map((t) => t.service || t.host)).size,
+        consent_step: scanConsentStep(transfers, cookies),
+        source: row.has_reject_pass ? "dashboard" : "automatic",
         trackers: new Set([...scan.trackers, ...scan.analytics]).size,
     };
 }
