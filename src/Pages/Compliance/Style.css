@@ -1484,3 +1484,6 @@
 @media (max-width: 640px) {
     .transfers-table td:first-child > span { max-width: 150px; }
 }
+
+.compliance-cookies__row-phase { align-self: flex-start; margin-top: var(--space-1); }
+.compliance-search { flex-wrap: wrap; align-items: flex-end; }

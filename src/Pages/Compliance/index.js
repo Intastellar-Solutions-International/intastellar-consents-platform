@@ -20,10 +20,10 @@ import { formatDate, formatDateTime, formatNumber } from "../../Functions/format
 import TransferVendors from "./TransferVendors.js";
 import { chapterVLabels } from "../../Functions/transferCompliance.js";
 import { COMPLIANCE_CHANGED_EVENT } from "../../Components/Shell/useDomainCompliance.js";
-import { scanConsentStep, staleScanDays, scanRegionLabel } from "../../Functions/scanHistory.js";
+import { scanConsentStep, consentPhaseLabel, filterByConsentPhase, staleScanDays, scanRegionLabel } from "../../Functions/scanHistory.js";
 import ScanHistoryPanel from "./ScanHistoryPanel.js";
 import DsrSummaryCard from "./DsrSummaryCard.js";
-import { KpiTile, Button, Tabs, TabPanel, EmptyState } from "../../Components/ui";
+import { KpiTile, Button, Badge, Tabs, TabPanel, EmptyState, FilterSelect } from "../../Components/ui";
 
 const Link = window.ReactRouterDOM.Link;
 const useParams = window.ReactRouterDOM.useParams;
@@ -94,6 +94,7 @@ function groupCookiesByName(rawCookies) {
         } else {
             const g = map.get(c.name);
             if (!g.domains.includes(c.domain)) g.domains.push(c.domain);
+            if (c.consentPhase === "pre") g.consentPhase = "pre";
             if (!g.session && c.expires && (!g.expires || c.expires > g.expires)) {
                 g.expires = c.expires;
             }
@@ -159,6 +160,7 @@ export default function CompliancePage() {
 
     const PAGE_SIZE = 10;
     const [searchQuery, setSearchQuery] = useState("");
+    const [cookiePhase, setCookiePhase] = useState("all");
     const [mapOpen, setMapOpen] = useState(false);
     const [scanHistory, setScanHistory] = useState([]);
     const [copyTableCopied, setCopyTableCopied] = useState(false);
@@ -449,11 +451,11 @@ export default function CompliancePage() {
         if (activeTab === "transfers") {
             const items = preConsentTransfers?.pre_consent_transfers || [];
             const rows = [
-                ["Service", "Host", "Category", "Resource Type", "Region", "Data Country", "Transfer Mechanism", "DPA", "Hosted in EU", "Mechanism Confirmed On", "Owner", "Notes", "Evidence Link", "Evidence File"],
+                ["Service", "Host", "Category", "Resource Type", "Region", "Data Country", "Transfer Mechanism", "DPA", "Hosted in EU", "Mechanism Confirmed On", "Owner", "Notes", "Evidence Link", "Evidence File", "Loaded"],
                 ...items.map(t => {
                     const record = vendorRecords[t.service || t.host];
                     const chapterV = chapterVLabels({ region: t.dataRegion === "eu" ? "eu" : "non-eu", transferMechanism: t.transferMechanism }, record);
-                    return [t.service || t.host, t.host, t.category || "", t.resourceType || "", t.dataRegion || "", t.dataCountry || "", chapterV.transfer, chapterV.dpa, t.dataRegion === "eu" || t.hostedInEU ? "Yes" : "No", record?.mechanism_confirmed_at || "", record?.owner || "", record?.notes || "", record?.evidence_url || "", record?.evidence_blob_path ? record.evidence_blob_path.split("/").pop() : ""];
+                    return [t.service || t.host, t.host, t.category || "", t.resourceType || "", t.dataRegion || "", t.dataCountry || "", chapterV.transfer, chapterV.dpa, t.dataRegion === "eu" || t.hostedInEU ? "Yes" : "No", record?.mechanism_confirmed_at || "", record?.owner || "", record?.notes || "", record?.evidence_url || "", record?.evidence_blob_path ? record.evidence_blob_path.split("/").pop() : "", consentPhaseLabel(t.consentPhase)];
                 }),
             ];
             downloadCSV(rows, `pre-consent-transfers-${scanDomain}.csv`);
@@ -461,11 +463,11 @@ export default function CompliancePage() {
             const items = preConsentTransfers?.pre_consent_cookies || [];
             const baseDomain = (handle || currentDomain || "").replace(/^www\./, "");
             const rows = [
-                ["Name", "Domain", "Party", "Lifetime", "HttpOnly", "Secure", "SameSite"],
+                ["Name", "Domain", "Party", "Lifetime", "HttpOnly", "Secure", "SameSite", "Loaded"],
                 ...items.map(c => {
                     const isThird = !c.domain.replace(/^\./, "").endsWith(baseDomain);
                     const lifetime = c.session ? "Session" : c.expires ? formatCookieDuration(c.expires, preConsentTransfers.scanned_at) : "Persistent";
-                    return [c.name, c.domain, isThird ? "3rd party" : "1st party", lifetime, c.httpOnly ? "Yes" : "No", c.secure ? "Yes" : "No", c.sameSite || ""];
+                    return [c.name, c.domain, isThird ? "3rd party" : "1st party", lifetime, c.httpOnly ? "Yes" : "No", c.secure ? "Yes" : "No", c.sameSite || "", consentPhaseLabel(c.consentPhase)];
                 }),
             ];
             downloadCSV(rows, `pre-consent-cookies-${scanDomain}.csv`);
@@ -642,7 +644,7 @@ export default function CompliancePage() {
                                     label="Scan results"
                                     idPrefix="compliance"
                                     value={activeTab}
-                                    onChange={(key) => { setActiveTab(key); setCookiePage(0); setSearchQuery(""); }}
+                                    onChange={(key) => { setActiveTab(key); setCookiePage(0); setSearchQuery(""); setCookiePhase("all"); }}
                                     tabs={[
                                         { id: "transfers", label: "Transfers", count: vendorCount },
                                         { id: "cookies", label: "Cookies", count: preConsentTransfers.pre_consent_cookies?.length || 0 },
@@ -731,8 +733,10 @@ export default function CompliancePage() {
                                         <span>No cookies set before consent in the last scan.</span>
                                     </div>
                                 );
+                                const cookiePhaseKnown = preConsentTransfers?.consent_phase_known === true;
+                                const cookiesInPhase = filterByConsentPhase(allCookies, cookiePhaseKnown ? cookiePhase : "all");
                                 const cookies = groupCookiesByName(
-                                    allCookies.filter(c => !csq ||
+                                    cookiesInPhase.filter(c => !csq ||
                                         (c.name || "").toLowerCase().includes(csq) ||
                                         (c.domain || "").toLowerCase().includes(csq)
                                     )
@@ -749,7 +753,15 @@ export default function CompliancePage() {
                                                 value={searchQuery}
                                                 onChange={e => { setSearchQuery(e.target.value); setCookiePage(0); }}
                                             />
-                                            {searchQuery && (
+                                            {cookiePhaseKnown && (
+                                                <FilterSelect
+                                                    label="Loaded"
+                                                    value={cookiePhase}
+                                                    onChange={(value) => { setCookiePhase(value); setCookiePage(0); }}
+                                                    options={[{ value: "all", label: "Before or after consent" }, { value: "pre", label: "Before consent only" }, { value: "post", label: "After consent only" }]}
+                                                />
+                                            )}
+                                            {(searchQuery || cookiePhase !== "all") && (
                                                 <span className="compliance-search__count">
                                                     {cookies.length} result{cookies.length !== 1 ? "s" : ""}
                                                 </span>
@@ -757,7 +769,7 @@ export default function CompliancePage() {
                                         </div>
                                         {!cookies.length ? (
                                             <div className="compliance-transfers__empty">
-                                                <span>No cookies match "{searchQuery}".</span>
+                                                <span>{searchQuery ? `No cookies match "${searchQuery}" with this filter.` : "No cookies match this filter."}</span>
                                             </div>
                                         ) : (
                                         <>
@@ -808,6 +820,8 @@ export default function CompliancePage() {
                                                         : <span className="compliance-cookies__row-vendor">{eff.vendor}</span>
                                                 )}
                                                                 <span className="compliance-cookies__row-domain">{eff.domains.join(", ")}</span>
+                                                                {cookiePhaseKnown && c.consentPhase === "pre" && <Badge tone="danger" icon="alert-triangle" className="compliance-cookies__row-phase">Before consent</Badge>}
+                                                                {cookiePhaseKnown && c.consentPhase === "post" && <Badge tone="neutral" icon="check-circle" className="compliance-cookies__row-phase">After consent</Badge>}
                                                                 {eff.description && (
                                                                     <span className="compliance-cookies__row-desc">{eff.description}</span>
                                                                 )}

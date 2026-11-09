@@ -17,6 +17,17 @@ export function scanConsentStep(transfers = [], cookies = []) {
     return items.some((x) => x.consentPhase === "post") ? "accepted" : "none";
 }
 
+/** Export wording for an item's consentPhase. */
+export function consentPhaseLabel(phase) {
+    if (phase === "pre") return "Before consent";
+    return phase === "post" ? "After consent" : "Unknown";
+}
+
+/** phase: "pre", "post" or "all". */
+export function filterByConsentPhase(items, phase) {
+    return phase === "all" ? items : items.filter((x) => x.consentPhase === phase);
+}
+
 const FIRST_VISIT_MAX_GAP_MS = 14 * 86400000;
 
 /** A first-visit scan only speaks for an accept-all scan made around the same time. */

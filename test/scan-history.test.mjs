@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { test } from "./_harness.mjs";
 import { listScans, scanDomainList } from "../api/pre-consent-scans.js";
 import { addScanDeltas, formatScanDelta, staleScanDays } from "../api/_scan-history.js";
-import { scanConsentStep, applyFirstVisit, firstVisitApplies } from "../api/_consent-phase.js";
+import { scanConsentStep, applyFirstVisit, firstVisitApplies, consentPhaseLabel, filterByConsentPhase } from "../api/_consent-phase.js";
 import fs from "node:fs";
 
 function fakeDb(rows = [], total = rows.length) {
@@ -142,4 +142,15 @@ test("first visit: every reader of the scan table excludes it", () => {
         assert.match(fs.readFileSync(new URL(`../api/${file}.js`, import.meta.url), "utf8"), /\$\{NOT_FIRST_VISIT\}/, file);
     }
     assert.match(fs.readFileSync(new URL("../api/cron-cleanup-scans.js", import.meta.url), "utf8"), /PARTITION BY domain, status, \$\{SCAN_TYPE\}/);
+});
+
+test("cookie filter: narrows by consent phase, all keeps untagged items", () => {
+    const items = [{ name: "a", consentPhase: "pre" }, { name: "b", consentPhase: "post" }, { name: "c" }];
+    assert.deepStrictEqual(filterByConsentPhase(items, "pre").map((x) => x.name), ["a"]);
+    assert.deepStrictEqual(filterByConsentPhase(items, "post").map((x) => x.name), ["b"]);
+    assert.strictEqual(filterByConsentPhase(items, "all").length, 3);
+});
+
+test("CSV wording says before, after or unknown", () => {
+    assert.deepStrictEqual(["pre", "post", undefined].map(consentPhaseLabel), ["Before consent", "After consent", "Unknown"]);
 });
