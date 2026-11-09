@@ -82,17 +82,18 @@ export default async function handler(req, res) {
     }
 
     const cleanDomain = domain.trim().toLowerCase().replace(/^https?:\/\//, "").split("/")[0];
-    const { transfers, cookies, durationMs, error } = await scanDomain(cleanDomain);
+    const { transfers, cookies, rejectPass, durationMs, error } = await scanDomain(cleanDomain, { rejectPass: true });
 
     const status    = error ? "failed" : "completed";
     const scannedAt = new Date().toISOString().slice(0, 19).replace("T", " ");
 
     try {
+        await getPool().query(`ALTER TABLE pre_consent_scans ADD COLUMN IF NOT EXISTS reject_pass JSONB DEFAULT NULL`);
         await getPool().query(
             `INSERT INTO pre_consent_scans
-                (domain, organisation_id, workspace_id, scanned_at, scan_duration_ms, status, transfers, cookies, error_message)
-             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
-            [cleanDomain, organisationId, workspaceId || null, scannedAt, durationMs, status, JSON.stringify(transfers), JSON.stringify(cookies), error || null]
+                (domain, organisation_id, workspace_id, scanned_at, scan_duration_ms, status, transfers, cookies, error_message, reject_pass)
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
+            [cleanDomain, organisationId, workspaceId || null, scannedAt, durationMs, status, JSON.stringify(transfers), JSON.stringify(cookies), error || null, rejectPass ? JSON.stringify(rejectPass) : null]
         );
     } catch (dbErr) {
         console.error("[pre-consent-scan] DB write failed:", dbErr.message);

@@ -41,6 +41,7 @@ const BANNER_CATEGORY_META = {
     analytics:  { label: "Analytics",  color: "#5090dc" },
     marketing:  { label: "Marketing",  color: "#dc5050" },
     functional: { label: "Functional", color: "#c0a053" },
+    unclassified: { label: "Unclassified", color: "#8a8a8a" },
 };
 
 const RESOURCE_LABELS = {

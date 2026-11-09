@@ -16,7 +16,7 @@
  *   POSTGRES_URL  — Neon connection string (EU Frankfurt)
  */
 
-import { vendorFromCookieName, VENDOR_META, reclassifyStoredTransfer } from "./_scan-core.js";
+import { vendorFromCookieName, cookieCategory, isEuHostedHost, VENDOR_META, reclassifyStoredTransfer } from "./_scan-core.js";
 import { getPool } from "./_db.js";
 import { normalizeBannerDomain } from "./_banner-domain.js";
 import { summarizeConsentPhase } from "./_consent-phase.js";
@@ -32,87 +32,26 @@ const BANNER_CATEGORY = {
     "third-party":  "functional",
 };
 
-const COOKIE_NAME_PATTERNS = [
-    { prefix: "_ga",              bannerCategory: "analytics"  },
-    { prefix: "_gcl_",            bannerCategory: "marketing"  },
-    { prefix: "_gac_",            bannerCategory: "marketing"  },
-    { exact:  "_fbp",             bannerCategory: "marketing"  },
-    { exact:  "_fbc",             bannerCategory: "marketing"  },
-    { exact:  "__hstc",           bannerCategory: "marketing"  },
-    { exact:  "__hssc",           bannerCategory: "marketing"  },
-    { exact:  "__hssrc",          bannerCategory: "marketing"  },
-    { exact:  "hubspotutk",       bannerCategory: "marketing"  },
-    { exact:  "li_sugr",          bannerCategory: "marketing"  },
-    { exact:  "UserMatchHistory", bannerCategory: "marketing"  },
-    { exact:  "lidc",             bannerCategory: "marketing"  },
-    { exact:  "bcookie",          bannerCategory: "marketing"  },
-    { exact:  "bscookie",         bannerCategory: "marketing"  },
-    { prefix: "_hj",              bannerCategory: "analytics"  },
-    { exact:  "_clck",            bannerCategory: "analytics"  },
-    { exact:  "_clsk",            bannerCategory: "analytics"  },
-    { exact:  "_ttp",             bannerCategory: "marketing"  },
-    { exact:  "muc_ads",          bannerCategory: "marketing"  },
-    { exact:  "personalization_id", bannerCategory: "marketing" },
-    { prefix: "amplitude_",       bannerCategory: "analytics"  },
-    { prefix: "intercom-",        bannerCategory: "functional" },
-    { prefix: "_vcrr_",           bannerCategory: "necessary"  },
-    { prefix: "__cf",             bannerCategory: "security"   },
-    { exact:  "cf_clearance",     bannerCategory: "security"   },
-    // Pinterest
-    { prefix: "_pin_",            bannerCategory: "marketing"  },
-    { prefix: "_pinterest_",      bannerCategory: "marketing"  },
-    // Reddit
-    { exact:  "reddaid",          bannerCategory: "marketing"  },
-    { exact:  "reddit_session",   bannerCategory: "marketing"  },
-    // Klaviyo
-    { exact:  "__kla_id",         bannerCategory: "marketing"  },
-    // Stripe (payment / functional)
-    { prefix: "__stripe_",        bannerCategory: "functional" },
-    // Wistia video analytics
-    { prefix: "_wijs",            bannerCategory: "analytics"  },
-    // Trustpilot
-    { prefix: "tp.",              bannerCategory: "marketing"  },
-    // Consent management platforms (necessary)
-    { prefix: "OptanonConsent",   bannerCategory: "necessary"  },
-    { exact:  "OptanonAlertBoxClosed", bannerCategory: "necessary" },
-    { prefix: "CookieConsent",    bannerCategory: "necessary"  },
-    { prefix: "cookieyes",        bannerCategory: "necessary"  },
-    { prefix: "cc_cookie",        bannerCategory: "necessary"  },
-    { prefix: "cmplz_",           bannerCategory: "necessary"  },
-    { prefix: "euconsent",        bannerCategory: "necessary"  },
-    { prefix: "GDPR",             bannerCategory: "necessary"  },
-    { prefix: "uc_",              bannerCategory: "necessary"  }, // Usercentrics
-    { prefix: "CI_",              bannerCategory: "necessary"  }, // Cookie Information
-];
-
-function categoryFromCookieName(name) {
-    for (const p of COOKIE_NAME_PATTERNS) {
-        if (p.exact  && name === p.exact)          return p.bannerCategory;
-        if (p.prefix && name.startsWith(p.prefix)) return p.bannerCategory;
-    }
-    return null;
-}
-
 function enrichWithBannerCategory(transfers, cookies, domain) {
     const domainRoot = domain.split(".").slice(-2).join(".");
     const enrichedTransfers = transfers.map(reclassifyStoredTransfer).map(t => ({
         ...t,
         bannerCategory: t.bannerCategory || BANNER_CATEGORY[t.category] || "functional",
+        hostedInEU: isEuHostedHost(t.host),
     }));
     const enrichedCookies = cookies.map(c => {
         const cookieRoot    = (c.domain || "").replace(/^\./, "").split(".").slice(-2).join(".");
         const isFirstParty  = cookieRoot === domainRoot;
         const matchedVendor = enrichedTransfers.find(t => t.host.split(".").slice(-2).join(".") === cookieRoot);
-        const nameCategory  = categoryFromCookieName(c.name);
         const vendor        = vendorFromCookieName(c.name) || (matchedVendor?.service) || null;
         const privacyUrl    = (vendor && VENDOR_META[vendor]?.privacyUrl)
                            || (matchedVendor && VENDOR_META[matchedVendor.service]?.privacyUrl)
                            || null;
         return {
             ...c,
-            bannerCategory: nameCategory
+            bannerCategory: cookieCategory(c.name, matchedVendor?.service)
                 ?? (matchedVendor ? matchedVendor.bannerCategory : null)
-                ?? (isFirstParty ? "necessary" : "functional"),
+                ?? (isFirstParty ? "unclassified" : "functional"),
             vendor,
             privacyUrl,
         };
@@ -194,7 +133,8 @@ export default async function handler(req, res) {
         const db = getPool();
         const [{ rows }, { rows: attempts }] = await Promise.all([
             db.query(
-                `SELECT domain, scanned_at, scan_duration_ms, status, transfers, cookies
+                `SELECT domain, scanned_at, scan_duration_ms, status, transfers, cookies,
+                        to_jsonb(pre_consent_scans) -> 'reject_pass' AS reject_pass
                    FROM pre_consent_scans
                   WHERE ${scope} AND status = 'completed'
                   ORDER BY scanned_at DESC
@@ -233,6 +173,7 @@ export default async function handler(req, res) {
             scanned_at:            row.scanned_at,
             scan_duration_ms:      row.scan_duration_ms,
             status:                row.status,
+            reject_pass:           row.reject_pass || null,
             pre_consent_transfers: enrichedTransfers,
             pre_consent_cookies:   enrichedCookies,
             // Every transfer/cookie carries consentPhase ("pre" | "post") on

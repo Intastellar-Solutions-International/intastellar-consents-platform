@@ -146,18 +146,22 @@ export default async function handler(req, res) {
     try {
         const needsConsent = reportType !== "snapshot";
         const needsScan = reportType !== "summary";
-        const [consent, countries, scan] = await Promise.all([
+        const [consent, scan] = await Promise.all([
             needsConsent ? fetchConsentApi("getInteractions", req, domain, fromDate, toDate) : null,
-            needsConsent ? fetchConsentApi("interactionsByCountry", req, domain, fromDate, toDate) : null,
             needsScan ? fetchScan(req, domain) : null,
         ]);
+        // countryBreakdown is counted over the same rows as the headline. The
+        // separate endpoint is only for a PHP deployment that lacks it yet.
+        const legacyCountries = needsConsent && !Array.isArray(consent.countryBreakdown)
+            ? await fetchConsentApi("interactionsByCountry", req, domain, fromDate, toDate)
+            : null;
         const type = REPORT_TYPES[reportType];
         const html = buildReportHtml(reportType, {
             domain, fromDate, toDate,
             generatedAt: new Date(),
             excludeBots: req.headers.excludebots !== "0",
             consent,
-            countries: countries?.data?.Countries || [],
+            countries: consent?.countryBreakdown || legacyCountries?.data?.Countries || [],
             scan,
         });
         const pdf = await renderPdf(html, type.title, domain);

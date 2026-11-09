@@ -508,6 +508,7 @@ export const BANNER_CATEGORY = {
 // so e.g. _ga set on the scanned domain is correctly classified as analytics.
 export const COOKIE_NAME_PATTERNS = [
     // Google Analytics (current)
+    { prefix: "_gac_",            bannerCategory: "marketing"  },
     { prefix: "_ga",              bannerCategory: "analytics"  }, // _ga, _ga_XXXXX, _gat
     { exact:  "_gid",             bannerCategory: "analytics"  },
     { prefix: "_dc_gtm_",         bannerCategory: "analytics"  }, // Google Tag Manager container
@@ -521,7 +522,6 @@ export const COOKIE_NAME_PATTERNS = [
     { exact:  "__utmd",           bannerCategory: "analytics"  },
     // Google Ads / Conversion
     { prefix: "_gcl_",            bannerCategory: "marketing"  },
-    { prefix: "_gac_",            bannerCategory: "marketing"  },
     // Google Advertising / DoubleClick
     { exact:  "NID",              bannerCategory: "marketing"  }, // Google ad profile / personalisation
     { exact:  "IDE",              bannerCategory: "marketing"  }, // DoubleClick ad targeting
@@ -832,6 +832,31 @@ export const COOKIE_NAME_PATTERNS = [
     { prefix: ".AspNetCore.",              bannerCategory: "necessary"  },
 ];
 
+// Cookies whose purpose differs from their vendor's main category. Each one
+// is a deliberate exception, so keep the reason next to it.
+const COOKIE_CATEGORY_OVERRIDES = {
+    _vwo_consent: "necessary", // VWO's record of the visitor's consent choice
+};
+
+const vendorCategory = (service) => {
+    const entry = service && TRACKERS.find((t) => t.service === service);
+    return entry ? BANNER_CATEGORY[entry.category] || null : null;
+};
+
+/**
+ * One rule for every cookie category: a documented override, then a tracking
+ * vendor that owns the cookie, then the name table (which also knows when a
+ * CDN's or CMP's cookie is strictly necessary). The caller decides the
+ * fallback for a cookie none of those can place.
+ */
+export function cookieCategory(name, matchedVendorService = null) {
+    if (Object.hasOwn(COOKIE_CATEGORY_OVERRIDES, name)) return COOKIE_CATEGORY_OVERRIDES[name];
+    const owner = vendorCategory(vendorFromCookieName(name));
+    if (owner === "marketing" || owner === "analytics") return owner;
+    return categoryFromCookieName(name)
+        ?? vendorCategory(matchedVendorService);
+}
+
 export function categoryFromCookieName(name) {
     for (const p of COOKIE_NAME_PATTERNS) {
         if (p.exact  && name === p.exact)           return p.bannerCategory;
@@ -844,11 +869,11 @@ export function categoryFromCookieName(name) {
 // Used when a cookie is set on the first-party domain (so domain-matching can't
 // identify the vendor) but the name is well-known enough to attribute it.
 export const COOKIE_VENDOR_HINTS = [
+    { prefix: "_gac_",                  service: "Google Ads"              },
     { prefix: "_ga",                    service: "Google Analytics"        },
     { exact:  "_gid",                   service: "Google Analytics"        },
     { exact:  "_gcl_au",                service: "Google Tag Manager"      },
     { prefix: "_gcl_",                  service: "Google Ads"              },
-    { prefix: "_gac_",                  service: "Google Ads"              },
     { prefix: "_hj",                    service: "Hotjar"                  },
     { exact:  "_fbp",                   service: "Facebook / Meta Pixel"   },
     { exact:  "_fbc",                   service: "Facebook / Meta Pixel"   },
@@ -1446,6 +1471,11 @@ export function describeCookie(name) {
     return null;
 }
 
+// HubSpot serves EU accounts from "-eu1" hosts. The company is still American,
+// so this says where the data goes first, not who the vendor is.
+const EU_HOSTED_HOSTS = [/(^|\.)(js|api|track|forms|cta|app|perf)-eu1\.(hubspot|hs-[a-z]+|hsforms|hscollectedforms|hsadspixel|hubapi)\.[a-z]+$/, /(^|\.)[a-z0-9-]+-eu1\.hubspot(usercontent)?\.[a-z]+$/];
+export const isEuHostedHost = (host) => EU_HOSTED_HOSTS.some((re) => re.test(String(host || "")));
+
 export function classifyHost(hostname) {
     for (const entry of TRACKERS) {
         for (const pattern of entry.domains) {
@@ -1556,11 +1586,15 @@ async function lookupRdap(domainRoot) {
 // Blocking the requests doesn't change what the scan sees: IntaAcceptAll()
 // still writes the consent cookie locally, so post-consent cookies still load.
 // Patterns use Chrome's Network.setBlockedURLs wildcard syntax.
+// analytics.intastellarsolutions.com/collect is where the banner's tracker
+// reports the stored choice on every page load once the consent cookie exists,
+// so a scan's reload after IntaAcceptAll() was recorded as accepted decisions.
 export const CONSENT_RECORDING_URLS = [
     "*://www.consentsmanagement.com/api/beacon-collector.php*",
     "*://consentsmanagement.com/api/beacon-collector.php*",
     "*://consents.intastellarsolutions.com/api/v1/cookie-events*",
     "*://analytics.intastellarsolutions.com/form/collect*",
+    "*://analytics.intastellarsolutions.com/collect*",
 ];
 
 // @sparticuz/chromium unpacks its binary to /tmp on executablePath(). Two
@@ -1575,12 +1609,74 @@ function getChromiumPath() {
     return chromiumPath;
 }
 
+const REJECT_PASS_LATEST_START_MS = 55000;
+
+/**
+ * Second visit in a clean session: inspects the banner's first layer, rejects,
+ * reloads, and reports what still loads. Never throws, so a failure here can
+ * only cost this extra result, not the main scan.
+ */
+async function scanAfterReject(browser, domain, startMs) {
+    if (Date.now() - startMs > REJECT_PASS_LATEST_START_MS) return { available: false, reason: "time" };
+    let context;
+    try {
+        context = await browser.createIncognitoBrowserContext();
+        const page = await context.newPage();
+        const cdp = await page.target().createCDPSession();
+        await cdp.send("Network.enable");
+        await cdp.send("Network.setBlockedURLs", { urls: CONSENT_RECORDING_URLS });
+        const siteRoot = domain.split(".").slice(-2).join(".");
+        let hosts = null; // starts recording once the visitor has rejected
+        page.on("request", (request) => {
+            try {
+                const host = new URL(request.url()).hostname;
+                if (hosts && host.split(".").slice(-2).join(".") !== siteRoot) hosts.add(host);
+            } catch {}
+        });
+        const visit = () => page.goto(`https://${domain}`, { waitUntil: "networkidle2", timeout: 12000 }).catch(() => {});
+        await visit();
+        const hasBanner = await page.waitForFunction(() => typeof IntaSaveNeccessary === "function", { timeout: 5000 }).then(() => true, () => false);
+        if (!hasBanner) return { available: false, reason: "no-banner" };
+
+        const firstLayer = await page.evaluate(() => {
+            const visible = (el) => { if (!el) return null; const r = el.getBoundingClientRect(); return r.width > 0 && r.height > 0 ? el : null; };
+            const accept = visible(document.querySelector('[onclick*="IntaAcceptAll"]'));
+            const reject = visible(document.querySelector('[onclick*="IntaSaveNeccessary"]'));
+            const look = (el) => { const s = getComputedStyle(el), r = el.getBoundingClientRect(); return { area: r.width * r.height, background: s.backgroundColor, color: s.color, fontSize: s.fontSize }; };
+            return { accept: accept && look(accept), reject: reject && look(reject) };
+        });
+        hosts = new Set();
+        await page.evaluate(() => IntaSaveNeccessary()).catch(() => {});
+        await visit();
+        await new Promise((r) => setTimeout(r, 1500));
+        const bannerShownAgain = await page.evaluate(() => {
+            const el = document.querySelector(".intastellarCookieConstents");
+            return !!el && el.getBoundingClientRect().height > 0;
+        }).catch(() => null);
+        const { cookies } = await cdp.send("Network.getAllCookies");
+        return {
+            available: true,
+            firstLayerReject: !!firstLayer.reject,
+            rejectAsProminent: !!firstLayer.reject && !!firstLayer.accept
+                && firstLayer.reject.area >= firstLayer.accept.area * 0.8
+                && firstLayer.reject.fontSize === firstLayer.accept.fontSize,
+            bannerShownAgain,
+            transfers: [...hosts].map((host) => ({ host, ...(classifyHost(host) || { service: host, category: "third-party" }) })),
+            cookies: cookies.map((x) => ({ name: x.name, domain: x.domain, bannerCategory: cookieCategory(x.name) ?? "unclassified", vendor: vendorFromCookieName(x.name) })),
+        };
+    } catch {
+        return { available: false, reason: "failed" };
+    } finally {
+        if (context) await context.close().catch(() => {});
+    }
+}
+
 // Identity of a cookie in the browser jar (CDP Network.Cookie).
 export function cookieKey(c) {
     return `${c.name}|${c.domain}|${c.path}`;
 }
 
-export async function scanDomain(domain) {
+export async function scanDomain(domain, { rejectPass: runRejectPass = false } = {}) {
     const startMs = Date.now();
     let browser;
     try {
@@ -1754,6 +1850,7 @@ export async function scanDomain(domain) {
         // ─────────────────────────────────────────────────────────────────────
 
         const { cookies: rawCookies } = await cdpClient.send("Network.getAllCookies");
+        const rejectPass = runRejectPass ? await scanAfterReject(browser, domain, startMs) : null;
         await browser.close();
 
         // Classify all observed hosts; collect unrecognised roots for RDAP lookup
@@ -1802,10 +1899,7 @@ export async function scanDomain(domain) {
         const cookies = rawCookies.map(c => {
             const cookieRoot    = (c.domain || "").replace(/^\./, "").split(".").slice(-2).join(".");
             const matchedVendor = transfers.find(t => t.host.split(".").slice(-2).join(".") === cookieRoot);
-            const bannerCategory = matchedVendor
-                ? matchedVendor.bannerCategory
-                : categoryFromCookieName(c.name)
-                ?? "unclassified";
+            const bannerCategory = cookieCategory(c.name, matchedVendor?.service) ?? "unclassified";
             return {
                 name:        c.name,
                 domain:      c.domain,
@@ -1825,7 +1919,7 @@ export async function scanDomain(domain) {
             };
         });
 
-        return { transfers, cookies, consentGranted: clicked, durationMs: Date.now() - startMs, error: null };
+        return { transfers, cookies, consentGranted: clicked, rejectPass, durationMs: Date.now() - startMs, error: null };
     } catch (err) {
         if (browser) await browser.close().catch(() => {});
         return { transfers: [], cookies: [], durationMs: Date.now() - startMs, error: err.message };

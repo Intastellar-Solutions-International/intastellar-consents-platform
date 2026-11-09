@@ -813,13 +813,46 @@ function consentTotalsSql($condition, $euCountryNamesList)
     return "SELECT
         COALESCE(SUM(`type` = 'all'        AND `value` = '1'), 0)        AS accepted,
         COALESCE(SUM(`type` = 'all'        AND `value` = 'declined'), 0) AS declined,
-        COALESCE(SUM(`type` = 'marketing'  AND `value` = '1'), 0)        AS marketing,
-        COALESCE(SUM(`type` = 'functional' AND `value` = '1'), 0)        AS functional,
-        COALESCE(SUM(`type` = 'statics'    AND `value` = '1'), 0)        AS statics,
+        COALESCE(SUM(`type` IN ('marketing', 'all')  AND `value` = '1'), 0) AS marketing,
+        COALESCE(SUM(`type` IN ('functional', 'all') AND `value` = '1'), 0) AS functional,
+        COALESCE(SUM(`type` IN ('statics', 'all')    AND `value` = '1'), 0) AS statics,
+        COALESCE(SUM(`type` != 'all'), 0)                                AS partial,
         COALESCE(SUM(`type` = 'all' AND `value` = '1' AND (country IN ($euCountryNamesList) OR country LIKE 'EU')), 0) AS eu_accepted,
         COALESCE(SUM(`type` = 'all' AND `value` = '1' AND country NOT IN ($euCountryNamesList) AND country NOT LIKE 'EU' AND country != ''), 0) AS non_eu_accepted
     FROM cookiebanner_tracking_settings
-    WHERE `type` IN ('all', 'marketing', 'functional', 'statics') " . $condition;
+    WHERE `type` IN ('all', 'marketing', 'functional', 'statics', 'salesOfDataAllowed') " . $condition;
+}
+
+/**
+ * Decisions per country over the same rows as the "Total" KPI, so the country
+ * table always adds up to the headline. $condition starts with WHERE.
+ */
+function countryTotalsSql($condition)
+{
+    return "SELECT
+        CASE WHEN country IS NULL OR country = '' THEN 'Unknown' ELSE country END AS country,
+        COUNT(*) AS total,
+        COALESCE(SUM(`type` = 'all' AND `value` = '1'), 0)        AS accepted,
+        COALESCE(SUM(`type` = 'all' AND `value` = 'declined'), 0) AS declined
+    FROM cookiebanner_tracking_settings " . $condition . "
+    GROUP BY 1
+    ORDER BY total DESC";
+}
+
+function fetchCountryTotals($db, $sql)
+{
+    $res = mysqli_query($db, $sql);
+    if (!$res) return null;
+    $rows = [];
+    while ($row = mysqli_fetch_assoc($res)) {
+        $total = (int) $row["total"];
+        $rows[] = [
+            "country" => $row["country"],
+            "num" => ["total" => $total, "accept" => (int) $row["accepted"], "decline" => (int) $row["declined"]],
+            "accepted" => $total > 0 ? round((float) $row["accepted"] / $total * 100, 1) : null,
+        ];
+    }
+    return $rows;
 }
 
 function deviceSplitSql($condition)
@@ -906,6 +939,11 @@ $compareRange = isset($_SERVER["HTTP_X_COMPARE_RANGE"]) ? $_SERVER["HTTP_X_COMPA
 
 $previousTotals = fetchConsentTotals($db, consentTotalsSql($previousAndClause, $euCountryNamesList));
 $previousAllTotal = $previousTotals["accepted"] ?? 0;
+
+// The comparison's denominator: every decision in the previous window, the
+// same definition as $allTotal for the current one.
+$previousRowsQuery = mysqli_query($db, "SELECT COUNT(*) AS n FROM cookiebanner_tracking_settings " . $whereClause . " " . $previousAndClause);
+$previousRowTotal = $previousRowsQuery ? (int) (mysqli_fetch_assoc($previousRowsQuery)["n"] ?? 0) : 0;
 
 if ($fromDate != $toDate && is_array($num_per_day) && count($num_per_day) > 0) {
     $num_per_day = addDailyAcceptance(
@@ -1248,7 +1286,9 @@ if ($currentTotals !== null) {
 
         // Change in percentage points: (currentShare - previousShare) where share = metric/total*100
         // Return null when totals are 0
-        $previousTotal = $previousAccepted + $previousDeclined;
+        // Was accepted + declined, while the current share divides by every
+        // decision — so custom choices alone moved the comparison.
+        $previousTotal = $previousRowTotal > 0 ? $previousRowTotal : $previousAccepted + $previousDeclined;
         $changeRate = function($current, $previous, $currentTotal, $previousTotal) {
             if ((float) $currentTotal == 0 || (float) $previousTotal == 0) return null;
             $currentShare = (float) $current / (float) $currentTotal * 100;
@@ -1312,6 +1352,7 @@ if ($currentTotals !== null) {
             "interactions_number" => [
                 "accept" => (float) $accepted,
                 "decline" => (float) $declined,
+                "partial" => (float) max(0, $allTotal - $accepted - $declined),
                 "marketing" => (float) $marketingNum,
                 "functional" => (float) $functionalNum,
                 "statics" => (float) $staticsNum
@@ -1330,6 +1371,7 @@ if ($currentTotals !== null) {
                 "functional" => (float) $functionalRelativeDrop,
                 "statics" => (float) $staticsRelativeDrop,
             ],
+            "countryBreakdown" => fetchCountryTotals($db, countryTotalsSql($whereClause . " " . $andClause)),
             "euUsers" => $euNoneEUNum,
             "noneEUUsers" => $noneEUNum,
             "euAcceptedRate" => ($euNoneEUNum > 0) ? (((float) $euAcceptedNum / (float) $euNoneEUNum * 100 < 0.1) ? round((float) $euAcceptedNum / (float) $euNoneEUNum * 100, 2) : round((float) $euAcceptedNum / (float) $euNoneEUNum * 100, 1)) : null,
