@@ -5,6 +5,7 @@ import Select from "../../../Components/SelectInput/Selector";
 import Button from "../../../Components/Button/Button";
 import Authentication from "../../../Authentication/Auth";
 import API from "../../../API/api";
+import NotificationSettings from "../../../Components/Notifications/NotificationSettings.js";
 import SuccessWindow from "../../../Components/SuccessWindow";
 import {
     readUserSettings,
@@ -140,6 +141,11 @@ export default function UserPreferences() {
                                         label={t("Language")}
                                     />
                                 </div>
+                            </section>
+                            <section className="settings-preferences__group" aria-labelledby="pref-notifications">
+                                <h3 className="settings-preferences__group-title" id="pref-notifications">Notifications</h3>
+                                <p className="settings-preferences__group-desc">Choose what appears in the notification bell. These apply to your whole organisation.</p>
+                                <NotificationSettings />
                             </section>
                             <section className="settings-preferences__group" aria-labelledby="pref-layout">
                                 <h3 className="settings-preferences__group-title" id="pref-layout">

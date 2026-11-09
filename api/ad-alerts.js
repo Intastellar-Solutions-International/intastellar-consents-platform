@@ -23,6 +23,7 @@
 
 import { checkAndFireAlerts } from "./_alert-check.js";
 import { getPool } from "./_db.js";
+import { ensureScanNotificationSchema, syncScanNotifications, getNotificationPreferences, setNotificationPreference } from "./_scan-notifications.js";
 // ── Schema setup ─────────────────────────────────────────────────────────────
 
 let schemaReady = false;
@@ -82,6 +83,8 @@ async function ensureSchema(db) {
             UNIQUE (organisation_id, endpoint)
         )
     `);
+
+    await ensureScanNotificationSchema(db);
 
     schemaReady = true;
 }
@@ -183,6 +186,10 @@ export default async function handler(req, res) {
                 return res.json({ rules: merged, vapidPublicKey: process.env.VAPID_PUBLIC_KEY || null });
             }
 
+            if (resource === "notification-preferences") {
+                return res.json({ types: await getNotificationPreferences(db, orgId) });
+            }
+
             if (resource === "notifications") {
                 // Domain is optional here — the header's NotificationCenter bell
                 // intentionally fetches org-wide (no domain selected), while the
@@ -207,6 +214,24 @@ export default async function handler(req, res) {
         // ── POST ──────────────────────────────────────────────────────────────
         if (req.method === "POST") {
             const body = req.body || {};
+
+            // Organisation-wide actions from the header's notification bell
+            if (body.action === "sync-scan-notifications") {
+                return res.json({ ok: true, created: await syncScanNotifications(db, orgId, body.domains) });
+            }
+            if (body.action === "set-notification-preference") {
+                const saved = await setNotificationPreference(db, orgId, body.type, body.enabled);
+                return saved ? res.json({ ok: true }) : res.status(400).json({ error: "Unknown notification type" });
+            }
+            if (body.action === "mark-read" && !body.domain) {
+                if (body.id === "all") {
+                    await db.query(`UPDATE ad_notifications SET read_at = NOW() WHERE organisation_id = $1 AND read_at IS NULL`, [orgId]);
+                } else if (body.id) {
+                    await db.query(`UPDATE ad_notifications SET read_at = NOW() WHERE id = $1 AND organisation_id = $2`, [body.id, orgId]);
+                }
+                return res.json({ ok: true });
+            }
+
             const domain = cleanDomain(body.domain);
             if (!domain) return res.status(400).json({ error: "domain is required" });
 
