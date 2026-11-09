@@ -107,9 +107,10 @@ export function vendorChapterV(vendor, record) {
     const confirmed = mechanismById(record?.mechanism);
     const suggested = mechanismById(CATALOGUE[vendor.transferMechanism]);
     let transfer;
-    if (confirmed && confirmed.id !== "none") transfer = { status: "ok", mechanism: confirmed };
-    else if (confirmed) transfer = { status: required ? "problem" : "not_required", mechanism: confirmed };
-    else if (!required) transfer = { status: "not_required", mechanism: null };
+    // An EU vendor has no transfer to cover, whatever was once recorded for it.
+    if (!required) transfer = { status: "not_required", mechanism: null };
+    else if (confirmed && confirmed.id !== "none") transfer = { status: "ok", mechanism: confirmed };
+    else if (confirmed) transfer = { status: "problem", mechanism: confirmed };
     else if (suggested) transfer = { status: "unconfirmed", mechanism: suggested };
     else transfer = { status: "problem", mechanism: null };
     // A mechanism only counts as confirmed once someone records when they checked it.

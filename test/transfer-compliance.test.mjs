@@ -102,3 +102,11 @@ test("vendor records: clearing every field removes the record", async () => {
     assert.strictEqual(await saveRecord(db, 7, { vendor: "V", mechanism: null, dpa_status: null, notes: "" }), null);
     assert.match(db.calls[0].sql, /^DELETE/);
 });
+
+test("chapter V: an EU vendor stays Not required even with a saved mechanism", () => {
+    const c = vendorChapterV({ vendor: "E", region: "eu", transferMechanism: "EEA" }, { mechanism: "sccs", dpa_status: "signed" });
+    assert.strictEqual(c.status, "not_required");
+    assert.strictEqual(c.mechanism, null);
+    assert.strictEqual(c.needsAction, false);
+    assert.strictEqual(chapterVLabels({ vendor: "E", region: "eu" }, { mechanism: "sccs" }).transfer, "Not required (EU)");
+});
