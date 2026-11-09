@@ -115,10 +115,19 @@
 
 /* Top bar: logo + domain switcher | date range + health pill | account.
    The classic header is a two-column grid; the new shell adds the middle
-   column, which shrinks before anything wraps. */
+   column. The switcher is the part that shrinks: a long organisation name
+   truncates instead of running under the date range. */
 .dashboard-profile.shell-profile {
-    grid-template-columns: auto minmax(0, 1fr) min-content;
+    grid-template-columns: minmax(0, 1fr) auto min-content;
     column-gap: var(--space-4);
+}
+.shell-profile .logo-selector-container,
+.shell-profile .company_container,
+.shell-profile .company_container .property-selector { min-width: 0; }
+.shell-profile .logo_container { flex-shrink: 0; }
+.shell-profile .company_container .property-selector__trigger { max-width: min(320px, 100%); }
+@media (min-width: 901px) {
+    .shell-profile .company_container { min-width: 200px; }
 }
 .shell-topbar-tools {
     display: flex;
@@ -147,6 +156,6 @@
 }
 
 /* Where the top bar is tight, the status pill stays; the audit card still shows logging. */
-@media (max-width: 1180px) {
+@media (max-width: 1400px) {
     .shell-logging-pill { display: none; }
 }

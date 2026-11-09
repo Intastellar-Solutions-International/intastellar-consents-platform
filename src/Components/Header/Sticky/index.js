@@ -6,6 +6,9 @@ import { isNewShell } from "../../../Functions/featureFlags.js";
 import { t } from "../../../i18n/index.js";
 
 // Added showInfoButton and infoType props
+// Below this the top bar has no room for the date range, so it sits in the page header.
+const DATE_IN_PAGE_QUERY = "(max-width: 1180px)";
+
 export default function StickyPageTitle({
     demoMode = false,
     loadingUpdated,
@@ -48,11 +51,11 @@ export default function StickyPageTitle({
     // range state — the control is just rendered into the bar's slot.
     // On phones there is no room in the bar, so it stays with the page title.
     const [dateSlot, setDateSlot] = React.useState(null);
-    const [phone, setPhone] = React.useState(() => window.matchMedia("(max-width: 900px)").matches);
-    const dateInTopBar = isNewShell() && !phone;
+    const [dateInPage, setDateInPage] = React.useState(() => window.matchMedia(DATE_IN_PAGE_QUERY).matches);
+    const dateInTopBar = isNewShell() && !dateInPage;
     React.useEffect(() => {
-        const query = window.matchMedia("(max-width: 900px)");
-        const onChange = () => setPhone(query.matches);
+        const query = window.matchMedia(DATE_IN_PAGE_QUERY);
+        const onChange = () => setDateInPage(query.matches);
         query.addEventListener("change", onChange);
         return () => query.removeEventListener("change", onChange);
     }, []);
