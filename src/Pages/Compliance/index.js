@@ -22,6 +22,7 @@ import { chapterVLabels } from "../../Functions/transferCompliance.js";
 import { COMPLIANCE_CHANGED_EVENT } from "../../Components/Shell/useDomainCompliance.js";
 import { scanConsentStep, staleScanDays } from "../../Functions/scanHistory.js";
 import ScanHistoryPanel from "./ScanHistoryPanel.js";
+import DsrSummaryCard from "./DsrSummaryCard.js";
 import { KpiTile, Button, Tabs, TabPanel, EmptyState } from "../../Components/ui";
 
 const Link = window.ReactRouterDOM.Link;
@@ -904,6 +905,7 @@ export default function CompliancePage() {
                         observedCookies={observedCookies}
                         preConsentScan={preConsentTransfers}
                     />
+                    <DsrSummaryCard platformId={id} />
                 </div>
 
             </div>{/* end compliance-bottom-grid */}
