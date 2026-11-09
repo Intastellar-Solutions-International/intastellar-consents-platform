@@ -113,6 +113,10 @@ export default function CompliancePage() {
 
     useSyncDomainFromRoute(handle, setCurrentDomain);
 
+    useEffect(() => {
+        document.title = `Compliance overview${handle ? `: ${handle}` : ""} | Reports | Intastellar Consents`;
+    }, [handle]);
+
     const workspaceId = activeWorkspace?.id ?? null;
 
     const initialLastDays = localStorage.getItem("settings") != null
@@ -497,11 +501,13 @@ export default function CompliancePage() {
                 <KpiTile
                     label="Pre-consent cookies"
                     value={preStat.count != null ? formatNumber(preStat.count) : preStat.label}
+                    noData={preStat.count == null ? preStat.reason : undefined}
                     hint={preStat.count != null ? `Cookie scan · ${formatDate(preStat.scannedAt)}` : preStat.reason}
                 />
                 <KpiTile
                     label="Post-consent cookies"
                     value={postStat.count != null ? formatNumber(postStat.count) : postStat.label}
+                    noData={postStat.count == null ? postStat.reason : undefined}
                     hint={postStat.count != null ? "Banner reports · real visits" : postStat.reason}
                 />
                 <KpiTile

@@ -392,3 +392,12 @@
     background: rgb(var(--c-black) / 0.18);
     border: 1px solid rgb(var(--c-white) / 0.06);
 }
+
+/* "No data" must not read as a value. */
+.audit-snapshot-card__stat dd.audit-snapshot-card__stat-nodata {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+}

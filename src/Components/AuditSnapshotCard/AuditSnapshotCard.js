@@ -15,6 +15,7 @@ import appStorage from '../../Functions/storage.js';
 import { parseConsentTimestamp } from "../../Functions/consentTimestamp.js";
 import { useExcludeBots } from "../../Functions/botFilter.js";
 import { preConsentCookieStat, postConsentCookieStat } from "../../Functions/cookieStats.js";
+import { Icon } from "../ui/icons.js";
 
 const Link = window.ReactRouterDOM.Link;
 
@@ -688,11 +689,11 @@ export default function AuditSnapshotCard(props) {
                                     <>
                                         <div className="audit-snapshot-card__stat">
                                             <dt>Pre-consent cookies</dt>
-                                            <dd title={pre.reason || undefined}>{pre.count != null ? pre.count.toLocaleString(locale) : pre.label}</dd>
+                                            {pre.count != null ? <dd>{pre.count.toLocaleString(locale)}</dd> : <dd className="audit-snapshot-card__stat-nodata" title={pre.reason}><Icon name="info" size={14} />{pre.label}</dd>}
                                         </div>
                                         <div className="audit-snapshot-card__stat">
                                             <dt>Post-consent cookies</dt>
-                                            <dd title={post.reason || undefined}>{post.count != null ? post.count.toLocaleString(locale) : post.label}</dd>
+                                            {post.count != null ? <dd>{post.count.toLocaleString(locale)}</dd> : <dd className="audit-snapshot-card__stat-nodata" title={post.reason}><Icon name="info" size={14} />{post.label}</dd>}
                                         </div>
                                     </>
                                 );

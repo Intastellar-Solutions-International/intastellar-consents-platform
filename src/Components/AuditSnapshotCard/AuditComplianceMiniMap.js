@@ -66,7 +66,7 @@ export default function AuditComplianceMiniMap({
             </div>
             <ul className="audit-compliance-map__legend" aria-hidden>
                 <li className="audit-compliance-map__legend-item audit-compliance-map__legend-item--potential">
-                    Regulated · no sample
+                    Regulated area, no consents in this sample
                 </li>
                 {FRAMEWORK_IDS.map((id) => {
                     const st = regionStatus?.[id]?.status ?? "none";
