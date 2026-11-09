@@ -333,6 +333,7 @@ export const DATA_REGIONS = {
     "iubenda": "eu", "Axeptio": "eu", "CookieFirst": "eu",
     "Termly": "non-eu", "Didomi": "eu", "Quantcast Choice": "non-eu", "CookieHub": "eu",
     "Intastellar Analytics": "eu",
+    "Seora": "eu",
     "Intastellar Consents": "eu",
 };
 
@@ -1516,16 +1517,20 @@ export function classifyHost(hostname) {
 // unclassified then ("third-party") but is in TRACKERS now — e.g.
 // cdn.intastellar.eu, Intastellar Consents' CDN — is reclassified on read,
 // so existing scans don't need a rescan. Classified hosts are left as stored.
-function withCatalogueMechanism(t) {
-    const meta = VENDOR_META[t?.service];
-    if (!meta?.transferMechanism || t.transferMechanism) return t;
-    return { ...t, transferMechanism: meta.transferMechanism, privacyUrl: t.privacyUrl || meta.privacyUrl || null };
+// Catalogue corrections that apply to scans stored before them.
+function withCatalogueFacts(t) {
+    if (!t) return t;
+    const meta = VENDOR_META[t.service];
+    const facts = {};
+    if (meta?.transferMechanism && !t.transferMechanism) Object.assign(facts, { transferMechanism: meta.transferMechanism, privacyUrl: t.privacyUrl || meta.privacyUrl || null });
+    if (DATA_REGIONS[t.service] === "eu" && t.dataRegion !== "eu") facts.dataRegion = "eu";
+    return Object.keys(facts).length ? { ...t, ...facts } : t;
 }
 
 export function reclassifyStoredTransfer(t) {
-    if (!t?.host || (t.category && t.category !== "third-party")) return withCatalogueMechanism(t);
+    if (!t?.host || (t.category && t.category !== "third-party")) return withCatalogueFacts(t);
     const match = classifyHost(t.host);
-    if (!match) return withCatalogueMechanism(t);
+    if (!match) return withCatalogueFacts(t);
     const meta = VENDOR_META[match.service] || {};
     return {
         ...t,

@@ -94,3 +94,11 @@ test("before consent: CMPs, fonts and CDNs are counted apart from tracking", () 
     assert.strictEqual(t.preConsent, 5);
     assert.strictEqual(t.preConsentTracking, 2);
 });
+
+test("Seora is an EU vendor, including in scans stored before the fix", () => {
+    assert.strictEqual(classifyHost("app.seora.dk").dataRegion, "eu");
+    const stored = reclassifyStoredTransfer({ host: "app.seora.dk", service: "Seora", category: "analytics", dataRegion: "non-eu", transferMechanism: "EEA" });
+    assert.strictEqual(stored.dataRegion, "eu");
+    assert.strictEqual(group([stored])[0].region, "eu");
+    assert.strictEqual(reclassifyStoredTransfer({ host: "a", service: "Meta Pixel", category: "advertising", dataRegion: "non-eu" }).dataRegion, "non-eu");
+});
