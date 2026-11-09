@@ -42,7 +42,7 @@ export default function DomainHealthPill() {
             {logging && <StatusPill status={logging.status} word={`Consent logging: ${LOGGING_WORD[logging.status]}`} title={logging.detail} className="shell-logging-pill" />}
             <StatusPill
                 status={level.status}
-                word={compliance?.count ? `${level.word} · ${compliance.count} issue${compliance.count === 1 ? "" : "s"}` : level.word}
+                word={<>{level.word}{compliance?.count > 0 && <span className="shell-issue-count"> · {compliance.count} issue{compliance.count === 1 ? "" : "s"}</span>}</>}
                 title={compliance ? issueSummary(compliance) : "Checking the latest scan…"}
                 to={`${reportsPath(platform, currentDomain, "/compliance")}#open-issues`}
                 onClick={() => document.getElementById("open-issues")?.scrollIntoView({ behavior: "smooth" })}

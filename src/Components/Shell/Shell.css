@@ -143,6 +143,7 @@
 /* Help stays reachable from the drawer where the header has no room. */
 @media (max-width: 480px) {
     .help-trigger { display: none; }
+    .shell-issue-count { display: none; }
 }
 
 /* Where the top bar is tight, the status pill stays; the audit card still shows logging. */

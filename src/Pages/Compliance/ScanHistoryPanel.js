@@ -28,7 +28,7 @@ export default function ScanHistoryPanel({ scans, currentId, firstVisitId, baseP
                                     {String(s.id) === String(firstVisitId) && !isCurrent && <Badge tone="neutral" icon="check-circle">Used for before-consent results</Badge>}
                                 </span>
                                 <span>{s.scan_type === "first_visit" ? "First visit, not accepted" : `${SOURCE[s.source]} · ${STEP[s.consent_step]}`} · {scanRegionLabel(s.scan_region)} · {s.domain}</span>
-                                <span>{formatNumber(s.vendors_found)} vendors · {formatNumber(s.cookies_found)} cookies</span>
+                                <span>{formatNumber(s.vendors_found)} vendor{s.vendors_found === 1 ? "" : "s"} · {formatNumber(s.cookies_found)} cookie{s.cookies_found === 1 ? "" : "s"}</span>
                                 <span>{formatScanDelta(s.delta)}</span>
                             </Link>
                         </li>
