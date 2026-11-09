@@ -296,12 +296,49 @@ export default function CompliancePage() {
         const response = await fetch(api.url, { method: "POST", headers: { ...api.headers }, body: JSON.stringify({ vendor, ...values }) });
         if (!response.ok) throw new Error("save failed");
         const { record } = await response.json();
+        applyVendorRecord(vendor, record);
+    };
+
+    const applyVendorRecord = (vendor, record) => {
         setVendorRecords((all) => {
             const next = { ...all };
             if (record) next[vendor] = record; else delete next[vendor];
             return next;
         });
         window.dispatchEvent(new Event(COMPLIANCE_CHANGED_EVENT));
+    };
+
+    const evidenceRequest = async (body) => {
+        const api = API[id].vendorCompliance;
+        const response = await fetch(api.url, { method: "POST", headers: { ...api.headers }, body: JSON.stringify(body) });
+        const result = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(result.error || "That didn't work. Please try again.");
+        applyVendorRecord(body.vendor, result.record);
+    };
+
+    const vendorEvidence = {
+        upload: async (vendor, file) => {
+            const data = await new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(String(reader.result).split(",")[1]);
+                reader.onerror = () => reject(new Error("That file couldn't be read."));
+                reader.readAsDataURL(file);
+            });
+            await evidenceRequest({ action: "upload_evidence", vendor, filename: file.name, content_type: file.type, data });
+        },
+        remove: (vendor) => evidenceRequest({ action: "delete_evidence", vendor }),
+        open: async (vendor) => {
+            const api = API[id].vendorCompliance;
+            const response = await fetch(`${api.url}?evidence=${encodeURIComponent(vendor)}`, { headers: { ...api.headers } });
+            if (!response.ok) throw new Error("That file couldn't be opened.");
+            const url = URL.createObjectURL(await response.blob());
+            const name = (vendorRecords[vendor]?.evidence_blob_path || "evidence").split("/").pop();
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = name;
+            a.click();
+            URL.revokeObjectURL(url);
+        },
     };
 
     // The header status links here (#open-issues); the block only exists on this tab.
@@ -408,10 +445,11 @@ export default function CompliancePage() {
         if (activeTab === "transfers") {
             const items = preConsentTransfers?.pre_consent_transfers || [];
             const rows = [
-                ["Service", "Host", "Category", "Resource Type", "Region", "Data Country", "Transfer Mechanism", "DPA", "Hosted in EU"],
+                ["Service", "Host", "Category", "Resource Type", "Region", "Data Country", "Transfer Mechanism", "DPA", "Hosted in EU", "Mechanism Confirmed On", "Owner", "Notes", "Evidence Link", "Evidence File"],
                 ...items.map(t => {
-                    const chapterV = chapterVLabels({ region: t.dataRegion === "eu" ? "eu" : "non-eu", transferMechanism: t.transferMechanism }, vendorRecords[t.service || t.host]);
-                    return [t.service || t.host, t.host, t.category || "", t.resourceType || "", t.dataRegion || "", t.dataCountry || "", chapterV.transfer, chapterV.dpa, t.dataRegion === "eu" || t.hostedInEU ? "Yes" : "No"];
+                    const record = vendorRecords[t.service || t.host];
+                    const chapterV = chapterVLabels({ region: t.dataRegion === "eu" ? "eu" : "non-eu", transferMechanism: t.transferMechanism }, record);
+                    return [t.service || t.host, t.host, t.category || "", t.resourceType || "", t.dataRegion || "", t.dataCountry || "", chapterV.transfer, chapterV.dpa, t.dataRegion === "eu" || t.hostedInEU ? "Yes" : "No", record?.mechanism_confirmed_at || "", record?.owner || "", record?.notes || "", record?.evidence_url || "", record?.evidence_blob_path ? record.evidence_blob_path.split("/").pop() : ""];
                 }),
             ];
             downloadCSV(rows, `pre-consent-transfers-${scanDomain}.csv`);
@@ -632,6 +670,7 @@ export default function CompliancePage() {
                                         phaseKnown={preConsentTransfers.consent_phase_known === true}
                                         records={vendorRecords}
                                         onSaveRecord={saveVendorRecord}
+                                        evidence={vendorEvidence}
                                     />
                                     {/* Map: secondary to the table — smaller, collapsed by default. */}
                                     {dataFlowCountries.length > 0 && (

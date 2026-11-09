@@ -4,7 +4,7 @@ import { test } from "./_harness.mjs";
 import { groupTransfersByVendor, complianceFindings, complianceStatus, scanCompliance } from "../api/_transfer-compliance.js";
 
 const host = (service, category, consentPhase, extra = {}) => ({ host: `${service}-${Math.random()}`.toLowerCase(), service, category, consentPhase, dataRegion: "non-eu", ...extra });
-const SIGNED = { dpa_status: "signed", mechanism: "dpf" };
+const SIGNED = { dpa_status: "signed", mechanism: "dpf", mechanism_confirmed_at: "2026-11-01" };
 const status = (transfers, records = {}, phaseKnown = true) => {
     const findings = complianceFindings(groupTransfersByVendor(transfers), records, { phaseKnown });
     return complianceStatus(findings, { phaseKnown }).level;

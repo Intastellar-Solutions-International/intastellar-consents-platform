@@ -85,8 +85,10 @@ export const MECHANISMS = [
     { id: "none", label: "None", short: "None" },
 ];
 export const DPA_STATES = [
-    { id: "signed", label: "In place" },
-    { id: "missing", label: "Not in place" },
+    { id: "unknown", label: "Unknown" },
+    { id: "requested", label: "Requested" },
+    { id: "signed", label: "Signed" },
+    { id: "not_required", label: "Not required" },
 ];
 
 const CATALOGUE = { "EU-US Data Privacy Framework": "dpf", "Standard Contractual Clauses": "sccs", "Adequacy Decision": "adequacy" };
@@ -101,7 +103,7 @@ const mechanismById = (id) => MECHANISMS.find((m) => m.id === id) || null;
 export function vendorChapterV(vendor, record) {
     const required = vendor.region !== "eu";
     const dpa = record?.dpa_status || null;
-    const needsDpa = dpa !== "signed";
+    const needsDpa = dpa !== "signed" && dpa !== "not_required";
     const confirmed = mechanismById(record?.mechanism);
     const suggested = mechanismById(CATALOGUE[vendor.transferMechanism]);
     let transfer;
@@ -110,14 +112,16 @@ export function vendorChapterV(vendor, record) {
     else if (!required) transfer = { status: "not_required", mechanism: null };
     else if (suggested) transfer = { status: "unconfirmed", mechanism: suggested };
     else transfer = { status: "problem", mechanism: null };
-    return { ...transfer, required, suggested, dpa, needsDpa, needsAction: needsDpa || transfer.status === "problem" || transfer.status === "unconfirmed" };
+    // A mechanism only counts as confirmed once someone records when they checked it.
+    const dateMissing = required && Boolean(confirmed) && confirmed.id !== "none" && !record?.mechanism_confirmed_at;
+    return { ...transfer, required, suggested, dpa, needsDpa, dateMissing, needsAction: needsDpa || dateMissing || transfer.status === "problem" || transfer.status === "unconfirmed" };
 }
 
 export function chapterVSummary(vendors, records) {
     const rows = vendors.map((v) => vendorChapterV(v, records?.[v.vendor]));
     return {
         problem: rows.filter((r) => r.status === "problem").length,
-        unconfirmed: rows.filter((r) => r.status === "unconfirmed").length,
+        unconfirmed: rows.filter((r) => r.status === "unconfirmed" || r.dateMissing).length,
         withoutDpa: rows.filter((r) => r.needsDpa).length,
     };
 }
@@ -143,7 +147,7 @@ export function complianceFindings(vendors, records, { phaseKnown = false } = {}
         }
         if (chapter.status === "problem") add("mechanism", `${v.vendor} has no transfer mechanism`);
         if (chapter.needsDpa) add("dpa", `No confirmed DPA with ${v.vendor}`);
-        if (chapter.status === "unconfirmed") add("unconfirmed", `${v.vendor}'s transfer mechanism is not confirmed`);
+        if (chapter.status === "unconfirmed" || chapter.dateMissing) add("unconfirmed", `${v.vendor}'s transfer mechanism is not confirmed`);
     }
     return findings.sort((a, b) => FINDING_RANK[a.kind] - FINDING_RANK[b.kind] || b.hosts - a.hosts || a.vendor.localeCompare(b.vendor));
 }

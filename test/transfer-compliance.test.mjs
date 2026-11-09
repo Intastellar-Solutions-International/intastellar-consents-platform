@@ -1,7 +1,7 @@
 // GDPR Chapter V per vendor: transfer mechanism and DPA.
 import assert from "node:assert/strict";
 import { test } from "./_harness.mjs";
-import { validateRecord, saveRecord, listRecords } from "../api/vendor-compliance.js";
+import { validateRecord, validateEvidence, evidencePath, saveRecord, listRecords } from "../api/vendor-compliance.js";
 import { vendorChapterV, chapterVSummary, chapterVLabels } from "../api/_transfer-compliance.js";
 
 const us = (mechanism) => ({ vendor: "V", region: "non-eu", transferMechanism: mechanism });
@@ -14,7 +14,7 @@ test("chapter V: a catalogue mechanism is only a suggestion until confirmed", ()
 });
 
 test("chapter V: the organisation's record overrides the catalogue", () => {
-    const c = vendorChapterV(us("EU-US Data Privacy Framework"), { mechanism: "sccs", dpa_status: "signed" });
+    const c = vendorChapterV(us("EU-US Data Privacy Framework"), { mechanism: "sccs", mechanism_confirmed_at: "2026-11-01", dpa_status: "signed" });
     assert.strictEqual(c.status, "ok");
     assert.strictEqual(c.mechanism.id, "sccs");
     assert.strictEqual(c.needsAction, false);
@@ -42,7 +42,7 @@ test("chapter V: a DPA is never assumed", () => {
 
 test("chapter V: the summary counts each state", () => {
     const vendors = [{ ...us(null), vendor: "A" }, { ...us("Standard Contractual Clauses"), vendor: "B" }, { vendor: "C", region: "eu" }];
-    const s = chapterVSummary(vendors, { B: { mechanism: "sccs", dpa_status: "signed" } });
+    const s = chapterVSummary(vendors, { B: { mechanism: "sccs", mechanism_confirmed_at: "2026-11-01", dpa_status: "signed" } });
     assert.deepStrictEqual({ ...s }, { problem: 1, unconfirmed: 0, withoutDpa: 2 });
 });
 
@@ -55,7 +55,33 @@ test("vendor records: only known values are accepted", () => {
     assert.ok(validateRecord({ vendor: "V", mechanism: "made-up" }).error);
     assert.ok(validateRecord({ vendor: "V", dpa_status: "maybe" }).error);
     assert.ok(validateRecord({ mechanism: "dpf" }).error);
-    assert.deepStrictEqual(validateRecord({ vendor: " V ", mechanism: "dpf", dpa_status: "", notes: " ref " }), { vendor: "V", mechanism: "dpf", dpa_status: null, notes: "ref" });
+    assert.deepStrictEqual(validateRecord({ vendor: " V ", mechanism: "dpf", dpa_status: "", notes: " ref " }), { vendor: "V", mechanism: "dpf", mechanism_confirmed_at: null, dpa_status: null, evidence_url: null, owner: "", notes: "ref" });
+});
+
+test("worklist: a confirmed mechanism still needs its date; requested DPAs stay open", () => {
+    const noDate = vendorChapterV(us(null), { mechanism: "dpf", dpa_status: "signed" });
+    assert.strictEqual(noDate.dateMissing, true);
+    assert.strictEqual(noDate.needsAction, true);
+    assert.strictEqual(vendorChapterV(us(null), { mechanism: "dpf", mechanism_confirmed_at: "2026-11-01", dpa_status: "requested" }).needsDpa, true);
+    const eu = vendorChapterV({ vendor: "E", region: "eu" }, { dpa_status: "not_required" });
+    assert.strictEqual(eu.needsDpa, false);
+    assert.strictEqual(eu.needsAction, false);
+});
+
+test("worklist: dates and evidence links are validated", () => {
+    assert.ok(validateRecord({ vendor: "V", mechanism_confirmed_at: "soon" }).error);
+    assert.ok(validateRecord({ vendor: "V", evidence_url: "javascript:alert(1)" }).error);
+    assert.ok(!validateRecord({ vendor: "V", dpa_status: "requested", evidence_url: "https://drive.example/dpa", mechanism_confirmed_at: "2026-11-01" }).error);
+});
+
+test("worklist: evidence uploads are limited and scoped to the organisation", () => {
+    const data = Buffer.from("x").toString("base64");
+    assert.ok(validateEvidence({ vendor: "V", content_type: "text/html", data }).error);
+    assert.ok(validateEvidence({ vendor: "V", content_type: "application/pdf", data: "" }).error);
+    assert.ok(validateEvidence({ vendor: "V", content_type: "application/pdf", data: Buffer.alloc(3 * 1024 * 1024 + 1).toString("base64") }).error);
+    const ok = validateEvidence({ vendor: "V", content_type: "application/pdf", filename: "../../DPA signed.pdf", data });
+    assert.strictEqual(ok.filename.includes("/"), false);
+    assert.ok(evidencePath(7, "V", ok.filename, 1).startsWith("vendor-evidence/7/"));
 });
 
 function fakeDb(rows = []) {

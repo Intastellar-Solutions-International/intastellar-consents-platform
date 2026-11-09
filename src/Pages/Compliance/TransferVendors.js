@@ -23,6 +23,7 @@ const FIELD_LABEL = "tw-flex tw-flex-col tw-gap-1 tw-text-xs tw-text-text-muted 
 
 function TransferBadge({ chapter }) {
     const short = chapter.mechanism?.short;
+    if (chapter.status === "ok" && chapter.dateMissing) return <Badge tone="warning" icon="alert-triangle">{short} · no date</Badge>;
     if (chapter.status === "ok") return <Badge tone="success" icon="check-circle">{short}</Badge>;
     if (chapter.status === "unconfirmed") return <Badge tone="warning" icon="alert-triangle">{short} · unconfirmed</Badge>;
     if (chapter.status === "problem") return <Badge tone="danger" icon="alert-octagon">{short === "None" ? "None" : "Not documented"}</Badge>;
@@ -30,28 +31,45 @@ function TransferBadge({ chapter }) {
 }
 
 function DpaBadge({ status }) {
-    if (status === "signed") return <Badge tone="success" icon="check-circle">In place</Badge>;
-    if (status === "missing") return <Badge tone="danger" icon="alert-octagon">Not in place</Badge>;
+    if (status === "signed") return <Badge tone="success" icon="check-circle">Signed</Badge>;
+    if (status === "not_required") return <Badge tone="neutral">Not required</Badge>;
+    if (status === "requested") return <Badge tone="warning" icon="clock">Requested</Badge>;
     return <Badge tone="warning" icon="alert-triangle">Unknown</Badge>;
 }
 
 /** Records the vendor's transfer mechanism and DPA for this organisation. */
-function ChapterVForm({ vendor, record, onSave }) {
+function ChapterVForm({ vendor, record, onSave, onUploadEvidence, onRemoveEvidence, onOpenEvidence }) {
     const chapter = vendorChapterV(vendor, record);
     const [mechanism, setMechanism] = useState(record?.mechanism || "");
-    const [dpa, setDpa] = useState(record?.dpa_status || "");
+    const [confirmedAt, setConfirmedAt] = useState(record?.mechanism_confirmed_at || "");
+    const [dpa, setDpa] = useState(record?.dpa_status || "unknown");
+    const [owner, setOwner] = useState(record?.owner || "");
     const [notes, setNotes] = useState(record?.notes || "");
+    const [evidenceUrl, setEvidenceUrl] = useState(record?.evidence_url || "");
+    const [fileState, setFileState] = useState(null); // null | "working" | error text
+    const evidenceFile = record?.evidence_blob_path ? record.evidence_blob_path.split("/").pop().replace(/^\d+-/, "") : null;
     const [state, setState] = useState(null); // null | "saving" | "saved" | "error"
 
     async function save() {
         setState("saving");
         try {
-            await onSave(vendor.vendor, { mechanism, dpa_status: dpa, notes });
+            await onSave(vendor.vendor, { mechanism, mechanism_confirmed_at: confirmedAt, dpa_status: dpa, owner, notes, evidence_url: evidenceUrl });
             setState("saved");
         } catch {
             setState("error");
         }
     }
+
+    async function withFile(action) {
+        setFileState("working");
+        try {
+            await action();
+            setFileState(null);
+        } catch (e) {
+            setFileState(e.message || "That didn't work. Please try again.");
+        }
+    }
+    const changed = (setter) => (e) => { setter(e.target.value); setState(null); };
 
     return (
         <section aria-labelledby="vendor-chapter-v" className="tw-flex tw-flex-col tw-gap-3 tw-p-4 tw-bg-bg-sunken tw-rounded-lg">
@@ -69,23 +87,48 @@ function ChapterVForm({ vendor, record, onSave }) {
             <div className="tw-grid tw-gap-3" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))" }}>
                 <label className={FIELD_LABEL}>
                     Transfer mechanism
-                    <select className={SELECT} value={mechanism} onChange={(e) => { setMechanism(e.target.value); setState(null); }} style={{ colorScheme: "dark" }}>
+                    <select className={SELECT} value={mechanism} onChange={(e) => { setMechanism(e.target.value); if (e.target.value && !confirmedAt) setConfirmedAt(new Date().toISOString().slice(0, 10)); setState(null); }} style={{ colorScheme: "dark" }}>
                         <option value="">Not confirmed</option>
                         {MECHANISMS.map((m) => <option key={m.id} value={m.id}>{m.label}</option>)}
                     </select>
                 </label>
                 <label className={FIELD_LABEL}>
+                    Mechanism confirmed on
+                    <input type="date" className={SELECT} value={confirmedAt} onChange={changed(setConfirmedAt)} style={{ colorScheme: "dark" }} />
+                </label>
+                <label className={FIELD_LABEL}>
                     Data processing agreement
-                    <select className={SELECT} value={dpa} onChange={(e) => { setDpa(e.target.value); setState(null); }} style={{ colorScheme: "dark" }}>
-                        <option value="">Unknown</option>
+                    <select className={SELECT} value={dpa} onChange={changed(setDpa)} style={{ colorScheme: "dark" }}>
                         {DPA_STATES.map((d) => <option key={d.id} value={d.id}>{d.label}</option>)}
                     </select>
+                </label>
+                <label className={FIELD_LABEL}>
+                    Owner
+                    <input type="text" className={SELECT} maxLength={255} placeholder="Who follows this up" value={owner} onChange={changed(setOwner)} />
                 </label>
             </div>
             <label className={FIELD_LABEL}>
                 Notes, such as where the signed DPA is kept
-                <textarea className={`${SELECT} tw-h-auto tw-py-2`} rows={2} maxLength={1000} value={notes} onChange={(e) => { setNotes(e.target.value); setState(null); }} style={{ colorScheme: "dark", resize: "vertical" }} />
+                <textarea className={`${SELECT} tw-h-auto tw-py-2`} rows={2} maxLength={1000} value={notes} onChange={changed(setNotes)} style={{ colorScheme: "dark", resize: "vertical" }} />
             </label>
+            <label className={FIELD_LABEL}>
+                Evidence link
+                <input type="url" className={SELECT} maxLength={2000} placeholder="https://" value={evidenceUrl} onChange={changed(setEvidenceUrl)} />
+            </label>
+            <div className="tw-flex tw-flex-wrap tw-items-center tw-gap-2 tw-text-xs tw-text-text-muted">
+                <span>Evidence file (PDF, PNG or JPEG, up to 3 MB):</span>
+                {evidenceFile && <Button size="sm" variant="ghost" iconRight="external-link" onClick={() => withFile(() => onOpenEvidence(vendor.vendor))}>{evidenceFile}</Button>}
+                {evidenceFile && <Button size="sm" variant="ghost" onClick={() => withFile(() => onRemoveEvidence(vendor.vendor))}>Remove</Button>}
+                <input
+                    type="file"
+                    accept="application/pdf,image/png,image/jpeg"
+                    aria-label={evidenceFile ? "Replace the evidence file" : "Upload an evidence file"}
+                    disabled={fileState === "working"}
+                    onChange={(e) => { const file = e.target.files[0]; e.target.value = ""; if (file) withFile(() => onUploadEvidence(vendor.vendor, file)); }}
+                />
+                {fileState === "working" && <span role="status">Working…</span>}
+                {fileState && fileState !== "working" && <span role="alert" className="tw-text-danger-text">{fileState}</span>}
+            </div>
             <div className="tw-flex tw-flex-wrap tw-items-center tw-gap-3">
                 <Button variant="primary" size="sm" loading={state === "saving"} onClick={save}>Save</Button>
                 {state === "saved" && <span role="status" className="tw-text-xs tw-text-success">Saved for your organisation</span>}
@@ -99,7 +142,7 @@ const CHAPTER_FILTER = {
     action: (c) => c.needsAction,
     no_mechanism: (c) => c.status === "problem",
     no_dpa: (c) => c.needsDpa,
-    unconfirmed: (c) => c.status === "unconfirmed",
+    unconfirmed: (c) => c.status === "unconfirmed" || c.dateMissing,
 };
 const FIX_KIND = {
     consent: { tone: "danger", icon: "alert-octagon", label: "Consent issue", chapter: "all", phase: "pre" },
@@ -152,7 +195,7 @@ function Fact({ label, children }) {
  * phaseKnown: the scan tagged each host pre/post consent, so the
  * "Loaded" column and filter are shown (older scans can't tell).
  */
-export default function TransferVendors({ transfers, categoryMeta, bannerMeta, resourceLabels, categoryOrder, phaseKnown = false, records = {}, onSaveRecord }) {
+export default function TransferVendors({ transfers, categoryMeta, bannerMeta, resourceLabels, categoryOrder, phaseKnown = false, records = {}, onSaveRecord, evidence = {} }) {
     const vendors = useMemo(() => groupTransfersByVendor(transfers, categoryMeta), [transfers, categoryMeta]);
     const [category, setCategory] = useState(null);
     const [region, setRegion] = useState("all");
@@ -220,6 +263,7 @@ export default function TransferVendors({ transfers, categoryMeta, bannerMeta, r
         },
         { key: "transfer", header: "Transfer mechanism", render: (v) => <TransferBadge chapter={vendorChapterV(v, records[v.vendor])} /> },
         { key: "dpa", header: "DPA", render: (v) => <DpaBadge status={records[v.vendor]?.dpa_status} /> },
+        { key: "owner", header: "Owner", hideOnMobile: true, render: (v) => records[v.vendor]?.owner || "—" },
         { key: "category", header: "Category", hideOnMobile: true, render: (v) => categoryMeta[v.category]?.label || v.category },
         { key: "risk", header: "Risk", sortable: true, hideOnMobile: true, render: (v) => <RiskBadge level={v.risk} /> },
         {
@@ -300,7 +344,7 @@ export default function TransferVendors({ transfers, categoryMeta, bannerMeta, r
                                 <Badge icon="globe" tone={selected.region === "eu" ? "neutral" : "warning"}>{REGION_LABEL[selected.region]}</Badge>
                                 {phaseKnown && <PhaseBadge phase={selected.consentPhase} />}
                             </div>
-                            {onSaveRecord && <ChapterVForm key={selected.vendor} vendor={selected} record={records[selected.vendor]} onSave={onSaveRecord} />}
+                            {onSaveRecord && <ChapterVForm key={selected.vendor} vendor={selected} record={records[selected.vendor]} onSave={onSaveRecord} onUploadEvidence={evidence.upload} onRemoveEvidence={evidence.remove} onOpenEvidence={evidence.open} />}
                             <dl className="tw-m-0 tw-flex tw-flex-col tw-gap-2">
                                 <Fact label="Category">{categoryMeta[selected.category]?.label || selected.category}</Fact>
                                 <Fact label="Consent category">{selected.bannerCategory && (bannerMeta[selected.bannerCategory]?.label || selected.bannerCategory)}</Fact>
