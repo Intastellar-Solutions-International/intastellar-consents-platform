@@ -11,6 +11,7 @@ import { ensureDsrTables, createRequest, validateNewRequest, validatePublicSubmi
  * link needs a button press so mail scanners can't trigger it.
  */
 const BASE = "https://www.intastellarconsents.com";
+const SENDER = "privacy@intastellar.com"; // Not RESEND_FROM, which is the address for product alerts.
 const CONFIRM_DAYS = 7;
 const MAX_PER_IP_HOUR = 5;
 const MAX_PER_FORM_DAY = 200;
@@ -85,9 +86,9 @@ async function sendEmail(to, subject, html) {
     const response = await fetch("https://api.resend.com/emails", {
         method: "POST",
         headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
-        body: JSON.stringify({ from: process.env.RESEND_FROM || "alerts@intastellarconsents.com", to: [to], subject, html }),
+        body: JSON.stringify({ from: SENDER, to: [to], subject, html }),
     });
-    if (!response.ok) console.error("[dsr-public] email failed:", response.status);
+    if (!response.ok) console.error("[dsr-public] email failed:", response.status, (await response.text().catch(() => "")).slice(0, 300));
     return response.ok;
 }
 
