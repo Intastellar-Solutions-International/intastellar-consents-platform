@@ -540,20 +540,12 @@ const API = {
         },
     },
     dsr: {
-        list: {
-            url: `${PrimaryHost}/cmp/dsr`,
-            method: "GET",
-            headers: { "Authorization": Authentication.getToken(), "Organisation": Authentication.getOrganisation(), "Content-Type": "application/json" }
-        },
-        create: {
-            url: `${PrimaryHost}/cmp/dsr`,
-            method: "POST",
-            headers: { "Authorization": Authentication.getToken(), "Organisation": Authentication.getOrganisation(), "Content-Type": "application/json" }
-        },
-        update: {
-            url: `${PrimaryHost}/cmp/dsr/update`,
-            method: "POST",
-            headers: { "Authorization": Authentication.getToken(), "Organisation": Authentication.getOrganisation(), "Content-Type": "application/json" }
+        url: `${ScannerHost}/api/dsr`,
+        headers: {
+            "Authorization": Authentication.getToken(),
+            "Organisation": Authentication.getOrganisation(),
+            "X-User-Email": Authentication.getUserId(),
+            "Content-Type": "application/json",
         },
     },
     legalBasis: {

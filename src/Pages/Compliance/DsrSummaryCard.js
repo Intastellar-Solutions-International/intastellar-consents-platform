@@ -1,7 +1,6 @@
 import API from "../../API/api";
 import { Card, Badge } from "../../Components/ui";
 import { formatNumber } from "../../Functions/format.js";
-import { DSR_DEADLINES_DAYS } from "../../Functions/jurisdictionEngine.js";
 import { dsrSummary } from "../../Functions/dsrSummary.js";
 
 const { useState, useEffect } = React;
@@ -14,12 +13,9 @@ export default function DsrSummaryCard({ platformId }) {
 
     useEffect(() => {
         const ac = new AbortController();
-        fetch(API.dsr.list.url, { method: API.dsr.list.method, headers: API.dsr.list.headers, signal: ac.signal })
-            .then((r) => r.json())
-            .then((data) => {
-                if (!Array.isArray(data)) throw new Error("unexpected response");
-                setSummary(dsrSummary(data, DSR_DEADLINES_DAYS));
-            })
+        fetch(API.dsr.url, { headers: API.dsr.headers, signal: ac.signal })
+            .then((r) => (r.ok ? r.json() : Promise.reject(new Error("request failed"))))
+            .then((data) => setSummary(dsrSummary(data.requests || [])))
             .catch((e) => { if (e.name !== "AbortError") setFailed(true); });
         return () => ac.abort();
     }, []);

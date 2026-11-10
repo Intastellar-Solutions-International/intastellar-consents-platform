@@ -1,258 +1,220 @@
-const { useState, useEffect, useCallback } = window.React;
-const useParams = window.ReactRouterDOM.useParams;
-const useHistory = window.ReactRouterDOM.useHistory;
-const Link = window.ReactRouterDOM.Link;
-import API from "../../API/api.js";
-import SideNav from "../../Components/Header/SideNav.js";
-import StickyPageTitle from "../../Components/Header/Sticky/index.js";
-import { reportsLinks } from "../Reports/Reports.js";
-import Authentication from "../../Authentication/Auth.js";
-import { DSR_DEADLINES_DAYS, FRAMEWORK_LABELS } from "../../Functions/jurisdictionEngine.js";
+import StickyPageTitle from "../../Components/Header/Sticky";
+import { ListTemplate } from "../../Components/templates";
+import { Badge, Button, Card, Drawer, FilterBar, FilterSearch, FilterSelect, KpiTile, Pagination, Table } from "../../Components/ui";
+import { readCachedDomains } from "../../Functions/cachedDomains.js";
+import { DEADLINE_RULES, REQUEST_TYPES, dueDate } from "../../Functions/dsr.js";
+import { dsrSummary } from "../../Functions/dsrSummary.js";
+import { formatDate, formatNumber } from "../../Functions/format.js";
+import { FRAMEWORK_LABELS } from "../../Functions/jurisdictionEngine.js";
+import { AREA, DsrStatusBadge, FIELD, LABEL, daysLeftLabel, fetchDsr, isClosed, postDsr, requesterName, typeLabel } from "./dsrShared.js";
 import "./Style.css";
 
-const REQUEST_TYPES = [
-    { id: "access",      label: "Access (Right to know)" },
-    { id: "erasure",     label: "Erasure (Right to be forgotten)" },
-    { id: "portability", label: "Portability" },
-    { id: "restriction", label: "Restriction of processing" },
-    { id: "objection",   label: "Objection to processing" },
-    { id: "opt_out",     label: "Opt-out of sale / share" },
-];
+const { useState, useEffect, useMemo } = React;
+const useParams = window.ReactRouterDOM.useParams;
+const useHistory = window.ReactRouterDOM.useHistory;
 
-const REGULATIONS = ["GDPR", "LGPD", "CCPA", "CDPA", "CPA", "UCPA", "CTDPA", "POPIA", "PDPA", "APA", "PDPL", "PIPEDA", "LAW25"];
+const PAGE_SIZE = 25;
+const today = () => new Date().toISOString().slice(0, 10);
+const emptyForm = () => ({ requester_name: "", requester_email: "", consent_id: "", type: "access", regulation: "GDPR", received_at: today(), domain: "", assignee: "", notes: "" });
 
-const STATUS_STYLES = {
-    pending:     { bg: "rgba(192,159,83,0.15)", border: "rgba(192,159,83,0.35)", color: "#d4b87a", label: "Pending" },
-    in_progress: { bg: "rgba(80,130,210,0.15)", border: "rgba(80,130,210,0.35)", color: "#88b0e8", label: "In Progress" },
-    completed:   { bg: "rgba(80,180,100,0.15)", border: "rgba(80,180,100,0.35)", color: "#7dd590", label: "Completed" },
-    overdue:     { bg: "rgba(220,80,80,0.15)",  border: "rgba(220,80,80,0.35)",  color: "#f0a8a0", label: "Overdue" },
+const STATUS_FILTER = {
+    open: (r) => !isClosed(r),
+    overdue: (r) => r.overdue,
+    pending: (r) => r.status === "pending",
+    in_progress: (r) => r.status === "in_progress",
+    completed: (r) => r.status === "completed",
+    rejected: (r) => r.status === "rejected",
 };
 
-function deadlineDate(submittedIso, regulation) {
-    const days = DSR_DEADLINES_DAYS[regulation] ?? 30;
-    const d = new Date(submittedIso);
-    d.setDate(d.getDate() + days);
-    return d;
+function downloadCsv(rows) {
+    const header = ["Requester", "Email", "Consent ID", "Domain", "Type", "Regulation", "Status", "Received", "Due", "Extended until", "Assignee", "Identity verified", "Closed"];
+    const day = (v) => (v ? String(v).slice(0, 10) : "");
+    const lines = rows.map((r) => [r.requester_name, r.requester_email, r.consent_id, r.domain, typeLabel(r.type), r.regulation, r.overdue ? "overdue" : r.status, day(r.received_at), day(r.due_at), day(r.extended_until), r.assignee, day(r.identity_verified_at), day(r.closed_at)]);
+    const csv = [header, ...lines].map((row) => row.map((cell) => `"${String(cell ?? "").replace(/"/g, '""')}"`).join(",")).join("\n");
+    const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8;" }));
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "data-subject-requests.csv";
+    a.click();
+    URL.revokeObjectURL(url);
 }
 
-function deriveStatus(request) {
-    if (request.status === "completed") return "completed";
-    const deadline = deadlineDate(request.submitted, request.regulation);
-    if (new Date() > deadline) return "overdue";
-    return request.status || "pending";
-}
+/** Logs a request that reached the organisation by email, post or phone. */
+function NewRequestForm({ onCreated }) {
+    const [form, setForm] = useState(emptyForm);
+    const [state, setState] = useState(null); // null | "saving" | error text
+    const set = (key) => (e) => { const { value } = e.target; setForm((f) => ({ ...f, [key]: value })); };
+    const domains = useMemo(readCachedDomains, []);
+    const due = form.received_at ? dueDate(`${form.received_at}T00:00:00Z`, form.regulation) : null;
+    const identified = form.requester_name.trim() || form.requester_email.trim() || form.consent_id.trim();
 
-function StatusBadge({ status }) {
-    const s = STATUS_STYLES[status] || STATUS_STYLES.pending;
+    async function submit(e) {
+        e.preventDefault();
+        setState("saving");
+        try {
+            const { request } = await postDsr({ action: "create", ...form });
+            onCreated(request);
+        } catch (err) {
+            setState(err.message);
+        }
+    }
+
     return (
-        <span style={{
-            display: "inline-flex", alignItems: "center",
-            padding: "3px 10px", borderRadius: "var(--radius-md)",
-            fontSize: "var(--text-xs)", fontWeight: 700,
-            textTransform: "uppercase", letterSpacing: "0.06em",
-            background: s.bg, border: `1px solid ${s.border}`, color: s.color,
-        }}>
-            {s.label}
-        </span>
+        <form onSubmit={submit} className="tw-flex tw-flex-col tw-gap-4">
+            <p className="tw-m-0 tw-text-sm tw-text-text-muted">Add at least one way to identify the person.</p>
+            <div className="dsr-form-grid">
+                <label className={LABEL}>Name<input className={FIELD} maxLength={255} value={form.requester_name} onChange={set("requester_name")} /></label>
+                <label className={LABEL}>Email<input type="email" className={FIELD} maxLength={255} value={form.requester_email} onChange={set("requester_email")} /></label>
+                <label className={LABEL}>Consent ID<input className={FIELD} maxLength={255} value={form.consent_id} onChange={set("consent_id")} /></label>
+                <label className={LABEL}>Domain
+                    <select className={FIELD} value={form.domain} onChange={set("domain")} style={{ colorScheme: "dark" }}>
+                        <option value="">Not domain-specific</option>
+                        {domains.map((d) => <option key={d} value={d}>{d}</option>)}
+                    </select>
+                </label>
+                <label className={LABEL}>Request type
+                    <select className={FIELD} value={form.type} onChange={set("type")} style={{ colorScheme: "dark" }}>
+                        {REQUEST_TYPES.map((t) => <option key={t.id} value={t.id}>{t.label}</option>)}
+                    </select>
+                </label>
+                <label className={LABEL}>Regulation
+                    <select className={FIELD} value={form.regulation} onChange={set("regulation")} style={{ colorScheme: "dark" }}>
+                        {Object.keys(DEADLINE_RULES).map((r) => <option key={r} value={r}>{FRAMEWORK_LABELS[r] || r}</option>)}
+                    </select>
+                </label>
+                <label className={LABEL}>Received on<input type="date" className={FIELD} max={today()} required value={form.received_at} onChange={set("received_at")} style={{ colorScheme: "dark" }} /></label>
+                <label className={LABEL}>Assignee<input className={FIELD} maxLength={255} value={form.assignee} onChange={set("assignee")} /></label>
+            </div>
+            {due && <p className="tw-m-0 tw-text-sm tw-text-text-secondary">Response due by <strong className="tw-text-text-primary">{formatDate(due)}</strong>.</p>}
+            <label className={LABEL}>Internal notes<textarea className={AREA} rows={3} maxLength={4000} value={form.notes} onChange={set("notes")} style={{ resize: "vertical" }} /></label>
+            {state && state !== "saving" && <p role="alert" className="tw-m-0 tw-text-sm tw-text-danger-text">{state}</p>}
+            <div><Button type="submit" variant="primary" loading={state === "saving"} disabled={!identified}>Log request</Button></div>
+        </form>
     );
 }
 
+/** The organisation's data subject requests. */
 export default function DSR() {
-    document.title = "Data Subject Requests | Reports | Intastellar Consents";
+    document.title = "Data subject requests | Reports | Intastellar Consents";
     const { id } = useParams();
     const history = useHistory();
+    const [requests, setRequests] = useState(null);
+    const [error, setError] = useState(null);
+    const [attempt, setAttempt] = useState(0);
+    const [drawer, setDrawer] = useState(false);
+    const [status, setStatus] = useState("all");
+    const [type, setType] = useState("all");
+    const [query, setQuery] = useState("");
+    const [sort, setSort] = useState({ key: "received", direction: "desc" });
+    const [page, setPage] = useState(0);
 
-    const [requests, setRequests] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [showModal, setShowModal] = useState(false);
-    const [form, setForm] = useState({ uid: "", type: "access", regulation: "GDPR", notes: "" });
-    const [submitting, setSubmitting] = useState(false);
+    useEffect(() => {
+        let live = true;
+        setError(null);
+        fetchDsr()
+            .then((data) => { if (live) setRequests(data.requests || []); })
+            .catch((e) => { if (live) setError(e.message); });
+        return () => { live = false; };
+    }, [attempt]);
+    useEffect(() => setPage(0), [status, type, query, sort]);
 
-    const load = useCallback(() => {
-        setLoading(true);
-        fetch(API.dsr.list.url, {
-            method: API.dsr.list.method,
-            headers: API.dsr.list.headers,
-        })
-            .then((r) => r.json())
-            .then((data) => setRequests(Array.isArray(data) ? data : []))
-            .catch(() => setRequests([]))
-            .finally(() => setLoading(false));
-    }, []);
+    const summary = useMemo(() => dsrSummary(requests || []), [requests]);
+    const filtered = useMemo(() => {
+        const q = query.trim().toLowerCase();
+        const dir = sort.direction === "asc" ? 1 : -1;
+        const when = (r) => new Date(sort.key === "due" ? r.effective_due_at : r.received_at).getTime();
+        return (requests || [])
+            .filter((r) => status === "all" || STATUS_FILTER[status](r))
+            .filter((r) => type === "all" || r.type === type)
+            .filter((r) => !q || [r.requester_name, r.requester_email, r.consent_id, r.domain, r.assignee].some((v) => String(v || "").toLowerCase().includes(q)))
+            .sort((a, b) => (when(a) - when(b)) * dir);
+    }, [requests, status, type, query, sort]);
+    const activeFilters = (status !== "all" ? 1 : 0) + (type !== "all" ? 1 : 0) + (query ? 1 : 0);
+    const clear = () => { setStatus("all"); setType("all"); setQuery(""); };
 
-    useEffect(() => { load(); }, [load]);
-
-    function submitRequest() {
-        if (!form.uid.trim()) return;
-        setSubmitting(true);
-        fetch(API.dsr.create.url, {
-            method: API.dsr.create.method,
-            headers: API.dsr.create.headers,
-            body: JSON.stringify({
-                ...form,
-                submitted: new Date().toISOString(),
-                submittedBy: Authentication.getUserId(),
-            }),
-        })
-            .then((r) => r.json())
-            .then(() => { setShowModal(false); setForm({ uid: "", type: "access", regulation: "GDPR", notes: "" }); load(); })
-            .catch(() => {})
-            .finally(() => setSubmitting(false));
-    }
-
-    const enriched = requests.map((r) => ({ ...r, derivedStatus: deriveStatus(r) }));
+    const columns = [
+        {
+            key: "requester", header: "Requester",
+            render: (r) => (
+                <span className="tw-block tw-min-w-0">
+                    <span className="tw-block tw-font-semibold tw-text-text-primary tw-truncate">{requesterName(r)}</span>
+                    {r.requester_name && r.requester_email && <span className="tw-block tw-text-xs tw-text-text-muted tw-truncate">{r.requester_email}</span>}
+                </span>
+            ),
+        },
+        { key: "type", header: "Type", hideOnMobile: true, render: (r) => typeLabel(r.type) },
+        { key: "domain", header: "Domain", hideOnMobile: true, render: (r) => r.domain || <span className="tw-text-text-muted">All</span> },
+        { key: "regulation", header: "Regulation", hideOnMobile: true, render: (r) => r.regulation },
+        { key: "received", header: "Received", sortable: true, hideOnMobile: true, render: (r) => formatDate(r.received_at) },
+        {
+            key: "due", header: "Due", sortable: true,
+            render: (r) => (
+                <span className="tw-block">
+                    <span className="tw-block">{formatDate(r.effective_due_at)}</span>
+                    {!isClosed(r) && <span className={`tw-block tw-text-xs ${r.overdue ? "tw-text-danger-text" : "tw-text-text-muted"}`}>{daysLeftLabel(r)}</span>}
+                </span>
+            ),
+        },
+        { key: "assignee", header: "Assignee", hideOnMobile: true, render: (r) => r.assignee || <span className="tw-text-text-muted">Unassigned</span> },
+        { key: "status", header: "Status", render: (r) => <DsrStatusBadge request={r} /> },
+    ];
 
     return (
         <>
-            <SideNav links={reportsLinks} title="Reports" />
-            <main className="dashboard-content settings-subpage settings-subpage--wide">
-                <StickyPageTitle title="Data Subject Requests" />
-                <p className="settings-subpage__intro">
-                    Track and manage data subject requests (access, erasure, portability, etc.) with automatic
-                    deadlines per regulation. Click a request to view the subject's consent history and update its status.
-                </p>
-
-                <div className="settings-subpage__toolbar">
-                    <span style={{ fontSize: "var(--text-sm)", color: "rgba(180,180,180,0.8)" }}>
-                        {enriched.length} request{enriched.length !== 1 ? "s" : ""}
-                        {enriched.filter((r) => r.derivedStatus === "overdue").length > 0 && (
-                            <span style={{ marginLeft: "10px", color: "var(--color-danger-text)", fontWeight: 600 }}>
-                                {enriched.filter((r) => r.derivedStatus === "overdue").length} overdue
+            <StickyPageTitle title="Data subject requests" />
+            <div className="dashboard-content">
+                <section aria-label="Key figures" className="dsr-kpis">
+                    <KpiTile label="Open" loading={!requests && !error} value={formatNumber(summary.open)} hint="Not yet completed or rejected" />
+                    <KpiTile label="Due within 7 days" loading={!requests && !error} value={formatNumber(summary.dueSoon)} hint={summary.dueSoon ? <Badge tone="warning" icon="alert-triangle">Due soon</Badge> : "Nothing due this week"} />
+                    <KpiTile label="Overdue" loading={!requests && !error} value={formatNumber(summary.overdue)} hint={summary.overdue ? <Badge tone="danger" icon="alert-octagon">Past deadline</Badge> : "None past deadline"} />
+                </section>
+                <ListTemplate
+                    summary={(
+                        <span className="tw-flex tw-flex-wrap tw-items-center tw-justify-between tw-gap-3">
+                            <span>Requests from people exercising their privacy rights. Log one when it arrives so its legal deadline starts from the right date.</span>
+                            <span className="tw-flex tw-gap-2">
+                                {filtered.length > 0 && <Button variant="secondary" onClick={() => downloadCsv(filtered)}>Export CSV</Button>}
+                                <Button variant="primary" onClick={() => setDrawer(true)}>Log request</Button>
                             </span>
-                        )}
-                    </span>
-                    <button type="button" className="settings-subpage__submit" onClick={() => setShowModal(true)}>
-                        + New request
-                    </button>
-                </div>
-
-                {loading ? (
-                    <p className="settings-subpage__empty">Loading…</p>
-                ) : enriched.length === 0 ? (
-                    <p className="settings-subpage__empty">No data subject requests yet. Create one above.</p>
-                ) : (
-                    <div className="settings-table-wrap">
-                        <table className="settings-table">
-                            <thead>
-                                <tr>
-                                    <th>Subject UID</th>
-                                    <th>Type</th>
-                                    <th>Regulation</th>
-                                    <th>Submitted</th>
-                                    <th>Deadline</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {enriched.map((r) => {
-                                    const dl = deadlineDate(r.submitted, r.regulation);
-                                    const typeLabel = REQUEST_TYPES.find((t) => t.id === r.type)?.label || r.type;
-                                    return (
-                                        <tr
-                                            key={r.id}
-                                            style={{ cursor: "pointer" }}
-                                            onClick={() => history.push(`/${id}/reports/dsr/${r.id}`)}
-                                        >
-                                            <td style={{ fontFamily: "ui-monospace, monospace", fontSize: "var(--text-xs)", color: "var(--color-accent)" }}>
-                                                {r.uid}
-                                            </td>
-                                            <td>{typeLabel}</td>
-                                            <td>{FRAMEWORK_LABELS[r.regulation] || r.regulation}</td>
-                                            <td style={{ color: "rgb(var(--c-text-muted) / 0.85)", fontSize: "var(--text-xs)" }}>
-                                                {new Date(r.submitted).toLocaleDateString()}
-                                            </td>
-                                            <td style={{ fontSize: "var(--text-xs)", color: r.derivedStatus === "overdue" ? "#f0a8a0" : "rgba(180,180,180,0.85)" }}>
-                                                {dl.toLocaleDateString()}
-                                                <span style={{ marginLeft: "6px", fontSize: "var(--text-xs)", color: "rgba(140,140,140,0.7)" }}>
-                                                    ({DSR_DEADLINES_DAYS[r.regulation] ?? 30} days)
-                                                </span>
-                                            </td>
-                                            <td><StatusBadge status={r.derivedStatus} /></td>
-                                        </tr>
-                                    );
-                                })}
-                            </tbody>
-                        </table>
-                    </div>
-                )}
-
-                {showModal && (
-                    <div className="dsr-modal" role="dialog" aria-modal="true" aria-labelledby="dsr-modal-title">
-                        <div className="dsr-modal__card">
-                            <h2 id="dsr-modal-title">New data subject request</h2>
-
-                            <div className="settings-org-modal__field-block">
-                                <label className="settings-org-modal__label">Subject UID *</label>
-                                <input
-                                    type="text"
-                                    className="settings-blacklist-modal__card input"
-                                    placeholder="e.g. user-abc123 or UUID"
-                                    value={form.uid}
-                                    onChange={(e) => setForm((f) => ({ ...f, uid: e.target.value }))}
-                                    style={{ width: "100%", boxSizing: "border-box", padding: "10px 12px", borderRadius: "var(--radius-lg)", border: "1px solid rgb(var(--c-white) / 0.14)", background: "rgb(var(--c-black) / 0.35)", color: "var(--color-text-primary)", fontSize: "var(--text-sm)", fontFamily: "inherit", marginBottom: "0" }}
-                                />
-                            </div>
-
-                            <div className="settings-org-modal__field-block">
-                                <label className="settings-org-modal__label">Request type</label>
-                                <select
-                                    className="settings-org-modal__select settings-blacklist-modal__card"
-                                    value={form.type}
-                                    onChange={(e) => setForm((f) => ({ ...f, type: e.target.value }))}
-                                    style={{ width: "100%", boxSizing: "border-box", padding: "10px 12px", borderRadius: "var(--radius-lg)", border: "1px solid rgb(var(--c-white) / 0.14)", background: "rgb(var(--c-black) / 0.35)", color: "var(--color-text-primary)", fontSize: "var(--text-sm)", fontFamily: "inherit" }}
-                                >
-                                    {REQUEST_TYPES.map((t) => (
-                                        <option key={t.id} value={t.id}>{t.label}</option>
-                                    ))}
-                                </select>
-                            </div>
-
-                            <div className="settings-org-modal__field-block">
-                                <label className="settings-org-modal__label">Regulation</label>
-                                <select
-                                    className="settings-org-modal__select settings-blacklist-modal__card"
-                                    value={form.regulation}
-                                    onChange={(e) => setForm((f) => ({ ...f, regulation: e.target.value }))}
-                                    style={{ width: "100%", boxSizing: "border-box", padding: "10px 12px", borderRadius: "var(--radius-lg)", border: "1px solid rgb(var(--c-white) / 0.14)", background: "rgb(var(--c-black) / 0.35)", color: "var(--color-text-primary)", fontSize: "var(--text-sm)", fontFamily: "inherit" }}
-                                >
-                                    {REGULATIONS.map((r) => (
-                                        <option key={r} value={r}>{FRAMEWORK_LABELS[r] || r}</option>
-                                    ))}
-                                </select>
-                                <p style={{ margin: "6px 0 0", fontSize: "var(--text-xs)", color: "rgba(150,150,150,0.8)" }}>
-                                    Deadline: {DSR_DEADLINES_DAYS[form.regulation] ?? 30} days from today
-                                    ({new Date(Date.now() + (DSR_DEADLINES_DAYS[form.regulation] ?? 30) * 86400000).toLocaleDateString()})
-                                </p>
-                            </div>
-
-                            <div className="settings-org-modal__field-block">
-                                <label className="settings-org-modal__label">Notes (optional)</label>
-                                <textarea
-                                    rows={3}
-                                    placeholder="Internal notes about this request…"
-                                    value={form.notes}
-                                    onChange={(e) => setForm((f) => ({ ...f, notes: e.target.value }))}
-                                    style={{ width: "100%", boxSizing: "border-box", padding: "10px 12px", borderRadius: "var(--radius-lg)", border: "1px solid rgb(var(--c-white) / 0.14)", background: "rgb(var(--c-black) / 0.35)", color: "var(--color-text-primary)", fontSize: "var(--text-sm)", fontFamily: "inherit", resize: "vertical" }}
-                                />
-                            </div>
-
-                            <div className="settings-blacklist-modal__actions">
-                                <button type="button" className="settings-blacklist-modal__btn" onClick={() => setShowModal(false)}>
-                                    Cancel
-                                </button>
-                                <button
-                                    type="button"
-                                    className="settings-blacklist-modal__btn settings-blacklist-modal__btn--primary"
-                                    onClick={submitRequest}
-                                    disabled={submitting || !form.uid.trim()}
-                                >
-                                    {submitting ? "Creating…" : "Create request"}
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                )}
-            </main>
+                        </span>
+                    )}
+                    filters={(
+                        <FilterBar activeCount={activeFilters} onClear={clear} resultCount={requests ? filtered.length : null}>
+                            <FilterSearch label="Search" value={query} onChange={setQuery} placeholder="Name, email, consent ID, domain" />
+                            <FilterSelect
+                                label="Status"
+                                value={status}
+                                onChange={setStatus}
+                                options={[{ value: "all", label: "All statuses" }, { value: "open", label: "Open" }, { value: "overdue", label: "Overdue" }, { value: "pending", label: "Pending" }, { value: "in_progress", label: "In progress" }, { value: "completed", label: "Completed" }, { value: "rejected", label: "Rejected" }]}
+                            />
+                            <FilterSelect label="Type" value={type} onChange={setType} options={[{ value: "all", label: "All types" }, ...REQUEST_TYPES.map((t) => ({ value: t.id, label: t.label }))]} />
+                        </FilterBar>
+                    )}
+                    pagination={filtered.length > PAGE_SIZE && <Pagination page={page} pageSize={PAGE_SIZE} total={filtered.length} onChange={setPage} label="Request pages" />}
+                    drawer={(
+                        <Drawer open={drawer} onClose={() => setDrawer(false)} title="Log a data subject request" width="md">
+                            {drawer && <NewRequestForm onCreated={(request) => history.push(`/${id}/reports/dsr/${request.id}`)} />}
+                        </Drawer>
+                    )}
+                >
+                    <Card padding="none">
+                        <Table
+                            caption="Data subject requests"
+                            columns={columns}
+                            rows={filtered.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE)}
+                            getRowKey={(r) => r.id}
+                            sort={sort}
+                            onSortChange={(key) => setSort((s) => ({ key, direction: s.key === key && s.direction === "desc" ? "asc" : "desc" }))}
+                            onRowClick={(r) => history.push(`/${id}/reports/dsr/${r.id}`)}
+                            loading={!requests && !error}
+                            error={error ? { title: "Requests couldn't be loaded", message: error, onRetry: () => setAttempt((n) => n + 1) } : undefined}
+                            empty={activeFilters
+                                ? { title: "No requests match", message: "No request matches the current filters.", action: { label: "Clear filters", onClick: clear } }
+                                : { title: "No requests yet", message: "Log the first one when someone asks to see, correct or delete their data.", action: { label: "Log request", onClick: () => setDrawer(true) } }}
+                        />
+                    </Card>
+                </ListTemplate>
+            </div>
         </>
     );
 }
