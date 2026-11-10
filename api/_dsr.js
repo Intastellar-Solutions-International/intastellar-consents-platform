@@ -246,6 +246,7 @@ export async function ensureDsrTables(db) {
             created_at         TIMESTAMPTZ NOT NULL DEFAULT NOW()
         )
     `);
+    await db.query(`ALTER TABLE dsr_public_forms ADD COLUMN IF NOT EXISTS logo_data TEXT`);
     await db.query(`
         CREATE TABLE IF NOT EXISTS dsr_public_submissions (
             token_hash TEXT PRIMARY KEY,
@@ -467,6 +468,14 @@ export const PUBLIC_REGIONS = [
     { id: "default", label: "Somewhere else" },
 ];
 const MIN_FILL_MS = 3000;
+const MAX_LOGO_CHARS = 280000; // about 200 KB once decoded
+
+/** A logo is kept as a data URI so the form loads nothing from third parties. Returns the URI, or { error }. */
+export function validateLogo(value) {
+    if (!/^data:image\/(png|jpeg|webp|svg\+xml);base64,[A-Za-z0-9+/]+=*$/.test(String(value))) return { error: "Upload a PNG, JPEG, WebP or SVG logo" };
+    if (String(value).length > MAX_LOGO_CHARS) return { error: "The logo must be under 200 KB" };
+    return value;
+}
 
 /** Cleaned public submission, or { error } for the person, or { spam: true } to discard silently. */
 export function validatePublicSubmission(body, form, now = Date.now()) {

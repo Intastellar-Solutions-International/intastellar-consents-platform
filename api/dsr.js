@@ -3,7 +3,7 @@ import { requireMember } from "./_member-auth.js";
 import { randomBytes } from "crypto";
 import {
     ensureDsrTables, listRequests, getRequest, createRequest, saveAction, validateNewRequest, applyAction,
-    seedVendorNotifications, listVendorNotifications, addVendorNotification, validateVendorUpdate, saveVendorNotification, needsVendorNotice, DEADLINE_RULES,
+    seedVendorNotifications, listVendorNotifications, addVendorNotification, validateVendorUpdate, saveVendorNotification, needsVendorNotice, validateLogo, DEADLINE_RULES,
 } from "./_dsr.js";
 import { ADAPTERS, VENDOR_ADAPTER, deletionStatus, runDeletion, encryptCredentials, decryptCredentials } from "./_dsr-deletion.js";
 
@@ -92,7 +92,7 @@ async function vendorDelete(db, organisationId, email, request, vendor, identifi
 }
 
 async function setup(db, organisationId) {
-    const { rows: forms } = await db.query(`SELECT token, company_name, domain, notify_email, default_regulation, enabled, created_at FROM dsr_public_forms WHERE organisation_id = $1 ORDER BY created_at DESC`, [organisationId]);
+    const { rows: forms } = await db.query(`SELECT token, company_name, domain, notify_email, default_regulation, enabled, logo_data, created_at FROM dsr_public_forms WHERE organisation_id = $1 ORDER BY created_at DESC`, [organisationId]);
     const { rows: stored } = await db.query(`SELECT adapter, config, updated_at FROM dsr_vendor_credentials WHERE organisation_id = $1`, [organisationId]);
     const byId = Object.fromEntries(stored.map((r) => [r.adapter, r]));
     const connectors = Object.entries(ADAPTERS).filter(([, a]) => a.kind === "key").map(([id, a]) => ({ id, label: a.label, fields: a.fields, regions: Boolean(a.regions), connected: Boolean(byId[id]), region: byId[id]?.config?.region || "us" }));
@@ -108,13 +108,18 @@ async function saveForm(db, organisationId, email, body) {
     if (notify_email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(notify_email)) return { status: 400, error: "That notification email doesn't look right" };
     const default_regulation = DEADLINE_RULES[body.default_regulation] ? body.default_regulation : "GDPR";
     const token = body.token ? short(body.token, 64) : randomBytes(18).toString("base64url");
+    // Left out means keep the current logo; empty removes it.
+    const keepLogo = body.logo === undefined;
+    const logo = keepLogo || body.logo === "" ? null : validateLogo(body.logo);
+    if (logo?.error) return { status: 400, error: logo.error };
     await db.query(
-        `INSERT INTO dsr_public_forms (token, organisation_id, company_name, domain, notify_email, default_regulation, enabled, created_by)
-         VALUES ($1, $2, $3, $4, $5, $6, COALESCE($7, TRUE), $8)
+        `INSERT INTO dsr_public_forms (token, organisation_id, company_name, domain, notify_email, default_regulation, enabled, created_by, logo_data)
+         VALUES ($1, $2, $3, $4, $5, $6, COALESCE($7, TRUE), $8, $9)
          ON CONFLICT (token) DO UPDATE SET company_name = EXCLUDED.company_name, domain = EXCLUDED.domain, notify_email = EXCLUDED.notify_email,
-                default_regulation = EXCLUDED.default_regulation, enabled = EXCLUDED.enabled
+                default_regulation = EXCLUDED.default_regulation, enabled = EXCLUDED.enabled,
+                logo_data = CASE WHEN $10 THEN dsr_public_forms.logo_data ELSE EXCLUDED.logo_data END
           WHERE dsr_public_forms.organisation_id = EXCLUDED.organisation_id`,
-        [token, organisationId, company_name, short(body.domain) || null, notify_email, default_regulation, typeof body.enabled === "boolean" ? body.enabled : null, email]
+        [token, organisationId, company_name, short(body.domain) || null, notify_email, default_regulation, typeof body.enabled === "boolean" ? body.enabled : null, email, logo, keepLogo]
     );
     return {};
 }

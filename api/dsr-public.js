@@ -1,5 +1,6 @@
 import { createHash, randomBytes } from "crypto";
 import { getPool } from "./_db.js";
+import { LOGO_DATA_URI } from "./_report-logo.js";
 import { ensureDsrTables, createRequest, validateNewRequest, validatePublicSubmission, REQUEST_TYPES, PUBLIC_REGIONS } from "./_dsr.js";
 
 /**
@@ -16,7 +17,13 @@ const MAX_PER_FORM_DAY = 200;
 export const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const sha = (v) => createHash("sha256").update(v).digest("hex");
 
-function page(title, body) {
+/** Always on white, because either logo may be dark-on-transparent. */
+function brandBar(form) {
+    const company = form?.logo_data ? `<img class="co" src="${esc(form.logo_data)}" alt="${esc(form.company_name)}">` : "";
+    return `<div class="brand">${company}<img class="ics" src="${LOGO_DATA_URI}" alt="Intastellar Consents"></div>`;
+}
+
+function page(title, body, form) {
     return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>${esc(title)}</title>
 <style>
 :root{color-scheme:light dark;--bg:#f5f5f4;--card:#fff;--text:#1c1c1c;--muted:#5f5f5f;--line:#d6d6d3;--accent:#8a6a1f}
@@ -26,8 +33,9 @@ main{max-width:520px;margin:0 auto;padding:28px;background:var(--card);border:1p
 h1{margin:0 0 8px;font-size:24px;line-height:1.25}p{margin:0 0 16px;color:var(--muted)}label{display:block;margin:0 0 16px;font-size:14px;font-weight:600}
 input,select,textarea{display:block;width:100%;margin-top:4px;padding:10px;background:transparent;color:inherit;border:1px solid var(--line);border-radius:8px;font:inherit}
 select option{color:#1c1c1c}button{padding:12px 20px;background:var(--accent);color:#fff;border:0;border-radius:8px;font:inherit;font-weight:600;cursor:pointer}
+.brand{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:0 0 24px;padding:14px 16px;background:#fff;border-radius:8px}.brand img{display:block;max-width:45%;object-fit:contain}.brand .co{max-height:44px}.brand .ics{max-height:28px;margin-left:auto}
 .err{padding:10px 12px;border:1px solid #c44;border-radius:8px;color:inherit}.hp{position:absolute;left:-9999px}small{display:block;margin-top:20px;color:var(--muted)}
-</style></head><body><main>${body}</main></body></html>`;
+</style></head><body><main>${brandBar(form)}${body}</main></body></html>`;
 }
 
 export function formPage(form, error = "", values = {}) {
@@ -45,11 +53,11 @@ ${error ? `<p class="err" role="alert">${esc(error)}</p>` : ""}
 <input type="hidden" name="started" value="${Date.now()}">
 <button type="submit">Send request</button>
 </form>
-<small>We'll email you a link to confirm this came from you. Your details are used only to handle this request.</small>`);
+<small>We'll email you a link to confirm this came from you. Your details are used only to handle this request.</small>`, form);
 }
 
-const notice = (title, text) => page(title, `<h1>${esc(title)}</h1><p>${esc(text)}</p>`);
-const checkEmail = () => notice("Check your email", "If that address is valid, we've sent a link to confirm your request. It works for 7 days.");
+const notice = (title, text, form) => page(title, `<h1>${esc(title)}</h1><p>${esc(text)}</p>`, form);
+const checkEmail = (form) => notice("Check your email", "If that address is valid, we've sent a link to confirm your request. It works for 7 days.", form);
 
 async function sendEmail(to, subject, html) {
     const key = process.env.RESEND_API_KEY;
@@ -66,7 +74,7 @@ async function sendEmail(to, subject, html) {
 function send(res, status, html) {
     res.setHeader("Content-Type", "text/html; charset=utf-8");
     res.setHeader("Cache-Control", "no-store");
-    res.setHeader("Content-Security-Policy", "default-src 'none'; style-src 'unsafe-inline'; form-action 'self'; base-uri 'none'");
+    res.setHeader("Content-Security-Policy", "default-src 'none'; style-src 'unsafe-inline'; img-src data:; form-action 'self'; base-uri 'none'");
     res.setHeader("X-Content-Type-Options", "nosniff");
     return res.status(status).send(html);
 }
@@ -79,7 +87,7 @@ async function loadForm(db, token) {
 async function submit(req, res, db, form) {
     const body = req.body || {};
     const values = validatePublicSubmission(body, form);
-    if (values.spam) return send(res, 200, checkEmail());
+    if (values.spam) return send(res, 200, checkEmail(form));
     if (values.error) return send(res, 400, formPage(form, values.error, body));
 
     const ip = String(req.headers["x-forwarded-for"] || "").split(",")[0].trim();
@@ -90,7 +98,7 @@ async function submit(req, res, db, form) {
            FROM dsr_public_submissions WHERE form_token = $2`,
         [ipHash, form.token]
     );
-    if (by_ip >= MAX_PER_IP_HOUR || by_form >= MAX_PER_FORM_DAY) return send(res, 429, notice("Too many requests", "Please try again later."));
+    if (by_ip >= MAX_PER_IP_HOUR || by_form >= MAX_PER_FORM_DAY) return send(res, 429, notice("Too many requests", "Please try again later.", form));
 
     const code = randomBytes(24).toString("base64url");
     await db.query(
@@ -104,7 +112,7 @@ async function submit(req, res, db, form) {
         await db.query(`DELETE FROM dsr_public_submissions WHERE token_hash = $1`, [sha(code)]);
         return send(res, 503, formPage(form, "We couldn't send the confirmation email. Please try again shortly.", body));
     }
-    return send(res, 200, checkEmail());
+    return send(res, 200, checkEmail(form));
 }
 
 const confirmPage = (code) => page("Confirm your request", `<h1>Confirm your request</h1><p>Press the button to send your privacy request.</p><form method="post" action="/privacy-request/confirm/${esc(code)}"><button type="submit">Confirm my request</button></form>`);
@@ -123,7 +131,7 @@ async function confirm(res, db, code) {
     if (values.error) return send(res, 400, notice("Something went wrong", "Please send your request again."));
     await createRequest(db, form.organisation_id, "Public request form", { ...values, source: "public_form" });
     if (form.notify_email) await sendEmail(form.notify_email, "New data subject request", `<p>A new data subject request was confirmed for ${esc(form.company_name)}. Open the DSR portal to handle it.</p>`).catch(() => {});
-    return send(res, 200, notice("Request received", `Thank you. ${form.company_name} will respond within the legal time limit.`));
+    return send(res, 200, notice("Request received", `Thank you. ${form.company_name} will respond within the legal time limit.`, form));
 }
 
 export default async function handler(req, res) {
