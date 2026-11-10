@@ -3,7 +3,7 @@ const CLOSED = new Set(["completed", "rejected"]);
 
 /** Open requests, how many fall due within 7 days, and how many are overdue. */
 export function dsrSummary(requests, now = Date.now()) {
-    const open = requests.filter((r) => !CLOSED.has(r.status));
+    const open = requests.filter((r) => !CLOSED.has(r.status) && !r.is_test);
     let dueSoon = 0, overdue = 0;
     for (const r of open) {
         const left = new Date(r.effective_due_at).getTime() - now;

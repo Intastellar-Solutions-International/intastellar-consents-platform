@@ -116,7 +116,7 @@ export function newRequestEmail(form, request) {
             heading: "New data subject request",
             body: emailP(`Someone sent a request through the ${emailEsc(form.company_name)} privacy form and confirmed their email.`) + emailFacts([
                 ["Request", emailEsc(type)],
-                ["Regulation", emailEsc(request.regulation)],
+                ["Regulation", emailEsc(String(request.regulation).replace("_", " "))],
                 ["Received", emailEsc(longDate(request.received_at))],
                 ["Response due", emailEsc(longDate(request.due_at))],
             ]),
@@ -209,6 +209,7 @@ async function confirm(res, db, code, lang) {
     const values = validateNewRequest({ ...rows[0].payload, received_at: received, domain: form.domain });
     if (values.error) return send(res, 400, notice("wrong", lang, form));
     const request = await createRequest(db, form.organisation_id, "Public request form", { ...values, source: "public_form" });
+    await db.query(`INSERT INTO dsr_events (request_id, organisation_id, actor, action) VALUES ($1, $2, $3, 'email_confirmed')`, [request.id, form.organisation_id, values.requester_email]);
     if (form.notify_email) {
         const mail = newRequestEmail(form, request);
         await sendEmail(form.notify_email, mail.subject, mail.html, mail.attachments).catch(() => {});

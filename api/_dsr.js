@@ -17,6 +17,7 @@ export const REQUEST_TYPES = [
 const US_STATE = { days: 45, extendDays: 45 };
 export const DEADLINE_RULES = {
     GDPR: { months: 1, extendMonths: 2 },
+    UK_GDPR: { months: 1, extendMonths: 2 },
     LGPD: { days: 15 },
     PDPA: { days: 30 },
     POPIA: { days: 30 },
@@ -28,6 +29,12 @@ export const DEADLINE_RULES = {
 };
 
 const CLOSED = new Set(["completed", "rejected"]);
+export const IDENTITY_METHODS = [
+    { id: "email", label: "Confirmed from their email address" },
+    { id: "account", label: "Signed in to their account" },
+    { id: "document", label: "Checked an identity document" },
+    { id: "other", label: "Another way" },
+];
 const TYPE_IDS = new Set(REQUEST_TYPES.map((t) => t.id));
 const MAX_NAME = 255;
 const MAX_TEXT = 4000;
@@ -101,16 +108,21 @@ export function applyAction(current, body, now = new Date()) {
     if (current.anonymized_at) return { error: "This request has been anonymised and can't be changed" };
     const closed = CLOSED.has(current.status);
     const action = body?.action;
+    const toldOn = (value) => isDay(value) && Date.parse(`${value}T00:00:00Z`) <= now.getTime() + 86400000;
     const needOpen = ["start", "verify_identity", "extend", "complete", "reject"];
     if (needOpen.includes(action) && closed) return { error: "This request is closed. Reopen it first." };
 
     if (action === "start") {
         if (current.status !== "pending") return { error: "This request has already been started" };
+        if (!current.assignee) return { error: "Assign someone under Details before starting, so it's clear who owns it." };
         return { patch: { status: "in_progress" }, action, detail: { from: "pending", to: "in_progress" } };
     }
     if (action === "verify_identity") {
         if (current.identity_verified_at) return { error: "Identity is already verified" };
-        return { patch: { identity_verified_at: now }, action, detail: {} };
+        if (!IDENTITY_METHODS.some((m) => m.id === body.method)) return { error: "Choose how identity was verified" };
+        const note = clean(body.note, MAX_TEXT);
+        if (!note) return { error: "Record what was checked" };
+        return { patch: { identity_verified_at: now, identity_method: body.method, identity_note: note, identity_verified_by: clean(body.actor, MAX_NAME) || null }, action, detail: { method: body.method } };
     }
     if (action === "extend") {
         if (current.extended_until) return { error: "This deadline has already been extended" };
@@ -122,21 +134,28 @@ export function applyAction(current, body, now = new Date()) {
         const extended_until = endOfDayUtc(new Date(`${body.extended_until}T00:00:00Z`));
         if (extended_until <= new Date(current.due_at)) return { error: "The new deadline must be after the current one" };
         if (extended_until > limit) return { error: "That is later than the law allows" };
-        return { patch: { extended_until, extension_reason: reason }, action, detail: { extended_until: extended_until.toISOString() } };
+        if (!toldOn(body.notified_on)) return { error: "Add the date the requester was told about the extension" };
+        return { patch: { extended_until, extension_reason: reason, extension_notified_on: body.notified_on }, action, detail: { extended_until: extended_until.toISOString() } };
     }
     if (action === "complete") {
         const outcome = clean(body.outcome, MAX_TEXT);
-        if (!outcome) return { error: "Record how the request was answered" };
-        return { patch: { status: "completed", outcome, rejection_reason: null, closed_at: now }, action, detail: { from: current.status, to: "completed" } };
+        if (!outcome) return { error: "Record what was done" };
+        if (!toldOn(body.notified_on)) return { error: "Add the date the requester was told" };
+        return { patch: { status: "completed", outcome, rejection_reason: null, requester_notified_on: body.notified_on, complaint_notice_given: false, closed_at: now }, action, detail: { from: current.status, to: "completed" } };
     }
     if (action === "reject") {
         const reason = clean(body.reason, MAX_TEXT);
         if (!reason) return { error: "Record why the request was rejected" };
-        return { patch: { status: "rejected", rejection_reason: reason, outcome: null, closed_at: now }, action, detail: { from: current.status, to: "rejected" } };
+        if (!toldOn(body.notified_on)) return { error: "Add the date the requester was told" };
+        if (body.complaint_notice !== true) return { error: "Confirm the requester was told they can complain to a supervisory authority" };
+        return { patch: { status: "rejected", rejection_reason: reason, outcome: null, requester_notified_on: body.notified_on, complaint_notice_given: true, closed_at: now }, action, detail: { from: current.status, to: "rejected" } };
     }
     if (action === "reopen") {
         if (!closed) return { error: "This request is already open" };
         return { patch: { status: "in_progress", closed_at: null }, action, detail: { from: current.status, to: "in_progress" } };
+    }
+    if (action === "mark_test") {
+        return { patch: { is_test: body.is_test === true }, action, detail: { is_test: body.is_test === true } };
     }
     if (action === "update") {
         const contact = validateContact({ ...current, ...body });
@@ -205,6 +224,16 @@ export async function ensureDsrTables(db) {
     await db.query(`CREATE INDEX IF NOT EXISTS idx_dsr_events_request ON dsr_events (request_id, created_at)`);
     await db.query(`ALTER TABLE dsr_requests ADD COLUMN IF NOT EXISTS source TEXT`);
     await db.query(`
+        ALTER TABLE dsr_requests
+            ADD COLUMN IF NOT EXISTS is_test BOOLEAN NOT NULL DEFAULT FALSE,
+            ADD COLUMN IF NOT EXISTS identity_method TEXT,
+            ADD COLUMN IF NOT EXISTS identity_note TEXT,
+            ADD COLUMN IF NOT EXISTS identity_verified_by TEXT,
+            ADD COLUMN IF NOT EXISTS extension_notified_on DATE,
+            ADD COLUMN IF NOT EXISTS requester_notified_on DATE,
+            ADD COLUMN IF NOT EXISTS complaint_notice_given BOOLEAN NOT NULL DEFAULT FALSE
+    `);
+    await db.query(`
         CREATE TABLE IF NOT EXISTS dsr_vendor_notifications (
             id              BIGSERIAL PRIMARY KEY,
             request_id      BIGINT NOT NULL REFERENCES dsr_requests (id) ON DELETE CASCADE,
@@ -222,6 +251,7 @@ export async function ensureDsrTables(db) {
             UNIQUE (request_id, vendor)
         )
     `);
+    await db.query(`ALTER TABLE dsr_vendor_notifications ADD COLUMN IF NOT EXISTS kind TEXT NOT NULL DEFAULT 'vendor'`);
     await db.query(`
         CREATE TABLE IF NOT EXISTS dsr_vendor_credentials (
             organisation_id INTEGER NOT NULL,
@@ -302,7 +332,7 @@ export async function createRequest(db, organisationId, actor, values) {
     return requestView(rows[0]);
 }
 
-const PATCHABLE = new Set(["status", "identity_verified_at", "extended_until", "extension_reason", "outcome", "rejection_reason", "closed_at", "domain", "requester_name", "requester_email", "consent_id", "assignee", "notes"]);
+const PATCHABLE = new Set(["status", "is_test", "identity_method", "identity_note", "identity_verified_by", "extension_notified_on", "requester_notified_on", "complaint_notice_given", "identity_verified_at", "extended_until", "extension_reason", "outcome", "rejection_reason", "closed_at", "domain", "requester_name", "requester_email", "consent_id", "assignee", "notes"]);
 
 /** Saves a step and its history entry together. Null when the request changed underneath it. */
 export async function saveAction(db, organisationId, actor, current, { patch, action, detail }) {
@@ -329,7 +359,7 @@ export async function anonymizeExpiredRequests(db) {
     const { rows } = await db.query(
         `UPDATE dsr_requests
             SET requester_name = NULL, requester_email = NULL, consent_id = NULL, assignee = NULL, created_by = NULL,
-                notes = '', outcome = NULL, rejection_reason = NULL, extension_reason = NULL, anonymized_at = NOW()
+                notes = '', outcome = NULL, rejection_reason = NULL, extension_reason = NULL, identity_note = NULL, identity_verified_by = NULL, anonymized_at = NOW()
           WHERE closed_at < NOW() - INTERVAL '${RETENTION_YEARS} years' AND anonymized_at IS NULL
           RETURNING id`
     );
@@ -357,17 +387,29 @@ const NO_RECORD_CATEGORIES = new Set(["cdn", "cmp"]);
 
 export const needsVendorNotice = (type) => NOTIFIABLE_TYPES.has(type);
 
-/** One row per vendor from a scan: { vendor, privacy_url }. */
+/** The organisation's own places to act on first; they can add others. */
+export const OWN_SYSTEMS = ["Consent log (Intastellar Consents)", "CRM or customer database", "Email and support inbox", "Backups"];
+
+/**
+ * One row per vendor from a scan: { vendor, privacy_url, no_record }.
+ * no_record marks CDNs and CMPs, which rarely keep anything about one person.
+ * They're listed as not applicable rather than left out, so the choice shows.
+ */
 export function vendorsFromTransfers(transfers) {
     const byVendor = new Map();
     for (const t of transfers || []) {
-        if (NO_RECORD_CATEGORIES.has(t.category)) continue;
         const vendor = t.service || t.host;
-        if (!byVendor.has(vendor)) byVendor.set(vendor, { vendor, privacy_url: t.privacyUrl || null });
-        else if (t.privacyUrl) byVendor.get(vendor).privacy_url ||= t.privacyUrl;
+        const noRecord = NO_RECORD_CATEGORIES.has(t.category);
+        if (!byVendor.has(vendor)) byVendor.set(vendor, { vendor, privacy_url: t.privacyUrl || null, no_record: noRecord });
+        else {
+            const row = byVendor.get(vendor);
+            row.privacy_url ||= t.privacyUrl || null;
+            row.no_record &&= noRecord;
+        }
     }
     return [...byVendor.values()];
 }
+const NO_RECORD_NOTE = "Content delivery or consent tool, which usually keeps no record of one person. Change this if it does.";
 
 /**
  * Fills the checklist once, from the domain's latest scan or else the
@@ -375,9 +417,13 @@ export function vendorsFromTransfers(transfers) {
  * also reaches the browser bundle, and the scanner code must not.
  */
 export async function seedVendorNotifications(db, organisationId, request, loadReclassify) {
-    if (!needsVendorNotice(request.type) || request.anonymized_at) return;
-    const { rows: existing } = await db.query(`SELECT 1 FROM dsr_vendor_notifications WHERE request_id = $1 LIMIT 1`, [request.id]);
-    if (existing.length) return;
+    if (request.anonymized_at) return;
+    const { rows: existing } = await db.query(`SELECT DISTINCT kind FROM dsr_vendor_notifications WHERE request_id = $1`, [request.id]);
+    const has = (kind) => existing.some((r) => r.kind === kind);
+    if (!has("system")) {
+        for (const vendor of OWN_SYSTEMS) await addVendorNotification(db, organisationId, request.id, { vendor, kind: "system" });
+    }
+    if (!needsVendorNotice(request.type) || has("vendor")) return;
     let vendors = [];
     if (request.domain) {
         const { rows } = await db.query(
@@ -395,14 +441,16 @@ export async function seedVendorNotifications(db, organisationId, request, loadR
         const { rows } = await db.query(`SELECT vendor FROM vendor_compliance WHERE organisation_id = $1`, [organisationId]).catch(() => ({ rows: [] }));
         vendors = rows.map((r) => ({ vendor: r.vendor, privacy_url: null }));
     }
-    for (const v of vendors) await addVendorNotification(db, organisationId, request.id, v);
+    for (const v of vendors) {
+        await addVendorNotification(db, organisationId, request.id, { ...v, ...(v.no_record ? { status: "not_applicable", note: NO_RECORD_NOTE } : {}) });
+    }
 }
 
-export async function addVendorNotification(db, organisationId, requestId, { vendor, privacy_url = null }) {
+export async function addVendorNotification(db, organisationId, requestId, { vendor, privacy_url = null, kind = "vendor", status = "to_notify", note = "" }) {
     await db.query(
-        `INSERT INTO dsr_vendor_notifications (request_id, organisation_id, vendor, privacy_url) VALUES ($1, $2, $3, $4)
+        `INSERT INTO dsr_vendor_notifications (request_id, organisation_id, vendor, privacy_url, kind, status, note) VALUES ($1, $2, $3, $4, $5, $6, $7)
          ON CONFLICT (request_id, vendor) DO NOTHING`,
-        [requestId, organisationId, vendor, privacy_url]
+        [requestId, organisationId, vendor, privacy_url, kind, status, note]
     );
 }
 
@@ -470,7 +518,8 @@ export function vendorMessage(request, vendor, companyName) {
 
 // ── Public request form ─────────────────────────────────────────────────────
 export const PUBLIC_REGIONS = [
-    { id: "GDPR", label: "EU, EEA or UK" },
+    { id: "GDPR", label: "EU or EEA" },
+    { id: "UK_GDPR", label: "United Kingdom" },
     { id: "CCPA", label: "California, USA" },
     { id: "LGPD", label: "Brazil" },
     { id: "PIPEDA", label: "Canada" },

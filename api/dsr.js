@@ -229,7 +229,7 @@ export default async function handler(req, res) {
         if (body.action === "vendor_add") {
             const vendor = short(body.vendor);
             if (!vendor) return res.status(400).json({ error: "Add the vendor's name" });
-            await addVendorNotification(db, organisationId, found.request.id, { vendor });
+            await addVendorNotification(db, organisationId, found.request.id, { vendor, kind: body.kind === "system" ? "system" : "vendor" });
             return res.json(await detail(db, organisationId, found.request.id));
         }
         if (body.action === "vendor_update") {
@@ -247,11 +247,11 @@ export default async function handler(req, res) {
             return res.json({ ...(await detail(db, organisationId, found.request.id)), deletion_message: result.message });
         }
 
-        if (body.action === "complete" && needsVendorNotice(found.request.type) && body.confirm_open_vendors !== true) {
+        if (body.action === "complete" && body.confirm_open_vendors !== true) {
             const open = (await listVendorNotifications(db, organisationId, found.request.id)).filter((v) => v.status === "to_notify");
-            if (open.length) return res.status(409).json({ error: `${open.length} vendor${open.length === 1 ? " hasn't" : "s haven't"} been dealt with yet.`, open_vendors: open.map((v) => v.vendor) });
+            if (open.length) return res.status(409).json({ error: `${open.length} item${open.length === 1 ? " hasn't" : "s haven't"} been dealt with yet.`, open_vendors: open.map((v) => v.vendor) });
         }
-        const step = applyAction(found.request, body);
+        const step = applyAction(found.request, body.action === "verify_identity" ? { ...body, actor: email } : body);
         if (step.error) return res.status(400).json({ error: step.error });
         const request = await saveAction(db, organisationId, email, found.request, step);
         if (!request) return res.status(409).json({ error: "This request was just changed by someone else. Reload and try again." });

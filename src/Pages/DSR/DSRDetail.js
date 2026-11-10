@@ -1,10 +1,9 @@
 import StickyPageTitle from "../../Components/Header/Sticky";
-import { Button, Card, EmptyState, ErrorState, Skeleton } from "../../Components/ui";
+import { Badge, Button, Card, EmptyState, ErrorState, Skeleton } from "../../Components/ui";
 import { reportsPath } from "../../Functions/domainPathSegments.js";
-import { latestExtension } from "../../Functions/dsr.js";
+import { IDENTITY_METHODS, latestExtension } from "../../Functions/dsr.js";
 import { formatDate, formatDateTime } from "../../Functions/format.js";
-import { FRAMEWORK_LABELS } from "../../Functions/jurisdictionEngine.js";
-import { AREA, DsrStatusBadge, FIELD, LABEL, daysLeftLabel, fetchDsr, isClosed, postDsr, requesterName, typeLabel } from "./dsrShared.js";
+import { AREA, DsrStatusBadge, FIELD, LABEL, daysLeftLabel, fetchDsr, isClosed, legalDate, postDsr, regulationLabel, requesterName, typeLabel } from "./dsrShared.js";
 import VendorChecklist from "./VendorChecklist.js";
 import "./Style.css";
 
@@ -21,7 +20,9 @@ const EVENT_LABEL = {
     reject: "Rejected",
     reopen: "Reopened",
     update: "Details edited",
-    vendor_update: "Vendor status changed",
+    vendor_update: "Checklist item changed",
+    email_confirmed: "Email address confirmed by the requester",
+    mark_test: "Test flag changed",
     vendor_deletion: "Deletion sent through vendor API",
     vendor_deletion_failed: "Vendor API deletion failed",
 };
@@ -37,21 +38,27 @@ function Fact({ label, children }) {
     );
 }
 
-/** One closing or extending step: asks for the text the record needs, then confirms. */
-function StepForm({ label, field, hint, submit, onCancel, onSubmit, children, saving }) {
+const today = () => new Date().toISOString().slice(0, 10);
+
+/** One step that has to leave a record: asks for what the record needs, then confirms. */
+function StepForm({ label, field, hint, submit, onCancel, onSubmit, saving, initial = {}, extra, valid = () => true }) {
     const [text, setText] = useState("");
-    const [extra, setExtra] = useState("");
+    const [values, setValues] = useState(initial);
     return (
-        <form className="tw-flex tw-flex-col tw-gap-3 tw-p-3 tw-bg-bg-sunken tw-rounded-lg" onSubmit={(e) => { e.preventDefault(); onSubmit({ [field]: text, extended_until: extra }); }}>
-            {children && children(extra, setExtra)}
+        <form className="tw-flex tw-flex-col tw-gap-3 tw-p-3 tw-bg-bg-sunken tw-rounded-lg" onSubmit={(e) => { e.preventDefault(); onSubmit({ [field]: text, ...values }); }}>
+            {extra && <div className="dsr-form-grid">{extra(values, (key, value) => setValues((v) => ({ ...v, [key]: value })))}</div>}
             <label className={LABEL}>{label}<textarea className={AREA} rows={3} required maxLength={4000} value={text} onChange={(e) => setText(e.target.value)} style={{ resize: "vertical" }} /></label>
             {hint && <p className="tw-m-0 tw-text-xs tw-text-text-muted">{hint}</p>}
             <div className="tw-flex tw-gap-2">
-                <Button type="submit" size="sm" variant="primary" loading={saving}>{submit}</Button>
+                <Button type="submit" size="sm" variant="primary" loading={saving} disabled={!valid(values)}>{submit}</Button>
                 <Button size="sm" variant="ghost" onClick={onCancel}>Cancel</Button>
             </div>
         </form>
     );
+}
+
+function ToldOn({ label, values, set }) {
+    return <label className={LABEL}>{label}<input type="date" className={FIELD} required max={today()} value={values.notified_on || ""} onChange={(e) => set("notified_on", e.target.value)} style={{ colorScheme: "dark" }} /></label>;
 }
 
 function DetailsForm({ request, onSave, saving }) {
@@ -78,7 +85,7 @@ export default function DSRDetail() {
     const [data, setData] = useState(null);
     const [loadError, setLoadError] = useState(null);
     const [attempt, setAttempt] = useState(0);
-    const [panel, setPanel] = useState(null); // null | "complete" | "reject" | "extend"
+    const [panel, setPanel] = useState(null); // null | "verify" | "complete" | "reject" | "extend"
     const [busy, setBusy] = useState(false);
     const [error, setError] = useState(null);
     const [openVendors, setOpenVendors] = useState(null); // the outcome waiting on "complete anyway"
@@ -134,19 +141,21 @@ export default function DSRDetail() {
                 <Card
                     title={requesterName(request)}
                     description={`${typeLabel(request.type)} request`}
-                    actions={<DsrStatusBadge request={request} />}
+                    actions={<span className="tw-flex tw-items-center tw-gap-2">{request.is_test && <Badge tone="neutral">Test</Badge>}<DsrStatusBadge request={request} /></span>}
                 >
                     {locked && <p className="tw-m-0 tw-mb-4 tw-text-sm tw-text-text-muted">Personal details were removed {formatDate(request.anonymized_at)}, 3 years after this request closed.</p>}
                     <dl className="dsr-facts">
                         <Fact label="Email">{request.requester_email}</Fact>
                         <Fact label="Consent ID">{request.consent_id && <code className="tw-text-xs">{request.consent_id}</code>}</Fact>
                         <Fact label="Domain">{request.domain || "Not domain-specific"}</Fact>
-                        <Fact label="Regulation">{FRAMEWORK_LABELS[request.regulation] || request.regulation}</Fact>
+                        <Fact label="Regulation">{regulationLabel(request.regulation)}</Fact>
                         <Fact label="Assignee">{request.assignee || "Unassigned"}</Fact>
-                        <Fact label="Identity verified">{request.identity_verified_at ? formatDate(request.identity_verified_at) : "Not yet"}</Fact>
+                        <Fact label="Identity verified">{request.identity_verified_at ? `${formatDate(request.identity_verified_at)} · ${IDENTITY_METHODS.find((m) => m.id === request.identity_method)?.label || "Method not recorded"}${request.identity_verified_by ? ` · ${request.identity_verified_by}` : ""}` : "Not yet"}</Fact>
+                        {request.identity_note && <div className="dsr-facts__wide"><Fact label="What was checked">{request.identity_note}</Fact></div>}
                         {request.source === "public_form" && <Fact label="Received through">Public form, email confirmed. <Link to={`/${id}/reports/dsr?setup=form`} className="tw-text-accent-strong">Form settings</Link></Fact>}
-                        {request.outcome && <div className="dsr-facts__wide"><Fact label="How it was answered">{request.outcome}</Fact></div>}
+                        {request.outcome && <div className="dsr-facts__wide"><Fact label="What was done">{request.outcome}</Fact></div>}
                         {request.rejection_reason && <div className="dsr-facts__wide"><Fact label="Why it was rejected">{request.rejection_reason}</Fact></div>}
+                        {request.requester_notified_on && <Fact label="Requester told">{legalDate(request.requester_notified_on)}{request.complaint_notice_given ? ", including the right to complain" : ""}</Fact>}
                         {request.notes && <div className="dsr-facts__wide"><Fact label="Internal notes">{request.notes}</Fact></div>}
                     </dl>
                     {consentPath && <Link to={consentPath} className="tw-inline-block tw-mt-4 tw-text-sm tw-font-semibold tw-text-accent-strong">View consent records</Link>}
@@ -158,26 +167,65 @@ export default function DSRDetail() {
                             {identityWarning && <p className="tw-m-0 tw-text-sm tw-text-warning">Confirm who this person is before you hand over or change any data.</p>}
                             <div className="tw-flex tw-flex-wrap tw-gap-2">
                                 {request.status === "pending" && <Button variant="primary" loading={busy} onClick={() => run("start")}>Mark in progress</Button>}
-                                {!closed && !request.identity_verified_at && <Button variant="secondary" disabled={busy} onClick={() => run("verify_identity")}>Mark identity verified</Button>}
+                                {!closed && !request.identity_verified_at && <Button variant="secondary" disabled={busy} onClick={() => setPanel("verify")}>Mark identity verified</Button>}
                                 {!closed && <Button variant="secondary" disabled={busy} onClick={() => setPanel("complete")}>Complete</Button>}
                                 {!closed && <Button variant="secondary" disabled={busy} onClick={() => setPanel("reject")}>Reject</Button>}
                                 {canExtend && <Button variant="ghost" disabled={busy} onClick={() => setPanel("extend")}>Extend deadline</Button>}
                                 {closed && <Button variant="secondary" loading={busy} onClick={() => run("reopen")}>Reopen</Button>}
                             </div>
-                            {panel === "complete" && <StepForm key="complete" label="How was it answered?" field="outcome" hint="Kept as evidence, for example what was sent or deleted and when." submit="Complete request" saving={busy} onCancel={() => setPanel(null)} onSubmit={(v) => run("complete", { outcome: v.outcome })} />}
-                            {panel === "reject" && <StepForm key="reject" label="Why is it being rejected?" field="reason" hint="The person must be told the reason and that they can complain to a supervisory authority." submit="Reject request" saving={busy} onCancel={() => setPanel(null)} onSubmit={(v) => run("reject", { reason: v.reason })} />}
-                            {panel === "extend" && (
-                                <StepForm key="extend" label="Why is more time needed?" field="reason" hint="The person must be told about the extension and why, within the original deadline." submit="Extend deadline" saving={busy} onCancel={() => setPanel(null)} onSubmit={(v) => run("extend", v)}>
-                                    {(value, setValue) => (
-                                        <label className={LABEL}>New deadline (latest {formatDate(limit)})
-                                            <input type="date" className={FIELD} required value={value} max={limit.toISOString().slice(0, 10)} onChange={(e) => setValue(e.target.value)} style={{ colorScheme: "dark" }} />
+                            {panel === "verify" && (
+                                <StepForm
+                                    key="verify" label="What was checked?" field="note" submit="Record verification" saving={busy}
+                                    hint="Keep only what's needed to show the check happened, not copies of documents."
+                                    initial={{ method: "email" }} onCancel={() => setPanel(null)} onSubmit={(v) => run("verify_identity", v)}
+                                    extra={(values, set) => (
+                                        <label className={LABEL}>How identity was verified
+                                            <select className={FIELD} value={values.method} onChange={(e) => set("method", e.target.value)} style={{ colorScheme: "dark" }}>
+                                                {IDENTITY_METHODS.map((m) => <option key={m.id} value={m.id}>{m.label}</option>)}
+                                            </select>
                                         </label>
                                     )}
-                                </StepForm>
+                                />
+                            )}
+                            {panel === "complete" && (
+                                <StepForm
+                                    key="complete" label="What was done?" field="outcome" hint="Kept as evidence, for example what was sent, restricted or deleted." submit="Complete request" saving={busy}
+                                    initial={{ notified_on: today() }} onCancel={() => setPanel(null)} onSubmit={(v) => run("complete", v)}
+                                    extra={(values, set) => <ToldOn label="Requester told on" values={values} set={set} />}
+                                />
+                            )}
+                            {panel === "reject" && (
+                                <StepForm
+                                    key="reject" label="Why is it being rejected?" field="reason" submit="Reject request" saving={busy}
+                                    initial={{ notified_on: today(), complaint_notice: false }} valid={(v) => v.complaint_notice} onCancel={() => setPanel(null)} onSubmit={(v) => run("reject", v)}
+                                    extra={(values, set) => (
+                                        <>
+                                            <ToldOn label="Requester told on" values={values} set={set} />
+                                            <label className="tw-flex tw-items-center tw-gap-2 tw-text-sm tw-text-text-secondary">
+                                                <input type="checkbox" required checked={values.complaint_notice} onChange={(e) => set("complaint_notice", e.target.checked)} />
+                                                I told them the reason and that they can complain to a supervisory authority or go to court.
+                                            </label>
+                                        </>
+                                    )}
+                                />
+                            )}
+                            {panel === "extend" && (
+                                <StepForm
+                                    key="extend" label="Why is more time needed?" field="reason" hint="The person must be told about the extension and why, within the original deadline." submit="Extend deadline" saving={busy}
+                                    initial={{ notified_on: today() }} onCancel={() => setPanel(null)} onSubmit={(v) => run("extend", v)}
+                                    extra={(values, set) => (
+                                        <>
+                                            <label className={LABEL}>New deadline (latest {legalDate(limit)})
+                                                <input type="date" className={FIELD} required value={values.extended_until || ""} max={limit.toISOString().slice(0, 10)} onChange={(e) => set("extended_until", e.target.value)} style={{ colorScheme: "dark" }} />
+                                            </label>
+                                            <ToldOn label="Requester told on" values={values} set={set} />
+                                        </>
+                                    )}
+                                />
                             )}
                             {openVendors && (
                                 <div role="alert" className="tw-flex tw-flex-col tw-gap-2 tw-p-3 tw-bg-bg-sunken tw-rounded-lg tw-text-sm tw-text-text-secondary">
-                                    <p className="tw-m-0">These vendors haven't been dealt with yet: {openVendors.names.join(", ")}. GDPR Art. 19 expects them to be told, unless that's impossible or disproportionate.</p>
+                                    <p className="tw-m-0">These haven't been dealt with yet: {openVendors.names.join(", ")}.</p>
                                     <div className="tw-flex tw-gap-2">
                                         <Button size="sm" variant="secondary" loading={busy} onClick={() => run("complete", { ...openVendors.values, confirm_open_vendors: true })}>Complete anyway</Button>
                                         <Button size="sm" variant="ghost" onClick={() => setOpenVendors(null)}>Go back</Button>
@@ -189,17 +237,27 @@ export default function DSRDetail() {
                     </Card>
                 )}
 
-                {!locked && data.notice_required && <VendorChecklist request={request} vendors={data.vendors} onData={setData} />}
+                {!locked && <VendorChecklist kind="system" request={request} vendors={data.vendors.filter((v) => v.kind === "system")} onData={setData} />}
+                {!locked && data.notice_required && <VendorChecklist kind="vendor" request={request} vendors={data.vendors.filter((v) => v.kind !== "system")} onData={setData} />}
 
-                {!locked && <Card title="Details"><DetailsForm key={request.updated_at} request={request} saving={busy} onSave={(form) => run("update", form)} /></Card>}
+                {!locked && (
+                    <Card title="Details">
+                        <DetailsForm key={request.updated_at} request={request} saving={busy} onSave={(form) => run("update", form)} />
+                        <label className="tw-flex tw-items-center tw-gap-2 tw-mt-4 tw-text-sm tw-text-text-secondary">
+                            <input type="checkbox" disabled={busy} checked={Boolean(request.is_test)} onChange={(e) => run("mark_test", { is_test: e.target.checked })} />
+                            This is a test request, so leave it out of counts and exports
+                        </label>
+                    </Card>
+                )}
             </div>
 
             <div className="tw-flex tw-flex-col tw-gap-5 tw-min-w-0">
                 <Card title="Deadline">
                     <dl className="tw-m-0 tw-flex tw-flex-col tw-gap-3">
-                        <Fact label="Received">{formatDate(request.received_at)}</Fact>
-                        <Fact label={request.extended_until ? "Original deadline" : "Due"}>{formatDate(request.due_at)}</Fact>
-                        {request.extended_until && <Fact label="Extended to">{formatDate(request.extended_until)}</Fact>}
+                        <Fact label="Received">{legalDate(request.received_at)}</Fact>
+                        <Fact label={request.extended_until ? "Original deadline" : "Due"}>{legalDate(request.due_at)}</Fact>
+                        {request.extended_until && <Fact label="Extended to">{legalDate(request.extended_until)}</Fact>}
+                        {request.extension_notified_on && <Fact label="Told about extension">{legalDate(request.extension_notified_on)}</Fact>}
                         {request.extension_reason && <Fact label="Reason for extension">{request.extension_reason}</Fact>}
                         {closed ? <Fact label="Closed">{formatDate(request.closed_at)}</Fact> : <Fact label="Time left"><span className={request.overdue ? "tw-text-danger-text" : undefined}>{daysLeftLabel(request)}</span></Fact>}
                     </dl>

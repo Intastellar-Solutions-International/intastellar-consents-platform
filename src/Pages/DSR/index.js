@@ -4,9 +4,8 @@ import { Badge, Button, Card, Drawer, FilterBar, FilterSearch, FilterSelect, Kpi
 import { readCachedDomains } from "../../Functions/cachedDomains.js";
 import { DEADLINE_RULES, REQUEST_TYPES, dueDate } from "../../Functions/dsr.js";
 import { dsrSummary } from "../../Functions/dsrSummary.js";
-import { formatDate, formatNumber } from "../../Functions/format.js";
-import { FRAMEWORK_LABELS } from "../../Functions/jurisdictionEngine.js";
-import { AREA, DsrStatusBadge, FIELD, LABEL, daysLeftLabel, fetchDsr, isClosed, postDsr, requesterName, typeLabel } from "./dsrShared.js";
+import { formatNumber } from "../../Functions/format.js";
+import { AREA, DsrStatusBadge, FIELD, LABEL, daysLeftLabel, fetchDsr, isClosed, legalDate, postDsr, regulationLabel, requesterName, typeLabel } from "./dsrShared.js";
 import DsrSetup from "./DsrSetup.js";
 import "./Style.css";
 
@@ -82,13 +81,13 @@ function NewRequestForm({ onCreated }) {
                 </label>
                 <label className={LABEL}>Regulation
                     <select className={FIELD} value={form.regulation} onChange={set("regulation")} style={{ colorScheme: "dark" }}>
-                        {Object.keys(DEADLINE_RULES).map((r) => <option key={r} value={r}>{FRAMEWORK_LABELS[r] || r}</option>)}
+                        {Object.keys(DEADLINE_RULES).map((r) => <option key={r} value={r}>{regulationLabel(r)}</option>)}
                     </select>
                 </label>
                 <label className={LABEL}>Received on<input type="date" className={FIELD} max={today()} required value={form.received_at} onChange={set("received_at")} style={{ colorScheme: "dark" }} /></label>
                 <label className={LABEL}>Assignee<input className={FIELD} maxLength={255} value={form.assignee} onChange={set("assignee")} /></label>
             </div>
-            {due && <p className="tw-m-0 tw-text-sm tw-text-text-secondary">Response due by <strong className="tw-text-text-primary">{formatDate(due)}</strong>.</p>}
+            {due && <p className="tw-m-0 tw-text-sm tw-text-text-secondary">Response due by <strong className="tw-text-text-primary">{legalDate(due)}</strong>.</p>}
             <label className={LABEL}>Internal notes<textarea className={AREA} rows={3} maxLength={4000} value={form.notes} onChange={set("notes")} style={{ resize: "vertical" }} /></label>
             {state && state !== "saving" && <p role="alert" className="tw-m-0 tw-text-sm tw-text-danger-text">{state}</p>}
             <div><Button type="submit" variant="primary" loading={state === "saving"} disabled={!identified}>Log request</Button></div>
@@ -145,20 +144,23 @@ export default function DSR() {
             key: "requester", header: "Requester",
             render: (r) => (
                 <span className="tw-block tw-min-w-0">
-                    <span className="tw-block tw-font-semibold tw-text-text-primary tw-truncate">{requesterName(r)}</span>
+                    <span className="tw-flex tw-items-center tw-gap-2 tw-font-semibold tw-text-text-primary">
+                        <span className="tw-truncate">{requesterName(r)}</span>
+                        {r.is_test && <Badge tone="neutral">Test</Badge>}
+                    </span>
                     {r.requester_name && r.requester_email && <span className="tw-block tw-text-xs tw-text-text-muted tw-truncate">{r.requester_email}</span>}
                 </span>
             ),
         },
         { key: "type", header: "Type", hideOnMobile: true, render: (r) => typeLabel(r.type) },
         { key: "domain", header: "Domain", hideOnMobile: true, render: (r) => r.domain || <span className="tw-text-text-muted">All</span> },
-        { key: "regulation", header: "Regulation", hideOnMobile: true, render: (r) => r.regulation },
-        { key: "received", header: "Received", sortable: true, hideOnMobile: true, render: (r) => formatDate(r.received_at) },
+        { key: "regulation", header: "Regulation", hideOnMobile: true, render: (r) => String(r.regulation).replace("_", " ") },
+        { key: "received", header: "Received", sortable: true, hideOnMobile: true, render: (r) => legalDate(r.received_at) },
         {
             key: "due", header: "Due", sortable: true,
             render: (r) => (
                 <span className="tw-block">
-                    <span className="tw-block">{formatDate(r.effective_due_at)}</span>
+                    <span className="tw-block">{legalDate(r.effective_due_at)}</span>
                     {!isClosed(r) && <span className={`tw-block tw-text-xs ${r.overdue ? "tw-text-danger-text" : "tw-text-text-muted"}`}>{daysLeftLabel(r)}</span>}
                 </span>
             ),
@@ -183,7 +185,7 @@ export default function DSR() {
                             <span className="tw-flex tw-gap-2">
                                 <Button variant="ghost" onClick={() => setSetup("connections")}>Vendor connections</Button>
                                 <Button variant="ghost" onClick={() => setSetup("form")}>Public form</Button>
-                                {filtered.length > 0 && <Button variant="secondary" onClick={() => downloadCsv(filtered)}>Export CSV</Button>}
+                                {filtered.some((r) => !r.is_test) && <Button variant="secondary" onClick={() => downloadCsv(filtered.filter((r) => !r.is_test))}>Export CSV</Button>}
                                 <Button variant="primary" onClick={() => setDrawer(true)}>Log request</Button>
                             </span>
                         </span>

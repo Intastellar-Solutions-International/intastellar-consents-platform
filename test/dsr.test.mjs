@@ -46,9 +46,15 @@ test("dsr create: someone must be identifiable and the fields valid", () => {
 
 test("dsr workflow: closing needs a recorded outcome or reason", () => {
     assert.ok(applyAction(base, { action: "complete" }).error);
-    assert.ok(applyAction(base, { action: "reject" }).error);
-    assert.strictEqual(applyAction(base, { action: "complete", outcome: "Sent export" }).patch.status, "completed");
-    assert.strictEqual(applyAction(base, { action: "reject", reason: "Identity unconfirmed" }).patch.status, "rejected");
+    assert.ok(applyAction(base, { action: "complete", outcome: "Sent export" }).error, "needs the date they were told");
+    assert.ok(applyAction(base, { action: "reject", reason: "x", notified_on: "2026-11-01" }).error, "needs the right-to-complain notice");
+    const completed = applyAction(base, { action: "complete", outcome: "Sent export", notified_on: "2026-11-01" });
+    assert.strictEqual(completed.patch.status, "completed");
+    assert.strictEqual(completed.patch.requester_notified_on, "2026-11-01");
+    const rejected = applyAction(base, { action: "reject", reason: "Identity unconfirmed", notified_on: "2026-11-01", complaint_notice: true });
+    assert.strictEqual(rejected.patch.status, "rejected");
+    assert.strictEqual(rejected.patch.complaint_notice_given, true);
+    assert.ok(applyAction(base, { action: "complete", outcome: "x", notified_on: "2999-01-01" }).error, "can't be in the future");
 });
 
 test("dsr workflow: closed requests must be reopened; anonymised ones are locked", () => {
@@ -62,9 +68,10 @@ test("dsr workflow: closed requests must be reopened; anonymised ones are locked
 test("dsr workflow: an extension needs a reason, a later date, and stays in the limit", () => {
     const go = (extra) => applyAction(base, { action: "extend", ...extra });
     assert.ok(go({ extended_until: "2027-01-10" }).error);
-    assert.ok(go({ reason: "Complex", extended_until: "2026-12-01" }).error);
-    assert.ok(go({ reason: "Complex", extended_until: "2027-02-11" }).error);
-    assert.ok(!go({ reason: "Complex", extended_until: "2027-02-10" }).error);
+    assert.ok(go({ reason: "Complex", extended_until: "2026-12-01", notified_on: "2026-11-01" }).error);
+    assert.ok(go({ reason: "Complex", extended_until: "2027-02-11", notified_on: "2026-11-01" }).error);
+    assert.ok(go({ reason: "Complex", extended_until: "2027-02-10" }).error, "needs the date the requester was told");
+    assert.strictEqual(go({ reason: "Complex", extended_until: "2027-02-10", notified_on: "2026-11-01" }).patch.extension_notified_on, "2026-11-01");
     assert.ok(applyAction({ ...base, extended_until: "2027-01-01" }, { action: "extend", reason: "x", extended_until: "2027-02-01" }).error);
     assert.ok(applyAction({ ...base, regulation: "LGPD" }, { action: "extend", reason: "x", extended_until: "2027-01-01" }).error);
 });
@@ -82,6 +89,24 @@ function fakeDb(rows = []) {
     const calls = [];
     return { calls, query: async (sql, params) => { calls.push({ sql, params }); return { rows: /UPDATE dsr_requests|WITH /.test(sql) ? rows : [] }; } };
 }
+
+test("dsr workflow: starting needs an owner, verifying leaves a record", () => {
+    assert.match(applyAction(base, { action: "start" }).error, /Assign/);
+    assert.strictEqual(applyAction({ ...base, assignee: "Jo" }, { action: "start" }).patch.status, "in_progress");
+    assert.ok(applyAction(base, { action: "verify_identity" }).error);
+    assert.ok(applyAction(base, { action: "verify_identity", method: "email" }).error, "needs what was checked");
+    const step = applyAction(base, { action: "verify_identity", method: "document", note: "Passport seen", actor: "me@x.dk" });
+    assert.strictEqual(step.patch.identity_method, "document");
+    assert.strictEqual(step.patch.identity_verified_by, "me@x.dk");
+    assert.deepStrictEqual(step.detail, { method: "document" }, "the note stays out of the history");
+});
+
+test("dsr deadline: stored at the end of the UTC day, so it reads as the legal date in UTC", () => {
+    const due = dueDate("2026-11-10T00:00:00Z", "GDPR");
+    assert.strictEqual(due.toISOString(), "2026-12-10T23:59:59.000Z");
+    assert.strictEqual(due.toLocaleDateString("en-GB", { timeZone: "UTC", day: "numeric", month: "short" }), "10 Dec");
+    assert.strictEqual(day(dueDate("2026-11-10T00:00:00Z", "UK_GDPR")), "2026-12-10");
+});
 
 test("dsr storage: every write is scoped to the organisation and logged in one statement", async () => {
     const db = fakeDb([{ id: "1", status: "in_progress", due_at: "2026-12-10" }]);

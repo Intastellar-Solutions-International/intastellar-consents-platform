@@ -136,7 +136,7 @@ const RUNNERS = {
         const response = await fetchImpl(`https://mixpanel.com/api/app/data-deletions/v3.0/?token=${encodeURIComponent(credentials.project_token)}`, {
             method: "POST",
             headers: json(credentials.oauth_token),
-            body: JSON.stringify({ distinct_ids: [identifier], compliance_type: request.regulation === "GDPR" ? "GDPR" : "CCPA" }),
+            body: JSON.stringify({ distinct_ids: [identifier], compliance_type: ["GDPR", "UK_GDPR"].includes(request.regulation) ? "GDPR" : "CCPA" }),
         });
         if (!response.ok) return failure(response, "Mixpanel didn't accept the deletion.");
         const data = await response.json().catch(() => ({}));

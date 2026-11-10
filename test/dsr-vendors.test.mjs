@@ -23,19 +23,26 @@ test("vendors: only erasure, rectification and restriction need notices", () => 
     assert.deepStrictEqual(["erasure", "rectification", "restriction", "access", "opt_out"].map(needsVendorNotice), [true, true, true, false, false]);
 });
 
-test("vendors: the checklist groups hosts and skips CDNs and CMPs", () => {
+test("vendors: CDNs and CMPs are listed as having no record, not left out", () => {
     const out = vendorsFromTransfers([{ service: "HubSpot", category: "advertising" }, { service: "HubSpot", category: "functional", privacyUrl: "https://h" }, { service: "Fonts", category: "cdn" }, { service: "Own", category: "cmp" }, { host: "x.example", category: "third-party" }]);
-    assert.deepStrictEqual(out.map((v) => v.vendor), ["HubSpot", "x.example"]);
+    assert.deepStrictEqual(out.map((v) => `${v.vendor}:${v.no_record}`), ["HubSpot:false", "Fonts:true", "Own:true", "x.example:false"]);
     assert.strictEqual(out[0].privacy_url, "https://h");
 });
 
-test("vendors: the checklist is filled once and not for access requests", async () => {
-    const calls = [];
-    const db = { query: async (sql) => { calls.push(sql); return { rows: /SELECT 1 FROM dsr_vendor/.test(sql) ? [{}] : [] }; } };
-    await seedVendorNotifications(db, 7, erasure);
-    assert.strictEqual(calls.filter((s) => /INSERT/.test(s)).length, 0);
-    const none = []; await seedVendorNotifications({ query: async (s) => { none.push(s); return { rows: [] }; } }, 7, { ...erasure, type: "access" });
-    assert.strictEqual(none.length, 0);
+test("checklists: own systems on every request, vendors only where Art. 19 applies, each filled once", async () => {
+    const run = async (request, kinds = []) => {
+        const inserts = [];
+        const db = { query: async (sql, params) => {
+            if (/INSERT/.test(sql)) inserts.push(params);
+            return { rows: /SELECT DISTINCT kind/.test(sql) ? kinds.map((kind) => ({ kind })) : [] };
+        } };
+        await seedVendorNotifications(db, 7, request, async () => (t) => t);
+        return inserts;
+    };
+    const access = await run({ ...erasure, type: "access" });
+    assert.ok(access.length >= 4 && access.every((p) => p[4] === "system"));
+    assert.strictEqual((await run(erasure, ["system", "vendor"])).length, 0);
+    assert.strictEqual((await run({ ...erasure, anonymized_at: "2030" })).length, 0);
 });
 
 test("vendors: marking notified stamps the date once; other statuses clear it", () => {

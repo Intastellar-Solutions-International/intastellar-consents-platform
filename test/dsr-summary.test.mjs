@@ -22,3 +22,7 @@ test("dsr summary: open, due within 7 days, overdue; closed requests don't count
     ], NOW);
     assert.deepStrictEqual(JSON.parse(JSON.stringify(out)), { open: 3, dueSoon: 1, overdue: 1 });
 });
+
+test("dsr summary: test requests aren't counted", () => {
+    assert.strictEqual(ctx.dsrSummary([{ status: "pending", effective_due_at: inDays(5), is_test: true }, { status: "pending", effective_due_at: inDays(5) }], NOW).open, 1);
+});

@@ -42,15 +42,17 @@ function MessagePanel({ request, vendor }) {
     );
 }
 
-function DetailsPanel({ vendor, onSave, saving }) {
+function DetailsPanel({ vendor, system, onSave, saving }) {
     const [form, setForm] = useState({ contact: vendor.contact || "", method: vendor.method || "", note: vendor.note || "" });
     const set = (key) => (e) => { const { value } = e.target; setForm((f) => ({ ...f, [key]: value })); };
     return (
         <form className="tw-flex tw-flex-col tw-gap-2" onSubmit={(e) => { e.preventDefault(); onSave(form); }}>
-            <div className="dsr-form-grid">
-                <label className={LABEL}>Privacy contact<input className={FIELD} maxLength={255} placeholder="privacy@vendor.com" value={form.contact} onChange={set("contact")} /></label>
-                <label className={LABEL}>How they were told<input className={FIELD} maxLength={255} placeholder="Email, web form, portal" value={form.method} onChange={set("method")} /></label>
-            </div>
+            {!system && (
+                <div className="dsr-form-grid">
+                    <label className={LABEL}>Privacy contact<input className={FIELD} maxLength={255} placeholder="privacy@vendor.com" value={form.contact} onChange={set("contact")} /></label>
+                    <label className={LABEL}>How they were told<input className={FIELD} maxLength={255} placeholder="Email, web form, portal" value={form.method} onChange={set("method")} /></label>
+                </div>
+            )}
             <label className={LABEL}>Note<textarea className={AREA} rows={2} maxLength={4000} value={form.note} onChange={set("note")} style={{ resize: "vertical" }} /></label>
             <div><Button type="submit" size="sm" variant="secondary" loading={saving}>Save</Button></div>
         </form>
@@ -85,7 +87,10 @@ function DeletePanel({ request, vendor, onRun, saving }) {
     );
 }
 
-function VendorRow({ request, vendor, onData, onResult }) {
+const SYSTEM_STATUSES = [{ id: "to_notify", label: "To do" }, { id: "notified", label: "Done" }, { id: "not_applicable", label: "Not applicable" }];
+
+function VendorRow({ request, vendor, kind, onData, onResult }) {
+    const system = kind === "system";
     const [panel, setPanel] = useState(null); // null | "message" | "details" | "delete"
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState(null);
@@ -112,13 +117,14 @@ function VendorRow({ request, vendor, onData, onResult }) {
             <div className="dsr-vendor__row">
                 <div className="tw-min-w-0">
                     <span className="tw-block tw-text-sm tw-font-semibold tw-text-text-primary tw-break-words">{vendor.vendor}</span>
-                    {vendor.notified_at && <span className="tw-block tw-text-xs tw-text-text-muted">Told {formatDate(vendor.notified_at)}{vendor.method ? ` · ${vendor.method}` : ""}</span>}
+                    {vendor.notified_at && <span className="tw-block tw-text-xs tw-text-text-muted">{system ? "Done" : "Told"} {formatDate(vendor.notified_at)}{vendor.method ? ` · ${vendor.method}` : ""}</span>}
+                    {vendor.note && <span className="tw-block tw-text-xs tw-text-text-muted">{vendor.note}</span>}
                 </div>
                 <select className={FIELD} aria-label={`Status for ${vendor.vendor}`} value={vendor.status} disabled={saving} onChange={(e) => update({ status: e.target.value })} style={{ colorScheme: "dark" }}>
-                    {VENDOR_STATUSES.map((s) => <option key={s.id} value={s.id}>{s.label}</option>)}
+                    {(system ? SYSTEM_STATUSES : VENDOR_STATUSES).map((s) => <option key={s.id} value={s.id}>{s.label}</option>)}
                 </select>
                 <div className="tw-flex tw-flex-wrap tw-gap-1">
-                    <Button size="sm" variant="ghost" aria-expanded={panel === "message"} onClick={() => toggle("message")}>Message</Button>
+                    {!system && <Button size="sm" variant="ghost" aria-expanded={panel === "message"} onClick={() => toggle("message")}>Message</Button>}
                     <Button size="sm" variant="ghost" aria-expanded={panel === "details"} onClick={() => toggle("details")}>Details</Button>
                     {vendor.deletion && <Button size="sm" variant="ghost" aria-expanded={panel === "delete"} onClick={() => toggle("delete")}>Delete via API</Button>}
                 </div>
@@ -126,7 +132,7 @@ function VendorRow({ request, vendor, onData, onResult }) {
             {panel && (
                 <div className="tw-p-3 tw-bg-bg-sunken tw-rounded-lg">
                     {panel === "message" && <MessagePanel request={request} vendor={vendor} />}
-                    {panel === "details" && <DetailsPanel vendor={vendor} saving={saving} onSave={update} />}
+                    {panel === "details" && <DetailsPanel vendor={vendor} system={system} saving={saving} onSave={update} />}
                     {panel === "delete" && <DeletePanel request={request} vendor={vendor} saving={saving} onRun={(identifier) => send({ action: "vendor_delete", confirm: true, identifier }, () => setPanel(null))} />}
                 </div>
             )}
@@ -135,8 +141,26 @@ function VendorRow({ request, vendor, onData, onResult }) {
     );
 }
 
-/** Who has to be told about this request, and what happened when they were (GDPR Art. 19). */
-export default function VendorChecklist({ request, vendors, onData }) {
+const COPY = {
+    vendor: {
+        title: "Tell the vendors",
+        description: "From this domain's latest scan, which doesn't show that this person's data reached them. Mark any that never held it as Not applicable. Under GDPR Art. 19, those that did must be told unless that's impossible or disproportionate.",
+        empty: "No vendors found from a scan for this request. Add them below.",
+        open: "to notify",
+        add: "Add a vendor",
+    },
+    system: {
+        title: "Your own systems",
+        description: "Where this person's data is held on your side. Apply the request here first.",
+        empty: "",
+        open: "to do",
+        add: "Add a system",
+    },
+};
+
+/** A checklist for one request: the organisation's own systems, or the vendors to tell (GDPR Art. 19). */
+export default function VendorChecklist({ kind = "vendor", request, vendors, onData }) {
+    const copy = COPY[kind];
     const [name, setName] = useState("");
     const [error, setError] = useState(null);
     const [result, setResult] = useState(null);
@@ -146,7 +170,7 @@ export default function VendorChecklist({ request, vendors, onData }) {
         e.preventDefault();
         setError(null);
         try {
-            onData(await postDsr({ action: "vendor_add", id: request.id, vendor: name }));
+            onData(await postDsr({ action: "vendor_add", id: request.id, vendor: name, kind }));
             setName("");
         } catch (err) {
             setError(err.message);
@@ -155,18 +179,18 @@ export default function VendorChecklist({ request, vendors, onData }) {
 
     return (
         <Card
-            title="Tell the vendors"
-            description="Everyone who received this person's data must be told, unless that's impossible or disproportionate."
-            actions={open > 0 ? <Badge tone="warning" icon="alert-triangle">{open} to notify</Badge> : vendors.length > 0 ? <Badge tone="success" icon="check-circle">All dealt with</Badge> : undefined}
+            title={copy.title}
+            description={copy.description}
+            actions={open > 0 ? <Badge tone="warning" icon="alert-triangle">{open} {copy.open}</Badge> : vendors.length > 0 ? <Badge tone="success" icon="check-circle">All dealt with</Badge> : undefined}
         >
             <div className="tw-flex tw-flex-col tw-gap-3">
-                {vendors.length === 0 && <p className="tw-m-0 tw-text-sm tw-text-text-muted">No vendors found from a scan for this request. Add them below.</p>}
+                {vendors.length === 0 && copy.empty && <p className="tw-m-0 tw-text-sm tw-text-text-muted">{copy.empty}</p>}
                 {result && <p role="status" className="tw-m-0 tw-text-sm tw-text-success">{result}</p>}
                 <ul className="dsr-vendors">
-                    {vendors.map((v) => <VendorRow key={v.id} request={request} vendor={v} onData={onData} onResult={setResult} />)}
+                    {vendors.map((v) => <VendorRow key={v.id} request={request} vendor={v} kind={kind} onData={onData} onResult={setResult} />)}
                 </ul>
                 <form className="tw-flex tw-gap-2 tw-items-end" onSubmit={add}>
-                    <label className={`${LABEL} tw-flex-1`}>Add a vendor<input className={FIELD} maxLength={255} value={name} onChange={(e) => setName(e.target.value)} /></label>
+                    <label className={`${LABEL} tw-flex-1`}>{copy.add}<input className={FIELD} maxLength={255} value={name} onChange={(e) => setName(e.target.value)} /></label>
                     <Button type="submit" variant="secondary" disabled={!name.trim()}>Add</Button>
                 </form>
                 {error && <p role="alert" className="tw-m-0 tw-text-sm tw-text-danger-text">{error}</p>}

@@ -7,7 +7,6 @@ import { normalizeCustomDomain, dnsInstructions, domainState, attachDomain, chec
 import { emailLayout, emailFacts, INTASTELLAR_LOGO_ATTACHMENT } from "../api/_email-layout.js";
 
 process.env.VERCEL_API_TOKEN = "t";
-process.env.VERCEL_PROJECT_ID = "p";
 const reply = (data, status = 200) => ({ ok: status < 400, status, json: async () => data });
 
 test("hosts: the dashboard's domains stay the dashboard, others go to the form", () => {
@@ -36,7 +35,9 @@ test("domains: subdomains only", () => {
 });
 
 test("domains: our own domains can't be claimed", () => {
-    for (const bad of ["www.intastellarconsents.com", "forms.intastellar.com", "x.consentsmanagement.com", "x.vercel.app"]) assert.ok(normalizeCustomDomain(bad).error, bad);
+    for (const bad of ["www.intastellarconsents.com", "forms.intastellar.com", "x.consentsmanagement.com", "x.vercel.app"]) assert.ok(normalizeCustomDomain(bad, 7).error, bad);
+    assert.strictEqual(normalizeCustomDomain("privacy.intastellar.eu", 1), "privacy.intastellar.eu");
+    for (const stillBlocked of ["www.intastellarconsents.com", "dev.intastellarconsents.com", "x.vercel.app"]) assert.ok(normalizeCustomDomain(stillBlocked, 1).error, stillBlocked);
 });
 
 test("domains: a root domain Vercel recognises is taken straight back off", async () => {
@@ -44,6 +45,12 @@ test("domains: a root domain Vercel recognises is taken straight back off", asyn
     const fetchImpl = async (url, options) => { calls.push(options.method); return reply({ apexName: "weird.tld", name: "weird.tld" }); };
     assert.ok((await attachDomain("weird.tld", { fetchImpl })).error);
     assert.deepStrictEqual(calls, ["POST", "DELETE"]);
+});
+
+test("domains: every Vercel call names this project and team", async () => {
+    const urls = [];
+    await attachDomain("p.a.dk", { fetchImpl: async (url) => { urls.push(url); return reply({}); } });
+    assert.match(urls[0], /\/projects\/prj_CfB9TsDNKEE72Wi6vSQLUhl57zPO\/domains\?teamId=team_aWxsCZ5awaiAbwZxTjzhaHk1$/);
 });
 
 test("domains: live only when both of Vercel's checks pass", async () => {

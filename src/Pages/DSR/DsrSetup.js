@@ -1,8 +1,7 @@
 import { Badge, Button, FileDropzone, Modal } from "../../Components/ui";
 import { readCachedDomains } from "../../Functions/cachedDomains.js";
 import { DEADLINE_RULES } from "../../Functions/dsr.js";
-import { FRAMEWORK_LABELS } from "../../Functions/jurisdictionEngine.js";
-import { FIELD, LABEL, fetchDsr, postDsr } from "./dsrShared.js";
+import { FIELD, LABEL, fetchDsr, postDsr, regulationLabel } from "./dsrShared.js";
 
 const { useState, useEffect, useMemo } = React;
 const formLink = (form) => (form.custom_domain && form.custom_domain_status === "active" ? `https://${form.custom_domain}` : `https://www.intastellarconsents.com/privacy-request/${form.token}`);
@@ -150,7 +149,7 @@ function FormFields({ values, onChange, domains }) {
             <label className={LABEL}>Notify this email<input type="email" className={FIELD} maxLength={255} value={values.notify_email} onChange={set("notify_email")} /></label>
             <label className={LABEL}>Regulation if the visitor is elsewhere
                 <select className={FIELD} value={values.default_regulation} onChange={set("default_regulation")} style={{ colorScheme: "dark" }}>
-                    {Object.keys(DEADLINE_RULES).map((r) => <option key={r} value={r}>{FRAMEWORK_LABELS[r] || r}</option>)}
+                    {Object.keys(DEADLINE_RULES).map((r) => <option key={r} value={r}>{regulationLabel(r)}</option>)}
                 </select>
             </label>
         </div>
@@ -239,7 +238,7 @@ function FormRow({ form, onOpen, onToggle, busy }) {
                 {form.enabled ? <Badge tone="success" icon="check-circle">Live</Badge> : <Badge tone="neutral" icon="minus-circle">Off</Badge>}
             </div>
             <code className="tw-text-xs tw-break-all">{formLink(form)}</code>
-            <p className="tw-m-0 tw-text-xs tw-text-text-muted">Notifies {form.notify_email || "nobody"} · {FRAMEWORK_LABELS[form.default_regulation] || form.default_regulation} if the visitor is elsewhere</p>
+            <p className="tw-m-0 tw-text-xs tw-text-text-muted">Notifies {form.notify_email || "nobody"} · {regulationLabel(form.default_regulation)} if the visitor is elsewhere</p>
             {form.custom_domain && form.custom_domain_status !== "active" && <div><Badge tone="warning" icon="clock">{form.custom_domain}: waiting for DNS</Badge></div>}
             <div className="tw-flex tw-flex-wrap tw-gap-1">
                 <Button size="sm" variant="secondary" onClick={copy}>{copied ? "Copied" : "Copy link"}</Button>
