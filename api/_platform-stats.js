@@ -109,30 +109,39 @@ export function summarizeConsents(body) {
     };
 }
 
-function serviceHeaders() {
-    const headers = { "Content-Type": "application/json" };
-    if (process.env.DOMAINS_API_KEY) headers.Authorization = `Bearer ${process.env.DOMAINS_API_KEY}`;
+/** An admin's own token when one is making the request, as the dashboard sends it. The nightly job only has the service key. */
+function apiHeaders(authorization) {
+    const headers = { "Content-Type": "application/json", Organisation: "1" };
+    const token = authorization || (process.env.DOMAINS_API_KEY && `Bearer ${process.env.DOMAINS_API_KEY}`);
+    if (token) headers.Authorization = token;
     return headers;
 }
 
-async function fetchInstalls(fetchImpl) {
-    const response = await fetchImpl(process.env.DOMAINS_API_URL || `${GDPR_API}/getDomains`, { headers: serviceHeaders() });
+const unexpected = (name, body) => new Error(`${name} returned ${JSON.stringify(body)?.slice(0, 80)}`);
+
+/** The API answers a refused login with 200 and a string such as "Err_Login_Expired", so the body has to be checked too. */
+async function fetchInstalls(fetchImpl, authorization) {
+    const response = await fetchImpl(process.env.DOMAINS_API_URL || `${GDPR_API}/getDomains`, { headers: apiHeaders(authorization) });
     if (!response.ok) throw new Error(`getDomains responded ${response.status}`);
     const body = await response.json();
-    return Array.isArray(body) ? body : body?.domains ?? body?.data ?? [];
+    const sites = Array.isArray(body) ? body : body?.domains ?? body?.data;
+    if (!Array.isArray(sites) || !sites.length) throw unexpected("getDomains", body);
+    return sites;
 }
 
 /** The last 30 full days across every banner, from the MySQL consent tables behind the PHP API. Organisation 1's combined view covers all sites. */
-async function fetchConsents(fetchImpl, now) {
+async function fetchConsents(fetchImpl, authorization, now) {
     const day = (daysAgo) => new Date(now - daysAgo * 86400000).toISOString().slice(0, 10);
     const response = await fetchImpl(`${GDPR_API}/getInteractions`, {
         method: "POST",
-        headers: { ...serviceHeaders(), Organisation: "1", Domains: "combined view", FromDate: day(30), ToDate: day(1) },
+        headers: { ...apiHeaders(authorization), Domains: "combined view", FromDate: day(30), ToDate: day(1) },
         body: "{}",
         signal: AbortSignal.timeout(CONSENT_TIMEOUT_MS),
     });
     if (!response.ok) throw new Error(`getInteractions responded ${response.status}`);
-    return response.json();
+    const body = await response.json();
+    if (body?.Total === undefined) throw unexpected("getInteractions", body);
+    return body;
 }
 
 const latestScansSql = (scanFilter) => `
@@ -141,23 +150,34 @@ const latestScansSql = (scanFilter) => `
      WHERE status = 'completed' AND ${scanFilter} AND scanned_at > NOW() - INTERVAL '90 days'
      ORDER BY domain, scanned_at DESC`;
 
-export async function calculateFigures(db, { fetchImpl = fetch, now = Date.now() } = {}) {
+/** A source that failed keeps its last known figures, and source_errors says why. `authorization` is the signed-in admin's header, if any. */
+export async function calculateFigures(db, { fetchImpl = fetch, now = Date.now(), authorization } = {}) {
     await ensureScanColumns(db);
-    const failedAs = (fallback, what) => (err) => {
-        console.error(`[platform-stats] ${what} failed:`, err.message);
+    const errors = [];
+    const failedAs = (fallback) => (err) => {
+        console.error("[platform-stats]", err.message);
+        errors.push(err.message);
         return fallback;
     };
-    const [accepted, firstVisits, installs, consents] = await Promise.all([
+    const [accepted, firstVisits, installs, consents, earlier] = await Promise.all([
         db.query(latestScansSql(NOT_FIRST_VISIT)),
         db.query(latestScansSql(`${SCAN_TYPE} = '${FIRST_VISIT}'`)),
-        fetchInstalls(fetchImpl).catch(failedAs([], "site list")),
-        fetchConsents(fetchImpl, now).catch(failedAs(null, "consent totals")),
+        fetchInstalls(fetchImpl, authorization).catch(failedAs(null)),
+        fetchConsents(fetchImpl, authorization, now).catch(failedAs(null)),
+        db.query(`SELECT figures FROM platform_stats_snapshots ORDER BY day DESC LIMIT 1`),
     ]);
+    const known = (keys, failed, fresh) => {
+        if (!failed) return fresh;
+        return Object.fromEntries(keys.map((key) => [key, earlier.rows[0]?.figures?.[key] ?? fresh[key]]));
+    };
+    const installFigures = summarizeInstalls(installs, now);
+    const consentFigures = summarizeConsents(consents);
     return {
-        ...summarizeInstalls(installs, now),
-        ...summarizeConsents(consents),
+        ...known(Object.keys(installFigures), installs === null, installFigures),
+        ...known(Object.keys(consentFigures), consents === null, consentFigures),
         ...summarizeScans(accepted.rows),
         ...summarizeFirstVisits(firstVisits.rows),
+        source_errors: errors,
     };
 }
 

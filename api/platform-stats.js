@@ -35,7 +35,7 @@ export default async function handler(req, res) {
         if (req.method === "POST") {
             const action = req.body?.action;
             if (action === "refresh") {
-                await saveSnapshot(db, await calculateFigures(db));
+                await saveSnapshot(db, await calculateFigures(db, { authorization: req.headers.authorization }));
             } else if (action === "publish") {
                 if (!await publishLatest(db, admin.email)) return res.status(409).json({ error: "There are no figures to publish yet" });
             } else if (action === "unpublish") {
