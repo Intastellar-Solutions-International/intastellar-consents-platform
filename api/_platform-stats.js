@@ -9,6 +9,12 @@ import { FIRST_VISIT, NOT_FIRST_VISIT, SCAN_TYPE, ensureScanColumns } from "./_s
 /** A percentage on fewer sites says too little to quote, and could describe a single customer. */
 export const MIN_SITES = 30;
 export const MIN_RECORDS = 1000;
+const TOP_TRACKERS = 10;
+/** Kept off the website until an admin switches them on. */
+const DEFAULT_HIDDEN = ["decline_all_pct"];
+/** Figures the admin page draws over time. */
+export const TREND_KEYS = ["visitors_30d", "consent_records_30d", "countries_30d", "sites_installed", "sites_active", "sites_scanned"];
+const HISTORY_DAYS = 365;
 const ACTIVE_DAYS = 30;
 const GDPR_API = "https://apis.intastellarsolutions.com/analytics/gdpr";
 // Inside the 60 second function limit in vercel.json, so the rest of the snapshot still saves when this query is slow.
@@ -19,6 +25,7 @@ const OWN_OR_TEST = /^localhost$|^[\d.]+$|\.(test|local)$|(^|\.)intastellar[a-z]
 const PUBLIC_KEYS = [
     "visitors_30d", "consent_records_30d", "accept_all_pct", "custom_choice_pct", "decline_all_pct", "mobile_pct", "countries_30d", "sites_installed", "sites_active", "sites_scanned", "tracking_services_found", "cookies_found",
     "median_tracking_services", "us_transfer_pct", "advertising_pct", "pre_consent_pct", "pre_consent_sites",
+    "top_trackers", "eu_accept_pct", "non_eu_accept_pct",
 ];
 
 const list = (value) => (Array.isArray(value) ? value : []);
@@ -39,11 +46,15 @@ export function summarizeScans(rows) {
     const scans = list(rows).filter((r) => countable(r.domain) && (list(r.transfers).length || list(r.cookies).length));
     const services = new Set();
     const cookies = new Set();
+    const sitesPerService = new Map();
     let usTransfer = 0;
     let advertising = 0;
     const perSite = scans.map((scan) => {
         const found = new Set(trackers(scan.transfers).map(serviceName));
         found.forEach((name) => services.add(name));
+        // Named services only: an unrecognised host could be a customer's own subdomain.
+        new Set(trackers(scan.transfers).map((t) => t.service).filter(Boolean))
+            .forEach((name) => sitesPerService.set(name, (sitesPerService.get(name) || 0) + 1));
         list(scan.cookies).forEach((c) => c?.name && cookies.add(c.name));
         if (list(scan.transfers).some((t) => t?.dataCountry === "US" && t.category !== "cmp")) usTransfer += 1;
         if (trackers(scan.transfers).some((t) => t.category === "advertising")) advertising += 1;
@@ -56,6 +67,10 @@ export function summarizeScans(rows) {
         median_tracking_services: median(perSite),
         us_transfer_pct: percent(usTransfer, scans.length),
         advertising_pct: percent(advertising, scans.length),
+        top_trackers: scans.length >= MIN_SITES
+            ? [...sitesPerService].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).slice(0, TOP_TRACKERS)
+                .map(([name, sites]) => ({ name, pct: percent(sites, scans.length) }))
+            : null,
     };
 }
 
@@ -98,7 +113,15 @@ export function summarizeConsents(body) {
     const devices = body?.device_type;
     const knownDevices = (Number(devices?.mobile) || 0) + (Number(devices?.tablet) || 0) + (Number(devices?.desktop) || 0);
     const countries = list(body?.countryBreakdown).filter((c) => c?.num?.total > 0 && !["Unknown", "EU"].includes(c.country)).length;
+    // euUsers and noneEUUsers count records, like Total; the rates are already percentages of them.
+    const euRecords = Number(body?.euUsers) || null;
+    const nonEuRecords = Number(body?.noneEUUsers) || null;
+    const rate = (value, sample) => (sample >= MIN_RECORDS && Number.isFinite(Number(value)) && value !== null ? Math.round(Number(value)) : null);
     return {
+        eu_records_30d: euRecords,
+        non_eu_records_30d: nonEuRecords,
+        eu_accept_pct: rate(body?.euAcceptedRate, euRecords),
+        non_eu_accept_pct: rate(body?.noneEUAcceptedRate, nonEuRecords),
         visitors_30d: Number(body?.activeUsers) || null,
         consent_records_30d: records,
         accept_all_pct: share(counts?.accept, records),
@@ -182,10 +205,10 @@ export async function calculateFigures(db, { fetchImpl = fetch, now = Date.now()
     };
 }
 
-/** Only known figures with enough sites behind them, so a new figure stays private until it's added here. */
-export function publicFigures(figures) {
+/** Only known figures with enough sites behind them and not switched off, so a new figure stays private until it's added here. */
+export function publicFigures(figures, hidden = []) {
     const out = {};
-    for (const key of PUBLIC_KEYS) if (figures?.[key] != null) out[key] = figures[key];
+    for (const key of PUBLIC_KEYS) if (figures?.[key] != null && !hidden.includes(key)) out[key] = figures[key];
     if (out.pre_consent_pct == null) delete out.pre_consent_sites;
     return out;
 }
@@ -209,7 +232,32 @@ export async function ensureStatsTables(db) {
             published_by TEXT
         )
     `);
+    await db.query(`
+        CREATE TABLE IF NOT EXISTS platform_stats_settings (
+            id          SMALLINT PRIMARY KEY DEFAULT 1 CHECK (id = 1),
+            hidden_keys JSONB    NOT NULL
+        )
+    `);
     tablesReady = true;
+}
+
+async function readHidden(db) {
+    const { rows } = await db.query(`SELECT hidden_keys FROM platform_stats_settings WHERE id = 1`);
+    return rows[0]?.hidden_keys ?? DEFAULT_HIDDEN;
+}
+
+/** Switches one figure on or off for the website. False for a key that can't be published. */
+export async function setVisibility(db, key, visible) {
+    if (!PUBLIC_KEYS.includes(key) || key === "pre_consent_sites" || typeof visible !== "boolean") return false;
+    const hidden = new Set(await readHidden(db));
+    if (visible) hidden.delete(key);
+    else hidden.add(key);
+    await db.query(
+        `INSERT INTO platform_stats_settings (id, hidden_keys) VALUES (1, $1)
+         ON CONFLICT (id) DO UPDATE SET hidden_keys = EXCLUDED.hidden_keys`,
+        [JSON.stringify([...hidden])]
+    );
+    return true;
 }
 
 export async function saveSnapshot(db, figures, now = Date.now()) {
@@ -233,10 +281,16 @@ export async function adminView(db) {
         `SELECT day::text AS day, figures FROM platform_stats_snapshots WHERE day <= $1::date - 30 ORDER BY day DESC LIMIT 1`,
         [latest.day]
     );
+    const hidden = await readHidden(db);
+    const history = await db.query(
+        `SELECT day::text AS day, figures FROM platform_stats_snapshots WHERE day > CURRENT_DATE - ${HISTORY_DAYS} ORDER BY day`
+    );
     return {
         latest,
         previous: earlier?.rows[0] || null,
-        publishable: latest ? publicFigures(latest.figures) : null,
+        history: history.rows.map((row) => ({ day: row.day, ...Object.fromEntries(TREND_KEYS.map((key) => [key, row.figures?.[key] ?? null])) })),
+        hidden,
+        publishable: latest ? publicFigures(latest.figures, hidden) : null,
         published: await readPublished(db),
         min_sites: MIN_SITES,
         min_records: MIN_RECORDS,
@@ -246,7 +300,7 @@ export async function adminView(db) {
 /** Freezes the newest snapshot as the website's copy. False when there is nothing to publish. */
 export async function publishLatest(db, email) {
     const { rows } = await db.query(`SELECT day::text AS day, figures FROM platform_stats_snapshots ORDER BY day DESC LIMIT 1`);
-    const figures = rows[0] ? publicFigures(rows[0].figures) : {};
+    const figures = rows[0] ? publicFigures(rows[0].figures, await readHidden(db)) : {};
     if (!Object.keys(figures).length) return false;
     await db.query(
         `INSERT INTO platform_stats_published (id, as_of, figures, published_at, published_by) VALUES (1, $1, $2, NOW(), $3)

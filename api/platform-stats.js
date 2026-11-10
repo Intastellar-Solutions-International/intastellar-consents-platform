@@ -1,12 +1,13 @@
 import { getPool } from "./_db.js";
 import { requirePlatformAdmin } from "./_member-auth.js";
-import { adminView, calculateFigures, ensureStatsTables, publishLatest, saveSnapshot, unpublish } from "./_platform-stats.js";
+import { adminView, calculateFigures, ensureStatsTables, publishLatest, saveSnapshot, setVisibility, unpublish } from "./_platform-stats.js";
 
 /**
  * /api/platform-stats — sales figures for the admin Platform page, organisation 1 only.
  *
- * GET  → the newest snapshot, what could be published and what is live
+ * GET  → the newest snapshot, its history, what could be published and what is live
  * POST { action: "refresh" | "publish" | "unpublish" } → the same, after acting
+ * POST { action: "visibility", key, visible } → switches one figure on or off for the website
  */
 const ALLOWED_ORIGINS = [
     "https://www.intastellarconsents.com",
@@ -40,6 +41,8 @@ export default async function handler(req, res) {
                 if (!await publishLatest(db, admin.email)) return res.status(409).json({ error: "There are no figures to publish yet" });
             } else if (action === "unpublish") {
                 await unpublish(db);
+            } else if (action === "visibility") {
+                if (!await setVisibility(db, req.body.key, req.body.visible)) return res.status(400).json({ error: "This figure can't be shown on the website" });
             } else {
                 return res.status(400).json({ error: "Unknown action" });
             }
