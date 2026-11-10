@@ -1,12 +1,14 @@
 import { SCAN_TYPE, ensureScanColumns } from "./_scan-schema.js";
 import { getPool } from "./_db.js";
+import { anonymizeExpiredRequests } from "./_dsr.js";
 /**
  * GET /api/cron-cleanup-scans  (invoked by Vercel Cron, daily at 03:30 UTC)
  *
  * Keeps the pre_consent_scans table from growing unbounded.
  * Retains the 3 most recent completed and 3 most recent failed scans per
  * domain and deletes the rest.
- * Also purges stuck pending/in_progress rows older than 2 hours.
+ * Also purges stuck pending/in_progress rows older than 2 hours, and removes
+ * personal details from data subject requests closed over 3 years ago.
  */
 export default async function handler(req, res) {
     if (req.headers.authorization !== `Bearer ${process.env.CRON_SECRET}`) {
@@ -40,9 +42,16 @@ export default async function handler(req, res) {
               AND scanned_at < NOW() - INTERVAL '2 hours'
         `);
 
+        // Separate so a problem here can't stop the scan cleanup being reported.
+        const anonymizedRequests = await anonymizeExpiredRequests(db).catch((err) => {
+            console.error("[cron-cleanup-scans] DSR retention failed:", err.message);
+            return null;
+        });
+
         return res.json({
             deleted_old_scans:   oldScans,
             deleted_stuck_scans: stuckScans,
+            anonymized_dsr_requests: anonymizedRequests,
         });
     } catch (err) {
         console.error("[cron-cleanup-scans] error:", err.message);

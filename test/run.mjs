@@ -1,4 +1,5 @@
 import { run } from "./_harness.mjs";
+import "./dsr.test.mjs";
 import "./dsr-summary.test.mjs";
 import "./audit-rows.test.mjs";
 import "./compliance-status.test.mjs";
