@@ -28,7 +28,7 @@ const BOT_FLAG_START = "2026-11-03";
 const ADVERTISING_CATEGORIES = ["advertising", "fingerprinting", "social"];
 // EEA = EU-27 + Iceland, Liechtenstein, Norway. UK and Switzerland are outside it.
 const EEA_COUNTRIES = new Set(["Austria", "Belgium", "Bulgaria", "Croatia", "Cyprus", "Czech Republic", "Czechia", "Denmark", "Estonia", "Finland", "France", "Germany", "Greece", "Hungary", "Iceland", "Ireland", "Italy", "Latvia", "Liechtenstein", "Lithuania", "Luxembourg", "Malta", "Netherlands", "The Netherlands", "Norway", "Poland", "Portugal", "Romania", "Slovakia", "Slovenia", "Spain", "Sweden", "EU"]);
-const OWN_CMP_HOST = /(^|\.)(intastellar[a-z-]*|consentsmanagement)\.[a-z.]+$/;
+export const OWN_CMP_HOST = /(^|\.)(intastellar[a-z-]*|consentsmanagement)\.[a-z.]+$/;
 // Universal Analytics stopped processing data in 2024.
 const STALE_TAG_COOKIE = /^(_gat_UA-|__utm[abcztv]$)/;
 const DAY_MS = 86400000;

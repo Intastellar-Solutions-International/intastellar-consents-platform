@@ -5,7 +5,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { test } from "./_harness.mjs";
-import { MIN_RECORDS, MIN_SITES, TREND_KEYS, calculateFigures, publicFigures, setVisibility, summarizeConsents, summarizeFirstVisits, summarizeInstalls, summarizeScans } from "../api/_platform-stats.js";
+import { MIN_RECORDS, MIN_SITES, TREND_KEYS, calculateFigures, publicFigures, setVisibility, summarizeBannerCompliance, summarizeConsents, summarizeFirstVisits, summarizeInstalls, summarizeScans } from "../api/_platform-stats.js";
 import { requirePlatformAdmin } from "../api/_member-auth.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -155,6 +155,38 @@ test("sales figures: EU and non-EU acceptance need enough records of their own",
     assert.strictEqual(out.non_eu_accept_pct, null);
     assert.strictEqual(out.non_eu_records_30d, 400);
     assert.strictEqual(summarizeConsents({ Total: 5000, euUsers: 3000, euAcceptedRate: null }).eu_accept_pct, null);
+});
+
+const intastellar = { service: "Intastellar", host: "www.intastellarsolutions.com", category: "cmp" };
+
+test("sales figures: compliance is compared between sites where the banner loaded and the rest", () => {
+    const out = summarizeBannerCompliance([
+        ...sites(27, [intastellar], "clean"),
+        ...sites(3, [intastellar, ga], "leaky"),
+        ...sites(10, [ga], "other-leaky"),
+        ...sites(20, [{ host: "cdn.x", category: "cdn" }], "other-clean"),
+        ...sites(5, [], "blocked"),
+    ]);
+    assert.deepStrictEqual({ ...out }, { banner_sites_tested: 30, banner_compliant_pct: 90, other_sites_tested: 30, other_compliant_pct: 67 });
+});
+
+test("sales figures: a lookalike host doesn't count as the Intastellar banner", () => {
+    const out = summarizeBannerCompliance(sites(30, [{ host: "notintastellar.com", category: "cmp" }]));
+    assert.strictEqual(out.banner_sites_tested, 0);
+    assert.strictEqual(out.other_sites_tested, 30);
+});
+
+test("sales figures: a compliance share needs enough sites in its own group, and its sample only goes public with it", () => {
+    const out = summarizeBannerCompliance([...sites(30, [intastellar], "a"), ...sites(4, [ga], "b")]);
+    assert.strictEqual(out.banner_compliant_pct, 100);
+    assert.strictEqual(out.other_compliant_pct, null);
+    assert.deepStrictEqual({ ...publicFigures(out) }, { banner_compliant_pct: 100, banner_sites_tested: 30 });
+});
+
+test("sales figures: sample sizes can't be switched on their own", async () => {
+    const db = { query: async () => ({ rows: [] }) };
+    for (const key of ["pre_consent_sites", "banner_sites_tested", "other_sites_tested"]) assert.strictEqual(await setVisibility(db, key, true), false);
+    assert.strictEqual(await setVisibility(db, "banner_compliant_pct", true), true);
 });
 
 test("sales figures: switched-off figures stay off the website", () => {

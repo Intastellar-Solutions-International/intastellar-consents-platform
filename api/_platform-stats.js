@@ -1,4 +1,5 @@
 import { FIRST_VISIT, NOT_FIRST_VISIT, SCAN_TYPE, ensureScanColumns } from "./_scan-schema.js";
+import { OWN_CMP_HOST } from "./_report-html.js";
 
 /**
  * Figures that promote the platform, calculated nightly from every site.
@@ -26,7 +27,10 @@ const PUBLIC_KEYS = [
     "visitors_30d", "consent_records_30d", "accept_all_pct", "custom_choice_pct", "decline_all_pct", "mobile_pct", "countries_30d", "sites_installed", "sites_active", "sites_scanned", "tracking_services_found", "cookies_found",
     "median_tracking_services", "us_transfer_pct", "advertising_pct", "pre_consent_pct", "pre_consent_sites",
     "top_trackers", "eu_accept_pct", "non_eu_accept_pct",
+    "banner_compliant_pct", "banner_sites_tested", "other_compliant_pct", "other_sites_tested",
 ];
+/** Sample sizes, published only alongside the percentage they belong to. */
+const SAMPLE_OF = { pre_consent_sites: "pre_consent_pct", banner_sites_tested: "banner_compliant_pct", other_sites_tested: "other_compliant_pct" };
 
 const list = (value) => (Array.isArray(value) ? value : []);
 const countable = (domain) => Boolean(domain) && !OWN_OR_TEST.test(domain);
@@ -79,6 +83,24 @@ export function summarizeFirstVisits(rows) {
     const scans = list(rows).filter((r) => countable(r.domain) && (list(r.transfers).length || list(r.cookies).length));
     const withTrackers = scans.filter((scan) => trackers(scan.transfers).length > 0).length;
     return { pre_consent_sites: scans.length, pre_consent_pct: percent(withTrackers, scans.length) };
+}
+
+/**
+ * The same first-visit scans, split by whether the Intastellar banner actually loaded. That is
+ * stricter than the install list: a site that installed the banner and later removed or broke it
+ * counts with the other websites. "Compliant" here means no tracking service before consent only.
+ */
+export function summarizeBannerCompliance(rows) {
+    const scans = list(rows).filter((r) => countable(r.domain) && (list(r.transfers).length || list(r.cookies).length));
+    const banner = scans.filter((scan) => list(scan.transfers).some((t) => OWN_CMP_HOST.test(String(t?.host || ""))));
+    const other = scans.filter((scan) => !banner.includes(scan));
+    const clean = (group) => group.filter((scan) => !trackers(scan.transfers).length).length;
+    return {
+        banner_sites_tested: banner.length,
+        banner_compliant_pct: percent(clean(banner), banner.length),
+        other_sites_tested: other.length,
+        other_compliant_pct: percent(clean(other), other.length),
+    };
 }
 
 function parseSiteDate(value) {
@@ -201,6 +223,7 @@ export async function calculateFigures(db, { fetchImpl = fetch, now = Date.now()
         ...known(Object.keys(consentFigures), consents === null, consentFigures),
         ...summarizeScans(accepted.rows),
         ...summarizeFirstVisits(firstVisits.rows),
+        ...summarizeBannerCompliance(firstVisits.rows),
         source_errors: errors,
     };
 }
@@ -209,7 +232,7 @@ export async function calculateFigures(db, { fetchImpl = fetch, now = Date.now()
 export function publicFigures(figures, hidden = []) {
     const out = {};
     for (const key of PUBLIC_KEYS) if (figures?.[key] != null && !hidden.includes(key)) out[key] = figures[key];
-    if (out.pre_consent_pct == null) delete out.pre_consent_sites;
+    for (const [sample, figure] of Object.entries(SAMPLE_OF)) if (out[figure] == null) delete out[sample];
     return out;
 }
 
@@ -248,7 +271,7 @@ async function readHidden(db) {
 
 /** Switches one figure on or off for the website. False for a key that can't be published. */
 export async function setVisibility(db, key, visible) {
-    if (!PUBLIC_KEYS.includes(key) || key === "pre_consent_sites" || typeof visible !== "boolean") return false;
+    if (!PUBLIC_KEYS.includes(key) || key in SAMPLE_OF || typeof visible !== "boolean") return false;
     const hidden = new Set(await readHidden(db));
     if (visible) hidden.delete(key);
     else hidden.add(key);

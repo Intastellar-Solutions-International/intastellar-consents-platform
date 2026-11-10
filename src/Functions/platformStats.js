@@ -42,6 +42,8 @@ export function platformShares(stats) {
 
 /** Sales figures, strongest selling point first. `text` finishes a sentence after the number. */
 export const SALES_FIGURES = [
+    { key: "banner_compliant_pct", label: "Clean before consent, with Intastellar", unit: "percent", sample: "banner_sites_tested", text: "of websites running Intastellar Consents load no trackers before the visitor agrees" },
+    { key: "other_compliant_pct", label: "Clean before consent, without", unit: "percent", sample: "other_sites_tested", text: "of websites tested without Intastellar Consents load no trackers before the visitor agrees" },
     { key: "pre_consent_pct", label: "Trackers before consent", unit: "percent", sample: "pre_consent_sites", text: "of websites tested load trackers before the visitor has agreed" },
     { key: "us_transfer_pct", label: "Data sent to the US", unit: "percent", sample: "sites_scanned", text: "of websites scanned send visitor data to the US once cookies are accepted" },
     { key: "advertising_pct", label: "Advertising services", unit: "percent", sample: "sites_scanned", text: "of websites scanned load advertising services" },
