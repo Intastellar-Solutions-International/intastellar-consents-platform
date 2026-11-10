@@ -5,7 +5,7 @@ import { FRAMEWORK_LABELS } from "../../Functions/jurisdictionEngine.js";
 import { FIELD, LABEL, fetchDsr, postDsr } from "./dsrShared.js";
 
 const { useState, useEffect, useMemo } = React;
-const formLink = (token) => `https://www.intastellarconsents.com/privacy-request/${token}`;
+const formLink = (form) => (form.custom_domain && form.custom_domain_status === "active" ? `https://${form.custom_domain}` : `https://www.intastellarconsents.com/privacy-request/${form.token}`);
 const LOGO_ACCEPT = ".png,.jpg,.jpeg,.webp,.svg,image/png,image/jpeg,image/webp,image/svg+xml";
 const MAX_LOGO_BYTES = 200 * 1024;
 const LOGO_TYPE_BY_EXTENSION = { png: "image/png", jpg: "image/jpeg", jpeg: "image/jpeg", webp: "image/webp", svg: "image/svg+xml" };
@@ -69,7 +69,72 @@ function LogoDropzone({ logo, busy, error, onLogo, onRemove }) {
     );
 }
 
-function FormsPanel({ forms, onData, busy, setBusy }) {
+function DnsRecords({ records }) {
+    return (
+        <dl className="dsr-dns">
+            {records.map((r) => (
+                <div key={`${r.type}-${r.name}`}>
+                    <dt>Type</dt><dd>{r.type}</dd>
+                    <dt>Name</dt><dd><code>{r.name}</code></dd>
+                    <dt>Value</dt><dd><code>{r.value}</code></dd>
+                </div>
+            ))}
+        </dl>
+    );
+}
+
+/** Lets an Agency plan show this form on its own subdomain. */
+function CustomDomain({ form, access, onData }) {
+    const [domain, setDomain] = useState("");
+    const [state, setState] = useState(null); // null | "working" | error text
+    async function run(action, extra) {
+        setState("working");
+        try {
+            onData(await postDsr({ action, token: form.token, ...extra }));
+            setState(null);
+        } catch (e) {
+            setState(e.message);
+        }
+    }
+    const working = state === "working";
+    const failure = state && !working ? <p role="alert" className="tw-m-0 tw-text-sm tw-text-danger-text">{state}</p> : null;
+
+    if (!access.allowed) return <p className="tw-m-0 tw-text-xs tw-text-text-muted">Show this form on your own domain with an Agency plan.</p>;
+    if (!access.configured) return <p className="tw-m-0 tw-text-xs tw-text-warning">Custom domains aren't set up on the server yet.</p>;
+    if (!form.custom_domain) {
+        return (
+            <form className="tw-flex tw-flex-col tw-gap-2" onSubmit={(e) => { e.preventDefault(); run("domain_connect", { domain }); }}>
+                <div className="tw-flex tw-gap-2 tw-items-end">
+                    <label className={`${LABEL} tw-flex-1`}>Custom domain<input className={FIELD} placeholder="privacy.yourcompany.com" maxLength={253} value={domain} onChange={(e) => setDomain(e.target.value)} /></label>
+                    <Button type="submit" size="md" variant="secondary" loading={working} disabled={!domain.trim()}>Connect</Button>
+                </div>
+                {failure}
+            </form>
+        );
+    }
+    const active = form.custom_domain_status === "active";
+    return (
+        <div className="tw-flex tw-flex-col tw-gap-2">
+            <div className="tw-flex tw-flex-wrap tw-items-center tw-justify-between tw-gap-2">
+                <span className="tw-text-sm tw-text-text-primary tw-break-all">{form.custom_domain}</span>
+                {active ? <Badge tone="success" icon="check-circle">Live</Badge> : <Badge tone="warning" icon="clock">Waiting for DNS</Badge>}
+            </div>
+            {!active && (
+                <>
+                    <p className="tw-m-0 tw-text-xs tw-text-text-muted">Add these records where the domain's DNS is managed. It can take a while to take effect.</p>
+                    <DnsRecords records={form.custom_domain_dns || []} />
+                </>
+            )}
+            <div className="tw-flex tw-flex-wrap tw-gap-2">
+                <Button size="sm" variant="secondary" loading={working} onClick={() => run("domain_check")}>Check now</Button>
+                <Button size="sm" variant="ghost" disabled={working} onClick={() => run("domain_remove")}>Remove domain</Button>
+            </div>
+            {failure}
+        </div>
+    );
+}
+
+function FormsPanel({ forms, customDomains, onData, busy, setBusy }) {
     const [draft, setDraft] = useState({ company_name: "", domain: "", notify_email: "", default_regulation: "GDPR", logo: "" });
     const [error, setError] = useState(null);
     const [logoError, setLogoError] = useState({}); // by form token, "new" for the create form
@@ -120,7 +185,7 @@ function FormsPanel({ forms, onData, busy, setBusy }) {
         }
     }
 
-    const copy = (token) => navigator.clipboard.writeText(formLink(token)).then(() => { setCopied(token); setTimeout(() => setCopied(null), 2000); });
+    const copy = (token) => navigator.clipboard.writeText(formLink(forms.find((f) => f.token === token))).then(() => { setCopied(token); setTimeout(() => setCopied(null), 2000); });
 
     return (
         <div className="tw-flex tw-flex-col tw-gap-5">
@@ -131,8 +196,9 @@ function FormsPanel({ forms, onData, busy, setBusy }) {
                         <span className="tw-text-sm tw-font-semibold tw-text-text-primary">{f.company_name}{f.domain ? ` · ${f.domain}` : ""}</span>
                         {f.enabled ? <Badge tone="success" icon="check-circle">Live</Badge> : <Badge tone="neutral" icon="minus-circle">Off</Badge>}
                     </div>
-                    <code className="tw-text-xs tw-break-all">{formLink(f.token)}</code>
+                    <code className="tw-text-xs tw-break-all">{formLink(f)}</code>
                     <LogoDropzone logo={f.logo_data} busy={busy} error={logoError[f.token]} onLogo={(logo) => saveLogo(f, logo)} onRemove={() => saveLogo(f, "")} />
+                    <CustomDomain form={f} access={customDomains} onData={onData} />
                     <div className="tw-flex tw-flex-wrap tw-gap-2">
                         <Button size="sm" variant="secondary" onClick={() => copy(f.token)}>{copied === f.token ? "Copied" : "Copy link"}</Button>
                         {f.enabled
@@ -220,7 +286,7 @@ export default function DsrSetup({ section }) {
 
     if (error) return <p role="alert" className="tw-m-0 tw-text-sm tw-text-danger-text">{error}</p>;
     if (!data) return <p className="tw-m-0 tw-text-sm tw-text-text-muted">Loading…</p>;
-    if (section === "form") return <FormsPanel forms={data.forms} onData={setData} busy={busy} setBusy={setBusy} />;
+    if (section === "form") return <FormsPanel forms={data.forms} customDomains={data.custom_domains || {}} onData={setData} busy={busy} setBusy={setBusy} />;
     return (
         <div className="tw-flex tw-flex-col tw-gap-4">
             <p className="tw-m-0 tw-text-sm tw-text-text-muted">Connect a vendor to delete through its API on erasure requests. Keys are stored encrypted and can't be read back. Google Ads, Google Analytics and Meta use the accounts connected under Marketing.</p>

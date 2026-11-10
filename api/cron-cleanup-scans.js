@@ -1,6 +1,7 @@
 import { SCAN_TYPE, ensureScanColumns } from "./_scan-schema.js";
 import { getPool } from "./_db.js";
 import { anonymizeExpiredRequests } from "./_dsr.js";
+import { checkCustomDomains } from "./_dsr-domains.js";
 /**
  * GET /api/cron-cleanup-scans  (invoked by Vercel Cron, daily at 03:30 UTC)
  *
@@ -48,7 +49,13 @@ export default async function handler(req, res) {
             return null;
         });
 
+        const customDomains = await checkCustomDomains(db).catch((err) => {
+            console.error("[cron-cleanup-scans] custom domain check failed:", err.message);
+            return null;
+        });
+
         return res.json({
+            custom_domains:      customDomains,
             deleted_old_scans:   oldScans,
             deleted_stuck_scans: stuckScans,
             anonymized_dsr_requests: anonymizedRequests,

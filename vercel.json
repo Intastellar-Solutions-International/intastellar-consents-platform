@@ -127,7 +127,7 @@
     },
     "api/cron-cleanup-scans.js": {
       "memory": 128,
-      "maxDuration": 10
+      "maxDuration": 30
     },
     "api/ad-connections.js": {
       "memory": 256,

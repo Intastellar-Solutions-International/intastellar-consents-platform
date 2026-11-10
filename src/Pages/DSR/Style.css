@@ -54,3 +54,8 @@
 }
 
 .dsr-logo-preview { display: block; max-height: 40px; max-width: 140px; padding: var(--space-1); background: #fff; border-radius: var(--radius-sm); object-fit: contain; }
+
+.dsr-dns { margin: 0; display: flex; flex-direction: column; gap: var(--space-2); }
+.dsr-dns > div { display: grid; grid-template-columns: 60px minmax(0, 1fr); gap: 2px var(--space-2); font-size: var(--text-xs); }
+.dsr-dns dt { color: var(--color-text-muted); }
+.dsr-dns dd { margin: 0; color: var(--color-text-primary); overflow-wrap: anywhere; }

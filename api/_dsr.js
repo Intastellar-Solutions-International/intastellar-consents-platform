@@ -248,6 +248,15 @@ export async function ensureDsrTables(db) {
     `);
     await db.query(`ALTER TABLE dsr_public_forms ADD COLUMN IF NOT EXISTS logo_data TEXT`);
     await db.query(`
+        ALTER TABLE dsr_public_forms
+            ADD COLUMN IF NOT EXISTS custom_domain TEXT,
+            ADD COLUMN IF NOT EXISTS custom_domain_status TEXT,
+            ADD COLUMN IF NOT EXISTS custom_domain_dns JSONB,
+            ADD COLUMN IF NOT EXISTS custom_domain_checked_at TIMESTAMPTZ,
+            ADD COLUMN IF NOT EXISTS custom_domain_failed_since TIMESTAMPTZ
+    `);
+    await db.query(`CREATE UNIQUE INDEX IF NOT EXISTS idx_dsr_forms_custom_domain ON dsr_public_forms (custom_domain) WHERE custom_domain IS NOT NULL`);
+    await db.query(`
         CREATE TABLE IF NOT EXISTS dsr_public_submissions (
             token_hash TEXT PRIMARY KEY,
             form_token TEXT NOT NULL REFERENCES dsr_public_forms (token) ON DELETE CASCADE,

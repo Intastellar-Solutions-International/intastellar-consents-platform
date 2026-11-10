@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { test } from "./_harness.mjs";
 import { vendorsFromTransfers, needsVendorNotice, validateVendorUpdate, vendorMessage, validatePublicSubmission, seedVendorNotifications, validateLogo } from "../api/_dsr.js";
 import { hashEmail, encryptCredentials, decryptCredentials, deletionStatus, runDeletion } from "../api/_dsr-deletion.js";
-import { formPage, esc, confirmationEmail } from "../api/dsr-public.js";
+import { formPage, esc, confirmationEmail, newRequestEmail } from "../api/dsr-public.js";
 import fs from "node:fs";
 import { FORM_LANGUAGES, FORM_TEXT, formT, pickFormLanguage } from "../api/_dsr-public-i18n.js";
 
@@ -244,4 +244,15 @@ test("confirmation email: without a mail-safe logo it shows the company name", (
         assert.doesNotMatch(mail.html, /cid:/);
         assert.match(mail.html, /A &amp; B/);
     }
+});
+
+test("new request email: tells the team what's due, with no personal details", () => {
+    const mail = newRequestEmail({ company_name: "A & B" }, { id: "7", type: "erasure", regulation: "GDPR", received_at: "2026-11-10T00:00:00Z", due_at: "2026-12-10T23:59:59Z", requester_email: "secret@x.dk", requester_name: "Maria" });
+    assert.match(mail.subject, /A & B/);
+    assert.match(mail.html, /A &amp; B/);
+    assert.match(mail.html, /10 December 2026/);
+    assert.match(mail.html, /reports\/dsr\/7/);
+    assert.doesNotMatch(mail.html, /secret@x\.dk|Maria/);
+    assert.match(mail.html, /src="cid:intastellar-logo"/);
+    assert.strictEqual(mail.attachments[0].content_id, "intastellar-logo");
 });

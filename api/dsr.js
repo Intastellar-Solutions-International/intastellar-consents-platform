@@ -5,6 +5,8 @@ import {
     ensureDsrTables, listRequests, getRequest, createRequest, saveAction, validateNewRequest, applyAction,
     seedVendorNotifications, listVendorNotifications, addVendorNotification, validateVendorUpdate, saveVendorNotification, needsVendorNotice, validateLogo, DEADLINE_RULES,
 } from "./_dsr.js";
+import { organisationHasPlan } from "./_stripe.js";
+import { normalizeCustomDomain, customDomainsConfigured, attachDomain, detachDomain, domainState, CLEAR_CUSTOM_DOMAIN } from "./_dsr-domains.js";
 import { ADAPTERS, VENDOR_ADAPTER, deletionStatus, runDeletion, encryptCredentials, decryptCredentials } from "./_dsr-deletion.js";
 
 /**
@@ -14,7 +16,8 @@ import { ADAPTERS, VENDOR_ADAPTER, deletionStatus, runDeletion, encryptCredentia
  * GET ?id=       → { request, events }
  * GET ?setup=1  → { forms, connectors }
  * POST { action: "create", ... } or a workflow step { action, id, ... }
- * POST vendor_update | vendor_add | vendor_delete, form_save | form_disable, connector_save | connector_remove
+ * POST vendor_update | vendor_add | vendor_delete, form_save | form_disable, connector_save | connector_remove,
+ *      domain_connect | domain_check | domain_remove (Agency plans)
  *
  * Headers: Authorization (Bearer), Organisation, X-User-Email
  */
@@ -92,11 +95,12 @@ async function vendorDelete(db, organisationId, email, request, vendor, identifi
 }
 
 async function setup(db, organisationId) {
-    const { rows: forms } = await db.query(`SELECT token, company_name, domain, notify_email, default_regulation, enabled, logo_data, created_at FROM dsr_public_forms WHERE organisation_id = $1 ORDER BY created_at DESC`, [organisationId]);
+    const { rows: forms } = await db.query(`SELECT token, company_name, domain, notify_email, default_regulation, enabled, logo_data, custom_domain, custom_domain_status, custom_domain_dns, created_at FROM dsr_public_forms WHERE organisation_id = $1 ORDER BY created_at DESC`, [organisationId]);
     const { rows: stored } = await db.query(`SELECT adapter, config, updated_at FROM dsr_vendor_credentials WHERE organisation_id = $1`, [organisationId]);
     const byId = Object.fromEntries(stored.map((r) => [r.adapter, r]));
     const connectors = Object.entries(ADAPTERS).filter(([, a]) => a.kind === "key").map(([id, a]) => ({ id, label: a.label, fields: a.fields, regions: Boolean(a.regions), connected: Boolean(byId[id]), region: byId[id]?.config?.region || "us" }));
-    return { forms, connectors, encryption_ready: Boolean(process.env.DSR_CREDENTIALS_KEY) };
+    const allowed = await organisationHasPlan(db, organisationId, "agency-pro").catch(() => false);
+    return { forms, connectors, encryption_ready: Boolean(process.env.DSR_CREDENTIALS_KEY), custom_domains: { allowed, configured: customDomainsConfigured() } };
 }
 
 const short = (value, max = 255) => String(value ?? "").trim().slice(0, max);
@@ -120,6 +124,39 @@ async function saveForm(db, organisationId, email, body) {
                 logo_data = CASE WHEN $10 THEN dsr_public_forms.logo_data ELSE EXCLUDED.logo_data END
           WHERE dsr_public_forms.organisation_id = EXCLUDED.organisation_id`,
         [token, organisationId, company_name, short(body.domain) || null, notify_email, default_regulation, typeof body.enabled === "boolean" ? body.enabled : null, email, logo, keepLogo]
+    );
+    return {};
+}
+
+/** Connect, re-check or remove a form's domain. The plan is checked here, not just hidden in the page. */
+async function domainAction(db, organisationId, body) {
+    if (!(await organisationHasPlan(db, organisationId, "agency-pro").catch(() => false))) return { status: 403, error: "Custom domains are available on Agency plans." };
+    if (!customDomainsConfigured()) return { status: 503, error: "Custom domains aren't set up on the server yet." };
+    const { rows: [form] } = await db.query(`SELECT token, custom_domain FROM dsr_public_forms WHERE token = $1 AND organisation_id = $2`, [short(body.token, 64), organisationId]);
+    if (!form) return { status: 404, error: "Form not found" };
+
+    if (body.action === "domain_remove") {
+        if (form.custom_domain && !(await detachDomain(form.custom_domain))) return { status: 502, error: "The domain couldn't be removed. Please try again." };
+        await db.query(`UPDATE dsr_public_forms SET ${CLEAR_CUSTOM_DOMAIN} WHERE token = $1`, [form.token]);
+        return {};
+    }
+    let domain = form.custom_domain;
+    if (body.action === "domain_connect") {
+        if (domain) return { status: 400, error: "Remove the current domain first." };
+        domain = normalizeCustomDomain(body.domain);
+        if (domain.error) return { status: 400, error: domain.error };
+        const { rows: taken } = await db.query(`SELECT 1 FROM dsr_public_forms WHERE custom_domain = $1`, [domain]);
+        if (taken.length) return { status: 409, error: "That domain is already connected to a form." };
+        const attached = await attachDomain(domain);
+        if (attached.error) return { status: 400, error: attached.error };
+    }
+    if (!domain) return { status: 400, error: "This form has no domain" };
+    const { status, dns } = await domainState(domain);
+    await db.query(
+        `UPDATE dsr_public_forms SET custom_domain = $2, custom_domain_status = $3, custom_domain_dns = $4::jsonb, custom_domain_checked_at = NOW(),
+                custom_domain_failed_since = CASE WHEN $3 = 'active' THEN NULL ELSE custom_domain_failed_since END
+          WHERE token = $1`,
+        [form.token, domain, status, JSON.stringify(dns)]
     );
     return {};
 }
@@ -168,6 +205,10 @@ export default async function handler(req, res) {
             return res.status(201).json({ request: await createRequest(db, organisationId, email, values) });
         }
 
+        if (["domain_connect", "domain_check", "domain_remove"].includes(body.action)) {
+            const result = await domainAction(db, organisationId, body);
+            return result.error ? res.status(result.status).json({ error: result.error }) : res.json(await setup(db, organisationId));
+        }
         const organisationWide = { form_save: saveForm, connector_save: saveConnector };
         if (organisationWide[body.action]) {
             const result = await organisationWide[body.action](db, organisationId, email, body);

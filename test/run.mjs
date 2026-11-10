@@ -1,4 +1,5 @@
 import { run } from "./_harness.mjs";
+import "./custom-domains.test.mjs";
 import "./file-dropzone.test.mjs";
 import "./dsr-vendors.test.mjs";
 import "./dsr.test.mjs";

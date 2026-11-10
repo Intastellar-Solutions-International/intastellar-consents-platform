@@ -1,6 +1,8 @@
 import { createHash, randomBytes } from "crypto";
 import { getPool } from "./_db.js";
 import { LOGO_DATA_URI } from "./_report-logo.js";
+import { isPlatformHost, normalizeHost } from "./_known-hosts.js";
+import { emailLayout, emailEsc, emailP, emailFacts, INTASTELLAR_LOGO_ATTACHMENT, EMAIL_FONT } from "./_email-layout.js";
 import { FORM_LANGUAGES, formT, pickFormLanguage } from "./_dsr-public-i18n.js";
 import { ensureDsrTables, createRequest, validateNewRequest, validatePublicSubmission, REQUEST_TYPES, PUBLIC_REGIONS } from "./_dsr.js";
 
@@ -80,35 +82,48 @@ function notice(name, lang, form, vars) {
     return page(title, `<h1>${esc(title)}</h1><p>${esc(formT(lang, `${name}_text`, vars))}</p>`, form, lang);
 }
 
-/**
- * Table layout with inline styles, because that's what mail clients render.
- * The logo travels as an inline attachment: they drop data: images and SVGs,
- * so a logo in any other format falls back to the company name.
- */
+/** The logo travels as an inline attachment; one mail clients can't show falls back to the company name. */
 export function confirmationEmail(form, lang, link) {
     const company = form.company_name;
     const t = (key) => esc(formT(lang, key, { company }));
     const logo = /^data:image\/(png|jpeg);base64,(.+)$/.exec(form.logo_data || "");
-    const FONT = "font-family:Arial,Helvetica,sans-serif;";
     const brand = logo
         ? `<img src="cid:company-logo" alt="${esc(company)}" height="48" style="display:block;height:48px;width:auto;max-width:240px;border:0">`
-        : `<span style="${FONT}font-size:20px;font-weight:700;color:#1c1c1c">${esc(company)}</span>`;
-    const html = `<!doctype html><html lang="${esc(lang)}"><body style="margin:0;padding:0;background:#f5f5f4">
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f5f5f4"><tr><td align="center" style="padding:32px 16px">
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;background:#ffffff;border:1px solid #d6d6d3;border-radius:12px">
-<tr><td style="padding:28px 28px 0">${brand}</td></tr>
-<tr><td style="padding:24px 28px 0;${FONT}font-size:24px;line-height:30px;font-weight:700;color:#1c1c1c">${t("confirm_title")}</td></tr>
-<tr><td style="padding:8px 28px 0;${FONT}font-size:16px;line-height:24px;color:#4a4a4a">${t("mail_intro")}</td></tr>
-<tr><td style="padding:24px 28px 0"><table role="presentation" cellpadding="0" cellspacing="0"><tr><td bgcolor="#8a6a1f" style="border-radius:8px"><a href="${esc(link)}" style="display:inline-block;padding:13px 22px;${FONT}font-size:16px;font-weight:700;color:#ffffff;text-decoration:none;border-radius:8px">${t("mail_button")}</a></td></tr></table></td></tr>
-<tr><td style="padding:20px 28px 0;${FONT}font-size:14px;line-height:21px;color:#5f5f5f">${t("mail_expires")}<br>${t("mail_ignore")}</td></tr>
-<tr><td style="padding:20px 28px 28px;${FONT}font-size:13px;line-height:19px;color:#5f5f5f;word-break:break-all">${t("mail_fallback")}<br><a href="${esc(link)}" style="color:#8a6a1f">${esc(link)}</a></td></tr>
-</table>
-<p style="max-width:520px;margin:16px auto 0;${FONT}font-size:13px;line-height:19px;color:#5f5f5f">${t("mail_footer")}</p>
-</td></tr></table></body></html>`;
+        : `<span style="${EMAIL_FONT}font-size:20px;font-weight:700;color:#1c1c1c">${esc(company)}</span>`;
     return {
         subject: formT(lang, "mail_subject", { company }),
-        html,
+        html: emailLayout({
+            lang, brand,
+            heading: formT(lang, "confirm_title"),
+            body: emailP(t("mail_intro")),
+            cta: { label: formT(lang, "mail_button"), href: link },
+            note: `${t("mail_expires")}<br>${t("mail_ignore")}<br><br><span style="font-size:13px;word-break:break-all">${t("mail_fallback")}<br><a href="${esc(link)}" style="color:#8a6a1f">${esc(link)}</a></span>`,
+            footer: t("mail_footer"),
+        }),
         attachments: logo ? [{ filename: `logo.${logo[1] === "jpeg" ? "jpg" : "png"}`, content: logo[2], content_id: "company-logo" }] : [],
+    };
+}
+
+const longDate = (value) => new Date(value).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
+
+/** To the company's team. Holds no personal details, which stay behind the login. */
+export function newRequestEmail(form, request) {
+    const type = REQUEST_TYPES.find((t) => t.id === request.type)?.label || request.type;
+    return {
+        subject: `New data subject request for ${form.company_name}`,
+        html: emailLayout({
+            badge: { text: "Action needed", tone: "warning" },
+            heading: "New data subject request",
+            body: emailP(`Someone sent a request through the ${emailEsc(form.company_name)} privacy form and confirmed their email.`) + emailFacts([
+                ["Request", emailEsc(type)],
+                ["Regulation", emailEsc(request.regulation)],
+                ["Received", emailEsc(longDate(request.received_at))],
+                ["Response due", emailEsc(longDate(request.due_at))],
+            ]),
+            cta: { label: "Open the request", href: `${BASE}/gdpr/reports/dsr/${request.id}` },
+            note: "The person's details are in the DSR portal.",
+        }),
+        attachments: [INTASTELLAR_LOGO_ATTACHMENT],
     };
 }
 
@@ -131,6 +146,14 @@ function send(res, status, html) {
     res.setHeader("X-Content-Type-Options", "nosniff");
     return res.status(status).send(html);
 }
+
+async function loadFormByDomain(db, host) {
+    const { rows } = await db.query(`SELECT * FROM dsr_public_forms WHERE custom_domain = $1 AND enabled = TRUE`, [normalizeHost(host)]);
+    return rows[0] || null;
+}
+
+const requestHost = (req) => req.headers["x-forwarded-host"] || req.headers.host;
+const formOrigin = (form) => (form.custom_domain && form.custom_domain_status === "active" ? `https://${form.custom_domain}` : BASE);
 
 async function loadForm(db, token) {
     const { rows } = await db.query(`SELECT * FROM dsr_public_forms WHERE token = $1 AND enabled = TRUE`, [String(token).slice(0, 64)]);
@@ -158,7 +181,7 @@ async function submit(req, res, db, form, lang) {
         `INSERT INTO dsr_public_submissions (token_hash, form_token, payload, ip_hash, expires_at) VALUES ($1, $2, $3::jsonb, $4, NOW() + INTERVAL '${CONFIRM_DAYS} days')`,
         [sha(code), form.token, JSON.stringify({ ...values, lang }), ipHash]
     );
-    const link = `${BASE}/privacy-request/confirm/${code}?lang=${lang}`;
+    const link = `${formOrigin(form)}/privacy-request/confirm/${code}?lang=${lang}`;
     const mail = confirmationEmail(form, lang, link);
     const sent = await sendEmail(values.requester_email, mail.subject, mail.html, mail.attachments);
     if (!sent) {
@@ -185,8 +208,11 @@ async function confirm(res, db, code, lang) {
     const received = new Date(rows[0].created_at).toISOString().slice(0, 10);
     const values = validateNewRequest({ ...rows[0].payload, received_at: received, domain: form.domain });
     if (values.error) return send(res, 400, notice("wrong", lang, form));
-    await createRequest(db, form.organisation_id, "Public request form", { ...values, source: "public_form" });
-    if (form.notify_email) await sendEmail(form.notify_email, "New data subject request", `<p>A new data subject request was confirmed for ${esc(form.company_name)}. Open the DSR portal to handle it.</p>`).catch(() => {});
+    const request = await createRequest(db, form.organisation_id, "Public request form", { ...values, source: "public_form" });
+    if (form.notify_email) {
+        const mail = newRequestEmail(form, request);
+        await sendEmail(form.notify_email, mail.subject, mail.html, mail.attachments).catch(() => {});
+    }
     return send(res, 200, notice("received", lang, form, { company: form.company_name }));
 }
 
@@ -200,7 +226,18 @@ export default async function handler(req, res) {
         const db = getPool();
         await ensureDsrTables(db);
         if (req.query.confirm) return req.method === "POST" ? await confirm(res, db, req.query.confirm, lang) : send(res, 200, confirmPage(req.query.confirm, lang));
-        const form = req.query.token ? await loadForm(db, req.query.token) : null;
+        const host = requestHost(req);
+        const custom = !isPlatformHost(host);
+        let form = req.query.token ? await loadForm(db, req.query.token) : null;
+        if (custom) {
+            const own = await loadFormByDomain(db, host);
+            // A customer's domain only ever shows that customer's form.
+            form = own && (!req.query.token || own.token === req.query.token) ? own : null;
+            if (!own && req.query.host) {
+                res.setHeader("Location", BASE);
+                return res.status(302).end();
+            }
+        }
         if (!form) return send(res, 404, notice("missing", lang));
         return req.method === "POST" ? await submit(req, res, db, form, lang) : send(res, 200, formPage(form, "", {}, lang));
     } catch (err) {
