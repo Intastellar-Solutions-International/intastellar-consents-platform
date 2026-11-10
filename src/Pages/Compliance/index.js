@@ -23,6 +23,7 @@ import { COMPLIANCE_CHANGED_EVENT } from "../../Components/Shell/useDomainCompli
 import { scanConsentStep, consentPhaseLabel, filterByConsentPhase, staleScanDays, scanRegionLabel } from "../../Functions/scanHistory.js";
 import ScanHistoryPanel from "./ScanHistoryPanel.js";
 import DsrSummaryCard from "./DsrSummaryCard.js";
+import AllDomainsCompliance from "./AllDomainsCompliance.js";
 import { KpiTile, Button, Badge, Tabs, TabPanel, EmptyState, FilterSelect } from "../../Components/ui";
 
 const Link = window.ReactRouterDOM.Link;
@@ -169,6 +170,7 @@ export default function CompliancePage() {
     const [cookieOverrides, setCookieOverrides] = useState({});
     const [editingCookie, setEditingCookie] = useState(null);
     const [editDraft, setEditDraft] = useState({ vendor: "", description: "", bannerCategory: "" });
+    const [allDomainsSummary, setAllDomainsSummary] = useState(null);
 
     const domainsForApi = useMemo(
         () => (handle ? handle : currentDomain) || "combined view",
@@ -511,6 +513,7 @@ export default function CompliancePage() {
 
     // Same sources as Home and the audit snapshot card — see cookieStats.js.
     const vendorCount = new Set((preConsentTransfers?.pre_consent_transfers || []).map((t) => t.service || t.host)).size;
+    const allDomains = (handle || currentDomain) === "combined view";
     const preStat = preConsentCookieStat(preConsentTransfers);
     const postStat = postConsentCookieStat(observedCookies);
     const auditLogPath = reportsPath(id, currentDomain, "/user-consents");
@@ -543,7 +546,14 @@ export default function CompliancePage() {
             <div className="dashboard-content compliance-page">
             {/* Headline figures (were overlaid on the hero map). Same sources as before. */}
             <section aria-label="Key figures" className="compliance-kpis">
-                <KpiTile
+                {allDomains ? (
+                    <KpiTile
+                        label="Pre-consent cookies"
+                        loading={allDomainsSummary == null}
+                        value={allDomainsSummary?.preConsentCookies != null ? formatNumber(allDomainsSummary.preConsentCookies) : "—"}
+                        hint={allDomainsSummary ? `Across ${formatNumber(allDomainsSummary.domainsWithCookieCount)} scanned domains` : undefined}
+                    />
+                ) : <KpiTile
                     label="Pre-consent cookies"
                     value={preStat.count != null ? formatNumber(preStat.count) : preStat.label}
                     noData={preStat.count == null ? preStat.reason : undefined}
@@ -553,7 +563,7 @@ export default function CompliancePage() {
                             Cookie scan · {formatDate(preStat.scannedAt)}
                         </>
                     ) : preStat.reason}
-                />
+                />}
                 <KpiTile
                     label="Post-consent cookies"
                     value={postStat.count != null ? formatNumber(postStat.count) : postStat.label}
@@ -570,14 +580,7 @@ export default function CompliancePage() {
             <div className="compliance-bottom-grid">
 
                 {/* ── Data transfers ── */}
-                {(handle || currentDomain) === "combined view" && (
-                    <div className="dashboard-section compliance-transfers">
-                        <div className="compliance-transfers__card compliance-transfers__combined-placeholder">
-                            <span className="compliance-transfers__combined-placeholder-icon" aria-hidden>⊙</span>
-                            <p>Select a specific domain from the domain picker to view data transfers and cookie scans for that domain.</p>
-                        </div>
-                    </div>
-                )}
+                {allDomains && <AllDomainsCompliance platformId={id} workspace={activeWorkspace} onSummary={setAllDomainsSummary} />}
                 {(handle || currentDomain) && (handle || currentDomain) !== "combined view" && (
                     <div className="dashboard-section compliance-transfers">
                         <div className="compliance-transfers__card">

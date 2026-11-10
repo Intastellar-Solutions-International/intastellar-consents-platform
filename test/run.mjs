@@ -53,6 +53,7 @@ import "./scan-history.test.mjs";
 import "./live-view.test.mjs";
 import "./platform-stats.test.mjs";
 import "./platform-sales-figures.test.mjs";
+import "./all-domains-compliance.test.mjs";
 import "./scan-notifications.test.mjs";
 import "./onboarding-steps.test.mjs";
 import "./transfer-compliance.test.mjs";
