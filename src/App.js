@@ -911,7 +911,7 @@ export default function App() {
                                                 {Number(getOrg()?.id) === 1 ? <CookieDatabase /> : <p style={{ padding: "40px", color: "var(--color-text-muted)" }}>Admin access required.</p>}
                                             </ErrorBoundary>
                                         </Route>
-                                        <Route path="/platform" exact>
+                                        <Route path={["/platform", "/platform/sales"]} exact>
                                             <ErrorBoundary>
                                                 {Number(getOrg()?.id) === 1 ? <PlatformPage /> : <p style={{ padding: "40px", color: "var(--color-text-muted)" }}>Admin access required.</p>}
                                             </ErrorBoundary>

@@ -53,7 +53,7 @@ function buildGroups(platform, domain, isAdminOrg) {
         {
             label: t("Settings"), items: [
                 { name: t("Settings"), icon: "settings", to: "/settings", match: (p) => p.startsWith("/settings") },
-                ...(isAdminOrg ? [{ name: t("Cookie database"), icon: "database", to: "/cookie-database", match: (p) => p === "/cookie-database" }, { name: "Platform", icon: "layers", to: "/platform", match: (p) => p === "/platform" }] : []),
+                ...(isAdminOrg ? [{ name: t("Cookie database"), icon: "database", to: "/cookie-database", match: (p) => p === "/cookie-database" }, { name: "Platform", icon: "layers", to: "/platform", match: (p) => p === "/platform" || p.startsWith("/platform/") }] : []),
             ],
         },
     ];

@@ -77,11 +77,14 @@ export function dashboardPath(platformId, domainUnicode) {
     return `/${platformId}/view/${seg}`;
 }
 
-/** @param {string} leaf — "/user-consents" | "/audit-report" | "" */
+/** Report pages that cover the whole organisation. They have no per-domain route, so the selected domain is left out. */
+const ORGANISATION_WIDE_LEAVES = new Set(["/dsr"]);
+
+/** @param {string} leaf — "/user-consents" | "/audit-report" | "/dsr" | "" */
 export function reportsPath(platformId, domainUnicode, leaf) {
     const seg = encodeDomainPathSegment(domainUnicode);
     const suffix = leaf && leaf !== "/" ? (leaf.startsWith("/") ? leaf : `/${leaf}`) : "";
-    if (!seg) {
+    if (!seg || ORGANISATION_WIDE_LEAVES.has(suffix)) {
         return `/${platformId}/reports${suffix}`;
     }
     return `/${platformId}/reports/view/${seg}${suffix}`;

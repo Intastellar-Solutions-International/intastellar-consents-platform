@@ -79,7 +79,7 @@ export default function Nav() {
                                 </Link>
                             )}
                             {isAdminOrg && (
-                                <Link className={"navItems" + (path === "/platform" ? " --active" : "")} to="/platform">
+                                <Link className={"navItems" + (path === "/platform" || path.startsWith("/platform/") ? " --active" : "")} to="/platform">
                                     <i className="dashboard-icons" style={{ backgroundImage: `url(${platformIcon})` }} data-icon={platformIcon}></i>
                                     <span className="hiddenCollapsed">Platform</span>
                                 </Link>

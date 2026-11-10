@@ -562,16 +562,20 @@ const API = {
             headers: { "Authorization": Authentication.getToken(), "Organisation": Authentication.getOrganisation(), "Content-Type": "application/json" }
         },
     },
+    platformStats: {
+        url: `${ScannerHost}/api/platform-stats`,
+        headers: { "Authorization": Authentication.getToken(), "Organisation": Authentication.getOrganisation(), "X-User-Email": Authentication.getUserId(), "Content-Type": "application/json" }
+    },
     cookieDiscoveries: {
         get: {
             url: `${ScannerHost}/api/admin-cookie-discoveries`,
             method: "GET",
-            headers: { "Authorization": Authentication.getToken(), "Organisation": Authentication.getOrganisation(), "Content-Type": "application/json" }
+            headers: { "Authorization": Authentication.getToken(), "Organisation": Authentication.getOrganisation(), "X-User-Email": Authentication.getUserId(), "Content-Type": "application/json" }
         },
         action: {
             url: `${ScannerHost}/api/admin-cookie-discoveries`,
             method: "POST",
-            headers: { "Authorization": Authentication.getToken(), "Organisation": Authentication.getOrganisation(), "Content-Type": "application/json" }
+            headers: { "Authorization": Authentication.getToken(), "Organisation": Authentication.getOrganisation(), "X-User-Email": Authentication.getUserId(), "Content-Type": "application/json" }
         },
     },
     ropa: {

@@ -1,14 +1,17 @@
 import API from "../../API/api";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import { ListTemplate } from "../../Components/templates";
-import { Badge, Card, FilterBar, FilterSearch, KpiTile, Pagination, Table } from "../../Components/ui";
+import { Badge, Card, FilterBar, FilterSearch, KpiTile, Pagination, Table, Tabs, TabPanel } from "../../Components/ui";
 import { fetchJsonWithTimeout } from "../../Functions/fetchWithTimeout.js";
 import { appLocale, formatDate, formatNumber, formatPercent } from "../../Functions/format.js";
 import { installsByMonth, platformShares, toSites } from "../../Functions/platformStats.js";
 import { toUnicodeDomain } from "../../Functions/cachedDomains.js";
 import appStorage from "../../Functions/storage.js";
+import SalesFigures from "./SalesFigures.js";
 
 const { useState, useEffect, useMemo } = React;
+const useHistory = window.ReactRouterDOM.useHistory;
+const useLocation = window.ReactRouterDOM.useLocation;
 
 const PAGE_SIZE = 25;
 const STATUS = {
@@ -17,6 +20,11 @@ const STATUS = {
     inactive: { tone: "danger", icon: "alert-octagon", label: "Inactive" },
     unknown: { tone: "neutral", icon: "info", label: "Unknown" },
 };
+/** Each tab has its own address, so it can be linked to and survives a reload. */
+const TABS = [
+    { id: "sites", label: "Sites", path: "/platform", title: "Platform" },
+    { id: "sales", label: "Sales figures", path: "/platform/sales", title: "Sales figures | Platform" },
+];
 
 const onLoginExpired = () => {
     appStorage.removeItem("globals");
@@ -44,9 +52,8 @@ function InstallsChart({ months }) {
     );
 }
 
-/** Admin-only overview of banner installs across every customer. */
-export default function PlatformPage() {
-    document.title = "Platform | Intastellar Consents | CMP";
+/** Banner installs across every customer. */
+function SitesOverview() {
     const [stats, setStats] = useState(null);
     const [statsError, setStatsError] = useState(null);
     const [rows, setRows] = useState(null);
@@ -98,41 +105,60 @@ export default function PlatformPage() {
     }
 
     return (
+        <div className="tw-flex tw-flex-col tw-gap-5">
+            <section aria-label="Install figures" className="tw-grid tw-gap-4" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))" }}>
+                <KpiTile label="Websites" loading={statsLoading} error={tileError} value={formatNumber(stats?.Total)} />
+                <KpiTile label="JavaScript" loading={statsLoading} error={tileError} value={formatPercent(shares.javascript, 2)} />
+                <KpiTile label="WordPress" loading={statsLoading} error={tileError} value={formatPercent(shares.wordpress, 2)} />
+                <KpiTile label="Platform unknown" loading={statsLoading} error={tileError} value={formatPercent(shares.unknown, 2)} hint="No platform stored for these sites" />
+            </section>
+            <Card title="New installs per month">
+                {rows == null && !sitesError ? <p className="tw-m-0 tw-text-sm tw-text-text-muted">Loading…</p> : <InstallsChart months={months} />}
+            </Card>
+            <ListTemplate
+                summary={rows ? `${formatNumber(sites.length)} sites. ${formatNumber(inactive)} without activity for more than 30 days.` : null}
+                filters={(
+                    <FilterBar resultCount={rows ? formatNumber(visible.length) : null}>
+                        <FilterSearch label="Site or company" value={search} onChange={(v) => { setSearch(v); setPage(0); }} placeholder="Search" />
+                    </FilterBar>
+                )}
+                pagination={visible.length > PAGE_SIZE ? <Pagination page={page} pageSize={PAGE_SIZE} total={visible.length} onChange={setPage} label="Site pages" /> : null}
+            >
+                <Card padding="none">
+                    <Table
+                        caption="Sites with the banner installed"
+                        columns={columns}
+                        rows={visible.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE)}
+                        getRowKey={(s) => s.domain}
+                        sort={sort}
+                        onSortChange={changeSort}
+                        loading={rows == null && !sitesError}
+                        error={sitesError ? { title: "Sites couldn't be loaded", message: sitesError, onRetry: () => setAttempt((n) => n + 1) } : undefined}
+                        empty={{ title: "No sites found", message: "Nothing matches this search." }}
+                    />
+                </Card>
+            </ListTemplate>
+        </div>
+    );
+}
+
+/** Admin-only pages about the whole platform, one tab each. */
+export default function PlatformPage() {
+    const history = useHistory();
+    const { pathname } = useLocation();
+    const tab = TABS.find((t) => t.path === pathname.replace(/\/$/, "")) || TABS[0];
+    document.title = `${tab.title} | Intastellar Consents | CMP`;
+
+    return (
         <>
             <StickyPageTitle title="Platform" />
             <div className="dashboard-content tw-flex tw-flex-col tw-gap-5">
-                <section aria-label="Install figures" className="tw-grid tw-gap-4" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))" }}>
-                    <KpiTile label="Websites" loading={statsLoading} error={tileError} value={formatNumber(stats?.Total)} />
-                    <KpiTile label="JavaScript" loading={statsLoading} error={tileError} value={formatPercent(shares.javascript, 2)} />
-                    <KpiTile label="WordPress" loading={statsLoading} error={tileError} value={formatPercent(shares.wordpress, 2)} />
-                    <KpiTile label="Platform unknown" loading={statsLoading} error={tileError} value={formatPercent(shares.unknown, 2)} hint="No platform stored for these sites" />
-                </section>
-                <Card title="New installs per month">
-                    {rows == null && !sitesError ? <p className="tw-m-0 tw-text-sm tw-text-text-muted">Loading…</p> : <InstallsChart months={months} />}
-                </Card>
-                <ListTemplate
-                    summary={rows ? `${formatNumber(sites.length)} sites. ${formatNumber(inactive)} without activity for more than 30 days.` : null}
-                    filters={(
-                        <FilterBar resultCount={rows ? formatNumber(visible.length) : null}>
-                            <FilterSearch label="Site or company" value={search} onChange={(v) => { setSearch(v); setPage(0); }} placeholder="Search" />
-                        </FilterBar>
-                    )}
-                    pagination={visible.length > PAGE_SIZE ? <Pagination page={page} pageSize={PAGE_SIZE} total={visible.length} onChange={setPage} label="Site pages" /> : null}
-                >
-                    <Card padding="none">
-                        <Table
-                            caption="Sites with the banner installed"
-                            columns={columns}
-                            rows={visible.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE)}
-                            getRowKey={(s) => s.domain}
-                            sort={sort}
-                            onSortChange={changeSort}
-                            loading={rows == null && !sitesError}
-                            error={sitesError ? { title: "Sites couldn't be loaded", message: sitesError, onRetry: () => setAttempt((n) => n + 1) } : undefined}
-                            empty={{ title: "No sites found", message: "Nothing matches this search." }}
-                        />
-                    </Card>
-                </ListTemplate>
+                <Tabs label="Platform sections" idPrefix="platform" tabs={TABS} value={tab.id} onChange={(id) => history.push(TABS.find((t) => t.id === id).path)} />
+                {TABS.map((t) => (
+                    <TabPanel key={t.id} idPrefix="platform" id={t.id} active={t.id === tab.id}>
+                        {t.id === "sales" ? <SalesFigures /> : <SitesOverview />}
+                    </TabPanel>
+                ))}
             </div>
         </>
     );
