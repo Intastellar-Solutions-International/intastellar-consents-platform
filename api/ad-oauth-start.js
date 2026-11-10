@@ -44,7 +44,7 @@ function buildState({ platform, domain, orgId, returnPath }) {
     return `${encoded}.${sig}`;
 }
 
-function buildAuthUrl(platform, state) {
+function buildAuthUrl(platform, state, { deletion = false } = {}) {
     const redirectUri = encodeURIComponent(REDIRECT_URI);
 
     switch (platform) {
@@ -69,7 +69,8 @@ function buildAuthUrl(platform, state) {
         case "google_analytics": {
             const clientId = process.env.GOOGLE_CLIENT_ID;
             if (!clientId) return null;
-            const scope = encodeURIComponent("https://www.googleapis.com/auth/analytics.readonly");
+            // Deletion is opt-in: most people connect Analytics only to read reports.
+            const scope = encodeURIComponent(`https://www.googleapis.com/auth/analytics.readonly${deletion ? " https://www.googleapis.com/auth/analytics.user.deletion" : ""}`);
             return `https://accounts.google.com/o/oauth2/v2/auth?client_id=${encodeURIComponent(clientId)}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}&state=${state}&access_type=offline&prompt=consent`;
         }
         case "google_search_console": {
@@ -103,7 +104,7 @@ export default async function handler(req, res) {
     // The orgId is embedded in an HMAC-signed state — the callback verifies
     // the signature, so no JWT validation is needed at this step.
     const state = buildState({ platform, domain, orgId, returnPath: returnPath || "" });
-    const authUrl = buildAuthUrl(platform, state);
+    const authUrl = buildAuthUrl(platform, state, { deletion: req.query.deletion === "1" });
 
     if (!authUrl) {
         return res.status(503).json({ error: `${platform} OAuth is not configured on this server` });

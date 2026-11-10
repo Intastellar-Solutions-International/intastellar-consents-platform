@@ -203,6 +203,59 @@ export async function ensureDsrTables(db) {
         )
     `);
     await db.query(`CREATE INDEX IF NOT EXISTS idx_dsr_events_request ON dsr_events (request_id, created_at)`);
+    await db.query(`ALTER TABLE dsr_requests ADD COLUMN IF NOT EXISTS source TEXT`);
+    await db.query(`
+        CREATE TABLE IF NOT EXISTS dsr_vendor_notifications (
+            id              BIGSERIAL PRIMARY KEY,
+            request_id      BIGINT NOT NULL REFERENCES dsr_requests (id) ON DELETE CASCADE,
+            organisation_id INTEGER NOT NULL,
+            vendor          TEXT NOT NULL,
+            status          TEXT NOT NULL DEFAULT 'to_notify',
+            notified_at     TIMESTAMPTZ,
+            method          TEXT,
+            contact         TEXT,
+            note            TEXT NOT NULL DEFAULT '',
+            privacy_url     TEXT,
+            deletion_ref    TEXT,
+            updated_by      TEXT,
+            updated_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+            UNIQUE (request_id, vendor)
+        )
+    `);
+    await db.query(`
+        CREATE TABLE IF NOT EXISTS dsr_vendor_credentials (
+            organisation_id INTEGER NOT NULL,
+            adapter         TEXT NOT NULL,
+            ciphertext      TEXT NOT NULL,
+            config          JSONB NOT NULL DEFAULT '{}',
+            updated_by      TEXT,
+            updated_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+            PRIMARY KEY (organisation_id, adapter)
+        )
+    `);
+    await db.query(`
+        CREATE TABLE IF NOT EXISTS dsr_public_forms (
+            token              TEXT PRIMARY KEY,
+            organisation_id    INTEGER NOT NULL,
+            company_name       TEXT NOT NULL,
+            domain             TEXT,
+            notify_email       TEXT,
+            default_regulation TEXT NOT NULL DEFAULT 'GDPR',
+            enabled            BOOLEAN NOT NULL DEFAULT TRUE,
+            created_by         TEXT,
+            created_at         TIMESTAMPTZ NOT NULL DEFAULT NOW()
+        )
+    `);
+    await db.query(`
+        CREATE TABLE IF NOT EXISTS dsr_public_submissions (
+            token_hash TEXT PRIMARY KEY,
+            form_token TEXT NOT NULL REFERENCES dsr_public_forms (token) ON DELETE CASCADE,
+            payload    JSONB NOT NULL,
+            ip_hash    TEXT,
+            created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+            expires_at TIMESTAMPTZ NOT NULL
+        )
+    `);
     ready = true;
 }
 
@@ -221,10 +274,10 @@ export async function getRequest(db, organisationId, id) {
     return { request: requestView(rows[0]), events };
 }
 
-const NEW_COLUMNS = ["domain", "requester_name", "requester_email", "consent_id", "type", "regulation", "received_at", "due_at", "assignee", "notes"];
+const NEW_COLUMNS = ["domain", "requester_name", "requester_email", "consent_id", "type", "regulation", "received_at", "due_at", "assignee", "notes", "source"];
 
 export async function createRequest(db, organisationId, actor, values) {
-    const params = [organisationId, actor, ...NEW_COLUMNS.map((c) => values[c])];
+    const params = [organisationId, actor, ...NEW_COLUMNS.map((c) => values[c] ?? null)];
     const { rows } = await db.query(
         `WITH created AS (
             INSERT INTO dsr_requests (organisation_id, created_by, ${NEW_COLUMNS.join(", ")})
@@ -271,7 +324,158 @@ export async function anonymizeExpiredRequests(db) {
           RETURNING id`
     );
     if (rows.length) {
-        await db.query(`UPDATE dsr_events SET actor = NULL, detail = '{}' WHERE request_id = ANY($1)`, [rows.map((r) => r.id)]);
+        const ids = [rows.map((r) => r.id)];
+        await db.query(`UPDATE dsr_events SET actor = NULL, detail = '{}' WHERE request_id = ANY($1)`, ids);
+        await db.query(`UPDATE dsr_vendor_notifications SET note = '', contact = NULL, deletion_ref = NULL, updated_by = NULL WHERE request_id = ANY($1)`, ids);
     }
+    await db.query(`DELETE FROM dsr_public_submissions WHERE expires_at < NOW()`);
     return rows.length;
+}
+
+// ── Telling recipients (GDPR Art. 19) ───────────────────────────────────────
+export const VENDOR_STATUSES = [
+    { id: "to_notify", label: "To notify" },
+    { id: "notified", label: "Notified" },
+    { id: "confirmed", label: "Confirmed" },
+    { id: "cannot_identify", label: "Can't identify the person" },
+    { id: "not_applicable", label: "Not applicable" },
+];
+const VENDOR_STATUS_IDS = new Set(VENDOR_STATUSES.map((s) => s.id));
+const NOTIFIABLE_TYPES = new Set(["erasure", "rectification", "restriction"]);
+// A CDN or font host holds no record of the person to correct or delete.
+const NO_RECORD_CATEGORIES = new Set(["cdn", "cmp"]);
+
+export const needsVendorNotice = (type) => NOTIFIABLE_TYPES.has(type);
+
+/** One row per vendor from a scan: { vendor, privacy_url }. */
+export function vendorsFromTransfers(transfers) {
+    const byVendor = new Map();
+    for (const t of transfers || []) {
+        if (NO_RECORD_CATEGORIES.has(t.category)) continue;
+        const vendor = t.service || t.host;
+        if (!byVendor.has(vendor)) byVendor.set(vendor, { vendor, privacy_url: t.privacyUrl || null });
+        else if (t.privacyUrl) byVendor.get(vendor).privacy_url ||= t.privacyUrl;
+    }
+    return [...byVendor.values()];
+}
+
+/**
+ * Fills the checklist once, from the domain's latest scan or else the
+ * organisation's vendor records. loadReclassify is passed in because this file
+ * also reaches the browser bundle, and the scanner code must not.
+ */
+export async function seedVendorNotifications(db, organisationId, request, loadReclassify) {
+    if (!needsVendorNotice(request.type) || request.anonymized_at) return;
+    const { rows: existing } = await db.query(`SELECT 1 FROM dsr_vendor_notifications WHERE request_id = $1 LIMIT 1`, [request.id]);
+    if (existing.length) return;
+    let vendors = [];
+    if (request.domain) {
+        const { rows } = await db.query(
+            `SELECT transfers FROM pre_consent_scans
+              WHERE (domain = $1 OR domain = 'www.' || $1) AND (organisation_id = $2 OR organisation_id IS NULL)
+                AND status = 'completed' AND COALESCE(scan_type, 'accept_all') <> 'first_visit'
+              ORDER BY scanned_at DESC LIMIT 1`,
+            [request.domain.replace(/^www\./, ""), organisationId]
+        );
+        if (rows[0]) {
+            vendors = vendorsFromTransfers((rows[0].transfers || []).map(await loadReclassify()));
+        }
+    }
+    if (!vendors.length) {
+        const { rows } = await db.query(`SELECT vendor FROM vendor_compliance WHERE organisation_id = $1`, [organisationId]).catch(() => ({ rows: [] }));
+        vendors = rows.map((r) => ({ vendor: r.vendor, privacy_url: null }));
+    }
+    for (const v of vendors) await addVendorNotification(db, organisationId, request.id, v);
+}
+
+export async function addVendorNotification(db, organisationId, requestId, { vendor, privacy_url = null }) {
+    await db.query(
+        `INSERT INTO dsr_vendor_notifications (request_id, organisation_id, vendor, privacy_url) VALUES ($1, $2, $3, $4)
+         ON CONFLICT (request_id, vendor) DO NOTHING`,
+        [requestId, organisationId, vendor, privacy_url]
+    );
+}
+
+export async function listVendorNotifications(db, organisationId, requestId) {
+    const { rows } = await db.query(`SELECT * FROM dsr_vendor_notifications WHERE request_id = $1 AND organisation_id = $2 ORDER BY vendor`, [requestId, organisationId]);
+    return rows;
+}
+
+/** Cleaned checklist edit, or { error }. Marking a vendor notified stamps the date. */
+export function validateVendorUpdate(body, current, now = new Date()) {
+    if (!VENDOR_STATUS_IDS.has(body.status)) return { error: "Unknown status" };
+    const told = body.status === "notified" || body.status === "confirmed";
+    return {
+        status: body.status,
+        notified_at: told ? current?.notified_at || now : null,
+        method: clean(body.method, MAX_NAME) || null,
+        contact: clean(body.contact, MAX_NAME) || null,
+        note: clean(body.note, MAX_TEXT),
+    };
+}
+
+export async function saveVendorNotification(db, organisationId, actor, requestId, vendor, values) {
+    const { rows } = await db.query(
+        `WITH updated AS (
+            UPDATE dsr_vendor_notifications
+               SET status = $4, notified_at = $5, method = $6, contact = $7, note = $8, deletion_ref = COALESCE($9, deletion_ref), updated_by = $10, updated_at = NOW()
+             WHERE request_id = $1 AND organisation_id = $2 AND vendor = $3
+            RETURNING *
+         ), logged AS (
+            INSERT INTO dsr_events (request_id, organisation_id, actor, action, detail)
+            SELECT request_id, organisation_id, $10, 'vendor_update', jsonb_build_object('vendor', vendor, 'status', status) FROM updated
+         )
+         SELECT * FROM updated`,
+        [requestId, organisationId, vendor, values.status, values.notified_at, values.method, values.contact, values.note, values.deletion_ref ?? null, actor]
+    );
+    return rows[0] || null;
+}
+
+const MESSAGE_ACTION = {
+    erasure: { subject: "erasure", ask: "erase the personal data you hold about this person, and confirm when that is done (GDPR Art. 17 and 19)" },
+    rectification: { subject: "rectification", ask: "correct the personal data you hold about this person. Please contact us for the corrected details (GDPR Art. 16 and 19)" },
+    restriction: { subject: "restriction of processing", ask: "restrict processing of the personal data you hold about this person, and confirm when that is done (GDPR Art. 18 and 19)" },
+};
+
+/** Ready-to-send notice. Holds only what the vendor needs to find the person. */
+export function vendorMessage(request, vendor, companyName) {
+    const action = MESSAGE_ACTION[request.type] || MESSAGE_ACTION.erasure;
+    const ids = [request.requester_email && `Email: ${request.requester_email}`, request.consent_id && `Consent ID: ${request.consent_id}`].filter(Boolean);
+    return {
+        subject: `Data subject request: ${action.subject}`,
+        body: [
+            `Hello ${vendor} privacy team,`,
+            "",
+            `${companyName || "We"} received a data subject request from a person whose data you may process on our behalf or receive from us. Please ${action.ask}.`,
+            "",
+            ...ids,
+            "",
+            "If you can't identify this person from these details, please let us know.",
+            "",
+            "Kind regards,",
+            companyName || "",
+        ].join("\n").trim(),
+    };
+}
+
+// ── Public request form ─────────────────────────────────────────────────────
+export const PUBLIC_REGIONS = [
+    { id: "GDPR", label: "EU, EEA or UK" },
+    { id: "CCPA", label: "California, USA" },
+    { id: "LGPD", label: "Brazil" },
+    { id: "PIPEDA", label: "Canada" },
+    { id: "default", label: "Somewhere else" },
+];
+const MIN_FILL_MS = 3000;
+
+/** Cleaned public submission, or { error } for the person, or { spam: true } to discard silently. */
+export function validatePublicSubmission(body, form, now = Date.now()) {
+    if (clean(body?.website, 50)) return { spam: true };
+    const started = Number(body?.started);
+    if (!started || now - started < MIN_FILL_MS) return { spam: true };
+    const requester_email = clean(body.email, MAX_NAME).toLowerCase();
+    if (!isEmail(requester_email)) return { error: "Please enter a valid email address." };
+    if (!TYPE_IDS.has(body.type)) return { error: "Please choose what you'd like us to do." };
+    const regulation = DEADLINE_RULES[body.region] ? body.region : form.default_regulation;
+    return { requester_email, requester_name: clean(body.name, MAX_NAME) || null, type: body.type, regulation, notes: clean(body.message, MAX_TEXT) };
 }
