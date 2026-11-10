@@ -477,14 +477,14 @@ export function validateLogo(value) {
     return value;
 }
 
-/** Cleaned public submission, or { error } for the person, or { spam: true } to discard silently. */
+/** Cleaned public submission, { error } with a key from _dsr-public-i18n.js, or { spam: true } to discard silently. */
 export function validatePublicSubmission(body, form, now = Date.now()) {
     if (clean(body?.website, 50)) return { spam: true };
     const started = Number(body?.started);
     if (!started || now - started < MIN_FILL_MS) return { spam: true };
     const requester_email = clean(body.email, MAX_NAME).toLowerCase();
-    if (!isEmail(requester_email)) return { error: "Please enter a valid email address." };
-    if (!TYPE_IDS.has(body.type)) return { error: "Please choose what you'd like us to do." };
+    if (!isEmail(requester_email)) return { error: "error_email" };
+    if (!TYPE_IDS.has(body.type)) return { error: "error_type" };
     const regulation = DEADLINE_RULES[body.region] ? body.region : form.default_regulation;
     return { requester_email, requester_name: clean(body.name, MAX_NAME) || null, type: body.type, regulation, notes: clean(body.message, MAX_TEXT) };
 }
