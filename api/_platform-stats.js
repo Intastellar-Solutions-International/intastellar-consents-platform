@@ -8,6 +8,7 @@ import { FIRST_VISIT, NOT_FIRST_VISIT, SCAN_TYPE, ensureScanColumns } from "./_s
 
 /** A percentage on fewer sites says too little to quote, and could describe a single customer. */
 export const MIN_SITES = 30;
+export const MIN_RECORDS = 1000;
 const ACTIVE_DAYS = 30;
 const GDPR_API = "https://apis.intastellarsolutions.com/analytics/gdpr";
 // Short enough that the rest of the snapshot still saves when this query is slow.
@@ -16,7 +17,7 @@ const TRACKING = new Set(["advertising", "analytics", "fingerprinting", "social"
 const OWN_OR_TEST = /^localhost$|^[\d.]+$|\.(test|local)$|(^|\.)intastellar[a-z]*\.|\.vercel\.app$/i;
 
 const PUBLIC_KEYS = [
-    "visitors_30d", "consent_records_30d", "sites_installed", "sites_active", "sites_scanned", "tracking_services_found", "cookies_found",
+    "visitors_30d", "consent_records_30d", "accept_all_pct", "custom_choice_pct", "decline_all_pct", "mobile_pct", "countries_30d", "sites_installed", "sites_active", "sites_scanned", "tracking_services_found", "cookies_found",
     "median_tracking_services", "us_transfer_pct", "advertising_pct", "pre_consent_pct", "pre_consent_sites",
 ];
 
@@ -85,9 +86,27 @@ export function summarizeInstalls(entries, now = Date.now()) {
     };
 }
 
-/** getInteractions as Total (consent rows, one per page load with a stored choice) and activeUsers (distinct visitors). No data comes back as zeros, which means unknown here. */
+/**
+ * getInteractions as Total (consent rows, one per page load with a stored choice) and activeUsers
+ * (distinct visitors). No data comes back as zeros, which means unknown here. Shares are of rows,
+ * so a returning visitor counts more than once.
+ */
 export function summarizeConsents(body) {
-    return { visitors_30d: Number(body?.activeUsers) || null, consent_records_30d: Number(body?.Total) || null };
+    const records = Number(body?.Total) || null;
+    const counts = body?.interactions_number;
+    const share = (part, whole) => (part != null && whole >= MIN_RECORDS ? Math.round((Number(part) / whole) * 100) : null);
+    const devices = body?.device_type;
+    const knownDevices = (Number(devices?.mobile) || 0) + (Number(devices?.tablet) || 0) + (Number(devices?.desktop) || 0);
+    const countries = list(body?.countryBreakdown).filter((c) => c?.num?.total > 0 && !["Unknown", "EU"].includes(c.country)).length;
+    return {
+        visitors_30d: Number(body?.activeUsers) || null,
+        consent_records_30d: records,
+        accept_all_pct: share(counts?.accept, records),
+        custom_choice_pct: share(counts?.partial, records),
+        decline_all_pct: share(counts?.decline, records),
+        mobile_pct: share(devices?.mobile, knownDevices),
+        countries_30d: countries || null,
+    };
 }
 
 function serviceHeaders() {
@@ -199,6 +218,7 @@ export async function adminView(db) {
         publishable: latest ? publicFigures(latest.figures) : null,
         published: await readPublished(db),
         min_sites: MIN_SITES,
+        min_records: MIN_RECORDS,
     };
 }
 
