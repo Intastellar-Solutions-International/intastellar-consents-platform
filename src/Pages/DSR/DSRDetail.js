@@ -144,7 +144,7 @@ export default function DSRDetail() {
                         <Fact label="Regulation">{FRAMEWORK_LABELS[request.regulation] || request.regulation}</Fact>
                         <Fact label="Assignee">{request.assignee || "Unassigned"}</Fact>
                         <Fact label="Identity verified">{request.identity_verified_at ? formatDate(request.identity_verified_at) : "Not yet"}</Fact>
-                        {request.source === "public_form" && <Fact label="Received through">Public form, email confirmed</Fact>}
+                        {request.source === "public_form" && <Fact label="Received through">Public form, email confirmed. <Link to={`/${id}/reports/dsr?setup=form`} className="tw-text-accent-strong">Form settings</Link></Fact>}
                         {request.outcome && <div className="dsr-facts__wide"><Fact label="How it was answered">{request.outcome}</Fact></div>}
                         {request.rejection_reason && <div className="dsr-facts__wide"><Fact label="Why it was rejected">{request.rejection_reason}</Fact></div>}
                         {request.notes && <div className="dsr-facts__wide"><Fact label="Internal notes">{request.notes}</Fact></div>}

@@ -15,6 +15,7 @@ const PATHS = {
     "x-circle": <><circle cx="12" cy="12" r="9" /><path d="m9 9 6 6M15 9l-6 6" /></>,
     "alert-triangle": <><path d="M12 3 2 20h20L12 3Z" /><path d="M12 10v4" /><circle cx="12" cy="17.3" r="0.6" fill="currentColor" stroke="none" /></>,
     "alert-octagon": <><path d="M8 2h8l6 6v8l-6 6H8l-6-6V8l6-6Z" /><path d="M12 7v6" /><circle cx="12" cy="16.5" r="0.6" fill="currentColor" stroke="none" /></>,
+    "plus": <><path d="M12 5v14" /><path d="M5 12h14" /></>,
     "upload": <><path d="M12 16V4" /><path d="m7 9 5-5 5 5" /><path d="M4 20h16" /></>,
     "info": <><circle cx="12" cy="12" r="9" /><path d="M12 11v5" /><circle cx="12" cy="8" r="0.6" fill="currentColor" stroke="none" /></>,
     "minus-circle": <><circle cx="12" cy="12" r="9" /><path d="M8 12h8" /></>,

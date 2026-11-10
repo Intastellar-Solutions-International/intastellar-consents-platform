@@ -13,6 +13,8 @@ import "./Style.css";
 const { useState, useEffect, useMemo } = React;
 const useParams = window.ReactRouterDOM.useParams;
 const useHistory = window.ReactRouterDOM.useHistory;
+const useLocation = window.ReactRouterDOM.useLocation;
+const SETUP_SECTIONS = ["form", "connections"];
 
 const PAGE_SIZE = 25;
 const today = () => new Date().toISOString().slice(0, 10);
@@ -103,7 +105,11 @@ export default function DSR() {
     const [error, setError] = useState(null);
     const [attempt, setAttempt] = useState(0);
     const [drawer, setDrawer] = useState(false);
-    const [setup, setSetup] = useState(null); // null | "form" | "connections"
+    const location = useLocation();
+    // In the address so other pages can link straight to these settings.
+    const requested = new URLSearchParams(location.search).get("setup");
+    const setup = SETUP_SECTIONS.includes(requested) ? requested : null; // null | "form" | "connections"
+    const setSetup = (section) => history.replace({ pathname: location.pathname, search: section ? `?setup=${section}` : "" });
     const [status, setStatus] = useState("all");
     const [type, setType] = useState("all");
     const [query, setQuery] = useState("");

@@ -1,4 +1,4 @@
-import { Badge, Button, FileDropzone } from "../../Components/ui";
+import { Badge, Button, FileDropzone, Modal } from "../../Components/ui";
 import { readCachedDomains } from "../../Functions/cachedDomains.js";
 import { DEADLINE_RULES } from "../../Functions/dsr.js";
 import { FRAMEWORK_LABELS } from "../../Functions/jurisdictionEngine.js";
@@ -134,99 +134,163 @@ function CustomDomain({ form, access, onData }) {
     );
 }
 
-function FormsPanel({ forms, customDomains, onData, busy, setBusy }) {
-    const [draft, setDraft] = useState({ company_name: "", domain: "", notify_email: "", default_regulation: "GDPR", logo: "" });
-    const [error, setError] = useState(null);
-    const [logoError, setLogoError] = useState({}); // by form token, "new" for the create form
-    const [copied, setCopied] = useState(null);
-    const domains = useMemo(readCachedDomains, []);
-    const set = (key) => (e) => { const { value } = e.target; setDraft((d) => ({ ...d, [key]: value })); };
+/** The settings shared by creating and editing a form. */
+function FormFields({ values, onChange, domains }) {
+    const set = (key) => (e) => { const { value } = e.target; onChange((v) => ({ ...v, [key]: value })); };
+    const domainOptions = values.domain && !domains.includes(values.domain) ? [values.domain, ...domains] : domains;
+    return (
+        <div className="dsr-form-grid">
+            <label className={LABEL}>Company name people will see<input className={FIELD} required maxLength={255} value={values.company_name} onChange={set("company_name")} /></label>
+            <label className={LABEL}>Domain
+                <select className={FIELD} value={values.domain} onChange={set("domain")} style={{ colorScheme: "dark" }}>
+                    <option value="">Not domain-specific</option>
+                    {domainOptions.map((d) => <option key={d} value={d}>{d}</option>)}
+                </select>
+            </label>
+            <label className={LABEL}>Notify this email<input type="email" className={FIELD} maxLength={255} value={values.notify_email} onChange={set("notify_email")} /></label>
+            <label className={LABEL}>Regulation if the visitor is elsewhere
+                <select className={FIELD} value={values.default_regulation} onChange={set("default_regulation")} style={{ colorScheme: "dark" }}>
+                    {Object.keys(DEADLINE_RULES).map((r) => <option key={r} value={r}>{FRAMEWORK_LABELS[r] || r}</option>)}
+                </select>
+            </label>
+        </div>
+    );
+}
 
-    async function run(body, after) {
-        setBusy(true);
-        setError(null);
+function CreateForm({ domains, onData, onDone }) {
+    const [values, setValues] = useState({ company_name: "", domain: "", notify_email: "", default_regulation: "GDPR", logo: "" });
+    const [state, setState] = useState(null); // null | "saving" | error text
+    async function save(e) {
+        e.preventDefault();
+        setState("saving");
         try {
-            onData(await postDsr(body));
-            if (after) after();
-        } catch (e) {
-            setError(e.message);
-        } finally {
-            setBusy(false);
+            const data = await postDsr({ action: "form_save", ...values });
+            onData(data);
+            onDone(values.logo && !data.forms[0]?.logo_data ? "The form was created, but the logo wasn't saved. The server may need updating." : null);
+        } catch (err) {
+            setState(err.message);
         }
     }
+    return (
+        <form className="tw-flex tw-flex-col tw-gap-4" onSubmit={save}>
+            <FormFields values={values} onChange={setValues} domains={domains} />
+            <LogoDropzone logo={values.logo} onLogo={(logo) => setValues((v) => ({ ...v, logo }))} onRemove={() => setValues((v) => ({ ...v, logo: "" }))} />
+            {state && state !== "saving" && <p role="alert" className="tw-m-0 tw-text-sm tw-text-danger-text">{state}</p>}
+            <div className="tw-flex tw-gap-2">
+                <Button type="submit" variant="primary" loading={state === "saving"}>Create form</Button>
+                <Button variant="ghost" onClick={() => onDone(null)}>Cancel</Button>
+            </div>
+        </form>
+    );
+}
+
+function EditForm({ form, domains, onData, onDone }) {
+    const [values, setValues] = useState({ company_name: form.company_name, domain: form.domain || "", notify_email: form.notify_email || "", default_regulation: form.default_regulation || "GDPR" });
+    const [state, setState] = useState(null); // null | "saving" | error text
+    const [logoState, setLogoState] = useState(null); // null | "saving" | error text
+
     // A success reply doesn't prove the logo was stored, so check the form that comes back.
-    async function saveLogo(form, logo) {
-        setBusy(true);
-        setLogoError((all) => ({ ...all, [form.token]: null }));
+    async function saveLogo(logo) {
+        setLogoState("saving");
         try {
-            const data = await postDsr({ action: "form_save", ...form, logo_data: undefined, logo });
+            const data = await postDsr({ action: "form_save", token: form.token, enabled: form.enabled, company_name: form.company_name, domain: form.domain, notify_email: form.notify_email, default_regulation: form.default_regulation, logo });
             onData(data);
             const saved = data.forms.find((f) => f.token === form.token);
-            if (logo && !saved?.logo_data) setLogoError((all) => ({ ...all, [form.token]: "The logo wasn't saved. The server may need updating." }));
-        } catch (e) {
-            setLogoError((all) => ({ ...all, [form.token]: e.message }));
-        } finally {
-            setBusy(false);
+            setLogoState(logo && !saved?.logo_data ? "The logo wasn't saved. The server may need updating." : null);
+        } catch (err) {
+            setLogoState(err.message);
         }
     }
+    async function save(e) {
+        e.preventDefault();
+        setState("saving");
+        try {
+            onData(await postDsr({ action: "form_save", token: form.token, enabled: form.enabled, ...values }));
+            onDone();
+        } catch (err) {
+            setState(err.message);
+        }
+    }
+    return (
+        <form className="tw-flex tw-flex-col tw-gap-4" onSubmit={save}>
+            <FormFields values={values} onChange={setValues} domains={domains} />
+            <p className="tw-m-0 tw-text-xs tw-text-text-muted">The visitor's location sets the regulation. This one applies when they choose "Somewhere else". Leave the email empty for no notifications.</p>
+            <LogoDropzone logo={form.logo_data} busy={logoState === "saving"} error={logoState && logoState !== "saving" ? logoState : null} onLogo={saveLogo} onRemove={() => saveLogo("")} />
+            {state && state !== "saving" && <p role="alert" className="tw-m-0 tw-text-sm tw-text-danger-text">{state}</p>}
+            <div className="tw-flex tw-gap-2">
+                <Button type="submit" variant="primary" loading={state === "saving"}>Save changes</Button>
+                <Button variant="ghost" onClick={onDone}>Cancel</Button>
+            </div>
+        </form>
+    );
+}
 
-    async function createForm() {
+function FormRow({ form, onOpen, onToggle, busy }) {
+    const [copied, setCopied] = useState(false);
+    const copy = () => navigator.clipboard.writeText(formLink(form)).then(() => { setCopied(true); setTimeout(() => setCopied(false), 2000); });
+    return (
+        <li className="tw-flex tw-flex-col tw-gap-2 tw-p-3 tw-bg-bg-sunken tw-rounded-lg">
+            <div className="tw-flex tw-items-center tw-gap-3">
+                {form.logo_data && <img src={form.logo_data} alt="" className="dsr-logo-preview" />}
+                <div className="tw-flex-1 tw-min-w-0">
+                    <span className="tw-block tw-text-sm tw-font-semibold tw-text-text-primary tw-break-words">{form.company_name}</span>
+                    {form.domain && <span className="tw-block tw-text-xs tw-text-text-muted tw-break-all">{form.domain}</span>}
+                </div>
+                {form.enabled ? <Badge tone="success" icon="check-circle">Live</Badge> : <Badge tone="neutral" icon="minus-circle">Off</Badge>}
+            </div>
+            <code className="tw-text-xs tw-break-all">{formLink(form)}</code>
+            <p className="tw-m-0 tw-text-xs tw-text-text-muted">Notifies {form.notify_email || "nobody"} · {FRAMEWORK_LABELS[form.default_regulation] || form.default_regulation} if the visitor is elsewhere</p>
+            {form.custom_domain && form.custom_domain_status !== "active" && <div><Badge tone="warning" icon="clock">{form.custom_domain}: waiting for DNS</Badge></div>}
+            <div className="tw-flex tw-flex-wrap tw-gap-1">
+                <Button size="sm" variant="secondary" onClick={copy}>{copied ? "Copied" : "Copy link"}</Button>
+                <Button size="sm" variant="ghost" onClick={() => onOpen({ type: "edit", token: form.token })}>Edit</Button>
+                <Button size="sm" variant="ghost" onClick={() => onOpen({ type: "domain", token: form.token })}>Custom domain</Button>
+                <Button size="sm" variant="ghost" disabled={busy} onClick={onToggle}>{form.enabled ? "Turn off" : "Turn on"}</Button>
+            </div>
+        </li>
+    );
+}
+
+function FormsPanel({ forms, customDomains, onData, busy, setBusy }) {
+    const [modal, setModal] = useState(null); // null | { type: "create" } | { type: "edit" | "domain", token }
+    const [error, setError] = useState(null);
+    const domains = useMemo(readCachedDomains, []);
+    const open = modal?.token ? forms.find((f) => f.token === modal.token) : null;
+    const close = () => setModal(null);
+
+    async function toggle(form) {
         setBusy(true);
         setError(null);
         try {
-            const data = await postDsr({ action: "form_save", ...draft });
-            onData(data);
-            if (draft.logo && !data.forms[0]?.logo_data) setError("The form was created, but the logo wasn't saved. The server may need updating.");
-            setDraft((d) => ({ ...d, company_name: "", notify_email: "", logo: "" }));
+            onData(await postDsr(form.enabled ? { action: "form_disable", token: form.token } : { action: "form_save", ...form, logo_data: undefined, enabled: true }));
         } catch (e) {
             setError(e.message);
         } finally {
             setBusy(false);
         }
     }
-
-    const copy = (token) => navigator.clipboard.writeText(formLink(forms.find((f) => f.token === token))).then(() => { setCopied(token); setTimeout(() => setCopied(null), 2000); });
+    const title = modal?.type === "create" ? "New form" : modal?.type === "edit" ? `Edit ${open?.company_name || "form"}` : `Custom domain for ${open?.company_name || "form"}`;
 
     return (
-        <div className="tw-flex tw-flex-col tw-gap-5">
-            <p className="tw-m-0 tw-text-sm tw-text-text-muted">Link to this page from your privacy policy. People confirm their email before a request reaches this list, and the deadline runs from the day they sent it.</p>
-            {forms.map((f) => (
-                <div key={f.token} className="tw-flex tw-flex-col tw-gap-2 tw-p-3 tw-bg-bg-sunken tw-rounded-lg">
-                    <div className="tw-flex tw-items-center tw-justify-between tw-gap-2">
-                        <span className="tw-text-sm tw-font-semibold tw-text-text-primary">{f.company_name}{f.domain ? ` · ${f.domain}` : ""}</span>
-                        {f.enabled ? <Badge tone="success" icon="check-circle">Live</Badge> : <Badge tone="neutral" icon="minus-circle">Off</Badge>}
+        <div className="tw-flex tw-flex-col tw-gap-4">
+            <div className="tw-flex tw-items-start tw-justify-between tw-gap-3">
+                <p className="tw-m-0 tw-text-sm tw-text-text-muted">Link to a form from your privacy policy. People confirm their email before a request reaches your list.</p>
+                <Button variant="primary" icon="plus" className="tw-flex-shrink-0" onClick={() => setModal({ type: "create" })}>New form</Button>
+            </div>
+            {error && <p role="alert" className="tw-m-0 tw-text-sm tw-text-danger-text">{error}</p>}
+            {forms.length === 0
+                ? <p className="tw-m-0 tw-text-sm tw-text-text-muted">No forms yet. Create one to start receiving requests.</p>
+                : <ul className="tw-m-0 tw-p-0 tw-list-none tw-flex tw-flex-col tw-gap-3">{forms.map((f) => <FormRow key={f.token} form={f} busy={busy} onOpen={setModal} onToggle={() => toggle(f)} />)}</ul>}
+            <Modal open={Boolean(modal)} onClose={close} title={title}>
+                {modal?.type === "create" && <CreateForm domains={domains} onData={onData} onDone={(message) => { setError(message); close(); }} />}
+                {modal?.type === "edit" && open && <EditForm key={open.token} form={open} domains={domains} onData={onData} onDone={close} />}
+                {modal?.type === "domain" && open && (
+                    <div className="tw-flex tw-flex-col tw-gap-3">
+                        <p className="tw-m-0 tw-text-sm tw-text-text-muted">Show this form on your own subdomain, such as privacy.yourcompany.com. Root domains can't be used.</p>
+                        <CustomDomain form={open} access={customDomains} onData={onData} />
                     </div>
-                    <code className="tw-text-xs tw-break-all">{formLink(f)}</code>
-                    <LogoDropzone logo={f.logo_data} busy={busy} error={logoError[f.token]} onLogo={(logo) => saveLogo(f, logo)} onRemove={() => saveLogo(f, "")} />
-                    <CustomDomain form={f} access={customDomains} onData={onData} />
-                    <div className="tw-flex tw-flex-wrap tw-gap-2">
-                        <Button size="sm" variant="secondary" onClick={() => copy(f.token)}>{copied === f.token ? "Copied" : "Copy link"}</Button>
-                        {f.enabled
-                            ? <Button size="sm" variant="ghost" disabled={busy} onClick={() => run({ action: "form_disable", token: f.token })}>Turn off</Button>
-                            : <Button size="sm" variant="ghost" disabled={busy} onClick={() => run({ action: "form_save", ...f, logo_data: undefined, enabled: true })}>Turn on</Button>}
-                    </div>
-                </div>
-            ))}
-            <form className="tw-flex tw-flex-col tw-gap-3" onSubmit={(e) => { e.preventDefault(); createForm(); }}>
-                <div className="dsr-form-grid">
-                    <label className={LABEL}>Company name people will see<input className={FIELD} required maxLength={255} value={draft.company_name} onChange={set("company_name")} /></label>
-                    <label className={LABEL}>Domain
-                        <select className={FIELD} value={draft.domain} onChange={set("domain")} style={{ colorScheme: "dark" }}>
-                            <option value="">Not domain-specific</option>
-                            {domains.map((d) => <option key={d} value={d}>{d}</option>)}
-                        </select>
-                    </label>
-                    <label className={LABEL}>Notify this email<input type="email" className={FIELD} maxLength={255} value={draft.notify_email} onChange={set("notify_email")} /></label>
-                    <label className={LABEL}>Regulation if unsure
-                        <select className={FIELD} value={draft.default_regulation} onChange={set("default_regulation")} style={{ colorScheme: "dark" }}>
-                            {Object.keys(DEADLINE_RULES).map((r) => <option key={r} value={r}>{FRAMEWORK_LABELS[r] || r}</option>)}
-                        </select>
-                    </label>
-                </div>
-                <LogoDropzone logo={draft.logo} error={logoError.new} onLogo={(logo) => setDraft((d) => ({ ...d, logo }))} onRemove={() => setDraft((d) => ({ ...d, logo: "" }))} />
-                {error && <p role="alert" className="tw-m-0 tw-text-sm tw-text-danger-text">{error}</p>}
-                <div><Button type="submit" variant="primary" loading={busy}>Create form</Button></div>
-            </form>
+                )}
+            </Modal>
         </div>
     );
 }
