@@ -214,7 +214,7 @@
       "memory": 256,
       "maxDuration": 10
     },
-    "api/cron-analytics-alerts.js": {
+    "api/cron-analytics-*.js": {
       "memory": 256,
       "maxDuration": 60
     },
@@ -222,7 +222,7 @@
       "memory": 256,
       "maxDuration": 10
     },
-    "api/cron-analytics-scheduled-reports.js": {
+    "api/*platform-stats.js": {
       "memory": 256,
       "maxDuration": 60
     },

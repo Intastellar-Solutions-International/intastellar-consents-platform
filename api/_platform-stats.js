@@ -11,8 +11,8 @@ export const MIN_SITES = 30;
 export const MIN_RECORDS = 1000;
 const ACTIVE_DAYS = 30;
 const GDPR_API = "https://apis.intastellarsolutions.com/analytics/gdpr";
-// Short enough that the rest of the snapshot still saves when this query is slow.
-const CONSENT_TIMEOUT_MS = 12000;
+// Inside the 60 second function limit in vercel.json, so the rest of the snapshot still saves when this query is slow.
+const CONSENT_TIMEOUT_MS = 50000;
 const TRACKING = new Set(["advertising", "analytics", "fingerprinting", "social"]);
 const OWN_OR_TEST = /^localhost$|^[\d.]+$|\.(test|local)$|(^|\.)intastellar[a-z]*\.|\.vercel\.app$/i;
 
@@ -134,7 +134,8 @@ async function fetchConsents(fetchImpl, authorization, now) {
     const day = (daysAgo) => new Date(now - daysAgo * 86400000).toISOString().slice(0, 10);
     const response = await fetchImpl(`${GDPR_API}/getInteractions`, {
         method: "POST",
-        headers: { ...apiHeaders(authorization), Domains: "combined view", FromDate: day(30), ToDate: day(1) },
+        // Nothing here uses the comparison period, so it's kept to one day instead of the default 30.
+        headers: { ...apiHeaders(authorization), Domains: "combined view", FromDate: day(30), ToDate: day(1), "X-Compare-Start": day(31), "X-Compare-End": day(31) },
         body: "{}",
         signal: AbortSignal.timeout(CONSENT_TIMEOUT_MS),
     });
