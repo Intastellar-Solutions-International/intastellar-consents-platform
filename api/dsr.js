@@ -3,7 +3,7 @@ import { requireMember } from "./_member-auth.js";
 import { randomBytes } from "crypto";
 import {
     ensureDsrTables, listRequests, getRequest, createRequest, saveAction, validateNewRequest, applyAction,
-    seedVendorNotifications, listVendorNotifications, addVendorNotification, validateVendorUpdate, saveVendorNotification, needsVendorNotice, validateLogo, markRequestOpened, applyConsentToVendors, DEADLINE_RULES,
+    seedVendorNotifications, listVendorNotifications, addVendorNotification, validateVendorUpdate, saveVendorNotification, needsVendorNotice, validateLogo, validateGtmId, markRequestOpened, applyConsentToVendors, DEADLINE_RULES,
 } from "./_dsr.js";
 import { organisationHasPlan } from "./_stripe.js";
 import { fetchConsentRecord } from "./_dsr-consent.js";
@@ -100,7 +100,7 @@ async function vendorDelete(db, organisationId, email, request, vendor, identifi
 }
 
 async function setup(db, organisationId) {
-    const { rows: forms } = await db.query(`SELECT token, company_name, domain, notify_email, default_regulation, enabled, logo_data, custom_domain, custom_domain_status, custom_domain_dns, created_at FROM dsr_public_forms WHERE organisation_id = $1 ORDER BY created_at DESC`, [organisationId]);
+    const { rows: forms } = await db.query(`SELECT token, company_name, domain, notify_email, default_regulation, enabled, logo_data, gtm_id, custom_domain, custom_domain_status, custom_domain_dns, created_at FROM dsr_public_forms WHERE organisation_id = $1 ORDER BY created_at DESC`, [organisationId]);
     const { rows: stored } = await db.query(`SELECT adapter, config, updated_at FROM dsr_vendor_credentials WHERE organisation_id = $1`, [organisationId]);
     const byId = Object.fromEntries(stored.map((r) => [r.adapter, r]));
     const connectors = Object.entries(ADAPTERS).filter(([, a]) => a.kind === "key").map(([id, a]) => ({ id, label: a.label, fields: a.fields, regions: Boolean(a.regions), connected: Boolean(byId[id]), region: byId[id]?.config?.region || "us" }));
@@ -121,14 +121,18 @@ async function saveForm(db, organisationId, email, body) {
     const keepLogo = body.logo === undefined;
     const logo = keepLogo || body.logo === "" ? null : validateLogo(body.logo);
     if (logo?.error) return { status: 400, error: logo.error };
+    const keepGtm = body.gtm_id === undefined;
+    const gtm = keepGtm || !String(body.gtm_id ?? "").trim() ? null : validateGtmId(body.gtm_id);
+    if (gtm?.error) return { status: 400, error: gtm.error };
     await db.query(
-        `INSERT INTO dsr_public_forms (token, organisation_id, company_name, domain, notify_email, default_regulation, enabled, created_by, logo_data)
-         VALUES ($1, $2, $3, $4, $5, $6, COALESCE($7, TRUE), $8, $9)
+        `INSERT INTO dsr_public_forms (token, organisation_id, company_name, domain, notify_email, default_regulation, enabled, created_by, logo_data, gtm_id)
+         VALUES ($1, $2, $3, $4, $5, $6, COALESCE($7, TRUE), $8, $9, $11)
          ON CONFLICT (token) DO UPDATE SET company_name = EXCLUDED.company_name, domain = EXCLUDED.domain, notify_email = EXCLUDED.notify_email,
                 default_regulation = EXCLUDED.default_regulation, enabled = EXCLUDED.enabled,
-                logo_data = CASE WHEN $10 THEN dsr_public_forms.logo_data ELSE EXCLUDED.logo_data END
+                logo_data = CASE WHEN $10 THEN dsr_public_forms.logo_data ELSE EXCLUDED.logo_data END,
+                gtm_id = CASE WHEN $12 THEN dsr_public_forms.gtm_id ELSE EXCLUDED.gtm_id END
           WHERE dsr_public_forms.organisation_id = EXCLUDED.organisation_id`,
-        [token, organisationId, company_name, short(body.domain) || null, notify_email, default_regulation, typeof body.enabled === "boolean" ? body.enabled : null, email, logo, keepLogo]
+        [token, organisationId, company_name, short(body.domain) || null, notify_email, default_regulation, typeof body.enabled === "boolean" ? body.enabled : null, email, logo, keepLogo, gtm, keepGtm]
     );
     return {};
 }

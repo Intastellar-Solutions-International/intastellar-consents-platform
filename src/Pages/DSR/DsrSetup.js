@@ -184,7 +184,7 @@ function CreateForm({ domains, onData, onDone }) {
 }
 
 function EditForm({ form, domains, onData, onDone }) {
-    const [values, setValues] = useState({ company_name: form.company_name, domain: form.domain || "", notify_email: form.notify_email || "", default_regulation: form.default_regulation || "GDPR" });
+    const [values, setValues] = useState({ company_name: form.company_name, domain: form.domain || "", notify_email: form.notify_email || "", default_regulation: form.default_regulation || "GDPR", gtm_id: form.gtm_id || "" });
     const [state, setState] = useState(null); // null | "saving" | error text
     const [logoState, setLogoState] = useState(null); // null | "saving" | error text
 
@@ -214,6 +214,10 @@ function EditForm({ form, domains, onData, onDone }) {
         <form className="tw-flex tw-flex-col tw-gap-4" onSubmit={save}>
             <FormFields values={values} onChange={setValues} domains={domains} />
             <p className="tw-m-0 tw-text-xs tw-text-text-muted">The visitor's location sets the regulation. This one applies when they choose "Somewhere else". Leave the email empty for no notifications.</p>
+            <label className={LABEL}>Google Tag Manager ID (optional)
+                <input className={FIELD} placeholder="GTM-ABC1234" maxLength={20} value={values.gtm_id} onChange={(e) => { const { value } = e.target; setValues((v) => ({ ...v, gtm_id: value })); }} />
+                <span className="tw-mt-1">Only loads on this form's custom domain, as soon as the page opens. The container must include your cookie banner, with every other tag waiting for consent. Tags can read what people type, so don't add any that collect form fields.{!(form.custom_domain && form.custom_domain_status === "active") && " This form has no live custom domain yet, so tracking won't run."}</span>
+            </label>
             <LogoDropzone logo={form.logo_data} busy={logoState === "saving"} error={logoState && logoState !== "saving" ? logoState : null} onLogo={saveLogo} onRemove={() => saveLogo("")} />
             {state && state !== "saving" && <p role="alert" className="tw-m-0 tw-text-sm tw-text-danger-text">{state}</p>}
             <div className="tw-flex tw-gap-2">
@@ -238,7 +242,7 @@ function FormRow({ form, onOpen, onToggle, busy }) {
                 {form.enabled ? <Badge tone="success" icon="check-circle">Live</Badge> : <Badge tone="neutral" icon="minus-circle">Off</Badge>}
             </div>
             <code className="tw-text-xs tw-break-all">{formLink(form)}</code>
-            <p className="tw-m-0 tw-text-xs tw-text-text-muted">Notifies {form.notify_email || "nobody"} · {regulationLabel(form.default_regulation)} if the visitor is elsewhere</p>
+            <p className="tw-m-0 tw-text-xs tw-text-text-muted">Notifies {form.notify_email || "nobody"} · {regulationLabel(form.default_regulation)} if the visitor is elsewhere{form.gtm_id ? ` · Tag Manager ${form.gtm_id}` : ""}</p>
             {form.custom_domain && form.custom_domain_status !== "active" && <div><Badge tone="warning" icon="clock">{form.custom_domain}: waiting for DNS</Badge></div>}
             <div className="tw-flex tw-flex-wrap tw-gap-1">
                 <Button size="sm" variant="secondary" onClick={copy}>{copied ? "Copied" : "Copy link"}</Button>

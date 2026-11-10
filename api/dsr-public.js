@@ -55,13 +55,25 @@ function languageMenu(form, lang, consentId) {
     return `<details class="lang"><summary aria-label="${esc(formT(lang, "language"))}: ${esc(current.name)}">${GLOBE}${esc(current.name)}</summary><ul>${items}</ul></details>`;
 }
 
-export function formPage(form, error = "", values = {}, lang = "en") {
+/**
+ * The form's Tag Manager container, which brings the cookie banner with it, so
+ * it has to load straight away and the banner decides what else may run. Only
+ * ever given to a page on the form's own custom domain: a container runs its
+ * owner's scripts, and on our domain those could reach a dashboard user's session.
+ */
+function trackingScript(form) {
+    const id = JSON.stringify(form.gtm_id).replace(/</g, "\\u003c");
+    return `<script>(function(){if(location.search.indexOf("consent_id=")>-1){var u=new URL(location.href);u.searchParams.delete("consent_id");history.replaceState(null,"",u)}window.dataLayer=window.dataLayer||[];dataLayer.push({"gtm.start":Date.now(),event:"gtm.js"});var s=document.createElement("script");s.async=true;s.src="https://www.googletagmanager.com/gtm.js?id="+encodeURIComponent(${id});document.head.appendChild(s)})();</script>`;
+}
+
+export function formPage(form, error = "", values = {}, lang = "en", { tracking = false } = {}) {
     const t = (key, vars) => esc(formT(lang, key, vars));
     const option = (id, label, current) => `<option value="${esc(id)}"${id === current ? " selected" : ""}>${label}</option>`;
     const optional = `<span class="opt">${t("optional")}</span>`;
     const company = form.company_name;
     return page(`${formT(lang, "title")}: ${company}`, `<div class="top"><h1>${t("title")}</h1>${languageMenu(form, lang, values.consent_id)}</div>
 <p>${t("intro", { company })}</p>
+${tracking ? trackingScript(form) : ""}
 ${error ? `<p class="err" role="alert">${esc(error)}</p>` : ""}
 <form method="post" action="/privacy-request/${esc(form.token)}">
 <input type="hidden" name="lang" value="${esc(lang)}">
@@ -141,10 +153,14 @@ async function sendEmail(to, subject, html, attachments) {
     return response.ok;
 }
 
-function send(res, status, html) {
+const BASE_POLICY = "default-src 'none'; style-src 'unsafe-inline'; img-src data:; form-action 'self'; base-uri 'none'";
+// Tag Manager injects inline tags and loads from many hosts, so this can't be narrower.
+const TRACKING_POLICY = "default-src 'none'; script-src 'unsafe-inline' https:; style-src 'unsafe-inline' https:; img-src data: https:; font-src data: https:; connect-src https:; frame-src https:; form-action 'self'; base-uri 'none'";
+
+function send(res, status, html, policy = BASE_POLICY) {
     res.setHeader("Content-Type", "text/html; charset=utf-8");
     res.setHeader("Cache-Control", "no-store");
-    res.setHeader("Content-Security-Policy", "default-src 'none'; style-src 'unsafe-inline'; img-src data:; form-action 'self'; base-uri 'none'");
+    res.setHeader("Content-Security-Policy", policy);
     res.setHeader("X-Content-Type-Options", "nosniff");
     return res.status(status).send(html);
 }
@@ -243,7 +259,9 @@ export default async function handler(req, res) {
             }
         }
         if (!form) return send(res, 404, notice("missing", lang));
-        return req.method === "POST" ? await submit(req, res, db, form, lang) : send(res, 200, formPage(form, "", { consent_id: /^[\w-]{1,128}$/.test(String(req.query.consent_id || "")) ? req.query.consent_id : "" }, lang));
+        if (req.method === "POST") return await submit(req, res, db, form, lang);
+        const tracking = custom && Boolean(form.gtm_id);
+        return send(res, 200, formPage(form, "", { consent_id: /^[\w-]{1,128}$/.test(String(req.query.consent_id || "")) ? req.query.consent_id : "" }, lang, { tracking }), tracking ? TRACKING_POLICY : BASE_POLICY);
     } catch (err) {
         console.error("[dsr-public]", err.message);
         return send(res, 500, notice("wrong", lang));

@@ -1,7 +1,7 @@
 // Data subject requests: telling vendors, deleting through their APIs, and the public form.
 import assert from "node:assert/strict";
 import { test } from "./_harness.mjs";
-import { vendorsFromTransfers, needsVendorNotice, validateVendorUpdate, vendorMessage, validatePublicSubmission, seedVendorNotifications, validateLogo, requestView, consentExclusion, canPauseClock, applyAction } from "../api/_dsr.js";
+import { vendorsFromTransfers, needsVendorNotice, validateVendorUpdate, vendorMessage, validatePublicSubmission, seedVendorNotifications, validateLogo, validateGtmId, requestView, consentExclusion, canPauseClock, applyAction } from "../api/_dsr.js";
 import { hashEmail, encryptCredentials, decryptCredentials, deletionStatus, runDeletion } from "../api/_dsr-deletion.js";
 import { formPage, esc, confirmationEmail, newRequestEmail } from "../api/dsr-public.js";
 import fs from "node:fs";
@@ -381,4 +381,29 @@ test("deadline pause: closing a paused request leaves the deadline alone", () =>
     const step = applyAction(paused, { action: "reject", reason: "No reply", notified_on: "2026-11-15", complaint_notice: true }, later);
     assert.strictEqual(step.patch.paused_at, null);
     assert.strictEqual(step.patch.due_at, undefined);
+});
+
+test("tracking: nothing loads unless the page is told it may", () => {
+    const html = formPage({ ...form, gtm_id: "GTM-ABC1234" });
+    assert.doesNotMatch(html, /googletagmanager|<script/);
+});
+
+test("tracking: Tag Manager loads straight away, because the banner lives inside it", () => {
+    const html = formPage({ ...form, gtm_id: "GTM-ABC1234" }, "", {}, "da", { tracking: true });
+    assert.match(html, /gtm\.js\?id=/);
+    assert.match(html, /"GTM-ABC1234"/);
+    assert.doesNotMatch(html, /id="tc"|localStorage/, "no second consent prompt");
+    const script = html.slice(html.indexOf("<script>"), html.indexOf("</script>"));
+    assert.ok(script.indexOf('searchParams.delete("consent_id")') < script.indexOf("gtm.js?id"), "the consent ID is gone before any tag runs");
+});
+
+test("tracking: only well-formed container IDs are saved", () => {
+    assert.strictEqual(validateGtmId(" gtm-abc1234 "), "GTM-ABC1234");
+    for (const bad of ["UA-123", "GTM-", "GTM-ABC<script>", "'; alert(1)//", ""]) assert.ok(validateGtmId(bad).error, bad);
+});
+
+test("tracking: the server only allows it on a customer's own domain", () => {
+    const source = fs.readFileSync(new URL("../api/dsr-public.js", import.meta.url), "utf8");
+    assert.match(source, /const tracking = custom && Boolean\(form\.gtm_id\);/);
+    assert.match(source, /const custom = !isPlatformHost\(host\);/);
 });

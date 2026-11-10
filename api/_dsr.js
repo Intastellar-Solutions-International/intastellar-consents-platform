@@ -313,6 +313,7 @@ export async function ensureDsrTables(db) {
         )
     `);
     await db.query(`ALTER TABLE dsr_public_forms ADD COLUMN IF NOT EXISTS logo_data TEXT`);
+    await db.query(`ALTER TABLE dsr_public_forms ADD COLUMN IF NOT EXISTS gtm_id TEXT`);
     await db.query(`
         ALTER TABLE dsr_public_forms
             ADD COLUMN IF NOT EXISTS custom_domain TEXT,
@@ -596,6 +597,12 @@ export const PUBLIC_REGIONS = [
 ];
 const MIN_FILL_MS = 3000;
 const MAX_LOGO_CHARS = 280000; // about 200 KB once decoded
+
+/** A Tag Manager container ID in its usual form, or { error }. */
+export function validateGtmId(value) {
+    const id = String(value ?? "").trim().toUpperCase();
+    return /^GTM-[A-Z0-9]{4,12}$/.test(id) ? id : { error: "Enter a Tag Manager ID like GTM-ABC1234" };
+}
 
 /** A logo is kept as a data URI so the form loads nothing from third parties. Returns the URI, or { error }. */
 export function validateLogo(value) {
