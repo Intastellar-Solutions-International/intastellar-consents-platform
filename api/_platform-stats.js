@@ -9,11 +9,14 @@ import { FIRST_VISIT, NOT_FIRST_VISIT, SCAN_TYPE, ensureScanColumns } from "./_s
 /** A percentage on fewer sites says too little to quote, and could describe a single customer. */
 export const MIN_SITES = 30;
 const ACTIVE_DAYS = 30;
+const GDPR_API = "https://apis.intastellarsolutions.com/analytics/gdpr";
+// Short enough that the rest of the snapshot still saves when this query is slow.
+const CONSENT_TIMEOUT_MS = 12000;
 const TRACKING = new Set(["advertising", "analytics", "fingerprinting", "social"]);
 const OWN_OR_TEST = /^localhost$|^[\d.]+$|\.(test|local)$|(^|\.)intastellar[a-z]*\.|\.vercel\.app$/i;
 
 const PUBLIC_KEYS = [
-    "sites_installed", "sites_active", "sites_scanned", "tracking_services_found", "cookies_found",
+    "visitors_30d", "consent_records_30d", "sites_installed", "sites_active", "sites_scanned", "tracking_services_found", "cookies_found",
     "median_tracking_services", "us_transfer_pct", "advertising_pct", "pre_consent_pct", "pre_consent_sites",
 ];
 
@@ -82,14 +85,35 @@ export function summarizeInstalls(entries, now = Date.now()) {
     };
 }
 
-async function fetchInstalls(fetchImpl) {
-    const url = process.env.DOMAINS_API_URL || "https://apis.intastellarsolutions.com/analytics/gdpr/getDomains";
+/** getInteractions as Total (consent rows, one per page load with a stored choice) and activeUsers (distinct visitors). No data comes back as zeros, which means unknown here. */
+export function summarizeConsents(body) {
+    return { visitors_30d: Number(body?.activeUsers) || null, consent_records_30d: Number(body?.Total) || null };
+}
+
+function serviceHeaders() {
     const headers = { "Content-Type": "application/json" };
     if (process.env.DOMAINS_API_KEY) headers.Authorization = `Bearer ${process.env.DOMAINS_API_KEY}`;
-    const response = await fetchImpl(url, { headers });
+    return headers;
+}
+
+async function fetchInstalls(fetchImpl) {
+    const response = await fetchImpl(process.env.DOMAINS_API_URL || `${GDPR_API}/getDomains`, { headers: serviceHeaders() });
     if (!response.ok) throw new Error(`getDomains responded ${response.status}`);
     const body = await response.json();
     return Array.isArray(body) ? body : body?.domains ?? body?.data ?? [];
+}
+
+/** The last 30 full days across every banner, from the MySQL consent tables behind the PHP API. Organisation 1's combined view covers all sites. */
+async function fetchConsents(fetchImpl, now) {
+    const day = (daysAgo) => new Date(now - daysAgo * 86400000).toISOString().slice(0, 10);
+    const response = await fetchImpl(`${GDPR_API}/getInteractions`, {
+        method: "POST",
+        headers: { ...serviceHeaders(), Organisation: "1", Domains: "combined view", FromDate: day(30), ToDate: day(1) },
+        body: "{}",
+        signal: AbortSignal.timeout(CONSENT_TIMEOUT_MS),
+    });
+    if (!response.ok) throw new Error(`getInteractions responded ${response.status}`);
+    return response.json();
 }
 
 const latestScansSql = (scanFilter) => `
@@ -100,21 +124,29 @@ const latestScansSql = (scanFilter) => `
 
 export async function calculateFigures(db, { fetchImpl = fetch, now = Date.now() } = {}) {
     await ensureScanColumns(db);
-    const [accepted, firstVisits, installs] = await Promise.all([
+    const failedAs = (fallback, what) => (err) => {
+        console.error(`[platform-stats] ${what} failed:`, err.message);
+        return fallback;
+    };
+    const [accepted, firstVisits, installs, consents] = await Promise.all([
         db.query(latestScansSql(NOT_FIRST_VISIT)),
         db.query(latestScansSql(`${SCAN_TYPE} = '${FIRST_VISIT}'`)),
-        fetchInstalls(fetchImpl).catch((err) => {
-            console.error("[platform-stats] site list failed:", err.message);
-            return [];
-        }),
+        fetchInstalls(fetchImpl).catch(failedAs([], "site list")),
+        fetchConsents(fetchImpl, now).catch(failedAs(null, "consent totals")),
     ]);
-    return { ...summarizeInstalls(installs, now), ...summarizeScans(accepted.rows), ...summarizeFirstVisits(firstVisits.rows) };
+    return {
+        ...summarizeInstalls(installs, now),
+        ...summarizeConsents(consents),
+        ...summarizeScans(accepted.rows),
+        ...summarizeFirstVisits(firstVisits.rows),
+    };
 }
 
 /** Only known figures with enough sites behind them, so a new figure stays private until it's added here. */
 export function publicFigures(figures) {
     const out = {};
     for (const key of PUBLIC_KEYS) if (figures?.[key] != null) out[key] = figures[key];
+    if (out.pre_consent_pct == null) delete out.pre_consent_sites;
     return out;
 }
 
