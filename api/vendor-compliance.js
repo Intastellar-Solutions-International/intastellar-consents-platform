@@ -1,6 +1,7 @@
 import { createHash } from "crypto";
 import { Readable } from "stream";
 import { getPool } from "./_db.js";
+import { requireMember } from "./_member-auth.js";
 
 /**
  * /api/vendor-compliance — what an organisation has recorded about each
@@ -15,7 +16,7 @@ import { getPool } from "./_db.js";
  * POST { action: "upload_evidence", vendor, filename, content_type, data (base64) }
  * POST { action: "delete_evidence", vendor }
  *
- * Headers: Authorization (Bearer), Organisation
+ * Headers: Authorization (Bearer), Organisation, X-User-Email
  */
 const MECHANISMS = new Set(["dpf", "sccs", "adequacy", "bcr", "none"]);
 const DPA_STATES = new Set(["unknown", "requested", "signed", "not_required"]);
@@ -66,23 +67,8 @@ function setCors(req, res) {
         res.setHeader("Access-Control-Allow-Origin", origin);
     }
     res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-    res.setHeader("Access-Control-Allow-Headers", "Authorization, Organisation, Content-Type");
+    res.setHeader("Access-Control-Allow-Headers", "Authorization, Organisation, Content-Type, X-User-Email");
     res.setHeader("Access-Control-Max-Age", "86400");
-}
-
-function validateJwt(authHeader) {
-    const match = (authHeader || "").match(/^Bearer\s+(.+)$/i);
-    if (!match) return null;
-    try {
-        const parts = Buffer.from(match[1], "base64").toString("utf8").split(".");
-        if (parts.length !== 3) return null;
-        const payload = JSON.parse(Buffer.from(parts[1], "base64").toString("utf8"));
-        const now = Math.floor(Date.now() / 1000);
-        if ((payload.exp && payload.exp < now) || (payload.nbf && payload.nbf > now)) return null;
-        return payload;
-    } catch {
-        return null;
-    }
 }
 
 /** Cleaned record, or { error } when a value isn't one we accept. */
@@ -218,9 +204,9 @@ export default async function handler(req, res) {
         res.setHeader("Allow", "GET, POST, OPTIONS");
         return res.status(405).json({ error: "Method not allowed" });
     }
-    if (!validateJwt(req.headers.authorization)) return res.status(401).json({ error: "Unauthorized" });
-    const organisationId = parseInt(req.headers.organisation || "0", 10);
-    if (!organisationId) return res.status(400).json({ error: "Missing Organisation header" });
+    const member = await requireMember(req);
+    if (member.error) return res.status(member.status).json({ error: member.error });
+    const { organisationId } = member;
 
     try {
         const db = getPool();

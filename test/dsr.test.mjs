@@ -1,6 +1,7 @@
 // Data subject requests: deadlines, workflow, retention and who may call the API.
 import assert from "node:assert/strict";
 import { createHmac } from "node:crypto";
+import fs from "node:fs";
 import { test } from "./_harness.mjs";
 import { dueDate, latestExtension, validateNewRequest, applyAction, requestView, anonymizeExpiredRequests, saveAction, createRequest } from "../api/_dsr.js";
 import { requireMember, isMember, signatureValid } from "../api/_member-auth.js";
@@ -151,4 +152,11 @@ test("dsr access: membership and both signature encodings", () => {
     const [h, p, s] = t.split(".");
     assert.ok(signatureValid(`${h}.${p}.${Buffer.from(s).toString("base64url")}`, SECRET));
     assert.ok(!signatureValid(`${h}.${p}.AAAA`, SECRET));
+});
+
+test("vendor records use the member check, and PDFs pass on who is asking", () => {
+    const read = (f) => fs.readFileSync(new URL(`../api/${f}.js`, import.meta.url), "utf8");
+    assert.match(read("vendor-compliance"), /await requireMember\(req\)/);
+    assert.doesNotMatch(read("vendor-compliance"), /validateJwt/);
+    assert.match(read("report-pdf"), /"X-User-Email": req\.headers\["x-user-email"\]/);
 });

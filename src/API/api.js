@@ -196,6 +196,7 @@ const API = {
             method: "POST",
             headers: {
                 "Authorization": Authentication.getToken(),
+                "X-User-Email": Authentication.getUserId(),
                 "Organisation": Authentication.getOrganisation(),
                 "Content-Type": "application/json",
                 get ExcludeBots() { return excludeBotsHeader(); },
@@ -250,6 +251,7 @@ const API = {
             url: `${ScannerHost}/api/vendor-compliance`,
             headers: {
                 "Authorization": Authentication.getToken(),
+                "X-User-Email": Authentication.getUserId(),
                 "Organisation": Authentication.getOrganisation(),
                 "Content-Type": "application/json"
             }

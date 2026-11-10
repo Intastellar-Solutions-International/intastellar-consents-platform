@@ -41,7 +41,7 @@ function setCors(req, res) {
         res.setHeader("Access-Control-Allow-Origin", origin);
     }
     res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
-    res.setHeader("Access-Control-Allow-Headers", "Authorization, Organisation, Content-Type, ExcludeBots");
+    res.setHeader("Access-Control-Allow-Headers", "Authorization, Organisation, X-User-Email, Content-Type, ExcludeBots");
     res.setHeader("Access-Control-Max-Age", "86400");
 }
 
@@ -96,7 +96,7 @@ async function fetchScan(req, domain) {
 /** What the organisation has recorded per vendor, for the Chapter V findings. */
 async function fetchVendorRecords(req) {
     const response = await fetch(VENDOR_RECORDS_API, {
-        headers: { Authorization: req.headers.authorization, Organisation: req.headers.organisation },
+        headers: { Authorization: req.headers.authorization, Organisation: req.headers.organisation, "X-User-Email": req.headers["x-user-email"] || "" },
     });
     if (response.status === 401) throw new ReportError(401, "Unauthorized");
     if (!response.ok) throw new ReportError(502, "Vendor records could not be loaded.");
