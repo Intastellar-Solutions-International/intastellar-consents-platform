@@ -19,6 +19,8 @@
     }
   ],
   "rewrites": [
+    { "source": "/privacy-request/confirm/:code", "destination": "/api/dsr-public?confirm=:code" },
+    { "source": "/privacy-request/:token", "destination": "/api/dsr-public?token=:token" },
     { "source": "/((?!api/|sw\\.js$).*)", "destination": "/index.html" }
   ],
   "crons": [

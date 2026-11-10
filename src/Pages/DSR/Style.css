@@ -40,3 +40,15 @@
 @media (max-width: 900px) {
     .dsr-detail { grid-template-columns: minmax(0, 1fr); }
 }
+
+.dsr-vendors { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: var(--space-3); }
+.dsr-vendor { display: flex; flex-direction: column; gap: var(--space-2); padding-bottom: var(--space-3); border-bottom: 1px solid var(--color-border-subtle); }
+.dsr-vendor__row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 190px 280px;
+    gap: var(--space-3);
+    align-items: center;
+}
+@media (max-width: 640px) {
+    .dsr-vendor__row { grid-template-columns: minmax(0, 1fr); }
+}

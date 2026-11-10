@@ -5,6 +5,7 @@ import { latestExtension } from "../../Functions/dsr.js";
 import { formatDate, formatDateTime } from "../../Functions/format.js";
 import { FRAMEWORK_LABELS } from "../../Functions/jurisdictionEngine.js";
 import { AREA, DsrStatusBadge, FIELD, LABEL, daysLeftLabel, fetchDsr, isClosed, postDsr, requesterName, typeLabel } from "./dsrShared.js";
+import VendorChecklist from "./VendorChecklist.js";
 import "./Style.css";
 
 const { useState, useEffect } = React;
@@ -20,6 +21,9 @@ const EVENT_LABEL = {
     reject: "Rejected",
     reopen: "Reopened",
     update: "Details edited",
+    vendor_update: "Vendor status changed",
+    vendor_deletion: "Deletion sent through vendor API",
+    vendor_deletion_failed: "Vendor API deletion failed",
 };
 // Identity matters where data is handed over or changed; an opt-out or objection needs less.
 const NEEDS_IDENTITY = new Set(["access", "rectification", "erasure", "portability"]);
@@ -77,6 +81,7 @@ export default function DSRDetail() {
     const [panel, setPanel] = useState(null); // null | "complete" | "reject" | "extend"
     const [busy, setBusy] = useState(false);
     const [error, setError] = useState(null);
+    const [openVendors, setOpenVendors] = useState(null); // the outcome waiting on "complete anyway"
 
     useEffect(() => {
         let live = true;
@@ -93,8 +98,10 @@ export default function DSRDetail() {
         try {
             setData(await postDsr({ action, id: requestId, ...values }));
             setPanel(null);
+            setOpenVendors(null);
         } catch (e) {
-            setError(e.message);
+            if (e.data?.open_vendors) { setOpenVendors({ names: e.data.open_vendors, values }); setPanel(null); }
+            else setError(e.message);
         } finally {
             setBusy(false);
         }
@@ -137,6 +144,7 @@ export default function DSRDetail() {
                         <Fact label="Regulation">{FRAMEWORK_LABELS[request.regulation] || request.regulation}</Fact>
                         <Fact label="Assignee">{request.assignee || "Unassigned"}</Fact>
                         <Fact label="Identity verified">{request.identity_verified_at ? formatDate(request.identity_verified_at) : "Not yet"}</Fact>
+                        {request.source === "public_form" && <Fact label="Received through">Public form, email confirmed</Fact>}
                         {request.outcome && <div className="dsr-facts__wide"><Fact label="How it was answered">{request.outcome}</Fact></div>}
                         {request.rejection_reason && <div className="dsr-facts__wide"><Fact label="Why it was rejected">{request.rejection_reason}</Fact></div>}
                         {request.notes && <div className="dsr-facts__wide"><Fact label="Internal notes">{request.notes}</Fact></div>}
@@ -167,10 +175,21 @@ export default function DSRDetail() {
                                     )}
                                 </StepForm>
                             )}
+                            {openVendors && (
+                                <div role="alert" className="tw-flex tw-flex-col tw-gap-2 tw-p-3 tw-bg-bg-sunken tw-rounded-lg tw-text-sm tw-text-text-secondary">
+                                    <p className="tw-m-0">These vendors haven't been dealt with yet: {openVendors.names.join(", ")}. GDPR Art. 19 expects them to be told, unless that's impossible or disproportionate.</p>
+                                    <div className="tw-flex tw-gap-2">
+                                        <Button size="sm" variant="secondary" loading={busy} onClick={() => run("complete", { ...openVendors.values, confirm_open_vendors: true })}>Complete anyway</Button>
+                                        <Button size="sm" variant="ghost" onClick={() => setOpenVendors(null)}>Go back</Button>
+                                    </div>
+                                </div>
+                            )}
                             {error && <p role="alert" className="tw-m-0 tw-text-sm tw-text-danger-text">{error}</p>}
                         </div>
                     </Card>
                 )}
+
+                {!locked && data.notice_required && <VendorChecklist request={request} vendors={data.vendors} onData={setData} />}
 
                 {!locked && <Card title="Details"><DetailsForm key={request.updated_at} request={request} saving={busy} onSave={(form) => run("update", form)} /></Card>}
             </div>
@@ -189,7 +208,7 @@ export default function DSRDetail() {
                     <ol className="dsr-history">
                         {events.map((event, i) => (
                             <li key={i}>
-                                <span className="tw-block tw-text-sm tw-text-text-primary">{EVENT_LABEL[event.action] || event.action}</span>
+                                <span className="tw-block tw-text-sm tw-text-text-primary">{EVENT_LABEL[event.action] || event.action}{event.detail?.vendor ? `: ${event.detail.vendor}` : ""}</span>
                                 <span className="tw-block tw-text-xs tw-text-text-muted">{formatDateTime(event.created_at)}{event.actor ? ` · ${event.actor}` : ""}</span>
                             </li>
                         ))}

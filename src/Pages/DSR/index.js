@@ -7,6 +7,7 @@ import { dsrSummary } from "../../Functions/dsrSummary.js";
 import { formatDate, formatNumber } from "../../Functions/format.js";
 import { FRAMEWORK_LABELS } from "../../Functions/jurisdictionEngine.js";
 import { AREA, DsrStatusBadge, FIELD, LABEL, daysLeftLabel, fetchDsr, isClosed, postDsr, requesterName, typeLabel } from "./dsrShared.js";
+import DsrSetup from "./DsrSetup.js";
 import "./Style.css";
 
 const { useState, useEffect, useMemo } = React;
@@ -102,6 +103,7 @@ export default function DSR() {
     const [error, setError] = useState(null);
     const [attempt, setAttempt] = useState(0);
     const [drawer, setDrawer] = useState(false);
+    const [setup, setSetup] = useState(null); // null | "form" | "connections"
     const [status, setStatus] = useState("all");
     const [type, setType] = useState("all");
     const [query, setQuery] = useState("");
@@ -173,6 +175,8 @@ export default function DSR() {
                         <span className="tw-flex tw-flex-wrap tw-items-center tw-justify-between tw-gap-3">
                             <span>Requests from people exercising their privacy rights. Log one when it arrives so its legal deadline starts from the right date.</span>
                             <span className="tw-flex tw-gap-2">
+                                <Button variant="ghost" onClick={() => setSetup("connections")}>Vendor connections</Button>
+                                <Button variant="ghost" onClick={() => setSetup("form")}>Public form</Button>
                                 {filtered.length > 0 && <Button variant="secondary" onClick={() => downloadCsv(filtered)}>Export CSV</Button>}
                                 <Button variant="primary" onClick={() => setDrawer(true)}>Log request</Button>
                             </span>
@@ -192,9 +196,14 @@ export default function DSR() {
                     )}
                     pagination={filtered.length > PAGE_SIZE && <Pagination page={page} pageSize={PAGE_SIZE} total={filtered.length} onChange={setPage} label="Request pages" />}
                     drawer={(
+                        <>
                         <Drawer open={drawer} onClose={() => setDrawer(false)} title="Log a data subject request" width="md">
                             {drawer && <NewRequestForm onCreated={(request) => history.push(`/${id}/reports/dsr/${request.id}`)} />}
                         </Drawer>
+                        <Drawer open={Boolean(setup)} onClose={() => setSetup(null)} title={setup === "form" ? "Public request form" : "Vendor connections"} width="md">
+                            {setup && <DsrSetup section={setup} />}
+                        </Drawer>
+                        </>
                     )}
                 >
                     <Card padding="none">

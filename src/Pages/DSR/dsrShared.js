@@ -35,7 +35,7 @@ export function daysLeftLabel(request, now = Date.now()) {
 
 async function readJson(response) {
     const data = await response.json().catch(() => ({}));
-    if (!response.ok) throw new Error(data.error || "That didn't work. Please try again.");
+    if (!response.ok) throw Object.assign(new Error(data.error || "That didn't work. Please try again."), { data });
     return data;
 }
 
