@@ -13,6 +13,16 @@ const BASE = "https://www.intastellarconsents.com";
 const CONFIRM_DAYS = 7;
 const MAX_PER_IP_HOUR = 5;
 const MAX_PER_FORM_DAY = 200;
+// What visitors read; the legal name stays in brackets and in the portal.
+const PLAIN_TYPE_LABEL = {
+    access: "See the data you hold about me (access)",
+    rectification: "Correct data that's wrong (rectification)",
+    erasure: "Delete my data (erasure)",
+    portability: "Give me a copy to take elsewhere (portability)",
+    restriction: "Limit how my data is used (restriction)",
+    objection: "Stop a particular use of my data (objection)",
+    opt_out: "Don't sell or share my data (opt-out)",
+};
 
 export const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const sha = (v) => createHash("sha256").update(v).digest("hex");
@@ -26,14 +36,16 @@ function brandBar(form) {
 function page(title, body, form) {
     return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>${esc(title)}</title>
 <style>
-:root{color-scheme:light dark;--bg:#f5f5f4;--card:#fff;--text:#1c1c1c;--muted:#5f5f5f;--line:#d6d6d3;--accent:#8a6a1f}
-@media (prefers-color-scheme:dark){:root{--bg:#222;--card:#333;--text:#f2f2f2;--muted:#b5b5b5;--line:#555;--accent:#c9a653}}
+:root{color-scheme:light dark;--bg:#f5f5f4;--card:#fff;--text:#1c1c1c;--muted:#5f5f5f;--line:#d6d6d3;--accent:#8a6a1f;--on-accent:#fff}
+@media (prefers-color-scheme:dark){:root{--bg:#222;--card:#333;--text:#f2f2f2;--muted:#b5b5b5;--line:#555;--accent:#c9a653;--on-accent:#1c1c1c}}
 *{box-sizing:border-box}body{margin:0;padding:32px 16px;background:var(--bg);color:var(--text);font:16px/1.5 system-ui,sans-serif}
 main{max-width:520px;margin:0 auto;padding:28px;background:var(--card);border:1px solid var(--line);border-radius:12px}
 h1{margin:0 0 8px;font-size:24px;line-height:1.25}p{margin:0 0 16px;color:var(--muted)}label{display:block;margin:0 0 16px;font-size:14px;font-weight:600}
-input,select,textarea{display:block;width:100%;margin-top:4px;padding:10px;background:transparent;color:inherit;border:1px solid var(--line);border-radius:8px;font:inherit}
-select option{color:#1c1c1c}button{padding:12px 20px;background:var(--accent);color:#fff;border:0;border-radius:8px;font:inherit;font-weight:600;cursor:pointer}
-.brand{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:0 0 24px;padding:14px 16px;background:#fff;border-radius:8px}.brand img{display:block;max-width:45%;object-fit:contain}.brand .co{max-height:44px}.brand .ics{max-height:28px;margin-left:auto}
+input,select,textarea{display:block;width:100%;margin-top:4px;padding:10px;background:transparent;color:inherit;border:1px solid var(--line);border-radius:8px;font:inherit;font-size:16px;font-weight:400}
+select{appearance:none;-webkit-appearance:none;padding-right:36px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none' stroke='%23888' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m1 1.5 5 5 5-5'/%3E%3C/svg%3E") no-repeat right 14px center}
+select option{color:#1c1c1c}.opt{font-weight:400;color:var(--muted)}.hint{display:block;margin-top:4px;font-size:13px;font-weight:400;color:var(--muted)}
+button{padding:12px 20px;background:var(--accent);color:var(--on-accent);border:0;border-radius:8px;font:inherit;font-weight:600;cursor:pointer}
+.brand{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:0 0 24px;padding:14px 16px;background:#fff;border-radius:8px}.brand img{display:block;height:32px;width:auto;max-width:47%;object-fit:contain}.brand .ics{margin-left:auto}
 .err{padding:10px 12px;border:1px solid #c44;border-radius:8px;color:inherit}.hp{position:absolute;left:-9999px}small{display:block;margin-top:20px;color:var(--muted)}
 </style></head><body><main>${brandBar(form)}${body}</main></body></html>`;
 }
@@ -44,11 +56,11 @@ export function formPage(form, error = "", values = {}) {
 <p>Ask ${esc(form.company_name)} to see, correct or delete the personal data it holds about you.</p>
 ${error ? `<p class="err" role="alert">${esc(error)}</p>` : ""}
 <form method="post" action="/privacy-request/${esc(form.token)}">
-<label>Your email<input type="email" name="email" required maxlength="255" autocomplete="email" value="${esc(values.email)}"></label>
-<label>Your name (optional)<input name="name" maxlength="255" autocomplete="name" value="${esc(values.name)}"></label>
-<label>What would you like us to do?<select name="type">${REQUEST_TYPES.map((t) => option(t, values.type)).join("")}</select></label>
-<label>Where do you live?<select name="region">${PUBLIC_REGIONS.map((r) => option(r, values.region)).join("")}</select></label>
-<label>Anything we should know? (optional)<textarea name="message" rows="4" maxlength="4000">${esc(values.message)}</textarea></label>
+<label>Your email<input type="email" name="email" required maxlength="255" autocomplete="email" placeholder="name@example.com" value="${esc(values.email)}"></label>
+<label>Your name <span class="opt">(optional)</span><input name="name" maxlength="255" autocomplete="name" value="${esc(values.name)}"></label>
+<label>What would you like us to do?<select name="type">${REQUEST_TYPES.map((t) => option({ id: t.id, label: PLAIN_TYPE_LABEL[t.id] || t.label }, values.type)).join("")}</select></label>
+<label>Where do you live?<select name="region">${PUBLIC_REGIONS.map((r) => option(r, values.region)).join("")}</select><span class="hint">This decides which privacy law applies to your request.</span></label>
+<label>Anything we should know? <span class="opt">(optional)</span><textarea name="message" rows="4" maxlength="4000">${esc(values.message)}</textarea></label>
 <label class="hp" aria-hidden="true">Website<input name="website" tabindex="-1" autocomplete="off"></label>
 <input type="hidden" name="started" value="${Date.now()}">
 <button type="submit">Send request</button>
