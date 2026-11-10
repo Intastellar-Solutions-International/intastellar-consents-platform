@@ -52,3 +52,5 @@
 @media (max-width: 640px) {
     .dsr-vendor__row { grid-template-columns: minmax(0, 1fr); }
 }
+
+.dsr-logo-preview { display: block; max-height: 40px; max-width: 140px; padding: var(--space-1); background: #fff; border-radius: var(--radius-sm); object-fit: contain; }

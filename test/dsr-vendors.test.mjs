@@ -1,10 +1,11 @@
 // Data subject requests: telling vendors, deleting through their APIs, and the public form.
 import assert from "node:assert/strict";
 import { test } from "./_harness.mjs";
-import { vendorsFromTransfers, needsVendorNotice, validateVendorUpdate, vendorMessage, validatePublicSubmission, seedVendorNotifications } from "../api/_dsr.js";
+import { vendorsFromTransfers, needsVendorNotice, validateVendorUpdate, vendorMessage, validatePublicSubmission, seedVendorNotifications, validateLogo } from "../api/_dsr.js";
 import { hashEmail, encryptCredentials, decryptCredentials, deletionStatus, runDeletion } from "../api/_dsr-deletion.js";
-import { formPage, esc } from "../api/dsr-public.js";
+import { formPage, esc, confirmationEmail } from "../api/dsr-public.js";
 import fs from "node:fs";
+import { FORM_LANGUAGES, FORM_TEXT, formT, pickFormLanguage } from "../api/_dsr-public-i18n.js";
 
 const NOW = 1_800_000_000_000;
 const form = { token: "t1", company_name: "Shop A/S", default_regulation: "GDPR" };
@@ -164,4 +165,83 @@ test("public form: everything shown back is escaped", () => {
 
 test("the rules shared with the browser don't pull in server-only code", () => {
     assert.doesNotMatch(fs.readFileSync(new URL("../api/_dsr.js", import.meta.url), "utf8"), /^\s*(import .* from|.*await import\()/m);
+});
+
+test("public form: shows both logos, and the company's only if it was given", () => {
+    const logo = "data:image/png;base64,AAAA";
+    const html = formPage({ ...form, logo_data: logo });
+    assert.ok(html.includes(`class="co" src="${logo}"`));
+    assert.match(html, /class="ics" src="data:image/);
+    assert.doesNotMatch(formPage(form), /class="co"/);
+});
+
+test("public form: only small image data URIs are accepted as logos", () => {
+    const ok = "data:image/svg+xml;base64,AAAA";
+    assert.strictEqual(validateLogo(ok), ok);
+    assert.ok(validateLogo("https://evil.example/x.png").error);
+    assert.ok(validateLogo("data:text/html;base64,AAAA").error);
+    assert.ok(validateLogo('data:image/png;base64,AA"onerror="x').error);
+    assert.ok(validateLogo(`data:image/png;base64,${"A".repeat(280001)}`).error);
+});
+
+test("public form: request types are in plain language, with a hint for the region", () => {
+    const html = formPage(form);
+    assert.match(html, /Correct data that&#39;s wrong \(rectification\)/);
+    assert.match(html, /Limit how my data is used \(restriction\)/);
+    assert.match(html, /decides which privacy law applies/);
+    assert.match(html, /placeholder="name@example\.com"/);
+    assert.match(html, /<span class="opt">\(optional\)<\/span>/);
+});
+
+test("public form: every language has every wording", () => {
+    const keys = Object.keys(FORM_TEXT.en);
+    for (const { id } of FORM_LANGUAGES) {
+        assert.deepStrictEqual(keys.filter((k) => !FORM_TEXT[id][k]), [], id);
+        assert.deepStrictEqual(Object.keys(FORM_TEXT[id]).filter((k) => !(k in FORM_TEXT.en)), [], id);
+        for (const key of ["intro", "received_text", "mail_subject", "mail_intro"]) assert.match(FORM_TEXT[id][key], /\{company\}/, `${id}.${key}`);
+    }
+});
+
+test("public form: the visitor's choice wins, then the browser, then English", () => {
+    assert.strictEqual(pickFormLanguage("da", "de"), "da");
+    assert.strictEqual(pickFormLanguage(undefined, "fr-CA,en;q=0.5"), "fr");
+    assert.strictEqual(pickFormLanguage(undefined, "ja,de;q=0.8,sv;q=0.9"), "sv");
+    assert.strictEqual(pickFormLanguage(undefined, "nn-NO"), "nb");
+    assert.strictEqual(pickFormLanguage("xx", "ja"), "en");
+    assert.strictEqual(pickFormLanguage(undefined, undefined), "en");
+    assert.strictEqual(pickFormLanguage("<script>", ""), "en");
+});
+
+test("public form: a translated page marks its language and offers all the others", () => {
+    const html = formPage({ ...form, company_name: "A & B" }, "", {}, "da");
+    assert.match(html, /<html lang="da">/);
+    assert.match(html, /Slet mine oplysninger/);
+    assert.match(html, /Bed A &amp; B om/);
+    assert.match(html, /name="lang" value="da"/);
+    for (const { id } of FORM_LANGUAGES) assert.ok(html.includes(`?lang=${id}"`), id);
+    assert.doesNotMatch(html, /<script/);
+});
+
+test("public form: a validation error is a wording key every language can show", () => {
+    const { error } = validatePublicSubmission({ ...good, email: "nope" }, form, NOW);
+    assert.strictEqual(formT("da", error), "Indtast en gyldig e-mailadresse.");
+    assert.strictEqual(formT("en", validatePublicSubmission({ ...good, type: "x" }, form, NOW).error), "Please choose what you'd like us to do.");
+});
+
+test("confirmation email: carries the form's logo inline, in the visitor's language", () => {
+    const mail = confirmationEmail({ company_name: "ASA", logo_data: "data:image/png;base64,AAAA" }, "da", "https://x/confirm/abc?lang=da");
+    assert.match(mail.subject, /ASA/);
+    assert.match(mail.html, /src="cid:company-logo"/);
+    assert.match(mail.html, /Bekræft min anmodning/);
+    assert.deepStrictEqual(mail.attachments, [{ filename: "logo.png", content: "AAAA", content_id: "company-logo" }]);
+    assert.doesNotMatch(mail.html, /data:image/);
+});
+
+test("confirmation email: without a mail-safe logo it shows the company name", () => {
+    for (const logo_data of [undefined, "data:image/svg+xml;base64,AAAA"]) {
+        const mail = confirmationEmail({ company_name: "A & B", logo_data }, "en", "https://x");
+        assert.deepStrictEqual(mail.attachments, []);
+        assert.doesNotMatch(mail.html, /cid:/);
+        assert.match(mail.html, /A &amp; B/);
+    }
 });

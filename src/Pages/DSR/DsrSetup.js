@@ -1,4 +1,4 @@
-import { Badge, Button } from "../../Components/ui";
+import { Badge, Button, FileDropzone } from "../../Components/ui";
 import { readCachedDomains } from "../../Functions/cachedDomains.js";
 import { DEADLINE_RULES } from "../../Functions/dsr.js";
 import { FRAMEWORK_LABELS } from "../../Functions/jurisdictionEngine.js";
@@ -6,10 +6,73 @@ import { FIELD, LABEL, fetchDsr, postDsr } from "./dsrShared.js";
 
 const { useState, useEffect, useMemo } = React;
 const formLink = (token) => `https://www.intastellarconsents.com/privacy-request/${token}`;
+const LOGO_ACCEPT = ".png,.jpg,.jpeg,.webp,.svg,image/png,image/jpeg,image/webp,image/svg+xml";
+const MAX_LOGO_BYTES = 200 * 1024;
+const LOGO_TYPE_BY_EXTENSION = { png: "image/png", jpg: "image/jpeg", jpeg: "image/jpeg", webp: "image/webp", svg: "image/svg+xml" };
+
+/**
+ * Mail clients don't show SVG or (in Outlook) WebP, so those become a PNG here,
+ * where the browser can draw them. If that can't be done, the original is kept
+ * and still works on the form page.
+ */
+function toPng(dataUri) {
+    return new Promise((resolve) => {
+        const image = new Image();
+        image.onload = () => {
+            try {
+                const width = image.naturalWidth || 300, height = image.naturalHeight || 150;
+                const scale = Math.min(160 / height, 640 / width);
+                const canvas = document.createElement("canvas");
+                canvas.width = Math.round(width * scale);
+                canvas.height = Math.round(height * scale);
+                canvas.getContext("2d").drawImage(image, 0, 0, canvas.width, canvas.height);
+                const png = canvas.toDataURL("image/png");
+                resolve(png.length * 0.75 <= MAX_LOGO_BYTES ? png : dataUri);
+            } catch {
+                resolve(dataUri);
+            }
+        };
+        image.onerror = () => resolve(dataUri);
+        image.src = dataUri;
+    });
+}
+
+/** Some systems report no type for an SVG, so the type comes from the file name. */
+function readLogo(file) {
+    return new Promise((resolve, reject) => {
+        const type = LOGO_TYPE_BY_EXTENSION[file.name.split(".").pop().toLowerCase()];
+        const reader = new FileReader();
+        reader.onload = () => {
+            const dataUri = `data:${type};base64,${String(reader.result).split(",")[1]}`;
+            resolve(type === "image/png" || type === "image/jpeg" ? dataUri : toPng(dataUri));
+        };
+        reader.onerror = () => reject(new Error("That file couldn't be read."));
+        reader.readAsDataURL(file);
+    });
+}
+
+function LogoDropzone({ logo, busy, error, onLogo, onRemove }) {
+    return (
+        <FileDropzone
+            compact
+            title={logo ? "Replace your logo" : "Drag and drop your logo"}
+            hint="PNG, JPEG, WebP or SVG, under 200 KB"
+            accept={LOGO_ACCEPT}
+            maxBytes={MAX_LOGO_BYTES}
+            icon="upload"
+            busy={busy}
+            error={error}
+            preview={logo ? <img src={logo} alt="Current logo" className="dsr-logo-preview" /> : undefined}
+            actions={logo && onRemove ? <Button size="sm" variant="ghost" disabled={busy} onClick={onRemove}>Remove</Button> : undefined}
+            onFile={(file) => readLogo(file).then(onLogo)}
+        />
+    );
+}
 
 function FormsPanel({ forms, onData, busy, setBusy }) {
-    const [draft, setDraft] = useState({ company_name: "", domain: "", notify_email: "", default_regulation: "GDPR" });
+    const [draft, setDraft] = useState({ company_name: "", domain: "", notify_email: "", default_regulation: "GDPR", logo: "" });
     const [error, setError] = useState(null);
+    const [logoError, setLogoError] = useState({}); // by form token, "new" for the create form
     const [copied, setCopied] = useState(null);
     const domains = useMemo(readCachedDomains, []);
     const set = (key) => (e) => { const { value } = e.target; setDraft((d) => ({ ...d, [key]: value })); };
@@ -26,6 +89,37 @@ function FormsPanel({ forms, onData, busy, setBusy }) {
             setBusy(false);
         }
     }
+    // A success reply doesn't prove the logo was stored, so check the form that comes back.
+    async function saveLogo(form, logo) {
+        setBusy(true);
+        setLogoError((all) => ({ ...all, [form.token]: null }));
+        try {
+            const data = await postDsr({ action: "form_save", ...form, logo_data: undefined, logo });
+            onData(data);
+            const saved = data.forms.find((f) => f.token === form.token);
+            if (logo && !saved?.logo_data) setLogoError((all) => ({ ...all, [form.token]: "The logo wasn't saved. The server may need updating." }));
+        } catch (e) {
+            setLogoError((all) => ({ ...all, [form.token]: e.message }));
+        } finally {
+            setBusy(false);
+        }
+    }
+
+    async function createForm() {
+        setBusy(true);
+        setError(null);
+        try {
+            const data = await postDsr({ action: "form_save", ...draft });
+            onData(data);
+            if (draft.logo && !data.forms[0]?.logo_data) setError("The form was created, but the logo wasn't saved. The server may need updating.");
+            setDraft((d) => ({ ...d, company_name: "", notify_email: "", logo: "" }));
+        } catch (e) {
+            setError(e.message);
+        } finally {
+            setBusy(false);
+        }
+    }
+
     const copy = (token) => navigator.clipboard.writeText(formLink(token)).then(() => { setCopied(token); setTimeout(() => setCopied(null), 2000); });
 
     return (
@@ -38,15 +132,16 @@ function FormsPanel({ forms, onData, busy, setBusy }) {
                         {f.enabled ? <Badge tone="success" icon="check-circle">Live</Badge> : <Badge tone="neutral" icon="minus-circle">Off</Badge>}
                     </div>
                     <code className="tw-text-xs tw-break-all">{formLink(f.token)}</code>
+                    <LogoDropzone logo={f.logo_data} busy={busy} error={logoError[f.token]} onLogo={(logo) => saveLogo(f, logo)} onRemove={() => saveLogo(f, "")} />
                     <div className="tw-flex tw-flex-wrap tw-gap-2">
                         <Button size="sm" variant="secondary" onClick={() => copy(f.token)}>{copied === f.token ? "Copied" : "Copy link"}</Button>
                         {f.enabled
                             ? <Button size="sm" variant="ghost" disabled={busy} onClick={() => run({ action: "form_disable", token: f.token })}>Turn off</Button>
-                            : <Button size="sm" variant="ghost" disabled={busy} onClick={() => run({ action: "form_save", ...f, enabled: true })}>Turn on</Button>}
+                            : <Button size="sm" variant="ghost" disabled={busy} onClick={() => run({ action: "form_save", ...f, logo_data: undefined, enabled: true })}>Turn on</Button>}
                     </div>
                 </div>
             ))}
-            <form className="tw-flex tw-flex-col tw-gap-3" onSubmit={(e) => { e.preventDefault(); run({ action: "form_save", ...draft }, () => setDraft((d) => ({ ...d, company_name: "", notify_email: "" }))); }}>
+            <form className="tw-flex tw-flex-col tw-gap-3" onSubmit={(e) => { e.preventDefault(); createForm(); }}>
                 <div className="dsr-form-grid">
                     <label className={LABEL}>Company name people will see<input className={FIELD} required maxLength={255} value={draft.company_name} onChange={set("company_name")} /></label>
                     <label className={LABEL}>Domain
@@ -62,6 +157,7 @@ function FormsPanel({ forms, onData, busy, setBusy }) {
                         </select>
                     </label>
                 </div>
+                <LogoDropzone logo={draft.logo} error={logoError.new} onLogo={(logo) => setDraft((d) => ({ ...d, logo }))} onRemove={() => setDraft((d) => ({ ...d, logo: "" }))} />
                 {error && <p role="alert" className="tw-m-0 tw-text-sm tw-text-danger-text">{error}</p>}
                 <div><Button type="submit" variant="primary" loading={busy}>Create form</Button></div>
             </form>

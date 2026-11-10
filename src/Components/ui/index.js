@@ -7,6 +7,7 @@ export { default as Table } from "./Table.js";
 export { default as Tabs, TabPanel } from "./Tabs.js";
 export { default as FilterBar, FilterSelect, FilterSearch, FilterChip } from "./FilterBar.js";
 export { default as Drawer } from "./Drawer.js";
+export { default as FileDropzone } from "./FileDropzone.js";
 export { default as EmptyState } from "./EmptyState.js";
 export { default as ErrorState } from "./ErrorState.js";
 export { default as Skeleton, SkeletonText, SkeletonKpiTile, SkeletonTableRows, SkeletonCard } from "./Skeleton.js";

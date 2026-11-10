@@ -80,13 +80,45 @@ function notice(name, lang, form, vars) {
     return page(title, `<h1>${esc(title)}</h1><p>${esc(formT(lang, `${name}_text`, vars))}</p>`, form, lang);
 }
 
-async function sendEmail(to, subject, html) {
+/**
+ * Table layout with inline styles, because that's what mail clients render.
+ * The logo travels as an inline attachment: they drop data: images and SVGs,
+ * so a logo in any other format falls back to the company name.
+ */
+export function confirmationEmail(form, lang, link) {
+    const company = form.company_name;
+    const t = (key) => esc(formT(lang, key, { company }));
+    const logo = /^data:image\/(png|jpeg);base64,(.+)$/.exec(form.logo_data || "");
+    const FONT = "font-family:Arial,Helvetica,sans-serif;";
+    const brand = logo
+        ? `<img src="cid:company-logo" alt="${esc(company)}" height="48" style="display:block;height:48px;width:auto;max-width:240px;border:0">`
+        : `<span style="${FONT}font-size:20px;font-weight:700;color:#1c1c1c">${esc(company)}</span>`;
+    const html = `<!doctype html><html lang="${esc(lang)}"><body style="margin:0;padding:0;background:#f5f5f4">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f5f5f4"><tr><td align="center" style="padding:32px 16px">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;background:#ffffff;border:1px solid #d6d6d3;border-radius:12px">
+<tr><td style="padding:28px 28px 0">${brand}</td></tr>
+<tr><td style="padding:24px 28px 0;${FONT}font-size:24px;line-height:30px;font-weight:700;color:#1c1c1c">${t("confirm_title")}</td></tr>
+<tr><td style="padding:8px 28px 0;${FONT}font-size:16px;line-height:24px;color:#4a4a4a">${t("mail_intro")}</td></tr>
+<tr><td style="padding:24px 28px 0"><table role="presentation" cellpadding="0" cellspacing="0"><tr><td bgcolor="#8a6a1f" style="border-radius:8px"><a href="${esc(link)}" style="display:inline-block;padding:13px 22px;${FONT}font-size:16px;font-weight:700;color:#ffffff;text-decoration:none;border-radius:8px">${t("mail_button")}</a></td></tr></table></td></tr>
+<tr><td style="padding:20px 28px 0;${FONT}font-size:14px;line-height:21px;color:#5f5f5f">${t("mail_expires")}<br>${t("mail_ignore")}</td></tr>
+<tr><td style="padding:20px 28px 28px;${FONT}font-size:13px;line-height:19px;color:#5f5f5f;word-break:break-all">${t("mail_fallback")}<br><a href="${esc(link)}" style="color:#8a6a1f">${esc(link)}</a></td></tr>
+</table>
+<p style="max-width:520px;margin:16px auto 0;${FONT}font-size:13px;line-height:19px;color:#5f5f5f">${t("mail_footer")}</p>
+</td></tr></table></body></html>`;
+    return {
+        subject: formT(lang, "mail_subject", { company }),
+        html,
+        attachments: logo ? [{ filename: `logo.${logo[1] === "jpeg" ? "jpg" : "png"}`, content: logo[2], content_id: "company-logo" }] : [],
+    };
+}
+
+async function sendEmail(to, subject, html, attachments) {
     const key = process.env.RESEND_API_KEY;
     if (!key) return false;
     const response = await fetch("https://api.resend.com/emails", {
         method: "POST",
         headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
-        body: JSON.stringify({ from: SENDER, to: [to], subject, html }),
+        body: JSON.stringify({ from: SENDER, to: [to], subject, html, ...(attachments?.length ? { attachments } : {}) }),
     });
     if (!response.ok) console.error("[dsr-public] email failed:", response.status, (await response.text().catch(() => "")).slice(0, 300));
     return response.ok;
@@ -127,9 +159,8 @@ async function submit(req, res, db, form, lang) {
         [sha(code), form.token, JSON.stringify({ ...values, lang }), ipHash]
     );
     const link = `${BASE}/privacy-request/confirm/${code}?lang=${lang}`;
-    const company = form.company_name;
-    const sent = await sendEmail(values.requester_email, formT(lang, "mail_subject", { company }),
-        `<p>${esc(formT(lang, "mail_intro", { company }))}</p><p><a href="${link}">${esc(formT(lang, "mail_button"))}</a></p><p>${esc(formT(lang, "mail_ignore"))}</p>`);
+    const mail = confirmationEmail(form, lang, link);
+    const sent = await sendEmail(values.requester_email, mail.subject, mail.html, mail.attachments);
     if (!sent) {
         await db.query(`DELETE FROM dsr_public_submissions WHERE token_hash = $1`, [sha(code)]);
         return send(res, 503, formPage(form, formT(lang, "error_send"), body, lang));

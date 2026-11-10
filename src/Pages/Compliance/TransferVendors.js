@@ -1,5 +1,5 @@
 import { Icon } from "../../Components/ui/icons.js";
-import { Badge, Button, RiskBadge, Card, Table, FilterBar, FilterSelect, FilterSearch, Drawer, Pagination } from "../../Components/ui";
+import { Badge, Button, RiskBadge, Card, Table, FilterBar, FilterSelect, FilterSearch, Drawer, FileDropzone, Pagination } from "../../Components/ui";
 import { ListTemplate } from "../../Components/templates";
 import { formatNumber } from "../../Functions/format.js";
 import { MECHANISMS, DPA_STATES, RISK_RANK, isTrackingCategory, hostRegion, groupTransfersByVendor, vendorTotals, vendorChapterV, chapterVSummary, complianceFindings, complianceStatus, issueBreakdownText } from "../../Functions/transferCompliance.js";
@@ -118,20 +118,23 @@ function ChapterVForm({ vendor, record, onSave, onUploadEvidence, onRemoveEviden
                 Evidence link
                 <input type="url" className={SELECT} maxLength={2000} placeholder="https://" value={evidenceUrl} onChange={changed(setEvidenceUrl)} />
             </label>
-            <div className="tw-flex tw-flex-wrap tw-items-center tw-gap-2 tw-text-xs tw-text-text-muted">
-                <span>Evidence file (PDF, PNG or JPEG, up to 3 MB):</span>
-                {evidenceFile && <Button size="sm" variant="ghost" iconRight="external-link" onClick={() => withFile(() => onOpenEvidence(vendor.vendor))}>{evidenceFile}</Button>}
-                {evidenceFile && <Button size="sm" variant="ghost" onClick={() => withFile(() => onRemoveEvidence(vendor.vendor))}>Remove</Button>}
-                <input
-                    type="file"
-                    accept="application/pdf,image/png,image/jpeg"
-                    aria-label={evidenceFile ? "Replace the evidence file" : "Upload an evidence file"}
-                    disabled={fileState === "working"}
-                    onChange={(e) => { const file = e.target.files[0]; e.target.value = ""; if (file) withFile(() => onUploadEvidence(vendor.vendor, file)); }}
-                />
-                {fileState === "working" && <span role="status">Working…</span>}
-                {fileState && fileState !== "working" && <span role="alert" className="tw-text-danger-text">{fileState}</span>}
-            </div>
+            <FileDropzone
+                compact
+                title={evidenceFile ? `Evidence on file: ${evidenceFile}` : "Drag and drop evidence to upload"}
+                hint="PDF, PNG or JPEG, up to 3 MB"
+                accept=".pdf,.png,.jpg,.jpeg,application/pdf,image/png,image/jpeg"
+                maxBytes={3 * 1024 * 1024}
+                buttonLabel={evidenceFile ? "Replace file" : "Select file"}
+                busy={fileState === "working"}
+                error={fileState && fileState !== "working" ? fileState : null}
+                onFile={(file) => withFile(() => onUploadEvidence(vendor.vendor, file))}
+                actions={evidenceFile && (
+                    <>
+                        <Button size="sm" variant="ghost" iconRight="external-link" onClick={() => withFile(() => onOpenEvidence(vendor.vendor))}>Download</Button>
+                        <Button size="sm" variant="ghost" onClick={() => withFile(() => onRemoveEvidence(vendor.vendor))}>Remove</Button>
+                    </>
+                )}
+            />
             <div className="tw-flex tw-flex-wrap tw-items-center tw-gap-3">
                 <Button variant="primary" size="sm" loading={state === "saving"} onClick={save}>Save</Button>
                 {state === "saved" && <span role="status" className="tw-text-xs tw-text-success">Saved for your organisation</span>}
