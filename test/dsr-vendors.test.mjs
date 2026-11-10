@@ -1,10 +1,11 @@
 // Data subject requests: telling vendors, deleting through their APIs, and the public form.
 import assert from "node:assert/strict";
 import { test } from "./_harness.mjs";
-import { vendorsFromTransfers, needsVendorNotice, validateVendorUpdate, vendorMessage, validatePublicSubmission, seedVendorNotifications, validateLogo } from "../api/_dsr.js";
+import { vendorsFromTransfers, needsVendorNotice, validateVendorUpdate, vendorMessage, validatePublicSubmission, seedVendorNotifications, validateLogo, requestView } from "../api/_dsr.js";
 import { hashEmail, encryptCredentials, decryptCredentials, deletionStatus, runDeletion } from "../api/_dsr-deletion.js";
 import { formPage, esc, confirmationEmail, newRequestEmail } from "../api/dsr-public.js";
 import fs from "node:fs";
+import { notifyNewRequest, newRequestNotification } from "../api/_dsr-notify.js";
 import { FORM_LANGUAGES, FORM_TEXT, formT, pickFormLanguage } from "../api/_dsr-public-i18n.js";
 
 const NOW = 1_800_000_000_000;
@@ -262,4 +263,32 @@ test("new request email: tells the team what's due, with no personal details", (
     assert.doesNotMatch(mail.html, /secret@x\.dk|Maria/);
     assert.match(mail.html, /src="cid:intastellar-logo"/);
     assert.strictEqual(mail.attachments[0].content_id, "intastellar-logo");
+});
+
+test("new requests: new until someone opens them, and not once closed", () => {
+    assert.strictEqual(requestView({ status: "pending", due_at: "2030-01-01" }, NOW).is_new, true);
+    assert.strictEqual(requestView({ status: "pending", due_at: "2030-01-01", first_opened_at: "2026-11-10" }, NOW).is_new, false);
+    assert.strictEqual(requestView({ status: "completed", due_at: "2030-01-01" }, NOW).is_new, false);
+});
+
+const notifyForm = { organisation_id: 7, company_name: "Shop A/S", domain: null };
+const notifyRequest = { id: "12", due_at: "2026-12-10T23:59:59Z", requester_email: "secret@x.dk", requester_name: "Maria" };
+
+test("bell: one notification per request, linked to it, with no personal details", async () => {
+    const calls = [];
+    const db = { query: async (sql, params) => { calls.push({ sql, params }); return { rows: [] }; } };
+    assert.strictEqual(await notifyNewRequest(db, notifyForm, notifyRequest, "Erasure"), true);
+    const insert = calls.find((c) => /INSERT INTO ad_notifications/.test(c.sql));
+    assert.match(insert.sql, /ON CONFLICT/);
+    assert.ok(insert.params.includes("dsr:12") && insert.params.includes("12"));
+    assert.ok(insert.params.includes("Shop A/S"), "a form without a domain still has a value for the required column");
+    assert.doesNotMatch(JSON.stringify(insert.params), /secret@x|Maria/);
+    assert.match(newRequestNotification(notifyForm, notifyRequest, "Erasure").body, /10 December 2026/);
+});
+
+test("bell: respects the organisation's setting, and a failure can't break confirmation", async () => {
+    const off = { query: async () => ({ rows: [{ enabled: false }] }) };
+    assert.strictEqual(await notifyNewRequest(off, notifyForm, notifyRequest, "Erasure"), false);
+    const broken = { query: async (sql) => { if (/INSERT/.test(sql)) throw new Error("down"); return { rows: [] }; } };
+    assert.strictEqual(await notifyNewRequest(broken, notifyForm, notifyRequest, "Erasure"), false);
 });

@@ -2,6 +2,7 @@ import { createHash, randomBytes } from "crypto";
 import { getPool } from "./_db.js";
 import { LOGO_DATA_URI } from "./_report-logo.js";
 import { isPlatformHost, normalizeHost } from "./_known-hosts.js";
+import { notifyNewRequest } from "./_dsr-notify.js";
 import { emailLayout, emailEsc, emailP, emailFacts, INTASTELLAR_LOGO_ATTACHMENT, EMAIL_FONT } from "./_email-layout.js";
 import { FORM_LANGUAGES, formT, pickFormLanguage } from "./_dsr-public-i18n.js";
 import { ensureDsrTables, createRequest, validateNewRequest, validatePublicSubmission, REQUEST_TYPES, PUBLIC_REGIONS } from "./_dsr.js";
@@ -210,6 +211,7 @@ async function confirm(res, db, code, lang) {
     if (values.error) return send(res, 400, notice("wrong", lang, form));
     const request = await createRequest(db, form.organisation_id, "Public request form", { ...values, source: "public_form" });
     await db.query(`INSERT INTO dsr_events (request_id, organisation_id, actor, action) VALUES ($1, $2, $3, 'email_confirmed')`, [request.id, form.organisation_id, values.requester_email]);
+    await notifyNewRequest(db, form, request, REQUEST_TYPES.find((t) => t.id === request.type)?.label || request.type);
     if (form.notify_email) {
         const mail = newRequestEmail(form, request);
         await sendEmail(form.notify_email, mail.subject, mail.html, mail.attachments).catch(() => {});

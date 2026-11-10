@@ -176,7 +176,7 @@ export function applyAction(current, body, now = new Date()) {
 /** What the API returns for a row: the deadline in force and whether it has passed. */
 export function requestView(row, now = Date.now()) {
     const effective_due_at = row.extended_until || row.due_at;
-    return { ...row, effective_due_at, overdue: !CLOSED.has(row.status) && new Date(effective_due_at).getTime() < now };
+    return { ...row, effective_due_at, overdue: !CLOSED.has(row.status) && new Date(effective_due_at).getTime() < now, is_new: !row.first_opened_at && !CLOSED.has(row.status) };
 }
 
 let ready = false;
@@ -223,6 +223,9 @@ export async function ensureDsrTables(db) {
     `);
     await db.query(`CREATE INDEX IF NOT EXISTS idx_dsr_events_request ON dsr_events (request_id, created_at)`);
     await db.query(`ALTER TABLE dsr_requests ADD COLUMN IF NOT EXISTS source TEXT`);
+    // The temporary default marks every existing request as already seen; new ones start empty.
+    await db.query(`ALTER TABLE dsr_requests ADD COLUMN IF NOT EXISTS first_opened_at TIMESTAMPTZ DEFAULT NOW()`);
+    await db.query(`ALTER TABLE dsr_requests ALTER COLUMN first_opened_at DROP DEFAULT`);
     await db.query(`
         ALTER TABLE dsr_requests
             ADD COLUMN IF NOT EXISTS is_test BOOLEAN NOT NULL DEFAULT FALSE,
@@ -312,6 +315,10 @@ export async function getRequest(db, organisationId, id) {
         [id, organisationId]
     );
     return { request: requestView(rows[0]), events };
+}
+
+export async function markRequestOpened(db, organisationId, id) {
+    await db.query(`UPDATE dsr_requests SET first_opened_at = NOW() WHERE id = $1 AND organisation_id = $2 AND first_opened_at IS NULL`, [id, organisationId]);
 }
 
 const NEW_COLUMNS = ["domain", "requester_name", "requester_email", "consent_id", "type", "regulation", "received_at", "due_at", "assignee", "notes", "source"];

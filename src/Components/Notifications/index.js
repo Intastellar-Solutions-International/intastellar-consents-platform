@@ -85,7 +85,10 @@ export default function NotificationCenter() {
             setUnread((c) => Math.max(0, c - 1));
             post({ action: "mark-read", id: n.id }).catch(() => {});
         }
-        if (n.scan_id) {
+        if (n.rule_type === "dsr_new_request" && n.scan_id) {
+            setOpen(false);
+            history.push(`/${localStorage.getItem("platform") || "gdpr"}/reports/dsr/${encodeURIComponent(n.scan_id)}`);
+        } else if (n.scan_id) {
             const platform = localStorage.getItem("platform") || "gdpr";
             setOpen(false);
             history.push(`${reportsPath(platform, toUnicodeDomain(n.domain), "/compliance")}?scan=${encodeURIComponent(n.scan_id)}`);

@@ -18,6 +18,7 @@ export const NOTIFICATION_TYPES = [
     { id: "second_consent_banner", label: "Second consent banner", description: "Another consent tool is loading alongside yours." },
     { id: "scan_out_of_date", label: "Out-of-date scan", description: "A domain has not been scanned for two weeks." },
     { id: "scan_failed", label: "Failed scan", description: "The latest scan of a domain could not finish." },
+    { id: "dsr_new_request", label: "New data subject request", description: "Someone confirmed a request through your public form." },
 ];
 
 const STALE_DAYS = 14;

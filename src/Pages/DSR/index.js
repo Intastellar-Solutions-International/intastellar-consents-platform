@@ -20,6 +20,7 @@ const today = () => new Date().toISOString().slice(0, 10);
 const emptyForm = () => ({ requester_name: "", requester_email: "", consent_id: "", type: "access", regulation: "GDPR", received_at: today(), domain: "", assignee: "", notes: "" });
 
 const STATUS_FILTER = {
+    new: (r) => r.is_new,
     open: (r) => !isClosed(r),
     overdue: (r) => r.overdue,
     pending: (r) => r.status === "pending",
@@ -28,10 +29,12 @@ const STATUS_FILTER = {
     rejected: (r) => r.status === "rejected",
 };
 
+const sourceLabel = (r) => (r.source === "public_form" ? "Public form" : "Logged by hand");
+
 function downloadCsv(rows) {
-    const header = ["Requester", "Email", "Consent ID", "Domain", "Type", "Regulation", "Status", "Received", "Due", "Extended until", "Assignee", "Identity verified", "Closed"];
+    const header = ["Requester", "Email", "Consent ID", "Domain", "Source", "Type", "Regulation", "Status", "Received", "Due", "Extended until", "Assignee", "Identity verified", "Closed"];
     const day = (v) => (v ? String(v).slice(0, 10) : "");
-    const lines = rows.map((r) => [r.requester_name, r.requester_email, r.consent_id, r.domain, typeLabel(r.type), r.regulation, r.overdue ? "overdue" : r.status, day(r.received_at), day(r.due_at), day(r.extended_until), r.assignee, day(r.identity_verified_at), day(r.closed_at)]);
+    const lines = rows.map((r) => [r.requester_name, r.requester_email, r.consent_id, r.domain, sourceLabel(r), typeLabel(r.type), r.regulation, r.overdue ? "overdue" : r.status, day(r.received_at), day(r.due_at), day(r.extended_until), r.assignee, day(r.identity_verified_at), day(r.closed_at)]);
     const csv = [header, ...lines].map((row) => row.map((cell) => `"${String(cell ?? "").replace(/"/g, '""')}"`).join(",")).join("\n");
     const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8;" }));
     const a = document.createElement("a");
@@ -111,6 +114,7 @@ export default function DSR() {
     const setSetup = (section) => history.replace({ pathname: location.pathname, search: section ? `?setup=${section}` : "" });
     const [status, setStatus] = useState("all");
     const [type, setType] = useState("all");
+    const [source, setSource] = useState("all");
     const [query, setQuery] = useState("");
     const [sort, setSort] = useState({ key: "received", direction: "desc" });
     const [page, setPage] = useState(0);
@@ -123,7 +127,7 @@ export default function DSR() {
             .catch((e) => { if (live) setError(e.message); });
         return () => { live = false; };
     }, [attempt]);
-    useEffect(() => setPage(0), [status, type, query, sort]);
+    useEffect(() => setPage(0), [status, type, source, query, sort]);
 
     const summary = useMemo(() => dsrSummary(requests || []), [requests]);
     const filtered = useMemo(() => {
@@ -133,11 +137,12 @@ export default function DSR() {
         return (requests || [])
             .filter((r) => status === "all" || STATUS_FILTER[status](r))
             .filter((r) => type === "all" || r.type === type)
+            .filter((r) => source === "all" || (source === "public_form") === (r.source === "public_form"))
             .filter((r) => !q || [r.requester_name, r.requester_email, r.consent_id, r.domain, r.assignee].some((v) => String(v || "").toLowerCase().includes(q)))
             .sort((a, b) => (when(a) - when(b)) * dir);
-    }, [requests, status, type, query, sort]);
-    const activeFilters = (status !== "all" ? 1 : 0) + (type !== "all" ? 1 : 0) + (query ? 1 : 0);
-    const clear = () => { setStatus("all"); setType("all"); setQuery(""); };
+    }, [requests, status, type, source, query, sort]);
+    const activeFilters = (status !== "all" ? 1 : 0) + (type !== "all" ? 1 : 0) + (source !== "all" ? 1 : 0) + (query ? 1 : 0);
+    const clear = () => { setStatus("all"); setType("all"); setSource("all"); setQuery(""); };
 
     const columns = [
         {
@@ -146,6 +151,7 @@ export default function DSR() {
                 <span className="tw-block tw-min-w-0">
                     <span className="tw-flex tw-items-center tw-gap-2 tw-font-semibold tw-text-text-primary">
                         <span className="tw-truncate">{requesterName(r)}</span>
+                        {r.is_new && <Badge tone="info">New</Badge>}
                         {r.is_test && <Badge tone="neutral">Test</Badge>}
                     </span>
                     {r.requester_name && r.requester_email && <span className="tw-block tw-text-xs tw-text-text-muted tw-truncate">{r.requester_email}</span>}
@@ -154,6 +160,7 @@ export default function DSR() {
         },
         { key: "type", header: "Type", hideOnMobile: true, render: (r) => typeLabel(r.type) },
         { key: "domain", header: "Domain", hideOnMobile: true, render: (r) => r.domain || <span className="tw-text-text-muted">All</span> },
+        { key: "source", header: "Source", hideOnMobile: true, render: sourceLabel },
         { key: "regulation", header: "Regulation", hideOnMobile: true, render: (r) => String(r.regulation).replace("_", " ") },
         { key: "received", header: "Received", sortable: true, hideOnMobile: true, render: (r) => legalDate(r.received_at) },
         {
@@ -197,8 +204,9 @@ export default function DSR() {
                                 label="Status"
                                 value={status}
                                 onChange={setStatus}
-                                options={[{ value: "all", label: "All statuses" }, { value: "open", label: "Open" }, { value: "overdue", label: "Overdue" }, { value: "pending", label: "Pending" }, { value: "in_progress", label: "In progress" }, { value: "completed", label: "Completed" }, { value: "rejected", label: "Rejected" }]}
+                                options={[{ value: "all", label: "All statuses" }, { value: "new", label: "New" }, { value: "open", label: "Open" }, { value: "overdue", label: "Overdue" }, { value: "pending", label: "Pending" }, { value: "in_progress", label: "In progress" }, { value: "completed", label: "Completed" }, { value: "rejected", label: "Rejected" }]}
                             />
+                            <FilterSelect label="Source" value={source} onChange={setSource} options={[{ value: "all", label: "All sources" }, { value: "public_form", label: "Public form" }, { value: "manual", label: "Logged by hand" }]} />
                             <FilterSelect label="Type" value={type} onChange={setType} options={[{ value: "all", label: "All types" }, ...REQUEST_TYPES.map((t) => ({ value: t.id, label: t.label }))]} />
                         </FilterBar>
                     )}

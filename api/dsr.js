@@ -3,7 +3,7 @@ import { requireMember } from "./_member-auth.js";
 import { randomBytes } from "crypto";
 import {
     ensureDsrTables, listRequests, getRequest, createRequest, saveAction, validateNewRequest, applyAction,
-    seedVendorNotifications, listVendorNotifications, addVendorNotification, validateVendorUpdate, saveVendorNotification, needsVendorNotice, validateLogo, DEADLINE_RULES,
+    seedVendorNotifications, listVendorNotifications, addVendorNotification, validateVendorUpdate, saveVendorNotification, needsVendorNotice, validateLogo, markRequestOpened, DEADLINE_RULES,
 } from "./_dsr.js";
 import { organisationHasPlan } from "./_stripe.js";
 import { normalizeCustomDomain, customDomainsConfigured, attachDomain, detachDomain, domainState, CLEAR_CUSTOM_DOMAIN } from "./_dsr-domains.js";
@@ -58,6 +58,7 @@ async function deletionContext(db, organisationId, request) {
 async function detail(db, organisationId, id) {
     const found = await getRequest(db, organisationId, id);
     if (!found) return null;
+    if (!found.request.first_opened_at) await markRequestOpened(db, organisationId, id);
     await seedVendorNotifications(db, organisationId, found.request, () => import("./_scan-core.js").then((m) => m.reclassifyStoredTransfer));
     const rows = await listVendorNotifications(db, organisationId, id);
     const context = await deletionContext(db, organisationId, found.request);

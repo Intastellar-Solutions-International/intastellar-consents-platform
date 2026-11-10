@@ -83,6 +83,6 @@ test("notifications: sync inserts idempotently and respects the organisation sco
 test("notifications: everything is on by default and a type can be turned off", async () => {
     assert.ok((await getNotificationPreferences(fakeDb(), 7)).every((p) => p.enabled));
     assert.strictEqual((await getNotificationPreferences(fakeDb({ prefs: [{ type: "scan_failed", enabled: false }] }), 7)).find((p) => p.id === "scan_failed").enabled, false);
-    assert.strictEqual(NOTIFICATION_TYPES.length, 5);
+    assert.strictEqual(NOTIFICATION_TYPES.length, 6);
     assert.strictEqual(await setNotificationPreference(fakeDb(), 7, "made_up", false), false);
 });
