@@ -143,7 +143,7 @@ async function domainAction(db, organisationId, body) {
     let domain = form.custom_domain;
     if (body.action === "domain_connect") {
         if (domain) return { status: 400, error: "Remove the current domain first." };
-        domain = normalizeCustomDomain(body.domain);
+        domain = normalizeCustomDomain(body.domain, organisationId);
         if (domain.error) return { status: 400, error: domain.error };
         const { rows: taken } = await db.query(`SELECT 1 FROM dsr_public_forms WHERE custom_domain = $1`, [domain]);
         if (taken.length) return { status: 409, error: "That domain is already connected to a form." };

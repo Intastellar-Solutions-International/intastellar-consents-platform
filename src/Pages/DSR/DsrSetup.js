@@ -121,7 +121,7 @@ function CustomDomain({ form, access, onData }) {
             </div>
             {!active && (
                 <>
-                    <p className="tw-m-0 tw-text-xs tw-text-text-muted">Add these records where the domain's DNS is managed. It can take a while to take effect.</p>
+                    <p className="tw-m-0 tw-text-xs tw-text-text-muted">Add these records where the domain's DNS is managed. It can take a while to take effect. On Cloudflare, set the record to "DNS only" (grey cloud).</p>
                     <DnsRecords records={form.custom_domain_dns || []} />
                 </>
             )}

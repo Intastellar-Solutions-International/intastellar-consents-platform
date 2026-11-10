@@ -6,31 +6,37 @@ import { isPlatformHost, normalizeHost } from "./_known-hosts.js";
  * pointing a root domain here would take over the customer's main website.
  */
 const LABEL = /^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/;
-const OWN_DOMAINS = /(^|\.)(intastellar[a-z-]*|consentsmanagement|vercel)\.[a-z.]+$/;
+const HOSTING_DOMAINS = /(^|\.)vercel\.[a-z.]+$/;
+// Our domains resolve on this Vercel team, so a customer could otherwise put a form on one.
+const INTASTELLAR_DOMAINS = /(^|\.)(intastellar[a-z-]*|consentsmanagement)\.[a-z.]+$/;
+const INTASTELLAR_ORGANISATION = 1;
 // Two-part endings, so that company.co.uk isn't mistaken for a subdomain.
 const SECOND_LEVEL = new Set(["co.uk", "org.uk", "me.uk", "ac.uk", "com.au", "net.au", "org.au", "co.nz", "org.nz", "co.jp", "or.jp", "ne.jp", "com.br", "net.br", "org.br", "co.za", "com.mx", "co.in", "com.sg", "com.hk", "co.kr", "com.tr", "com.pl", "com.cn"]);
 const FAILING_DAYS_BEFORE_REMOVAL = 14;
 const API = "https://api.vercel.com";
+// Not secret, and always this project; only the token comes from the environment.
+const VERCEL_PROJECT = "prj_CfB9TsDNKEE72Wi6vSQLUhl57zPO";
+const VERCEL_TEAM = "team_aWxsCZ5awaiAbwZxTjzhaHk1";
 
 /** A clean subdomain, or { error }. */
-export function normalizeCustomDomain(input) {
+export function normalizeCustomDomain(input, organisationId) {
     const name = normalizeHost(String(input || "").trim().replace(/^[a-z]+:\/\//i, "").split("/")[0]);
     const labels = name.split(".");
     if (!name || name.length > 253 || !labels.every((l) => LABEL.test(l)) || labels.length < 2 || !/[a-z]/.test(labels[labels.length - 1])) return { error: "Enter a domain like privacy.yourcompany.com" };
-    if (isPlatformHost(name) || OWN_DOMAINS.test(name)) return { error: "That domain can't be used" };
+    if (isPlatformHost(name) || HOSTING_DOMAINS.test(name)) return { error: "That domain can't be used" };
+    if (INTASTELLAR_DOMAINS.test(name) && Number(organisationId) !== INTASTELLAR_ORGANISATION) return { error: "Domains belonging to Intastellar can't be used" };
     const rootParts = SECOND_LEVEL.has(labels.slice(-2).join(".")) ? 3 : 2;
     if (labels.length <= rootParts) return { error: "Use a subdomain, like privacy.yourcompany.com" };
     return name;
 }
 
-const vercelConfig = () => ({ token: process.env.VERCEL_API_TOKEN, project: process.env.VERCEL_PROJECT_ID, team: process.env.VERCEL_TEAM_ID });
-export const customDomainsConfigured = () => { const c = vercelConfig(); return Boolean(c.token && c.project); };
+const apiToken = () => String(process.env.VERCEL_API_TOKEN || "").trim();
+export const customDomainsConfigured = () => Boolean(apiToken());
 
 function client(fetchImpl = globalThis.fetch) {
-    const { token, project, team } = vercelConfig();
+    const token = apiToken();
     const call = async (method, path, body) => {
-        const separator = path.includes("?") ? "&" : "?";
-        const response = await fetchImpl(`${API}${path.replace(":project", encodeURIComponent(project))}${team ? `${separator}teamId=${encodeURIComponent(team)}` : ""}`, {
+        const response = await fetchImpl(`${API}${path.replace(":project", VERCEL_PROJECT)}${path.includes("?") ? "&" : "?"}teamId=${VERCEL_TEAM}`, {
             method,
             headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
             ...(body ? { body: JSON.stringify(body) } : {}),
