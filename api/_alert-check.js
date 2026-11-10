@@ -1,3 +1,4 @@
+import { emailLayout, emailEsc, emailP, INTASTELLAR_LOGO_ATTACHMENT } from "./_email-layout.js";
 /**
  * Shared alert-check logic — used by ad-alerts.js (manual trigger) and
  * ad-snapshots.js (auto-trigger on snapshot save).
@@ -15,7 +16,7 @@ async function sendEmail({ to, subject, html }) {
         const resp = await fetch("https://api.resend.com/emails", {
             method: "POST",
             headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
-            body: JSON.stringify({ from, to, subject, html }),
+            body: JSON.stringify({ from, to, subject, html, attachments: [INTASTELLAR_LOGO_ATTACHMENT] }),
         });
         return resp.ok;
     } catch (err) {
@@ -25,28 +26,13 @@ async function sendEmail({ to, subject, html }) {
 }
 
 function buildEmailHtml({ title, body, domain, severity, snapshotDate }) {
-    const color = severity === "critical" ? "#ef4444" : severity === "warning" ? "#f59e0b" : "#3b82f6";
-    return `<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"></head>
-<body style="margin:0;padding:0;background:#0f1117;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif">
-  <div style="max-width:560px;margin:0 auto;padding:32px 24px">
-    <div style="background:#1a1d27;border:1px solid #2a2d3a;border-radius:12px;overflow:hidden">
-      <div style="padding:4px 20px;background:${color}22;border-bottom:2px solid ${color}">
-        <p style="margin:8px 0;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:${color}">
-          ${severity} · ${domain}
-        </p>
-      </div>
-      <div style="padding:24px 20px">
-        <h2 style="margin:0 0 12px;font-size:18px;font-weight:700;color:#e8ecf8;line-height:1.3">${title}</h2>
-        <p style="margin:0 0 20px;font-size:14px;color:#a0aec0;line-height:1.6">${body}</p>
-        ${snapshotDate ? `<p style="margin:0;font-size:12px;color:#606880">Snapshot: ${snapshotDate}</p>` : ""}
-      </div>
-      <div style="padding:16px 20px;border-top:1px solid #2a2d3a;background:#161921">
-        <a href="https://www.intastellarconsents.com" style="font-size:13px;color:#6366f1;text-decoration:none">Open Ad Reconciliation →</a>
-        <p style="margin:8px 0 0;font-size:11px;color:#4a5068">Manage alerts in the Ad Reconciliation dashboard.</p>
-      </div>
-    </div>
-  </div>
-</body></html>`;
+    return emailLayout({
+        badge: { text: `${emailEsc(severity.charAt(0).toUpperCase() + severity.slice(1))} · ${emailEsc(domain)}`, tone: severity === "critical" ? "critical" : severity === "warning" ? "warning" : "info" },
+        heading: title,
+        body: emailP(emailEsc(body)) + (snapshotDate ? emailP(`Snapshot: ${emailEsc(snapshotDate)}`, "font-size:14px;color:#5f5f5f") : ""),
+        cta: { label: "Open Ad Reconciliation", href: "https://www.intastellarconsents.com" },
+        note: "Manage alerts in the Ad Reconciliation dashboard.",
+    });
 }
 
 // ── Web Push ──────────────────────────────────────────────────────────────────

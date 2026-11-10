@@ -1,3 +1,4 @@
+import { emailLayout, emailEsc, emailP, INTASTELLAR_LOGO_ATTACHMENT } from "./_email-layout.js";
 import { getPool } from "./_db.js";
 /**
  * Cron: /api/cron-analytics-alerts  (runs daily at 07:00 UTC per vercel.json)
@@ -24,7 +25,7 @@ async function sendEmail({ to, subject, html }) {
         headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
         body: JSON.stringify({
             from: process.env.RESEND_FROM || "alerts@intastellarconsents.com",
-            to, subject, html,
+            to, subject, html, attachments: [INTASTELLAR_LOGO_ATTACHMENT],
         }),
     }).catch(e => console.error("[cron-analytics-alerts] email error:", e.message));
 }
@@ -39,28 +40,15 @@ function buildEmailHtml({ domain, metric, label, value, threshold, period_days }
         engaged_drop:       "Engaged user drop",
     }[metric] || metric;
 
-    return `<!DOCTYPE html><html><head><meta charset="utf-8"></head>
-<body style="margin:0;padding:0;background:#0f1117;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif">
-<div style="max-width:540px;margin:0 auto;padding:32px 20px">
-  <div style="background:#1a1d27;border:1px solid #2a2d3a;border-radius:12px;overflow:hidden">
-    <div style="padding:4px 20px;background:#ef444422;border-bottom:2px solid #ef4444">
-      <p style="margin:8px 0;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#ef4444">
-        ALERT · ${domain}
-      </p>
-    </div>
-    <div style="padding:24px 20px">
-      <h2 style="margin:0 0 10px;font-size:17px;font-weight:700;color:#e8ecf8">${label || metricLabel} threshold breached</h2>
-      <p style="margin:0 0 16px;font-size:14px;color:#a0aec0;line-height:1.6">
-        ${metricLabel} for <strong>${domain}</strong> is <strong>${fmt(value)}${metric.includes("rate") || metric.includes("drop") ? "%" : ""}</strong>,
-        which crossed the alert threshold of <strong>${fmt(threshold)}${metric.includes("rate") || metric.includes("drop") ? "%" : ""}</strong>
-        over the past <strong>${period_days} day${period_days !== 1 ? "s" : ""}</strong>.
-      </p>
-    </div>
-    <div style="padding:14px 20px;border-top:1px solid #2a2d3a">
-      <a href="https://www.intastellarconsents.com" style="font-size:13px;color:#c09f53;text-decoration:none">Open Analytics Dashboard →</a>
-    </div>
-  </div>
-</div></body></html>`;
+    const suffix = metric.includes("rate") || metric.includes("drop") ? "%" : "";
+    const strong = (text) => `<strong style="color:#1c1c1c">${emailEsc(text)}</strong>`;
+    return emailLayout({
+        badge: { text: `Alert · ${emailEsc(domain)}`, tone: "critical" },
+        heading: `${label || metricLabel} threshold breached`,
+        body: emailP(`${emailEsc(metricLabel)} for ${strong(domain)} is ${strong(`${fmt(value)}${suffix}`)}, which crossed the alert threshold of ${strong(`${fmt(threshold)}${suffix}`)} over the past ${strong(`${period_days} day${period_days !== 1 ? "s" : ""}`)}.`),
+        cta: { label: "Open Analytics Dashboard", href: "https://www.intastellarconsents.com" },
+        note: "Manage alerts in the Analytics dashboard.",
+    });
 }
 
 // ── Metric computation ────────────────────────────────────────────────────────

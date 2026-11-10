@@ -13,6 +13,7 @@
  * domains of one client workspace (workspace_id + a stored domains list).
  */
 
+import { emailLayout, EMAIL_FONT, INTASTELLAR_LOGO_ATTACHMENT } from "./_email-layout.js";
 import { selfReferralClause, noiseReferralClause, getApprovedDomainsForSites } from "./_self-referral.js";
 import { isHeadlineConversionSql } from "./_conversions.js";
 
@@ -273,14 +274,14 @@ function fmtPct(n, decimals = 1) {
 function fmtTrend(pct) {
     if (pct == null || !Number.isFinite(pct)) return "";
     const sign  = pct > 0 ? "+" : "";
-    const color = pct > 0 ? "#4ade80" : pct < 0 ? "#ef4444" : "#a0aec0";
+    const color = pct > 0 ? "#15803d" : pct < 0 ? "#b42318" : "#4a4a4a";
     return `<span style="color:${color};font-size:12px;font-weight:600">${sign}${pct.toFixed(1)}%</span>`;
 }
 
 function kpiCell(label, value, trend) {
     return `<td style="padding:12px 16px;vertical-align:top">
-        <p style="margin:0 0 4px;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#7c8299">${label}</p>
-        <p style="margin:0;font-size:20px;font-weight:700;color:#e8ecf8">${value}</p>
+        <p style="margin:0 0 4px;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#5f5f5f">${label}</p>
+        <p style="margin:0;font-size:20px;font-weight:700;color:#1c1c1c">${value}</p>
         <p style="margin:4px 0 0">${fmtTrend(trend)}</p>
     </td>`;
 }
@@ -289,12 +290,12 @@ function miniTable(title, rows, keyLabel, valueFmt) {
     if (!rows.length) return "";
     const body = rows.map(r => `
         <tr>
-            <td style="padding:6px 0;font-size:13px;color:#c8cfe0;border-top:1px solid #262a38">${esc(r[keyLabel])}</td>
-            <td style="padding:6px 0;font-size:13px;color:#a0aec0;text-align:right;border-top:1px solid #262a38">${valueFmt(r)}</td>
+            <td style="padding:6px 0;font-size:13px;color:#1c1c1c;border-top:1px solid #e5e5e2">${esc(r[keyLabel])}</td>
+            <td style="padding:6px 0;font-size:13px;color:#4a4a4a;text-align:right;border-top:1px solid #e5e5e2">${valueFmt(r)}</td>
         </tr>`).join("");
     return `
     <div style="margin-top:20px">
-        <p style="margin:0 0 6px;font-size:12px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:#7c8299">${title}</p>
+        <p style="margin:0 0 6px;font-size:12px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:#5f5f5f">${title}</p>
         <table style="width:100%;border-collapse:collapse">${body}</table>
     </div>`;
 }
@@ -302,9 +303,9 @@ function miniTable(title, rows, keyLabel, valueFmt) {
 function domainTable(rows) {
     if (!rows?.length) return "";
     const th = (text, align = "right") =>
-        `<th style="padding:6px 0;font-size:11px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:#7c8299;text-align:${align}">${text}</th>`;
+        `<th style="padding:6px 0;font-size:11px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:#5f5f5f;text-align:${align}">${text}</th>`;
     const td = (html, align = "right") =>
-        `<td style="padding:6px 0;font-size:13px;color:${align === "left" ? "#c8cfe0" : "#a0aec0"};text-align:${align};border-top:1px solid #262a38">${html}</td>`;
+        `<td style="padding:6px 0;font-size:13px;color:${align === "left" ? "#1c1c1c" : "#4a4a4a"};text-align:${align};border-top:1px solid #e5e5e2">${html}</td>`;
     const body = rows.map(r => `<tr>
             ${td(esc(r.domain), "left")}
             ${td(`${r.sessions.toLocaleString("en-US")} ${fmtTrend(r.sessionsTrend)}`)}
@@ -313,7 +314,7 @@ function domainTable(rows) {
         </tr>`).join("");
     return `
     <div style="margin-top:20px">
-        <p style="margin:0 0 6px;font-size:12px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:#7c8299">By domain</p>
+        <p style="margin:0 0 6px;font-size:12px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:#5f5f5f">By domain</p>
         <table style="width:100%;border-collapse:collapse">
             <tr>${th("Domain", "left")}${th("Sessions")}${th("Consent")}${th("Conversions")}</tr>
             ${body}
@@ -335,26 +336,12 @@ export function buildReportEmailHtml({ domain, frequency, label, data, clientNam
         ? kpiCell("Revenue", (data.revenue.currency === "USD" ? "$" : data.revenue.currency === "GBP" ? "£" : "€") + data.revenue.total.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }))
         : "";
 
-    return `<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"></head>
-<body style="margin:0;padding:0;background:#0f1117;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif">
-  <div style="max-width:600px;margin:0 auto;padding:32px 24px">
-    <div style="background:#1a1d27;border:1px solid #2a2d3a;border-radius:12px;overflow:hidden">
-      <div style="padding:14px 20px;background:#161921;border-bottom:1px solid #2a2d3a">
-        <img src="https://www.intastellar-consents.com/assets/icons/intastellar-logo-black.svg"
-             alt="Intastellar Consents"
-             height="22"
-             style="display:block;filter:brightness(0) invert(1);max-width:220px" />
-      </div>
-      <div style="padding:4px 20px;background:#c09f5322;border-bottom:2px solid #c09f53">
-        <p style="margin:8px 0;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#c09f53">
-          ${scopeLabel} · ${periodLabel}
-        </p>
-      </div>
-      <div style="padding:20px">
-        <h2 style="margin:0 0 4px;font-size:18px;font-weight:700;color:#e8ecf8;line-height:1.3">${esc(title)}</h2>
-        <p style="margin:0 0 12px;font-size:12px;color:#606880">${data.from} — ${data.to}</p>
-
-        <table style="width:100%;border-collapse:collapse;margin-top:8px">
+    return emailLayout({
+        width: 600,
+        badge: { text: `${scopeLabel} · ${periodLabel}`, tone: "brand" },
+        heading: title,
+        body: `<p style="margin:0 0 8px;${EMAIL_FONT}font-size:14px;color:#5f5f5f">${data.from} — ${data.to}</p>
+        <table style="width:100%;border-collapse:collapse;${EMAIL_FONT}">
           <tr>
             ${kpiCell("Active users", data.totals.engagedUsers.toLocaleString("en-US"), data.trends.engagedUsers)}
             ${kpiCell("Sessions", data.totals.sessions.toLocaleString("en-US"), data.trends.sessions)}
@@ -365,21 +352,16 @@ export function buildReportEmailHtml({ domain, frequency, label, data, clientNam
           </tr>
           ${revenueCell ? `<tr>${revenueCell}<td></td></tr>` : ""}
         </table>
-
-        ${data.topConversion ? `<p style="margin:16px 0 0;font-size:12px;color:#7c8299">Top conversion: <strong style="color:#c8cfe0">${esc(data.topConversion.name)}</strong> (${data.topConversion.count.toLocaleString("en-US")})</p>` : ""}
-
+        <div style="${EMAIL_FONT}">
+        ${data.topConversion ? `<p style="margin:16px 0 0;font-size:12px;color:#5f5f5f">Top conversion: <strong style="color:#1c1c1c">${esc(data.topConversion.name)}</strong> (${data.topConversion.count.toLocaleString("en-US")})</p>` : ""}
         ${domainTable(data.perDomain)}
         ${miniTable("Top pages", data.topPages, "pathname", r => r.views.toLocaleString("en-US"))}
         ${miniTable("Top countries", data.topCountries, "code", r => r.events.toLocaleString("en-US"))}
         ${miniTable("Top traffic sources", data.topReferrers, "referrer", r => r.events.toLocaleString("en-US"))}
-      </div>
-      <div style="padding:16px 20px;border-top:1px solid #2a2d3a;background:#161921">
-        <a href="https://www.intastellarconsents.com" style="font-size:13px;color:#c09f53;text-decoration:none">Open Analytics Dashboard →</a>
-        <p style="margin:8px 0 0;font-size:11px;color:#4a5068">Manage scheduled reports in Analytics → Scheduled Reports.</p>
-      </div>
-    </div>
-  </div>
-</body></html>`;
+        </div>`,
+        cta: { label: "Open Analytics Dashboard", href: "https://www.intastellarconsents.com" },
+        note: "Manage scheduled reports in Analytics → Scheduled Reports.",
+    });
 }
 
 // One config's email: { html, subject }, or null when none of its sites
@@ -402,7 +384,7 @@ export async function sendReportEmail({ recipients, subject, html }) {
         const resp = await fetch("https://api.resend.com/emails", {
             method: "POST",
             headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
-            body: JSON.stringify({ from, to: recipients, subject, html }),
+            body: JSON.stringify({ from, to: recipients, subject, html, attachments: [INTASTELLAR_LOGO_ATTACHMENT] }),
         });
         if (resp.ok) return { ok: true };
         const body = await resp.json().catch(() => ({}));
