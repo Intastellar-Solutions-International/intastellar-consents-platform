@@ -3,6 +3,7 @@ import { Badge, Button, Card, EmptyState, ErrorState, Skeleton } from "../../Com
 import { reportsPath } from "../../Functions/domainPathSegments.js";
 import { IDENTITY_METHODS, latestExtension } from "../../Functions/dsr.js";
 import { formatDate, formatDateTime } from "../../Functions/format.js";
+import { parseConsentTimestamp } from "../../Functions/consentTimestamp.js";
 import { AREA, DsrStatusBadge, FIELD, LABEL, daysLeftLabel, fetchDsr, isClosed, legalDate, postDsr, regulationLabel, requesterName, typeLabel } from "./dsrShared.js";
 import VendorChecklist from "./VendorChecklist.js";
 import "./Style.css";
@@ -23,6 +24,8 @@ const EVENT_LABEL = {
     vendor_update: "Checklist item changed",
     email_confirmed: "Email address confirmed by the requester",
     mark_test: "Test flag changed",
+    pause_clock: "Deadline paused, waiting for identity",
+    resume_clock: "Deadline restarted",
     vendor_deletion: "Deletion sent through vendor API",
     vendor_deletion_failed: "Vendor API deletion failed",
 };
@@ -85,7 +88,8 @@ export default function DSRDetail() {
     const [data, setData] = useState(null);
     const [loadError, setLoadError] = useState(null);
     const [attempt, setAttempt] = useState(0);
-    const [panel, setPanel] = useState(null); // null | "verify" | "complete" | "reject" | "extend"
+    const [panel, setPanel] = useState(null); // null | "verify" | "pause" | "complete" | "reject" | "extend"
+    const [consentMessage, setConsentMessage] = useState(null);
     const [busy, setBusy] = useState(false);
     const [error, setError] = useState(null);
     const [openVendors, setOpenVendors] = useState(null); // the outcome waiting on "complete anyway"
@@ -103,7 +107,9 @@ export default function DSRDetail() {
         setBusy(true);
         setError(null);
         try {
-            setData(await postDsr({ action, id: requestId, ...values }));
+            const next = await postDsr({ action, id: requestId, ...values });
+            setData(next);
+            setConsentMessage(next.consent_message || null);
             setPanel(null);
             setOpenVendors(null);
         } catch (e) {
@@ -168,6 +174,8 @@ export default function DSRDetail() {
                             <div className="tw-flex tw-flex-wrap tw-gap-2">
                                 {request.status === "pending" && <Button variant="primary" loading={busy} onClick={() => run("start")}>Mark in progress</Button>}
                                 {!closed && !request.identity_verified_at && <Button variant="secondary" disabled={busy} onClick={() => setPanel("verify")}>Mark identity verified</Button>}
+                                {request.can_pause && <Button variant="ghost" disabled={busy} onClick={() => setPanel("pause")}>Pause for identity</Button>}
+                                {request.paused && <Button variant="ghost" loading={busy} onClick={() => run("resume_clock")}>Restart the deadline</Button>}
                                 {!closed && <Button variant="secondary" disabled={busy} onClick={() => setPanel("complete")}>Complete</Button>}
                                 {!closed && <Button variant="secondary" disabled={busy} onClick={() => setPanel("reject")}>Reject</Button>}
                                 {canExtend && <Button variant="ghost" disabled={busy} onClick={() => setPanel("extend")}>Extend deadline</Button>}
@@ -185,6 +193,14 @@ export default function DSRDetail() {
                                             </select>
                                         </label>
                                     )}
+                                />
+                            )}
+                            {panel === "pause" && (
+                                <StepForm
+                                    key="pause" label="What did you ask them for?" field="reason" submit="Pause the deadline" saving={busy}
+                                    hint="Only when you have real doubts about who this is, and ask without delay. The deadline moves by the days it was paused, and restarts when identity is verified."
+                                    initial={{ notified_on: today() }} onCancel={() => setPanel(null)} onSubmit={(v) => run("pause_clock", v)}
+                                    extra={(values, set) => <ToldOn label="Asked on" values={values} set={set} />}
                                 />
                             )}
                             {panel === "complete" && (
@@ -237,6 +253,30 @@ export default function DSRDetail() {
                     </Card>
                 )}
 
+                {request.consent_id && data.consent && !locked && (
+                    <Card title="Consent record" description="From your consent log, for this consent ID.">
+                        {!data.consent.available && <p className="tw-m-0 tw-text-sm tw-text-text-muted">The consent log couldn't be reached.</p>}
+                        {data.consent.available && !data.consent.found && <p className="tw-m-0 tw-text-sm tw-text-text-muted">No consent records were found for this ID{request.domain ? ` on ${request.domain}` : ""}.</p>}
+                        {data.consent.found && (
+                            <div className="tw-flex tw-flex-col tw-gap-3">
+                                <dl className="dsr-facts">
+                                    <Fact label="Records">{data.consent.count}</Fact>
+                                    <Fact label="Latest">{data.consent.last_at ? formatDateTime(parseConsentTimestamp(data.consent.last_at)) : null}</Fact>
+                                    <Fact label="Accepted at some point">{data.consent.accepted.join(", ") || "Nothing"}</Fact>
+                                    <Fact label="Never accepted">{data.consent.declined.join(", ") || "Nothing shown"}</Fact>
+                                </dl>
+                                {data.consent.partial && <p className="tw-m-0 tw-text-xs tw-text-text-muted">Some records only name one category, so other categories may be missing here.</p>}
+                                {data.notice_required && !closed && (
+                                    <div className="tw-flex tw-flex-wrap tw-items-center tw-gap-3">
+                                        <Button size="sm" variant="secondary" loading={busy} onClick={() => run("apply_consent")}>Update vendor list from this</Button>
+                                        {consentMessage && <span role="status" className="tw-text-sm tw-text-success">{consentMessage}</span>}
+                                    </div>
+                                )}
+                            </div>
+                        )}
+                    </Card>
+                )}
+
                 {!locked && <VendorChecklist kind="system" request={request} vendors={data.vendors.filter((v) => v.kind === "system")} onData={setData} />}
                 {!locked && data.notice_required && <VendorChecklist kind="vendor" request={request} vendors={data.vendors.filter((v) => v.kind !== "system")} onData={setData} />}
 
@@ -259,6 +299,9 @@ export default function DSRDetail() {
                         {request.extended_until && <Fact label="Extended to">{legalDate(request.extended_until)}</Fact>}
                         {request.extension_notified_on && <Fact label="Told about extension">{legalDate(request.extension_notified_on)}</Fact>}
                         {request.extension_reason && <Fact label="Reason for extension">{request.extension_reason}</Fact>}
+                        {request.paused && <Fact label="Paused since">{legalDate(request.paused_at)}</Fact>}
+                        {request.paused_reason && <Fact label="Asked them for">{request.paused_reason}</Fact>}
+                        {request.paused_days > 0 && <Fact label="Added for pauses">{request.paused_days} day{request.paused_days === 1 ? "" : "s"}</Fact>}
                         {closed ? <Fact label="Closed">{formatDate(request.closed_at)}</Fact> : <Fact label="Time left"><span className={request.overdue ? "tw-text-danger-text" : undefined}>{daysLeftLabel(request)}</span></Fact>}
                     </dl>
                 </Card>

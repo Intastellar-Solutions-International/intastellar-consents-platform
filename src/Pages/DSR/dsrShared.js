@@ -23,15 +23,17 @@ const STATUS = {
     completed: { tone: "success", icon: "check-circle", label: "Completed" },
     rejected: { tone: "neutral", icon: "minus-circle", label: "Rejected" },
     overdue: { tone: "danger", icon: "alert-octagon", label: "Overdue" },
+    paused: { tone: "neutral", icon: "clock", label: "Waiting for identity" },
 };
 
 export function DsrStatusBadge({ request }) {
-    const s = STATUS[request.overdue ? "overdue" : request.status] || STATUS.pending;
+    const s = STATUS[request.paused ? "paused" : request.overdue ? "overdue" : request.status] || STATUS.pending;
     return <Badge tone={s.tone} icon={s.icon}>{s.label}</Badge>;
 }
 
 /** "12 days left", "Due today" or "3 days overdue". */
 export function daysLeftLabel(request, now = Date.now()) {
+    if (request.paused) return "Deadline paused";
     const remaining = (new Date(request.effective_due_at).getTime() - now) / DAY_MS;
     if (request.overdue) { const late = Math.max(1, Math.ceil(-remaining)); return `${late} day${late === 1 ? "" : "s"} overdue`; }
     const days = Math.ceil(remaining);

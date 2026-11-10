@@ -3,9 +3,10 @@ import { requireMember } from "./_member-auth.js";
 import { randomBytes } from "crypto";
 import {
     ensureDsrTables, listRequests, getRequest, createRequest, saveAction, validateNewRequest, applyAction,
-    seedVendorNotifications, listVendorNotifications, addVendorNotification, validateVendorUpdate, saveVendorNotification, needsVendorNotice, validateLogo, markRequestOpened, DEADLINE_RULES,
+    seedVendorNotifications, listVendorNotifications, addVendorNotification, validateVendorUpdate, saveVendorNotification, needsVendorNotice, validateLogo, markRequestOpened, applyConsentToVendors, DEADLINE_RULES,
 } from "./_dsr.js";
 import { organisationHasPlan } from "./_stripe.js";
+import { fetchConsentRecord } from "./_dsr-consent.js";
 import { normalizeCustomDomain, customDomainsConfigured, attachDomain, detachDomain, domainState, CLEAR_CUSTOM_DOMAIN } from "./_dsr-domains.js";
 import { ADAPTERS, VENDOR_ADAPTER, deletionStatus, runDeletion, encryptCredentials, decryptCredentials } from "./_dsr-deletion.js";
 
@@ -55,16 +56,19 @@ async function deletionContext(db, organisationId, request) {
     return { credentials, connections };
 }
 
-async function detail(db, organisationId, id) {
+const loadReclassify = () => import("./_scan-core.js").then((m) => m.reclassifyStoredTransfer);
+
+async function detail(req, db, organisationId, id) {
     const found = await getRequest(db, organisationId, id);
     if (!found) return null;
     if (!found.request.first_opened_at) await markRequestOpened(db, organisationId, id);
-    await seedVendorNotifications(db, organisationId, found.request, () => import("./_scan-core.js").then((m) => m.reclassifyStoredTransfer));
+    const consent = await fetchConsentRecord(req, found.request);
+    await seedVendorNotifications(db, organisationId, found.request, loadReclassify, consent);
     const rows = await listVendorNotifications(db, organisationId, id);
     const context = await deletionContext(db, organisationId, found.request);
     const closed = found.request.anonymized_at || ["completed", "rejected"].includes(found.request.status);
     const vendors = rows.map((v) => ({ ...v, deletion: closed ? null : deletionStatus(v.vendor, found.request, context) }));
-    return { ...found, vendors, notice_required: needsVendorNotice(found.request.type) };
+    return { ...found, vendors, consent, notice_required: needsVendorNotice(found.request.type) };
 }
 
 async function vendorDelete(db, organisationId, email, request, vendor, identifier) {
@@ -195,7 +199,7 @@ export default async function handler(req, res) {
         if (req.method === "GET") {
             if (req.query?.setup) return res.json(await setup(db, organisationId));
             if (req.query?.id === undefined) return res.json({ requests: await listRequests(db, organisationId) });
-            const found = validId(req.query.id) ? await detail(db, organisationId, req.query.id) : null;
+            const found = validId(req.query.id) ? await detail(req, db, organisationId, req.query.id) : null;
             return found ? res.json(found) : res.status(404).json({ error: "Request not found" });
         }
 
@@ -227,11 +231,17 @@ export default async function handler(req, res) {
         const found = validId(body.id) ? await getRequest(db, organisationId, body.id) : null;
         if (!found) return res.status(404).json({ error: "Request not found" });
 
+        if (body.action === "apply_consent") {
+            const consent = await fetchConsentRecord(req, found.request);
+            if (!consent?.found) return res.status(400).json({ error: "No consent record was found for this consent ID." });
+            const changed = await applyConsentToVendors(db, organisationId, found.request, loadReclassify, consent);
+            return res.json({ ...(await detail(req, db, organisationId, found.request.id)), consent_message: `${changed} vendor${changed === 1 ? "" : "s"} updated.` });
+        }
         if (body.action === "vendor_add") {
             const vendor = short(body.vendor);
             if (!vendor) return res.status(400).json({ error: "Add the vendor's name" });
             await addVendorNotification(db, organisationId, found.request.id, { vendor, kind: body.kind === "system" ? "system" : "vendor" });
-            return res.json(await detail(db, organisationId, found.request.id));
+            return res.json(await detail(req, db, organisationId, found.request.id));
         }
         if (body.action === "vendor_update") {
             const [current] = (await listVendorNotifications(db, organisationId, found.request.id)).filter((v) => v.vendor === body.vendor);
@@ -239,13 +249,13 @@ export default async function handler(req, res) {
             const values = validateVendorUpdate(body, current);
             if (values.error) return res.status(400).json({ error: values.error });
             await saveVendorNotification(db, organisationId, email, found.request.id, body.vendor, values);
-            return res.json(await detail(db, organisationId, found.request.id));
+            return res.json(await detail(req, db, organisationId, found.request.id));
         }
         if (body.action === "vendor_delete") {
             if (body.confirm !== true) return res.status(400).json({ error: "Confirm the deletion first" });
             const result = await vendorDelete(db, organisationId, email, found.request, short(body.vendor), body.identifier);
             if (result.error) return res.status(result.status).json({ error: result.error });
-            return res.json({ ...(await detail(db, organisationId, found.request.id)), deletion_message: result.message });
+            return res.json({ ...(await detail(req, db, organisationId, found.request.id)), deletion_message: result.message });
         }
 
         if (body.action === "complete" && body.confirm_open_vendors !== true) {
@@ -256,7 +266,7 @@ export default async function handler(req, res) {
         if (step.error) return res.status(400).json({ error: step.error });
         const request = await saveAction(db, organisationId, email, found.request, step);
         if (!request) return res.status(409).json({ error: "This request was just changed by someone else. Reload and try again." });
-        return res.json(await detail(db, organisationId, request.id));
+        return res.json(await detail(req, db, organisationId, request.id));
     } catch (err) {
         console.error("[dsr]", err.message);
         return res.status(500).json({ error: "Internal server error" });

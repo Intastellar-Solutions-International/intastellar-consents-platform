@@ -1,10 +1,11 @@
 // Data subject requests: telling vendors, deleting through their APIs, and the public form.
 import assert from "node:assert/strict";
 import { test } from "./_harness.mjs";
-import { vendorsFromTransfers, needsVendorNotice, validateVendorUpdate, vendorMessage, validatePublicSubmission, seedVendorNotifications, validateLogo, requestView } from "../api/_dsr.js";
+import { vendorsFromTransfers, needsVendorNotice, validateVendorUpdate, vendorMessage, validatePublicSubmission, seedVendorNotifications, validateLogo, requestView, consentExclusion, canPauseClock, applyAction } from "../api/_dsr.js";
 import { hashEmail, encryptCredentials, decryptCredentials, deletionStatus, runDeletion } from "../api/_dsr-deletion.js";
 import { formPage, esc, confirmationEmail, newRequestEmail } from "../api/dsr-public.js";
 import fs from "node:fs";
+import { summarizeConsentRows, fetchConsentRecord } from "../api/_dsr-consent.js";
 import { notifyNewRequest, newRequestNotification } from "../api/_dsr-notify.js";
 import { FORM_LANGUAGES, FORM_TEXT, formT, pickFormLanguage } from "../api/_dsr-public-i18n.js";
 
@@ -291,4 +292,93 @@ test("bell: respects the organisation's setting, and a failure can't break confi
     assert.strictEqual(await notifyNewRequest(off, notifyForm, notifyRequest, "Erasure"), false);
     const broken = { query: async (sql) => { if (/INSERT/.test(sql)) throw new Error("down"); return { rows: [] }; } };
     assert.strictEqual(await notifyNewRequest(broken, notifyForm, notifyRequest, "Erasure"), false);
+});
+
+const consentRow = (consent, at = "2026-11-01 10:00:00") => ({ consent: JSON.stringify(consent), consents_timestamp: at });
+
+test("consent record: full choices are exact, and an accept anywhere counts", () => {
+    const out = summarizeConsentRows([
+        consentRow([{ type: "marketing", checked: false }, { type: "statistics", checked: true }, { type: "functional", checked: false }]),
+        consentRow([{ type: "functional", checked: true }], "2026-10-01 10:00:00"),
+    ]);
+    assert.deepStrictEqual(out.accepted, ["functional", "statistics"]);
+    assert.deepStrictEqual(out.declined, ["marketing"]);
+    assert.strictEqual(out.last_at, "2026-11-01 10:00:00");
+});
+
+test("consent record: accept and reject all; a single custom row leaves others unknown", () => {
+    assert.deepStrictEqual(summarizeConsentRows([consentRow([{ consent_type: "all", consent_value: "1" }])]).accepted, ["functional", "statistics", "marketing"]);
+    assert.deepStrictEqual(summarizeConsentRows([consentRow([{ consent_type: "all", consent_value: "declined" }])]).declined, ["functional", "statistics", "marketing"]);
+    const custom = summarizeConsentRows([consentRow([{ consent_type: "statics", consent_value: "1" }])]);
+    assert.deepStrictEqual(custom.accepted, ["statistics"]);
+    assert.deepStrictEqual(custom.declined, []);
+    assert.strictEqual(custom.partial, true);
+    assert.strictEqual(summarizeConsentRows([]).found, false);
+});
+
+test("consent record: only a vendor that loads after consent, in a declined category, is excluded", () => {
+    const consent = { found: true, declined: ["marketing"] };
+    assert.ok(consentExclusion({ category: "advertising", before_consent: false }, consent));
+    assert.strictEqual(consentExclusion({ category: "advertising", before_consent: true }, consent), null, "loaded regardless of the choice");
+    assert.strictEqual(consentExclusion({ category: "analytics", before_consent: false }, consent), null, "that category wasn't declined");
+    assert.strictEqual(consentExclusion({ category: "third-party", before_consent: false }, consent), null, "unknown purpose");
+    assert.strictEqual(consentExclusion({ category: "advertising", before_consent: false }, { found: false, declined: [] }), null);
+});
+
+test("consent record: a lookup failure is reported, never thrown, and sends the caller's login", async () => {
+    const req = { headers: { authorization: "Bearer x", organisation: "7" } };
+    const seen = [];
+    const ok = await fetchConsentRecord(req, { consent_id: "c-unique-1", domain: "a.dk" }, { fetchImpl: async (u, o) => { seen.push(o.headers); return reply([consentRow([{ consent_type: "all", consent_value: "1" }])]); } });
+    assert.strictEqual(ok.found, true);
+    assert.strictEqual(seen[0].UID, "c-unique-1");
+    assert.strictEqual(seen[0].Authorization, "Bearer x");
+    assert.deepStrictEqual(await fetchConsentRecord(req, { consent_id: "c-unique-2" }, { fetchImpl: async () => { throw new Error("down"); } }), { available: false });
+    assert.strictEqual(await fetchConsentRecord(req, { consent_id: null }), null);
+});
+const reply = (data) => ({ ok: true, status: 200, json: async () => data });
+
+test("public form: carries a valid consent ID through, and ignores anything else", () => {
+    assert.strictEqual(validatePublicSubmission({ ...good, consent_id: "cns_8f3a-1" }, form, NOW).consent_id, "cns_8f3a-1");
+    assert.strictEqual(validatePublicSubmission({ ...good, consent_id: "<script>" }, form, NOW).consent_id, null);
+    assert.match(formPage(form, "", { consent_id: "cns_1" }), /name="consent_id" value="cns_1"/);
+    assert.doesNotMatch(formPage(form), /name="consent_id"/);
+});
+
+const pausable = { id: "1", status: "pending", regulation: "GDPR", due_at: "2026-12-10T23:59:59Z" };
+const later = new Date("2026-11-20T12:00:00Z");
+
+test("deadline pause: GDPR and UK GDPR only, with a record of what was asked", () => {
+    assert.ok(canPauseClock(pausable) && canPauseClock({ ...pausable, regulation: "UK_GDPR" }));
+    assert.ok(!canPauseClock({ ...pausable, regulation: "CCPA" }));
+    assert.ok(!canPauseClock({ ...pausable, identity_verified_at: "x" }));
+    assert.ok(!canPauseClock({ ...pausable, paused_at: "x" }));
+    assert.ok(applyAction(pausable, { action: "pause_clock" }, later).error);
+    assert.ok(applyAction({ ...pausable, regulation: "CCPA" }, { action: "pause_clock", reason: "ID", notified_on: "2026-11-10" }, later).error);
+    assert.strictEqual(applyAction(pausable, { action: "pause_clock", reason: "ID", notified_on: "2026-11-10" }, later).patch.paused_reason, "ID");
+});
+
+test("deadline pause: resuming moves the deadline by the days paused", () => {
+    const paused = { ...pausable, paused_at: "2026-11-10T00:00:00Z", paused_days: 2 };
+    const step = applyAction(paused, { action: "resume_clock" }, later);
+    assert.strictEqual(step.patch.due_at.toISOString(), "2026-12-20T23:59:59.000Z");
+    assert.strictEqual(step.patch.paused_at, null);
+    assert.strictEqual(step.patch.paused_days, 12);
+    assert.deepStrictEqual(step.detail, { days_added: 10 });
+});
+
+test("deadline pause: verifying identity restarts it; a paused request isn't overdue", () => {
+    const paused = { ...pausable, paused_at: "2026-11-10T00:00:00Z" };
+    const step = applyAction(paused, { action: "verify_identity", method: "email", note: "Replied from address" }, later);
+    assert.strictEqual(step.patch.paused_at, null);
+    assert.strictEqual(step.patch.due_at.toISOString(), "2026-12-20T23:59:59.000Z");
+    const view = requestView({ ...paused, due_at: "2020-01-01" }, NOW);
+    assert.strictEqual(view.overdue, false);
+    assert.strictEqual(view.paused, true);
+});
+
+test("deadline pause: closing a paused request leaves the deadline alone", () => {
+    const paused = { ...pausable, paused_at: "2026-11-10T00:00:00Z" };
+    const step = applyAction(paused, { action: "reject", reason: "No reply", notified_on: "2026-11-15", complaint_notice: true }, later);
+    assert.strictEqual(step.patch.paused_at, null);
+    assert.strictEqual(step.patch.due_at, undefined);
 });

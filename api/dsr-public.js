@@ -49,9 +49,9 @@ button{padding:12px 20px;background:var(--accent);color:var(--on-accent);border:
 const GLOBE = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg>`;
 
 /** Plain links, because this page runs no JavaScript. */
-function languageMenu(form, lang) {
+function languageMenu(form, lang, consentId) {
     const current = FORM_LANGUAGES.find((l) => l.id === lang);
-    const items = FORM_LANGUAGES.map((l) => `<li><a href="/privacy-request/${esc(form.token)}?lang=${l.id}" hreflang="${l.id}" lang="${l.id}"${l.id === lang ? ' aria-current="true"' : ""}>${esc(l.name)}</a></li>`).join("");
+    const items = FORM_LANGUAGES.map((l) => `<li><a href="/privacy-request/${esc(form.token)}?lang=${l.id}${consentId ? `&consent_id=${encodeURIComponent(consentId)}` : ""}" hreflang="${l.id}" lang="${l.id}"${l.id === lang ? ' aria-current="true"' : ""}>${esc(l.name)}</a></li>`).join("");
     return `<details class="lang"><summary aria-label="${esc(formT(lang, "language"))}: ${esc(current.name)}">${GLOBE}${esc(current.name)}</summary><ul>${items}</ul></details>`;
 }
 
@@ -60,11 +60,12 @@ export function formPage(form, error = "", values = {}, lang = "en") {
     const option = (id, label, current) => `<option value="${esc(id)}"${id === current ? " selected" : ""}>${label}</option>`;
     const optional = `<span class="opt">${t("optional")}</span>`;
     const company = form.company_name;
-    return page(`${formT(lang, "title")}: ${company}`, `<div class="top"><h1>${t("title")}</h1>${languageMenu(form, lang)}</div>
+    return page(`${formT(lang, "title")}: ${company}`, `<div class="top"><h1>${t("title")}</h1>${languageMenu(form, lang, values.consent_id)}</div>
 <p>${t("intro", { company })}</p>
 ${error ? `<p class="err" role="alert">${esc(error)}</p>` : ""}
 <form method="post" action="/privacy-request/${esc(form.token)}">
 <input type="hidden" name="lang" value="${esc(lang)}">
+${values.consent_id ? `<input type="hidden" name="consent_id" value="${esc(values.consent_id)}">` : ""}
 <label>${t("email")}<input type="email" name="email" required maxlength="255" autocomplete="email" placeholder="name@example.com" value="${esc(values.email)}"></label>
 <label>${t("name")} ${optional}<input name="name" maxlength="255" autocomplete="name" value="${esc(values.name)}"></label>
 <label>${t("type_q")}<select name="type">${REQUEST_TYPES.map((r) => option(r.id, t(`type_${r.id}`), values.type)).join("")}</select></label>
@@ -242,7 +243,7 @@ export default async function handler(req, res) {
             }
         }
         if (!form) return send(res, 404, notice("missing", lang));
-        return req.method === "POST" ? await submit(req, res, db, form, lang) : send(res, 200, formPage(form, "", {}, lang));
+        return req.method === "POST" ? await submit(req, res, db, form, lang) : send(res, 200, formPage(form, "", { consent_id: /^[\w-]{1,128}$/.test(String(req.query.consent_id || "")) ? req.query.consent_id : "" }, lang));
     } catch (err) {
         console.error("[dsr-public]", err.message);
         return send(res, 500, notice("wrong", lang));

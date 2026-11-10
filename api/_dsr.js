@@ -29,6 +29,10 @@ export const DEADLINE_RULES = {
 };
 
 const CLOSED = new Set(["completed", "rejected"]);
+// EDPB guidance allows a pause while identity is reasonably in doubt. California's
+// rules say the time limit runs regardless of verification, so this isn't offered everywhere.
+const PAUSABLE = new Set(["GDPR", "UK_GDPR"]);
+export const canPauseClock = (request) => PAUSABLE.has(request.regulation) && !CLOSED.has(request.status) && !request.paused_at && !request.identity_verified_at;
 export const IDENTITY_METHODS = [
     { id: "email", label: "Confirmed from their email address" },
     { id: "account", label: "Signed in to their account" },
@@ -100,6 +104,20 @@ export function validateNewRequest(body, now = Date.now()) {
     };
 }
 
+/** Ends a pause: the days it lasted move the deadline back. */
+function resumedClock(current, now) {
+    if (!current.paused_at) return {};
+    const days = Math.max(0, Math.floor((now.getTime() - new Date(current.paused_at).getTime()) / 86400000));
+    const shift = (value) => new Date(new Date(value).getTime() + days * 86400000);
+    return {
+        due_at: shift(current.due_at),
+        ...(current.extended_until ? { extended_until: shift(current.extended_until) } : {}),
+        paused_at: null,
+        paused_reason: null,
+        paused_days: (current.paused_days || 0) + days,
+    };
+}
+
 /**
  * One workflow step on a stored request. Returns { patch, action, detail } or
  * { error }. Personal values stay out of `detail`; it only names what changed.
@@ -109,7 +127,7 @@ export function applyAction(current, body, now = new Date()) {
     const closed = CLOSED.has(current.status);
     const action = body?.action;
     const toldOn = (value) => isDay(value) && Date.parse(`${value}T00:00:00Z`) <= now.getTime() + 86400000;
-    const needOpen = ["start", "verify_identity", "extend", "complete", "reject"];
+    const needOpen = ["start", "verify_identity", "extend", "complete", "reject", "pause_clock", "resume_clock"];
     if (needOpen.includes(action) && closed) return { error: "This request is closed. Reopen it first." };
 
     if (action === "start") {
@@ -122,7 +140,19 @@ export function applyAction(current, body, now = new Date()) {
         if (!IDENTITY_METHODS.some((m) => m.id === body.method)) return { error: "Choose how identity was verified" };
         const note = clean(body.note, MAX_TEXT);
         if (!note) return { error: "Record what was checked" };
-        return { patch: { identity_verified_at: now, identity_method: body.method, identity_note: note, identity_verified_by: clean(body.actor, MAX_NAME) || null }, action, detail: { method: body.method } };
+        return { patch: { identity_verified_at: now, identity_method: body.method, identity_note: note, identity_verified_by: clean(body.actor, MAX_NAME) || null, ...resumedClock(current, now) }, action, detail: { method: body.method } };
+    }
+    if (action === "pause_clock") {
+        if (!canPauseClock(current)) return { error: "The deadline can't be paused for this request" };
+        const reason = clean(body.reason, MAX_TEXT);
+        if (!reason) return { error: "Record what you asked them for" };
+        if (!toldOn(body.notified_on)) return { error: "Add the date you asked them" };
+        return { patch: { paused_at: new Date(`${body.notified_on}T00:00:00Z`), paused_reason: reason }, action, detail: { asked_on: body.notified_on } };
+    }
+    if (action === "resume_clock") {
+        if (!current.paused_at) return { error: "The deadline isn't paused" };
+        const patch = resumedClock(current, now);
+        return { patch, action, detail: { days_added: patch.paused_days - (current.paused_days || 0) } };
     }
     if (action === "extend") {
         if (current.extended_until) return { error: "This deadline has already been extended" };
@@ -141,14 +171,14 @@ export function applyAction(current, body, now = new Date()) {
         const outcome = clean(body.outcome, MAX_TEXT);
         if (!outcome) return { error: "Record what was done" };
         if (!toldOn(body.notified_on)) return { error: "Add the date the requester was told" };
-        return { patch: { status: "completed", outcome, rejection_reason: null, requester_notified_on: body.notified_on, complaint_notice_given: false, closed_at: now }, action, detail: { from: current.status, to: "completed" } };
+        return { patch: { status: "completed", outcome, rejection_reason: null, requester_notified_on: body.notified_on, complaint_notice_given: false, closed_at: now, paused_at: null, paused_reason: null }, action, detail: { from: current.status, to: "completed" } };
     }
     if (action === "reject") {
         const reason = clean(body.reason, MAX_TEXT);
         if (!reason) return { error: "Record why the request was rejected" };
         if (!toldOn(body.notified_on)) return { error: "Add the date the requester was told" };
         if (body.complaint_notice !== true) return { error: "Confirm the requester was told they can complain to a supervisory authority" };
-        return { patch: { status: "rejected", rejection_reason: reason, outcome: null, requester_notified_on: body.notified_on, complaint_notice_given: true, closed_at: now }, action, detail: { from: current.status, to: "rejected" } };
+        return { patch: { status: "rejected", rejection_reason: reason, outcome: null, requester_notified_on: body.notified_on, complaint_notice_given: true, closed_at: now, paused_at: null, paused_reason: null }, action, detail: { from: current.status, to: "rejected" } };
     }
     if (action === "reopen") {
         if (!closed) return { error: "This request is already open" };
@@ -176,7 +206,7 @@ export function applyAction(current, body, now = new Date()) {
 /** What the API returns for a row: the deadline in force and whether it has passed. */
 export function requestView(row, now = Date.now()) {
     const effective_due_at = row.extended_until || row.due_at;
-    return { ...row, effective_due_at, overdue: !CLOSED.has(row.status) && new Date(effective_due_at).getTime() < now, is_new: !row.first_opened_at && !CLOSED.has(row.status) };
+    return { ...row, effective_due_at, paused: Boolean(row.paused_at), can_pause: canPauseClock(row), overdue: !row.paused_at && !CLOSED.has(row.status) && new Date(effective_due_at).getTime() < now, is_new: !row.first_opened_at && !CLOSED.has(row.status) };
 }
 
 let ready = false;
@@ -229,6 +259,9 @@ export async function ensureDsrTables(db) {
     await db.query(`
         ALTER TABLE dsr_requests
             ADD COLUMN IF NOT EXISTS is_test BOOLEAN NOT NULL DEFAULT FALSE,
+            ADD COLUMN IF NOT EXISTS paused_at TIMESTAMPTZ,
+            ADD COLUMN IF NOT EXISTS paused_reason TEXT,
+            ADD COLUMN IF NOT EXISTS paused_days INTEGER NOT NULL DEFAULT 0,
             ADD COLUMN IF NOT EXISTS identity_method TEXT,
             ADD COLUMN IF NOT EXISTS identity_note TEXT,
             ADD COLUMN IF NOT EXISTS identity_verified_by TEXT,
@@ -339,7 +372,7 @@ export async function createRequest(db, organisationId, actor, values) {
     return requestView(rows[0]);
 }
 
-const PATCHABLE = new Set(["status", "is_test", "identity_method", "identity_note", "identity_verified_by", "extension_notified_on", "requester_notified_on", "complaint_notice_given", "identity_verified_at", "extended_until", "extension_reason", "outcome", "rejection_reason", "closed_at", "domain", "requester_name", "requester_email", "consent_id", "assignee", "notes"]);
+const PATCHABLE = new Set(["due_at", "paused_at", "paused_reason", "paused_days", "status", "is_test", "identity_method", "identity_note", "identity_verified_by", "extension_notified_on", "requester_notified_on", "complaint_notice_given", "identity_verified_at", "extended_until", "extension_reason", "outcome", "rejection_reason", "closed_at", "domain", "requester_name", "requester_email", "consent_id", "assignee", "notes"]);
 
 /** Saves a step and its history entry together. Null when the request changed underneath it. */
 export async function saveAction(db, organisationId, actor, current, { patch, action, detail }) {
@@ -366,7 +399,7 @@ export async function anonymizeExpiredRequests(db) {
     const { rows } = await db.query(
         `UPDATE dsr_requests
             SET requester_name = NULL, requester_email = NULL, consent_id = NULL, assignee = NULL, created_by = NULL,
-                notes = '', outcome = NULL, rejection_reason = NULL, extension_reason = NULL, identity_note = NULL, identity_verified_by = NULL, anonymized_at = NOW()
+                notes = '', outcome = NULL, rejection_reason = NULL, extension_reason = NULL, identity_note = NULL, identity_verified_by = NULL, paused_reason = NULL, anonymized_at = NOW()
           WHERE closed_at < NOW() - INTERVAL '${RETENTION_YEARS} years' AND anonymized_at IS NULL
           RETURNING id`
     );
@@ -407,15 +440,27 @@ export function vendorsFromTransfers(transfers) {
     for (const t of transfers || []) {
         const vendor = t.service || t.host;
         const noRecord = NO_RECORD_CATEGORIES.has(t.category);
-        if (!byVendor.has(vendor)) byVendor.set(vendor, { vendor, privacy_url: t.privacyUrl || null, no_record: noRecord });
+        const beforeConsent = t.consentPhase !== "post";
+        if (!byVendor.has(vendor)) byVendor.set(vendor, { vendor, privacy_url: t.privacyUrl || null, no_record: noRecord, category: t.category, before_consent: beforeConsent });
         else {
             const row = byVendor.get(vendor);
             row.privacy_url ||= t.privacyUrl || null;
             row.no_record &&= noRecord;
+            row.before_consent ||= beforeConsent;
+            if (CONSENT_CATEGORY[t.category] === "marketing") row.category = t.category;
         }
     }
     return [...byVendor.values()];
 }
+const CONSENT_CATEGORY = { advertising: "marketing", fingerprinting: "marketing", social: "marketing", analytics: "statistics", functional: "functional" };
+
+/** Why a vendor can start as not applicable given this person's consent history, or null. */
+export function consentExclusion(vendor, consent) {
+    const category = CONSENT_CATEGORY[vendor.category];
+    if (!consent?.found || !category || vendor.before_consent || !consent.declined.includes(category)) return null;
+    return `Their consent records never accepted ${category}, and this vendor only loads after consent. Change this if it did receive their data.`;
+}
+
 const NO_RECORD_NOTE = "Content delivery or consent tool, which usually keeps no record of one person. Change this if it does.";
 
 /**
@@ -423,7 +468,7 @@ const NO_RECORD_NOTE = "Content delivery or consent tool, which usually keeps no
  * organisation's vendor records. loadReclassify is passed in because this file
  * also reaches the browser bundle, and the scanner code must not.
  */
-export async function seedVendorNotifications(db, organisationId, request, loadReclassify) {
+export async function seedVendorNotifications(db, organisationId, request, loadReclassify, consent = null) {
     if (request.anonymized_at) return;
     const { rows: existing } = await db.query(`SELECT DISTINCT kind FROM dsr_vendor_notifications WHERE request_id = $1`, [request.id]);
     const has = (kind) => existing.some((r) => r.kind === kind);
@@ -431,26 +476,43 @@ export async function seedVendorNotifications(db, organisationId, request, loadR
         for (const vendor of OWN_SYSTEMS) await addVendorNotification(db, organisationId, request.id, { vendor, kind: "system" });
     }
     if (!needsVendorNotice(request.type) || has("vendor")) return;
-    let vendors = [];
-    if (request.domain) {
-        const { rows } = await db.query(
-            `SELECT transfers FROM pre_consent_scans
-              WHERE (domain = $1 OR domain = 'www.' || $1) AND (organisation_id = $2 OR organisation_id IS NULL)
-                AND status = 'completed' AND COALESCE(scan_type, 'accept_all') <> 'first_visit'
-              ORDER BY scanned_at DESC LIMIT 1`,
-            [request.domain.replace(/^www\./, ""), organisationId]
-        );
-        if (rows[0]) {
-            vendors = vendorsFromTransfers((rows[0].transfers || []).map(await loadReclassify()));
-        }
-    }
+    let vendors = await scanVendors(db, organisationId, request, loadReclassify);
     if (!vendors.length) {
         const { rows } = await db.query(`SELECT vendor FROM vendor_compliance WHERE organisation_id = $1`, [organisationId]).catch(() => ({ rows: [] }));
         vendors = rows.map((r) => ({ vendor: r.vendor, privacy_url: null }));
     }
     for (const v of vendors) {
-        await addVendorNotification(db, organisationId, request.id, { ...v, ...(v.no_record ? { status: "not_applicable", note: NO_RECORD_NOTE } : {}) });
+        const excluded = v.no_record ? NO_RECORD_NOTE : consentExclusion(v, consent);
+        await addVendorNotification(db, organisationId, request.id, { ...v, ...(excluded ? { status: "not_applicable", note: excluded } : {}) });
     }
+}
+
+async function scanVendors(db, organisationId, request, loadReclassify) {
+    if (!request.domain) return [];
+    const { rows } = await db.query(
+        `SELECT transfers FROM pre_consent_scans
+          WHERE (domain = $1 OR domain = 'www.' || $1) AND (organisation_id = $2 OR organisation_id IS NULL)
+            AND status = 'completed' AND COALESCE(scan_type, 'accept_all') <> 'first_visit'
+          ORDER BY scanned_at DESC LIMIT 1`,
+        [request.domain.replace(/^www\./, ""), organisationId]
+    );
+    return rows[0] ? vendorsFromTransfers((rows[0].transfers || []).map(await loadReclassify())) : [];
+}
+
+/** For a consent ID added later: updates only vendors nobody has acted on yet. Returns how many changed. */
+export async function applyConsentToVendors(db, organisationId, request, loadReclassify, consent) {
+    let changed = 0;
+    for (const v of await scanVendors(db, organisationId, request, loadReclassify)) {
+        const note = consentExclusion(v, consent);
+        if (!note) continue;
+        const { rowCount } = await db.query(
+            `UPDATE dsr_vendor_notifications SET status = 'not_applicable', note = $4, updated_at = NOW()
+              WHERE request_id = $1 AND organisation_id = $2 AND vendor = $3 AND status = 'to_notify' AND kind = 'vendor'`,
+            [request.id, organisationId, v.vendor, note]
+        );
+        changed += rowCount || 0;
+    }
+    return changed;
 }
 
 export async function addVendorNotification(db, organisationId, requestId, { vendor, privacy_url = null, kind = "vendor", status = "to_notify", note = "" }) {
@@ -551,5 +613,6 @@ export function validatePublicSubmission(body, form, now = Date.now()) {
     if (!isEmail(requester_email)) return { error: "error_email" };
     if (!TYPE_IDS.has(body.type)) return { error: "error_type" };
     const regulation = DEADLINE_RULES[body.region] ? body.region : form.default_regulation;
-    return { requester_email, requester_name: clean(body.name, MAX_NAME) || null, type: body.type, regulation, notes: clean(body.message, MAX_TEXT) };
+    const consentId = clean(body.consent_id, 128);
+    return { requester_email, requester_name: clean(body.name, MAX_NAME) || null, consent_id: /^[\w-]+$/.test(consentId) ? consentId : null, type: body.type, regulation, notes: clean(body.message, MAX_TEXT) };
 }
