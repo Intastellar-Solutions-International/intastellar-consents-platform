@@ -8,6 +8,7 @@ import { createHash, createHmac, timingSafeEqual } from "crypto";
  */
 const MEMBERSHIP_URL = "https://apis.intastellarsolutions.com/analytics/settings/getOrganisation";
 const CACHE_MS = 5 * 60 * 1000;
+const PLATFORM_ORGANISATION = 1;
 const confirmed = new Map();
 
 const b64url = (buf) => Buffer.from(buf).toString("base64").replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
@@ -85,4 +86,11 @@ export async function requireMember(req, { fetchImpl = fetch, secret = process.e
     }
     confirmed.set(key, now + CACHE_MS);
     return { organisationId, email };
+}
+
+/** requireMember, limited to members of the organisation that runs the platform. */
+export async function requirePlatformAdmin(req, options) {
+    const member = await requireMember(req, options);
+    if (member.error) return member;
+    return member.organisationId === PLATFORM_ORGANISATION ? member : { status: 403, error: "Forbidden" };
 }

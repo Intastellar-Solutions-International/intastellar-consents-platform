@@ -15,20 +15,12 @@
  * POST body { action: "delete_definition", name }
  *      → Removes entry from cookie_definitions
  *
- * Auth: requires Authorization header (user token) + Organisation: "1" header.
+ * Auth: a confirmed member of organisation 1 (see requirePlatformAdmin).
  */
 
 import { describeCookie, vendorFromCookieName, categoryFromCookieName } from "./_scan-core.js";
 import { getPool } from "./_db.js";
-function requireAdminOrg(req, res) {
-    const org  = req.headers["organisation"] || req.headers["Organization"];
-    const auth = req.headers["authorization"];
-    if (!auth || String(org) !== "1") {
-        res.status(403).json({ error: "Forbidden — admin org only" });
-        return false;
-    }
-    return true;
-}
+import { requirePlatformAdmin } from "./_member-auth.js";
 
 async function ensureSchema(db) {
     await db.query(`
@@ -80,10 +72,11 @@ async function ensureSchema(db) {
 export default async function handler(req, res) {
     res.setHeader("Access-Control-Allow-Origin", "https://platform.intastellarconsents.com");
     res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, Organisation");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, Organisation, X-User-Email");
 
     if (req.method === "OPTIONS") return res.status(204).end();
-    if (!requireAdminOrg(req, res)) return;
+    const admin = await requirePlatformAdmin(req);
+    if (admin.error) return res.status(admin.status).json({ error: admin.error });
 
     const db = getPool();
     await ensureSchema(db);
