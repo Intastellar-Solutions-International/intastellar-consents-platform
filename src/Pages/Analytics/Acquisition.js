@@ -19,6 +19,54 @@ const CHANNEL_LABELS = {
     direct:      "Direct",
 };
 
+// Fixed per-channel colors (not index-based) so a given channel keeps the
+// same color across reloads/domains even though data.channels arrives
+// sorted by event volume, which changes row order.
+const CHANNEL_COLORS = {
+    organic:     "rgba(74,222,128,0.85)",
+    paid:        "rgba(192,159,83,0.9)",
+    paid_social: "rgba(167,139,250,0.85)",
+    referral:    "rgba(99,179,237,0.85)",
+    direct:      "rgba(251,146,60,0.85)",
+};
+
+function ChannelDonut({ channels }) {
+    const rows  = (channels || []).filter(c => c.sessions > 0);
+    const total = rows.reduce((sum, c) => sum + c.sessions, 0);
+    if (!rows.length || total <= 0) return null;
+
+    const C = 2 * Math.PI * 52;
+    let offset = 0;
+    return (
+        <div className="sa-rb-donut-wrap">
+            <svg width="160" height="160" viewBox="0 0 130 130" style={{ transform: "rotate(-90deg)", flexShrink: 0 }}
+                role="img" aria-label="Sessions by channel">
+                <circle cx="65" cy="65" r="52" fill="none" stroke="rgba(255,255,255,0.07)" strokeWidth="18" />
+                {rows.map(c => {
+                    const dash = C * (c.sessions / total);
+                    const el = (
+                        <circle key={c.channel} cx="65" cy="65" r="52" fill="none"
+                            stroke={CHANNEL_COLORS[c.channel] || "rgba(160,160,160,0.6)"} strokeWidth="18"
+                            strokeDasharray={`${dash} ${C - dash}`} strokeDashoffset={-offset} />
+                    );
+                    offset += dash;
+                    return el;
+                })}
+            </svg>
+            <div className="sa-rb-donut-legend">
+                {rows.map(c => (
+                    <div key={c.channel} className="sa-rb-donut-row">
+                        <span className="sa-rb-donut-dot" style={{ background: CHANNEL_COLORS[c.channel] || "rgba(160,160,160,0.6)" }} />
+                        <span className="sa-rb-donut-label">{CHANNEL_LABELS[c.channel] || c.channel}</span>
+                        <span className="sa-rb-donut-count">{c.sessions.toLocaleString("de-DE")}</span>
+                        <span className="sa-rb-donut-pct">{formatPercent((c.sessions / total) * 100, 0)}</span>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+}
+
 function isSameSite(host, domain) {
     const norm = h => (h || "").replace(/^www\./, "").toLowerCase();
     const h = norm(host), d = norm(domain);
@@ -174,35 +222,38 @@ export default function AnalyticsAcquisition() {
                                 <h3 className="sa-panel__title">
                                     <IconTrendingUp className="sa-icon" /> Channels
                                 </h3>
-                                <table className="sa-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Channel</th>
-                                            <th className="sa-table__num">Events</th>
-                                            <th className="sa-table__num">Sessions</th>
-                                            <th className="sa-table__num">% of sessions</th>
-                                            <th className="sa-table__bar" />
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {(data.channels || []).map(c => (
-                                            <tr key={c.channel}>
-                                                <td>{CHANNEL_LABELS[c.channel] || c.channel}</td>
-                                                <td className="sa-table__num">{c.events.toLocaleString("de-DE")}</td>
-                                                <td className="sa-table__num">{c.sessions.toLocaleString("de-DE")}</td>
-                                                <td className="sa-table__num">
-                                                    {data.totals.uniqueSessions > 0 ? formatPercent((c.sessions / data.totals.uniqueSessions) * 100) : "—"}
-                                                </td>
-                                                <td className="sa-table__bar">
-                                                    <MiniBar value={c.events} max={maxChannel} color="rgba(167,139,250,0.6)" />
-                                                </td>
+                                <div style={{ display: "flex", gap: 20, flexWrap: "wrap", alignItems: "flex-start" }}>
+                                    <ChannelDonut channels={data.channels} />
+                                    <table className="sa-table" style={{ flex: "1 1 320px", minWidth: 0 }}>
+                                        <thead>
+                                            <tr>
+                                                <th>Channel</th>
+                                                <th className="sa-table__num">Events</th>
+                                                <th className="sa-table__num">Sessions</th>
+                                                <th className="sa-table__num">% of sessions</th>
+                                                <th className="sa-table__bar" />
                                             </tr>
-                                        ))}
-                                        {!data.channels?.length && (
-                                            <tr><td colSpan={5} style={{ color: "rgba(130,130,130,0.55)", fontSize: "0.8rem" }}>No data yet</td></tr>
-                                        )}
-                                    </tbody>
-                                </table>
+                                        </thead>
+                                        <tbody>
+                                            {(data.channels || []).map(c => (
+                                                <tr key={c.channel}>
+                                                    <td>{CHANNEL_LABELS[c.channel] || c.channel}</td>
+                                                    <td className="sa-table__num">{c.events.toLocaleString("de-DE")}</td>
+                                                    <td className="sa-table__num">{c.sessions.toLocaleString("de-DE")}</td>
+                                                    <td className="sa-table__num">
+                                                        {data.totals.uniqueSessions > 0 ? formatPercent((c.sessions / data.totals.uniqueSessions) * 100) : "—"}
+                                                    </td>
+                                                    <td className="sa-table__bar">
+                                                        <MiniBar value={c.events} max={maxChannel} color={CHANNEL_COLORS[c.channel] || "rgba(167,139,250,0.6)"} />
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                            {!data.channels?.length && (
+                                                <tr><td colSpan={5} style={{ color: "rgba(130,130,130,0.55)", fontSize: "0.8rem" }}>No data yet</td></tr>
+                                            )}
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
 
                             {/* Top pages */}
