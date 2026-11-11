@@ -181,12 +181,21 @@ async function _handler(req, res) {
     // or referrer-spam noise — see item 3.
     const SELF_REFERRAL = selfReferralClause(domain, approvedDomains);
     const NOISE_REFERRAL = noiseReferralClause();
+    // Google/Microsoft/Meta auto-append a click ID to the landing URL on
+    // every ad click regardless of whether the advertiser also set UTM
+    // tags (captured into analytics_events by api/a.js). Without this,
+    // UTM-less ad clicks fall through to "organic" (Google Ads search
+    // clicks commonly still carry referrer_host=google.com with no UTM,
+    // matching the organic referrer regex below) or "direct" — silently
+    // undercounting paid. See MarketingReconciliationPanel.js's identical
+    // "gclid-unmatched" problem on the UTM-only reconciliation side.
+    const HAS_CLICK_ID = `(gclid IS NOT NULL OR msclkid IS NOT NULL OR fbclid IS NOT NULL)`;
     const CHANNEL_SQL = {
-        organic:     `(utm_medium = 'organic' OR (COALESCE(utm_medium,'')='' AND COALESCE(utm_source,'')='' AND referrer_host ~* '(google|bing|duckduckgo|yahoo|baidu|yandex|ecosia)\\.'))`,
-        paid:        `(utm_medium ~* '^(cpc|ppc|paid|cpm|display)' OR (COALESCE(utm_source,'')!='' AND COALESCE(utm_medium,'') NOT IN ('organic','') AND utm_source !~* ${META_SOURCE_PATTERN}))`,
-        paid_social: `(utm_source ~* ${META_SOURCE_PATTERN})`,
-        referral:    `(COALESCE(referrer_host,'')!='' AND COALESCE(utm_source,'')='' AND COALESCE(utm_medium,'')='' AND NOT ${SELF_REFERRAL} AND NOT ${NOISE_REFERRAL})`,
-        direct:      `((COALESCE(referrer_host,'')='' OR ${SELF_REFERRAL} OR ${NOISE_REFERRAL}) AND COALESCE(utm_source,'')='' AND COALESCE(utm_medium,'')='')`,
+        organic:     `(NOT ${HAS_CLICK_ID} AND (utm_medium = 'organic' OR (COALESCE(utm_medium,'')='' AND COALESCE(utm_source,'')='' AND referrer_host ~* '(google|bing|duckduckgo|yahoo|baidu|yandex|ecosia)\\.')))`,
+        paid:        `(utm_medium ~* '^(cpc|ppc|paid|cpm|display)' OR (COALESCE(utm_source,'')!='' AND COALESCE(utm_medium,'') NOT IN ('organic','') AND utm_source !~* ${META_SOURCE_PATTERN}) OR (COALESCE(utm_source,'')='' AND (gclid IS NOT NULL OR msclkid IS NOT NULL)))`,
+        paid_social: `(utm_source ~* ${META_SOURCE_PATTERN} OR (COALESCE(utm_source,'')='' AND fbclid IS NOT NULL))`,
+        referral:    `(COALESCE(referrer_host,'')!='' AND COALESCE(utm_source,'')='' AND COALESCE(utm_medium,'')='' AND NOT ${HAS_CLICK_ID} AND NOT ${SELF_REFERRAL} AND NOT ${NOISE_REFERRAL})`,
+        direct:      `((COALESCE(referrer_host,'')='' OR ${SELF_REFERRAL} OR ${NOISE_REFERRAL}) AND COALESCE(utm_source,'')='' AND COALESCE(utm_medium,'')='' AND NOT ${HAS_CLICK_ID})`,
     };
 
     // Embedded-context pageviews (a booking widget or similar preloaded as an
@@ -325,7 +334,7 @@ async function _handler(req, res) {
             SELECT utm_source, utm_medium, utm_campaign, COUNT(*) AS events
             FROM analytics_events
             WHERE site_id = $1 AND consent_level = 'full'
-              AND received_at >= $2 AND received_at < $3 ${EMBED_FILTER}
+              AND received_at >= $2 AND received_at < $3 ${segAnd}
               AND utm_source IS NOT NULL AND utm_source != ''
             GROUP BY utm_source, utm_medium, utm_campaign ORDER BY events DESC LIMIT 20`,
             [siteId, fromDate, toDateExclusive]
@@ -346,7 +355,7 @@ async function _handler(req, res) {
                    COUNT(DISTINCT session_id) FILTER (WHERE session_id IS NOT NULL)  AS sessions
             FROM analytics_events
             WHERE site_id = $1
-              AND received_at >= $2 AND received_at < $3 ${EMBED_FILTER}
+              AND received_at >= $2 AND received_at < $3 ${segAnd}
             GROUP BY referrer ORDER BY events DESC LIMIT 20`,
             [siteId, fromDate, toDateExclusive]
         ).catch((err) => {
@@ -631,7 +640,10 @@ async function _handler(req, res) {
                     ce.session_id,
                     ae.utm_medium,
                     ae.utm_source,
-                    ae.referrer_host
+                    ae.referrer_host,
+                    ae.gclid,
+                    ae.msclkid,
+                    ae.fbclid
                 FROM analytics_custom_events ce
                 JOIN analytics_events ae
                     ON ae.session_id = ce.session_id
@@ -642,7 +654,9 @@ async function _handler(req, res) {
             )
             SELECT
                 CASE
+                    WHEN COALESCE(utm_source,'') = '' AND fbclid IS NOT NULL                          THEN 'paid_social'
                     WHEN utm_source ~* '^(fb|facebook|ig|instagram|msg|messenger|an)$'                THEN 'paid_social'
+                    WHEN COALESCE(utm_source,'') = '' AND (gclid IS NOT NULL OR msclkid IS NOT NULL)  THEN 'paid'
                     WHEN utm_medium ~* '^(cpc|ppc|paid|cpm|display)'                                  THEN 'paid'
                     WHEN utm_medium = 'organic'
                          OR (COALESCE(utm_medium,'')='' AND COALESCE(utm_source,'')=''
@@ -747,7 +761,7 @@ async function _handler(req, res) {
                 COUNT(*)                                                          AS events,
                 COUNT(DISTINCT session_id) FILTER (WHERE session_id IS NOT NULL)  AS sessions
             FROM analytics_events
-            WHERE site_id = $1 AND received_at >= $2 AND received_at < $3 ${EMBED_FILTER}
+            WHERE site_id = $1 AND received_at >= $2 AND received_at < $3 ${segAnd}
             GROUP BY channel ORDER BY events DESC`,
             [siteId, fromDate, toDateExclusive]
         ).catch((err) => {
