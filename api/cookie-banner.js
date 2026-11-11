@@ -22,6 +22,7 @@
  * CORS: wildcard — this endpoint is designed to be called from any website.
  */
 
+import { waitUntil } from "@vercel/functions";
 import { getPool } from "./_db.js";
 import { NOT_FIRST_VISIT, scanRegion, ensureScanColumns } from "./_scan-schema.js";
 import { normalizeBannerDomain } from "./_banner-domain.js";
@@ -81,6 +82,7 @@ const BANNER_CATEGORIES = ["necessary", "security", "analytics", "marketing", "f
 
 // Same freshness window as cookie-banner-scan.js and cron-scan-domains.js.
 const RESCAN_AFTER_DAYS = 7;
+const RETRY_FAILED_AFTER_HOURS = 6;
 
 // Shared data-processing: turns raw transfers + cookies arrays into the
 // grouped categories object the banner consumes.
@@ -222,15 +224,19 @@ async function loadOverrides(db, domain) {
 }
 
 async function runBackgroundScan(domain, db, scanCore) {
-    // Skip if a scan is already running for this domain
+    // Skip if a scan is already running for this domain, or failed recently
     const { rows: active } = await db.query(
         `SELECT id FROM pre_consent_scans
-          WHERE domain = $1 AND status IN ('pending', 'in_progress') AND ${NOT_FIRST_VISIT}
+          WHERE domain = $1 AND ${NOT_FIRST_VISIT}
+            AND ((status IN ('pending', 'in_progress')
             -- A scan that died mid-run (function timeout/crash) stays
             -- in_progress until the daily cleanup cron; don't let it block
             -- rescans for up to a day. Same 10-minute window as
             -- cookie-banner-scan.js.
-            AND scanned_at > NOW() - INTERVAL '10 minutes'
+            AND scanned_at > NOW() - INTERVAL '10 minutes')
+            -- After a failure, wait before trying again: every visitor's
+            -- request would otherwise start another scan.
+              OR (status = 'failed' AND scanned_at > NOW() - INTERVAL '${RETRY_FAILED_AFTER_HOURS} hours'))
           LIMIT 1`,
         [domain]
     );
@@ -324,10 +330,12 @@ export default async function handler(req, res) {
             // Refresh the scan in the background once it is older than
             // RESCAN_AFTER_DAYS — not on every request, or every CDN cache miss
             // rescans the site and a bad run replaces the good scan.
+            // waitUntil keeps the function running after the response; without it
+            // Vercel freezes the instance mid-scan and Chromium times out.
             if (Date.now() - new Date(row.scanned_at).getTime() > RESCAN_AFTER_DAYS * 86400000) {
-                await runBackgroundScan(domain, db, scanCore).catch(err =>
+                waitUntil(runBackgroundScan(domain, db, scanCore).catch(err =>
                     console.error("[cookie-banner] bg-scan error:", err.message)
-                );
+                ));
             }
             return;
         }

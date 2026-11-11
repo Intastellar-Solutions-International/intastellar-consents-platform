@@ -44,6 +44,13 @@ test("notifications: a failure older than the latest good scan is ignored", () =
     assert.deepStrictEqual(build({ latest: scan(1, []), failed: { id: 2, scanned_at: "2026-11-01T12:00:00Z" } }), []);
 });
 
+test("notifications: a run of failed scans is raised once until a scan succeeds", () => {
+    const failed = { id: 3, scanned_at: "2026-11-09T11:00:00Z" };
+    assert.deepStrictEqual(build({ latest: scan(1, []), failed, failedNotifiedAt: "2026-11-09T09:00:00Z" }), []);
+    assert.deepStrictEqual(build({ latest: null, failed, failedNotifiedAt: "2026-11-01T09:00:00Z" }), []);
+    assert.deepStrictEqual(types(build({ latest: scan(1, []), failed, failedNotifiedAt: "2026-11-01T09:00:00Z" })), ["scan_failed"]);
+});
+
 test("notifications: turned-off types are dropped and the most serious come first", () => {
     const items = [{ rule_type: "scan_out_of_date", severity: "info" }, { rule_type: "trackers_before_consent", severity: "critical" }, { rule_type: "scan_failed", severity: "warning" }];
     assert.deepStrictEqual(types(selectNotifications(items, new Set(["scan_failed"]))), ["trackers_before_consent", "scan_out_of_date"]);

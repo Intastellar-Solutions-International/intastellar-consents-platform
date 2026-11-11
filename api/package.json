@@ -6,6 +6,7 @@
   "dependencies": {
     "@sparticuz/chromium": "147.0.0",
     "@vercel/blob": "2.6.1",
+    "@vercel/functions": "1.6.0",
     "maxmind": "5.0.7",
     "node-html-parser": "9.0.1",
     "pg": "8.22.0",

@@ -45,12 +45,17 @@ function summarize(row, now) {
 
 const trackersOf = (scan) => [...new Set([...scan.trackers, ...scan.analytics])];
 
-/** latest and previous are completed scan rows, failed the newest failed one. */
-export function buildScanNotifications({ domain, latest, previous = null, failed = null }, now = Date.now()) {
+/**
+ * latest and previous are completed scan rows, failed the newest failed one.
+ * failedNotifiedAt is when this domain last got a scan_failed notification:
+ * a run of failures is raised once, not once per failed scan.
+ */
+export function buildScanNotifications({ domain, latest, previous = null, failed = null, failedNotifiedAt = null }, now = Date.now()) {
     const out = [];
     const add = (rule_type, severity, title, body, dedupe_key, scan_id) => out.push({ domain, rule_type, severity, title, body, dedupe_key, scan_id: scan_id ?? null });
 
-    if (failed && (!latest || new Date(failed.scanned_at) > new Date(latest.scanned_at))) {
+    const alreadyNotified = failedNotifiedAt && (!latest || new Date(failedNotifiedAt) > new Date(latest.scanned_at));
+    if (failed && !alreadyNotified && (!latest || new Date(failed.scanned_at) > new Date(latest.scanned_at))) {
         add("scan_failed", "warning", "A cookie scan failed", `The latest scan of ${domain} could not finish, so its results may be out of date.`, `failed:${failed.id}`);
     }
     if (!latest) return out;
@@ -161,7 +166,13 @@ export async function syncScanNotifications(db, orgId, rawDomains, now = Date.no
     );
     const prefs = await getNotificationPreferences(db, orgId);
     const disabled = new Set(prefs.filter((p) => !p.enabled).map((p) => p.id));
-    const candidates = groupScans(rows).flatMap((entry) => buildScanNotifications(entry, now));
+    const { rows: notified } = await db.query(
+        `SELECT domain, MAX(created_at) AS at FROM ad_notifications
+          WHERE organisation_id = $1 AND rule_type = 'scan_failed' GROUP BY domain`,
+        [orgId]
+    );
+    const failedNotifiedAt = new Map(notified.map((r) => [r.domain, r.at]));
+    const candidates = groupScans(rows).flatMap((entry) => buildScanNotifications({ ...entry, failedNotifiedAt: failedNotifiedAt.get(entry.domain) }, now));
     const selected = selectNotifications(candidates, disabled, candidates.length);
     let inserted = 0;
     for (const n of selected) {
