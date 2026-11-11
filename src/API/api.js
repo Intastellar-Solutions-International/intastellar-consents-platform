@@ -435,6 +435,7 @@ const API = {
             method: "POST",
             headers: {
                 "Authorization": Authentication.getToken(),
+                "X-User-Email": Authentication.getUserId(),
                 "Content-Type": "application/json"
             }
         },
@@ -551,16 +552,8 @@ const API = {
         },
     },
     legalBasis: {
-        get: {
-            url: `${PrimaryHost}/cmp/legal-basis-config`,
-            method: "GET",
-            headers: { "Authorization": Authentication.getToken(), "Organisation": Authentication.getOrganisation(), "Content-Type": "application/json" }
-        },
-        save: {
-            url: `${PrimaryHost}/cmp/legal-basis-config`,
-            method: "POST",
-            headers: { "Authorization": Authentication.getToken(), "Organisation": Authentication.getOrganisation(), "Content-Type": "application/json" }
-        },
+        url: `${ScannerHost}/api/legal-basis`,
+        headers: { "Authorization": Authentication.getToken(), "Organisation": Authentication.getOrganisation(), "X-User-Email": Authentication.getUserId(), "Content-Type": "application/json" }
     },
     platformStats: {
         url: `${ScannerHost}/api/platform-stats`,

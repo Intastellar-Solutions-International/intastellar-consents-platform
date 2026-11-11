@@ -57,5 +57,6 @@ import "./all-domains-compliance.test.mjs";
 import "./scan-notifications.test.mjs";
 import "./onboarding-steps.test.mjs";
 import "./transfer-compliance.test.mjs";
+import "./legal-basis.test.mjs";
 
 await run();

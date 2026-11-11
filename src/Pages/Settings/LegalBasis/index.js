@@ -6,6 +6,7 @@ import StickyPageTitle from "../../../Components/Header/Sticky/index.js";
 import "../Style.css";
 import { LEGAL_BASES, PROCESSING_PURPOSES, DEFAULT_LEGAL_BASIS } from "../../../Functions/legalBasisDefinitions.js";
 import { FRAMEWORK_IDS } from "../../../Components/AuditSnapshotCard/complianceRegions.js";
+import ServicesEditor from "./ServicesEditor.js";
 
 function buildDefault() {
     const out = {};
@@ -22,19 +23,21 @@ export default function LegalBasis() {
     document.title = "Legal Basis Tracking | Settings | Intastellar Consents";
 
     const [config, setConfig] = useState(buildDefault);
+    const [services, setServices] = useState([]);
     const [saving, setSaving] = useState(false);
     const [status, setStatus] = useState(null);
+    const [error, setError] = useState(null);
+
+    function apply(data) {
+        if (data.matrix) setConfig((prev) => ({ ...prev, ...data.matrix }));
+        if (Array.isArray(data.services)) setServices(data.services.map((s) => ({ ...s, hosts: (s.hosts || []).join(", ") })));
+    }
 
     useEffect(() => {
-        fetch(API.legalBasis.get.url, {
-            method: API.legalBasis.get.method,
-            headers: API.legalBasis.get.headers,
-        })
+        fetch(API.legalBasis.url, { headers: API.legalBasis.headers })
             .then((r) => r.json())
             .then((data) => {
-                if (data && typeof data === "object" && !data.error) {
-                    setConfig((prev) => ({ ...prev, ...data }));
-                }
+                if (data && typeof data === "object" && !data.error) apply(data);
             })
             .catch(() => {});
     }, []);
@@ -49,14 +52,27 @@ export default function LegalBasis() {
     function save() {
         setSaving(true);
         setStatus(null);
-        fetch(API.legalBasis.save.url, {
-            method: API.legalBasis.save.method,
-            headers: API.legalBasis.save.headers,
-            body: JSON.stringify(config),
+        setError(null);
+        fetch(API.legalBasis.url, {
+            method: "POST",
+            headers: API.legalBasis.headers,
+            body: JSON.stringify({ matrix: config, services }),
         })
-            .then((r) => r.json())
-            .then(() => setStatus("saved"))
-            .catch(() => setStatus("error"))
+            .then(async (r) => {
+                const data = await r.json().catch(() => ({}));
+                if (!r.ok) throw new Error(data.error || "Failed to save — please try again.");
+                apply(data);
+                if (data.sync && !data.sync.ok) {
+                    setError(`Saved, but the banner on your sites isn't updated yet: ${data.sync.error}. Save again to retry.`);
+                    setStatus("error");
+                } else {
+                    setStatus("saved");
+                }
+            })
+            .catch((err) => {
+                setError(err.message);
+                setStatus("error");
+            })
             .finally(() => setSaving(false));
     }
 
@@ -70,7 +86,8 @@ export default function LegalBasis() {
                 <p className="settings-subpage__intro">
                     Assign a legal basis to each processing purpose under each active regulation. These
                     assignments are shown alongside consent decisions in the audit log, making it easy to
-                    demonstrate compliance during an inspection or DSR response.
+                    demonstrate compliance during an inspection or DSR response. Services listed under
+                    “Services without consent” are passed to the cookie banner through each domain's config.js.
                 </p>
 
                 {status === "saved" && (
@@ -78,7 +95,7 @@ export default function LegalBasis() {
                 )}
                 {status === "error" && (
                     <p className="settings-subpage__status settings-subpage__status--error">
-                        Failed to save — please try again.
+                        {error}
                     </p>
                 )}
 
@@ -124,6 +141,8 @@ export default function LegalBasis() {
                         </tbody>
                     </table>
                 </div>
+
+                <ServicesEditor services={services} onChange={setServices} />
 
                 <button
                     type="button"
