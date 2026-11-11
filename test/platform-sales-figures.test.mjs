@@ -5,7 +5,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { test } from "./_harness.mjs";
-import { MIN_RECORDS, MIN_SITES, TREND_KEYS, calculateFigures, publicFigures, setVisibility, summarizeBannerCompliance, summarizeConsents, summarizeFirstVisits, summarizeInstalls, summarizeScans } from "../api/_platform-stats.js";
+import { MIN_RECORDS, MIN_SITES, SITE_KEY_SQL, TREND_KEYS, calculateFigures, latestScansSql, publicFigures, setVisibility, summarizeBannerCompliance, summarizeConsents, summarizeFirstVisits, summarizeInstalls, summarizeScans } from "../api/_platform-stats.js";
 import { requirePlatformAdmin } from "../api/_member-auth.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -43,6 +43,15 @@ test("sales figures: the banner and CDNs don't count as trackers before consent"
 test("sales figures: own and test domains are left out", () => {
     const rows = ["localhost", "127.0.0.1", "www.intastellarsolutions.com", "demo.vercel.app", "shop.test", "shop.dk"].map((domain) => ({ domain, transfers: [ga], cookies: [] }));
     assert.strictEqual(summarizeScans(rows).sites_scanned, 1);
+});
+
+test("sales figures: www, case and trailing-dot variants of a site are counted once", () => {
+    const sql = latestScansSql("TRUE");
+    assert.match(sql, new RegExp(`DISTINCT ON \\(${SITE_KEY_SQL.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\)`));
+    // Same steps as the SQL key, so the figures agree with normalizeBannerDomain().
+    const key = (d) => d.trim().toLowerCase().replace(/\.+$/, "").replace(/^www\./, "");
+    assert.deepStrictEqual(["www.Example.com.", "example.com", "EXAMPLE.COM"].map(key), ["example.com", "example.com", "example.com"]);
+    assert.match(SITE_KEY_SQL, /rtrim\(lower\(btrim\(domain\)\), '\.'\), '\^www\\\.'/);
 });
 
 test("sales figures: installs count each domain once and read getDomains dates", () => {

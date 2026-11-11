@@ -190,11 +190,15 @@ async function fetchConsents(fetchImpl, authorization, now) {
     return body;
 }
 
-const latestScansSql = (scanFilter) => `
-    SELECT DISTINCT ON (domain) domain, transfers, cookies
+// One row per site: "www.example.com", "Example.com." and "example.com" are the same
+// site, as normalizeBannerDomain() treats them, so they are grouped before counting.
+export const SITE_KEY_SQL = `regexp_replace(rtrim(lower(btrim(domain)), '.'), '^www\\.', '')`;
+
+export const latestScansSql = (scanFilter) => `
+    SELECT DISTINCT ON (${SITE_KEY_SQL}) ${SITE_KEY_SQL} AS domain, transfers, cookies
       FROM pre_consent_scans
      WHERE status = 'completed' AND ${scanFilter} AND scanned_at > NOW() - INTERVAL '90 days'
-     ORDER BY domain, scanned_at DESC`;
+     ORDER BY ${SITE_KEY_SQL}, scanned_at DESC`;
 
 /** A source that failed keeps its last known figures, and source_errors says why. `authorization` is the signed-in admin's header, if any. */
 export async function calculateFigures(db, { fetchImpl = fetch, now = Date.now(), authorization } = {}) {
