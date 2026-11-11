@@ -45,6 +45,14 @@ test("sales figures: own and test domains are left out", () => {
     assert.strictEqual(summarizeScans(rows).sites_scanned, 1);
 });
 
+test("sales figures: Shopify previews, app-review and test stores and hosting aliases are left out", () => {
+    const rows = [
+        "abc123-95701893503.shopifypreview.com", "app-review-49b1c7c8-r168693-a0.myshopify.com", "cross-shop-missing-a025.myshopify.com",
+        "intastellar-test-store.myshopify.com", "waterless.eco.linux223.curanetserver.dk", "merchant-shop.myshopify.com",
+    ].map((domain) => ({ domain, transfers: [ga], cookies: [] }));
+    assert.strictEqual(summarizeScans(rows).sites_scanned, 1);
+});
+
 test("sales figures: www, case and trailing-dot variants of a site are counted once", () => {
     const sql = latestScansSql("TRUE");
     assert.match(sql, new RegExp(`DISTINCT ON \\(${SITE_KEY_SQL.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\)`));

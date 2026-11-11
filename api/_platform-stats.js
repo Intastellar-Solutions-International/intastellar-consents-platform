@@ -22,6 +22,9 @@ const GDPR_API = "https://apis.intastellarsolutions.com/analytics/gdpr";
 const CONSENT_TIMEOUT_MS = 50000;
 const TRACKING = new Set(["advertising", "analytics", "fingerprinting", "social"]);
 const OWN_OR_TEST = /^localhost$|^[\d.]+$|\.(test|local)$|(^|\.)intastellar[a-z]*\.|\.vercel\.app$/i;
+// Not a public website: Shopify theme previews, Shopify's app-review and test stores,
+// and a hosting provider's alias for a site that is already counted under its own name.
+const NOT_A_SITE = /\.shopifypreview\.com$|^(app-review-|cross-shop-)[^.]*\.myshopify\.com$|test-store[^.]*\.myshopify\.com$|\.curanetserver\.dk$/i;
 
 const PUBLIC_KEYS = [
     "visitors_30d", "consent_records_30d", "accept_all_pct", "custom_choice_pct", "decline_all_pct", "mobile_pct", "countries_30d", "sites_installed", "sites_active", "sites_scanned", "tracking_services_found", "cookies_found",
@@ -33,7 +36,7 @@ const PUBLIC_KEYS = [
 const SAMPLE_OF = { pre_consent_sites: "pre_consent_pct", banner_sites_tested: "banner_compliant_pct", other_sites_tested: "other_compliant_pct" };
 
 const list = (value) => (Array.isArray(value) ? value : []);
-const countable = (domain) => Boolean(domain) && !OWN_OR_TEST.test(domain);
+const countable = (domain) => Boolean(domain) && !OWN_OR_TEST.test(domain) && !NOT_A_SITE.test(domain);
 const percent = (part, whole) => (whole >= MIN_SITES ? Math.round((part / whole) * 100) : null);
 const trackers = (transfers) => list(transfers).filter((t) => TRACKING.has(t?.category));
 const serviceName = (t) => t.service || t.host;
