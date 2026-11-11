@@ -18,6 +18,7 @@ import { preConsentCookieStat, postConsentCookieStat } from "../../Functions/coo
 import { Icon } from "../../Components/ui/icons.js";
 import { formatDate, formatDateTime, formatNumber } from "../../Functions/format.js";
 import TransferVendors from "./TransferVendors.js";
+import { loadEvidence, vendorDocuments } from "../../Functions/evidenceClient.js";
 import { chapterVLabels } from "../../Functions/transferCompliance.js";
 import { COMPLIANCE_CHANGED_EVENT } from "../../Components/Shell/useDomainCompliance.js";
 import { scanConsentStep, consentPhaseLabel, filterByConsentPhase, staleScanDays, scanRegionLabel } from "../../Functions/scanHistory.js";
@@ -154,6 +155,7 @@ export default function CompliancePage() {
     const [excludeBots] = useExcludeBots();
     const [preConsentTransfers, setPreConsentTransfers] = useState(null);
     const [vendorRecords, setVendorRecords] = useState({});
+    const [evidenceDocs, setEvidenceDocs] = useState([]);
     const [scanLoading, setScanLoading] = useState(false);
     const [activeTab, setActiveTab] = useState("transfers");
     const [loading, setLoading] = useState(false);
@@ -293,6 +295,7 @@ export default function CompliancePage() {
             .then((r) => (r.ok ? r.json() : null))
             .then((data) => { if (data?.records) setVendorRecords(data.records); })
             .catch(() => {});
+        loadEvidence().then((data) => setEvidenceDocs(data.documents || [])).catch(() => {});
     }, [id]);
 
     const saveVendorRecord = async (vendor, values) => {
@@ -312,38 +315,7 @@ export default function CompliancePage() {
         window.dispatchEvent(new Event(COMPLIANCE_CHANGED_EVENT));
     };
 
-    const evidenceRequest = async (body) => {
-        const api = API[id].vendorCompliance;
-        const response = await fetch(api.url, { method: "POST", headers: { ...api.headers }, body: JSON.stringify(body) });
-        const result = await response.json().catch(() => ({}));
-        if (!response.ok) throw new Error(result.error || "That didn't work. Please try again.");
-        applyVendorRecord(body.vendor, result.record);
-    };
-
-    const vendorEvidence = {
-        upload: async (vendor, file) => {
-            const data = await new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onload = () => resolve(String(reader.result).split(",")[1]);
-                reader.onerror = () => reject(new Error("That file couldn't be read."));
-                reader.readAsDataURL(file);
-            });
-            await evidenceRequest({ action: "upload_evidence", vendor, filename: file.name, content_type: file.type, data });
-        },
-        remove: (vendor) => evidenceRequest({ action: "delete_evidence", vendor }),
-        open: async (vendor) => {
-            const api = API[id].vendorCompliance;
-            const response = await fetch(`${api.url}?evidence=${encodeURIComponent(vendor)}`, { headers: { ...api.headers } });
-            if (!response.ok) throw new Error("That file couldn't be opened.");
-            const url = URL.createObjectURL(await response.blob());
-            const name = (vendorRecords[vendor]?.evidence_blob_path || "evidence").split("/").pop();
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = name;
-            a.click();
-            URL.revokeObjectURL(url);
-        },
-    };
+    const vendorEvidence = { documents: evidenceDocs, onChange: (catalog) => setEvidenceDocs(catalog.documents || []) };
 
     // The header status links here (#open-issues); the block only exists on this tab.
     useEffect(() => {
@@ -448,16 +420,21 @@ export default function CompliancePage() {
         });
     }
 
+    const documentList = (vendor) => {
+        const { dpa, other } = vendorDocuments(evidenceDocs, vendor);
+        return [dpa, ...other].filter(Boolean).map((d) => d.title).join("; ");
+    };
+
     const exportCSV = () => {
         const scanDomain = (handle || currentDomain || "domain").replace(/[^a-z0-9.-]/gi, "_");
         if (activeTab === "transfers") {
             const items = preConsentTransfers?.pre_consent_transfers || [];
             const rows = [
-                ["Service", "Host", "Category", "Resource Type", "Region", "Data Country", "Transfer Mechanism", "DPA", "Hosted in EU", "Mechanism Confirmed On", "Owner", "Notes", "Evidence Link", "Evidence File", "Loaded"],
+                ["Service", "Host", "Category", "Resource Type", "Region", "Data Country", "Transfer Mechanism", "DPA", "Hosted in EU", "Mechanism Confirmed On", "Owner", "Notes", "Evidence Link", "Documents", "Loaded"],
                 ...items.map(t => {
                     const record = vendorRecords[t.service || t.host];
                     const chapterV = chapterVLabels({ region: t.dataRegion === "eu" ? "eu" : "non-eu", transferMechanism: t.transferMechanism }, record);
-                    return [t.service || t.host, t.host, t.category || "", t.resourceType || "", t.dataRegion || "", t.dataCountry || "", chapterV.transfer, chapterV.dpa, t.dataRegion === "eu" || t.hostedInEU ? "Yes" : "No", record?.mechanism_confirmed_at || "", record?.owner || "", record?.notes || "", record?.evidence_url || "", record?.evidence_blob_path ? record.evidence_blob_path.split("/").pop() : "", consentPhaseLabel(t.consentPhase)];
+                    return [t.service || t.host, t.host, t.category || "", t.resourceType || "", t.dataRegion || "", t.dataCountry || "", chapterV.transfer, chapterV.dpa, t.dataRegion === "eu" || t.hostedInEU ? "Yes" : "No", record?.mechanism_confirmed_at || "", record?.owner || "", record?.notes || "", record?.evidence_url || "", documentList(t.service || t.host), consentPhaseLabel(t.consentPhase)];
                 }),
             ];
             downloadCSV(rows, `pre-consent-transfers-${scanDomain}.csv`);

@@ -21,6 +21,10 @@
   "rewrites": [
     { "source": "/privacy-request/confirm/:code", "destination": "/api/dsr-public?confirm=:code" },
     { "source": "/privacy-request/:token", "destination": "/api/dsr-public?token=:token" },
+    { "source": "/evidence-room/:token/login/:code", "destination": "/api/evidence-room?token=:token&login=:code" },
+    { "source": "/evidence-room/:token/view/:doc", "destination": "/api/evidence-room?token=:token&view=:doc" },
+    { "source": "/evidence-room/:token/file/:doc", "destination": "/api/evidence-room?token=:token&file=:doc" },
+    { "source": "/evidence-room/:token", "destination": "/api/evidence-room?token=:token" },
     { "source": "/((?!api/|sw\\.js$).*)", "destination": "/index.html" }
   ],
   "crons": [

@@ -50,6 +50,7 @@ import TeamActivityTracker from "./Functions/teamActivity.js";
 import JurisdictionConfig from "./Pages/Settings/Jurisdiction";
 import LegalBasis from "./Pages/Settings/LegalBasis";
 import ROPA from "./Pages/Settings/ROPA";
+import Evidence from "./Pages/Settings/Evidence";
 import ROPAEntry from "./Pages/Settings/ROPA/ROPAEntry";
 import DSR from "./Pages/DSR";
 import DSRDetail from "./Pages/DSR/DSRDetail";
@@ -823,6 +824,11 @@ export default function App() {
                                         <Route path="/settings/legal-basis">
                                             <ErrorBoundary>
                                                 {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('growth') ? <TierGate minTier="growth" featureName="Legal Basis Tracking" fullPage /> : <LegalBasis />}
+                                            </ErrorBoundary>
+                                        </Route>
+                                        <Route path="/settings/evidence" exact>
+                                            <ErrorBoundary>
+                                                {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('growth') ? <TierGate minTier="growth" featureName="Evidence Catalog" fullPage /> : <Evidence />}
                                             </ErrorBoundary>
                                         </Route>
                                         <Route path="/settings/ropa/:entryId">

@@ -1,6 +1,8 @@
 import { Icon } from "../../Components/ui/icons.js";
-import { Badge, Button, RiskBadge, Card, Table, FilterBar, FilterSelect, FilterSearch, Drawer, FileDropzone, Pagination } from "../../Components/ui";
+import { Badge, Button, RiskBadge, Card, Table, FilterBar, FilterSelect, FilterSearch, Drawer, Pagination } from "../../Components/ui";
 import { ListTemplate } from "../../Components/templates";
+import VendorDocuments from "../../Components/Evidence/VendorDocuments.js";
+import { vendorDocuments } from "../../Functions/evidenceClient.js";
 import { formatNumber } from "../../Functions/format.js";
 import { MECHANISMS, DPA_STATES, RISK_RANK, isTrackingCategory, hostRegion, groupTransfersByVendor, vendorTotals, vendorChapterV, chapterVSummary, complianceFindings, complianceStatus, issueBreakdownText } from "../../Functions/transferCompliance.js";
 
@@ -41,7 +43,7 @@ function DpaBadge({ status }) {
 }
 
 /** Records the vendor's transfer mechanism and DPA for this organisation. */
-function ChapterVForm({ vendor, record, onSave, onUploadEvidence, onRemoveEvidence, onOpenEvidence }) {
+function ChapterVForm({ vendor, record, onSave }) {
     const chapter = vendorChapterV(vendor, record);
     const [mechanism, setMechanism] = useState(record?.mechanism || "");
     const [confirmedAt, setConfirmedAt] = useState(record?.mechanism_confirmed_at || "");
@@ -49,8 +51,6 @@ function ChapterVForm({ vendor, record, onSave, onUploadEvidence, onRemoveEviden
     const [owner, setOwner] = useState(record?.owner || "");
     const [notes, setNotes] = useState(record?.notes || "");
     const [evidenceUrl, setEvidenceUrl] = useState(record?.evidence_url || "");
-    const [fileState, setFileState] = useState(null); // null | "working" | error text
-    const evidenceFile = record?.evidence_blob_path ? record.evidence_blob_path.split("/").pop().replace(/^\d+-/, "") : null;
     const [state, setState] = useState(null); // null | "saving" | "saved" | "error"
 
     async function save() {
@@ -63,15 +63,6 @@ function ChapterVForm({ vendor, record, onSave, onUploadEvidence, onRemoveEviden
         }
     }
 
-    async function withFile(action) {
-        setFileState("working");
-        try {
-            await action();
-            setFileState(null);
-        } catch (e) {
-            setFileState(e.message || "That didn't work. Please try again.");
-        }
-    }
     const changed = (setter) => (e) => { setter(e.target.value); setState(null); };
 
     return (
@@ -118,23 +109,6 @@ function ChapterVForm({ vendor, record, onSave, onUploadEvidence, onRemoveEviden
                 Evidence link
                 <input type="url" className={SELECT} maxLength={2000} placeholder="https://" value={evidenceUrl} onChange={changed(setEvidenceUrl)} />
             </label>
-            <FileDropzone
-                compact
-                title={evidenceFile ? `Evidence on file: ${evidenceFile}` : "Drag and drop evidence to upload"}
-                hint="PDF, PNG or JPEG, up to 3 MB"
-                accept=".pdf,.png,.jpg,.jpeg,application/pdf,image/png,image/jpeg"
-                maxBytes={3 * 1024 * 1024}
-                buttonLabel={evidenceFile ? "Replace file" : "Select file"}
-                busy={fileState === "working"}
-                error={fileState && fileState !== "working" ? fileState : null}
-                onFile={(file) => withFile(() => onUploadEvidence(vendor.vendor, file))}
-                actions={evidenceFile && (
-                    <>
-                        <Button size="sm" variant="ghost" iconRight="external-link" onClick={() => withFile(() => onOpenEvidence(vendor.vendor))}>Download</Button>
-                        <Button size="sm" variant="ghost" onClick={() => withFile(() => onRemoveEvidence(vendor.vendor))}>Remove</Button>
-                    </>
-                )}
-            />
             <div className="tw-flex tw-flex-wrap tw-items-center tw-gap-3">
                 <Button variant="primary" size="sm" loading={state === "saving"} onClick={save}>Save</Button>
                 {state === "saved" && <span role="status" className="tw-text-xs tw-text-success">Saved for your organisation</span>}
@@ -144,10 +118,10 @@ function ChapterVForm({ vendor, record, onSave, onUploadEvidence, onRemoveEviden
     );
 }
 
-function evidenceLabel(record) {
-    if (record?.evidence_blob_path && record?.evidence_url) return "File + link";
-    if (record?.evidence_blob_path) return "File";
-    return record?.evidence_url ? "Link" : <span className="tw-text-text-muted">None</span>;
+function evidenceLabel(record, documents, vendor) {
+    const { dpa, other } = vendorDocuments(documents, vendor);
+    const parts = [dpa && "DPA", other.length > 0 && `${other.length} other`, record?.evidence_url && "Link"].filter(Boolean);
+    return parts.length ? parts.join(" + ") : <span className="tw-text-text-muted">None</span>;
 }
 
 const CHAPTER_FILTER = {
@@ -211,7 +185,7 @@ function Fact({ label, children }) {
  * phaseKnown: the scan tagged each host pre/post consent, so the
  * "Loaded" column and filter are shown (older scans can't tell).
  */
-export default function TransferVendors({ transfers, categoryMeta, bannerMeta, resourceLabels, categoryOrder, phaseKnown = false, records = {}, onSaveRecord, evidence = {} }) {
+export default function TransferVendors({ transfers, categoryMeta, bannerMeta, resourceLabels, categoryOrder, phaseKnown = false, records = {}, onSaveRecord, evidence }) {
     const vendors = useMemo(() => groupTransfersByVendor(transfers, categoryMeta), [transfers, categoryMeta]);
     const [category, setCategory] = useState(null);
     const [region, setRegion] = useState("all");
@@ -283,7 +257,7 @@ export default function TransferVendors({ transfers, categoryMeta, bannerMeta, r
         { key: "transfer", header: "Transfer mechanism", render: (v) => <TransferBadge chapter={vendorChapterV(v, records[v.vendor])} /> },
         { key: "dpa", header: "DPA", render: (v) => <DpaBadge status={records[v.vendor]?.dpa_status} /> },
         { key: "owner", header: "Owner", hideOnMobile: true, render: (v) => records[v.vendor]?.owner || <span className="tw-text-text-muted">Unassigned</span> },
-        { key: "evidence", header: "Evidence", hideOnMobile: true, render: (v) => evidenceLabel(records[v.vendor]) },
+        { key: "evidence", header: "Evidence", hideOnMobile: true, render: (v) => evidenceLabel(records[v.vendor], evidence?.documents, v.vendor) },
         { key: "category", header: "Category", hideOnMobile: true, render: (v) => categoryMeta[v.category]?.label || v.category },
         { key: "risk", header: "Risk", sortable: true, hideOnMobile: true, render: (v) => <RiskBadge level={v.risk} /> },
         {
@@ -308,7 +282,7 @@ export default function TransferVendors({ transfers, categoryMeta, bannerMeta, r
                     {" · "}<strong className="tw-text-text-primary">{formatNumber(chapterCounts.problem)}</strong> with no mechanism on record
                     {" · "}<strong className="tw-text-text-primary">{formatNumber(chapterCounts.unconfirmed)}</strong> unconfirmed
                     {" · "}<strong className="tw-text-text-primary">{formatNumber(chapterCounts.withoutDpa)}</strong> without a confirmed DPA
-                    {onSaveRecord && <span className="tw-block tw-mt-1 tw-text-text-muted">Select Edit on a vendor to set its DPA status, mechanism date, owner, notes and evidence.</span>}
+                    {onSaveRecord && <span className="tw-block tw-mt-1 tw-text-text-muted">Select Edit on a vendor to set its DPA status, mechanism date, owner and notes, and to upload its DPA and other evidence.</span>}
                 </span>
             }
             filters={
@@ -366,7 +340,8 @@ export default function TransferVendors({ transfers, categoryMeta, bannerMeta, r
                                 <Badge icon="globe" tone={selected.region === "eu" ? "neutral" : "warning"}>{REGION_LABEL[selected.region]}</Badge>
                                 {phaseKnown && <PhaseBadge phase={selected.consentPhase} category={selected.category} />}
                             </div>
-                            {onSaveRecord && <ChapterVForm key={selected.vendor} vendor={selected} record={records[selected.vendor]} onSave={onSaveRecord} onUploadEvidence={evidence.upload} onRemoveEvidence={evidence.remove} onOpenEvidence={evidence.open} />}
+                            {onSaveRecord && <ChapterVForm key={selected.vendor} vendor={selected} record={records[selected.vendor]} onSave={onSaveRecord} />}
+                            {onSaveRecord && evidence && <VendorDocuments vendor={selected.vendor} documents={evidence.documents} onChange={evidence.onChange} />}
                             <dl className="tw-m-0 tw-flex tw-flex-col tw-gap-2">
                                 <Fact label="Category">{categoryMeta[selected.category]?.label || selected.category}</Fact>
                                 <Fact label="Consent category">{selected.bannerCategory && (bannerMeta[selected.bannerCategory]?.label || selected.bannerCategory)}</Fact>

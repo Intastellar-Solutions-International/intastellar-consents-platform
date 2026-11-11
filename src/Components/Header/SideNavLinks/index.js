@@ -62,6 +62,12 @@ export const reportsLinks = [
         requiresTier: 'growth',
     },
     {
+        name: "Evidence Catalog",
+        path: "/settings/evidence",
+        view: ["admin", "super-admin", "manager"],
+        requiresTier: 'growth',
+    },
+    {
         name: "Ad Connections",
         path: "/settings/ad-connections",
         view: ["admin", "super-admin", "manager"],

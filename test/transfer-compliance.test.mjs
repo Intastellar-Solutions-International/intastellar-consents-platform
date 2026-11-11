@@ -1,7 +1,7 @@
 // GDPR Chapter V per vendor: transfer mechanism and DPA.
 import assert from "node:assert/strict";
 import { test } from "./_harness.mjs";
-import { validateRecord, validateEvidence, evidencePath, saveRecord, listRecords } from "../api/vendor-compliance.js";
+import { validateRecord, saveRecord, listRecords } from "../api/vendor-compliance.js";
 import { vendorChapterV, chapterVSummary, chapterVLabels } from "../api/_transfer-compliance.js";
 
 const us = (mechanism) => ({ vendor: "V", region: "non-eu", transferMechanism: mechanism });
@@ -73,16 +73,6 @@ test("worklist: dates and evidence links are validated", () => {
     assert.ok(validateRecord({ vendor: "V", mechanism_confirmed_at: "soon" }).error);
     assert.ok(validateRecord({ vendor: "V", evidence_url: "javascript:alert(1)" }).error);
     assert.ok(!validateRecord({ vendor: "V", dpa_status: "requested", evidence_url: "https://drive.example/dpa", mechanism_confirmed_at: "2026-11-01" }).error);
-});
-
-test("worklist: evidence uploads are limited and scoped to the organisation", () => {
-    const data = Buffer.from("x").toString("base64");
-    assert.ok(validateEvidence({ vendor: "V", content_type: "text/html", data }).error);
-    assert.ok(validateEvidence({ vendor: "V", content_type: "application/pdf", data: "" }).error);
-    assert.ok(validateEvidence({ vendor: "V", content_type: "application/pdf", data: Buffer.alloc(3 * 1024 * 1024 + 1).toString("base64") }).error);
-    const ok = validateEvidence({ vendor: "V", content_type: "application/pdf", filename: "../../DPA signed.pdf", data });
-    assert.strictEqual(ok.filename.includes("/"), false);
-    assert.ok(evidencePath(7, "V", ok.filename, 1).startsWith("vendor-evidence/7/"));
 });
 
 function fakeDb(rows = []) {

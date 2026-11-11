@@ -551,6 +551,10 @@ const API = {
             "Content-Type": "application/json",
         },
     },
+    evidence: {
+        url: `${ScannerHost}/api/evidence`,
+        headers: { "Authorization": Authentication.getToken(), "Organisation": Authentication.getOrganisation(), "X-User-Email": Authentication.getUserId(), "Content-Type": "application/json" }
+    },
     legalBasis: {
         url: `${ScannerHost}/api/legal-basis`,
         headers: { "Authorization": Authentication.getToken(), "Organisation": Authentication.getOrganisation(), "X-User-Email": Authentication.getUserId(), "Content-Type": "application/json" }
