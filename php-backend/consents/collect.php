@@ -695,19 +695,16 @@ $policyIdRow = mysqli_fetch_assoc($selectPolicyId_query);
 $policyId = $policyIdRow['policy_id'] ?? "ic-consent-v1";
 
 /**
- * Short fingerprint of the domain's banner configuration (config.js, the same
- * file bannerConfigPath() in analytics/settings/_banner-config.php writes):
- * the first 12 hex characters of its SHA-256, or null when there is no file.
- * It is the config on the server when the consent arrived; a visitor served a
- * cached copy may have seen an older one.
+ * Fingerprint of the banner configuration the visitor was shown, as the banner
+ * reports it in `configVersion`: hex SHA-256 of the settings it ran with
+ * (window.INTA, whether from the hosted config.js or inline on the site).
+ * Only the banner knows which config it used, so nothing is derived here.
+ * Stores the first 12 characters; null when missing or not hex.
  */
-function bannerConfigVersion($domain, $root)
+function bannerConfigVersion($reported)
 {
-    if (!preg_match('/^(?=.{4,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z][a-z0-9-]{1,62}$/', strtolower((string) $domain))) return null;
-    $path = rtrim((string) $root, '/') . '/downloads/cookieconsents/' . strtolower($domain) . '/config.js';
-    if (!is_file($path)) return null;
-    $hash = @hash_file('sha256', $path);
-    return $hash ? substr($hash, 0, 12) : null;
+    $value = strtolower(trim((string) $reported));
+    return preg_match('/^[a-f0-9]{12,64}$/', $value) ? substr($value, 0, 12) : null;
 }
 
 /** Whether user_consents_tracking has a column yet; migrations can run after this file is uploaded. */
@@ -724,7 +721,7 @@ function consentColumnExists($db, $column)
 $configInsertCols = "";
 $configInsertVals = "";
 if (consentColumnExists($db, 'banner_config_version')) {
-    $configVersion = bannerConfigVersion($domain, $_SERVER['DOCUMENT_ROOT'] ?? '');
+    $configVersion = bannerConfigVersion($data->configVersion ?? null);
     $configInsertCols = ", `banner_config_version`";
     $configInsertVals = $configVersion !== null ? ", '$configVersion'" : ", NULL";
 }

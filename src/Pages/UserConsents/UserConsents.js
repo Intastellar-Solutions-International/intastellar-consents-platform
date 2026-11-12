@@ -306,7 +306,7 @@ function RecordDrawer({ row, group, burst, onClose, onShowHistory, onSelect }) {
                 </Detail>
                 <Detail label="Banner config">
                     {row.banner_config_version
-                        ? <span className="tw-font-mono" title="Fingerprint of the domain's banner configuration on the server when this consent was recorded">{row.banner_config_version}</span>
+                        ? <span className="tw-font-mono" title="Fingerprint of the banner settings this visitor was shown, as reported by the banner">{row.banner_config_version}</span>
                         : <span className="tw-text-text-muted">Not recorded</span>}
                 </Detail>
                 <Detail label="Policy schema">{row.banner_policy_id ?? "Legacy record"}</Detail>
