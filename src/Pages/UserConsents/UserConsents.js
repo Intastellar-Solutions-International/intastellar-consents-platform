@@ -1,15 +1,9 @@
-import { isJson } from "../../Functions/isJson.js";
-import useFetch from "../../Functions/FetchHook";
-import Unknown from "../../Components/Error/Unknown.js";
-import NoDataFound from "../../Components/Error/NoDataFound.js";
-import { Loading } from "../../Components/widget/Loading.js";
 import API from "../../API/api.js";
 import { reportsLinks } from "../Reports/Reports.js";
 import "./Style.css";
 import SideNav from "../../Components/Header/SideNav.js";
 import StickyPageTitle from "../../Components/Header/Sticky";
 import { DomainContext } from "../../App.js";
-import LoadingSpinner from "../../Components/LoadingSpinner/LoadingSpinner.js";
 import Authentication from "../../Authentication/Auth.js";
 import { buildDemoConsentList, buildDemoConsentRecord } from "./userConsentsDemo.js";
 import {
@@ -25,40 +19,49 @@ import appStorage from '../../Functions/storage.js';
 import { parseConsentTimestamp } from "../../Functions/consentTimestamp.js";
 import BotFilterToggle from "../../Components/BotFilterToggle";
 import { useExcludeBots } from "../../Functions/botFilter.js";
-import { appLocale } from "../../Functions/format.js";
+import { appLocale, formatNumber } from "../../Functions/format.js";
+import { Badge, Button, Drawer, FilterBar, FilterSearch, FilterSelect, Icon, Table } from "../../Components/ui";
+import {
+    CHOICE_CATEGORIES,
+    METHOD_NAMES,
+    cleanUrl,
+    comparableUrl,
+    consentChoices,
+    formatAuditTime,
+    languageLabel,
+    methodLabel,
+    pageLabel,
+    transferSummary,
+} from "./auditLogFormat.js";
 
 const { useState, useEffect, useRef, useContext, useCallback, useMemo } = React;
 const useParams = window.ReactRouterDOM.useParams;
 const useLocation = window.ReactRouterDOM.useLocation;
 const useHistory = window.ReactRouterDOM.useHistory;
-const PAGE_SIZE = 40;
+const PAGE_SIZE = 50;
+const TEXT_FILTER_DELAY_MS = 400;
 
-/**
- * Pull the `country` query param out of a react-router `location` object.
- * Normalised to upper-case ISO-3166 alpha-2 so it compares cleanly against
- * `row.country_code` which `collect.php` already stores upper-cased.
- */
-function readCountryFromSearch(search) {
+/** Why collect.php flagged a record — see suspectedBotReason() there. */
+const BOT_REASON_LABELS = {
+    datacenter_ip: "Sent from a datacenter IP address",
+    conflicting_decisions: "Same visitor stored a different choice within one second",
+    high_rate: "More than 5 decisions by this visitor within a minute",
+};
+
+const EMPTY_FILTERS = { framework: "", country: "", method: "", choice: "", language: "", version: "", uidSearch: "", page: "" };
+
+/** Request header for each filter (see auditFilterSql() in getDomainStatistics.php). */
+const FILTER_HEADERS = { framework: "Framework", country: "Country", method: "Method", choice: "Choice", language: "Language", version: "Version", uidSearch: "UIDSearch", page: "Page" };
+
+const CHOICE_OPTIONS = CHOICE_CATEGORIES.filter((c) => c.type !== "necessary").flatMap((c) => [
+    { value: `${c.type}:declined`, label: `${c.label} declined` },
+    { value: `${c.type}:accepted`, label: `${c.label} accepted` },
+]);
+
+function readSearchParam(search, name) {
     if (!search || typeof search !== "string") return "";
     try {
-        const params = new URLSearchParams(search.startsWith("?") ? search.slice(1) : search);
-        const raw = params.get("country");
-        if (!raw) return "";
-        return String(raw).trim().toUpperCase();
-    } catch (_) {
-        return "";
-    }
-}
-
-/**
- * Pull the `uid` query param from URL search.
- * Kept as a raw trimmed string (UIDs can be alphanumeric, UUIDs, etc.).
- */
-function readUidFromSearch(search) {
-    if (!search || typeof search !== "string") return "";
-    try {
-        const params = new URLSearchParams(search.startsWith("?") ? search.slice(1) : search);
-        const raw = params.get("uid");
+        const raw = new URLSearchParams(search.startsWith("?") ? search.slice(1) : search).get(name);
         return raw ? String(raw).trim() : "";
     } catch (_) {
         return "";
@@ -71,169 +74,181 @@ function consentDateKey(d) {
     return String(d).split("T")[0];
 }
 
-/** Parse consent time for sorting (newest first). */
-function consentTimestampMs(row) {
-    const d = parseConsentTimestamp(row?.consents_timestamp);
-    return d ? d.getTime() : 0;
+function rowKey(row, i) {
+    return `${row?.uid ?? ""}|${row?.consents_timestamp ?? ""}|${i}`;
 }
 
-/** Newest decisions first so “yesterday” appears before older days while scrolling loads more. */
-function sortConsentsNewestFirst(rows) {
-    if (!Array.isArray(rows)) return rows;
-    return [...rows].sort((a, b) => {
-        const d = consentTimestampMs(b) - consentTimestampMs(a);
-        if (d !== 0) return d;
-        return String(b?.uid ?? "").localeCompare(String(a?.uid ?? ""));
-    });
-}
-
-/**
- * Human-readable language tag, e.g. "th" → "th (Thai)", "en-GB" → "en-GB (English (UK))".
- * Accepts both bare ISO 639-1 codes (en, th, de) and BCP 47 tags (en-GB, th-TH).
- * Falls back to Intl.DisplayNames when available so uncommon codes still resolve.
- * Returns null when missing.
- */
-const LANGUAGE_NAMES_STATIC = {
-    en: "English",
-    "en-GB": "English (UK)",
-    "en-US": "English (US)",
-    da: "Danish",
-    "da-DK": "Danish",
-    sv: "Swedish",
-    "sv-SE": "Swedish",
-    nb: "Norwegian",
-    "nb-NO": "Norwegian",
-    no: "Norwegian",
-    fi: "Finnish",
-    "fi-FI": "Finnish",
-    de: "German",
-    "de-DE": "German",
-    "de-AT": "German (Austria)",
-    "de-CH": "German (Switzerland)",
-    fr: "French",
-    "fr-FR": "French",
-    es: "Spanish",
-    "es-ES": "Spanish",
-    pt: "Portuguese",
-    "pt-BR": "Portuguese (Brazil)",
-    "pt-PT": "Portuguese (Portugal)",
-    nl: "Dutch",
-    "nl-NL": "Dutch",
-    it: "Italian",
-    "it-IT": "Italian",
-    pl: "Polish",
-    "pl-PL": "Polish",
-    ja: "Japanese",
-    "ja-JP": "Japanese",
-    zh: "Chinese",
-    "zh-CN": "Chinese (Simplified)",
-    "zh-TW": "Chinese (Traditional)",
-    ko: "Korean",
-    "ko-KR": "Korean",
-    th: "Thai",
-    "th-TH": "Thai",
-    vi: "Vietnamese",
-    id: "Indonesian",
-    ms: "Malay",
-};
-
-function formatLanguage(lang) {
-    if (lang == null || lang === "") return null;
-    const raw = String(lang).trim();
-    if (!raw) return null;
-    const bcp47 = raw.includes("-")
-        ? raw.replace(/^([a-z]{2,3})-([a-z]{2})$/i, (_, l, r) => `${l.toLowerCase()}-${r.toUpperCase()}`)
-        : raw.toLowerCase();
-    const fromStatic = LANGUAGE_NAMES_STATIC[bcp47] || LANGUAGE_NAMES_STATIC[raw];
-    if (fromStatic) return `${bcp47} (${fromStatic})`;
+function regionName(code) {
     try {
-        if (typeof Intl !== "undefined" && typeof Intl.DisplayNames === "function") {
-            const dn = new Intl.DisplayNames(["en"], { type: "language" });
-            const name = dn.of(bcp47);
-            if (name && name !== bcp47) return `${bcp47} (${name})`;
-        }
+        return new Intl.DisplayNames(["en"], { type: "region" }).of(code) || code;
     } catch {
-        /* Intl may throw on invalid tags; fall through to returning the raw tag. */
+        return code;
     }
-    return bcp47;
 }
 
-/** Human-readable consent method, e.g. "banner_granular" → "Banner — granular". */
-function formatConsentMethod(method) {
-    if (method == null || method === "") return null;
-    const s = String(method).trim();
-    if (!s) return null;
-    const NAMES = {
-        banner_accept_all: "Banner — accept all",
-        banner_reject_all: "Banner — reject all",
-        banner_granular: "Banner — granular",
-        banner_essential_only: "Banner — essential only",
-        preferences_updated: "Preferences updated",
-        preferences_withdrawn: "Preferences withdrawn",
-        withdrawal: "Withdrawal",
-        api_import: "API import",
-    };
-    return NAMES[s] || s.replace(/_/g, " ");
+/** Options for a filter menu: values seen in the period, plus the current one so it never vanishes. */
+function menuOptions(allLabel, values, current, label = (v) => v) {
+    const list = [...new Set([...(values || []), ...(current ? [current] : [])])];
+    return [{ value: "", label: allLabel }, ...list.map((v) => ({ value: v, label: label(v) }))];
 }
 
-/** Why collect.php flagged a record — see suspectedBotReason() there. */
-const BOT_REASON_LABELS = {
-    datacenter_ip: "Sent from a datacenter IP address",
-    conflicting_decisions: "Same visitor stored a different choice within one second",
-    high_rate: "More than 5 decisions by this visitor within a minute",
-};
+function copyText(text) {
+    return navigator.clipboard?.writeText(String(text)).catch(() => {});
+}
 
-/**
- * Short label for a data-transfer basis code. These match the `basis` values
- * written by collect.php / domain_data_transfer.
- */
-const TRANSFER_BASIS_SHORT = {
-    sccs: "SCCs",
-    bcrs: "BCRs",
-    adequacy: "Adequacy",
-    certification: "Certification",
-    consent: "Consent",
-    intra_group: "Intra-group",
-    derogation: "Derogation",
-    none_required: "No transfer",
-    disclosure_only: "Disclosure only",
-};
+function AuditTime({ row }) {
+    const t = formatAuditTime(parseConsentTimestamp(row?.consents_timestamp), appLocale());
+    if (!t) return "—";
+    return (
+        <span className="tw-whitespace-nowrap tw-tabular-nums" title={`${t.iso} (UTC)`}>
+            <span className="tw-text-text-primary">{t.date}</span> {t.time}
+            <span className="tw-text-xs tw-text-text-muted"> {t.zone}</span>
+        </span>
+    );
+}
 
-/**
- * Build the structured transfer summary shown on an audit card. Accepts the
- * new snapshot columns (`transfer_basis`, `transfer_destination`, …) and
- * falls back to the legacy single-string fields.
- * Returns { primary, secondary } or null if nothing is known.
- */
-function formatTransfer(row) {
+function ChoiceChips({ consent }) {
+    const choices = consentChoices(consent);
+    return (
+        <span className="tw-inline-flex tw-gap-1" role="list" aria-label="Choices">
+            {choices.map((c) => {
+                const word = c.state === "accepted" ? (c.type === "necessary" ? "always on" : "accepted") : c.state === "declined" ? "declined" : "not recorded";
+                return (
+                    <span
+                        key={c.type}
+                        role="listitem"
+                        title={`${c.label}: ${word}`}
+                        aria-label={`${c.label}: ${word}`}
+                        className={`audit-choice audit-choice--${c.state}`}
+                    >
+                        {c.short}
+                        <Icon name={c.state === "accepted" ? "check" : c.state === "declined" ? "x" : "minus-circle"} size={11} />
+                    </span>
+                );
+            })}
+        </span>
+    );
+}
+
+/** The framework the banner applied, or "None applied" with what the country usually falls under. */
+function FrameworkCell({ row }) {
+    const applied = String(row?.regulation_applied ?? "").trim();
+    if (applied) return <Badge>{applied}</Badge>;
+    const usual = [...frameworksForAuditRow({ country_code: row?.country_code })];
+    const hint = usual.length
+        ? `The banner recorded no framework for this visitor. ${row?.country_code} usually falls under ${usual.join(" / ")}.`
+        : "The banner recorded no framework for this visitor.";
+    return <span className="tw-text-text-muted" title={hint}>None applied</span>;
+}
+
+function CopyUid({ uid }) {
+    const [copied, setCopied] = useState(false);
+    if (!uid) return null;
+    return (
+        <Button
+            variant="ghost"
+            size="sm"
+            icon={copied ? "check" : "copy"}
+            iconOnly
+            aria-label={copied ? "UID copied" : `Copy UID ${uid}`}
+            title={copied ? "Copied" : "Copy UID"}
+            onClick={(e) => {
+                e.stopPropagation();
+                copyText(uid);
+                setCopied(true);
+                setTimeout(() => setCopied(false), 1500);
+            }}
+        />
+    );
+}
+
+function Detail({ label, children, wide = false }) {
+    return (
+        <div className={wide ? "audit-detail audit-detail--wide" : "audit-detail"}>
+            <dt>{label}</dt>
+            <dd>{children}</dd>
+        </div>
+    );
+}
+
+function RecordDrawer({ row, onClose, onShowHistory }) {
     if (!row) return null;
-    const basisRaw = String(row.transfer_basis ?? "").trim().toLowerCase();
-    const destination = String(row.transfer_destination ?? "").trim();
-    const instrument = String(row.transfer_instrument ?? "").trim();
-    const importer = String(row.transfer_data_importer ?? "").trim();
-    const effective = String(row.transfer_effective_from ?? "").trim();
-
-    if (basisRaw || destination || instrument) {
-        const basisLabel = TRANSFER_BASIS_SHORT[basisRaw] || (basisRaw ? basisRaw.replace(/_/g, " ") : "");
-        const primary = [basisLabel, destination].filter(Boolean).join(" → ");
-        const secondaryParts = [];
-        if (instrument) secondaryParts.push(instrument);
-        if (importer) secondaryParts.push(importer);
-        if (effective) secondaryParts.push(`since ${effective.slice(0, 10)}`);
-        return {
-            primary: primary || "—",
-            secondary: secondaryParts.join(" · ") || null,
-        };
-    }
-
-    const legacy =
-        row.transfer_mechanism ??
-        row.data_transfer ??
-        row.data_residency ??
-        row.hosting_region ??
-        null;
-    if (legacy) return { primary: String(legacy), secondary: null };
-    return null;
+    const time = formatAuditTime(parseConsentTimestamp(row.consents_timestamp), appLocale());
+    const transfer = transferSummary(row);
+    const page = cleanUrl(row.url);
+    const referrer = cleanUrl(row.referrer);
+    const sameAsPage = referrer && comparableUrl(referrer) === comparableUrl(page);
+    const priorConsentId = row.prior_consent_id ?? row.previous_consent_id ?? null;
+    return (
+        <Drawer
+            open
+            onClose={onClose}
+            title="Consent record"
+            width="lg"
+            footer={row.uid ? <Button variant="secondary" size="sm" icon="clock" onClick={() => onShowHistory(String(row.uid))}>All records for this visitor</Button> : null}
+        >
+            <dl className="audit-details">
+                <Detail label="UID" wide>
+                    <span className="tw-inline-flex tw-items-center tw-gap-1 tw-font-mono tw-text-text-primary tw-break-all">
+                        {row.uid ?? "—"}<CopyUid uid={row.uid} />
+                    </span>
+                </Detail>
+                <Detail label="Time">
+                    {time ? <>{time.date}, {time.time} {time.zone}<span className="tw-block tw-text-xs tw-text-text-muted">{time.iso} UTC</span></> : "—"}
+                </Detail>
+                <Detail label="Domain">{row.domain ? punycode.toUnicode(String(row.domain)) : "—"}</Detail>
+                <Detail label="Country / state">{row.country_code && row.country_code !== "-" ? `${regionName(row.country_code)} (${row.country_code})` : "—"}{row.state_code && row.state_code !== "-" ? ` · ${row.state_code}` : ""}</Detail>
+                <Detail label="Language">{languageLabel(row.language ?? row.banner_language) ?? "—"}</Detail>
+                <Detail label="Method">{methodLabel(row.consent_method) ?? "Not recorded"}</Detail>
+                <Detail label="Framework"><FrameworkCell row={row} /></Detail>
+                <Detail label="Choices" wide>
+                    <ul className="audit-choice-list">
+                        {consentChoices(row.consent).map((c) => (
+                            <li key={c.type}>
+                                <span>{c.label}</span>
+                                <Badge
+                                    tone={c.state === "accepted" ? "success" : c.state === "declined" ? "danger" : "neutral"}
+                                    icon={c.state === "accepted" ? "check" : c.state === "declined" ? "x" : "minus-circle"}
+                                >
+                                    {c.state === "accepted" ? (c.type === "necessary" ? "Always on" : "Accepted") : c.state === "declined" ? "Declined" : "Not recorded"}
+                                </Badge>
+                            </li>
+                        ))}
+                    </ul>
+                </Detail>
+                <Detail label="Data transfer" wide>
+                    {transfer ? (
+                        <>
+                            <span className="tw-text-text-primary">{transfer.short}</span>
+                            {transfer.instrument && <span className="tw-block">{transfer.instrument}</span>}
+                            {transfer.importer && <span className="tw-block">Data importer: {transfer.importer}</span>}
+                            {transfer.effective && <span className="tw-block">In effect since {transfer.effective}</span>}
+                        </>
+                    ) : "—"}
+                </Detail>
+                <Detail label="Page" wide><span className="tw-break-all">{page || "—"}</span></Detail>
+                <Detail label="Referrer" wide>
+                    {sameAsPage ? <span className="tw-text-text-muted">Same as page</span> : <span className="tw-break-all">{referrer || "—"}</span>}
+                </Detail>
+                <Detail label="Time to decision">{row.time_to_decision != null ? `${formatNumber(row.time_to_decision / 1000, { maximumFractionDigits: 1 })} s` : "—"}</Detail>
+                <Detail label="Banner version">
+                    {row.github_link
+                        ? <a className="link" href={row.github_link} target="_blank" rel="noopener noreferrer">{row.code_version ?? "—"}</a>
+                        : row.code_version ?? "—"}
+                </Detail>
+                <Detail label="Policy schema">{row.banner_policy_id ?? "Legacy record"}</Detail>
+                {row.shopify_consent_id ? <Detail label="Shopify consent ID"><span className="tw-break-all">{row.shopify_consent_id}</span></Detail> : null}
+                {priorConsentId ? <Detail label="Prior consent"><span className="tw-break-all">{String(priorConsentId)}</span></Detail> : null}
+                <Detail label="Suspected bot">
+                    {row.is_suspected_bot ? <Badge tone="warning" icon="alert-triangle">{BOT_REASON_LABELS[row.bot_reason] || "Flagged as automated traffic"}</Badge> : "No"}
+                </Detail>
+            </dl>
+            <details className="audit-raw">
+                <summary>Raw record</summary>
+                <pre>{JSON.stringify(row, null, 2)}</pre>
+            </details>
+        </Drawer>
+    );
 }
 
 export default function UserConsents(props) {
@@ -244,720 +259,284 @@ export default function UserConsents(props) {
     const { handle, id, uid: uidFromPath } = useParams();
     useSyncDomainFromRoute(handle, setGlobalDomain);
 
-    const listDomainLabel = useMemo(
-        () => consentsDomainFromRoute(handle, currentDomain),
-        [handle, currentDomain]
-    );
+    const listDomainLabel = useMemo(() => consentsDomainFromRoute(handle, currentDomain), [handle, currentDomain]);
     const domainsApiHeader = useMemo(() => toDomainsApiHeader(listDomainLabel), [listDomainLabel]);
 
-    const [activeData, setActiveData] = useState(null);
-    const [loadingMore, setLoadingMore] = useState(false);
-    const [hasMore, setHasMore] = useState(true);
-    const [selectedFramework, setSelectedFramework] = useState("all");
+    const routerLocation = typeof useLocation === "function" ? useLocation() : null;
+    const currentSearch = routerLocation?.search ?? (typeof window !== "undefined" ? window.location.search : "");
+    const routeUid = uidFromPath != null && String(uidFromPath).trim() !== "" ? decodeURIComponent(String(uidFromPath)) : "";
 
     /**
-     * Country filter driven by the `?country=XX` query param. This is how the
-     * world map drawer deep-links into a country-scoped view of the audit log.
-     * We keep it in React state so the UI can also clear it; the URL is kept
-     * in sync via `history.replaceState` so the link stays copy/paste-able.
+     * One visitor's full history: /user-consents/<uid> (or the older ?uid=).
+     * The world map drawer deep-links a country with ?country=XX.
      */
-    const routerLocation = typeof useLocation === "function" ? useLocation() : null;
-    const initialCountry = readCountryFromSearch(
-        routerLocation?.search ?? (typeof window !== "undefined" ? window.location.search : "")
-    );
-    const initialUid = readUidFromSearch(
-        routerLocation?.search ?? (typeof window !== "undefined" ? window.location.search : "")
-    );
-    const routeUid =
-        uidFromPath != null && String(uidFromPath).trim() !== ""
-            ? decodeURIComponent(String(uidFromPath))
-            : "";
-    const effectiveInitialUid = routeUid || initialUid;
-    const [selectedCountry, setSelectedCountry] = useState(initialCountry);
-    const [uidQueryInput, setUidQueryInput] = useState(effectiveInitialUid);
-    const [uidQuery, setUidQuery] = useState(effectiveInitialUid);
+    const [uidQuery, setUidQuery] = useState(routeUid || readSearchParam(currentSearch, "uid"));
+    const [filters, setFilters] = useState(() => ({ ...EMPTY_FILTERS, country: readSearchParam(currentSearch, "country").toUpperCase() }));
+    const [textFilters, setTextFilters] = useState({ uidSearch: "", page: "" });
+    const [sortDirection, setSortDirection] = useState("desc");
 
     useEffect(() => {
-        const fromUrl = readCountryFromSearch(routerLocation?.search ?? "");
-        if (fromUrl !== selectedCountry) setSelectedCountry(fromUrl);
-    }, [routerLocation?.search]);
-
-    useEffect(() => {
-        const fromPath =
-            uidFromPath != null && String(uidFromPath).trim() !== ""
-                ? decodeURIComponent(String(uidFromPath))
-                : "";
-        const fromUrl = fromPath || readUidFromSearch(routerLocation?.search ?? "");
-        if (fromUrl !== uidQuery) {
-            setUidQuery(fromUrl);
-        }
-        if (fromUrl !== uidQueryInput) {
-            setUidQueryInput(fromUrl);
-        }
+        const fromUrl = routeUid || readSearchParam(routerLocation?.search ?? "", "uid");
+        setUidQuery(fromUrl);
     }, [routerLocation?.search, uidFromPath]);
 
-    const clearCountryFilter = useCallback(() => {
-        setSelectedCountry("");
-        if (typeof window === "undefined" || !window.history?.replaceState) return;
-        try {
-            const url = new URL(window.location.href);
-            url.searchParams.delete("country");
-            window.history.replaceState({}, "", `${url.pathname}${url.search}${url.hash}`);
-        } catch (_) {
-            /* non-fatal: the in-memory state is still cleared */
-        }
-    }, []);
+    useEffect(() => {
+        const country = readSearchParam(routerLocation?.search ?? "", "country").toUpperCase();
+        setFilters((f) => (f.country === country ? f : { ...f, country }));
+    }, [routerLocation?.search]);
 
-    const clearUidFilter = useCallback(() => {
-        setUidQueryInput("");
-        setUidQuery("");
-        const currentPath = routerLocation?.pathname ?? (typeof window !== "undefined" ? window.location.pathname : "");
-        const basePath = String(currentPath).replace(/\/user-consents(?:\/[^/?#]+)?$/, "/user-consents");
-        const params = new URLSearchParams(
-            (routerLocation?.search ?? (typeof window !== "undefined" ? window.location.search : "")).replace(/^\?/, "")
-        );
-        params.delete("uid");
+    // Typed filters wait for a pause so each keystroke isn't a request.
+    useEffect(() => {
+        const timer = setTimeout(() => setFilters((f) => (f.uidSearch === textFilters.uidSearch && f.page === textFilters.page ? f : { ...f, ...textFilters })), TEXT_FILTER_DELAY_MS);
+        return () => clearTimeout(timer);
+    }, [textFilters]);
+
+    const replaceUrl = useCallback((pathname, mutateParams) => {
+        const params = new URLSearchParams(currentSearch.replace(/^\?/, ""));
+        mutateParams(params);
         const search = params.toString();
-        const next = `${basePath}${search ? `?${search}` : ""}`;
-        if (history?.replace) {
-            history.replace(next);
-            return;
+        const next = `${pathname}${search ? `?${search}` : ""}`;
+        if (history?.replace) history.replace(next);
+        else {
+            try { window.history.replaceState({}, "", next); } catch (_) { /* in-memory state still applies */ }
         }
-        if (typeof window === "undefined" || !window.history?.replaceState) return;
-        try {
-            window.history.replaceState({}, "", next);
-        } catch (_) {
-            /* non-fatal: in-memory state already cleared */
-        }
-    }, [history, routerLocation?.pathname, routerLocation?.search]);
+    }, [history, currentSearch]);
 
-    const [demoMode, setDemoMode] = useState(Authentication.DemoMode); 
+    const basePath = String(routerLocation?.pathname ?? window.location.pathname).replace(/\/user-consents(?:\/[^/?#]+)?$/, "/user-consents");
+
+    const setFilter = useCallback((key, value) => {
+        setFilters((f) => ({ ...f, [key]: value }));
+        if (key === "country") replaceUrl(String(routerLocation?.pathname ?? window.location.pathname), (p) => (value ? p.set("country", value) : p.delete("country")));
+    }, [replaceUrl, routerLocation?.pathname]);
+
+    const showVisitorHistory = useCallback((uid) => {
+        setUidQuery(uid);
+        replaceUrl(`${basePath}/${encodeURIComponent(uid)}`, (p) => p.delete("uid"));
+    }, [basePath, replaceUrl]);
+
+    const clearVisitorHistory = useCallback(() => {
+        setUidQuery("");
+        replaceUrl(basePath, (p) => p.delete("uid"));
+    }, [basePath, replaceUrl]);
+
+    const clearFilters = useCallback(() => {
+        setFilters(EMPTY_FILTERS);
+        setTextFilters({ uidSearch: "", page: "" });
+        replaceUrl(String(routerLocation?.pathname ?? window.location.pathname), (p) => p.delete("country"));
+    }, [replaceUrl, routerLocation?.pathname]);
+
+    const [demoMode, setDemoMode] = useState(Authentication.DemoMode);
+    useEffect(() => Authentication.onDemoModeChange(setDemoMode), []);
 
     const [getLastDays, setLastDays] = useState((localStorage.getItem("settings") != null) ? JSON.parse(localStorage.getItem("settings")).dateRange : 30);
-
     const today = new Date();
     const rangeDays = settings?.dateRange ?? 30;
     const [fromDate, setFromDate] = useState(new Date(new Date().setDate(today.getDate() - (rangeDays - 1))));
     const [toDate, setToDate] = useState(new Date());
     const [compareRange, setCompareRange] = useState(0);
-    const [previousPeriod, setPreviousPeriod] = useState(() =>
-        defaultCompareWindowForPrimary(
-            new Date(new Date().setDate(new Date().getDate() - (rangeDays - 1))),
-            new Date()
-        ).start
-    );
-    const [previousPeriod2, setPreviousPeriod2] = useState(() =>
-        defaultCompareWindowForPrimary(
-            new Date(new Date().setDate(new Date().getDate() - (rangeDays - 1))),
-            new Date()
-        ).end
-    );
+    const [previousPeriod, setPreviousPeriod] = useState(() => defaultCompareWindowForPrimary(new Date(new Date().setDate(new Date().getDate() - (rangeDays - 1))), new Date()).start);
+    const [previousPeriod2, setPreviousPeriod2] = useState(() => defaultCompareWindowForPrimary(new Date(new Date().setDate(new Date().getDate() - (rangeDays - 1))), new Date()).end);
 
     const [excludeBots] = useExcludeBots();
 
-    const consentsQueryKey = useMemo(
-        () => `${id}|${domainsApiHeader}|${consentDateKey(fromDate)}|${consentDateKey(toDate)}|${uidQuery}|${excludeBots}`,
-        [id, domainsApiHeader, fromDate, toDate, uidQuery, excludeBots]
-    );
+    const [rows, setRows] = useState(null);
+    const [total, setTotal] = useState(null);
+    const [options, setOptions] = useState(null);
+    const [status, setStatus] = useState("loading"); // loading | ready | error
+    const [loadingMore, setLoadingMore] = useState(false);
+    const [hasMore, setHasMore] = useState(false);
+    const [selected, setSelected] = useState(null);
+    const [reload, setReload] = useState(0);
 
-    API[id].getDomainsUrl.headers.Domains = domainsApiHeader;
-    API[id].getDomainsUrl.headers.Offset = "0";
-    API[id].getDomainsUrl.headers.Limit = String(PAGE_SIZE);
-    API[id].getDomainsUrl.headers.FromDate = consentDateKey(fromDate);
-    API[id].getDomainsUrl.headers.ToDate = consentDateKey(toDate);
-    API[id].getDomainsUrl.headers.SortOrder = "desc";
-    if (uidQuery) {
-        API[id].getDomainsUrl.headers.UID = uidQuery;
-    } else {
-        delete API[id].getDomainsUrl.headers.UID;
-    }
+    const queryKey = JSON.stringify([id, domainsApiHeader, consentDateKey(fromDate), consentDateKey(toDate), uidQuery, excludeBots, sortDirection, filters, reload]);
+    const latestQuery = useRef(queryKey);
 
-    const url = API[id].getDomainsUrl.url;
-    const method = API[id].getDomainsUrl.method;
-
-    const [getDomainsUrlLoading, getDomainsUrlData, getDomainsUrlError, getDomainsUrlGetUpdated] = useFetch(
-        5,
-        API[id].getDomainsUrl.url,
-        API[id].getDomainsUrl.method,
-        API[id].getDomainsUrl.headers
-    );
+    const fetchPage = useCallback(async (offset) => {
+        const headers = {
+            ...API[id].getDomainsUrl.headers,
+            Domains: domainsApiHeader,
+            Offset: String(offset),
+            Limit: String(PAGE_SIZE),
+            FromDate: consentDateKey(fromDate),
+            ToDate: consentDateKey(toDate),
+            SortOrder: sortDirection,
+            IncludeTotal: "1",
+        };
+        delete headers.UID;
+        if (uidQuery) headers.UID = uidQuery;
+        for (const [key, header] of Object.entries(FILTER_HEADERS)) {
+            if (filters[key]) headers[header] = encodeURIComponent(filters[key]);
+        }
+        const res = await fetch(API[id].getDomainsUrl.url, { method: API[id].getDomainsUrl.method, headers });
+        if (res.status === 401) {
+            appStorage.removeItem("globals");
+            window.location.href = "/login";
+            return null;
+        }
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        // An API without IncludeTotal support answers with the bare array.
+        if (Array.isArray(data)) return { rows: data, total: null, options: null };
+        if (data === "Err_No_Data_Found") return { rows: [], total: 0, options: null };
+        if (!data || !Array.isArray(data.rows)) throw new Error(typeof data === "string" ? data : data?.error || "Unexpected response");
+        return data;
+    }, [id, domainsApiHeader, fromDate, toDate, sortDirection, uidQuery, filters]);
 
     useEffect(() => {
-        const unsubscribe = Authentication.onDemoModeChange(setDemoMode);
-        return unsubscribe; // Clean up on unmount
-    }, []);
-
-    const consentsInFlightKeyRef = useRef(null);
-
-    useEffect(() => {
-        setActiveData(null);
-        setHasMore(true);
-    }, [consentsQueryKey]);
-
-    useEffect(() => {
-        if (getDomainsUrlLoading) {
-            consentsInFlightKeyRef.current = consentsQueryKey;
-        }
-    }, [getDomainsUrlLoading, consentsQueryKey]);
-
-    useEffect(() => {
-        if (getDomainsUrlError) {
-            return;
-        }
-        if (getDomainsUrlLoading) {
-            return;
-        }
-        if (getDomainsUrlData === undefined) {
-            return;
-        }
-        if (
-            consentsInFlightKeyRef.current != null &&
-            consentsInFlightKeyRef.current !== consentsQueryKey
-        ) {
-            return;
-        }
-        if (
-            getDomainsUrlData === "Err_Server_Error" ||
-            getDomainsUrlData === "Err_No_Access"
-        ) {
-            return;
-        }
-        if (getDomainsUrlData === "Err_No_Data_Found") {
-            setActiveData([]);
-            setHasMore(false);
-            return;
-        }
-        if (Array.isArray(getDomainsUrlData)) {
-            // Append necessary consent to getDomainsUrlData
-            getDomainsUrlData.forEach(item => {
-                item.consent.unshift({
-                    type: "necessary",
-                    checked: "checked",
-                });
+        latestQuery.current = queryKey;
+        setStatus("loading");
+        setRows(null);
+        setSelected(null);
+        fetchPage(0)
+            .then((data) => {
+                if (!data || latestQuery.current !== queryKey) return;
+                setRows(data.rows);
+                setTotal(data.total);
+                if (data.options) setOptions(data.options);
+                setHasMore(data.total != null ? data.rows.length < data.total : data.rows.length === PAGE_SIZE);
+                setStatus("ready");
+            })
+            .catch(() => {
+                if (latestQuery.current === queryKey) setStatus("error");
             });
-            setActiveData(sortConsentsNewestFirst(getDomainsUrlData));
-            setHasMore(getDomainsUrlData.length === PAGE_SIZE);
-        }
-    }, [getDomainsUrlData, getDomainsUrlError, getDomainsUrlLoading, consentsQueryKey]);
+    }, [queryKey]);
 
-    const dataLengthRef = useRef(0);
-    useEffect(() => {
-        if (Array.isArray(activeData)) {
-            dataLengthRef.current = activeData.length;
-        }
-    }, [activeData]);
-
-    const loadingMoreRef = useRef(false);
-    useEffect(() => {
-        loadingMoreRef.current = loadingMore;
-    }, [loadingMore]);
-
-    const hasMoreRef = useRef(true);
-    useEffect(() => {
-        hasMoreRef.current = hasMore;
-    }, [hasMore]);
-
-    const appendNextBatch = useCallback(async () => {
-        if (loadingMoreRef.current || !hasMoreRef.current || getDomainsUrlLoading) {
-            return;
-        }
+    const loadMore = useCallback(async () => {
+        if (loadingMore || !rows) return;
+        const key = queryKey;
         setLoadingMore(true);
         try {
-            const offset = dataLengthRef.current;
-            const headers = {
-                ...API[id].getDomainsUrl.headers,
-                Domains: domainsApiHeader,
-                Offset: String(offset),
-                Limit: String(PAGE_SIZE),
-                FromDate: consentDateKey(fromDate),
-                ToDate: consentDateKey(toDate),
-                SortOrder: "desc",
-            };
-            if (uidQuery) {
-                headers.UID = uidQuery;
-            } else {
-                delete headers.UID;
-            }
-            const res = await fetch(url, { method, headers });
-            if (res.status === 401) {
-                appStorage.removeItem("globals");
-                window.location.href = "/login";
-                return;
-            }
-            if (!res.ok) {
-                setHasMore(false);
-                return;
-            }
-            const batch = await res.json();
-            if (batch === "Err_No_Data_Found" || !Array.isArray(batch) || batch.length === 0) {
-                setHasMore(false);
-                return;
-            }
-            batch.forEach(item => {
-                item.consent.unshift({
-                    type: "necessary",
-                    checked: "checked",
-                });
-            });
-            setActiveData((prev) =>
-                sortConsentsNewestFirst(Array.isArray(prev) ? [...prev, ...batch] : batch)
-            );
-            setHasMore(batch.length === PAGE_SIZE);
-        } catch (e) {
+            const data = await fetchPage(rows.length);
+            if (!data || latestQuery.current !== key) return;
+            const next = [...rows, ...data.rows];
+            setRows(next);
+            setHasMore(data.total != null ? next.length < data.total : data.rows.length === PAGE_SIZE);
+        } catch (_) {
             setHasMore(false);
         } finally {
             setLoadingMore(false);
         }
-    }, [domainsApiHeader, fromDate, toDate, id, getDomainsUrlLoading, method, url, uidQuery]);
+    }, [loadingMore, rows, queryKey, fetchPage]);
 
-    const applyUidFilter = useCallback(() => {
-        const targetUid = uidQueryInput.trim();
-        if (!targetUid) {
-            clearUidFilter();
-            return;
-        }
-        setUidQuery(targetUid);
-        const currentPath = routerLocation?.pathname ?? (typeof window !== "undefined" ? window.location.pathname : "");
-        const basePath = String(currentPath).replace(/\/user-consents(?:\/[^/?#]+)?$/, "/user-consents");
-        const nextPath = `${basePath}/${encodeURIComponent(targetUid)}`;
-        const params = new URLSearchParams(
-            (routerLocation?.search ?? (typeof window !== "undefined" ? window.location.search : "")).replace(/^\?/, "")
-        );
-        params.delete("uid");
-        const search = params.toString();
-        const next = `${nextPath}${search ? `?${search}` : ""}`;
-        if (history?.replace) {
-            history.replace(next);
-            return;
-        }
-        if (typeof window === "undefined" || !window.history?.replaceState) return;
-        try {
-            window.history.replaceState({}, "", next);
-        } catch (_) {
-            /* non-fatal: server-side filter still applies in memory */
-        }
-    }, [uidQueryInput, clearUidFilter, history, routerLocation?.pathname, routerLocation?.search]);
+    const displayRows = useMemo(() => {
+        if (!demoMode) return rows || [];
+        if (!rows?.length) return status === "loading" ? [] : buildDemoConsentList(28);
+        return rows.map((d, i) => buildDemoConsentRecord(i, d));
+    }, [demoMode, rows, status]);
+    const displayTotal = demoMode ? displayRows.length : total;
 
-    useEffect(() => {
-        const onScroll = () => {
-            if (getDomainsUrlLoading || loadingMoreRef.current || !hasMoreRef.current) {
-                return;
-            }
-            const doc = document.documentElement;
-            if (window.innerHeight + window.scrollY < doc.scrollHeight - 240) {
-                return;
-            }
-            void appendNextBatch();
-        };
-        window.addEventListener("scroll", onScroll, { passive: true });
-        return () => window.removeEventListener("scroll", onScroll);
-    }, [appendNextBatch, getDomainsUrlLoading]);
+    const activeCount = Object.values(filters).filter(Boolean).length;
 
-    const displayData = useMemo(() => {
-        if (!demoMode) {
-            return activeData;
-        }
-        if (!activeData || activeData.length === 0) {
-            if (getDomainsUrlLoading) {
-                return [];
-            }
-            return buildDemoConsentList(28);
-        }
-        return activeData.map((d, i) => buildDemoConsentRecord(i, d));
-    }, [demoMode, activeData, getDomainsUrlLoading]);
+    const columns = useMemo(() => [
+        { key: "time", header: "Time", sortable: true, width: "13rem", render: (r) => <AuditTime row={r} /> },
+        {
+            key: "uid",
+            header: "UID",
+            render: (r) => (
+                <span className="audit-uid">
+                    <span className="audit-uid__value" title={r.uid ?? ""}>{r.uid ?? "—"}</span>
+                    <CopyUid uid={r.uid} />
+                    {r.is_suspected_bot && (
+                        <span title={BOT_REASON_LABELS[r.bot_reason] || "Flagged as automated traffic"} className="tw-text-warning tw-inline-flex">
+                            <Icon name="alert-triangle" size={14} label="Suspected bot" />
+                        </span>
+                    )}
+                </span>
+            ),
+        },
+        {
+            key: "country",
+            header: "Country",
+            render: (r) => {
+                const cc = r.country_code && r.country_code !== "-" ? r.country_code : "";
+                const st = r.state_code && r.state_code !== "-" ? r.state_code : "";
+                return cc ? <span title={regionName(cc)} className="tw-whitespace-nowrap">{cc}{st ? <span className="tw-text-text-muted"> · {st}</span> : null}</span> : "—";
+            },
+        },
+        { key: "method", header: "Method", render: (r) => <span className="tw-whitespace-nowrap">{methodLabel(r.consent_method) ?? <span className="tw-text-text-muted">Not recorded</span>}</span> },
+        { key: "choices", header: "Choices", render: (r) => <ChoiceChips consent={r.consent} /> },
+        { key: "framework", header: "Framework", hideOnMobile: true, render: (r) => <FrameworkCell row={r} /> },
+        {
+            key: "transfer",
+            header: "Transfer",
+            hideOnMobile: true,
+            render: (r) => {
+                const t = transferSummary(r);
+                return t ? <span className="tw-whitespace-nowrap" title={t.full}>{t.short}</span> : "—";
+            },
+        },
+        {
+            key: "page",
+            header: "Page",
+            hideOnMobile: true,
+            render: (r) => {
+                const label = pageLabel(r.url, r.domain);
+                return label ? <span className="audit-page" title={cleanUrl(r.url)}>{label}</span> : "—";
+            },
+        },
+    ], []);
 
-    /** Union of frameworks observed in loaded records + the full static list, preserving static order. */
-    const availableFrameworks = useMemo(() => {
-        const observed = new Set();
-        if (Array.isArray(displayData)) {
-            for (const row of displayData) {
-                for (const fw of frameworksForAuditRow(row)) observed.add(fw);
-            }
-        }
-        const ordered = FRAMEWORK_IDS.filter((id) => observed.has(id) || FRAMEWORK_IDS.includes(id));
-        for (const fw of observed) if (!ordered.includes(fw)) ordered.push(fw);
-        return ordered;
-    }, [displayData]);
-
-    /** Reset framework filter when the underlying query changes so stale selections don't hide new data. */
-    useEffect(() => {
-        setSelectedFramework("all");
-    }, [consentsQueryKey]);
-
-    const baseDisplayData = displayData;
-
-    const filteredDisplayData = useMemo(() => {
-        if (!Array.isArray(baseDisplayData)) return baseDisplayData;
-        const country = selectedCountry ? selectedCountry.toUpperCase() : "";
-        if (selectedFramework === "all" && !country) return baseDisplayData;
-        return baseDisplayData.filter((row) => {
-            if (selectedFramework !== "all" && !frameworksForAuditRow(row).has(selectedFramework)) {
-                return false;
-            }
-            if (country) {
-                const rowCc = String(row?.country_code ?? "").trim().toUpperCase();
-                if (rowCc !== country) return false;
-            }
-            return true;
-        });
-    }, [baseDisplayData, selectedFramework, selectedCountry]);
-
-    const filteredAway =
-        Array.isArray(baseDisplayData) && Array.isArray(filteredDisplayData)
-            ? baseDisplayData.length - filteredDisplayData.length
-            : 0;
-
-    const showNoData =
-        !demoMode &&
-        (getDomainsUrlData === "Err_No_Data_Found" ||
-            (Array.isArray(getDomainsUrlData) && getDomainsUrlData.length === 0));
-
-    const showFetchFailure =
-        !demoMode &&
-        (getDomainsUrlError ||
-            getDomainsUrlData === "Err_Server_Error" ||
-            getDomainsUrlData === "Err_No_Access");
+    const frameworkMenu = menuOptions("All frameworks", [...FRAMEWORK_IDS], filters.framework);
+    frameworkMenu.splice(1, 0, { value: "none", label: "None applied" });
+    const methodMenu = menuOptions("All methods", [...new Set([...Object.keys(METHOD_NAMES).slice(0, 4), ...(options?.method || [])])], filters.method, methodLabel);
+    methodMenu.push({ value: "none", label: "Not recorded" });
 
     const titleDomainLabel = isCombinedOrClearDomain(listDomainLabel) ? null : listDomainLabel;
+    const loading = status === "loading" && !demoMode;
 
     return (
         <>
             <SideNav links={reportsLinks} title="Reports" />
-            <article style={{ flex: "1"}}>
-                <StickyPageTitle demoMode={demoMode} loadingUpdated={getDomainsUrlLoading} finalLoaded={getDomainsUrlLoading} title={"Audit log" + (titleDomainLabel ? " for " + punycode.toUnicode(titleDomainLabel) : "")} numberofDays={setLastDays} getLastDays={getLastDays} setActiveData={setActiveData} fromDate={fromDate} toDate={toDate} setFromDate={setFromDate} setToDate={setToDate} previousPeriod={previousPeriod} previousPeriod2={previousPeriod2} compareRange={compareRange} setCompareRange={setCompareRange} setCompareWindowStart={setPreviousPeriod} setCompareWindowEnd={setPreviousPeriod2} />
+            <article style={{ flex: "1" }}>
+                <StickyPageTitle demoMode={demoMode} loadingUpdated={loading} finalLoaded={loading} title={"Audit log" + (titleDomainLabel ? " for " + punycode.toUnicode(titleDomainLabel) : "")} numberofDays={setLastDays} getLastDays={getLastDays} setActiveData={setRows} fromDate={fromDate} toDate={toDate} setFromDate={setFromDate} setToDate={setToDate} previousPeriod={previousPeriod} previousPeriod2={previousPeriod2} compareRange={compareRange} setCompareRange={setCompareRange} setCompareWindowStart={setPreviousPeriod} setCompareWindowEnd={setPreviousPeriod2} />
                 <div className="dashboard-content">
-                    <section className="filter user-consents-filter-bar" aria-label="Audit log filters">
+                    {uidQuery ? (
+                        <div className="audit-visitor" role="status">
+                            <span>Showing every record for visitor <strong className="tw-font-mono">{uidQuery}</strong></span>
+                            <CopyUid uid={uidQuery} />
+                            <Button variant="ghost" size="sm" icon="x" onClick={clearVisitorHistory}>Back to all visitors</Button>
+                        </div>
+                    ) : null}
+                    <FilterBar activeCount={activeCount} onClear={clearFilters} label="Audit log filters">
+                        <FilterSearch label="UID" value={textFilters.uidSearch} placeholder="Part of a UID" onChange={(v) => setTextFilters((f) => ({ ...f, uidSearch: v }))} />
+                        <FilterSelect label="Country" value={filters.country} options={menuOptions("All countries", options?.country, filters.country, (c) => `${regionName(c)} (${c})`)} onChange={(v) => setFilter("country", v)} />
+                        <FilterSelect label="Method" value={filters.method} options={methodMenu} onChange={(v) => setFilter("method", v)} />
+                        <FilterSelect label="Choice" value={filters.choice} options={[{ value: "", label: "Any choice" }, ...CHOICE_OPTIONS]} onChange={(v) => setFilter("choice", v)} />
+                        <FilterSelect label="Framework" value={filters.framework} options={frameworkMenu} onChange={(v) => setFilter("framework", v)} />
+                        <FilterSelect label="Language" value={filters.language} options={menuOptions("All languages", options?.language, filters.language, (l) => languageLabel(l) || l)} onChange={(v) => setFilter("language", v)} />
+                        <FilterSelect label="Banner version" value={filters.version} options={menuOptions("All versions", options?.version, filters.version)} onChange={(v) => setFilter("version", v)} />
+                        <FilterSearch label="Page" value={textFilters.page} placeholder="/checkout" onChange={(v) => setTextFilters((f) => ({ ...f, page: v }))} />
                         <BotFilterToggle />
-                        <label className="user-consents-filter-field" htmlFor="user-consents-framework-filter">
-                            <span className="user-consents-filter-label">Framework</span>
-                            <select
-                                id="user-consents-framework-filter"
-                                className="user-consents-filter-select"
-                                value={selectedFramework}
-                                onChange={(e) => setSelectedFramework(e.target.value)}
-                            >
-                                <option value="all">All frameworks</option>
-                                {availableFrameworks.map((fw) => (
-                                    <option key={fw} value={fw}>
-                                        {fw}
-                                    </option>
-                                ))}
-                            </select>
-                        </label>
-                        <form
-                            className="user-consents-filter-field user-consents-filter-field--uid"
-                            onSubmit={(e) => {
-                                e.preventDefault();
-                                applyUidFilter();
-                            }}
-                        >
-                            <label className="user-consents-filter-label" htmlFor="user-consents-uid-filter">
-                                UID
-                            </label>
-                            <input
-                                id="user-consents-uid-filter"
-                                className="user-consents-filter-input"
-                                type="text"
-                                placeholder="Exact UID…"
-                                value={uidQueryInput}
-                                onChange={(e) => setUidQueryInput(e.target.value)}
-                            />
-                            <button
-                                type="submit"
-                                className="user-consents-filter-apply"
-                            >
-                                Find
-                            </button>
-                            {uidQuery ? (
-                                <button
-                                    type="button"
-                                    className="user-consents-filter-reset"
-                                    onClick={clearUidFilter}
-                                >
-                                    clear
-                                </button>
-                            ) : null}
-                        </form>
-                        {selectedCountry ? (
-                            <span
-                                className="user-consents-filter-chip"
-                                role="status"
-                                aria-live="polite"
-                                title={`Showing records where country_code = ${selectedCountry}`}
-                            >
-                                <span className="user-consents-filter-chip__label">Country</span>
-                                <span className="user-consents-filter-chip__value">{selectedCountry}</span>
-                                <button
-                                    type="button"
-                                    className="user-consents-filter-chip__clear"
-                                    onClick={clearCountryFilter}
-                                    aria-label={`Clear country filter (${selectedCountry})`}
-                                >
-                                    ×
-                                </button>
-                            </span>
-                        ) : null}
-                        {uidQuery ? (
-                            <span className="user-consents-filter-chip" role="status" aria-live="polite">
-                                <span className="user-consents-filter-chip__label">UID</span>
-                                <span className="user-consents-filter-chip__value">{uidQuery}</span>
-                                <button
-                                    type="button"
-                                    className="user-consents-filter-chip__clear"
-                                    onClick={clearUidFilter}
-                                    aria-label={`Clear UID filter (${uidQuery})`}
-                                >
-                                    ×
-                                </button>
-                            </span>
-                        ) : null}
-                        {uidQuery ? (
-                            <span className="user-consents-filter-note" role="status" aria-live="polite">
-                                UID mode active: server-side filter for {uidQuery}
-                            </span>
-                        ) : null}
-                        {(selectedFramework !== "all" || selectedCountry) && filteredAway > 0 ? (
-                            <span className="user-consents-filter-note" role="status" aria-live="polite">
-                                Showing {filteredDisplayData.length} of {baseDisplayData.length} loaded records
-                                {hasMore && !uidQuery ? " · scroll to load more" : ""}
-                            </span>
-                        ) : null}
-                    </section>
-                    {(getDomainsUrlLoading && !showFetchFailure) ? 
-                        <div className="user-consents-grid">
-                            <Loading />
-                            <Loading />
-                            <Loading />
-                            <Loading />
-                            <Loading />
-                            <Loading />
-                            <Loading />
-                            <Loading />
+                    </FilterBar>
+                    <p className="audit-count" aria-live="polite">
+                        {loading ? "Loading records…" : displayTotal != null
+                            ? `${formatNumber(displayTotal)} ${displayTotal === 1 ? "record" : "records"}${displayRows.length < displayTotal ? ` · showing ${formatNumber(displayRows.length)}` : ""}`
+                            : `${formatNumber(displayRows.length)} records loaded`}
+                        <span className="tw-text-text-muted"> · times in your time zone, hover for UTC</span>
+                    </p>
+                    <div className="audit-table">
+                        <Table
+                            caption="Consent records"
+                            columns={columns}
+                            rows={displayRows}
+                            getRowKey={rowKey}
+                            loading={loading}
+                            error={status === "error" && !demoMode ? { message: "The audit log couldn't be loaded.", onRetry: () => setReload((n) => n + 1) } : undefined}
+                            empty={{ title: "No records", message: activeCount || uidQuery ? "Nothing matches these filters in the selected period." : "No consent decisions were recorded in the selected period." }}
+                            sort={{ key: "time", direction: sortDirection }}
+                            onSortChange={() => setSortDirection((d) => (d === "desc" ? "asc" : "desc"))}
+                            onRowClick={setSelected}
+                            selectedKey={selected ? rowKey(selected, displayRows.indexOf(selected)) : null}
+                        />
+                    </div>
+                    {hasMore && !demoMode && status === "ready" ? (
+                        <div className="tw-flex tw-justify-center tw-py-4">
+                            <Button variant="secondary" loading={loadingMore} onClick={loadMore}>Load {formatNumber(PAGE_SIZE)} more</Button>
                         </div>
-                    : showFetchFailure ? <Unknown /> : (showNoData) ? <NoDataFound /> : <>
-                        {(selectedFramework !== "all" || selectedCountry) &&
-                            Array.isArray(filteredDisplayData) &&
-                            filteredDisplayData.length === 0 ? (
-                            <div className="user-consents-empty-filter" role="status">
-                                No records match{" "}
-                                {selectedFramework !== "all" ? <strong>{selectedFramework}</strong> : null}
-                                {selectedFramework !== "all" && selectedCountry ? " in " : ""}
-                                {selectedCountry ? <strong>{selectedCountry}</strong> : null}
-                                {" "}in the currently loaded page.{" "}
-                                {hasMore && !uidQuery ? "Scroll to load more, or " : ""}
-                                {selectedFramework !== "all" ? (
-                                    <button
-                                        type="button"
-                                        className="user-consents-filter-reset"
-                                        onClick={() => setSelectedFramework("all")}
-                                    >
-                                        clear framework
-                                    </button>
-                                ) : null}
-                                {selectedFramework !== "all" && selectedCountry ? " · " : ""}
-                                {selectedCountry ? (
-                                    <button
-                                        type="button"
-                                        className="user-consents-filter-reset"
-                                        onClick={clearCountryFilter}
-                                    >
-                                        clear country
-                                    </button>
-                                ) : null}
-                                .
-                            </div>
-                        ) : null}
-                        <div className="user-consents-grid">
-                            {
-                                filteredDisplayData?.map((d, key) => {
-                                    let consent = "";
-                                    if (isJson(d?.consent)) {
-                                        consent = JSON.parse(d?.consent);
-                                    } else {
-                                        consent = d?.consent;
-                                    }
-
-                                    const referrerClean = d?.referrer ? String(d.referrer).split("?")[0] : "—";
-                                    const urlClean = d?.url ? String(d.url).split("?")[0].split("#")[0] : "—";
-                                    const parsedTime = parseConsentTimestamp(d?.consents_timestamp);
-                                    const timeStr = parsedTime
-                                        ? parsedTime.toLocaleString(appLocale(), { timeZone: "Europe/Copenhagen" })
-                                        : "—";
-
-                                    const consentLabel = (t) => (t === "statics" ? "analytics" : t);
-
-                                    const isNecessaryType = (t) => String(t || "").toLowerCase() === "necessary";
-
-                                    const languageLabel = formatLanguage(d?.language ?? d?.banner_language);
-                                    const methodLabel = formatConsentMethod(
-                                        d?.consent_method ?? d?.consentMethod ?? d?.method
-                                    );
-                                    const transferInfo = formatTransfer(d);
-                                    const priorConsentId =
-                                        d?.prior_consent_id ?? d?.previous_consent_id ?? null;
-
-                                    return (
-                                        <div
-                                            className="user-consent-card"
-                                            key={`${d?.uid || d?.shopify_consent_id || key}-${d?.consents_timestamp || ""}-${key}`}
-                                        >
-                                            <header className="user-consent-card__header">
-                                                <span className="user-consent-card__badge">
-                                                    {d?.banner_policy_id ? `ID ${d.banner_policy_id}` : "Legacy record"}
-                                                </span>
-                                                {d?.is_suspected_bot && (
-                                                    <span
-                                                        className="user-consent-card__badge user-consent-card__badge--bot"
-                                                        title={BOT_REASON_LABELS[d.bot_reason] || "Flagged as automated traffic"}
-                                                    >
-                                                        Suspected bot
-                                                    </span>
-                                                )}
-                                                <div className="user-consent-card__header-meta">
-                                                    <span className="user-consent-card__id-line" title={d?.uid != null ? String(d.uid) : ""}>
-                                                        <span className="user-consent-card__id-label">UID</span>
-                                                        <span className="user-consent-card__id-value">{d?.uid ?? "—"}</span>
-                                                    </span>
-                                                    <span
-                                                        className="user-consent-card__id-line"
-                                                        title={d?.shopify_consent_id != null ? String(d.shopify_consent_id) : ""}
-                                                    >
-                                                        <span className="user-consent-card__id-label">Shopify consent ID</span>
-                                                        <span className="user-consent-card__id-value">{d?.shopify_consent_id ?? "—"}</span>
-                                                    </span>
-                                                </div>
-                                            </header>
-
-                                            <dl className="user-consent-card__meta">
-                                                <div className="user-consent-card__row">
-                                                    <dt>Country | State</dt>
-                                                    <dd>{d?.country_code ?? "—"} | {d?.state_code ?? "—"}</dd>
-                                                </div>
-                                                <div className="user-consent-card__row">
-                                                    <dt>Language</dt>
-                                                    <dd>{languageLabel ?? "—"}</dd>
-                                                </div>
-                                                <div className="user-consent-card__row">
-                                                    <dt>Applied framework</dt>
-                                                    <dd><span className="regulation">{d?.regulation_applied ?? "—"}</span></dd>
-                                                </div>
-                                                <div className="user-consent-card__row">
-                                                    <dt>Method</dt>
-                                                    <dd>{methodLabel ?? "—"}</dd>
-                                                </div>
-                                                <div className="user-consent-card__row">
-                                                    <dt>Time</dt>
-                                                    <dd>{timeStr}</dd>
-                                                </div>
-                                                <div className="user-consent-card__row">
-                                                    <dt>Data transfer</dt>
-                                                    <dd>
-                                                        {transferInfo ? (
-                                                            <>
-                                                                <span className="user-consent-card__transfer-primary">
-                                                                    {transferInfo.primary}
-                                                                </span>
-                                                                {transferInfo.secondary ? (
-                                                                    <span
-                                                                        className="user-consent-card__transfer-secondary"
-                                                                        title={transferInfo.secondary}
-                                                                    >
-                                                                        {transferInfo.secondary}
-                                                                    </span>
-                                                                ) : null}
-                                                            </>
-                                                        ) : (
-                                                            "—"
-                                                        )}
-                                                    </dd>
-                                                </div>
-                                            </dl>
-
-                                            <div className="user-consent-card__urls">
-                                                <div className="user-consent-card__url-block">
-                                                    <span className="user-consent-card__url-label">Referrer</span>
-                                                    <span className="user-consent-card__url-text" title={referrerClean}>{referrerClean}</span>
-                                                </div>
-                                                <div className="user-consent-card__url-block">
-                                                    <span className="user-consent-card__url-label">URL</span>
-                                                    <span className="user-consent-card__url-text" title={urlClean}>{urlClean}</span>
-                                                </div>
-                                            </div>
-
-                                            <section className="user-consent-card__choices" aria-label="Cookie choices">
-                                                <h4 className="user-consent-card__choices-title">Choices</h4>
-                                                {(Object.prototype.toString.call(consent) === "[object Array]") ? (
-                                                    <ul className="user-consent-card__choice-list">
-                                                        {consent?.map((c, i) => {
-                                                            const accepted = c?.checked === "checked" || c?.checked === "1" || c?.checked === true;
-                                                            const declined = !c?.checked;
-                                                            const status = declined ? "declined" : accepted ? "accepted" : "mixed";
-                                                            const label = consentLabel(c?.type);
-                                                            return (
-                                                                <li key={i} className="user-consent-card__choice-item">
-                                                                    <span className="user-consent-card__choice-name">{label}</span>
-                                                                    <span className={`user-consent-card__pill user-consent-card__pill--${status}`}>
-                                                                        {declined ? "Declined" : accepted ? (isNecessaryType(c?.type) ? "Essential" : "Accepted") : String(c?.checked ?? "")}
-                                                                    </span>
-                                                                </li>
-                                                            );
-                                                        })}
-                                                    </ul>
-                                                ) : (
-                                                    <ul className="user-consent-card__choice-list">
-                                                        <li className="user-consent-card__choice-item">
-                                                            <span className="user-consent-card__choice-name">{consentLabel(consent?.consent_type)}</span>
-                                                            <span className={`user-consent-card__pill ${(consent?.consent_value == "1" || consent?.consent_value == "checked") ? "user-consent-card__pill--accepted" : "user-consent-card__pill--declined"}`}>
-                                                                {(consent?.consent_value == "1" || consent?.consent_value == "checked") ? (isNecessaryType(consent?.consent_type) ? "Essential" : "Accepted") : "Declined"}
-                                                            </span>
-                                                        </li>
-                                                    </ul>
-                                                )}
-                                            </section>
-
-                                            <footer className="user-consent-card__footer">
-                                                {priorConsentId ? (
-                                                    <span
-                                                        className="user-consent-card__prior"
-                                                        title={String(priorConsentId)}
-                                                    >
-                                                        <span className="user-consent-card__version-label">
-                                                            Prior consent
-                                                        </span>
-                                                        <span className="user-consent-card__prior-id">
-                                                            {String(priorConsentId)}
-                                                        </span>
-                                                    </span>
-                                                ) : null}
-                                                <span className="user-consent-card__footer-version">
-                                                    <span className="user-consent-card__version-label">Version</span>
-                                                    {d?.github_link ? (
-                                                        <a
-                                                            className="link user-consent-card__version-link"
-                                                            href={d.github_link}
-                                                            target="_blank"
-                                                            rel="noopener noreferrer"
-                                                        >
-                                                            {d?.code_version ?? "—"}
-                                                        </a>
-                                                    ) : (
-                                                        <span>{d?.code_version ?? "—"}</span>
-                                                    )}
-                                                </span>
-                                            </footer>
-                                        </div>
-                                    );
-                                })
-                            }
-                        </div>
-                        {loadingMore ? (
-                            <div className="user-consents-load-more" role="status" aria-live="polite">
-                                <LoadingSpinner />
-                            </div>
-                        ) : null}
-                    </>}
+                    ) : null}
                 </div>
             </article>
+            <RecordDrawer row={selected} onClose={() => setSelected(null)} onShowHistory={(uid) => { setSelected(null); showVisitorHistory(uid); }} />
         </>
-    )
+    );
 }

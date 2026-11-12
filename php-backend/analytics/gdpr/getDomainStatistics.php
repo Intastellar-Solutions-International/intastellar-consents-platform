@@ -2,6 +2,9 @@
 /**
  * Paginated user consent rows for the dashboard “Consent decisions overview”.
  * Headers: Organisation, Domains, FromDate, ToDate, Offset, Limit, SortOrder (asc|desc, default desc).
+ * Audit log filters (all optional, see auditFilterSql()): Country, State, Method,
+ * Framework, Choice, Language, Version, Page, UIDSearch.
+ * IncludeTotal: 1 returns { rows, total, options } instead of the bare array.
  *
  * Deploy on server only. Prefer env vars for DB credentials (see below).
  */
@@ -71,6 +74,74 @@ if ($uid !== "" && strtolower($uid) !== "null") {
     $andClause .= " AND ucs.uid = '$uidEsc'";
 }
 
+/** Escaped LIKE pattern with % and _ taken literally. */
+function likeContains($value, callable $escape)
+{
+    return "'%" . $escape(addcslashes((string) $value, "%_\\")) . "%'";
+}
+
+/**
+ * Whether a consent row accepted ($accepted) or declined one category. The
+ * consent column is the banner's JSON array of { type, checked }; CASE keeps
+ * JSON_CONTAINS away from legacy rows that aren't valid JSON.
+ */
+function consentChoiceSql($type, $accepted)
+{
+    $has = function ($checked) use ($type) {
+        return "JSON_CONTAINS(ucs.consent, '" . json_encode(["type" => $type, "checked" => $checked]) . "')";
+    };
+    $yes = "(" . $has("checked") . " OR " . $has("1") . " OR " . $has(true) . ")";
+    $present = "JSON_CONTAINS(ucs.consent, '" . json_encode(["type" => $type]) . "')";
+    $test = $accepted ? $yes : "($present AND NOT $yes)";
+    return "(CASE WHEN JSON_VALID(ucs.consent) THEN $test ELSE 0 END)";
+}
+
+/**
+ * Audit log filters from request headers. Every value is checked against a
+ * fixed shape or escaped, so nothing raw reaches the SQL. Returns a string of
+ * " AND ..." conditions (empty when no filter applies).
+ */
+function auditFilterSql(array $f, callable $escape)
+{
+    $sql = "";
+    $country = strtoupper(trim((string) ($f["country"] ?? "")));
+    if (preg_match('/^[A-Z]{2}$/', $country)) $sql .= " AND ucs.country_code = '$country'";
+
+    $state = trim((string) ($f["state"] ?? ""));
+    if ($state !== "") $sql .= " AND ucs.region = '" . $escape(substr($state, 0, 64)) . "'";
+
+    $method = trim((string) ($f["method"] ?? ""));
+    if ($method === "none") $sql .= " AND (ucs.consent_method IS NULL OR ucs.consent_method = '')";
+    elseif (preg_match('/^[a-z_]{1,40}$/', $method)) $sql .= " AND ucs.consent_method = '$method'";
+
+    $framework = strtoupper(trim((string) ($f["framework"] ?? "")));
+    if ($framework === "NONE") {
+        $sql .= " AND (ucs.regulation_applied IS NULL OR ucs.regulation_applied = '')";
+    } elseif ($framework === "CPA") {
+        // CPA is also part of CCPA and UCPA.
+        $sql .= " AND ucs.regulation_applied LIKE '%CPA%' AND ucs.regulation_applied NOT LIKE '%CCPA%' AND ucs.regulation_applied NOT LIKE '%UCPA%'";
+    } elseif (preg_match('/^[A-Z0-9]{2,10}$/', $framework)) {
+        $sql .= " AND ucs.regulation_applied LIKE '%$framework%'";
+    }
+
+    if (preg_match('/^(functional|statics|marketing):(accepted|declined)$/', trim((string) ($f["choice"] ?? "")), $m)) {
+        $sql .= " AND " . consentChoiceSql($m[1], $m[2] === "accepted");
+    }
+
+    $language = trim((string) ($f["language"] ?? ""));
+    if (preg_match('/^[A-Za-z]{2,3}(-[A-Za-z]{2,4})?$/', $language)) $sql .= " AND ucs.language LIKE '$language%'";
+
+    $version = trim((string) ($f["version"] ?? ""));
+    if ($version !== "") $sql .= " AND bp.code_version = '" . $escape(substr($version, 0, 40)) . "'";
+
+    $page = trim((string) ($f["page"] ?? ""));
+    if ($page !== "") $sql .= " AND ucs.url LIKE " . likeContains(substr($page, 0, 200), $escape);
+
+    $uidSearch = trim((string) ($f["uidSearch"] ?? ""));
+    if ($uidSearch !== "") $sql .= " AND ucs.uid LIKE " . likeContains(substr($uidSearch, 0, 100), $escape);
+
+    return $sql;
+}
 
 /**
  * Whether the is_suspected_bot / bot_reason columns exist yet
@@ -96,6 +167,22 @@ function botColumnsReady($db)
 if (botColumnsReady($db)) {
     $andClause .= botFilterSql($_SERVER["HTTP_EXCLUDEBOTS"] ?? null, "ucs.is_suspected_bot");
 }
+
+$escape = function ($v) use ($db) { return mysqli_real_escape_string($db, $v); };
+// The dashboard URL-encodes filter values, since headers can't carry non-ASCII text.
+$header = function ($name) { return rawurldecode((string) ($_SERVER["HTTP_" . $name] ?? "")); };
+$filterClause = auditFilterSql([
+    "country" => $header("COUNTRY"),
+    "state" => $header("STATE"),
+    "method" => $header("METHOD"),
+    "framework" => $header("FRAMEWORK"),
+    "choice" => $header("CHOICE"),
+    "language" => $header("LANGUAGE"),
+    "version" => $header("VERSION"),
+    "page" => $header("PAGE"),
+    "uidSearch" => $header("UIDSEARCH"),
+], $escape);
+$includeTotal = trim((string) $header("INCLUDETOTAL")) === "1";
 
 $domainsEsc = mysqli_real_escape_string($db, $domains);
 
@@ -130,6 +217,8 @@ function push_consent_row(&$consent_url, $row)
         "transfer_destination" => $row["transfer_destination"],
         "transfer_data_importer" => $row["transfer_data_importer"],
         "transfer_instrument" => $row["transfer_instrument"],
+        "transfer_effective_from" => $row["transfer_effective_from"] ?? null,
+        "time_to_decision" => isset($row["time_to_decision"]) ? (int) $row["time_to_decision"] : null,
         "consent_method" => $row["consent_method"],
         "is_suspected_bot" => !empty($row["is_suspected_bot"]),
         "bot_reason" => $row["bot_reason"] ?? null,
@@ -158,30 +247,7 @@ function consentRowsOrderSql($sortOrder)
 $orderSql = consentRowsOrderSql($sortRaw);
 
 if ($domains != "combined view") {
-    $sql = "SELECT ucs.*, bp.`GitHub-link`, bp.code_version "
-        . "FROM user_consents_tracking ucs "
-        . "INNER JOIN banner_policies bp ON ucs.banner_policy_id = bp.policy_id "
-        . "WHERE ucs.domain = '$domainsEsc' "
-        . $andClause
-        . " $orderSql "
-        . "LIMIT $limit OFFSET $offset";
-
-    $query = mysqli_query($db, $sql);
-
-    if (!$query) {
-        echo json_encode(["error" => mysqli_error($db)]);
-        exit;
-    }
-
-    while ($row = mysqli_fetch_assoc($query)) {
-        push_consent_row($consent_url, $row);
-    }
-
-    if (count($consent_url) === 0) {
-        echo json_encode("Err_No_Data_Found");
-    } else {
-        echo json_encode($consent_url);
-    }
+    $domainWhere = "ucs.domain = '$domainsEsc'";
 } else {
     if ($organisation != 1) {
         $sql = "SELECT * FROM organisation_domains WHERE `org_id` = '" . mysqli_real_escape_string($db, $organisation) . "'";
@@ -202,33 +268,49 @@ if ($domains != "combined view") {
     }
 
     if (count($domainList) === 0) {
-        echo json_encode("Err_No_Data_Found");
+        echo json_encode($includeTotal ? ["rows" => [], "total" => 0, "options" => (object) []] : "Err_No_Data_Found");
         exit;
     }
 
-    $inList = implode(",", $domainList);
-
-    $sql = "SELECT ucs.*, bp.`GitHub-link`, bp.code_version FROM user_consents_tracking ucs "
-        . "INNER JOIN banner_policies bp ON ucs.banner_policy_id = bp.policy_id "
-        . "WHERE ucs.domain IN ($inList) "
-        . $andClause
-        . " $orderSql "
-        . "LIMIT $limit OFFSET $offset";
-
-    $totalSettingsQuery = mysqli_query($db, $sql);
-
-    if (!$totalSettingsQuery) {
-        echo json_encode(["error" => mysqli_error($db)]);
-        exit;
-    }
-
-    while ($row = mysqli_fetch_assoc($totalSettingsQuery)) {
-        push_consent_row($consent_url, $row);
-    }
-
-    if (count($consent_url) === 0) {
-        echo json_encode("Err_No_Data_Found");
-    } else {
-        echo json_encode($consent_url);
-    }
+    $domainWhere = "ucs.domain IN (" . implode(",", $domainList) . ")";
 }
+
+$from = "FROM user_consents_tracking ucs "
+    . "INNER JOIN banner_policies bp ON ucs.banner_policy_id = bp.policy_id "
+    . "WHERE $domainWhere ";
+
+$query = mysqli_query($db, "SELECT ucs.*, bp.`GitHub-link`, bp.code_version " . $from . $andClause . $filterClause . " $orderSql LIMIT $limit OFFSET $offset");
+
+if (!$query) {
+    echo json_encode(["error" => mysqli_error($db)]);
+    exit;
+}
+
+while ($row = mysqli_fetch_assoc($query)) {
+    push_consent_row($consent_url, $row);
+}
+
+if (!$includeTotal) {
+    echo json_encode(count($consent_url) === 0 ? "Err_No_Data_Found" : $consent_url);
+    exit;
+}
+
+// Same grouping as the rows, so the total counts decisions, not raw rows.
+$total = 0;
+$totalQuery = mysqli_query($db, "SELECT COUNT(*) AS n FROM (SELECT 1 " . $from . $andClause . $filterClause . " GROUP BY ucs.uid, ucs.consents_timestamp, ucs.consent) t");
+if ($totalQuery && ($row = mysqli_fetch_assoc($totalQuery))) $total = (int) $row["n"];
+
+/*
+ * Values seen in the selected period, for the filter menus. Scoped to domain,
+ * dates and the bot setting only, so choosing one filter doesn't empty the
+ * other menus.
+ */
+$options = [];
+$facets = ["country" => "ucs.country_code", "method" => "ucs.consent_method", "framework" => "ucs.regulation_applied", "language" => "ucs.language", "version" => "bp.code_version"];
+foreach ($facets as $key => $column) {
+    $options[$key] = [];
+    $facetQuery = mysqli_query($db, "SELECT DISTINCT $column AS v " . $from . $andClause . " AND $column IS NOT NULL AND $column <> '' ORDER BY v LIMIT 300");
+    while ($facetQuery && ($row = mysqli_fetch_assoc($facetQuery))) $options[$key][] = $row["v"];
+}
+
+echo json_encode(["rows" => $consent_url, "total" => $total, "options" => $options]);

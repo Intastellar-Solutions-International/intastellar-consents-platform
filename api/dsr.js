@@ -8,7 +8,7 @@ import {
 import { organisationHasPlan } from "./_stripe.js";
 import { fetchConsentRecord } from "./_dsr-consent.js";
 import { normalizeCustomDomain, customDomainsConfigured, attachDomain, detachDomain, domainState, CLEAR_CUSTOM_DOMAIN } from "./_dsr-domains.js";
-import { ADAPTERS, VENDOR_ADAPTER, deletionStatus, runDeletion, encryptCredentials, decryptCredentials } from "./_dsr-deletion.js";
+import { ADAPTERS, VENDOR_ADAPTER, deletionStatus, runDeletion, encryptCredentials, decryptCredentials, parseOtherEmails } from "./_dsr-deletion.js";
 
 /**
  * /api/dsr — the organisation's data subject requests.
@@ -71,12 +71,14 @@ async function detail(req, db, organisationId, id) {
     return { ...found, vendors, consent, notice_required: needsVendorNotice(found.request.type) };
 }
 
-async function vendorDelete(db, organisationId, email, request, vendor, identifier) {
+async function vendorDelete(db, organisationId, email, request, vendor, identifier, otherEmails) {
     const adapterId = VENDOR_ADAPTER[vendor];
     const context = await deletionContext(db, organisationId, request);
     const status = deletionStatus(vendor, request, context);
     if (!status?.ready) return { status: 400, error: status?.reason || "This vendor can't be deleted through an API." };
-    const run = { identifier, email: request.requester_email, request, actor: email };
+    const other = status.otherEmails ? parseOtherEmails(otherEmails, request.requester_email) : { emails: [] };
+    if (other.error) return { status: 400, error: other.error };
+    const run = { identifier, email: request.requester_email, otherEmails: other.emails, request, actor: email };
     if (ADAPTERS[adapterId].kind === "key") {
         if (!process.env.DSR_CREDENTIALS_KEY) return { status: 503, error: "Vendor connections aren't set up on the server yet." };
         run.credentials = decryptCredentials(context.credentials[adapterId].ciphertext, process.env.DSR_CREDENTIALS_KEY);
@@ -257,7 +259,7 @@ export default async function handler(req, res) {
         }
         if (body.action === "vendor_delete") {
             if (body.confirm !== true) return res.status(400).json({ error: "Confirm the deletion first" });
-            const result = await vendorDelete(db, organisationId, email, found.request, short(body.vendor), body.identifier);
+            const result = await vendorDelete(db, organisationId, email, found.request, short(body.vendor), body.identifier, body.other_emails);
             if (result.error) return res.status(result.status).json({ error: result.error });
             return res.json({ ...(await detail(req, db, organisationId, found.request.id)), deletion_message: result.message });
         }

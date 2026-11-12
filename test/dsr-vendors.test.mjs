@@ -2,7 +2,7 @@
 import assert from "node:assert/strict";
 import { test } from "./_harness.mjs";
 import { vendorsFromTransfers, needsVendorNotice, validateVendorUpdate, vendorMessage, validatePublicSubmission, seedVendorNotifications, validateLogo, validateGtmId, requestView, consentExclusion, canPauseClock, applyAction } from "../api/_dsr.js";
-import { hashEmail, encryptCredentials, decryptCredentials, deletionStatus, runDeletion } from "../api/_dsr-deletion.js";
+import { hashEmail, encryptCredentials, decryptCredentials, deletionStatus, runDeletion, parseOtherEmails } from "../api/_dsr-deletion.js";
 import { formPage, esc, confirmationEmail, newRequestEmail } from "../api/dsr-public.js";
 import fs from "node:fs";
 import { summarizeConsentRows, fetchConsentRecord } from "../api/_dsr-consent.js";
@@ -131,10 +131,11 @@ test("deletion: a partial failure is not reported as done", async () => {
 });
 
 test("deletion: HubSpot, Mixpanel, Amplitude and Segment send the documented requests", async () => {
-    const h = recorder();
+    const h = recorder([ok({ results: [{ id: "11" }] })]);
     await runDeletion("hubspot", { credentials: { token: "k" }, email: "p@x.dk", fetchImpl: h.fetchImpl });
-    assert.deepStrictEqual(h.calls[0].parsed, { objectId: "p@x.dk", idProperty: "email" });
-    const notFound = recorder([ok({}, 404)]);
+    assert.match(h.calls[0].url, /contacts\/search$/);
+    assert.deepStrictEqual(h.calls[1].parsed, { objectId: "11" });
+    const notFound = recorder([ok({ results: [] })]);
     assert.strictEqual((await runDeletion("hubspot", { credentials: { token: "k" }, email: "p@x.dk", fetchImpl: notFound.fetchImpl })).nothingFound, true);
     const m = recorder([ok({ results: { task_id: "T1" } })]);
     const mr = await runDeletion("mixpanel", { credentials: { oauth_token: "o", project_token: "p t" }, identifier: "d1", request: erasure, fetchImpl: m.fetchImpl });
@@ -148,6 +149,31 @@ test("deletion: HubSpot, Mixpanel, Amplitude and Segment send the documented req
     const s = recorder();
     await runDeletion("segment", { credentials: { token: "t" }, identifier: "u1", config: {}, fetchImpl: s.fetchImpl });
     assert.deepStrictEqual(s.calls[0].parsed, { regulationType: "SUPPRESS_WITH_DELETE", subjectType: "USER_ID", subjectIds: ["u1"] });
+});
+
+test("deletion: HubSpot matches main and secondary emails, and deletes each contact once", async () => {
+    const h = recorder([ok({ results: [{ id: "1" }, { id: "2" }] }), ok({ results: [{ id: "2" }] })]);
+    const r = await runDeletion("hubspot", { credentials: { token: "k" }, email: "P@x.dk", otherEmails: "old@x.dk\np@x.dk", fetchImpl: h.fetchImpl });
+    const searches = h.calls.filter((c) => c.url.endsWith("/search"));
+    assert.deepStrictEqual(searches.map((c) => c.parsed.filterGroups.map((g) => g.filters[0].propertyName)), [["email", "hs_additional_emails"], ["email", "hs_additional_emails"]]);
+    assert.deepStrictEqual(searches.map((c) => c.parsed.filterGroups[1].filters[0].value), ["p@x.dk", "old@x.dk"]);
+    assert.deepStrictEqual(h.calls.filter((c) => c.url.endsWith("/gdpr-delete")).map((c) => c.parsed.objectId), ["1", "2"]);
+    assert.strictEqual(r.ok, true);
+    assert.match(r.message, /2 contacts, matched on 2 emails/);
+});
+
+test("deletion: HubSpot says when the token can't search, and other emails are checked", async () => {
+    const refused = recorder([ok({}, 403)]);
+    const r = await runDeletion("hubspot", { credentials: { token: "k" }, email: "p@x.dk", fetchImpl: refused.fetchImpl });
+    assert.strictEqual(r.ok, false);
+    assert.match(r.message, /read access/);
+    const partial = recorder([ok({ results: [{ id: "1" }, { id: "2" }] }), ok(), ok({}, 500)]);
+    assert.match((await runDeletion("hubspot", { credentials: { token: "k" }, email: "p@x.dk", fetchImpl: partial.fetchImpl })).message, /1 of 2/);
+    assert.deepStrictEqual(parseOtherEmails("a@x.dk, B@x.dk\na@x.dk p@x.dk", "p@x.dk").emails, ["a@x.dk", "b@x.dk"]);
+    assert.match(parseOtherEmails("a@x.dk nope").error, /nope/);
+    assert.match(parseOtherEmails(Array.from({ length: 11 }, (_, i) => `u${i}@x.dk`)).error, /at most 10/);
+    assert.strictEqual(deletionStatus("HubSpot", erasure, { credentials: { hubspot: {} } }).otherEmails, true);
+    assert.strictEqual(deletionStatus("Google Ads", erasure).otherEmails, false);
 });
 
 test("public form: bots are discarded quietly, people get a clear error", () => {

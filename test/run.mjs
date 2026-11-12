@@ -4,6 +4,7 @@ import "./file-dropzone.test.mjs";
 import "./dsr-vendors.test.mjs";
 import "./dsr.test.mjs";
 import "./dsr-summary.test.mjs";
+import "./audit-log-format.test.mjs";
 import "./audit-rows.test.mjs";
 import "./compliance-status.test.mjs";
 import "./tracker-embedded.test.mjs";

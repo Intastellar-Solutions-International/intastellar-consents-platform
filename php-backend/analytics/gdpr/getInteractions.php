@@ -19,13 +19,17 @@ $toDate = $_SERVER["HTTP_TODATE"];
 $body = json_decode(file_get_contents('php://input'), true);
 $workspaceId = (int)($body['workspaceId'] ?? 0);
 
+// A workspace narrows the combined view to its own domains. A single selected
+// domain needs no workspace filter. The filter is applied once the WHERE
+// clause exists, below.
+$workspaceDomains = [];
 if ($workspaceId > 0 && $domains == "combined view") {
-    $sql = "SELECT * FROM workspace_domains WHERE workspace_id = $workspaceId";
-    $query = mysqli_query($db, $sql);
-    $row = $query->fetch_assoc();
-    $domains = $row['domain'];
-    $domainsArray = explode(',', $domains);
-    $domains = implode(',', $domainsArray);
+    $query = mysqli_query($db, "SELECT domain FROM workspace_domains WHERE workspace_id = $workspaceId");
+    $values = [];
+    while ($query && ($row = mysqli_fetch_assoc($query))) {
+        $values[] = $row['domain'];
+    }
+    $workspaceDomains = splitDomainList($values);
 }
 
 /**
@@ -180,6 +184,63 @@ function fetchCompareHourly($db, $sql) {
     return $out;
 }
 
+/**
+ * Category aggregates for the hourly Today buckets. Same rules as
+ * consentTotalsSql(): accept-all counts towards every category, so an hour's
+ * marketing share matches the headline Marketing KPI.
+ */
+function hourlyCategoryColumns()
+{
+    return "SUM(CASE WHEN `type` = 'all' AND `value` = '1' THEN 1 ELSE 0 END) AS accepted,
+        SUM(CASE WHEN `type` = 'all' AND `value` = 'declined' THEN 1 ELSE 0 END) AS declined,
+        SUM(CASE WHEN `type` IN ('marketing', 'all')  AND `value` = '1' THEN 1 ELSE 0 END) AS marketing,
+        SUM(CASE WHEN `type` IN ('functional', 'all') AND `value` = '1' THEN 1 ELSE 0 END) AS functional,
+        SUM(CASE WHEN `type` IN ('statics', 'all')    AND `value` = '1' THEN 1 ELSE 0 END) AS statics";
+}
+
+/**
+ * Domains of a workspace from its workspace_domains.domain values. One domain
+ * per row, but older rows hold a comma-separated list, so both are split.
+ */
+function splitDomainList(array $values)
+{
+    $domains = [];
+    foreach ($values as $value) {
+        foreach (explode(',', (string) $value) as $domain) {
+            $domain = trim($domain);
+            if ($domain !== '' && !in_array($domain, $domains, true)) $domains[] = $domain;
+        }
+    }
+    return $domains;
+}
+
+/** Quoted list for a SQL IN (...), or null when there is nothing to list. */
+function sqlInList(array $values, callable $escape)
+{
+    if (count($values) === 0) return null;
+    return implode(",", array_map(function ($v) use ($escape) { return "'" . $escape($v) . "'"; }, $values));
+}
+
+/** Records per type and value over the same rows as "Total". $condition starts with WHERE. */
+function typeCountsSql($condition)
+{
+    return "SELECT `type`, `value`, COUNT(*) AS num
+    FROM cookiebanner_tracking_settings " . $condition . "
+    GROUP BY `type`, `value`
+    ORDER BY num DESC, `type`, `value`";
+}
+
+function fetchTypeCounts($db, $sql)
+{
+    $res = mysqli_query($db, $sql);
+    if (!$res) return null;
+    $rows = [];
+    while ($row = mysqli_fetch_assoc($res)) {
+        $rows[] = ["type" => $row["type"], "value" => $row["value"], "num" => (int) $row["num"]];
+    }
+    return $rows;
+}
+
 if ($domains != "combined view") {
 
     $sql = "SELECT installtime FROM cookiebanner_tracking WHERE domain = '" . $domains . "'";
@@ -215,36 +276,20 @@ if (isset($_SERVER["HTTP_FROMDATE"]) && isset($_SERVER["HTTP_TODATE"])) {
     }
 }
 
-if($workspaceId > 0){
-    $sql = "SELECT * FROM workspace_domains WHERE workspace_id = $workspaceId";
-    $query = mysqli_query($db, $sql);
-    $row = $query->fetch_assoc();
-    $domains = $row['domain'];
-    $domainsArray = explode(',', $domains);
-    $domains = implode(',', $domainsArray);
-    $andClause = " AND domain IN ($domains)" . $botFilter;
-    $whereClause = " AND cookiebanner_tracking_settings.domain IN ($domains)" . $botFilter;
-    
-    $hourlyTodaySql = "SELECT
-        HOUR(cookiebanner_tracking_settings.consentsGiving) AS h,
-        COUNT(*) AS num_per_day,
-        SUM(CASE WHEN `type` = 'all'        AND `value` = '1'        THEN 1 ELSE 0 END) AS accepted,
-        SUM(CASE WHEN `type` = 'all'        AND `value` = 'declined' THEN 1 ELSE 0 END) AS declined,
-        SUM(CASE WHEN `type` = 'marketing'  AND `value` = '1'        THEN 1 ELSE 0 END) AS marketing,
-        SUM(CASE WHEN `type` = 'functional' AND `value` = '1'        THEN 1 ELSE 0 END) AS functional,
-        SUM(CASE WHEN `type` = 'statics'    AND `value` = '1'        THEN 1 ELSE 0 END) AS statics
-    FROM cookiebanner_tracking_settings
-    INNER JOIN organisation_domains ON cookiebanner_tracking_settings.domain = organisation_domains.domain
-    " . $whereClause . " AND organisation_domains.org_id = '$organisation' " . $andClause . "
-    GROUP BY HOUR(cookiebanner_tracking_settings.consentsGiving)
-    ORDER BY HOUR(cookiebanner_tracking_settings.consentsGiving) ASC";
-    $totalSettingsQuery = mysqli_query($db, $hourlyTodaySql);
-    $num = mysqli_num_rows($totalSettingsQuery);
-    while ($row = mysqli_fetch_assoc($totalSettingsQuery)) {
-        $total += $row["num_per_day"];
-        if (!in_array($row["domain"], $domainsArray)) {
-            array_push($domainsArray, $row["domain"]);
-        }
+// Workspace combined view (handled by the last branch below). The domain
+// filter goes on $whereClause, qualified, because some queries join
+// organisation_domains; $domainsArray then limits the totals further down.
+// $andClause keeps its date range: it must only be added to, never replaced.
+$isWorkspaceView = $workspaceId > 0 && $domains == "combined view";
+if ($isWorkspaceView) {
+    $workspaceInList = sqlInList($workspaceDomains, function ($d) use ($db) { return mysqli_real_escape_string($db, $d); });
+    if ($workspaceInList !== null) {
+        $whereClause .= " AND cookiebanner_tracking_settings.domain IN ($workspaceInList)";
+        $domainsArray = $workspaceDomains;
+    } else {
+        // No domains yet: show nothing rather than every domain
+        $whereClause .= " AND 1=0";
+        $andClause .= " AND 1=0";
     }
 }
 
@@ -260,11 +305,7 @@ if ($organisation != 1 && $workspaceId == 0 && $domains == "combined view") {
         $hourlyTodaySql = "SELECT
                 HOUR(cookiebanner_tracking_settings.consentsGiving) AS h,
                 COUNT(*) AS num_per_day,
-                SUM(CASE WHEN `type` = 'all'        AND `value` = '1'        THEN 1 ELSE 0 END) AS accepted,
-                SUM(CASE WHEN `type` = 'all'        AND `value` = 'declined' THEN 1 ELSE 0 END) AS declined,
-                SUM(CASE WHEN `type` = 'marketing'  AND `value` = '1'        THEN 1 ELSE 0 END) AS marketing,
-                SUM(CASE WHEN `type` = 'functional' AND `value` = '1'        THEN 1 ELSE 0 END) AS functional,
-                SUM(CASE WHEN `type` = 'statics'    AND `value` = '1'        THEN 1 ELSE 0 END) AS statics
+                " . hourlyCategoryColumns() . "
             FROM cookiebanner_tracking_settings
             INNER JOIN organisation_domains ON cookiebanner_tracking_settings.domain = organisation_domains.domain
             " . $whereClause . " AND organisation_domains.org_id = '$organisation' " . $andClause . "
@@ -417,11 +458,7 @@ if ($organisation != 1 && $workspaceId == 0 && $domains == "combined view") {
         $hourlyTodaySql = "SELECT
                 HOUR(consentsGiving) AS h,
                 COUNT(*) AS num_per_day,
-                SUM(CASE WHEN `type` = 'all'        AND `value` = '1'        THEN 1 ELSE 0 END) AS accepted,
-                SUM(CASE WHEN `type` = 'all'        AND `value` = 'declined' THEN 1 ELSE 0 END) AS declined,
-                SUM(CASE WHEN `type` = 'marketing'  AND `value` = '1'        THEN 1 ELSE 0 END) AS marketing,
-                SUM(CASE WHEN `type` = 'functional' AND `value` = '1'        THEN 1 ELSE 0 END) AS functional,
-                SUM(CASE WHEN `type` = 'statics'    AND `value` = '1'        THEN 1 ELSE 0 END) AS statics
+                " . hourlyCategoryColumns() . "
             FROM cookiebanner_tracking_settings
             " . $whereClause . " " . $andClause . "
             GROUP BY HOUR(consentsGiving)
@@ -554,17 +591,21 @@ if ($organisation != 1 && $workspaceId == 0 && $domains == "combined view") {
     }
     $totalSettingsQuery = mysqli_query($db, $totalQuery);
 
-    if ($domains != "combined view") {
-        $sql = "SELECT * FROM cookiebanner_tracking WHERE domain != '' AND domain  NOT LIKE '%localhost%' AND domain = '" . $domains . "' ORDER BY id DESC";
-    } else {
-        $sql = "SELECT * FROM cookiebanner_tracking WHERE domain != '' AND domain  NOT LIKE '%localhost%' ORDER BY id DESC";
-    }
-    $totalDomains = mysqli_query($db, $sql);
-    $numRows = mysqli_num_rows($totalDomains);
+    // A workspace's domains are already in $domainsArray. Adding every banner
+    // domain here would widen the totals below to other organisations.
+    if (!$isWorkspaceView) {
+        if ($domains != "combined view") {
+            $sql = "SELECT * FROM cookiebanner_tracking WHERE domain != '' AND domain  NOT LIKE '%localhost%' AND domain = '" . $domains . "' ORDER BY id DESC";
+        } else {
+            $sql = "SELECT * FROM cookiebanner_tracking WHERE domain != '' AND domain  NOT LIKE '%localhost%' ORDER BY id DESC";
+        }
+        $totalDomains = mysqli_query($db, $sql);
+        $numRows = mysqli_num_rows($totalDomains);
 
-    while ($row = mysqli_fetch_assoc($totalDomains)) {
-        if (!in_array($row["domain"], $domainsArray)) {
-            array_push($domainsArray, $row["domain"]);
+        while ($row = mysqli_fetch_assoc($totalDomains)) {
+            if (!in_array($row["domain"], $domainsArray)) {
+                array_push($domainsArray, $row["domain"]);
+            }
         }
     }
     $screenSize = [];
@@ -598,11 +639,7 @@ if ($organisation != 1 && $workspaceId == 0 && $domains == "combined view") {
         $hourlyTodaySql = "SELECT
                 HOUR(cookiebanner_tracking_settings.consentsGiving) AS h,
                 COUNT(*) AS num_per_day,
-                SUM(CASE WHEN `type` = 'all'        AND `value` = '1'        THEN 1 ELSE 0 END) AS accepted,
-                SUM(CASE WHEN `type` = 'all'        AND `value` = 'declined' THEN 1 ELSE 0 END) AS declined,
-                SUM(CASE WHEN `type` = 'marketing'  AND `value` = '1'        THEN 1 ELSE 0 END) AS marketing,
-                SUM(CASE WHEN `type` = 'functional' AND `value` = '1'        THEN 1 ELSE 0 END) AS functional,
-                SUM(CASE WHEN `type` = 'statics'    AND `value` = '1'        THEN 1 ELSE 0 END) AS statics
+                " . hourlyCategoryColumns() . "
             " . $hourlyFromJoin . "
             " . $whereClause . $hourlyOrgFilter . " " . $andClause . "
             GROUP BY HOUR(cookiebanner_tracking_settings.consentsGiving)
@@ -1372,6 +1409,8 @@ if ($currentTotals !== null) {
                 "statics" => (float) $staticsRelativeDrop,
             ],
             "countryBreakdown" => fetchCountryTotals($db, countryTotalsSql($whereClause . " " . $andClause)),
+            // Raw records per type/value; adds up to "Total"
+            "typeCounts" => fetchTypeCounts($db, typeCountsSql($whereClause . " " . $andClause)),
             "euUsers" => $euNoneEUNum,
             "noneEUUsers" => $noneEUNum,
             "euAcceptedRate" => ($euNoneEUNum > 0) ? (((float) $euAcceptedNum / (float) $euNoneEUNum * 100 < 0.1) ? round((float) $euAcceptedNum / (float) $euNoneEUNum * 100, 2) : round((float) $euAcceptedNum / (float) $euNoneEUNum * 100, 1)) : null,
@@ -1545,6 +1584,7 @@ if ($currentTotals !== null) {
             "Marketing" => 0,
             "Functional" => 0,
             "Statics" => 0,
+            "typeCounts" => [],
             "Countries" => [],
             "device_type" => [
                 "mobile" => 0,

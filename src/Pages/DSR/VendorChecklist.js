@@ -61,6 +61,7 @@ function DetailsPanel({ vendor, system, onSave, saving }) {
 
 function DeletePanel({ request, vendor, onRun, saving }) {
     const [identifier, setIdentifier] = useState("");
+    const [otherEmails, setOtherEmails] = useState("");
     const { deletion } = vendor;
     const [error, setError] = useState(null);
     if (!deletion.ready) {
@@ -77,11 +78,18 @@ function DeletePanel({ request, vendor, onRun, saving }) {
         );
     }
     return (
-        <form className="tw-flex tw-flex-col tw-gap-2" onSubmit={(e) => { e.preventDefault(); onRun(identifier); }}>
+        <form className="tw-flex tw-flex-col tw-gap-2" onSubmit={(e) => { e.preventDefault(); onRun(identifier, otherEmails); }}>
             <p className="tw-m-0 tw-text-sm tw-text-text-secondary">
-                {deletion.usesEmail ? `This sends ${request.requester_email} to ${deletion.label} to remove it.` : `This asks ${deletion.label} to delete this person.`} It can't be undone.
+                {deletion.usesEmail ? `This sends ${request.requester_email}${deletion.otherEmails ? " and any other emails below" : ""} to ${deletion.label} to remove it.` : `This asks ${deletion.label} to delete this person.`} It can't be undone.
             </p>
             {deletion.identifier && <label className={LABEL}>{deletion.identifier}<input className={FIELD} required maxLength={255} value={identifier} onChange={(e) => setIdentifier(e.target.value)} /></label>}
+            {deletion.otherEmails && (
+                <label className={LABEL}>
+                    Other emails they use (optional)
+                    <textarea className={AREA} rows={2} maxLength={2000} placeholder="One per line" value={otherEmails} onChange={(e) => setOtherEmails(e.target.value)} style={{ resize: "vertical" }} />
+                    <span className="tw-text-xs tw-text-text-muted">Contacts are matched on their main and secondary emails in {deletion.label}. These addresses aren't saved.</span>
+                </label>
+            )}
             <div><Button type="submit" size="sm" variant="primary" loading={saving}>Delete from {deletion.label}</Button></div>
         </form>
     );
@@ -133,7 +141,7 @@ function VendorRow({ request, vendor, kind, onData, onResult }) {
                 <div className="tw-p-3 tw-bg-bg-sunken tw-rounded-lg">
                     {panel === "message" && <MessagePanel request={request} vendor={vendor} />}
                     {panel === "details" && <DetailsPanel vendor={vendor} system={system} saving={saving} onSave={update} />}
-                    {panel === "delete" && <DeletePanel request={request} vendor={vendor} saving={saving} onRun={(identifier) => send({ action: "vendor_delete", confirm: true, identifier }, () => setPanel(null))} />}
+                    {panel === "delete" && <DeletePanel request={request} vendor={vendor} saving={saving} onRun={(identifier, other_emails) => send({ action: "vendor_delete", confirm: true, identifier, other_emails }, () => setPanel(null))} />}
                 </div>
             )}
             {error && <p role="alert" className="tw-m-0 tw-text-sm tw-text-danger-text">{error}</p>}

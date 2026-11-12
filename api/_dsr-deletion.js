@@ -22,7 +22,7 @@ export const ADAPTERS = {
     google_analytics: { label: "Google Analytics", kind: "oauth", needsScope: "analytics.user.deletion", identifier: "Google Analytics client ID (from the person's _ga cookie)" },
     google_ads: { label: "Google Ads customer lists", kind: "oauth", needsScope: "datamanager", usesEmail: true },
     meta_ads: { label: "Meta customer audiences", kind: "oauth", usesEmail: true },
-    hubspot: { label: "HubSpot", kind: "key", usesEmail: true, fields: [{ id: "token", label: "Private app token" }] },
+    hubspot: { label: "HubSpot", kind: "key", usesEmail: true, otherEmails: true, fields: [{ id: "token", label: "Private app token" }] },
     mixpanel: { label: "Mixpanel", kind: "key", identifier: "Mixpanel distinct ID", fields: [{ id: "oauth_token", label: "GDPR API token" }, { id: "project_token", label: "Project token" }] },
     amplitude: { label: "Amplitude", kind: "key", identifier: "Amplitude user ID", fields: [{ id: "api_key", label: "API key" }, { id: "secret_key", label: "Secret key" }], regions: true },
     segment: { label: "Segment", kind: "key", identifier: "Segment user ID", fields: [{ id: "token", label: "Public API token" }], regions: true },
@@ -37,6 +37,18 @@ export function hashEmail(email, { google = false } = {}) {
         if (host === "gmail.com" || host === "googlemail.com") value = `${local.replace(/\./g, "")}@${host}`;
     }
     return sha256(value);
+}
+
+const MAX_OTHER_EMAILS = 10;
+
+/** Extra addresses typed for one deletion: comma or line separated, deduped, without the requester's own. */
+export function parseOtherEmails(input, primary = "") {
+    const list = (Array.isArray(input) ? input : String(input ?? "").split(/[\s,;]+/)).map((e) => String(e).trim().toLowerCase()).filter(Boolean);
+    const bad = list.find((e) => !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e));
+    if (bad) return { error: `${bad.slice(0, 80)} doesn't look like an email.` };
+    const emails = [...new Set(list)].filter((e) => e !== String(primary).trim().toLowerCase());
+    if (emails.length > MAX_OTHER_EMAILS) return { error: `Add at most ${MAX_OTHER_EMAILS} other emails.` };
+    return { emails };
 }
 
 const encryptionKey = (secret) => createHash("sha256").update(secret).digest();
@@ -121,15 +133,43 @@ const RUNNERS = {
         return { ok: true, message: `Removal requested from ${audiences.length} Meta audience${audiences.length === 1 ? "" : "s"}. Other data Meta holds isn't affected.` };
     },
 
-    async hubspot({ credentials, email, fetchImpl }) {
-        const response = await fetchImpl("https://api.hubapi.com/crm/v3/objects/contacts/gdpr-delete", {
-            method: "POST",
-            headers: json(credentials.token),
-            body: JSON.stringify({ objectId: email, idProperty: "email" }),
-        });
-        if (response.status === 404) return { ok: true, nothingFound: true, message: "HubSpot has no contact with this email." };
-        if (!response.ok) return failure(response, "HubSpot didn't accept the deletion.");
-        return { ok: true, message: "HubSpot permanently deleted the contact." };
+    async hubspot({ credentials, email, otherEmails = [], fetchImpl }) {
+        const emails = [String(email).trim().toLowerCase(), ...otherEmails];
+        const plural = (n, word) => `${n} ${word}${n === 1 ? "" : "s"}`;
+        // Search finds contacts whose primary or secondary email matches; deleting by ID then covers both.
+        const ids = new Set();
+        for (const value of emails) {
+            const search = await fetchImpl("https://api.hubapi.com/crm/v3/objects/contacts/search", {
+                method: "POST",
+                headers: json(credentials.token),
+                body: JSON.stringify({
+                    filterGroups: [
+                        { filters: [{ propertyName: "email", operator: "EQ", value }] },
+                        { filters: [{ propertyName: "hs_additional_emails", operator: "CONTAINS_TOKEN", value }] },
+                    ],
+                    properties: ["email"],
+                    limit: 100,
+                }),
+            });
+            if (!search.ok) {
+                const refused = await failure(search, "HubSpot contacts couldn't be searched.");
+                if (search.status === 401 || search.status === 403) refused.message = "HubSpot refused the contact search. Give the private app read access to contacts as well as delete.";
+                return refused;
+            }
+            for (const contact of (await search.json()).results || []) ids.add(String(contact.id));
+        }
+        if (!ids.size) return { ok: true, nothingFound: true, message: `HubSpot has no contact with ${emails.length === 1 ? "this email" : "these emails"}.` };
+        let failed = 0;
+        for (const objectId of ids) {
+            const response = await fetchImpl("https://api.hubapi.com/crm/v3/objects/contacts/gdpr-delete", {
+                method: "POST",
+                headers: json(credentials.token),
+                body: JSON.stringify({ objectId }),
+            });
+            if (!response.ok && response.status !== 404) { failed += 1; await failure(response, ""); }
+        }
+        if (failed) return { ok: false, message: `${failed} of ${plural(ids.size, "HubSpot contact")} couldn't be deleted.` };
+        return { ok: true, message: `HubSpot permanently deleted ${plural(ids.size, "contact")}, matched on ${plural(emails.length, "email")}.` };
     },
 
     async mixpanel({ credentials, identifier, request, fetchImpl }) {
@@ -172,7 +212,7 @@ export function deletionStatus(vendor, request, { connections = {}, credentials 
     const id = VENDOR_ADAPTER[vendor];
     if (!id || request.type !== "erasure") return null;
     const adapter = ADAPTERS[id];
-    const base = { adapter: id, label: adapter.label, identifier: adapter.identifier || null, usesEmail: Boolean(adapter.usesEmail) };
+    const base = { adapter: id, label: adapter.label, identifier: adapter.identifier || null, usesEmail: Boolean(adapter.usesEmail), otherEmails: Boolean(adapter.otherEmails) };
     if (adapter.usesEmail && !request.requester_email) return { ...base, ready: false, reason: "Add the requester's email first." };
     if (adapter.kind === "key") return credentials[id] ? { ...base, ready: true } : { ...base, ready: false, reason: "Connect this vendor under Vendor connections." };
     if (!request.domain) return { ...base, ready: false, reason: "Set the request's domain to use this connection." };
@@ -186,5 +226,7 @@ export async function runDeletion(id, context) {
     const adapter = ADAPTERS[id];
     if (!adapter) return { ok: false, message: "Unknown connector" };
     if (!adapter.usesEmail && !String(context.identifier || "").trim()) return { ok: false, message: `Enter the ${adapter.identifier}.` };
-    return RUNNERS[id]({ fetchImpl: globalThis.fetch, ...context, identifier: String(context.identifier || "").trim() });
+    const other = adapter.otherEmails ? parseOtherEmails(context.otherEmails, context.email) : { emails: [] };
+    if (other.error) return { ok: false, message: other.error };
+    return RUNNERS[id]({ fetchImpl: globalThis.fetch, ...context, otherEmails: other.emails, identifier: String(context.identifier || "").trim() });
 }
