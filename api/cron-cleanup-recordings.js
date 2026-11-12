@@ -8,8 +8,8 @@
  * 3. Hard-deletes click rows past each site's `heatmap_retention_days`.
  */
 
-import { del } from "@vercel/blob";
 import { getPool } from "./_db.js";
+import { delPrivate } from "./_blob-stores.js";
 export default async function handler(req, res) {
     const db = getPool();
 
@@ -31,7 +31,9 @@ export default async function handler(req, res) {
     let deletedRecordings = 0;
     for (const rec of expiredRecordings) {
         if (Array.isArray(rec.chunk_urls) && rec.chunk_urls.length) {
-            await del(rec.chunk_urls).catch(() => {});
+            // A recording's chunks can span both stores mid-migration (see
+            // api/_blob-stores.js), and each store needs its own token.
+            for (const url of rec.chunk_urls) await delPrivate(url).catch(() => {});
         }
         await db.query(`DELETE FROM analytics_recordings WHERE id = $1`, [rec.id]).catch(() => {});
         deletedRecordings++;

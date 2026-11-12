@@ -156,8 +156,8 @@ export default async function handler(req, res) {
             }
             const download = req.query.download === "1";
             if (download) await logAccess(db, invite, "download", doc.id);
-            const { get } = await import("@vercel/blob");
-            const result = await get(doc.blob_path, { access: "private" });
+            const { getPrivate } = await import("./_blob-stores.js");
+            const result = await getPrivate(doc.blob_path);
             if (!result?.stream) return notFound(res);
             for (const [name, value] of Object.entries(fileHeaders(doc, download))) res.setHeader(name, value);
             res.setHeader("Content-Security-Policy", "frame-ancestors 'self'");

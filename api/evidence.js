@@ -31,8 +31,8 @@ const ALLOWED_ORIGINS = [
 async function sendFile(res, db, organisationId, id, download) {
     const doc = await getDocument(db, organisationId, id);
     if (!doc) return res.status(404).json({ error: "Document not found" });
-    const { get } = await import("@vercel/blob");
-    const result = await get(doc.blob_path, { access: "private" });
+    const { getPrivate } = await import("./_blob-stores.js");
+    const result = await getPrivate(doc.blob_path);
     if (!result?.stream) return res.status(404).json({ error: "Document not found" });
     for (const [name, value] of Object.entries(fileHeaders(doc, download))) res.setHeader(name, value);
     return Readable.fromWeb(result.stream).pipe(res);
@@ -73,8 +73,8 @@ export default async function handler(req, res) {
             return res.json({ document, ...(await catalog(db, organisationId)) });
         }
         if (body.action === "delete") {
-            const { del } = await import("@vercel/blob");
-            if (!await deleteDocument(db, organisationId, String(body.id ?? ""), del)) return res.status(404).json({ error: "Document not found" });
+            const { delPrivate } = await import("./_blob-stores.js");
+            if (!await deleteDocument(db, organisationId, String(body.id ?? ""), delPrivate)) return res.status(404).json({ error: "Document not found" });
             return res.json(await catalog(db, organisationId));
         }
         if (body.action === "invite") {

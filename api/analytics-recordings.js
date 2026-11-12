@@ -10,7 +10,7 @@
  * Requires: Authorization: Bearer <token>   Organisation: <org_id>
  */
 
-import { get } from "@vercel/blob";
+import { getPrivate } from "./_blob-stores.js";
 import { getPool } from "./_db.js";
 const ALLOWED_ORIGINS = [
     "https://www.intastellarconsents.com",
@@ -115,7 +115,7 @@ export default async function handler(req, res) {
         const events = [];
         for (const url of orderedChunkUrls) {
             try {
-                const { stream } = await get(url, { access: "private" });
+                const { stream } = await getPrivate(url);
                 const text = await new Response(stream).text();
                 const parsed = JSON.parse(text);
                 if (Array.isArray(parsed)) events.push(...parsed);

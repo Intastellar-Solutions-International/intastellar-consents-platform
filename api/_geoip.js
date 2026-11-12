@@ -1,4 +1,4 @@
-import { get } from "@vercel/blob";
+import { getPrivate } from "./_blob-stores.js";
 import { Reader } from "maxmind";
 
 // ASN / hosting-provider lookup for a request's IP, used to help classify
@@ -25,7 +25,7 @@ function loadReader() {
     if (!readerPromise) {
         readerPromise = (async () => {
             try {
-                const { stream } = await get(BLOB_PATHNAME, { access: "private" });
+                const { stream } = await getPrivate(BLOB_PATHNAME);
                 const buf = Buffer.from(await new Response(stream).arrayBuffer());
                 return new Reader(buf);
             } catch (err) {

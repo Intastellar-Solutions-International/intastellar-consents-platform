@@ -9,9 +9,9 @@
  * the hot pageview ingest path.
  *
  * Body: { s: siteId, sid, recId, seq, final, pathname, pathnames, events }
- * Blob objects are stored with access:'private' — reading them back requires
- * the BLOB_READ_WRITE_TOKEN (see api/analytics-recordings.js's proxy), not
- * just knowledge of the URL.
+ * Blob objects are stored with access:'private' on the EU store (see
+ * api/_blob-stores.js) — reading them back requires the store's token (see
+ * api/analytics-recordings.js's proxy), not just knowledge of the URL.
  */
 
 import { put } from "@vercel/blob";
