@@ -5,6 +5,8 @@
  * Audit log filters (all optional, see auditFilterSql()): Country, State, Method,
  * Framework, Choice, Language, Version, Page, UIDSearch.
  * IncludeTotal: 1 returns { rows, total, options, summary } instead of the bare array.
+ * Export: 1 (with IncludeTotal) leaves out total, options and summary, for
+ * paging through every record without recounting them on each page.
  *
  * Deploy on server only. Prefer env vars for DB credentials (see below).
  */
@@ -143,6 +145,37 @@ function auditFilterSql(array $f, callable $escape)
 }
 
 /**
+ * The visitor's TCF record that was current when a consent was stored: the
+ * latest one updated no more than 5 seconds after it (the banner sends both
+ * from the same click). $records are tcf_data_tracking rows for that visitor
+ * and domain; tc_last_updated is epoch ms, consents_timestamp UTC.
+ */
+function matchTcfRecord(array $records, $consentTimestamp)
+{
+    try {
+        $consentMs = (new DateTime((string) $consentTimestamp, new DateTimeZone("UTC")))->getTimestamp() * 1000;
+    } catch (Throwable $e) {
+        return null;
+    }
+    $best = null;
+    foreach ($records as $r) {
+        $updated = (int) ($r["tc_last_updated"] ?? 0);
+        if ($updated <= 0 || $updated > $consentMs + 5000) continue;
+        if ($best === null || $updated > (int) $best["tc_last_updated"]) $best = $r;
+    }
+    if ($best === null) return null;
+    return [
+        "cmp_id" => (int) $best["cmp_id"],
+        "cmp_version" => (int) $best["cmp_version"],
+        "tcf_policy_version" => (int) $best["tcf_policy_version"],
+        "vendor_list_version" => (int) $best["vendor_list_version"],
+        "consent_language" => $best["consent_language"],
+        "last_updated" => gmdate("Y-m-d\\TH:i:s\\Z", intdiv((int) $best["tc_last_updated"], 1000)),
+        "tc_data" => json_decode((string) ($best["tc_string"] ?? ""), true),
+    ];
+}
+
+/**
  * Summary strip from decision counts grouped by method (m), country (c) and
  * UTC day (d): total, count per method, top five countries and count per day.
  */
@@ -209,6 +242,7 @@ $filterClause = auditFilterSql([
     "uidSearch" => $header("UIDSEARCH"),
 ], $escape);
 $includeTotal = trim((string) $header("INCLUDETOTAL")) === "1";
+$exportMode = $includeTotal && trim((string) $header("EXPORT")) === "1";
 
 $domainsEsc = mysqli_real_escape_string($db, $domains);
 
@@ -247,7 +281,9 @@ function push_consent_row(&$consent_url, $row)
         "time_to_decision" => isset($row["time_to_decision"]) ? (int) $row["time_to_decision"] : null,
         "consent_method" => $row["consent_method"],
         "is_suspected_bot" => !empty($row["is_suspected_bot"]),
+        // "" = checked and clean, null = recorded before the bot checks existed.
         "bot_reason" => $row["bot_reason"] ?? null,
+        "banner_config_version" => $row["banner_config_version"] ?? null,
     ]);
 }
 
@@ -316,8 +352,36 @@ while ($row = mysqli_fetch_assoc($query)) {
     push_consent_row($consent_url, $row);
 }
 
+/*
+ * TCF details for the loaded records (TCF domains only). tcf_data_tracking
+ * holds one row per TCF update, keyed by visitor and domain; each consent gets
+ * the row that was current at the time. Skipped quietly if the table is missing.
+ */
+if ($includeTotal && count($consent_url) > 0) {
+    $pairs = [];
+    foreach ($consent_url as $r) {
+        if ((string) $r["uid"] === "") continue;
+        $pairs[] = "('" . mysqli_real_escape_string($db, $r["uid"]) . "','" . mysqli_real_escape_string($db, $r["domain"]) . "')";
+    }
+    $tcfByVisitor = [];
+    if ($pairs) {
+        $tcfQuery = @mysqli_query($db, "SELECT uid, domain, cmp_id, cmp_version, tcf_policy_version, vendor_list_version, consent_language, tc_last_updated, tc_string
+            FROM tcf_data_tracking WHERE (uid, domain) IN (" . implode(",", array_unique($pairs)) . ") ORDER BY id DESC LIMIT 2000");
+        while ($tcfQuery && ($row = mysqli_fetch_assoc($tcfQuery))) $tcfByVisitor[$row["uid"] . "|" . $row["domain"]][] = $row;
+    }
+    foreach ($consent_url as $i => $r) {
+        $records = $tcfByVisitor[$r["uid"] . "|" . $r["domain"]] ?? [];
+        $consent_url[$i]["tcf"] = $records ? matchTcfRecord($records, $r["consents_timestamp"]) : null;
+    }
+}
+
 if (!$includeTotal) {
     echo json_encode(count($consent_url) === 0 ? "Err_No_Data_Found" : $consent_url);
+    exit;
+}
+
+if ($exportMode) {
+    echo json_encode(["rows" => $consent_url, "total" => null, "options" => null, "summary" => null]);
     exit;
 }
 

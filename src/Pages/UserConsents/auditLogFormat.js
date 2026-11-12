@@ -197,3 +197,141 @@ export function summarizeRows(rows) {
     const total = (rows || []).length;
     return { total, methods, countries: top, otherCountries: total - top.reduce((s, c) => s + c.n, 0), daily };
 }
+
+/** Milliseconds since epoch for a zone-less UTC "YYYY-MM-DD HH:MM:SS" (or any Date-parsable) timestamp. */
+function timestampMs(ts) {
+    if (ts == null || ts === "") return NaN;
+    const s = String(ts).trim();
+    return /^\d{4}-\d{2}-\d{2}[ T]\d{2}:\d{2}(:\d{2}(\.\d+)?)?$/.test(s) ? Date.parse(`${s.replace(" ", "T")}Z`) : Date.parse(s);
+}
+
+/**
+ * Rapid repeats by one visitor collapse into one entry: records with the same
+ * UID within `windowMs` of the previous one in the group. The entry sits where
+ * its first record was; `items` keeps every record in list order.
+ */
+export function groupRepeats(rows, windowMs = 60000) {
+    const groups = [];
+    const open = new Map();
+    for (const row of rows || []) {
+        const uid = String(row?.uid ?? "");
+        const at = timestampMs(row?.consents_timestamp);
+        const current = uid ? open.get(uid) : null;
+        if (current && Number.isFinite(at) && Math.abs(at - current.lastAt) <= windowMs) {
+            current.group.items.push(row);
+            current.lastAt = at;
+            continue;
+        }
+        const group = { row, items: [row] };
+        groups.push(group);
+        if (uid && Number.isFinite(at)) open.set(uid, { group, lastAt: at });
+    }
+    for (const g of groups) {
+        const times = g.items.map((r) => timestampMs(r?.consents_timestamp)).filter(Number.isFinite);
+        g.spanSeconds = times.length > 1 ? Math.round((Math.max(...times) - Math.min(...times)) / 1000) : 0;
+    }
+    return groups;
+}
+
+/**
+ * Bursts that look automated without tripping the per-visitor checks: at least
+ * `min` different visitors from the same country and state making the same
+ * choice on the same page within `windowMs`. Returns Map(row → { count, seconds, where }).
+ * A hint for the reader only; nothing is excluded because of it.
+ */
+export function findBursts(rows, { windowMs = 60000, min = 4 } = {}) {
+    const byKey = new Map();
+    for (const row of rows || []) {
+        const at = timestampMs(row?.consents_timestamp);
+        if (!Number.isFinite(at) || !row?.country_code || row.country_code === "-") continue;
+        const key = [row.country_code, row.state_code || "", comparableUrl(row.url), row.consent_method || ""].join("|");
+        if (!byKey.has(key)) byKey.set(key, []);
+        byKey.get(key).push({ row, at });
+    }
+    const hits = new Map();
+    for (const list of byKey.values()) {
+        list.sort((a, b) => a.at - b.at);
+        let start = 0;
+        for (let end = 0; end < list.length; end++) {
+            while (list[end].at - list[start].at > windowMs) start++;
+            const slice = list.slice(start, end + 1);
+            const visitors = new Set(slice.map((x) => String(x.row.uid ?? "")));
+            if (visitors.size < min) continue;
+            const info = {
+                count: slice.length,
+                seconds: Math.round((slice[slice.length - 1].at - slice[0].at) / 1000),
+                where: [slice[0].row.country_code, slice[0].row.state_code].filter((v) => v && v !== "-").join(" · "),
+            };
+            for (const x of slice) {
+                const prev = hits.get(x.row);
+                if (!prev || prev.count < info.count) hits.set(x.row, info);
+            }
+        }
+    }
+    return hits;
+}
+
+export const BOT_REASON_LABELS = {
+    datacenter_ip: "Sent from a datacenter IP address",
+    conflicting_decisions: "Same visitor stored a different choice within one second",
+    high_rate: "More than 5 decisions by this visitor within a minute",
+};
+
+/**
+ * Outcome of collect.php's bot checks for one record: "flagged" with the
+ * reason, "passed", or "unchecked" for records stored before the checks (or
+ * before collect.php started writing "" for clean records).
+ */
+export function botCheck(row) {
+    if (row?.is_suspected_bot) return { status: "flagged", label: BOT_REASON_LABELS[row.bot_reason] || "Flagged as automated traffic" };
+    if (row?.bot_reason === "") return { status: "passed", label: "Passed the bot checks" };
+    return { status: "unchecked", label: "Not checked: recorded before the bot checks were stored" };
+}
+
+const choiceWord = (state) => (state === "accepted" ? "accepted" : state === "declined" ? "declined" : "");
+
+/** One flat record for CSV, JSON and receipts. Times are UTC. */
+export function exportRecord(row) {
+    const choices = Object.fromEntries(consentChoices(row?.consent).map((c) => [c.label.toLowerCase(), choiceWord(c.state)]));
+    const transfer = transferSummary(row);
+    const at = timestampMs(row?.consents_timestamp);
+    const blank = (v) => (v == null || v === "-" ? "" : String(v));
+    return {
+        time_utc: Number.isFinite(at) ? new Date(at).toISOString().replace(/\.000Z$/, "Z") : "",
+        uid: blank(row?.uid),
+        domain: blank(row?.domain),
+        country: blank(row?.country_code),
+        state: blank(row?.state_code),
+        language: blank(row?.language),
+        method: methodLabel(row?.consent_method) || "",
+        framework: blank(row?.regulation_applied),
+        necessary: choices.necessary,
+        functional: choices.functional,
+        analytics: choices.analytics,
+        marketing: choices.marketing,
+        page: cleanUrl(row?.url),
+        referrer: cleanUrl(row?.referrer),
+        transfer: transfer ? transfer.full : "",
+        banner_version: blank(row?.code_version),
+        banner_config_version: blank(row?.banner_config_version),
+        policy_schema: blank(row?.banner_policy_id),
+        tcf_cmp_version: row?.tcf ? String(row.tcf.cmp_version) : "",
+        tcf_policy_version: row?.tcf ? String(row.tcf.tcf_policy_version) : "",
+        tcf_vendor_list_version: row?.tcf ? String(row.tcf.vendor_list_version) : "",
+        shopify_consent_id: blank(row?.shopify_consent_id),
+        bot_check: botCheck(row).status,
+        bot_reason: row?.is_suspected_bot ? blank(row?.bot_reason) : "",
+    };
+}
+
+/** CSV with a header row. Cells that a spreadsheet would run as a formula are prefixed with '. */
+export function toCsv(records) {
+    if (!records.length) return "";
+    const keys = Object.keys(records[0]);
+    const cell = (v) => {
+        let s = String(v ?? "");
+        if (/^[=+\-@\t\r]/.test(s)) s = `'${s}`;
+        return /[",\n\r]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+    };
+    return [keys.join(","), ...records.map((r) => keys.map((k) => cell(r[k])).join(","))].join("\r\n");
+}

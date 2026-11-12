@@ -681,7 +681,9 @@ if ($botUid !== '') {
 }
 $botReason = suspectedBotReason(!empty($countryData['hosting']), $hasConflictingDecision, $recentDecisions);
 $isSuspectedBot = $botReason !== '' ? 1 : 0;
-$botReasonSql = $botReason !== '' ? "'$botReason'" : "NULL";
+// '' means checked and clean; NULL is left for records from before the checks,
+// so the audit log can tell "passed" from "never checked".
+$botReasonSql = $botReason !== '' ? "'$botReason'" : "''";
 // Only write the flag once the columns exist — otherwise the inserts below
 // would fail and the consent would be lost.
 $botInsertCols = $botColumns ? ", `is_suspected_bot`, `bot_reason`" : "";
@@ -692,8 +694,43 @@ $selectPolicyId_query = mysqli_query($db, $selectPolicyId);
 $policyIdRow = mysqli_fetch_assoc($selectPolicyId_query);
 $policyId = $policyIdRow['policy_id'] ?? "ic-consent-v1";
 
+/**
+ * Short fingerprint of the domain's banner configuration (config.js, the same
+ * file bannerConfigPath() in analytics/settings/_banner-config.php writes):
+ * the first 12 hex characters of its SHA-256, or null when there is no file.
+ * It is the config on the server when the consent arrived; a visitor served a
+ * cached copy may have seen an older one.
+ */
+function bannerConfigVersion($domain, $root)
+{
+    if (!preg_match('/^(?=.{4,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z][a-z0-9-]{1,62}$/', strtolower((string) $domain))) return null;
+    $path = rtrim((string) $root, '/') . '/downloads/cookieconsents/' . strtolower($domain) . '/config.js';
+    if (!is_file($path)) return null;
+    $hash = @hash_file('sha256', $path);
+    return $hash ? substr($hash, 0, 12) : null;
+}
+
+/** Whether user_consents_tracking has a column yet; migrations can run after this file is uploaded. */
+function consentColumnExists($db, $column)
+{
+    try {
+        $res = mysqli_query($db, "SHOW COLUMNS FROM `user_consents_tracking` LIKE '" . mysqli_real_escape_string($db, $column) . "'");
+        return $res && mysqli_num_rows($res) > 0;
+    } catch (Throwable $e) {
+        return false;
+    }
+}
+
+$configInsertCols = "";
+$configInsertVals = "";
+if (consentColumnExists($db, 'banner_config_version')) {
+    $configVersion = bannerConfigVersion($domain, $_SERVER['DOCUMENT_ROOT'] ?? '');
+    $configInsertCols = ", `banner_config_version`";
+    $configInsertVals = $configVersion !== null ? ", '$configVersion'" : ", NULL";
+}
+
 $transferEffectiveFromSql = $transfer_effective_from !== null ? "'$transfer_effective_from'" : "NULL";
-$user_consents_tracking = "INSERT INTO user_consents_tracking(`url`, `domain`,`consents_timestamp`, `referrer`, `consent`, `uid`, `banner_policy_id`, `time_to_decision`, `shopify_consent_id`, `regulation_applied`, `country_code`, `region`, `language`, `consent_method`, `transfer_basis`, `transfer_destination`, `transfer_data_importer`, `transfer_instrument`, `transfer_effective_from`" . $botInsertCols . ") VALUES('$consent_url', '$domain', '$consentsGiving', '$referrer', '$consent', '$uid', '$policyId', '$timeToDecision', '$shopifyConsentId', '$regulation_applied', '$countryCode', '$region', '$language', '$consentMethod', '$transfer_basis', '$transfer_destination', '$transfer_data_importer', '$transfer_instrument', $transferEffectiveFromSql" . $botInsertVals . ")";
+$user_consents_tracking = "INSERT INTO user_consents_tracking(`url`, `domain`,`consents_timestamp`, `referrer`, `consent`, `uid`, `banner_policy_id`, `time_to_decision`, `shopify_consent_id`, `regulation_applied`, `country_code`, `region`, `language`, `consent_method`, `transfer_basis`, `transfer_destination`, `transfer_data_importer`, `transfer_instrument`, `transfer_effective_from`" . $botInsertCols . $configInsertCols . ") VALUES('$consent_url', '$domain', '$consentsGiving', '$referrer', '$consent', '$uid', '$policyId', '$timeToDecision', '$shopifyConsentId', '$regulation_applied', '$countryCode', '$region', '$language', '$consentMethod', '$transfer_basis', '$transfer_destination', '$transfer_data_importer', '$transfer_instrument', $transferEffectiveFromSql" . $botInsertVals . $configInsertVals . ")";
 $user_consents_query = mysqli_query($db, $user_consents_tracking);
 //$user_consents_query2 = mysqli_query($backUpDb, $user_consents_tracking);
 

@@ -4,13 +4,13 @@ import vm from "node:vm";
 import fs from "node:fs";
 import { test } from "./_harness.mjs";
 
-const ctx = vm.createContext({ Intl, Date, JSON, Number, String, Array, Object });
+const ctx = vm.createContext({ Intl, Date, JSON, Number, String, Array, Object, Map, Set, Math });
 vm.runInContext(
     fs.readFileSync(new URL("../src/Pages/UserConsents/auditLogFormat.js", import.meta.url), "utf8").replace(/^export /gm, "")
-        + "\n;this.api = { consentChoices, formatAuditTime, transferSummary, comparableUrl, pageLabel, methodLabel, decisionSplit, dailySeries, summarizeRows };",
+        + "\n;this.api = { consentChoices, formatAuditTime, transferSummary, comparableUrl, pageLabel, methodLabel, decisionSplit, dailySeries, summarizeRows, groupRepeats, findBursts, botCheck, exportRecord, toCsv };",
     ctx
 );
-const { consentChoices, formatAuditTime, transferSummary, comparableUrl, pageLabel, methodLabel, decisionSplit, dailySeries, summarizeRows } = ctx.api;
+const { consentChoices, formatAuditTime, transferSummary, comparableUrl, pageLabel, methodLabel, decisionSplit, dailySeries, summarizeRows, groupRepeats, findBursts, botCheck, exportRecord, toCsv } = ctx.api;
 const states = (c) => Object.fromEntries(consentChoices(c).map((x) => [x.type, x.state]));
 
 test("audit log: four choices in a fixed order, necessary always on, missing ones marked", () => {
@@ -63,4 +63,60 @@ test("audit summary: demo rows summarise like the server does", () => {
     assert.equal(s.total, 2);
     assert.equal(s.otherCountries, 1);
     assert.deepEqual(JSON.parse(JSON.stringify(s.countries)), [{ code: "DK", n: 1 }]);
+});
+
+const rec = (uid, ts, extra = {}) => ({ uid, consents_timestamp: ts, country_code: "US", state_code: "Virginia", url: "https://shop.dk/integrations", consent_method: "banner_accept_all", ...extra });
+
+test("audit repeats: one visitor's records seconds apart collapse, others stay separate", () => {
+    const rows = [rec("dk1", "2026-11-06 15:32:54"), rec("x", "2026-11-06 15:32:50"), rec("dk1", "2026-11-06 15:32:48"), rec("dk1", "2026-11-06 15:20:00")];
+    const g = groupRepeats(rows);
+    assert.equal(g.length, 3);
+    assert.equal(g[0].items.length, 2);
+    assert.equal(g[0].spanSeconds, 6);
+    assert.equal(g[2].items.length, 1, "13 minutes later is a new decision");
+});
+
+test("audit bursts: four visitors, same place, page and choice within a minute", () => {
+    const rows = [0, 10, 20, 30, 50].map((s, i) => rec(`v${i}`, `2026-10-19 14:00:${String(s).padStart(2, "0")}`));
+    const quiet = rec("other", "2026-10-19 14:00:10", { country_code: "DK", state_code: "" });
+    const hits = findBursts([...rows, quiet]);
+    assert.equal(hits.get(rows[0]).count, 5);
+    assert.equal(hits.get(rows[0]).seconds, 50);
+    assert.equal(hits.get(rows[0]).where, "US · Virginia");
+    assert.equal(hits.has(quiet), false);
+    assert.equal(findBursts(rows.slice(0, 3)).size, 0, "three visitors is not a burst");
+    assert.equal(findBursts([rec("same", "2026-10-19 14:00:00"), rec("same", "2026-10-19 14:00:05"), rec("same", "2026-10-19 14:00:09"), rec("same", "2026-10-19 14:00:12")]).size, 0, "one visitor repeating is a repeat, not a burst");
+});
+
+test("audit bot check: flagged, passed, or never checked", () => {
+    assert.equal(botCheck({ is_suspected_bot: true, bot_reason: "datacenter_ip" }).label, "Sent from a datacenter IP address");
+    assert.equal(botCheck({ is_suspected_bot: false, bot_reason: "" }).status, "passed");
+    assert.equal(botCheck({ is_suspected_bot: false, bot_reason: null }).status, "unchecked");
+});
+
+test("audit export: flat UTC record, and CSV that a spreadsheet can't run as a formula", () => {
+    const r = exportRecord({ ...rec("=HYPERLINK(1)", "2026-11-10 19:00:40"), consent: [{ type: "marketing", checked: "" }], referrer: "https://a.dk/?q=1", bot_reason: "" });
+    assert.equal(r.time_utc, "2026-11-10T19:00:40Z");
+    assert.equal(r.marketing, "declined");
+    assert.equal(r.necessary, "accepted");
+    assert.equal(r.referrer, "https://a.dk/");
+    assert.equal(r.bot_check, "passed");
+    const csv = toCsv([r, { ...r, uid: 'a "b", c' }]).split("\r\n");
+    assert.match(csv[0], /^time_utc,uid,domain/);
+    assert.match(csv[1], /,'=HYPERLINK\(1\),/);
+    assert.match(csv[2], /,"a ""b"", c",/);
+});
+
+const printCtx = vm.createContext({ String, Object, Date });
+vm.runInContext(fs.readFileSync(new URL("../src/Pages/UserConsents/auditPrint.js", import.meta.url), "utf8").replace(/^export /gm, "") + "\n;this.api = { receiptHtml, reportHtml };", printCtx);
+
+test("audit print: recorded values are escaped in the receipt and report", () => {
+    const record = { time_utc: "2026-11-10T19:00:40Z", uid: "<img src=x onerror=alert(1)>", domain: "shop.dk", page: "https://shop.dk/?a=\"b\"", bot_check: "passed", marketing: "" };
+    const receipt = printCtx.api.receiptHtml(record, { fingerprint: "abc" });
+    assert.doesNotMatch(receipt, /<img/);
+    assert.match(receipt, /&lt;img src=x/);
+    assert.doesNotMatch(receipt, /<dt>Marketing<\/dt>/, "empty fields are left out");
+    const report = printCtx.api.reportHtml([record], { scope: "<b>DK</b>", total: 3 });
+    assert.match(report, /&lt;b&gt;DK&lt;\/b&gt;/);
+    assert.match(report, /the first 1 of 3/);
 });
