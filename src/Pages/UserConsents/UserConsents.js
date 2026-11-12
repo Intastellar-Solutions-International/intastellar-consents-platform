@@ -6,6 +6,7 @@ import StickyPageTitle from "../../Components/Header/Sticky";
 import { DomainContext } from "../../App.js";
 import Authentication from "../../Authentication/Auth.js";
 import { buildDemoConsentList, buildDemoConsentRecord } from "./userConsentsDemo.js";
+import AuditSummary from "./AuditSummary.js";
 import {
     useSyncDomainFromRoute,
     isCombinedOrClearDomain,
@@ -31,6 +32,7 @@ import {
     languageLabel,
     methodLabel,
     pageLabel,
+    summarizeRows,
     transferSummary,
 } from "./auditLogFormat.js";
 
@@ -342,6 +344,7 @@ export default function UserConsents(props) {
     const [rows, setRows] = useState(null);
     const [total, setTotal] = useState(null);
     const [options, setOptions] = useState(null);
+    const [summary, setSummary] = useState(null);
     const [status, setStatus] = useState("loading"); // loading | ready | error
     const [loadingMore, setLoadingMore] = useState(false);
     const [hasMore, setHasMore] = useState(false);
@@ -376,8 +379,8 @@ export default function UserConsents(props) {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
         // An API without IncludeTotal support answers with the bare array.
-        if (Array.isArray(data)) return { rows: data, total: null, options: null };
-        if (data === "Err_No_Data_Found") return { rows: [], total: 0, options: null };
+        if (Array.isArray(data)) return { rows: data, total: null, options: null, summary: null };
+        if (data === "Err_No_Data_Found") return { rows: [], total: 0, options: null, summary: null };
         if (!data || !Array.isArray(data.rows)) throw new Error(typeof data === "string" ? data : data?.error || "Unexpected response");
         return data;
     }, [id, domainsApiHeader, fromDate, toDate, sortDirection, uidQuery, filters]);
@@ -392,6 +395,7 @@ export default function UserConsents(props) {
                 if (!data || latestQuery.current !== queryKey) return;
                 setRows(data.rows);
                 setTotal(data.total);
+                setSummary(data.summary || null);
                 if (data.options) setOptions(data.options);
                 setHasMore(data.total != null ? data.rows.length < data.total : data.rows.length === PAGE_SIZE);
                 setStatus("ready");
@@ -424,6 +428,7 @@ export default function UserConsents(props) {
         return rows.map((d, i) => buildDemoConsentRecord(i, d));
     }, [demoMode, rows, status]);
     const displayTotal = demoMode ? displayRows.length : total;
+    const displaySummary = demoMode ? summarizeRows(displayRows) : summary;
 
     const activeCount = Object.values(filters).filter(Boolean).length;
 
@@ -450,7 +455,7 @@ export default function UserConsents(props) {
             render: (r) => {
                 const cc = r.country_code && r.country_code !== "-" ? r.country_code : "";
                 const st = r.state_code && r.state_code !== "-" ? r.state_code : "";
-                return cc ? <span title={regionName(cc)} className="tw-whitespace-nowrap">{cc}{st ? <span className="tw-text-text-muted"> · {st}</span> : null}</span> : "—";
+                return cc ? <span title={[regionName(cc), st].filter(Boolean).join(" · ")} className="audit-country">{cc}{st ? <span className="tw-text-text-muted"> · {st}</span> : null}</span> : "—";
             },
         },
         { key: "method", header: "Method", render: (r) => <span className="tw-whitespace-nowrap">{methodLabel(r.consent_method) ?? <span className="tw-text-text-muted">Not recorded</span>}</span> },
@@ -487,7 +492,7 @@ export default function UserConsents(props) {
     return (
         <>
             <SideNav links={reportsLinks} title="Reports" />
-            <article style={{ flex: "1" }}>
+            <article style={{ flex: "1", minWidth: 0 }}>
                 <StickyPageTitle demoMode={demoMode} loadingUpdated={loading} finalLoaded={loading} title={"Audit log" + (titleDomainLabel ? " for " + punycode.toUnicode(titleDomainLabel) : "")} numberofDays={setLastDays} getLastDays={getLastDays} setActiveData={setRows} fromDate={fromDate} toDate={toDate} setFromDate={setFromDate} setToDate={setToDate} previousPeriod={previousPeriod} previousPeriod2={previousPeriod2} compareRange={compareRange} setCompareRange={setCompareRange} setCompareWindowStart={setPreviousPeriod} setCompareWindowEnd={setPreviousPeriod2} />
                 <div className="dashboard-content">
                     {uidQuery ? (
@@ -508,6 +513,7 @@ export default function UserConsents(props) {
                         <FilterSearch label="Page" value={textFilters.page} placeholder="/checkout" onChange={(v) => setTextFilters((f) => ({ ...f, page: v }))} />
                         <BotFilterToggle />
                     </FilterBar>
+                    <AuditSummary summary={displaySummary} loading={loading} fromDay={consentDateKey(fromDate)} toDay={consentDateKey(toDate)} />
                     <p className="audit-count" aria-live="polite">
                         {loading ? "Loading records…" : displayTotal != null
                             ? `${formatNumber(displayTotal)} ${displayTotal === 1 ? "record" : "records"}${displayRows.length < displayTotal ? ` · showing ${formatNumber(displayRows.length)}` : ""}`

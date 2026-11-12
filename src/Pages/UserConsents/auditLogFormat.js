@@ -152,3 +152,48 @@ export function languageLabel(lang) {
     } catch { /* invalid tag: show it as stored */ }
     return tag;
 }
+
+/** Which part of the decision split each stored method counts towards. */
+const METHOD_GROUP = {
+    banner_accept_all: "accept",
+    banner_reject_all: "reject",
+    banner_essential_only: "reject",
+    banner_granular: "custom",
+    preferences_updated: "custom",
+};
+
+/** Decision split from { method: count }: accept, reject (incl. essential only), custom, other. */
+export function decisionSplit(methods) {
+    const split = { accept: 0, reject: 0, custom: 0, other: 0 };
+    for (const [method, n] of Object.entries(methods || {})) split[METHOD_GROUP[method] || "other"] += Number(n) || 0;
+    return split;
+}
+
+/** One count per UTC day from `from` to `to` (YYYY-MM-DD), days without records as 0. */
+export function dailySeries(daily, from, to) {
+    const out = [];
+    const end = new Date(`${to}T00:00:00Z`);
+    for (let d = new Date(`${from}T00:00:00Z`); d <= end && out.length < 1000; d.setUTCDate(d.getUTCDate() + 1)) {
+        const key = d.toISOString().slice(0, 10);
+        out.push({ day: key, n: Number(daily?.[key]) || 0 });
+    }
+    return out;
+}
+
+/** The server's summary shape, computed from loaded rows (demo mode). */
+export function summarizeRows(rows) {
+    const methods = {};
+    const countries = {};
+    const daily = {};
+    for (const r of rows || []) {
+        const m = String(r?.consent_method ?? "");
+        methods[m] = (methods[m] || 0) + 1;
+        const c = String(r?.country_code ?? "").toUpperCase();
+        if (c && c !== "-") countries[c] = (countries[c] || 0) + 1;
+        const d = String(r?.consents_timestamp ?? "").slice(0, 10);
+        if (d) daily[d] = (daily[d] || 0) + 1;
+    }
+    const top = Object.entries(countries).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).slice(0, 5).map(([code, n]) => ({ code, n }));
+    const total = (rows || []).length;
+    return { total, methods, countries: top, otherCountries: total - top.reduce((s, c) => s + c.n, 0), daily };
+}

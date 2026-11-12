@@ -4,7 +4,7 @@
  * Headers: Organisation, Domains, FromDate, ToDate, Offset, Limit, SortOrder (asc|desc, default desc).
  * Audit log filters (all optional, see auditFilterSql()): Country, State, Method,
  * Framework, Choice, Language, Version, Page, UIDSearch.
- * IncludeTotal: 1 returns { rows, total, options } instead of the bare array.
+ * IncludeTotal: 1 returns { rows, total, options, summary } instead of the bare array.
  *
  * Deploy on server only. Prefer env vars for DB credentials (see below).
  */
@@ -26,7 +26,6 @@ if (!$db) {
     exit;
 }
 mysqli_set_charset($db, "utf8mb4");
-
 $domains = isset($_SERVER["HTTP_DOMAINS"]) ? $_SERVER["HTTP_DOMAINS"] : "";
 $fromDate = isset($_SERVER["HTTP_FROMDATE"]) ? $_SERVER["HTTP_FROMDATE"] : null;
 $toDate = isset($_SERVER["HTTP_TODATE"]) ? $_SERVER["HTTP_TODATE"] : null;
@@ -141,6 +140,33 @@ function auditFilterSql(array $f, callable $escape)
     if ($uidSearch !== "") $sql .= " AND ucs.uid LIKE " . likeContains(substr($uidSearch, 0, 100), $escape);
 
     return $sql;
+}
+
+/**
+ * Summary strip from decision counts grouped by method (m), country (c) and
+ * UTC day (d): total, count per method, top five countries and count per day.
+ */
+function summarizeAuditGroups(array $groups)
+{
+    $total = 0;
+    $methods = [];
+    $countries = [];
+    $daily = [];
+    foreach ($groups as $g) {
+        $n = (int) ($g["n"] ?? 0);
+        $total += $n;
+        $method = trim((string) ($g["m"] ?? ""));
+        $methods[$method] = ($methods[$method] ?? 0) + $n;
+        $country = strtoupper(trim((string) ($g["c"] ?? "")));
+        if ($country !== "" && $country !== "-") $countries[$country] = ($countries[$country] ?? 0) + $n;
+        $day = (string) ($g["d"] ?? "");
+        if ($day !== "") $daily[$day] = ($daily[$day] ?? 0) + $n;
+    }
+    uksort($countries, function ($a, $b) use ($countries) { return $countries[$b] <=> $countries[$a] ?: strcmp($a, $b); });
+    ksort($daily);
+    $top = [];
+    foreach (array_slice($countries, 0, 5, true) as $code => $n) $top[] = ["code" => $code, "n" => $n];
+    return ["total" => $total, "methods" => (object) $methods, "countries" => $top, "otherCountries" => $total - array_sum(array_column($top, "n")), "daily" => (object) $daily];
 }
 
 /**
@@ -295,10 +321,14 @@ if (!$includeTotal) {
     exit;
 }
 
-// Same grouping as the rows, so the total counts decisions, not raw rows.
-$total = 0;
-$totalQuery = mysqli_query($db, "SELECT COUNT(*) AS n FROM (SELECT 1 " . $from . $andClause . $filterClause . " GROUP BY ucs.uid, ucs.consents_timestamp, ucs.consent) t");
-if ($totalQuery && ($row = mysqli_fetch_assoc($totalQuery))) $total = (int) $row["n"];
+// Same grouping as the rows, so totals count decisions, not raw rows. One
+// pass gives the total and the summary strip; filters apply to both.
+$groups = [];
+$groupQuery = mysqli_query($db, "SELECT m, c, d, COUNT(*) AS n FROM (SELECT MIN(ucs.consent_method) AS m, MIN(ucs.country_code) AS c, DATE(MIN(ucs.consents_timestamp)) AS d "
+    . $from . $andClause . $filterClause . " GROUP BY ucs.uid, ucs.consents_timestamp, ucs.consent) t GROUP BY m, c, d");
+while ($groupQuery && ($row = mysqli_fetch_assoc($groupQuery))) $groups[] = $row;
+$summary = summarizeAuditGroups($groups);
+$total = $summary["total"];
 
 /*
  * Values seen in the selected period, for the filter menus. Scoped to domain,
@@ -313,4 +343,5 @@ foreach ($facets as $key => $column) {
     while ($facetQuery && ($row = mysqli_fetch_assoc($facetQuery))) $options[$key][] = $row["v"];
 }
 
-echo json_encode(["rows" => $consent_url, "total" => $total, "options" => $options]);
+echo json_encode(["rows" => $consent_url, "total" => $total, "options" => $options, "summary" => $summary]);
+

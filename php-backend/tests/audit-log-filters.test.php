@@ -1,6 +1,6 @@
 <?php
 // Audit log filters: server-side, so they apply to every record, not just the loaded page.
-load_functions("$ROOT/analytics/gdpr/getDomainStatistics.php", ['likeContains', 'consentChoiceSql', 'auditFilterSql']);
+load_functions("$ROOT/analytics/gdpr/getDomainStatistics.php", ['likeContains', 'consentChoiceSql', 'auditFilterSql', 'summarizeAuditGroups']);
 
 $esc = function ($v) { return addslashes($v); };
 
@@ -38,4 +38,22 @@ test('audit filters: a declined choice needs the category present and not accept
     if (strpos($sql, '{"type":"marketing","checked":"checked"}') === false) throw new RuntimeException($sql);
     $accepted = auditFilterSql(['choice' => 'statics:accepted'], $esc);
     if (strpos($accepted, 'NOT') !== false) throw new RuntimeException($accepted);
+});
+
+test('audit summary: totals, method counts, top five countries and days', function () {
+    $s = summarizeAuditGroups([
+        ['m' => 'banner_accept_all', 'c' => 'US', 'd' => '2026-11-02', 'n' => '4'],
+        ['m' => 'banner_reject_all', 'c' => 'DK', 'd' => '2026-11-01', 'n' => '2'],
+        ['m' => '', 'c' => 'DE', 'd' => '2026-11-02', 'n' => '1'],
+        ['m' => 'banner_accept_all', 'c' => 'DK', 'd' => '2026-11-02', 'n' => '3'],
+        ['m' => 'banner_granular', 'c' => '-', 'd' => '2026-11-03', 'n' => '1'],
+        ['m' => 'banner_granular', 'c' => 'SE', 'd' => '2026-11-03', 'n' => '1'],
+        ['m' => 'banner_granular', 'c' => 'NO', 'd' => '2026-11-03', 'n' => '1'],
+        ['m' => 'banner_granular', 'c' => 'FI', 'd' => '2026-11-03', 'n' => '1'],
+    ]);
+    eq($s['total'], 14);
+    eq((array) $s['methods'], ['banner_accept_all' => 7, 'banner_reject_all' => 2, '' => 1, 'banner_granular' => 4]);
+    eq($s['countries'], [['code' => 'DK', 'n' => 5], ['code' => 'US', 'n' => 4], ['code' => 'DE', 'n' => 1], ['code' => 'FI', 'n' => 1], ['code' => 'NO', 'n' => 1]]);
+    eq($s['otherCountries'], 2, 'SE plus the record without a country');
+    eq(array_keys((array) $s['daily']), ['2026-11-01', '2026-11-02', '2026-11-03']);
 });

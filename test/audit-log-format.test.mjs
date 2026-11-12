@@ -7,10 +7,10 @@ import { test } from "./_harness.mjs";
 const ctx = vm.createContext({ Intl, Date, JSON, Number, String, Array, Object });
 vm.runInContext(
     fs.readFileSync(new URL("../src/Pages/UserConsents/auditLogFormat.js", import.meta.url), "utf8").replace(/^export /gm, "")
-        + "\n;this.api = { consentChoices, formatAuditTime, transferSummary, comparableUrl, pageLabel, methodLabel };",
+        + "\n;this.api = { consentChoices, formatAuditTime, transferSummary, comparableUrl, pageLabel, methodLabel, decisionSplit, dailySeries, summarizeRows };",
     ctx
 );
-const { consentChoices, formatAuditTime, transferSummary, comparableUrl, pageLabel, methodLabel } = ctx.api;
+const { consentChoices, formatAuditTime, transferSummary, comparableUrl, pageLabel, methodLabel, decisionSplit, dailySeries, summarizeRows } = ctx.api;
 const states = (c) => Object.fromEntries(consentChoices(c).map((x) => [x.type, x.state]));
 
 test("audit log: four choices in a fixed order, necessary always on, missing ones marked", () => {
@@ -46,4 +46,21 @@ test("audit log: method names read as the button the visitor pressed", () => {
     assert.equal(methodLabel("banner_granular"), "Custom");
     assert.equal(methodLabel("some_new_method"), "some new method");
     assert.equal(methodLabel(""), null);
+});
+
+test("audit summary: methods group into accept, reject, custom and other", () => {
+    assert.deepEqual({ ...decisionSplit({ banner_accept_all: 7, banner_reject_all: 2, banner_essential_only: 1, banner_granular: 3, "": 4, withdrawal: 1 }) }, { accept: 7, reject: 3, custom: 3, other: 5 });
+});
+
+test("audit summary: the trend has a point for every day in the range", () => {
+    const s = dailySeries({ "2026-10-31": 2, "2026-11-02": 5 }, "2026-10-30", "2026-11-02");
+    assert.deepEqual(JSON.parse(JSON.stringify(s.map((p) => p.n))), [0, 2, 0, 5]);
+    assert.equal(s[3].day, "2026-11-02");
+});
+
+test("audit summary: demo rows summarise like the server does", () => {
+    const s = summarizeRows([{ consent_method: "banner_accept_all", country_code: "DK", consents_timestamp: "2026-11-01 10:00:00" }, { consent_method: "", country_code: "-", consents_timestamp: "2026-11-01 11:00:00" }]);
+    assert.equal(s.total, 2);
+    assert.equal(s.otherCountries, 1);
+    assert.deepEqual(JSON.parse(JSON.stringify(s.countries)), [{ code: "DK", n: 1 }]);
 });
