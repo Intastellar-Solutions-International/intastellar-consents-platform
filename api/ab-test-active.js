@@ -4,14 +4,14 @@ import { getPool } from "./_db.js";
  *
  * Public, unauthenticated — same trust model as GET /api/a and
  * analytics-site-config.js (the site key is already embeddable/public).
- * Read by the embed script UNCONDITIONALLY on every pageload, regardless of
- * consent tier — variant application is rendering, not tracking, so it has
- * to work for every visitor. The exposure record (POST /api/a, t:'ab') is
- * also sent unconditionally, since assignment data is needed for valid test
- * results even from visitors who declined statistics cookies. This is why
- * this is a separate endpoint rather than an extension of
- * analytics-site-config.js, which is only ever fetched for full-consent
- * visitors (via bootstrapSiteFeatures()).
+ * Read by the embed script on every pageload of a visitor with statistics
+ * consent — bucketing needs the _ia_s session cookie and the _ia_abv_<id>
+ * decision cookie, which can't be set before consent, so visitors without
+ * it see the control page and aren't counted. The exposure record
+ * (POST /api/a, t:'ab') follows the same rule. Kept separate from
+ * analytics-site-config.js (also full-consent only, via
+ * bootstrapSiteFeatures()) because it's fetched on every pageload rather
+ * than once per site config.
  *
  * Degrades to `{ test: null }` on any bad input or DB error — this fires on
  * every pageload across every customer site, so it must never surface as a

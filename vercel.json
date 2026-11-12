@@ -65,6 +65,10 @@
       "schedule": "0 5 * * *"
     },
     {
+      "path": "/api/cron-cleanup-events",
+      "schedule": "30 5 * * *"
+    },
+    {
       "path": "/api/cron-ab-test-lifecycle",
       "schedule": "0 6 * * *"
     },
@@ -271,6 +275,10 @@
       "maxDuration": 30
     },
     "api/cron-cleanup-recordings.js": {
+      "memory": 256,
+      "maxDuration": 60
+    },
+    "api/cron-cleanup-events.js": {
       "memory": 256,
       "maxDuration": 60
     },

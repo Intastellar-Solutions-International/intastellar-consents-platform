@@ -77,6 +77,7 @@ export default async function handler(req, res) {
         ALTER TABLE analytics_sites ADD COLUMN IF NOT EXISTS recording_sample_rate     SMALLINT     NOT NULL DEFAULT 20;
         ALTER TABLE analytics_sites ADD COLUMN IF NOT EXISTS recording_retention_days  SMALLINT     NOT NULL DEFAULT 30;
         ALTER TABLE analytics_sites ADD COLUMN IF NOT EXISTS heatmap_retention_days    SMALLINT     NOT NULL DEFAULT 90;
+        ALTER TABLE analytics_sites ADD COLUMN IF NOT EXISTS event_retention_days      SMALLINT     NOT NULL DEFAULT 425;
         ALTER TABLE analytics_sites ADD COLUMN IF NOT EXISTS recording_block_selectors TEXT[]       NOT NULL DEFAULT '{}';
         ALTER TABLE analytics_sites ADD COLUMN IF NOT EXISTS recording_mask_selectors  TEXT[]       NOT NULL DEFAULT '{}';
         ALTER TABLE analytics_sites ADD COLUMN IF NOT EXISTS industry                  VARCHAR(32);
@@ -111,7 +112,7 @@ export default async function handler(req, res) {
         const { rows } = await db.query(
             `SELECT id, domain, active, created_at,
                     heatmaps_enabled, recording_enabled, recording_sample_rate,
-                    recording_retention_days, heatmap_retention_days,
+                    recording_retention_days, heatmap_retention_days, event_retention_days,
                     recording_block_selectors, recording_mask_selectors,
                     datalayer_enabled,
                     lead_quality_enabled, lead_require_engaged,
@@ -156,6 +157,12 @@ export default async function handler(req, res) {
         if (typeof body.heatmapRetentionDays === "number" && isFinite(body.heatmapRetentionDays)) {
             sets.push(`heatmap_retention_days = $${i++}`);
             params.push(Math.min(365, Math.max(1, Math.round(body.heatmapRetentionDays))));
+        }
+        // Pageviews/events (enforced by api/cron-cleanup-events.js): 30 days
+        // up to 26 months, enough for a year-over-year comparison.
+        if (typeof body.eventRetentionDays === "number" && isFinite(body.eventRetentionDays)) {
+            sets.push(`event_retention_days = $${i++}`);
+            params.push(Math.min(790, Math.max(30, Math.round(body.eventRetentionDays))));
         }
         if (Array.isArray(body.blockSelectors)) {
             sets.push(`recording_block_selectors = $${i++}`);
@@ -218,6 +225,7 @@ export default async function handler(req, res) {
              WHERE organisation_id = $1 AND LOWER(domain) = LOWER($2)
              RETURNING id, domain, active, heatmaps_enabled, recording_enabled,
                        recording_sample_rate, recording_retention_days, heatmap_retention_days,
+                       event_retention_days,
                        recording_block_selectors, recording_mask_selectors,
                        datalayer_enabled, lead_quality_enabled, lead_require_engaged,
                        lead_qualifying_pages, lead_qualifying_events, industry, business_type,

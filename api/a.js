@@ -694,7 +694,9 @@ function getSid(){
   try{
     var existing=gc('_ia_s');
     if(existing)return existing;
-    var v=Math.random().toString(36).slice(2,10)+Date.now().toString(36);
+    // A session handed over from a partner domain (?ia=, see below) is only
+    // written to the cookie here, i.e. once a consented caller asks for it.
+    var v=_iaXSid||(Math.random().toString(36).slice(2,10)+Date.now().toString(36));
     // No Max-Age/Expires — a *session* cookie (cleared when the browser
     // itself closes, not per-tab like sessionStorage was), so this widens
     // *scope* (shared across tabs and, with Domain set, across subdomains)
@@ -729,24 +731,25 @@ function getVid(){
     return 1;
   }catch(e){return 0;}
 }
-var _iaNew=getVid();
+// Only ever called from sendFull(), so _ia_v is never written before the
+// visitor has granted statistics consent (ePrivacy Art. 5(3)).
+var _iaNew=null;
+function newVisitorFlag(){if(_iaNew===null)_iaNew=getVid();return _iaNew;}
 
 // Cross-site session continuation — when a visitor arrives via a decorated
 // link from a partner domain (?ia=SESSION_ID), restore that session so both
 // domains appear as one continuous journey in the analytics. Only applies if
 // no existing session is already live on this domain (don't clobber an active
-// session). The ?ia= param is stripped from the visible URL immediately.
+// session). The id is held in memory and only becomes the _ia_s cookie when
+// getSid() is first called under consent. The ?ia= param is stripped from
+// the visible URL immediately.
+var _iaXSid=null;
 (function(){
   try{
     var p=new URLSearchParams(location.search);
     var ia=p.get('ia');
     // Accept only the format getSid() produces: base36 chars, 8-48 length
-    if(ia&&/^[a-z0-9]{8,48}$/i.test(ia)&&!gc('_ia_s')){
-      var base='_ia_s='+encodeURIComponent(ia)+';path=/;SameSite=Lax'+(location.protocol==='https:'?';Secure':'');
-      var d2=rootDomain();
-      if(d2){document.cookie=base+';domain='+d2;if(document.cookie.indexOf('_ia_s=')===-1)document.cookie=base;}
-      else document.cookie=base;
-    }
+    if(ia&&/^[a-z0-9]{8,48}$/i.test(ia)&&!gc('_ia_s'))_iaXSid=ia;
     if(ia&&window.history&&window.history.replaceState){
       p.delete('ia');
       var qs=p.toString();
@@ -760,7 +763,9 @@ var _iaNew=getVid();
 // later in the same journey. UTM campaign/content often carry numeric platform
 // IDs (e.g. {campaignid}/{adgroupid} ValueTrack or {{campaign.id}} in Meta),
 // allowing server-side resolution to campaign/ad names. Only sent with
-// full-consent events.
+// full-consent events. The landing params are read into memory on load; the
+// _ia_cid cookie is only written by persistClickIds(), called from sendFull().
+var _iaCidLanding=null;
 function getClickIds(){
   try{
     var p=new URLSearchParams(location.search);
@@ -768,16 +773,24 @@ function getClickIds(){
     var uc=p.get('utm_campaign')||'',uk=p.get('utm_content')||'';
     var us=p.get('utm_source')||'',um=p.get('utm_medium')||'';
     if(g||ms||fb||uc||uk||us||um){
-      var val=encodeURIComponent(JSON.stringify({g:g,ms:ms,fb:fb,uc:uc,uk:uk,us:us,um:um}));
-      var base='_ia_cid='+val+';path=/;Max-Age=7776000;SameSite=Lax'+(location.protocol==='https:'?';Secure':'');
-      var d=rootDomain();
-      if(d){document.cookie=base+';domain='+d;if(document.cookie.indexOf('_ia_cid=')===-1)document.cookie=base;}
-      else document.cookie=base;
+      _iaCidLanding={g:g,ms:ms,fb:fb,uc:uc,uk:uk,us:us,um:um};
+      return _iaCidLanding;
     }
     var stored=gc('_ia_cid');
     if(stored){try{return JSON.parse(decodeURIComponent(stored));}catch(e){}}
     return {};
   }catch(e){return {};}
+}
+function persistClickIds(){
+  if(!_iaCidLanding)return;
+  try{
+    var val=encodeURIComponent(JSON.stringify(_iaCidLanding));
+    var base='_ia_cid='+val+';path=/;Max-Age=7776000;SameSite=Lax'+(location.protocol==='https:'?';Secure':'');
+    var d=rootDomain();
+    if(d){document.cookie=base+';domain='+d;if(document.cookie.indexOf('_ia_cid=')===-1)document.cookie=base;}
+    else document.cookie=base;
+  }catch(e){}
+  _iaCidLanding=null;
 }
 var _iaCid=getClickIds();
 
@@ -1030,12 +1043,12 @@ function bootstrapSiteFeatures(){
 }
 
 // ── Page Experiments (visual A/B tests) ─────────────────────────────────────
-// Unlike bootstrapSiteFeatures() above (only ever called for full-consent
-// visitors, since recording/dataLayer are consent-sensitive features), both
-// variant APPLICATION and the exposure record run for every visitor
-// regardless of consent tier — assignment data is needed for valid test
-// results even from visitors who declined statistics cookies. See
-// applyPageExperiment()'s call site near the bottom of this file.
+// Statistics consent only: bucketing needs the _ia_s session cookie and the
+// _ia_abv_<id> decision cookie, neither of which may be set before consent
+// (ePrivacy Art. 5(3)). Visitors without consent see the control page and
+// aren't counted, so results reflect consented visitors only. A visitor who
+// consents mid-page joins the test from their next page load rather than
+// having the page change under them.
 
 // Same generic fallback heuristic detectBot() uses server-side (self-
 // identifying crawlers only — Googlebot, Bingbot, etc. all match this).
@@ -1111,8 +1124,8 @@ function applyChange(change){
   });
 }
 
-function applyPageExperiment(){
-  if(looksLikeBot())return;
+function applyPageExperiment(c){
+  if(looksLikeBot()||!hasStat(c))return;
   try{
     var xhr=new XMLHttpRequest();
     xhr.open('GET','https://analytics.consentsmanagement.com/api/ab-test-active?site='+encodeURIComponent(SITE)+'&path='+encodeURIComponent(location.pathname)+'&host='+encodeURIComponent(getHost()),true);
@@ -1163,8 +1176,7 @@ function applyPageExperiment(){
         return;
       }
 
-      // Non-url-split: count exposure unconditionally (assignment/exposure data
-      // is needed even when the visitor declined statistics cookies).
+      // Non-url-split: count exposure on every evaluation.
       send(JSON.stringify({s:SITE,t:'ab',tid:test.id,vid:variant.id,sid:getSid(),u:location.pathname,h:getHost()}));
 
       var applyChanges=function(){
@@ -1222,12 +1234,14 @@ function fetchBrowserTopics(c){
 }
 
 function sendMinimal(c){
-  var pl={s:SITE,cl:'minimal',sid:getSid(),u:location.pathname,r:document.referrer||'',h:getHost(),dt:devType(),cs:hasStat(c)?1:0,cf:hasFun(c)?1:0,ca:hasAdv(c)?1:0,emb:EMB?1:0};
+  // No sid: a minimal pageview must not create or read the session cookie.
+  var pl={s:SITE,cl:'minimal',u:location.pathname,r:document.referrer||'',h:getHost(),dt:devType(),cs:hasStat(c)?1:0,cf:hasFun(c)?1:0,ca:hasAdv(c)?1:0,emb:EMB?1:0};
   send(JSON.stringify(pl));
 }
 
 function sendFull(c,final){
   fullFired=true;
+  persistClickIds();
   startClickTracking();
   if(!final)bootstrapSiteFeatures();
   fetchBrowserTopics(c);
@@ -1251,7 +1265,7 @@ function sendFull(c,final){
     emb:EMB?1:0,
     g:_iaGranular==null?undefined:(_iaGranular?1:0),
     final:final?1:0,
-    nv:_iaNew,
+    nv:newVisitorFlag(),
     gc:_iaCid.g||undefined,mc:_iaCid.ms||undefined,fc:_iaCid.fb||undefined
   };
   if(_bt.length&&hasFun(c))pl.bt=_bt;
@@ -1331,7 +1345,7 @@ function tryHooks(){
 
 var c=getConsents();
 tryHooks();
-applyPageExperiment(); // Runs (and reports exposure) regardless of consent tier — see its own doc comment above.
+applyPageExperiment(c); // Statistics consent only — see its own doc comment above.
 if(hasStat(c)){
   sendFull(c,false);
 }else{
@@ -1478,7 +1492,7 @@ var _spaLastPath=location.pathname+location.search;
     clickBuf.splice(0,clickBuf.length);
     var cn=getConsents();
     if(hasStat(cn)){sendFull(cn,false);}else{sendMinimal(cn);}
-    applyPageExperiment();
+    applyPageExperiment(cn);
   }
   try{
     var op=history.pushState,or=history.replaceState;
@@ -1571,8 +1585,9 @@ function _formId(form){
         for(var oi=0;oi<_ownDomains.length;oi++){
           if(rootDomain(_ownDomains[oi])===hRoot){
             // Decorate the link with ?ia=SESSION_ID so the partner domain can
-            // continue this session instead of starting a new one.
-            try{var u2=new URL(a.href);u2.searchParams.set('ia',getSid());a.href=u2.toString();}catch(e3){}
+            // continue this session instead of starting a new one. Only with
+            // statistics consent — getSid() writes the session cookie.
+            if(hasStat(getConsents()))try{var u2=new URL(a.href);u2.searchParams.set('ia',getSid());a.href=u2.toString();}catch(e3){}
             return;
           }
         }
@@ -2539,10 +2554,9 @@ export default async function handler(req, res) {
     }
 
     // ── Page Experiment exposure ──────────────────────────────────────────────
-    // Sent by the client unconditionally, regardless of consent tier (see
-    // applyPageExperiment() in the embed script below) — assignment data is
-    // needed for valid test results even from visitors who declined
-    // statistics cookies. Bot traffic is already excluded above, before any
+    // Sent by the client only for visitors with statistics consent (see
+    // applyPageExperiment() in the embed script below), since bucketing
+    // relies on the session cookie. Bot traffic is already excluded above, before any
     // eventType branch runs. Re-validates the test/variant/domain/status
     // triple server-side rather than trusting the client's earlier GET
     // /api/ab-test-active response, closing the race where a test gets paused
