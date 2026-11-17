@@ -238,9 +238,16 @@ async function _handler(req, res) {
         // Now scoped to tier 'lead'/'sale' via isHeadlineConversionSql, matching the
         // headline conversion definition used elsewhere (see docs/analytics-audit-plan.md
         // item 5 and api/_conversions.js).
+        //
+        // gclid/msclkid/fbclid presence is also now checked ahead of the utm_*
+        // string heuristics — a session carrying a real ad-platform click id is
+        // definitely paid traffic even when utm_campaign is absent entirely
+        // (Google Ads' default auto-tagging appends only gclid, not utm_* params,
+        // unless the advertiser also set up a manual UTM tracking template), so
+        // without this such sessions fell through to 'direct'.
         db.query(`
             WITH first_touch AS (
-                SELECT DISTINCT ON (session_id) session_id, utm_source, utm_medium, referrer_host
+                SELECT DISTINCT ON (session_id) session_id, utm_source, utm_medium, referrer_host, gclid, msclkid, fbclid
                 FROM analytics_events
                 WHERE site_id = $1 AND session_id IS NOT NULL
                   AND received_at >= $2 AND received_at < $3
@@ -249,6 +256,8 @@ async function _handler(req, res) {
             SELECT
                 CASE
                     WHEN ft.utm_source ~* '^(fb|facebook|ig|instagram|msg|messenger|an)$'       THEN 'paid_social'
+                    WHEN ft.fbclid IS NOT NULL                                                  THEN 'paid_social'
+                    WHEN ft.gclid IS NOT NULL OR ft.msclkid IS NOT NULL                         THEN 'paid'
                     WHEN ft.utm_medium ~* '^(cpc|ppc|paid|cpm|display)'                         THEN 'paid'
                     WHEN ft.utm_medium = 'organic'
                          OR (COALESCE(ft.utm_source, '') = ''
@@ -297,23 +306,42 @@ async function _handler(req, res) {
         // Now scoped to tier 'lead'/'sale' via isHeadlineConversionSql, matching the
         // headline conversion definition used elsewhere (see docs/analytics-audit-plan.md
         // item 5 and api/_conversions.js).
+        //
+        // Also now widened to include sessions that only carry a gclid, with no
+        // utm_campaign at all — Google Ads' default auto-tagging appends just
+        // gclid unless the advertiser also configured a manual UTM tracking
+        // template, so utm_campaign-only matching was invisible to a real slice
+        // of paid traffic. Where a gclid resolves against
+        // analytics_click_resolutions (populated by cron-ad-click-resolve.js via
+        // Google's click_view API), the REAL campaign id/name from Google Ads
+        // itself is used as the grouping key and display name instead of the
+        // (possibly stale, placeholder, or absent) utm_campaign string — see
+        // humanizeCampaign's caller below for how resolved_name takes priority.
         db.query(`
             WITH first_touch AS (
-                SELECT DISTINCT ON (session_id) session_id, utm_campaign, utm_source, utm_medium
+                SELECT DISTINCT ON (session_id) session_id, utm_campaign, utm_source, utm_medium, gclid
                 FROM analytics_events
                 WHERE site_id = $1 AND session_id IS NOT NULL
                   AND received_at >= $2 AND received_at < $3
-                  AND utm_campaign IS NOT NULL AND TRIM(utm_campaign) != ''
+                  AND ((utm_campaign IS NOT NULL AND TRIM(utm_campaign) != '') OR gclid IS NOT NULL)
                 ORDER BY session_id, received_at ASC
             ),
             campaign_events AS (
-                SELECT TRIM(ft.utm_campaign) AS campaign, ft.utm_source AS source, ft.utm_medium AS medium,
-                       ce.name AS event_name, ce.session_id
+                SELECT
+                    COALESCE(r.campaign_id, TRIM(ft.utm_campaign)) AS campaign,
+                    COALESCE(ft.utm_source, CASE WHEN r.campaign_id IS NOT NULL THEN 'adwords' END) AS source,
+                    COALESCE(ft.utm_medium, CASE WHEN r.campaign_id IS NOT NULL THEN 'ppc'     END) AS medium,
+                    r.campaign_name AS resolved_name,
+                    ce.name AS event_name, ce.session_id
                 FROM analytics_custom_events ce
                 JOIN first_touch ft ON ft.session_id = ce.session_id
                 LEFT JOIN analytics_event_defs d ON d.site_id = ce.site_id AND d.name = ce.name
+                LEFT JOIN analytics_click_resolutions r
+                    ON r.organisation_id = $4 AND r.domain = $5 AND r.platform = 'google_ads'
+                   AND r.click_id = ft.gclid AND r.found = true
                 WHERE ce.site_id = $1 AND ce.received_at >= $2 AND ce.received_at < $3
                   AND ${isHeadlineConversionSql("ce", "d")}
+                  AND COALESCE(r.campaign_id, TRIM(ft.utm_campaign)) IS NOT NULL
             ),
             top_campaigns AS (
                 SELECT campaign, COUNT(*) AS total_count, COUNT(DISTINCT session_id) AS campaign_sessions
@@ -326,6 +354,7 @@ async function _handler(req, res) {
                 cev.campaign,
                 (ARRAY_AGG(cev.source) FILTER (WHERE COALESCE(cev.source, '') != ''))[1]  AS source,
                 (ARRAY_AGG(cev.medium) FILTER (WHERE COALESCE(cev.medium, '') != ''))[1]  AS medium,
+                (ARRAY_AGG(cev.resolved_name) FILTER (WHERE cev.resolved_name IS NOT NULL))[1] AS resolved_name,
                 cev.event_name,
                 COUNT(*)              AS count,
                 tc.campaign_sessions  AS campaign_sessions
@@ -333,7 +362,7 @@ async function _handler(req, res) {
             JOIN top_campaigns tc ON tc.campaign = cev.campaign
             GROUP BY cev.campaign, cev.event_name, tc.campaign_sessions
             ORDER BY cev.campaign, count DESC`,
-            [siteId, fromDate, toDateExclusive]
+            [siteId, fromDate, toDateExclusive, orgId, domain]
         ).catch((err) => {
             if (err?.message?.includes("does not exist")) return { rows: [] };
             throw err;
@@ -615,7 +644,18 @@ async function _handler(req, res) {
                 const def = defsByName.get(r.event_name);
                 let entry = byCampaign.get(r.campaign);
                 if (!entry) {
-                    entry = { campaign: humanizeCampaign(r.campaign), source: r.source || null,
+                    // `campaign` stays the RAW join key (either the literal utm_campaign
+                    // string, or — when a gclid resolved via analytics_click_resolutions —
+                    // the real numeric Google Ads campaign ID) so the frontend's ad-spend
+                    // match against ad-campaign-report's byId map actually succeeds;
+                    // humanizing it here (as this used to do) destroyed that match for
+                    // every numeric-ID campaign before it ever reached the client.
+                    // `displayName` is what's actually shown: the real campaign name from
+                    // Google Ads itself when gclid-resolved, else the same human-readable
+                    // fallback humanizeCampaign always produced.
+                    entry = { campaign: r.campaign, displayName: r.resolved_name || humanizeCampaign(r.campaign),
+                               resolvedViaClickId: !!r.resolved_name,
+                               source: r.source || null,
                                medium: r.medium || null, count: 0,
                                sessions: Number(r.campaign_sessions || 0), events: [] };
                     byCampaign.set(r.campaign, entry);

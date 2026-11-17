@@ -28,6 +28,11 @@
  *                                            single-URL Search Console indexing status, shared between
  *                                            the live top-pages panel (api/ad-daily-data.js) and the
  *                                            full-site coverage cron (api/cron-gsc-index-coverage.js)
+ * fetchGoogleAdsClicksByGclid(conn, gclids, date) → Map<gclid, {campaignId, campaignName, adGroupId,
+ *                                            adGroupName}> — resolves raw gclids to the real campaign/ad
+ *                                            group that produced them via the click_view resource, one
+ *                                            calendar day at a time. Used by cron-ad-click-resolve.js to
+ *                                            populate analytics_click_resolutions.
  */
 
 import zlib from "zlib";
@@ -1277,6 +1282,90 @@ export async function fetchGoogleAdsObjectById(conn, id) {
     }
 
     return null;
+}
+
+// ── Google Ads: resolve gclid → campaign/ad group via click_view ────────────
+// click_view is Google Ads' click-level reporting resource — unlike every
+// other fetch* function in this file (which goes account/campaign -> metrics),
+// this goes the OTHER direction: given a raw gclid our own tracking script
+// captured, ask Google which campaign/ad group actually produced that specific
+// click. That's a lookup, not a guess — strictly more reliable than matching
+// utm_campaign strings, which can be a stale/wrong literal, an unsubstituted
+// ValueTrack placeholder like "{campaignid}", or simply absent (Google's
+// default auto-tagging appends only gclid to the landing URL; an advertiser
+// who never set up a manual UTM tracking template sends no utm_* at all).
+//
+// Constraints, per Google's click_view docs:
+//   - Must filter by segments.date — queried here one calendar day at a time
+//     (click_view is documented as a per-day resource; a wide date range is
+//     not the intended usage even though GAQL's BETWEEN would parse).
+//   - Only the last ~90 days of clicks are available.
+//   - Read-only; click_view.gclid IN (...) filtering is supported, used here
+//     to resolve a whole day's gclids in one call instead of one-per-click.
+//   - NOT verified against a live account with click_view access as of
+//     writing — the GAQL shape follows Google's documented schema as closely
+//     as possible, but the first real call may need a debugging pass, same
+//     caveat fetchMicrosoftAdsAccounts/fetchMicrosoftAdsCampaigns carry above.
+//
+// Returns Map<gclid, {campaignId, campaignName, adGroupId, adGroupName}>.
+// A gclid with no matching row (not found, belongs to a different connected
+// account, or outside the 90-day window) is simply absent from the map —
+// callers (cron-ad-click-resolve.js) decide how to record that.
+export async function fetchGoogleAdsClicksByGclid(conn, gclids, date) {
+    if (!conn.account_id) throw new Error("No Google Ads customer ID linked.");
+    const out = new Map();
+    if (!gclids.length) return out;
+
+    const customerId = conn.account_id.replace(/\D/g, "");
+    const devToken = process.env.GOOGLE_ADS_DEVELOPER_TOKEN || "";
+    const headers = {
+        Authorization: `Bearer ${conn.access_token}`,
+        "developer-token": devToken,
+        "Content-Type": "application/json",
+    };
+    if (conn.login_customer_id) headers["login-customer-id"] = String(conn.login_customer_id).replace(/\D/g, "");
+
+    // gclid is an opaque Google-generated token (base64url-ish), never
+    // user-supplied free text that reaches this query untrusted — still
+    // stripped of quotes defensively before interpolation into the GAQL IN
+    // list, same caution fetchGoogleAdsObjectById's numeric-only id applies.
+    const idList = gclids.map(g => `'${String(g).replace(/'/g, "")}'`).join(",");
+
+    const resp = await fetch(
+        `https://googleads.googleapis.com/v25/customers/${customerId}/googleAds:search`,
+        {
+            method: "POST",
+            headers,
+            body: JSON.stringify({
+                query: `
+                    SELECT click_view.gclid, campaign.id, campaign.name, ad_group.id, ad_group.name
+                    FROM click_view
+                    WHERE segments.date = '${date}'
+                      AND click_view.gclid IN (${idList})
+                `,
+            }),
+        }
+    );
+    if (!resp.ok) {
+        const raw = await resp.text().catch(() => "");
+        let err = {};
+        try { err = JSON.parse(raw); } catch {}
+        throw new Error(err?.error?.message || `Google Ads API error (${resp.status}): ${raw.slice(0, 200)}`);
+    }
+    const data = await resp.json();
+    for (const row of (data.results || [])) {
+        const clickView = row.clickView || row.click_view || {};
+        const gclid = clickView.gclid;
+        if (!gclid) continue;
+        const adGroup = row.adGroup || row.ad_group || {};
+        out.set(gclid, {
+            campaignId:   row.campaign?.id   != null ? String(row.campaign.id)   : null,
+            campaignName: row.campaign?.name || null,
+            adGroupId:    adGroup.id   != null ? String(adGroup.id) : null,
+            adGroupName:  adGroup.name || null,
+        });
+    }
+    return out;
 }
 
 /**

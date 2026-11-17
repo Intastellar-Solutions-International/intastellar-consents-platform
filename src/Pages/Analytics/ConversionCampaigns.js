@@ -114,8 +114,9 @@ export default function ConversionCampaigns({ domain, fromIso, toIso, byCampaign
             <div className="sa-panel sa-conv-campaigns">
                 <h3 className="sa-panel__title"><IconMegaphone className="sa-icon" /> Campaigns</h3>
                 <p className="sa-panel__sub">
-                    No UTM-tagged conversions in this period. Tag campaign links with{" "}
-                    <code>?utm_campaign=</code> to see them here.
+                    No campaign-linked conversions in this period. Tag campaign links with{" "}
+                    <code>?utm_campaign=</code>, or connect a Google Ads account so visits with a{" "}
+                    <code>gclid</code> resolve automatically, to see them here.
                 </p>
             </div>
         );
@@ -196,11 +197,16 @@ export default function ConversionCampaigns({ domain, fromIso, toIso, byCampaign
                                         )}
                                     </td>
                                     <td className="sa-table__path" title={r.campaign}>
-                                        {r.campaign}
+                                        {r.displayName || r.campaign}
+                                        {r.resolvedViaClickId && (
+                                            <span className="sa-panel__consent-note" title="Resolved from the visitor's gclid via Google Ads' click_view API — more reliable than the utm_campaign tag">
+                                                {" "}· via click ID
+                                            </span>
+                                        )}
                                         {r.ad && (
                                             <span className="sa-panel__consent-note">
                                                 {" "}· {PLATFORM_LABEL[r.ad.platform] || r.ad.platform}
-                                                {r.ad.name && r.ad.name !== r.campaign ? ` "${r.ad.name}"` : ""}
+                                                {r.ad.name && r.ad.name !== r.displayName ? ` "${r.ad.name}"` : ""}
                                             </span>
                                         )}
                                     </td>

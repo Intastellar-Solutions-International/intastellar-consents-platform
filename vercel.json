@@ -58,6 +58,10 @@
       "schedule": "30 2 * * *"
     },
     {
+      "path": "/api/cron-ad-click-resolve",
+      "schedule": "45 2 * * *"
+    },
+    {
       "path": "/api/cron-ad-conversion-push",
       "schedule": "0 * * * *"
     },
