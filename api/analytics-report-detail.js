@@ -176,6 +176,11 @@ async function _handler(req, res) {
         }),
 
         // Time-to-convert — elapsed time between session's first event and each conversion.
+        // Previously measured every analytics_custom_events row (incl. auto-collected
+        // telemetry like page_perf/network_connection/scroll_depth), so this was really
+        // "time to any event," not time to convert. Now scoped to tier 'lead'/'sale' via
+        // isHeadlineConversionSql, matching the headline conversion definition used
+        // elsewhere (see docs/analytics-audit-plan.md item 5 and api/_conversions.js).
         db.query(`
             WITH first_seen AS (
                 SELECT session_id, MIN(received_at) AS first_at
@@ -188,8 +193,10 @@ async function _handler(req, res) {
                 SELECT EXTRACT(EPOCH FROM (ce.received_at - fs.first_at)) AS secs
                 FROM analytics_custom_events ce
                 JOIN first_seen fs ON fs.session_id = ce.session_id
+                LEFT JOIN analytics_event_defs d ON d.site_id = ce.site_id AND d.name = ce.name
                 WHERE ce.site_id = $1 AND ce.received_at >= $2 AND ce.received_at < $3
                   AND ce.received_at >= fs.first_at
+                  AND ${isHeadlineConversionSql("ce", "d")}
             )
             SELECT
                 COUNT(*)                                                     AS sample_size,
@@ -266,13 +273,17 @@ async function _handler(req, res) {
             throw err;
         }),
 
-        // Conversions by device type.
+        // Conversions by device type. Scoped to tier 'lead'/'sale' via
+        // isHeadlineConversionSql — same fix as the channel/campaign/time-to-convert
+        // queries above (see docs/analytics-audit-plan.md item 5 and api/_conversions.js).
         db.query(`
-            SELECT device_type, COUNT(*) AS count
-            FROM analytics_custom_events
-            WHERE site_id = $1 AND received_at >= $2 AND received_at < $3
-              AND device_type IS NOT NULL
-            GROUP BY device_type ORDER BY count DESC`,
+            SELECT ce.device_type, COUNT(*) AS count
+            FROM analytics_custom_events ce
+            LEFT JOIN analytics_event_defs d ON d.site_id = ce.site_id AND d.name = ce.name
+            WHERE ce.site_id = $1 AND ce.received_at >= $2 AND ce.received_at < $3
+              AND ce.device_type IS NOT NULL
+              AND ${isHeadlineConversionSql("ce", "d")}
+            GROUP BY ce.device_type ORDER BY count DESC`,
             [siteId, fromDate, toDateExclusive]
         ).catch((err) => {
             if (err?.message?.includes("does not exist")) return { rows: [] };

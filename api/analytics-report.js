@@ -634,6 +634,11 @@ async function _handler(req, res) {
         // this surfaces assist vs closing channel differences: a channel that
         // appears heavily in first-touch but barely in last-touch is an awareness
         // channel; one that dominates last-touch is a closing channel.
+        // Scoped to tier 'lead'/'sale' via isHeadlineConversionSql — otherwise any
+        // session that merely fired auto-collected telemetry (page_perf,
+        // scroll_depth, etc.) counts as "converting" here. Same headline
+        // conversion definition used elsewhere (see docs/analytics-audit-plan.md
+        // item 5 and api/_conversions.js).
         db.query(`
             WITH last_touch AS (
                 SELECT DISTINCT ON (ce.session_id)
@@ -645,11 +650,13 @@ async function _handler(req, res) {
                     ae.msclkid,
                     ae.fbclid
                 FROM analytics_custom_events ce
+                LEFT JOIN analytics_event_defs d ON d.site_id = ce.site_id AND d.name = ce.name
                 JOIN analytics_events ae
                     ON ae.session_id = ce.session_id
                     AND ae.site_id = $1
                     AND ae.received_at >= $2 AND ae.received_at < $3
                 WHERE ce.site_id = $1 AND ce.received_at >= $2 AND ce.received_at < $3
+                  AND ${isHeadlineConversionSql("ce", "d")}
                 ORDER BY ce.session_id, ae.received_at DESC
             )
             SELECT
