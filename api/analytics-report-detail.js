@@ -272,6 +272,12 @@ async function _handler(req, res) {
         }),
 
         // Conversions by campaign (first-touch), ranked by volume, broken out by event name.
+        // Previously counted every analytics_custom_events row tied to the session
+        // (incl. auto-collected telemetry like page_perf/network_connection/scroll_depth),
+        // so the "Conversions" total here included events that aren't conversions at all.
+        // Now scoped to tier 'lead'/'sale' via isHeadlineConversionSql, matching the
+        // headline conversion definition used elsewhere (see docs/analytics-audit-plan.md
+        // item 5 and api/_conversions.js).
         db.query(`
             WITH first_touch AS (
                 SELECT DISTINCT ON (session_id) session_id, utm_campaign, utm_source, utm_medium
@@ -286,7 +292,9 @@ async function _handler(req, res) {
                        ce.name AS event_name, ce.session_id
                 FROM analytics_custom_events ce
                 JOIN first_touch ft ON ft.session_id = ce.session_id
+                LEFT JOIN analytics_event_defs d ON d.site_id = ce.site_id AND d.name = ce.name
                 WHERE ce.site_id = $1 AND ce.received_at >= $2 AND ce.received_at < $3
+                  AND ${isHeadlineConversionSql("ce", "d")}
             ),
             top_campaigns AS (
                 SELECT campaign, COUNT(*) AS total_count, COUNT(DISTINCT session_id) AS campaign_sessions
