@@ -5,6 +5,19 @@ import { IconMegaphone, IconChevronDown } from "./Icons.js";
 
 const PLATFORM_LABEL = { meta_ads: "Meta", google_ads: "Google Ads", microsoft_ads: "Microsoft Ads" };
 
+// Same source pattern analytics-report-detail.js uses to classify 'paid_social'
+// vs 'paid' traffic — used here only as a fallback label for campaigns that
+// didn't match a connected ad account's spend data, so they still roll up
+// under a named platform instead of disappearing into "Other."
+function inferPlatformFromSource(source) {
+    const s = (source || "").trim().toLowerCase();
+    if (!s) return null;
+    if (/^(fb|facebook|ig|instagram|msg|messenger|an)$/.test(s)) return "meta_ads";
+    if (/google/.test(s)) return "google_ads";
+    if (/(bing|microsoft)/.test(s)) return "microsoft_ads";
+    return null;
+}
+
 function useAdCampaignReport(domain, fromIso, toIso) {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -59,6 +72,43 @@ export default function ConversionCampaigns({ domain, fromIso, toIso, byCampaign
         });
     }, [byCampaign, adLookup]);
 
+    // Platform-level rollup — "which ad channel actually produced bookings/
+    // purchases" is a decision made at the Google Ads vs Meta vs Microsoft
+    // Ads level, not by reading individual campaign rows one at a time.
+    // Campaigns without a matched connected-account spend row still count
+    // toward their inferred platform's conversions (just not its spend), so
+    // a disconnected/unmatched account doesn't silently vanish from the
+    // comparison.
+    const platformRows = useMemo(() => {
+        const byPlatform = new Map();
+        rows.forEach(r => {
+            const platform = r.ad?.platform || inferPlatformFromSource(r.source) || "other";
+            let entry = byPlatform.get(platform);
+            if (!entry) {
+                entry = { platform, conversions: 0, spend: 0, currency: null, hasSpend: false };
+                byPlatform.set(platform, entry);
+            }
+            entry.conversions += r.count;
+            if (r.ad && r.ad.spend > 0) {
+                entry.spend += r.ad.spend;
+                entry.hasSpend = true;
+                entry.currency = r.ad.currency || entry.currency;
+            }
+        });
+        return Array.from(byPlatform.values())
+            .map(e => ({ ...e, costPerConversion: e.hasSpend && e.conversions > 0 ? e.spend / e.conversions : null }))
+            .sort((a, b) => b.conversions - a.conversions);
+    }, [rows]);
+
+    const platformInsight = useMemo(() => {
+        const withSpend = platformRows.filter(p => p.costPerConversion != null);
+        if (withSpend.length < 2) return null;
+        const cheapest = withSpend.reduce((a, b) => (a.costPerConversion <= b.costPerConversion ? a : b));
+        const priciest = withSpend.reduce((a, b) => (a.costPerConversion >= b.costPerConversion ? a : b));
+        if (cheapest.platform === priciest.platform) return null;
+        return { cheapest, priciest };
+    }, [platformRows]);
+
     if (!rows.length) {
         return (
             <div className="sa-panel sa-conv-campaigns">
@@ -79,6 +129,46 @@ export default function ConversionCampaigns({ domain, fromIso, toIso, byCampaign
                     session-linked conversions only{adLoading ? " · loading ad spend…" : ""}
                 </span>
             </h3>
+
+            {platformRows.length > 0 && (
+                <>
+                    <h4 className="sa-panel__sub-title">By ad platform</h4>
+                    <table className="sa-table sa-conv-campaigns__platform-table">
+                        <thead>
+                            <tr>
+                                <th>Platform</th>
+                                <th className="sa-table__num">Conversions</th>
+                                <th className="sa-table__num">Ad spend</th>
+                                <th className="sa-table__num">Cost / conversion</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {platformRows.map(p => (
+                                <tr key={p.platform}>
+                                    <td>{PLATFORM_LABEL[p.platform] || "Other paid source"}</td>
+                                    <td className="sa-table__num">{p.conversions.toLocaleString("de-DE")}</td>
+                                    <td className="sa-table__num">{p.hasSpend ? formatCurrency(p.spend, p.currency) : "—"}</td>
+                                    <td className="sa-table__num">
+                                        {p.costPerConversion != null ? formatCurrency(p.costPerConversion, p.currency) : "—"}
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                    {platformInsight && (
+                        <p className="sa-panel__sub">
+                            {PLATFORM_LABEL[platformInsight.cheapest.platform] || "That platform"} converts cheapest at{" "}
+                            {formatCurrency(platformInsight.cheapest.costPerConversion, platformInsight.cheapest.currency)} per
+                            conversion. {PLATFORM_LABEL[platformInsight.priciest.platform] || "The other platform"} costs{" "}
+                            {formatCurrency(platformInsight.priciest.costPerConversion, platformInsight.priciest.currency)} per
+                            conversion — the most expensive of the channels with spend data connected.
+                        </p>
+                    )}
+                    <div className="sa-panel__divider" />
+                </>
+            )}
+
+            <h4 className="sa-panel__sub-title">By campaign</h4>
             <table className="sa-table">
                 <thead>
                     <tr>

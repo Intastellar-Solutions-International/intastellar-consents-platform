@@ -1,12 +1,13 @@
 import { BarSegment } from "./_shared.js";
 import { IconMegaphone } from "./Icons.js";
 
-const CHANNEL_LABEL = { organic: "Organic", paid: "Paid", referral: "Referral", direct: "Direct" };
+const CHANNEL_LABEL = { organic: "Organic", paid: "Paid", paid_social: "Paid Social (Meta)", referral: "Referral", direct: "Direct" };
 const CHANNEL_COLOR = {
-    organic:  "rgba(74,222,128,0.7)",
-    paid:     "rgba(251,146,60,0.7)",
-    referral: "rgba(99,179,237,0.7)",
-    direct:   "rgba(167,139,250,0.7)",
+    organic:     "rgba(74,222,128,0.7)",
+    paid:        "rgba(251,146,60,0.7)",
+    paid_social: "rgba(24,119,242,0.7)",
+    referral:    "rgba(99,179,237,0.7)",
+    direct:      "rgba(167,139,250,0.7)",
 };
 const DEVICE_LABEL = { desktop: "Desktop", mobile: "Mobile", tablet: "Tablet" };
 const DEVICE_COLOR = "rgba(192,159,83,0.7)";

@@ -225,6 +225,12 @@ async function _handler(req, res) {
         }),
 
         // Conversions by channel (first-touch attribution).
+        // Previously counted every analytics_custom_events row tied to the session
+        // (incl. auto-collected telemetry like page_perf/network_connection/scroll_depth),
+        // so "Where conversions come from" was really "where all traffic comes from."
+        // Now scoped to tier 'lead'/'sale' via isHeadlineConversionSql, matching the
+        // headline conversion definition used elsewhere (see docs/analytics-audit-plan.md
+        // item 5 and api/_conversions.js).
         db.query(`
             WITH first_touch AS (
                 SELECT DISTINCT ON (session_id) session_id, utm_source, utm_medium, referrer_host
@@ -250,7 +256,9 @@ async function _handler(req, res) {
                 COUNT(DISTINCT ce.session_id)          AS sessions
             FROM analytics_custom_events ce
             JOIN first_touch ft ON ft.session_id = ce.session_id
+            LEFT JOIN analytics_event_defs d ON d.site_id = ce.site_id AND d.name = ce.name
             WHERE ce.site_id = $1 AND ce.received_at >= $2 AND ce.received_at < $3
+              AND ${isHeadlineConversionSql("ce", "d")}
             GROUP BY 1`,
             [siteId, fromDate, toDateExclusive]
         ).catch((err) => {
