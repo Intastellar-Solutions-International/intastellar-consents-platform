@@ -129,15 +129,27 @@ export default async function handler(req, res) {
         [orgId, domain, fromDate, toDate]
     ).catch(() => ({ rows: [] }));
 
-    // Push status for these events
+    // Push status for these events. Joined back to the source event and
+    // scoped to tier 'lead'/'sale' — same requirement the `attributed` query
+    // above applies — so a push row left over from before api/a.js's
+    // push-queueing gate checked tier (it used to block by event NAME only,
+    // which let auto-collected telemetry AND kind='click' CTA events like
+    // "clicked_book_demo" through as if they were real conversions) doesn't
+    // inflate "Pushes sent"/topFailureReasons with pushes that were never
+    // genuine conversions in the first place. The underlying
+    // analytics_conversion_pushes rows are left untouched — this only
+    // affects what gets reported here, not the historical push log itself.
     const { rows: pushes } = await db.query(
         `SELECT p.id, p.custom_event_id, p.platform, p.status, p.pushed_at, p.error_message
          FROM analytics_conversion_pushes p
          JOIN analytics_sites s ON s.id = p.site_id
+         JOIN analytics_custom_events ace ON ace.id = p.custom_event_id
+         LEFT JOIN analytics_event_defs d ON d.site_id = ace.site_id AND d.name = ace.name
          WHERE p.organisation_id = $1
            AND s.domain = $2
            AND p.created_at >= $3::date
-           AND p.created_at <  $4::date + INTERVAL '1 day'`,
+           AND p.created_at <  $4::date + INTERVAL '1 day'
+           AND ${isHeadlineConversionSql("ace", "d")}`,
         [orgId, domain, fromDate, toDate]
     ).catch(() => ({ rows: [] }));
 

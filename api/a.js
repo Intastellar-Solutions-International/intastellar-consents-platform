@@ -3,6 +3,7 @@ import { lookupNetwork, clientIp } from "./_geoip.js";
 import { verifyBotDNS } from "./_rdns.js";
 import { recordDebugHit, DEBUG_TOKEN_RE } from "./_debug-hits.js";
 import { createEmbedCache } from "./_minify-embed.js";
+import { classifyTier } from "./_conversions.js";
 /**
  * GET  /api/a  → serves the Intastellar First-Party Analytics embed script
  * POST /api/a  → ingest endpoint receiving pageview events from embedded sites
@@ -171,29 +172,22 @@ function isDevOrLocalHost(host) {
     return false;
 }
 
-// Auto-collected event names that are NOT real conversions — mirrors
-// NON_CONVERSION_AUTO_EVENTS in api/analytics-attribution.js exactly (the
-// full AUTO_EVENT_NAMES list from src/Pages/Analytics/Conversions.js, no
-// exceptions) — kept in sync by hand since api/ and src/ aren't
-// cross-imported in this project. Used to keep ad-platform conversion
-// pushes (analytics_conversion_pushes) limited to events that are actually
-// conversions, not every interaction that happened to fire with a gclid —
-// scroll_depth/page_load included, since an engagement signal isn't a
-// conversion just because it has a click ID attached.
-//
-// This was previously declared inside the EMBED_SCRIPT template literal
-// below (shipped to every visitor's browser, never referenced there) rather
-// than here in real server-side module scope — the one real usage, in the
-// POST handler's push-queueing gate further down this file, was throwing
-// `ReferenceError: NON_CONVERSION_AUTO_EVENTS is not defined` on every
-// ad-attributed conversion event as a result.
-const NON_CONVERSION_AUTO_EVENTS = new Set([
-    "outbound_click", "scroll_depth", "form_submit", "form_started", "form_step",
-    "file_download", "video_play", "video_complete", "video_50pct",
-    "phone_click", "email_click", "content_copy", "page_print",
-    "rage_click", "video_pause", "page_perf", "page_load", "form_error",
-    "form_success", "form_field_focus", "network_connection",
-]);
+// The ad-platform conversion-push gate (POST handler further down this file)
+// used to block a hand-maintained list of auto-collected event NAMES
+// (NON_CONVERSION_AUTO_EVENTS — scroll_depth, page_load, etc.) instead of
+// checking the event's actual conversion tier. Two real problems with that:
+//   1. It was name-based, not tier-based, so a registered custom event with
+//      kind='click' (e.g. "clicked_book_demo" — a CTA click, not a booking)
+//      sailed straight through and got pushed to Google/Microsoft Ads as a
+//      genuine conversion, badly misleading any Smart Bidding/CPA
+//      optimization reading that signal.
+//   2. The list included "form_submit" — which api/_conversions.js's
+//      classifyTier() explicitly promotes to tier 'lead' (a real conversion)
+//      everywhere else in this app — so a real form submission with a click
+//      ID attached was silently never pushed at all.
+// Replaced below with classifyTier(name, kind), the same lead/sale
+// definition used for the headline "Conversions" KPI and the Attribution
+// page (see docs/analytics-audit-plan.md item 5).
 
 // Full href or bare pathname, depending on event type — bot-checking happens
 // before we know which branch a request will take, so this needs to handle both.
@@ -2452,17 +2446,27 @@ export default async function handler(req, res) {
         // Meta/Microsoft for ad optimization is sharing data with a third-party ad
         // platform, which is what the Advertisement consent category is actually for.
         //
-        // Also excludes auto-collected interaction events (scroll_depth, page_perf,
-        // rage_click, etc.) — mirrors NON_CONVERSION_AUTO_EVENTS in
-        // api/analytics-attribution.js (same list, kept in sync by hand — api/ files
-        // don't share modules). Without this, any auto-collected event that happens
-        // to fire with a gclid in the session (which is most of them, since they're
-        // tied to normal browsing, not an intentional conversion) gets queued and
-        // pushed to the ad platform as if it were a real conversion.
+        // Also requires tier 'lead' or 'sale' (classifyTier, same definition the
+        // headline "Conversions" KPI and the Attribution page use) — not just any
+        // event that happens to fire with a click ID attached. Without this, both
+        // auto-collected telemetry (scroll_depth, page_perf, rage_click — tied to
+        // normal browsing, not an intentional conversion) AND a registered
+        // kind='click' CTA event (a "Book a demo" button click, not the booking
+        // itself) would get queued and pushed to the ad platform as if they were
+        // real conversions.
         const hasAdvConsent = ca === 1 || ca === true;
         const evId = evRows[0]?.id ?? null;
-        const isConversionWorthy = !NON_CONVERSION_AUTO_EVENTS.has(String(eventName));
-        if (!isMinimal && hasAdvConsent && isConversionWorthy && evId && (cleanGclid || cleanMsclkid || cleanFbclid)) {
+        const hasClickId = !!(cleanGclid || cleanMsclkid || cleanFbclid);
+        let isConversionWorthy = false;
+        if (!isMinimal && hasAdvConsent && evId && hasClickId) {
+            const { rows: defRows } = await db.query(
+                `SELECT kind FROM analytics_event_defs WHERE site_id = $1 AND name = $2 LIMIT 1`,
+                [siteId, String(eventName).slice(0, 64)]
+            ).catch(() => ({ rows: [] }));
+            const tier = classifyTier(String(eventName), defRows[0]?.kind ?? null);
+            isConversionWorthy = tier === "lead" || tier === "sale";
+        }
+        if (isConversionWorthy) {
             const valueUsd = valueCents != null
                 ? (valueCents / 100).toFixed(4)
                 : null;
