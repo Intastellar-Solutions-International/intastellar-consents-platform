@@ -561,7 +561,11 @@ export async function fetchMicrosoftAdsAccounts(accessToken) {
 // fetchMicrosoftAdsAccounts above. Errors are surfaced with raw response
 // text (never silently swallowed) so that pass has something to go on.
 const MS_ADS_REPORTING_NS = "https://bingads.microsoft.com/Reporting/v13";
-const MS_ADS_REPORTING_ENTITIES_NS = "https://bingads.microsoft.com/Reporting/v13/Entities";
+// Unlike Customer Management, Reporting has no separate Entities namespace:
+// every ReportRequest member (Columns, Scope, Time and their children) lives
+// in MS_ADS_REPORTING_NS. WCF reads members in alphabetical order and drops
+// out-of-order or wrong-namespace elements silently — e.g. CustomDateRangeEnd
+// must precede CustomDateRangeStart, or the request fails with 2008.
 const MS_ADS_ARRAYS_NS = "http://schemas.microsoft.com/2003/10/Serialization/Arrays";
 const MS_ADS_REPORTING_ENDPOINT = "https://reporting.api.bingads.microsoft.com/Api/Advertiser/Reporting/v13/ReportingService.svc";
 
@@ -690,22 +694,22 @@ export async function fetchMicrosoftAdsCampaigns(conn, fromDate, toDate) {
                 <ReportName>ConversionsCampaignPerformance</ReportName>
                 <ReturnOnlyCompleteData>false</ReturnOnlyCompleteData>
                 <Aggregation>Summary</Aggregation>
-                <Columns xmlns:e="${MS_ADS_REPORTING_ENTITIES_NS}">
-                    <e:CampaignPerformanceReportColumn>CampaignId</e:CampaignPerformanceReportColumn>
-                    <e:CampaignPerformanceReportColumn>CampaignName</e:CampaignPerformanceReportColumn>
-                    <e:CampaignPerformanceReportColumn>CampaignStatus</e:CampaignPerformanceReportColumn>
-                    <e:CampaignPerformanceReportColumn>CampaignType</e:CampaignPerformanceReportColumn>
-                    <e:CampaignPerformanceReportColumn>Impressions</e:CampaignPerformanceReportColumn>
-                    <e:CampaignPerformanceReportColumn>Clicks</e:CampaignPerformanceReportColumn>
-                    <e:CampaignPerformanceReportColumn>Spend</e:CampaignPerformanceReportColumn>
+                <Columns>
+                    <CampaignPerformanceReportColumn>CampaignId</CampaignPerformanceReportColumn>
+                    <CampaignPerformanceReportColumn>CampaignName</CampaignPerformanceReportColumn>
+                    <CampaignPerformanceReportColumn>CampaignStatus</CampaignPerformanceReportColumn>
+                    <CampaignPerformanceReportColumn>CampaignType</CampaignPerformanceReportColumn>
+                    <CampaignPerformanceReportColumn>Impressions</CampaignPerformanceReportColumn>
+                    <CampaignPerformanceReportColumn>Clicks</CampaignPerformanceReportColumn>
+                    <CampaignPerformanceReportColumn>Spend</CampaignPerformanceReportColumn>
                 </Columns>
-                <Scope xmlns:e="${MS_ADS_REPORTING_ENTITIES_NS}">
-                    <e:AccountIds xmlns:a="${MS_ADS_ARRAYS_NS}"><a:long>${conn.account_id}</a:long></e:AccountIds>
+                <Scope>
+                    <AccountIds xmlns:a="${MS_ADS_ARRAYS_NS}"><a:long>${conn.account_id}</a:long></AccountIds>
                 </Scope>
-                <Time xmlns:e="${MS_ADS_REPORTING_ENTITIES_NS}">
-                    <e:CustomDateRangeStart><e:Day>${sd}</e:Day><e:Month>${sm}</e:Month><e:Year>${sy}</e:Year></e:CustomDateRangeStart>
-                    <e:CustomDateRangeEnd><e:Day>${ed}</e:Day><e:Month>${em}</e:Month><e:Year>${ey}</e:Year></e:CustomDateRangeEnd>
-                    <e:ReportTimeZone>GreenwichMeanTimeDublinEdinburghLisbonLondon</e:ReportTimeZone>
+                <Time>
+                    <CustomDateRangeEnd><Day>${ed}</Day><Month>${em}</Month><Year>${ey}</Year></CustomDateRangeEnd>
+                    <CustomDateRangeStart><Day>${sd}</Day><Month>${sm}</Month><Year>${sy}</Year></CustomDateRangeStart>
+                    <ReportTimeZone>GreenwichMeanTimeDublinEdinburghLisbonLondon</ReportTimeZone>
                 </Time>
             </ReportRequest>
         </SubmitGenerateReportRequest>`;
@@ -1169,20 +1173,20 @@ async function fetchMicrosoftAdsDaily(conn, fromDate, toDate) {
                 <ReportName>ConversionsCampaignPerformanceDaily</ReportName>
                 <ReturnOnlyCompleteData>false</ReturnOnlyCompleteData>
                 <Aggregation>Daily</Aggregation>
-                <Columns xmlns:e="${MS_ADS_REPORTING_ENTITIES_NS}">
-                    <e:CampaignPerformanceReportColumn>CampaignId</e:CampaignPerformanceReportColumn>
-                    <e:CampaignPerformanceReportColumn>TimePeriod</e:CampaignPerformanceReportColumn>
-                    <e:CampaignPerformanceReportColumn>Impressions</e:CampaignPerformanceReportColumn>
-                    <e:CampaignPerformanceReportColumn>Clicks</e:CampaignPerformanceReportColumn>
-                    <e:CampaignPerformanceReportColumn>Spend</e:CampaignPerformanceReportColumn>
+                <Columns>
+                    <CampaignPerformanceReportColumn>CampaignId</CampaignPerformanceReportColumn>
+                    <CampaignPerformanceReportColumn>TimePeriod</CampaignPerformanceReportColumn>
+                    <CampaignPerformanceReportColumn>Impressions</CampaignPerformanceReportColumn>
+                    <CampaignPerformanceReportColumn>Clicks</CampaignPerformanceReportColumn>
+                    <CampaignPerformanceReportColumn>Spend</CampaignPerformanceReportColumn>
                 </Columns>
-                <Scope xmlns:e="${MS_ADS_REPORTING_ENTITIES_NS}">
-                    <e:AccountIds xmlns:a="${MS_ADS_ARRAYS_NS}"><a:long>${conn.account_id}</a:long></e:AccountIds>
+                <Scope>
+                    <AccountIds xmlns:a="${MS_ADS_ARRAYS_NS}"><a:long>${conn.account_id}</a:long></AccountIds>
                 </Scope>
-                <Time xmlns:e="${MS_ADS_REPORTING_ENTITIES_NS}">
-                    <e:CustomDateRangeStart><e:Day>${sd}</e:Day><e:Month>${sm}</e:Month><e:Year>${sy}</e:Year></e:CustomDateRangeStart>
-                    <e:CustomDateRangeEnd><e:Day>${ed}</e:Day><e:Month>${em}</e:Month><e:Year>${ey}</e:Year></e:CustomDateRangeEnd>
-                    <e:ReportTimeZone>GreenwichMeanTimeDublinEdinburghLisbonLondon</e:ReportTimeZone>
+                <Time>
+                    <CustomDateRangeEnd><Day>${ed}</Day><Month>${em}</Month><Year>${ey}</Year></CustomDateRangeEnd>
+                    <CustomDateRangeStart><Day>${sd}</Day><Month>${sm}</Month><Year>${sy}</Year></CustomDateRangeStart>
+                    <ReportTimeZone>GreenwichMeanTimeDublinEdinburghLisbonLondon</ReportTimeZone>
                 </Time>
             </ReportRequest>
         </SubmitGenerateReportRequest>`;
