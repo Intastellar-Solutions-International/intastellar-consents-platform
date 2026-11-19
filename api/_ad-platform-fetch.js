@@ -491,24 +491,18 @@ function xmlTag(xml, tag) {
 
 export async function fetchMicrosoftAdsAccounts(accessToken) {
     // 1. Resolve the authenticated user's UserId (required by SearchAccounts below)
-    let userXml;
-    try {
-        userXml = await msAdsSoapCall(
-            "GetUser",
-            `<GetUserRequest xmlns="${MS_ADS_SOAP_NS}"><UserId i:nil="true"/></GetUserRequest>`,
-            accessToken
-        );
-    } catch (err) {
-        // 1310 "The user id not found": the token is valid but the Microsoft
-        // identity behind it has no Microsoft Advertising user — typically the
-        // wrong identity was picked when one email exists as both a personal
-        // and a work/school account, or an account invitation wasn't accepted.
-        if (/\b1310:/.test(err.message)) {
-            throw new Error("This Microsoft sign-in has no Microsoft Advertising user. Reconnect and pick the exact account (personal vs. work/school) you use at ads.microsoft.com, and make sure any account invitation has been accepted.");
-        }
-        throw err;
-    }
-    const userId = xmlTag(userXml, "Id");
+    const userXml = await msAdsSoapCall(
+        "GetUser",
+        `<GetUserRequest xmlns="${MS_ADS_SOAP_NS}"><UserId i:nil="true"/></GetUserRequest>`,
+        accessToken
+    );
+    // User's members serialize alphabetically, so ContactInfo (whose Address
+    // carries its own <Id>) comes before the User's Id — strip it first, or
+    // the address id gets passed to SearchAccounts and fails with 1310
+    // "The user id not found".
+    const userBlock = (/<(?:\w+:)?User\b[^>]*>([\s\S]*?)<\/(?:\w+:)?User>/i.exec(userXml)?.[1] || userXml)
+        .replace(/<(?:\w+:)?ContactInfo\b[\s\S]*?<\/(?:\w+:)?ContactInfo>/i, "");
+    const userId = xmlTag(userBlock, "Id");
     if (!userId) throw new Error(`Could not resolve Microsoft Advertising user from GetUser response: ${userXml.slice(0, 300)}`);
 
     // 2. Every account this user has access to
