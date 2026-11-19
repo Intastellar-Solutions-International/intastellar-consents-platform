@@ -83,7 +83,7 @@ function buildAuthUrl(platform, state, { deletion = false } = {}) {
             const clientId = process.env.MICROSOFT_ADS_CLIENT_ID;
             if (!clientId) return null;
             const scope = encodeURIComponent("https://ads.microsoft.com/msads.manage offline_access");
-            return `https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=${encodeURIComponent(clientId)}&response_type=code&redirect_uri=${redirectUri}&scope=${scope}&state=${state}`;
+            return `https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=${encodeURIComponent(clientId)}&response_type=code&redirect_uri=${redirectUri}&scope=${scope}&state=${state}&prompt=select_account`;
         }
         default:
             return null;

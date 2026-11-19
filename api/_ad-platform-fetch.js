@@ -489,11 +489,23 @@ function xmlTag(xml, tag) {
 
 export async function fetchMicrosoftAdsAccounts(accessToken) {
     // 1. Resolve the authenticated user's UserId (required by SearchAccounts below)
-    const userXml = await msAdsSoapCall(
-        "GetUser",
-        `<GetUserRequest xmlns="${MS_ADS_SOAP_NS}"><UserId i:nil="true"/></GetUserRequest>`,
-        accessToken
-    );
+    let userXml;
+    try {
+        userXml = await msAdsSoapCall(
+            "GetUser",
+            `<GetUserRequest xmlns="${MS_ADS_SOAP_NS}"><UserId i:nil="true"/></GetUserRequest>`,
+            accessToken
+        );
+    } catch (err) {
+        // 1310 "The user id not found": the token is valid but the Microsoft
+        // identity behind it has no Microsoft Advertising user — typically the
+        // wrong identity was picked when one email exists as both a personal
+        // and a work/school account, or an account invitation wasn't accepted.
+        if (/\b1310:/.test(err.message)) {
+            throw new Error("This Microsoft sign-in has no Microsoft Advertising user. Reconnect and pick the exact account (personal vs. work/school) you use at ads.microsoft.com, and make sure any account invitation has been accepted.");
+        }
+        throw err;
+    }
     const userId = xmlTag(userXml, "Id");
     if (!userId) throw new Error(`Could not resolve Microsoft Advertising user from GetUser response: ${userXml.slice(0, 300)}`);
 
