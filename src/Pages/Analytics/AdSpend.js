@@ -4,7 +4,7 @@ const Link = window.ReactRouterDOM.Link;
 import { DomainContext } from "../../App.js";
 import {
     useSyncDomainFromRoute, isCombinedOrClearDomain, toDomainsApiHeader, analyticsMarketingPath,
-    consentsDomainFromRoute,
+    consentsDomainFromRoute, reportsPath,
 } from "../../Functions/domainPathSegments.js";
 import { ScannerHost } from "../../API/host.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
@@ -15,6 +15,7 @@ import {
 import { IconCash, IconTarget, IconGlobe, IconTrendingUp } from "./Icons.js";
 import DataSource from "../../Components/DataSource/index.js";
 import "./Analytics.css";
+import RelatedPages from "../../Components/RelatedPages/index.js";
 
 // Duplicated per-file, same convention as AdConnectionManager.js/MarketingReconciliationPanel.js
 // (no shared platform-constants module exists in this codebase).
@@ -432,6 +433,10 @@ export default function AdSpend() {
             />
             <div className="dashboard-content">
                 <div className="sa-page">
+                    <RelatedPages links={[
+                        { product: "cmp", label: "Ad reconciliation", to: reportsPath(localStorage.getItem("platform") || "gdpr", domainLabel, "/reconcile"), hint: "Ad clicks vs. visits that consented, per campaign" },
+                        { product: "settings", label: "Ad connections", to: `/settings/ad-connections${domainLabel ? `?site=${encodeURIComponent(domainLabel)}` : ""}`, hint: "Connect, re-sync or disconnect ad platforms" },
+                    ]} />
 
                     {loading && <p className="sa-notice">Loading&hellip;</p>}
                     {error && <p className="sa-notice sa-notice--error">{error}</p>}

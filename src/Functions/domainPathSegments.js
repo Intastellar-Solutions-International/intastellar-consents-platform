@@ -380,13 +380,19 @@ export function switchModePath(mode, platformId, domainUnicode, location = windo
     } else {
         target = modePath(mode, platformId, domainUnicode);
     }
+    return withSharedQuery(target, location);
+}
+
+/** `path` plus the shared query (date range) of the current page — for links across products. */
+export function withSharedQuery(path, location = window.location) {
     const current = new URLSearchParams(location?.search || "");
-    const carried = new URLSearchParams();
+    const [base, existing = ""] = String(path).split("?");
+    const carried = new URLSearchParams(existing);
     for (const key of SHARED_QUERY_KEYS) {
-        if (current.has(key)) carried.set(key, current.get(key));
+        if (current.has(key) && !carried.has(key)) carried.set(key, current.get(key));
     }
     const qs = carried.toString();
-    return qs ? `${target}?${qs}` : target;
+    return qs ? `${base}?${qs}` : base;
 }
 
 /** Keep DomainContext aligned with :handle on report + dashboard routes */

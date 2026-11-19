@@ -8,6 +8,8 @@ import API from "../../../API/api";
 
 const { useState, useEffect, useRef, useContext } = React;
 import { DomainContext } from "../../../App.js";
+import RelatedPages from "../../../Components/RelatedPages/index.js";
+import { analyticsAdSpendPath, reportsPath } from "../../../Functions/domainPathSegments.js";
 
 function readCachedDomains() {
     try {
@@ -317,6 +319,10 @@ export default function AdConnectionsSettings() {
                             Connect Google Ads, Meta, LinkedIn, and Microsoft Ads to auto-import
                             clicks and spend for each domain. Connections are per-domain.
                         </p>
+                        <RelatedPages className="tw-mt-3" links={[
+                            { product: "analytics", label: "Ad Spend", to: analyticsAdSpendPath(selectedDomain || null), hint: "What these connections report: spend, clicks, campaigns" },
+                            { product: "cmp", label: "Ad reconciliation", to: reportsPath(localStorage.getItem("platform") || "gdpr", selectedDomain || null, "/reconcile"), hint: "Ad clicks vs. visits that consented" },
+                        ]} />
                     </header>
 
                     {successMsg && (

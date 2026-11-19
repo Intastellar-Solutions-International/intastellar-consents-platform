@@ -28,6 +28,8 @@ import AllDomainsCompliance from "./AllDomainsCompliance.js";
 import { KpiTile, Button, Badge, Tabs, TabPanel, EmptyState, FilterSelect, ErrorState } from "../../Components/ui";
 import { readJsonResult, errorMessage } from "../../Functions/apiResult.js";
 import { redirectToLogin } from "../../Functions/session.js";
+import RelatedPages from "../../Components/RelatedPages/index.js";
+import { analyticsConsentPath, isCombinedOrClearDomain, decodeDomainPathSegment } from "../../Functions/domainPathSegments.js";
 
 const Link = window.ReactRouterDOM.Link;
 const useParams = window.ReactRouterDOM.useParams;
@@ -652,6 +654,11 @@ export default function CompliancePage() {
                                 </div>
                             )}
                             <ScanHistoryPanel scans={scanHistory} currentId={preConsentTransfers?.id} firstVisitId={preConsentTransfers?.first_visit?.id} basePath={location.pathname} />
+
+                            <RelatedPages links={[
+                                { product: "analytics", label: "Consent", to: analyticsConsentPath(isCombinedOrClearDomain(domainsForApi) ? null : (handle ? decodeDomainPathSegment(handle) : currentDomain)), hint: "How consent choices shape the traffic you can measure" },
+                                { product: "settings", label: "Legal basis", to: "/settings/legal-basis", hint: "Which services may run before consent" },
+                            ]} />
 
                             {/* ── Tabs (shown once a scan exists) ── */}
                             {preConsentTransfers && !scanLoading && !preConsentTransfers.error && (

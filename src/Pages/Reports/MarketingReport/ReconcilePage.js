@@ -13,11 +13,13 @@ import {
     consentsDomainFromRoute,
     toDomainsApiHeader,
     analyticsMarketingPath,
+    analyticsAdSpendPath,
     isCombinedOrClearDomain,
 } from "../../../Functions/domainPathSegments.js";
 import MarketingReconciliationPanel from "./MarketingReconciliationPanel.js";
 import appStorage from "../../../Functions/storage.js";
 import { redirectToLogin } from "../../../Functions/session.js";
+import RelatedPages from "../../../Components/RelatedPages/index.js";
 
 const useParams = window.ReactRouterDOM.useParams;
 
@@ -383,6 +385,11 @@ export default function ReconcilePage() {
                             }}
                         />
                     )}
+
+                    <RelatedPages className="tw-mb-4" links={[
+                        { product: "analytics", label: "Ad Spend", to: analyticsAdSpendPath(noDomain ? null : listDomainLabel), hint: "Spend, cost per click and campaigns per platform" },
+                        { product: "settings", label: "Ad connections", to: `/settings/ad-connections${noDomain ? "" : `?site=${encodeURIComponent(listDomainLabel)}`}` },
+                    ]} />
 
                     {/* ── Dashboard page header ─────────────────────────────── */}
                     <div className="recon-page-header">

@@ -6,6 +6,8 @@ import StickyPageTitle from "../../../Components/Header/Sticky/index.js";
 import { ScannerHost } from "../../../API/host.js";
 import { analyticsSnippet } from "../../../Functions/installSnippet.js";
 import "../Style.css";
+import RelatedPages from "../../../Components/RelatedPages/index.js";
+import { analyticsSettingsPath } from "../../../Functions/domainPathSegments.js";
 
 function readCachedDomains() {
     try {
@@ -462,9 +464,13 @@ export default function AnalyticsScript() {
                     <div className="as-intro">
                         <p>
                             Embed this lightweight script on your website to collect first-party, consent-gated
-                            analytics. The script reads your Intastellar banner cookie and only activates when the
-                            visitor has accepted <strong>statisticCookies</strong> — no consent, no data.
+                            analytics. It reads your Intastellar banner's consent: visitors who accept{" "}
+                            <strong>statisticCookies</strong> are measured in full; everyone else is counted
+                            anonymously (page and consent choice only — no cookies, no session).
                         </p>
+                        <RelatedPages className="tw-mt-3" links={[
+                            { product: "analytics", label: "Analytics settings", to: analyticsSettingsPath(domain || null), hint: "Industry, foreign domains, interests and more" },
+                        ]} />
                     </div>
 
                     {domains.length > 0 && (

@@ -4,6 +4,7 @@ import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import { authHeaders, useAnalyticsPageChrome, useCompareRange } from "./_shared.js";
 import { SkeletonRows } from "./components/Skeleton.js";
 import "./Analytics.css";
+import RelatedPages from "../../Components/RelatedPages/index.js";
 
 const AD_CONNECTIONS_URL      = `${ScannerHost}/api/ad-connections`;
 const AD_CONV_ACTIONS_URL     = `${ScannerHost}/api/ad-conversion-actions`;
@@ -944,6 +945,10 @@ export default function AnalyticsSettings() {
             />
             <div className="dashboard-content">
                 <div className="sa-page">
+                    <RelatedPages links={[
+                        { product: "cmp", label: "Domains & banner", to: `/${localStorage.getItem("platform") || "gdpr"}/domains`, hint: "The cookie banner the tracker reads consent from" },
+                        { product: "settings", label: "Install code", to: "/settings/analytics-script", hint: "Site key and tracker snippet" },
+                    ]} />
 
                     <Section title="Site Configuration">
                         <SiteConfigSection domain={domain} />

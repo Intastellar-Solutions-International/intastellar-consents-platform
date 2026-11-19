@@ -4,6 +4,8 @@ import { IconShieldCheck, IconBarChart } from "./Icons.js";
 import { ConsentImpactPanel } from "./ReportPanels.js";
 import { ConsentRatesBridge } from "../../Components/ProductBridge/index.js";
 import "./Analytics.css";
+import RelatedPages from "../../Components/RelatedPages/index.js";
+import { reportsPath } from "../../Functions/domainPathSegments.js";
 
 export default function AnalyticsConsent() {
     document.title = "Consent | Site Analytics";
@@ -36,6 +38,10 @@ export default function AnalyticsConsent() {
             />
             <div className="dashboard-content">
                 <div className="sa-page">
+                    <RelatedPages links={[
+                        { product: "cmp", label: "Compliance", to: reportsPath(localStorage.getItem("platform") || "gdpr", domain, "/compliance"), hint: "Cookies and vendors that load before consent" },
+                        { product: "settings", label: "Legal basis", to: "/settings/legal-basis", hint: "Which services may run before consent" },
+                    ]} />
                     {!hasDomain && (
                         <p className="sa-notice">Select a domain in the header to view consent data.</p>
                     )}
