@@ -691,18 +691,37 @@ function unzipFirstEntry(buf) {
 // quotes needing escaping in campaign names; a campaign name containing a
 // comma would need full CSV-quote-aware parsing, which this simple split
 // does not do.
+// Splits one CSV line, keeping commas inside quoted cells (campaign names)
+// and unescaping doubled quotes.
+function splitCsvLine(line) {
+    const cells = [];
+    let cur = "", quoted = false;
+    for (let i = 0; i < line.length; i++) {
+        const ch = line[i];
+        if (quoted) {
+            if (ch === '"' && line[i + 1] === '"') { cur += '"'; i++; }
+            else if (ch === '"') quoted = false;
+            else cur += ch;
+        } else if (ch === '"') quoted = true;
+        else if (ch === ",") { cells.push(cur.trim()); cur = ""; }
+        else cur += ch;
+    }
+    cells.push(cur.trim());
+    return cells;
+}
+
 function parseSimpleCsv(text) {
-    const lines = text.split(/\r?\n/);
+    const lines = text.replace(/^\uFEFF/, "").split(/\r?\n/);
     // Matched by presence, not position — the requested Columns order isn't
     // guaranteed to be the order the report actually comes back in.
     const headerIdx = lines.findIndex(l => /(^|,)"?CampaignId"?(,|$)/i.test(l.trim()));
     if (headerIdx === -1) return [];
-    const headers = lines[headerIdx].split(",").map(h => h.replace(/^"|"$/g, "").trim());
+    const headers = splitCsvLine(lines[headerIdx]);
     const rows = [];
     for (let i = headerIdx + 1; i < lines.length; i++) {
         const line = lines[i].trim();
         if (!line) break;
-        const cells = line.split(",").map(c => c.replace(/^"|"$/g, "").trim());
+        const cells = splitCsvLine(line);
         const row = {};
         headers.forEach((h, idx) => { row[h] = cells[idx]; });
         rows.push(row);
@@ -1249,10 +1268,19 @@ async function fetchMicrosoftAdsDaily(conn, fromDate, toDate) {
 
     const result = {};
     for (const r of rows) {
-        // TimePeriod comes back as MM/DD/YYYY per Bing's documented Csv format.
-        const m = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec(String(r.TimePeriod || "").trim());
-        if (!m) continue;
-        const date = `${m[3]}-${m[1].padStart(2, "0")}-${m[2].padStart(2, "0")}`;
+        // TimePeriod is documented as MM/DD/YYYY, but v13 Csv reports can
+        // also return ISO YYYY-MM-DD — accept both, or every row is dropped
+        // and the sync "succeeds" with zero days saved.
+        const tp = String(r.TimePeriod || "").trim();
+        const us = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec(tp);
+        const iso = /^(\d{4})-(\d{2})-(\d{2})/.exec(tp);
+        if (!us && !iso) {
+            console.warn("[fetchMicrosoftAdsDaily] unparseable TimePeriod:", tp);
+            continue;
+        }
+        const date = iso
+            ? `${iso[1]}-${iso[2]}-${iso[3]}`
+            : `${us[3]}-${us[1].padStart(2, "0")}-${us[2].padStart(2, "0")}`;
         if (!result[date]) result[date] = { clicks: 0, impressions: 0, spend: 0, currency };
         result[date].clicks      += Number(r.Clicks || 0);
         result[date].impressions += Number(r.Impressions || 0);
