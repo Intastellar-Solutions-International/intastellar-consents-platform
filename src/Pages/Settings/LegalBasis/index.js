@@ -3,6 +3,8 @@ import API from "../../../API/api.js";
 import SideNav from "../../../Components/Header/SideNav.js";
 import { reportsLinks } from "../../../Components/Header/SideNavLinks/index.js";
 import StickyPageTitle from "../../../Components/Header/Sticky/index.js";
+import ErrorState from "../../../Components/ui/ErrorState.js";
+import { errorMessage } from "../../../Functions/apiResult.js";
 import "../Style.css";
 import { LEGAL_BASES, PROCESSING_PURPOSES, DEFAULT_LEGAL_BASIS } from "../../../Functions/legalBasisDefinitions.js";
 import { FRAMEWORK_IDS } from "../../../Components/AuditSnapshotCard/complianceRegions.js";
@@ -27,20 +29,31 @@ export default function LegalBasis() {
     const [saving, setSaving] = useState(false);
     const [status, setStatus] = useState(null);
     const [error, setError] = useState(null);
+    // While the saved settings haven't loaded, Save is blocked: saving the
+    // defaults shown here would overwrite the real configuration.
+    const [loadError, setLoadError] = useState(null);
+    const [loaded, setLoaded] = useState(false);
 
     function apply(data) {
         if (data.matrix) setConfig((prev) => ({ ...prev, ...data.matrix }));
         if (Array.isArray(data.services)) setServices(data.services.map((s) => ({ ...s, hosts: (s.hosts || []).join(", ") })));
     }
 
-    useEffect(() => {
+    function load() {
+        setLoadError(null);
         fetch(API.legalBasis.url, { headers: API.legalBasis.headers })
-            .then((r) => r.json())
-            .then((data) => {
+            .then(async (r) => {
+                if (!r.ok) throw new Error(`Couldn't load your legal basis settings (${r.status}).`);
+                const data = await r.json();
+                // A body-level error means "nothing saved yet" (new org) —
+                // the defaults are the right starting point then.
                 if (data && typeof data === "object" && !data.error) apply(data);
+                setLoaded(true);
             })
-            .catch(() => {});
-    }, []);
+            .catch((err) => setLoadError(errorMessage(err)));
+    }
+
+    useEffect(() => { load(); }, []);
 
     function setBase(fw, purposeId, value) {
         setConfig((prev) => ({
@@ -90,6 +103,13 @@ export default function LegalBasis() {
                     “Services without consent” are passed to the cookie banner through each domain's config.js.
                 </p>
 
+                {loadError && (
+                    <ErrorState
+                        title="Couldn't load your saved settings"
+                        message={`${loadError} The values below are defaults — saving is disabled so they can't replace your real configuration.`}
+                        onRetry={load}
+                    />
+                )}
                 {status === "saved" && (
                     <p className="settings-subpage__status">Legal basis configuration saved.</p>
                 )}
@@ -148,7 +168,8 @@ export default function LegalBasis() {
                     type="button"
                     className="settings-subpage__submit"
                     onClick={save}
-                    disabled={saving}
+                    disabled={saving || !loaded}
+                    title={!loaded ? "Available once your saved settings have loaded" : undefined}
                 >
                     {saving ? "Saving…" : "Save changes"}
                 </button>

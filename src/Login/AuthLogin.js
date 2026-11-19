@@ -2,6 +2,7 @@ const useLocation = window.ReactRouterDOM.useLocation;
 const { useState, useEffect, useRef, useContext } = React;
 import API from "../API/api";
 import appStorage from '../Functions/storage.js';
+import { consumeReturnTo } from "../Functions/session.js";
 export default function AuthLogin() {
     const location = useLocation();
     const query = new URLSearchParams(location.search);
@@ -13,11 +14,9 @@ export default function AuthLogin() {
         return null;
     }
 
-    console.log("Token from URL: ", typeof token, token);
-    // Convert token string to object if needed
-
+    // (Token is not logged: it's a credential, and the console is visible
+    // to browser extensions and screen-shares.)
     const parsedToken = token ? JSON.parse(token) : null;
-    console.log("Parsed Token: ", typeof parsedToken, parsedToken);
 
     fetch(API.Login.url, {
         withCredentials: false,
@@ -41,7 +40,11 @@ export default function AuthLogin() {
         appStorage.setItem("organisation", response.organisation);
         appStorage.setItem("globals", JSON.stringify(response));
 
-        if (localStorage.getItem("platform") === null || localStorage.getItem("platform") === undefined) {
+        // Back to the page the session expired on, if there is one.
+        const returnTo = consumeReturnTo();
+        if (returnTo) {
+            window.location.href = returnTo;
+        } else if (localStorage.getItem("platform") === null || localStorage.getItem("platform") === undefined) {
             window.location.href = "/dashboard";
         } else {
             window.location.href = "/" + localStorage.getItem("platform") + "/dashboard";

@@ -17,6 +17,7 @@ import {
 } from "../../../Functions/domainPathSegments.js";
 import MarketingReconciliationPanel from "./MarketingReconciliationPanel.js";
 import appStorage from "../../../Functions/storage.js";
+import { redirectToLogin } from "../../../Functions/session.js";
 
 const useParams = window.ReactRouterDOM.useParams;
 
@@ -282,7 +283,7 @@ export default function ReconcilePage() {
             }
             if (json === "Err_Login_Expired") {
                 appStorage.removeItem("globals");
-                window.location.href = "/login";
+                redirectToLogin();
                 return;
             }
             if (!res.ok) {

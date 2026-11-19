@@ -14,6 +14,7 @@ import { Icon } from "../Components/UI/icons.js";
 import { TRANSLATIONS } from "./loginTranslations.js";
 import { useLanguage, setLanguage } from "../i18n/index.js";
 import LanguageMenu from "../Components/UI/LanguageMenu.js";
+import { consumeReturnTo } from "../Functions/session.js";
 
 const { useState, useRef, useEffect } = React;
 
@@ -78,6 +79,12 @@ function handleLogin(account, product = "cmp") {
         // No organisation yet is fine — App shows the first-run setup.
         storeUserOrganisations(account, organisations);
 
+        // Back to the page the session expired on, if there is one.
+        const returnTo = consumeReturnTo();
+        if (returnTo) {
+            window.location.href = returnTo;
+            return;
+        }
         const platform = localStorage.getItem("platform");
         if (product === "analytics") {
             window.location.href = "/analytics";

@@ -1,5 +1,6 @@
 import API from "../API/api";
 import appStorage from "./storage.js";
+import { redirectToLogin } from "./session.js";
 
 export const REPORTS = {
     audit: { name: "Consent audit", filename: "Consent_Audit" },
@@ -60,7 +61,7 @@ export async function requestReportPdf(platformId, type, domain, fromYmd, toYmd)
 
     if (response.status === 401 || response.status === 403) {
         appStorage.removeItem("globals");
-        window.location.href = "/login";
+        redirectToLogin();
         return { ok: false };
     }
 

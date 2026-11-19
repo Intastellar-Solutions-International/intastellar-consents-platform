@@ -5,6 +5,7 @@ import { Loading, CurrentPageLoading } from "../../Components/widget/Loading";
 import StickyPageTitle from "../../Components/Header/Sticky";
 import punycode from "punycode";
 import appStorage from '../../Functions/storage.js';
+import { redirectToLogin } from "../../Functions/session.js";
 
 const { useState, useEffect, useRef } = React;
 
@@ -27,7 +28,7 @@ export default function Websites() {
         }).then((data) => {
             if (data === "Err_Login_Expired") {
                 appStorage.removeItem("globals");
-                window.location.href = "/login";
+                redirectToLogin();
                 return;
             }
             // Handle successful PDF export

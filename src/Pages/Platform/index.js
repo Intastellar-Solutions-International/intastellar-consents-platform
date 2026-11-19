@@ -8,6 +8,7 @@ import { installsByMonth, platformShares, toSites } from "../../Functions/platfo
 import { toUnicodeDomain } from "../../Functions/cachedDomains.js";
 import appStorage from "../../Functions/storage.js";
 import SalesFigures from "./SalesFigures.js";
+import { redirectToLogin } from "../../Functions/session.js";
 
 const { useState, useEffect, useMemo } = React;
 const useHistory = window.ReactRouterDOM.useHistory;
@@ -28,7 +29,7 @@ const TABS = [
 
 const onLoginExpired = () => {
     appStorage.removeItem("globals");
-    window.location.href = "/login";
+    redirectToLogin();
 };
 
 function fetchEndpoint(endpoint, signal) {

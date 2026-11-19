@@ -1815,3 +1815,9 @@
     border-radius: var(--radius-md);
     cursor: pointer;
 }
+/* Save error inside the blacklist dialog (CMP danger text, announced) */
+.settings-blacklist-modal__error {
+    margin: var(--space-2) 0 0;
+    font-size: var(--text-sm);
+    color: var(--color-danger-text);
+}

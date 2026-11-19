@@ -3,6 +3,7 @@ import API from "../../API/api";
 import appStorage from "../../Functions/storage.js";
 import { fetchUserOrganisations, storeUserOrganisations } from "../../Functions/organisations.js";
 import "./Onboarding.css";
+import { redirectToLogin } from "../../Functions/session.js";
 
 const { useState } = React;
 
@@ -38,7 +39,7 @@ export default function CreateFirstOrganisation() {
             );
             if (re === "Err_Login_Expired") {
                 appStorage.removeItem("globals");
-                window.location.href = "/login";
+                redirectToLogin();
                 return;
             }
             if (typeof re === "string" && /^(ERR|Err)_/.test(re)) throw new Error(re);

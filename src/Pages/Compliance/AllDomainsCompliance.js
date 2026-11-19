@@ -8,6 +8,7 @@ import { issueBreakdownText, scanCompliance } from "../../Functions/transferComp
 import { preConsentCookieStat } from "../../Functions/cookieStats.js";
 import { combineDomainCompliance, filterDomainCompliance, mapWithLimit, sortDomains } from "../../Functions/allDomainsCompliance.js";
 import appStorage from "../../Functions/storage.js";
+import { redirectToLogin } from "../../Functions/session.js";
 
 const { useState, useEffect, useMemo } = React;
 const Link = window.ReactRouterDOM.Link;
@@ -40,7 +41,7 @@ const KIND = {
 
 const onLoginExpired = () => {
     appStorage.removeItem("globals");
-    window.location.href = "/login";
+    redirectToLogin();
 };
 
 /** One scanCompliance() per domain, from the same request the header status uses. */

@@ -9,6 +9,7 @@ import { reportsLinks } from "../../../Components/Header/SideNavLinks";
 import StickyPageTitle from "../../../Components/Header/Sticky";
 import "../Style.css";
 import appStorage from '../../../Functions/storage.js';
+import { redirectToLogin } from "../../../Functions/session.js";
 
 const Link = window.ReactRouterDOM.Link;
 
@@ -120,7 +121,7 @@ export default function ViewUsers() {
             setPending(null);
             if (re === "Err_Login_Expired" || re === "Err_Token_Not_Found") {
                 appStorage.removeItem("globals");
-                window.location.href = "/login";
+                redirectToLogin();
                 return;
             }
             if (re === "Err_No_Access" || re === "Err_No_Permission" || re === "Err_Server_Error") {
@@ -156,7 +157,7 @@ export default function ViewUsers() {
             setPending(null);
             if (re === "Err_Login_Expired" || re === "Err_Token_Not_Found") {
                 appStorage.removeItem("globals");
-                window.location.href = "/login";
+                redirectToLogin();
                 return;
             }
             if (re === "Err_No_Access" || re === "Err_No_Permission" || re === "Err_Server_Error") {

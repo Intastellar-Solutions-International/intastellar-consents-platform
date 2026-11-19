@@ -26,6 +26,7 @@ import DomainHealthPill from "../Shell/DomainHealthPill.js";
 import NotificationCenter from "../Notifications/index.js";
 import HelpCenter from "../Help/index.js";
 import { isNewShell } from "../../Functions/featureFlags.js";
+import { redirectToLogin } from "../../Functions/session.js";
 
 const { useState, useEffect, useContext, useMemo, useRef, useCallback } = React;
 
@@ -285,7 +286,7 @@ export default function Header(props) {
         })).then((data) => {
             if (data === "Err_Login_Expired") {
                 appStorage.removeItem("globals");
-                window.location.href = "/login";
+                redirectToLogin();
                 return;
             }
 
@@ -324,7 +325,7 @@ export default function Header(props) {
         Fetch(domainsApi.url, domainsApi.method, domainsApi.headers).then((data) => {
             if (data === "Err_Login_Expired") {
                 appStorage.removeItem("globals");
-                window.location.href = "/login";
+                redirectToLogin();
                 return;
             }
 

@@ -3,6 +3,8 @@ import API from "../../../API/api.js";
 import SideNav from "../../../Components/Header/SideNav.js";
 import { reportsLinks } from "../../../Components/Header/SideNavLinks/index.js";
 import StickyPageTitle from "../../../Components/Header/Sticky/index.js";
+import ErrorState from "../../../Components/ui/ErrorState.js";
+import { readJsonResult, errorMessage } from "../../../Functions/apiResult.js";
 import "../Style.css";
 
 export default function BlacklistIp() {
@@ -11,6 +13,10 @@ export default function BlacklistIp() {
     const [openModal, setOpenModal] = useState(false);
     const [userIp, setUserIp] = useState(null);
     const [newIp, setNewIp] = useState("");
+    const [listError, setListError] = useState(null);
+    const [listLoading, setListLoading] = useState(true);
+    const [saving, setSaving] = useState(false);
+    const [saveError, setSaveError] = useState(null);
 
     const fetchUserIp = async () => {
         try {
@@ -31,18 +37,44 @@ export default function BlacklistIp() {
         }
     };
 
+    // A failed load must not read as "No blacklisted IPs yet" — that would
+    // tell the user nothing is excluded when the list just didn't arrive.
     function fetchAllBlacklistedIps() {
-        fetch(API.gdpr.getBlackList.url, {
+        setListLoading(true);
+        setListError(null);
+        return fetch(API.gdpr.getBlackList.url, {
             method: API.gdpr.getBlackList.method,
             headers: API.gdpr.getBlackList.headers,
         })
-            .then((response) => response.json())
+            .then((response) => readJsonResult(response, "Couldn't load the blacklist."))
             .then((data) => {
-                if (data && Array.isArray(data.blacklisted_ips)) {
-                    setBlacklist(data.blacklisted_ips);
-                }
+                setBlacklist(Array.isArray(data?.blacklisted_ips) ? data.blacklisted_ips : []);
             })
-            .catch(() => {});
+            .catch((err) => setListError(errorMessage(err)))
+            .finally(() => setListLoading(false));
+    }
+
+    // Saved first, shown second: the IP only appears in the list once the
+    // server has it, so the list never claims an exclusion that isn't active.
+    async function addIp() {
+        const ip = newIp?.trim();
+        if (!ip) { setOpenModal(false); return; }
+        setSaving(true);
+        setSaveError(null);
+        try {
+            const response = await fetch(API.gdpr.saveBlacklistIp.url, {
+                method: API.gdpr.saveBlacklistIp.method,
+                headers: API.gdpr.saveBlacklistIp.headers,
+                body: API.gdpr.saveBlacklistIp.body(ip),
+            });
+            await readJsonResult(response, "Couldn't add the IP.");
+            setOpenModal(false);
+            await fetchAllBlacklistedIps();
+        } catch (err) {
+            setSaveError(errorMessage(err));
+        } finally {
+            setSaving(false);
+        }
     }
 
     useEffect(() => {
@@ -70,13 +102,20 @@ export default function BlacklistIp() {
                         type="button"
                         className="settings-blacklist__add"
                         aria-label="Add IP address"
-                        onClick={() => setOpenModal(true)}
+                        onClick={() => { setSaveError(null); setOpenModal(true); }}
                     >
                         +
                     </button>
                 </div>
-                <ul className="settings-blacklist__list">
-                    {blacklist.length === 0 ? (
+                {listError && (
+                    <ErrorState title="Couldn't load the blacklist" message={listError} onRetry={fetchAllBlacklistedIps} />
+                )}
+                {!listError && <ul className="settings-blacklist__list">
+                    {listLoading && blacklist.length === 0 ? (
+                        <li className="settings-blacklist__item settings-subpage__empty" style={{ border: "none" }}>
+                            Loading…
+                        </li>
+                    ) : blacklist.length === 0 ? (
                         <li className="settings-blacklist__item settings-subpage__empty" style={{ border: "none" }}>
                             No blacklisted IPs yet.
                         </li>
@@ -87,7 +126,7 @@ export default function BlacklistIp() {
                             </li>
                         ))
                     )}
-                </ul>
+                </ul>}
                 {openModal ? (
                     <div
                         className="settings-blacklist-modal"
@@ -103,7 +142,14 @@ export default function BlacklistIp() {
                                 value={newIp}
                                 onChange={(e) => setNewIp(e.target.value)}
                                 autoComplete="off"
+                                aria-invalid={saveError ? true : undefined}
+                                aria-describedby={saveError ? "blacklist-save-error" : undefined}
                             />
+                            {saveError && (
+                                <p id="blacklist-save-error" role="alert" className="settings-blacklist-modal__error">
+                                    {saveError}
+                                </p>
+                            )}
                             <div className="settings-blacklist-modal__actions">
                                 <button type="button" className="settings-blacklist-modal__btn" onClick={() => setOpenModal(false)}>
                                     Cancel
@@ -111,23 +157,10 @@ export default function BlacklistIp() {
                                 <button
                                     type="button"
                                     className="settings-blacklist-modal__btn settings-blacklist-modal__btn--primary"
-                                    onClick={() => {
-                                        if (!newIp?.trim()) {
-                                            setOpenModal(false);
-                                            return;
-                                        }
-                                        setBlacklist((prev) => [...prev, newIp.trim()]);
-                                        fetch(API.gdpr.saveBlacklistIp.url, {
-                                            method: API.gdpr.saveBlacklistIp.method,
-                                            headers: API.gdpr.saveBlacklistIp.headers,
-                                            body: API.gdpr.saveBlacklistIp.body(newIp.trim()),
-                                        })
-                                            .then((response) => response.json())
-                                            .catch(() => {});
-                                        setOpenModal(false);
-                                    }}
+                                    onClick={addIp}
+                                    disabled={saving}
                                 >
-                                    Add
+                                    {saving ? "Adding…" : "Add"}
                                 </button>
                             </div>
                         </div>

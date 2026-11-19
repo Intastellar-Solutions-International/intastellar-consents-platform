@@ -7,6 +7,8 @@ import StickyPageTitle from "../../../Components/Header/Sticky/index.js";
 import Authentication from "../../../Authentication/Auth.js";
 import { DomainContext } from "../../../App.js";
 import { isCombinedOrClearDomain } from "../../../Functions/domainPathSegments.js";
+import ErrorState from "../../../Components/ui/ErrorState.js";
+import { readJsonResult, errorMessage } from "../../../Functions/apiResult.js";
 import "../Style.css";
 
 export default function ROPA() {
@@ -19,6 +21,10 @@ export default function ROPA() {
     const [loading, setLoading] = useState(true);
     const [populating, setPopulating] = useState(false);
     const [exporting, setExporting] = useState(false);
+    const [listError, setListError] = useState(null);
+    // Result of the last action (auto-populate / export / delete), shown
+    // above the list — these used to fail without a word.
+    const [notice, setNotice] = useState(null); // { text, isError }
 
     const load = useCallback(() => {
         setLoading(true);
@@ -29,9 +35,11 @@ export default function ROPA() {
             method: API.ropa.list.method,
             headers: API.ropa.list.headers,
         })
-            .then((r) => r.json())
-            .then((data) => setEntries(Array.isArray(data) ? data : []))
-            .catch(() => setEntries([]))
+            .then((r) => readJsonResult(r, "Couldn't load processing activities."))
+            .then((data) => { setEntries(Array.isArray(data) ? data : []); setListError(null); })
+            // Not setEntries([]) — "No processing activities yet" would be
+            // false; the record exists, it just didn't load.
+            .catch((err) => setListError(errorMessage(err)))
             .finally(() => setLoading(false));
     }, [activeDomain]);
 
@@ -44,11 +52,18 @@ export default function ROPA() {
             headers: API.ropa.autoPopulate.headers,
             body: JSON.stringify(activeDomain ? { domain: activeDomain } : {}),
         })
-            .then((r) => r.json())
+            .then((r) => readJsonResult(r, "Couldn't import from the scan."))
             .then((result) => {
-                if (result.created > 0) load();
+                const created = Number(result?.created || 0);
+                setNotice({
+                    text: created > 0
+                        ? `Imported ${created} activit${created === 1 ? "y" : "ies"} from the latest scan.`
+                        : "Nothing new to import — every vendor from the latest scan is already listed.",
+                    isError: false,
+                });
+                if (created > 0) load();
             })
-            .catch(() => {})
+            .catch((err) => setNotice({ text: `Import failed: ${errorMessage(err)}`, isError: true }))
             .finally(() => setPopulating(false));
     }
 
@@ -58,7 +73,11 @@ export default function ROPA() {
             method: API.ropa.export.method,
             headers: API.ropa.export.headers,
         })
-            .then((r) => r.blob())
+            .then(async (r) => {
+                // Without this check an error response downloaded as a .csv
+                if (!r.ok) await readJsonResult(r, "Couldn't export the record.");
+                return r.blob();
+            })
             .then((blob) => {
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement("a");
@@ -67,18 +86,23 @@ export default function ROPA() {
                 a.click();
                 URL.revokeObjectURL(url);
             })
-            .catch(() => {})
+            .catch((err) => setNotice({ text: `Export failed: ${errorMessage(err)}`, isError: true }))
             .finally(() => setExporting(false));
     }
 
-    function deleteEntry(id) {
+    // Article 30 records are compliance evidence — confirm before deleting,
+    // and say so if it didn't work.
+    function deleteEntry(entry) {
+        const name = entry.activityName || "this activity";
+        if (!window.confirm(`Delete "${name}" from your Record of Processing Activities? This can't be undone.`)) return;
         fetch(API.ropa.delete.url, {
             method: API.ropa.delete.method,
             headers: API.ropa.delete.headers,
-            body: JSON.stringify({ id }),
+            body: JSON.stringify({ id: entry.id }),
         })
-            .then(() => load())
-            .catch(() => {});
+            .then((r) => readJsonResult(r, "Couldn't delete the activity."))
+            .then(() => { setNotice({ text: `Deleted "${name}".`, isError: false }); load(); })
+            .catch((err) => setNotice({ text: `Delete failed: ${errorMessage(err)}`, isError: true }));
     }
 
     return (
@@ -129,7 +153,18 @@ export default function ROPA() {
                     </div>
                 </div>
 
-                {loading ? (
+                {notice && (
+                    <p
+                        className={"settings-subpage__status" + (notice.isError ? " settings-subpage__status--error" : "")}
+                        role={notice.isError ? "alert" : "status"}
+                    >
+                        {notice.text}
+                    </p>
+                )}
+
+                {listError ? (
+                    <ErrorState title="Couldn't load your processing activities" message={listError} onRetry={load} />
+                ) : loading ? (
                     <p className="settings-subpage__empty">Loading…</p>
                 ) : entries.length === 0 ? (
                     <p className="settings-subpage__empty">
@@ -187,7 +222,8 @@ export default function ROPA() {
                                         type="button"
                                         className="settings-blacklist-modal__btn settings-blacklist-modal__btn--danger"
                                         style={{ padding: "7px 12px", fontSize: "var(--text-xs)" }}
-                                        onClick={() => deleteEntry(entry.id)}
+                                        onClick={() => deleteEntry(entry)}
+                                        aria-label={`Delete ${entry.activityName || "activity"}`}
                                     >
                                         ×
                                     </button>

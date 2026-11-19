@@ -16,6 +16,7 @@ import { useExcludeBots } from "../../Functions/botFilter.js";
 import { preConsentCookieStat, postConsentCookieStat } from "../../Functions/cookieStats.js";
 import { Icon } from "../ui/icons.js";
 import { auditRowChoiceSummary, auditRowChoices, consentIdOf, matchesConsentId, sortNewestFirst } from "./auditRows.js";
+import { redirectToLogin } from "../../Functions/session.js";
 
 const Link = window.ReactRouterDOM.Link;
 const useHistory = window.ReactRouterDOM.useHistory;
@@ -209,7 +210,7 @@ export default function AuditSnapshotCard(props) {
                 if (cancelled) return;
                 if (data === "Err_Login_Expired") {
                     appStorage.removeItem("globals");
-                    window.location.href = "/login";
+                    redirectToLogin();
                     return;
                 }
                 if (!res.ok) {
@@ -332,7 +333,7 @@ export default function AuditSnapshotCard(props) {
                 }
                 if (data === "Err_Login_Expired") {
                     appStorage.removeItem("globals");
-                    window.location.href = "/login";
+                    redirectToLogin();
                     return;
                 }
                 if (data?.ok) {

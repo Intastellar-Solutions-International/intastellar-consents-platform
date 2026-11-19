@@ -16,6 +16,7 @@ import punycode from "punycode";
 import { PremiumTier } from "../../Components/tiers/index.js";
 import appStorage from '../../Functions/storage.js';
 import { appLocale } from "../../Functions/format.js";
+import { redirectToLogin } from "../../Functions/session.js";
 
 const { useState, useEffect, useRef, useContext, useMemo } = React;
 
@@ -81,7 +82,7 @@ export default function DomainDashbord(props) {
         }).then((res) => res.json()).then((country) => {
             if (country === "Err_Login_Expired") {
                 appStorage.removeItem("globals");
-                window.location.href = "/login";
+                redirectToLogin();
                 return;
             }
             setactiveDataCountry(country);
@@ -102,7 +103,7 @@ export default function DomainDashbord(props) {
         }).then((res) => res.json()).then((cookiesData) => {
             if (cookiesData === "Err_Login_Expired") {
                 appStorage.removeItem("globals");
-                window.location.href = "/login";
+                redirectToLogin();
                 return;
             }
             setObservedCookies(cookiesData);
@@ -116,7 +117,7 @@ export default function DomainDashbord(props) {
         }).then((res) => res.json()).then((data) => {
             if (data === "Err_Login_Expired") {
                 appStorage.removeItem("globals");
-                window.location.href = "/login";
+                redirectToLogin();
                 return;
             }
             setActiveData(data);

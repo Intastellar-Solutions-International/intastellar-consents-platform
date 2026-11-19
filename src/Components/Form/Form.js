@@ -1,6 +1,7 @@
 import Fetch from "../../Functions/fetch";
 import API from "../../API/api";
 import appStorage from '../../Functions/storage.js';
+import { redirectToLogin } from "../../Functions/session.js";
 const { useState, useEffect, useRef } = React;
 
 export default function Form(props) {
@@ -9,7 +10,7 @@ export default function Form(props) {
         Fetch(API.gdpr.getDomains.url, API.gdpr.getDomains.method, API.gdpr.getDomains.headers).then((data) => {
             if (data === "Err_Login_Expired") {
                 appStorage.removeItem("globals");
-                window.location.href = "/login";
+                redirectToLogin();
                 return;
             }
 

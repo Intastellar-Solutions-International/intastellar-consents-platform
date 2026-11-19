@@ -42,6 +42,7 @@ import {
     toCsv,
     transferSummary,
 } from "./auditLogFormat.js";
+import { redirectToLogin } from "../../Functions/session.js";
 
 const { useState, useEffect, useRef, useContext, useCallback, useMemo } = React;
 const useParams = window.ReactRouterDOM.useParams;
@@ -487,7 +488,7 @@ export default function UserConsents(props) {
         const res = await fetch(API[id].getDomainsUrl.url, { method: API[id].getDomainsUrl.method, headers });
         if (res.status === 401) {
             appStorage.removeItem("globals");
-            window.location.href = "/login";
+            redirectToLogin();
             return null;
         }
         if (!res.ok) throw new Error(`HTTP ${res.status}`);

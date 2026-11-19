@@ -8,6 +8,7 @@ import "../Dashboard/Style.css";
 import "./Style.css";
 import appStorage from '../../Functions/storage.js';
 import { appLocale } from "../../Functions/format.js";
+import { redirectToLogin } from "../../Functions/session.js";
 
 const SLOT_COUNT = 5;
 
@@ -112,7 +113,7 @@ export default function Compare({ organisations: _organisations, domains }) {
             });
             if (response.status === 401 || response.status === 403) {
                 appStorage.removeItem("globals");
-                window.location.href = "/login";
+                redirectToLogin();
                 return;
             }
             if (response.headers.get("content-type")?.includes("application/pdf")) {
@@ -125,7 +126,7 @@ export default function Compare({ organisations: _organisations, domains }) {
                 const data = await response.json();
                 if (data === "Err_Login_Expired") {
                     appStorage.removeItem("globals");
-                    window.location.href = "/login";
+                    redirectToLogin();
                     return;
                 }
                 alert("Failed to generate PDF: " + (data?.error || JSON.stringify(data)));
@@ -154,7 +155,7 @@ export default function Compare({ organisations: _organisations, domains }) {
             .then((data) => {
                 if (data === "Err_Login_Expired") {
                     appStorage.removeItem("globals");
-                    window.location.href = "/login";
+                    redirectToLogin();
                     return;
                 }
                 setActiveData(data);

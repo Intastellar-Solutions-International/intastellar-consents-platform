@@ -1,4 +1,4 @@
-const { useState, useEffect, useContext, useMemo } = React;
+const { useState, useEffect, useContext, useMemo, useCallback } = React;
 import StickyPageTitle from "../../Components/Header/Sticky";
 import AuditSnapshotCard from "../../Components/AuditSnapshotCard/AuditSnapshotCard.js";
 import ComplianceFlowMap from "./ComplianceFlowMap.js";
@@ -25,7 +25,9 @@ import { scanConsentStep, consentPhaseLabel, filterByConsentPhase, staleScanDays
 import ScanHistoryPanel from "./ScanHistoryPanel.js";
 import DsrSummaryCard from "./DsrSummaryCard.js";
 import AllDomainsCompliance from "./AllDomainsCompliance.js";
-import { KpiTile, Button, Badge, Tabs, TabPanel, EmptyState, FilterSelect } from "../../Components/ui";
+import { KpiTile, Button, Badge, Tabs, TabPanel, EmptyState, FilterSelect, ErrorState } from "../../Components/ui";
+import { readJsonResult, errorMessage } from "../../Functions/apiResult.js";
+import { redirectToLogin } from "../../Functions/session.js";
 
 const Link = window.ReactRouterDOM.Link;
 const useParams = window.ReactRouterDOM.useParams;
@@ -156,6 +158,13 @@ export default function CompliancePage() {
     const [preConsentTransfers, setPreConsentTransfers] = useState(null);
     const [vendorRecords, setVendorRecords] = useState({});
     const [evidenceDocs, setEvidenceDocs] = useState([]);
+    // A failed load must not look like "no vendor records / no evidence" —
+    // on a compliance page that reads as an all-clear.
+    const [vendorLoadError, setVendorLoadError] = useState(null);
+    // Cookie overrides whose server save failed: { [cookieName]: draft }.
+    // They're applied locally (this browser) but not shared yet.
+    const [unsavedOverrides, setUnsavedOverrides] = useState({});
+    const [overrideSaveError, setOverrideSaveError] = useState(null);
     const [scanLoading, setScanLoading] = useState(false);
     const [activeTab, setActiveTab] = useState("transfers");
     const [loading, setLoading] = useState(false);
@@ -207,7 +216,7 @@ export default function CompliancePage() {
             .then((data) => {
                 if (data === "Err_Login_Expired") {
                     appStorage.removeItem("globals");
-                    window.location.href = "/login";
+                    redirectToLogin();
                     return;
                 }
                 setPreConsentTransfers(data);
@@ -245,7 +254,7 @@ export default function CompliancePage() {
             .then((data) => {
                 if (data === "Err_Login_Expired") {
                     appStorage.removeItem("globals");
-                    window.location.href = "/login";
+                    redirectToLogin();
                     return;
                 }
                 setActiveData(data);
@@ -262,7 +271,7 @@ export default function CompliancePage() {
             .then((data) => {
                 if (data === "Err_Login_Expired") {
                     appStorage.removeItem("globals");
-                    window.location.href = "/login";
+                    redirectToLogin();
                     return;
                 }
                 setActiveDataCountry(data);
@@ -278,7 +287,7 @@ export default function CompliancePage() {
             .then((data) => {
                 if (data === "Err_Login_Expired") {
                     appStorage.removeItem("globals");
-                    window.location.href = "/login";
+                    redirectToLogin();
                     return;
                 }
                 setObservedCookies(data);
@@ -288,15 +297,20 @@ export default function CompliancePage() {
         loadScan(scanId);
     }, [id, domainsForApi, fromDate, toDate, compareRange, previousPeriod, previousPeriod2, workspaceId, excludeBots, scanId]);
 
-    useEffect(() => {
+    const loadVendorData = useCallback(() => {
         const api = API[id]?.vendorCompliance;
         if (!api) return;
-        fetch(api.url, { headers: { ...api.headers } })
-            .then((r) => (r.ok ? r.json() : null))
-            .then((data) => { if (data?.records) setVendorRecords(data.records); })
-            .catch(() => {});
-        loadEvidence().then((data) => setEvidenceDocs(data.documents || [])).catch(() => {});
+        setVendorLoadError(null);
+        const records = fetch(api.url, { headers: { ...api.headers } })
+            .then((r) => readJsonResult(r, "Couldn't load vendor records."))
+            .then((data) => { if (data?.records) setVendorRecords(data.records); });
+        const evidence = loadEvidence().then((data) => setEvidenceDocs(data.documents || []));
+        Promise.allSettled([records, evidence]).then((results) => {
+            const failed = results.find((r) => r.status === "rejected");
+            if (failed) setVendorLoadError(errorMessage(failed.reason, "Couldn't load vendor records or evidence."));
+        });
     }, [id]);
+    useEffect(() => { loadVendorData(); }, [loadVendorData]);
 
     const saveVendorRecord = async (vendor, values) => {
         const api = API[id].vendorCompliance;
@@ -400,24 +414,40 @@ export default function CompliancePage() {
         URL.revokeObjectURL(url);
     }
 
+    // Sends overrides to the server. A failure keeps them in
+    // unsavedOverrides and shows a Retry banner — before, the browser copy
+    // made a failed save look saved, so teammates/other devices never got it.
+    async function pushCookieOverrides(overrides) {
+        const d = handle || currentDomain || "";
+        if (!id || !API[id]?.cookieOverrides) return;
+        const cfg = API[id].cookieOverrides.save;
+        try {
+            const response = await fetch(cfg.url, {
+                method: cfg.method,
+                headers: cfg.headers,
+                body: JSON.stringify({ domain: d, overrides }),
+            });
+            await readJsonResult(response, "Couldn't save the cookie change.");
+            setUnsavedOverrides(prev => {
+                const next = { ...prev };
+                for (const name of Object.keys(overrides)) delete next[name];
+                return next;
+            });
+            setOverrideSaveError(null);
+        } catch (err) {
+            setUnsavedOverrides(prev => ({ ...prev, ...overrides }));
+            setOverrideSaveError(errorMessage(err));
+        }
+    }
+
     function saveCookieOverride(cookieName, draft) {
         const d = handle || currentDomain || "";
         setCookieOverrides(prev => {
             const next = { ...prev, [cookieName]: { ...prev[cookieName], ...draft } };
             try { localStorage.setItem(`cookieOverrides_${d}`, JSON.stringify(next)); } catch {}
-
-            // Persist to server (fire-and-forget)
-            if (id && API[id]?.cookieOverrides) {
-                const cfg = API[id].cookieOverrides.save;
-                fetch(cfg.url, {
-                    method: cfg.method,
-                    headers: cfg.headers,
-                    body: JSON.stringify({ domain: d, overrides: { [cookieName]: draft } }),
-                }).catch(() => {});
-            }
-
             return next;
         });
+        pushCookieOverrides({ [cookieName]: draft });
     }
 
     const documentList = (vendor) => {
@@ -660,6 +690,14 @@ export default function CompliancePage() {
                                 </div>
                             )}
 
+                            {activeTab === "transfers" && vendorLoadError && (
+                                <ErrorState
+                                    compact
+                                    title="Vendor records or evidence didn't load"
+                                    message={`${vendorLoadError} The DPA and transfer status shown below may be incomplete.`}
+                                    onRetry={loadVendorData}
+                                />
+                            )}
                             {activeTab === "transfers" && preConsentTransfers?.pre_consent_transfers?.length > 0 && (
                                 <TabPanel idPrefix="compliance" id="transfers" active>
                                     <TransferVendors
@@ -708,6 +746,14 @@ export default function CompliancePage() {
 
                             {/* ── Cookies tab ── */}
                             <TabPanel idPrefix="compliance" id="cookies" active={activeTab === "cookies"}>
+                            {activeTab === "cookies" && overrideSaveError && Object.keys(unsavedOverrides).length > 0 && (
+                                <ErrorState
+                                    compact
+                                    title={`${Object.keys(unsavedOverrides).length} cookie change${Object.keys(unsavedOverrides).length === 1 ? "" : "s"} saved only in this browser`}
+                                    message={`${overrideSaveError} Your teammates and other devices won't see ${Object.keys(unsavedOverrides).length === 1 ? "it" : "them"} until it's saved.`}
+                                    onRetry={() => pushCookieOverrides(unsavedOverrides)}
+                                />
+                            )}
 {activeTab === "cookies" && !scanLoading && (() => {
                                 const domain  = (handle || currentDomain || "").replace(/^www\./, "");
                                 const csq = searchQuery.toLowerCase();

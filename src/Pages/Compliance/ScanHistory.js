@@ -8,6 +8,7 @@ import { fetchJsonWithTimeout } from "../../Functions/fetchWithTimeout.js";
 import { reportsPath } from "../../Functions/domainPathSegments.js";
 import { formatDateTime, formatNumber } from "../../Functions/format.js";
 import appStorage from "../../Functions/storage.js";
+import { redirectToLogin } from "../../Functions/session.js";
 
 const { useState, useEffect, useMemo, useContext } = React;
 const useParams = window.ReactRouterDOM.useParams;
@@ -58,7 +59,7 @@ export default function ScanHistory() {
             body: JSON.stringify({ domains, page, pageSize: PAGE_SIZE, search: appliedSearch, sort: sort.key, direction: sort.direction }),
         }, {
             signal: ac.signal,
-            onLoginExpired: () => { appStorage.removeItem("globals"); window.location.href = "/login"; },
+            onLoginExpired: () => { appStorage.removeItem("globals"); redirectToLogin(); },
         })
             .then((data) => {
                 if (ac.signal.aborted) return;

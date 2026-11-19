@@ -22,6 +22,7 @@ import MarketingSuggestionsStrip from "./MarketingSuggestionsStrip.js";
 import { buildInvisibleTrafficSuggestions } from "./marketingSuggestions.js";
 import appStorage from '../../../Functions/storage.js';
 import { appLocale } from "../../../Functions/format.js";
+import { redirectToLogin } from "../../../Functions/session.js";
 
 const useParams = window.ReactRouterDOM.useParams;
 
@@ -1758,7 +1759,7 @@ export default function MarketingReport() {
             }
             if (json === "Err_Login_Expired") {
                 appStorage.removeItem("globals");
-                window.location.href = "/login";
+                redirectToLogin();
                 return;
             }
 
@@ -1774,7 +1775,7 @@ export default function MarketingReport() {
                 }
                 if (jsonB === "Err_Login_Expired") {
                     appStorage.removeItem("globals");
-                    window.location.href = "/login";
+                    redirectToLogin();
                     return;
                 }
                 if (!resBaseline.ok) {
@@ -1881,7 +1882,7 @@ export default function MarketingReport() {
                 }
                 if (json === "Err_Login_Expired") {
                     appStorage.removeItem("globals");
-                    window.location.href = "/login";
+                    redirectToLogin();
                     return;
                 }
                 const ts = Array.isArray(json?.timeseries) ? json.timeseries : [];

@@ -41,6 +41,7 @@ import { t } from "../../i18n/index.js";
 import QuickReport from "./QuickReport.js";
 import { ComplianceChecks, PerformanceBand, CategoryOptIn, DecisionSplit, CountryRanking, DeviceShare, DecisionTime, LatestScan, periodChangePercent } from "./HomeSections.js";
 import useDomainHealth from "../../Components/Shell/useDomainHealth.js";
+import { redirectToLogin } from "../../Functions/session.js";
 
 const { useState, useEffect, useRef, useContext, useMemo } = React;
 
@@ -259,7 +260,7 @@ export default function Dashboard(props) {
     // left the whole page on skeletons.
     const onLoginExpired = () => {
         appStorage.removeItem("globals");
-        window.location.href = "/login";
+        redirectToLogin();
     };
 
     useEffect(() => {

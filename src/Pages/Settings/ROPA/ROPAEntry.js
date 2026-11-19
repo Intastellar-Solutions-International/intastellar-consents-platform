@@ -6,6 +6,8 @@ import API from "../../../API/api.js";
 import SideNav from "../../../Components/Header/SideNav.js";
 import { reportsLinks } from "../../../Components/Header/SideNavLinks/index.js";
 import StickyPageTitle from "../../../Components/Header/Sticky/index.js";
+import ErrorState from "../../../Components/ui/ErrorState.js";
+import { readJsonResult, errorMessage } from "../../../Functions/apiResult.js";
 import "../Style.css";
 import { LEGAL_BASES, PROCESSING_PURPOSES } from "../../../Functions/legalBasisDefinitions.js";
 import { FRAMEWORK_IDS, FRAMEWORK_LABELS } from "../../../Functions/jurisdictionEngine.js";
@@ -86,21 +88,35 @@ export default function ROPAEntry() {
 
     const [entry, setEntry] = useState(EMPTY_ENTRY);
     const [loading, setLoading] = useState(!isNew);
+    // Set when an existing entry fails to load. The form is then not shown
+    // at all: an empty form saved over the real entry would wipe it.
+    const [loadError, setLoadError] = useState(null);
+    const [saveError, setSaveError] = useState(null);
     const [saving, setSaving] = useState(false);
     const [status, setStatus] = useState(null);
     const [newRecipient, setNewRecipient] = useState("");
     const [newTransfer, setNewTransfer] = useState({ country: "", mechanism: "Standard Contractual Clauses (SCCs)" });
 
-    useEffect(() => {
-        if (isNew) return;
+    function loadEntry() {
+        setLoading(true);
+        setLoadError(null);
         fetch(`${API.ropa.list.url}?id=${entryId}`, {
             method: "GET",
             headers: API.ropa.list.headers,
         })
-            .then((r) => r.json())
-            .then((data) => data && setEntry({ ...EMPTY_ENTRY, ...data }))
-            .catch(() => {})
+            .then((r) => readJsonResult(r, "Couldn't load this activity."))
+            .then((data) => {
+                if (!data || (Array.isArray(data) && !data.length)) throw new Error("This activity doesn't exist or was deleted.");
+                setEntry({ ...EMPTY_ENTRY, ...data });
+            })
+            .catch((err) => setLoadError(errorMessage(err)))
             .finally(() => setLoading(false));
+    }
+
+    useEffect(() => {
+        if (isNew) return;
+        loadEntry();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [entryId, isNew]);
 
     function set(key, value) {
@@ -131,6 +147,7 @@ export default function ROPAEntry() {
         if (!entry.activityName.trim()) { setStatus("missing_name"); return; }
         setSaving(true);
         setStatus(null);
+        setSaveError(null);
         const url = isNew ? API.ropa.create.url : API.ropa.update.url;
         const method = isNew ? API.ropa.create.method : API.ropa.update.method;
         const headers = isNew ? API.ropa.create.headers : API.ropa.update.headers;
@@ -139,9 +156,9 @@ export default function ROPAEntry() {
             headers,
             body: JSON.stringify({ ...entry, id: isNew ? undefined : entryId, updatedAt: new Date().toISOString() }),
         })
-            .then((r) => r.json())
+            .then((r) => readJsonResult(r, "Couldn't save the activity."))
             .then(() => { setStatus("saved"); if (isNew) setTimeout(() => history.push("/settings/ropa"), 800); })
-            .catch(() => setStatus("error"))
+            .catch((err) => { setSaveError(errorMessage(err)); setStatus("error"); })
             .finally(() => setSaving(false));
     }
 
@@ -160,6 +177,19 @@ export default function ROPAEntry() {
         );
     }
 
+    if (loadError) {
+        return (
+            <>
+                <SideNav links={reportsLinks} title="Settings" />
+                <main className="dashboard-content settings-subpage settings-subpage--wide">
+                    <StickyPageTitle title="Processing Activity" />
+                    <Link to="/settings/ropa" className="settings-subpage__back">← All activities</Link>
+                    <ErrorState title="Couldn't load this processing activity" message={loadError} onRetry={loadEntry} />
+                </main>
+            </>
+        );
+    }
+
     document.title = `${isNew ? "New" : entry.activityName || "Edit"} Activity | RoPA | Intastellar Consents`;
 
     return (
@@ -171,7 +201,7 @@ export default function ROPAEntry() {
                 <Link to="/settings/ropa" className="settings-subpage__back">← All activities</Link>
 
                 {status === "saved" && <p className="settings-subpage__status">Activity saved.</p>}
-                {status === "error" && <p className="settings-subpage__status settings-subpage__status--error">Failed to save — please try again.</p>}
+                {status === "error" && <p className="settings-subpage__status settings-subpage__status--error" role="alert">Not saved: {saveError || "please try again."}</p>}
                 {status === "missing_name" && <p className="settings-subpage__status settings-subpage__status--error">Activity name is required.</p>}
 
                 <div className="settings-subpage__panel" style={{ marginBottom: "16px" }}>
