@@ -402,7 +402,7 @@ export default async function handler(req, res) {
     } catch (err) {
         console.error("[ad-oauth-callback]", platform, err.message);
         return res.redirect(302,
-            `${returnBase}?oauth_error=${encodeURIComponent(err.message)}&platform=${encodeURIComponent(platform)}`
+            `${returnBase}?oauth_error=${encodeURIComponent(err.message)}&platform=${encodeURIComponent(platform)}&oauth_domain=${encodeURIComponent(domain)}`
         );
     }
 }

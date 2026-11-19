@@ -160,6 +160,14 @@ export default function AdConnectionsSettings() {
     const [domainsLoading, setDomainsLoading] = useState(() => readCachedDomains().length === 0);
     const [domainsError, setDomainsError] = useState(false);
     const [selectedDomain, setSelectedDomain] = useState("");
+    // Domain to restore on load: ?site= survives a refresh; the OAuth return
+    // params bring back the domain that was just being connected. Read once
+    // up front — the effect below strips the OAuth params from the URL.
+    const preferredDomainRef = useRef(null);
+    if (preferredDomainRef.current === null) {
+        const params = new URLSearchParams(window.location.search);
+        preferredDomainRef.current = params.get("site") || params.get("domain") || params.get("oauth_domain") || "";
+    }
 
     // Pending OAuth account picker
     const [pendingId, setPendingId] = useState(null);
@@ -213,13 +221,28 @@ export default function AdConnectionsSettings() {
         setTimeout(() => setSuccessMsg(null), 6000);
     }
 
+    function pickInitialDomain(list) {
+        const preferred = preferredDomainRef.current;
+        if (preferred && list.includes(preferred)) return preferred;
+        const ctx = typeof currentDomain === "string" && currentDomain !== "combined view"
+            ? currentDomain : null;
+        return ctx && list.includes(ctx) ? ctx : list[0];
+    }
+
+    // Keep the selection in the URL so a refresh lands on the same domain
+    useEffect(() => {
+        if (!selectedDomain) return;
+        const url = new URL(window.location.href);
+        if (url.searchParams.get("site") === selectedDomain) return;
+        url.searchParams.set("site", selectedDomain);
+        window.history.replaceState({}, "", url.toString());
+    }, [selectedDomain]);
+
     // Domain list from localStorage cache (header populates this)
     useEffect(() => {
         const cached = readCachedDomains();
         if (cached.length > 0) {
-            const ctx = typeof currentDomain === "string" && currentDomain !== "combined view"
-                ? currentDomain : null;
-            setSelectedDomain(ctx && cached.includes(ctx) ? ctx : cached[0]);
+            setSelectedDomain(pickInitialDomain(cached));
             setDomainsLoading(false);
             return;
         }
@@ -247,9 +270,7 @@ export default function AdConnectionsSettings() {
                     .filter(d => d && d !== "combined view");
                 if (strings.length === 0) { setDomainsError(true); return; }
                 setDomains(strings);
-                const ctx = typeof currentDomain === "string" && currentDomain !== "combined view"
-                    ? currentDomain : null;
-                setSelectedDomain(ctx && strings.includes(ctx) ? ctx : strings[0]);
+                setSelectedDomain(pickInitialDomain(strings));
             })
             .catch(() => setDomainsError(true))
             .finally(() => setDomainsLoading(false));
