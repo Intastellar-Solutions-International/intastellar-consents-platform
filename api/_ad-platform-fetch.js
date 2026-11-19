@@ -628,9 +628,16 @@ async function msAdsReportingSoapCall(action, bodyXml, accessToken, accountId, c
     return text;
 }
 
+// Text content comes back XML-escaped — notably ReportDownloadUrl, whose
+// signed query string has every "&" as "&amp;"; fetching it undecoded fails
+// with 409.
 function msAdsXmlTag(xml, tag) {
     const m = new RegExp(`<(?:\\w+:)?${tag}(?:\\s[^>]*)?>([^<]*)<\\/(?:\\w+:)?${tag}>`, "i").exec(xml);
-    return m ? m[1] : null;
+    if (!m) return null;
+    return m[1]
+        .replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"').replace(/&apos;/g, "'")
+        .replace(/&#(\d+);/g, (_, n) => String.fromCodePoint(Number(n)))
+        .replace(/&amp;/g, "&");
 }
 
 function toBingDateParts(isoDate) {
@@ -752,6 +759,8 @@ export async function fetchMicrosoftAdsCampaigns(conn, fromDate, toDate) {
         const status = msAdsXmlTag(pollXml, "Status");
         if (status === "Success") {
             downloadUrl = msAdsXmlTag(pollXml, "ReportDownloadUrl");
+            // Success without a URL means the range has no data at all
+            if (!downloadUrl) return [];
             break;
         }
         if (status === "Error") {
@@ -1222,7 +1231,12 @@ async function fetchMicrosoftAdsDaily(conn, fromDate, toDate) {
         await new Promise(r => setTimeout(r, attempt === 0 ? 1500 : 3000));
         const pollXml = await msAdsReportingSoapCall("PollGenerateReport", pollBody, conn.access_token, conn.account_id, conn.login_customer_id);
         const status = msAdsXmlTag(pollXml, "Status");
-        if (status === "Success") { downloadUrl = msAdsXmlTag(pollXml, "ReportDownloadUrl"); break; }
+        if (status === "Success") {
+            downloadUrl = msAdsXmlTag(pollXml, "ReportDownloadUrl");
+            // Success without a URL means the range has no data at all
+            if (!downloadUrl) return {};
+            break;
+        }
         if (status === "Error") throw new Error(`Microsoft Ads report generation failed: ${pollXml.slice(0, 300)}`);
     }
     if (!downloadUrl) throw new Error("Microsoft Ads report did not complete within the polling window.");
