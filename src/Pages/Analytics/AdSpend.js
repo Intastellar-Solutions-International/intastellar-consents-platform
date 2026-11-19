@@ -480,6 +480,7 @@ export default function AdSpend() {
                             source={`Daily data from ${data.platforms.map(p => platformLabel(p.platform)).join(", ") || "your ad platforms"}, synced each night`}
                             filters={[`Amounts in ${displayCurrency}, converted with ECB rates`]}
                             fetchedAt={data.fetchedAt}
+                            helpArticle="ad-spend"
                         />
                     )}
 

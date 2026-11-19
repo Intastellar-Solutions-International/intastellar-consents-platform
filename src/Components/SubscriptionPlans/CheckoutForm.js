@@ -1,5 +1,5 @@
 import "./Style/Plans.css";
-import { Icon, Button } from "../UI/index.js";
+import { Icon, Button } from "../ui/index.js";
 import { formatDate } from "../../Functions/format.js";
 import { t, getLanguage } from "../../i18n/index.js";
 

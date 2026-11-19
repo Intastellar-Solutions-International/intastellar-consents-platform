@@ -2,7 +2,7 @@ const { useState, useEffect, useCallback } = React;
 import SideNav from "../../../Components/Header/SideNav";
 import { reportsLinks } from "../../../Components/Header/SideNavLinks";
 import StickyPageTitle from "../../../Components/Header/Sticky";
-import { Card, KpiTile, Table, ErrorState } from "../../../Components/UI/index.js";
+import { Card, KpiTile, Table, ErrorState } from "../../../Components/ui/index.js";
 import Authentication from "../../../Authentication/Auth";
 import { TEAM_ACTIVITY_URL } from "../../../Functions/teamActivity.js";
 import { sectionLabel } from "../../../Functions/teamSections.js";

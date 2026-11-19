@@ -10,10 +10,10 @@ import API from "../API/api.js";
 import { useIntastellar } from "@intastellar/signin-sdk-react";
 import appStorage from '../Functions/storage.js';
 import { fetchUserOrganisations, storeUserOrganisations } from "../Functions/organisations.js";
-import { Icon } from "../Components/UI/icons.js";
+import { Icon } from "../Components/ui/icons.js";
 import { TRANSLATIONS } from "./loginTranslations.js";
 import { useLanguage, setLanguage } from "../i18n/index.js";
-import LanguageMenu from "../Components/UI/LanguageMenu.js";
+import LanguageMenu from "../Components/ui/LanguageMenu.js";
 import { consumeReturnTo } from "../Functions/session.js";
 
 const { useState, useRef, useEffect } = React;

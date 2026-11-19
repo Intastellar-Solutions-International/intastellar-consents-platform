@@ -58,6 +58,7 @@ import "./all-domains-compliance.test.mjs";
 import "./scan-notifications.test.mjs";
 import "./onboarding-steps.test.mjs";
 import "./small-sample.test.mjs";
+import "./help.test.mjs";
 import "./transfer-compliance.test.mjs";
 import "./legal-basis.test.mjs";
 import "./evidence.test.mjs";

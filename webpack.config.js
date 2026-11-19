@@ -80,6 +80,13 @@ const client = {
             loader: 'file-loader',
           },
         ],
+      },
+      {
+        // Help hub articles (src/help/articles/*.md) — bundled as plain text
+        // and rendered by src/help/markdown.js.
+        test: /\.md$/,
+        include: path.resolve(__dirname, 'src/help'),
+        type: 'asset/source',
       }
     ]
   },

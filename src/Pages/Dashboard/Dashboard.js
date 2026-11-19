@@ -530,6 +530,7 @@ export default function Dashboard(props) {
                                 source="Consent records from the cookie banner"
                                 filters={[excludeBots ? "Suspected bots excluded" : "Including suspected bots"]}
                                 fetchedAt={activeDataAt}
+                                helpArticle="reading-the-numbers"
                             />
                         )}
                     </>)}

@@ -9,6 +9,8 @@ import {
 import { ymdLocal } from "../../Components/Filter/filterDatePresets.js";
 import { useExcludeBots } from "../../Functions/botFilter.js";
 import { appLocale } from "../../Functions/format.js";
+import { openHelp } from "../../Components/Help/index.js";
+import { t } from "../../i18n/index.js";
 
 export function authHeaders() {
     return {
@@ -420,6 +422,10 @@ export function LiveBotNote({ data }) {
             {" "}
             <button type="button" className="sa-live__bots-toggle" onClick={() => setExcludeBots(!excludeBots)}>
                 {excludeBots ? "Show them" : "Hide them"}
+            </button>
+            {" · "}
+            <button type="button" className="sa-live__bots-toggle" onClick={() => openHelp("suspected-bots")}>
+                {t("What counts as a bot?")}
             </button>
         </p>
     );

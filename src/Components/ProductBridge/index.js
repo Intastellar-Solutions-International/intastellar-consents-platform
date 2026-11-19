@@ -5,6 +5,8 @@ import { BANNER_ACCEPTANCE, STATISTICS_CONSENT } from "../../Functions/consentMe
 import { switchModePath, analyticsGettingStartedPath } from "../../Functions/domainPathSegments.js";
 import { canAccess } from "../../Functions/tier.js";
 import { formatNumber, formatPercent } from "../../Functions/format.js";
+import { openHelp } from "../Help/index.js";
+import { t } from "../../i18n/index.js";
 
 const useHistory = window.ReactRouterDOM.useHistory;
 
@@ -81,7 +83,10 @@ export function ConsentRatesBridge({ platform, domain, fromIso, toIso, statistic
                         statistics consent — so it's usually lower.
                     </p>
                 </div>
-                <Button size="sm" iconRight="chevron-right" onClick={() => history.push(switchModePath("cmp", platform, domain))}>Open in CMP</Button>
+                <div className="tw-flex tw-flex-wrap tw-gap-2">
+                    <Button size="sm" variant="ghost" icon="help-circle" onClick={() => openHelp("consent-rates")}>{t("Why they differ")}</Button>
+                    <Button size="sm" iconRight="chevron-right" onClick={() => history.push(switchModePath("cmp", platform, domain))}>Open in CMP</Button>
+                </div>
             </div>
             <div className="tw-grid tw-gap-4 tw-mt-4" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))" }}>
                 <Stat

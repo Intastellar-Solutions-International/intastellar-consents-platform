@@ -1,9 +1,11 @@
-const { useState, useEffect, useCallback } = window.React;
+const { useState, useEffect, useCallback, useContext } = window.React;
 import Authentication from "../../../Authentication/Auth.js";
 import SideNav from "../../../Components/Header/SideNav.js";
 import { reportsLinks } from "../../../Components/Header/SideNavLinks/index.js";
 import StickyPageTitle from "../../../Components/Header/Sticky/index.js";
 import { ScannerHost } from "../../../API/host.js";
+import { DomainContext } from "../../../App.js";
+import { isCombinedOrClearDomain } from "../../../Functions/domainPathSegments.js";
 import { analyticsSnippet } from "../../../Functions/installSnippet.js";
 import "../Style.css";
 import RelatedPages from "../../../Components/RelatedPages/index.js";
@@ -399,7 +401,14 @@ export default function AnalyticsScript() {
     document.title = "Analytics Script | Settings | Intastellar Consents";
 
     const domains = readCachedDomains();
-    const [domain, setDomain] = useState(domains[0] || "");
+    // Start on the domain selected in the header (and follow it), not
+    // simply the first one in the list.
+    const [globalDomain] = useContext(DomainContext);
+    const headerDomain = !isCombinedOrClearDomain(globalDomain)
+        ? domains.find((d) => d.toLowerCase() === String(globalDomain).trim().toLowerCase())
+        : null;
+    const [domain, setDomain] = useState(headerDomain || domains[0] || "");
+    useEffect(() => { if (headerDomain) setDomain(headerDomain); }, [headerDomain]);
     const [siteData, setSiteData] = useState(null);
     const [loading, setLoading] = useState(false);
     const [generating, setGenerating] = useState(false);
@@ -421,7 +430,12 @@ export default function AnalyticsScript() {
                 { headers: authHeaders }
             );
             if (r.status === 404) { setSiteData(null); }
-            else if (r.ok) { setSiteData(await r.json()); }
+            else if (r.ok) {
+                // { noSiteKey: true } = no Analytics for this domain yet: offer
+                // "Generate site key", never a snippet with data-site="undefined".
+                const json = await r.json();
+                setSiteData(json?.noSiteKey || !json?.id ? null : json);
+            }
             else { setError("Failed to load site key."); }
         } catch { setError("Network error."); }
         finally { setLoading(false); }

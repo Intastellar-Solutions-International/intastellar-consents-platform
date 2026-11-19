@@ -1,7 +1,7 @@
 import Filter from "../../Filter/index.js";
 import { LoadingBar } from "../../../Components/widget/Loading";
 import Button from "../../Button/Button.js";
-import SideCart from "../../SideCart/SideCart.js";
+import { openHelp } from "../../Help/index.js";
 import { isNewShell } from "../../../Functions/featureFlags.js";
 import { t } from "../../../i18n/index.js";
 
@@ -147,8 +147,10 @@ export default function StickyPageTitle({
         writeDateRangeToUrl({ fromDate, toDate, days: typeof getLastDays === "number" ? getLastDays : null });
     }, [canSyncDates, fromDate, toDate, getLastDays]);
 
-    function openSideCart() {
-        document.querySelector(".sideCart").classList.add("open");
+    // The "i" button opens the matching Help hub article (src/help/articles/<infoType>.md);
+    // an unknown id opens the hub's start page.
+    function openPageHelp() {
+        openHelp(infoType);
     }
 
     const wrapDate = (el) => (dateSlot ? window.ReactDOM.createPortal(el, dateSlot) : el);
@@ -170,7 +172,7 @@ export default function StickyPageTitle({
                         {/* Fixed page titles are translated here; names (domains etc.) pass through. */}
                         {typeof title === "string" ? t(title) : title}
                         {showInfoButton && (
-                            <Button className="secondary" onClick={openSideCart}>i</Button>
+                            <Button className="secondary" onClick={openPageHelp} aria-label={t("Help for this page")}>i</Button>
                         )}
                     </h1>
                     {toolbar ? <div className="infoHeader__toolbar">{toolbar}</div> : null}
@@ -196,7 +198,6 @@ export default function StickyPageTitle({
                     }
                 </div>
             </div>
-            {showInfoButton && <SideCart infoType={infoType} helpPage={infoType} />}
         </>
     } else {
         // With children
@@ -210,11 +211,10 @@ export default function StickyPageTitle({
                 }}>
                     {children}
                     {showInfoButton && (
-                        <Button className="secondary" onClick={openSideCart}>i</Button>
+                        <Button className="secondary" onClick={openPageHelp} aria-label={t("Help for this page")}>i</Button>
                     )}
                 </div>
             </div>
-            {showInfoButton && <SideCart infoType={infoType} helpPage={infoType} />}
         </>
     }
 

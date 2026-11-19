@@ -819,11 +819,13 @@ export default function SiteAnalytics() {
     // (paired with the chart) renders the first 4 ids, in the
     // business-type/customization-aware order.
     const cardMeta = useMemo(
-        () => data ? buildKpiCardMeta({ data, siteConfig, trendEngaged, trendEvents, trendSessions, trendConsent, trendBounce }) : {},
+        // Only with real totals: a domain without Analytics answers
+        // { noSiteKey: true } (no totals) and must reach the setup card, not crash.
+        () => data?.totals ? buildKpiCardMeta({ data, siteConfig, trendEngaged, trendEvents, trendSessions, trendConsent, trendBounce }) : {},
         [data, siteConfig, trendEngaged, trendEvents, trendSessions, trendConsent, trendBounce]
     );
     const kpiOrder = useMemo(
-        () => data ? (customCards || kpiDefaultOrder({ data, siteConfig })) : [],
+        () => data?.totals ? (customCards || kpiDefaultOrder({ data, siteConfig })) : [],
         [data, siteConfig, customCards]
     );
     const heroIds = kpiOrder.slice(0, 4);
@@ -1020,6 +1022,7 @@ export default function SiteAnalytics() {
                                                 : null,
                                         ]}
                                         fetchedAt={data.fetchedAt}
+                                        helpArticle="reading-the-numbers"
                                         action={
                                             <button type="button" className="sa-live__bots-toggle" onClick={() => setExcludeBots(!excludeBots)}>
                                                 {excludeBots ? "Include bots" : "Exclude bots"}

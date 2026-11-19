@@ -1,7 +1,7 @@
 import Authentication from "../../Authentication/Auth";
 import "./Style.css";
 import { t, getLanguage, setLanguage } from "../../i18n/index.js";
-import LanguageMenu from "../UI/LanguageMenu.js";
+import LanguageMenu from "../ui/LanguageMenu.js";
 const { useState, useEffect } = window.React;
 
 export default function Account(props) {

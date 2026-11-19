@@ -1,5 +1,7 @@
 import { Icon } from "../ui/icons.js";
 import { formatRelativeTime } from "../../Functions/format.js";
+import { openHelp } from "../Help/index.js";
+import { t } from "../../i18n/index.js";
 
 const { useState, useEffect } = React;
 
@@ -12,7 +14,7 @@ const { useState, useEffect } = React;
  * "0 users while visitors are on the site" moment). Filters are stated, not
  * implied: pass only what is actually applied.
  */
-export default function DataSource({ source, filters = [], fetchedAt, action, className = "" }) {
+export default function DataSource({ source, filters = [], fetchedAt, action, helpArticle, className = "" }) {
     // Re-render every 30s so "Updated …" keeps moving.
     const [, setNow] = useState(0);
     useEffect(() => {
@@ -28,6 +30,13 @@ export default function DataSource({ source, filters = [], fetchedAt, action, cl
             <Icon name="database" size={13} />
             <span>{parts.join(" · ")}</span>
             {action}
+            {helpArticle && (
+                <button type="button" onClick={() => openHelp(helpArticle)} aria-label={t("How to read these numbers")}
+                    title={t("How to read these numbers")}
+                    className="tw-inline-flex tw-items-center tw-p-0 tw-border-0 tw-bg-transparent tw-text-text-muted tw-cursor-pointer hover:tw-text-text-primary focus-visible:tw-outline-none focus-visible:tw-shadow-focus tw-rounded-sm">
+                    <Icon name="help-circle" size={14} />
+                </button>
+            )}
         </p>
     );
 }

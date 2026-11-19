@@ -5,7 +5,7 @@ import StickyPageTitle from "../../Components/Header/Sticky";
 import Authentication from "../../Authentication/Auth";
 import { canAccess, getTier, TIER_LABELS } from "../../Functions/tier.js";
 import { formatDate } from "../../Functions/format.js";
-import Button from "../../Components/UI/Button.js";
+import Button from "../../Components/ui/Button.js";
 import appStorage from '../../Functions/storage.js';
 import { t } from "../../i18n/index.js";
 

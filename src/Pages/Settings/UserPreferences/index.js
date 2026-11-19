@@ -15,7 +15,7 @@ import {
 import "../Style.css";
 import { isNewShell, setNewShell } from "../../../Functions/featureFlags.js";
 import { t, getLanguage, setLanguage } from "../../../i18n/index.js";
-import LanguageMenu from "../../../Components/UI/LanguageMenu.js";
+import LanguageMenu from "../../../Components/ui/LanguageMenu.js";
 
 const { useState } = React;
 
