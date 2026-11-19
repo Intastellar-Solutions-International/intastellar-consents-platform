@@ -537,8 +537,13 @@ export async function fetchMicrosoftAdsAccounts(accessToken) {
     );
 
     const accounts = [];
-    const accountBlocks = searchXml.match(/<AdvertiserAccount[^>]*>[\s\S]*?<\/AdvertiserAccount>/gi) || [];
-    for (const block of accountBlocks) {
+    const accountBlocks = searchXml.match(/<(?:\w+:)?AdvertiserAccount\b[^>]*>[\s\S]*?<\/(?:\w+:)?AdvertiserAccount>/gi) || [];
+    for (const rawBlock of accountBlocks) {
+        // Same trap as GetUser above: members serialize alphabetically, so
+        // BusinessAddress (with its own <Id>) precedes the account's Id.
+        // Reading the address id here makes every later report fail with
+        // 2003 "insufficient privileges".
+        const block = rawBlock.replace(/<(?:\w+:)?BusinessAddress\b[\s\S]*?<\/(?:\w+:)?BusinessAddress>/i, "");
         const id = xmlTag(block, "Id");
         if (!id) continue;
         const name = xmlTag(block, "Name");
@@ -548,6 +553,8 @@ export async function fetchMicrosoftAdsAccounts(accessToken) {
             id,
             name: name || (number ? `Account ${number}` : `Account ${id}`),
             currency: currency || null,
+            // Stored as login_customer_id; Reporting sends it as the CustomerId header.
+            loginCustomerId: xmlTag(block, "ParentCustomerId") || null,
         });
     }
     if (accounts.length === 0) {
@@ -582,7 +589,7 @@ const MS_ADS_REPORTING_NS = "https://bingads.microsoft.com/Reporting/v13";
 const MS_ADS_ARRAYS_NS = "http://schemas.microsoft.com/2003/10/Serialization/Arrays";
 const MS_ADS_REPORTING_ENDPOINT = "https://reporting.api.bingads.microsoft.com/Api/Advertiser/Reporting/v13/ReportingService.svc";
 
-async function msAdsReportingSoapCall(action, bodyXml, accessToken, accountId) {
+async function msAdsReportingSoapCall(action, bodyXml, accessToken, accountId, customerId) {
     const devToken = process.env.MICROSOFT_ADS_DEVELOPER_TOKEN || "";
     const envelope = `<?xml version="1.0" encoding="utf-8"?>
 <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
@@ -591,6 +598,7 @@ async function msAdsReportingSoapCall(action, bodyXml, accessToken, accountId) {
     <ApplicationToken i:nil="true" xmlns="${MS_ADS_REPORTING_NS}"/>
     <AuthenticationToken xmlns="${MS_ADS_REPORTING_NS}">${accessToken}</AuthenticationToken>
     <CustomerAccountId xmlns="${MS_ADS_REPORTING_NS}">${accountId}</CustomerAccountId>
+    ${customerId ? `<CustomerId xmlns="${MS_ADS_REPORTING_NS}">${customerId}</CustomerId>` : ""}
     <DeveloperToken xmlns="${MS_ADS_REPORTING_NS}">${devToken}</DeveloperToken>
   </soap:Header>
   <soap:Body>${bodyXml}</soap:Body>
@@ -727,7 +735,7 @@ export async function fetchMicrosoftAdsCampaigns(conn, fromDate, toDate) {
             </ReportRequest>
         </SubmitGenerateReportRequest>`;
 
-    const submitXml = await msAdsReportingSoapCall("SubmitGenerateReport", submitBody, conn.access_token, conn.account_id);
+    const submitXml = await msAdsReportingSoapCall("SubmitGenerateReport", submitBody, conn.access_token, conn.account_id, conn.login_customer_id);
     const reportRequestId = msAdsXmlTag(submitXml, "ReportRequestId");
     if (!reportRequestId) throw new Error(`Could not read ReportRequestId from SubmitGenerateReport response: ${submitXml.slice(0, 300)}`);
 
@@ -740,7 +748,7 @@ export async function fetchMicrosoftAdsCampaigns(conn, fromDate, toDate) {
     const maxAttempts = 10;
     for (let attempt = 0; attempt < maxAttempts; attempt++) {
         await new Promise(r => setTimeout(r, attempt === 0 ? 1500 : 3000));
-        const pollXml = await msAdsReportingSoapCall("PollGenerateReport", pollBody, conn.access_token, conn.account_id);
+        const pollXml = await msAdsReportingSoapCall("PollGenerateReport", pollBody, conn.access_token, conn.account_id, conn.login_customer_id);
         const status = msAdsXmlTag(pollXml, "Status");
         if (status === "Success") {
             downloadUrl = msAdsXmlTag(pollXml, "ReportDownloadUrl");
@@ -1204,7 +1212,7 @@ async function fetchMicrosoftAdsDaily(conn, fromDate, toDate) {
             </ReportRequest>
         </SubmitGenerateReportRequest>`;
 
-    const submitXml = await msAdsReportingSoapCall("SubmitGenerateReport", submitBody, conn.access_token, conn.account_id);
+    const submitXml = await msAdsReportingSoapCall("SubmitGenerateReport", submitBody, conn.access_token, conn.account_id, conn.login_customer_id);
     const reportRequestId = msAdsXmlTag(submitXml, "ReportRequestId");
     if (!reportRequestId) throw new Error(`Could not read ReportRequestId from SubmitGenerateReport response: ${submitXml.slice(0, 300)}`);
 
@@ -1212,7 +1220,7 @@ async function fetchMicrosoftAdsDaily(conn, fromDate, toDate) {
     let downloadUrl = null;
     for (let attempt = 0; attempt < 10; attempt++) {
         await new Promise(r => setTimeout(r, attempt === 0 ? 1500 : 3000));
-        const pollXml = await msAdsReportingSoapCall("PollGenerateReport", pollBody, conn.access_token, conn.account_id);
+        const pollXml = await msAdsReportingSoapCall("PollGenerateReport", pollBody, conn.access_token, conn.account_id, conn.login_customer_id);
         const status = msAdsXmlTag(pollXml, "Status");
         if (status === "Success") { downloadUrl = msAdsXmlTag(pollXml, "ReportDownloadUrl"); break; }
         if (status === "Error") throw new Error(`Microsoft Ads report generation failed: ${pollXml.slice(0, 300)}`);
