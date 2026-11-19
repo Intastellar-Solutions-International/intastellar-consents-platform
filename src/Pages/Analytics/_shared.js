@@ -360,6 +360,46 @@ export function useLiveData(domain, siteKey) {
     return { data, countdown };
 }
 
+// Per-minute activity bars for the live widget and the Live View page.
+// Plots ALL events per minute, not distinct sessions: visitors without full
+// consent have no session_id (no tracker cookies pre-consent), so a
+// users-per-minute chart reads as empty while people are on the site.
+// Empty minutes draw no bar (the track shows through), and "now" is only
+// highlighted when it actually has activity.
+export function LiveActivityBars({ perMinute = [], perMinuteUsers = [] }) {
+    const max = Math.max(...perMinute, 1);
+    const hasActivity = perMinute.some(v => v > 0);
+    const last = perMinute.length - 1;
+    return (
+        <div className="sa-live__sparkline">
+            <div className="sa-live__spark-hd">
+                <span className="sa-live__spark-label">Activity per minute</span>
+            </div>
+            <div className="sa-live__spark-bars" aria-hidden={!hasActivity}>
+                {perMinute.map((v, i) => {
+                    const users = perMinuteUsers[i] || 0;
+                    return (
+                        <div key={i} className="sa-live__spark-slot"
+                            title={`${v} event${v !== 1 ? "s" : ""}${users ? ` · ${users} active user${users !== 1 ? "s" : ""}` : ""}`}>
+                            {v > 0 && (
+                                <div
+                                    className={"sa-live__spark-bar" + (i === last ? " sa-live__spark-bar--last" : "")}
+                                    style={{ height: Math.max(4, Math.round((v / max) * 44)) + "px" }}
+                                />
+                            )}
+                        </div>
+                    );
+                })}
+            </div>
+            <div className="sa-live__spark-times">
+                <span>−30m</span>
+                <span>{hasActivity ? "−15m" : "No activity in the last 30 minutes"}</span>
+                <span>now</span>
+            </div>
+        </div>
+    );
+}
+
 // % change of `current` vs `previous` — null when there's no previous-period
 // baseline to compare against (0 or missing), so callers can hide the chip
 // instead of showing a misleading "+∞%"/"0%".
@@ -604,7 +644,9 @@ export function IndustryBenchmarkNote({ benchmark, actualPct }) {
 
 // Shimmer placeholder shown while the slow analytics-report-detail call loads.
 // `rows` controls how many skeleton lines to render inside the panel.
-export function MiniBar({ value, max, color = "rgba(192,159,83,0.7)" }) {
+// Default fill is CMP's --c-data (chart marks), not gold — gold is reserved
+// for actions and the active state.
+export function MiniBar({ value, max, color = "rgb(var(--c-data) / 0.75)" }) {
     const pct = max > 0 ? Math.round((value / max) * 100) : 0;
     return (
         <div className="sa-mini-bar">
@@ -621,13 +663,15 @@ export function SegmentFilter({ segment, setSegment }) {
         setSegment(s => ({ ...s, [k]: v || null }));
     }
 
-    const hasFilter = segment.device || segment.country || segment.channel || segment.consent;
+    const activeCount = [segment.device, segment.country, segment.channel, segment.consent].filter(Boolean).length;
+    const cls = (base, value) => base + (value ? ` ${base}--active` : "");
 
     return (
-        <div className="sa-seg-filter">
+        <div className="sa-seg-filter" role="group" aria-label="Filter analytics">
             <span className="sa-seg-filter__label">Filter</span>
 
-            <select className="sa-seg-filter__select"
+            <select className={cls("sa-seg-filter__select", segment.device)}
+                aria-label="Device"
                 value={segment.device || ""}
                 onChange={e => set("device", e.target.value)}>
                 <option value="">All devices</option>
@@ -637,7 +681,8 @@ export function SegmentFilter({ segment, setSegment }) {
                 <option value="other">Other</option>
             </select>
 
-            <select className="sa-seg-filter__select"
+            <select className={cls("sa-seg-filter__select", segment.channel)}
+                aria-label="Channel"
                 value={segment.channel || ""}
                 onChange={e => set("channel", e.target.value)}>
                 <option value="">All channels</option>
@@ -648,7 +693,8 @@ export function SegmentFilter({ segment, setSegment }) {
                 <option value="direct">Direct</option>
             </select>
 
-            <select className="sa-seg-filter__select"
+            <select className={cls("sa-seg-filter__select", segment.consent)}
+                aria-label="Consent level"
                 value={segment.consent || ""}
                 onChange={e => set("consent", e.target.value)}>
                 <option value="">All consent</option>
@@ -657,18 +703,19 @@ export function SegmentFilter({ segment, setSegment }) {
             </select>
 
             <input
-                className="sa-seg-filter__country"
+                className={cls("sa-seg-filter__country", segment.country)}
                 type="text"
+                aria-label="Country code (2 letters)"
                 maxLength={2}
                 placeholder="Country"
                 value={segment.country || ""}
                 onChange={e => setSegment(s => ({ ...s, country: e.target.value.toUpperCase().slice(0, 2) }))}
             />
 
-            {hasFilter && (
-                <button className="sa-seg-filter__clear"
+            {activeCount > 0 && (
+                <button type="button" className="sa-seg-filter__clear"
                     onClick={() => setSegment({ device: null, country: "", channel: null, consent: null })}>
-                    Clear
+                    Clear filters ({activeCount})
                 </button>
             )}
         </div>

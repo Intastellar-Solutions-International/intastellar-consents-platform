@@ -3,6 +3,7 @@ import { ScannerHost } from "../../API/host.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import { useAnalyticsPage, MiniBar, KpiCard, useAnalyticsReport, toIsoDate, pctChange, formatPercent, formatDuration, SegmentFilter, authHeaders, useCompareRange, usePrevRange } from "./_shared.js";
 import { IconMegaphone, IconTrendingUp, IconGlobe } from "./Icons.js";
+import { OutboundClicksPanel } from "./ReportPanels.js";
 import "./Analytics.css";
 
 const AD_RESOLVE_URL = `${ScannerHost}/api/ad-id-resolve`;
@@ -174,12 +175,14 @@ export default function AnalyticsAcquisition() {
                 setCompareRange={compare.setCompareRange}
                 setCompareWindowStart={compare.setCompareWindowStart}
                 setCompareWindowEnd={compare.setCompareWindowEnd}
+                toolbar={hasDomain && data && !data.noSiteKey ? (
+                    <div className="sa-meta-row">
+                        <SegmentFilter segment={segment} setSegment={setSegment} />
+                    </div>
+                ) : null}
             />
             <div className="dashboard-content">
                 <div className="sa-page">
-                    {hasDomain && !loading && data && !data.noSiteKey && (
-                        <SegmentFilter segment={segment} setSegment={setSegment} />
-                    )}
                     {!hasDomain && (
                         <p className="sa-notice">Select a domain in the header to view acquisition data.</p>
                     )}
@@ -435,6 +438,9 @@ export default function AnalyticsAcquisition() {
 
                         </div>
                     )}
+
+                    {/* Moved here from Overview (Home now shows insights only) */}
+                    {showData && <OutboundClicksPanel data={data} />}
                 </div>
             </div>
         </div>

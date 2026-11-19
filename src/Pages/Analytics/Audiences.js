@@ -98,7 +98,7 @@ function ConditionRow({ condition, onChange, onRemove }) {
                 />
             )}
 
-            <button type="button" className="sa-seg-filter__clear" onClick={onRemove}>Remove</button>
+            <button type="button" className="sa-seg-filter__clear sa-seg-filter__clear--danger" onClick={onRemove}>Remove</button>
         </div>
     );
 }
@@ -317,7 +317,7 @@ export default function Audiences() {
                                                 <td>
                                                     <button
                                                         type="button"
-                                                        className="sa-seg-filter__clear"
+                                                        className="sa-seg-filter__clear sa-seg-filter__clear--danger"
                                                         onClick={() => deleteAudience(a.id)}
                                                     >
                                                         Delete

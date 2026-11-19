@@ -33,6 +33,10 @@ export default function StickyPageTitle({
     setCompareWindowStart,
     setCompareWindowEnd,
     children,
+    // Optional controls (e.g. a page's filters) placed in the same row,
+    // between the title and the date range, so the sticky header keeps its
+    // one-line height; they scroll sideways when space runs out.
+    toolbar,
     showInfoButton = false,
     infoType = "information"
 }) {
@@ -71,11 +75,12 @@ export default function StickyPageTitle({
 
     if (!children) {
         return <>
-            <div ref={headerRef} className={"infoHeader" + (className ? " " + className : "")} style={{ padding: "10px 0" }}>
+            <div ref={headerRef} className={"infoHeader" + (className ? " " + className : "") + (toolbar ? " infoHeader--toolbar" : "")} style={{ padding: "10px 0" }}>
                 {loadingUpdated || finalLoaded ? <LoadingBar /> : null}
                 <div className="dashboard-content" style={{
                     display: "grid",
-                    gridTemplateColumns: "1fr .5fr",
+                    gridTemplateColumns: toolbar ? "auto minmax(0, 1fr) auto" : "1fr .5fr",
+                    columnGap: toolbar ? "var(--space-4)" : undefined,
                     alignItems: "center",
                 }}>
                     <h1 className="sticky-title">
@@ -88,6 +93,7 @@ export default function StickyPageTitle({
                             <Button className="secondary" onClick={openSideCart}>i</Button>
                         )}
                     </h1>
+                    {toolbar ? <div className="infoHeader__toolbar">{toolbar}</div> : null}
                     {
                         (numberofDays && !(dateInTopBar && !dateSlot)) ?
                             wrapDate(<Filter

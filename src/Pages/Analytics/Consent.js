@@ -1,6 +1,7 @@
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import { useAnalyticsPage, KpiCard, ConsentBar, IndustryBenchmarkNote, useCompareRange } from "./_shared.js";
 import { IconShieldCheck, IconBarChart } from "./Icons.js";
+import { ConsentImpactPanel } from "./ReportPanels.js";
 import "./Analytics.css";
 
 export default function AnalyticsConsent() {
@@ -139,6 +140,9 @@ export default function AnalyticsConsent() {
                             </div>
                         );
                     })()}
+
+                    {/* Moved here from Overview (Home now shows insights only) */}
+                    {showData && <ConsentImpactPanel impact={data.consentImpact} />}
                 </div>
             </div>
         </div>

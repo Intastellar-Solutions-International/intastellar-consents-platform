@@ -2,7 +2,8 @@ const { useState, useEffect, useMemo, useRef } = React;
 import { ScannerHost } from "../../API/host.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import heatmapLogo from "../../Components/Header/icons/heatmap.svg";
-import { authHeaders, useAnalyticsPageChrome, elementLabel, useCompareRange } from "./_shared.js";
+import { authHeaders, useAnalyticsPageChrome, useAnalyticsReport, elementLabel, useCompareRange } from "./_shared.js";
+import { FrustrationPanel } from "./ReportPanels.js";
 import { IconCursorClick, IconTarget, IconTrendingUp } from "./Icons.js";
 import "./Analytics.css";
 
@@ -383,6 +384,9 @@ export default function AnalyticsHeatmap() {
     } = useAnalyticsPageChrome();
 
     const { paths, loading: pathsLoading, noSiteKey } = usePaths(domain, fromIso, toIso);
+    // Site-wide rage-click summary (moved here from Overview) — from the
+    // analytics report, independent of the page picked for the heatmap.
+    const { data: report } = useAnalyticsReport(domain, fromIso, toIso);
     const [selected, setSelected] = useState(null);
     const [device,   setDevice]   = useState("");
     const [mode,     setMode]     = useState("clicks"); // "clicks" | "attention"
@@ -569,6 +573,8 @@ export default function AnalyticsHeatmap() {
 
                         </div>
                     )}
+
+                    {domain && <FrustrationPanel data={report} />}
                 </div>
             </div>
         </div>

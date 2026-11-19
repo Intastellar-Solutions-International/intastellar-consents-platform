@@ -2,7 +2,7 @@ const { useState, useCallback } = React;
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import LiveActivityMap from "./LiveActivityMap.js";
 import LiveVisitorDrawer, { countryName } from "./LiveVisitorDrawer.js";
-import { useAnalyticsPageChrome, useSiteConfig, useLiveData, formatCurrency, timeAgo } from "./_shared.js";
+import { useAnalyticsPageChrome, useSiteConfig, useLiveData, formatCurrency, timeAgo, LiveActivityBars } from "./_shared.js";
 import "./Analytics.css";
 
 /**
@@ -28,7 +28,6 @@ export default function LiveView() {
     const closeVisitor = useCallback(() => setOpenSession(null), []);
 
     const mapCountries = data?.countries || [];
-    const maxUserBar = Math.max(...(data?.perMinuteUsers || [1]), 1);
     const consentPct = data?.total > 0 ? Math.round((data.full / data.total) * 100) : 0;
 
     return (
@@ -64,24 +63,7 @@ export default function LiveView() {
                             <div className="sa-liveview__grid">
                                 <div className="sa-live sa-liveview__card">
                                     <div className="sa-live__body sa-liveview__card-body">
-                                        <div className="sa-live__sparkline">
-                                            <div className="sa-live__spark-hd">
-                                                <span className="sa-live__spark-label">Active users per minute</span>
-                                            </div>
-                                            <div className="sa-live__spark-bars">
-                                                {(data.perMinuteUsers || []).map((v, i) => (
-                                                    <div
-                                                        key={i}
-                                                        className={"sa-live__spark-bar" + (i === data.perMinuteUsers.length - 1 ? " sa-live__spark-bar--last" : "")}
-                                                        style={{ height: Math.max(3, Math.round((v / maxUserBar) * 44)) + "px" }}
-                                                        title={`${v} active user${v !== 1 ? "s" : ""}`}
-                                                    />
-                                                ))}
-                                            </div>
-                                            <div className="sa-live__spark-times">
-                                                <span>−30m</span><span>−15m</span><span>now</span>
-                                            </div>
-                                        </div>
+                                        <LiveActivityBars perMinute={data.perMinute} perMinuteUsers={data.perMinuteUsers} />
 
                                         <div className="sa-live__kpis">
                                             <div className="sa-live__kpi">

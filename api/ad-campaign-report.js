@@ -1,5 +1,9 @@
 /**
- * GET /api/ad-campaign-report?domain=example.com&fromDate=2024-01-01&toDate=2024-01-31
+ * GET /api/ad-campaign-report?domain=example.com&fromDate=2024-01-01&toDate=2024-01-31[&displayCurrency=EUR]
+ *
+ * With displayCurrency, each campaign's spend is converted with ECB rates
+ * (native amount kept as nativeSpend/nativeCurrency), so campaigns from
+ * accounts in different currencies can be ranked against each other.
  *
  * Real per-campaign ad performance (campaign name, clicks, impressions, spend)
  * for a single domain's connected ad accounts — a more trustworthy source than
@@ -26,6 +30,9 @@
 
 import { tryRefreshToken, fetchGoogleAdsCampaigns, fetchMetaAdsCampaigns, fetchMicrosoftAdsCampaigns } from "./_ad-platform-fetch.js";
 import { getPool } from "./_db.js";
+import { getEcbRates, fx } from "./_fx.js";
+
+const VALID_CURRENCIES = new Set(["EUR","USD","GBP","DKK","SEK","NOK","CHF","PLN","AUD","CAD","SGD"]);
 function validateJwt(authHeader) {
     const match = (authHeader || "").match(/^Bearer\s+(.+)$/i);
     if (!match) return null;
@@ -94,7 +101,7 @@ export default async function handler(req, res) {
         `SELECT * FROM ad_platform_connections
          WHERE organisation_id = $1 AND LOWER(domain) = LOWER($2)
            AND account_id IS NOT NULL AND access_token IS NOT NULL
-           AND platform != 'google_analytics'`,
+           AND platform NOT IN ('google_analytics', 'google_search_console')`,
         [orgId, domain]
     );
 
@@ -115,6 +122,20 @@ export default async function handler(req, res) {
             return { platform: conn.platform, supported: true, campaigns: [], error: e.message || "Fetch failed" };
         }
     }));
+
+    const displayCurrency = String(req.query.displayCurrency || "").toUpperCase().trim();
+    if (VALID_CURRENCIES.has(displayCurrency)) {
+        const rates = await getEcbRates();
+        for (const p of platforms) {
+            p.campaigns = p.campaigns.map(c => ({
+                ...c,
+                nativeSpend: c.spend,
+                nativeCurrency: c.currency,
+                spend: fx(c.spend, c.currency, displayCurrency, rates),
+                currency: displayCurrency,
+            }));
+        }
+    }
 
     return res.status(200).json({
         noConnections: false,

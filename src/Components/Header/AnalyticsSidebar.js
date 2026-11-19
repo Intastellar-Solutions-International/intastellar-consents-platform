@@ -28,6 +28,27 @@ import { t } from "../../i18n/index.js";
  * never removed from normal document flow, so it genuinely contributes
  * its width to the flex row it's in and actually pushes its siblings.
  */
+// Link URLs encode the domain's dots as "%2E" (encodeDomainPathSegment), but
+// React Router's history decodeURI()s location.pathname, so the two never
+// matched as raw strings and no menu item ever showed as active. Compare
+// decoded, case-insensitive, without a trailing slash.
+function normalizePath(path) {
+    let p = String(path || "");
+    try { p = decodeURIComponent(p); } catch { /* keep as-is if malformed */ }
+    return p.replace(/\/+$/, "").toLowerCase() || "/";
+}
+
+// Which groups the viewer opened/closed by hand — a per-browser convenience,
+// so storage failures (private mode, blocked site data) just fall back to
+// the default of "only the current page's group is open".
+const OPEN_GROUPS_KEY = "ia_analytics_nav_groups";
+function readGroupOverrides() {
+    try { return JSON.parse(localStorage.getItem(OPEN_GROUPS_KEY)) || {}; } catch { return {}; }
+}
+function writeGroupOverrides(v) {
+    try { localStorage.setItem(OPEN_GROUPS_KEY, JSON.stringify(v)); } catch { /* ignore */ }
+}
+
 export default function AnalyticsSidebar(props) {
     const useLocation = window.ReactRouterDOM.useLocation;
     const location = useLocation();
@@ -64,6 +85,103 @@ export default function AnalyticsSidebar(props) {
     }, []);
 
     const closeMobile = () => setMobileOpen(false);
+
+    // Resolve each link once: hidden (role/tier) → null, otherwise its URL
+    // and whether it's the current page.
+    const resolveLink = (link) => {
+        if (link?.view?.length && link.view.indexOf(Authentication.getCurrentOrganisationRole()) === -1) return null;
+        if (link.requiresTier && !canAccess(link.requiresTier)) return null;
+        if (link.external) return { link, url: link.path, isActive: false };
+        const url = (() => {
+            if (link.path.indexOf("/analytics") === 0) {
+                if (!handle) return link.path;
+                return link.path.replace(/^\/analytics/, `/analytics/${handle}`);
+            }
+            if (link.path.indexOf("reports") === -1) {
+                return link.path;
+            }
+            let p = link.path;
+            if (handle) {
+                p = p.replace(/^\/reports/, `/reports/view/${handle}`);
+            }
+            return "/" + id + p;
+        })();
+        return { link, url, isActive: normalizePath(location?.pathname) === normalizePath(url) };
+    };
+
+    // Flat link list (dividers mark group starts) → top-level items + groups.
+    // Groups the viewer can't see anything in are dropped entirely. Not
+    // memoized: tier/role can resolve after first render, and it's ~30 items.
+    const { topItems, groups } = (() => {
+        const top = [];
+        const grouped = [];
+        let current = null;
+        for (const link of props?.links || []) {
+            if (link.divider) {
+                if (link.requiresTier && !canAccess(link.requiresTier)) { current = { hidden: true, items: [] }; continue; }
+                current = { label: link.label, items: [] };
+                grouped.push(current);
+                continue;
+            }
+            if (current?.hidden) continue;
+            const r = resolveLink(link);
+            if (!r) continue;
+            (current ? current.items : top).push(r);
+        }
+        return { topItems: top, groups: grouped.filter(g => g.items.length) };
+    })();
+
+    // Collapsed by default so a first visit sees ~8 lines, not ~30 links;
+    // the group holding the current page opens itself. Explicit
+    // open/close by the viewer wins and is remembered.
+    const [groupOverrides, setGroupOverrides] = useState(readGroupOverrides);
+    const toggleGroup = (label, isOpen) => {
+        setGroupOverrides(prev => {
+            const next = { ...prev, [label]: !isOpen };
+            writeGroupOverrides(next);
+            return next;
+        });
+    };
+    // Navigating into a group that was closed by hand reopens it.
+    useEffect(() => {
+        const activeGroup = groups.find(g => g.items.some(i => i.isActive));
+        if (activeGroup && groupOverrides[activeGroup.label] === false) {
+            setGroupOverrides(prev => {
+                const next = { ...prev };
+                delete next[activeGroup.label];
+                writeGroupOverrides(next);
+                return next;
+            });
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [location?.pathname]);
+
+    const renderItem = ({ link, url, isActive }, key) => {
+        if (link.external) {
+            return (
+                <li key={key} className="ia-sidebar__item">
+                    <a className="ia-sidebar__link" href={link.path} target="_blank" rel="noopener noreferrer" onClick={closeMobile}>
+                        <span className="ia-sidebar__link-label">{t(link?.name)} ↗</span>
+                    </a>
+                </li>
+            );
+        }
+        const itemClass = "ia-sidebar__link"
+            + (isActive ? " --active" : "")
+            + (link.indent ? " ia-sidebar__link--indent" : "");
+        return (
+            <li key={key} className="ia-sidebar__item">
+                <Link className={itemClass} to={url} onClick={closeMobile} aria-current={isActive ? "page" : undefined}>
+                    {link?.logoSrc
+                        ? <img src={link.logoSrc} alt="" aria-hidden="true" style={{ width: 18, height: 18, objectFit: "contain", flexShrink: 0, verticalAlign: "middle" }} />
+                        : link?.icon
+                            ? <i className={"dashboard-icons " + link?.icon} aria-hidden="true"></i>
+                            : null}{" "}
+                    <span className="ia-sidebar__link-label">{t(link?.name)}</span>
+                </Link>
+            </li>
+        );
+    };
 
     return <>
         <button
@@ -104,78 +222,32 @@ export default function AnalyticsSidebar(props) {
                     </button>
                 </div>
                 <ul className="ia-sidebar__list">
-                {
-                    props?.links?.map((link, key) => {
-                        if (link.divider) {
-                            if (link.requiresTier && !canAccess(link.requiresTier)) return null;
-                            return (
-                                <li key={key} className="ia-sidebar__group-label" aria-hidden="true">
-                                    <span className="ia-sidebar__group-label-text">{t(link.label)}</span>
-                                </li>
-                            );
-                        }
-
-                        if (
-                            link?.view?.length &&
-                            link.view.indexOf(Authentication.getCurrentOrganisationRole()) === -1
-                        ) {
-                            return null;
-                        }
-
-                        if (link.requiresTier && !canAccess(link.requiresTier)) {
-                            return null;
-                        }
-
-                        if (link.external) {
-                            return (
-                                <li key={key} className="ia-sidebar__item">
-                                    <a
-                                        className="ia-sidebar__link"
-                                        href={link.path}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        onClick={closeMobile}
-                                    >
-                                        <span className="ia-sidebar__link-label">{t(link?.name)} ↗</span>
-                                    </a>
-                                </li>
-                            );
-                        }
-
-                        const url = (() => {
-                            if (link.path.indexOf("/analytics") === 0) {
-                                if (!handle) return link.path;
-                                return link.path.replace(/^\/analytics/, `/analytics/${handle}`);
-                            }
-                            if (link.path.indexOf("reports") === -1) {
-                                return link.path;
-                            }
-                            let p = link.path;
-                            if (handle) {
-                                p = p.replace(/^\/reports/, `/reports/view/${handle}`);
-                            }
-                            return "/" + id + p;
-                        })();
-
-                        const isActive = location?.pathname === url;
-                        const itemClass = "ia-sidebar__link"
-                            + (isActive ? " --active" : "")
-                            + (link.indent ? " ia-sidebar__link--indent" : "");
-
+                    {topItems.map((item, i) => renderItem(item, "top-" + i))}
+                    {groups.map((group, gi) => {
+                        const hasActive = group.items.some(i => i.isActive);
+                        const isOpen = groupOverrides[group.label] ?? hasActive;
+                        const listId = `ia-sidebar-group-${gi}`;
                         return (
-                            <li key={key} className="ia-sidebar__item">
-                                <Link className={itemClass} to={url} onClick={closeMobile}>
-                                    {link?.logoSrc
-                                        ? <img src={link.logoSrc} alt="" aria-hidden="true" style={{ width: 18, height: 18, objectFit: "contain", flexShrink: 0, verticalAlign: "middle" }} />
-                                        : link?.icon
-                                            ? <i className={"dashboard-icons " + link?.icon} aria-hidden="true"></i>
-                                            : null}{" "}
-                                    <span className="ia-sidebar__link-label">{t(link?.name)}</span>
-                                </Link>
+                            <li key={group.label} className={"ia-sidebar__group" + (isOpen ? " ia-sidebar__group--open" : "")}>
+                                <button
+                                    type="button"
+                                    className={"ia-sidebar__group-toggle" + (hasActive ? " ia-sidebar__group-toggle--has-active" : "")}
+                                    aria-expanded={isOpen}
+                                    aria-controls={listId}
+                                    onClick={() => toggleGroup(group.label, isOpen)}
+                                >
+                                    <span className="ia-sidebar__group-toggle-label">{t(group.label)}</span>
+                                    {!isOpen && <span className="ia-sidebar__group-count">{group.items.length}</span>}
+                                    <svg className="ia-sidebar__group-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                                        <path d="m6 9 6 6 6-6" />
+                                    </svg>
+                                </button>
+                                <ul id={listId} className="ia-sidebar__sublist" hidden={!isOpen}>
+                                    {group.items.map((item, i) => renderItem(item, group.label + "-" + i))}
+                                </ul>
                             </li>
                         );
-                    })
-                }
+                    })}
                 </ul>
             </nav>
         </aside>

@@ -1,32 +1,39 @@
 /* ── Design tokens ────────────────────────────────────────────────────────────── */
 
+/* Analytics follows the CMP palette in src/styles/tokens.css (loaded
+   globally by App.js). Whole-colour tokens alias the CMP ones directly;
+   the RGB triplets below can't (CMP uses space-separated channels for
+   rgb(var() / a), these are comma-separated for rgba(var(), a)), so their
+   values are copied from tokens.css — change both together. */
 :root {
-    --sa-surface:    rgba(14, 14, 20, 0.97);
-    --sa-surface-2:  rgba(20, 20, 28, 0.95);
-    --sa-surface-3:  rgba(26, 26, 36, 0.92);
-    --sa-border:     rgba(255, 255, 255, 0.055);
+    --sa-surface:    var(--color-bg-sunken);   /* #222 */
+    --sa-surface-2:  var(--color-bg-base);     /* #373737 */
+    --sa-surface-3:  var(--color-bg-raised);   /* #3f3f3f — cards, like CMP's Card */
+    --sa-border:     var(--color-border-subtle);
     --sa-radius:     12px;
     --sa-radius-lg:  16px;
     --sa-gap:        20px;
-    --sa-shadow-panel: 0 1px 3px rgba(0,0,0,0.4), 0 8px 24px rgba(0,0,0,0.18);
+    --sa-shadow-panel: var(--shadow-md);
 
-    /* Brand accent (gold) — used at varying opacity via rgba(var(--sa-accent), X) */
-    --sa-accent:     192, 159, 83;
-    /* Lighter gold for the active/selected state of an accent element, and
-       the pale gold used for text sitting on an accent-tinted background. */
-    --sa-accent-bright: 240, 205, 120;
-    --sa-accent-text:   230, 210, 160;
+    /* Brand accent (gold) — used at varying opacity via rgba(var(--sa-accent), X).
+       Primary actions and active state only, never framing cards (CMP rule). */
+    --sa-accent:     192, 159, 83;    /* = --c-accent */
+    /* Gold for hover/active and gold text — CMP's --c-accent-strong (AA on all layers). */
+    --sa-accent-bright: 212, 182, 116;
+    --sa-accent-text:   212, 182, 116;
 
     /* Gray text ladder (RGB triplets, no alpha — call sites vary opacity).
        Consolidated from ~34 near-duplicate one-off grays that had organically
        drifted in by ±10-20 units each with no real difference in intent;
        these 4 anchors are the dominant exact value already used within each
        brightness band, so most call sites needed no visual change at all. */
-    --sa-text-dim:       130, 130, 130;
-    --sa-text-muted:     160, 160, 160;
-    --sa-text-secondary: 180, 180, 180;
-    --sa-text:           210, 210, 210;
-    --sa-text-bright:    240, 235, 225;  /* warm near-white for labels on dark diagram nodes */
+    /* Mapped onto CMP's three AA-tested text tokens. CMP has nothing dimmer
+       than --c-text-muted (the old 130 grey failed AA), so dim shares it. */
+    --sa-text-dim:       173, 173, 173;  /* = --c-text-muted */
+    --sa-text-muted:     173, 173, 173;  /* = --c-text-muted */
+    --sa-text-secondary: 197, 197, 197;  /* = --c-text-secondary */
+    --sa-text:           240, 240, 240;  /* = --c-text-primary */
+    --sa-text-bright:    240, 240, 240;  /* = --c-text-primary */
 
     /* Per-channel accent palette */
     --sa-c-green:    #4ade80;
@@ -74,12 +81,14 @@
     --sa-bad:     248, 113, 113;  /* = --sa-c-red's value (#f87171) */
     --sa-warn:    249, 191, 64;   /* = --sa-c-amber's value — true caution amber, distinct from --sa-bad */
     --sa-info:    96, 165, 250;   /* = --sa-c-blue's value */
-    --sa-neutral: 160, 160, 160;  /* = --sa-text-muted's value, named for its status role rather than text */
+    --sa-neutral: 173, 173, 173;  /* = --sa-text-muted's value, named for its status role rather than text */
 
     /* One bar/line color per chart type, distinct from --sa-accent (gold
        stays button/link-only). Used by the shared Chart component (Phase 5)
        and any single-series chart that needs one consistent hue. */
-    --sa-chart-primary: 59, 130, 246;
+    --sa-chart-primary: 109, 187, 139;  /* = --c-data, CMP's colour for chart marks */
+    --sa-chart-2:       127, 140, 240;  /* = --c-data-2 */
+    --sa-chart-3:       232, 149, 92;   /* = --c-data-3 */
 
     /* 8px spacing scale for new components. --sa-gap (20px, above) predates
        this and stays as-is — many existing rules depend on its exact value
@@ -239,12 +248,13 @@
 
 /* ── Live view panel ─────────────────────────────────────────────────────────── */
 
+/* CMP card surface; green is kept only where it means "live" (dot + label). */
 .sa-live {
-    border: 1px solid rgba(74,222,128,0.15);
+    border: 1px solid var(--color-border-subtle);
     border-radius: var(--sa-radius, 12px);
-    background: rgba(10, 18, 12, 0.98);
+    background: var(--color-bg-raised);
     overflow: hidden;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.5), 0 8px 24px rgba(0,0,0,0.22);
+    box-shadow: var(--shadow-md);
     display: flex;
     flex-direction: column;
 }
@@ -261,7 +271,7 @@
     flex-shrink: 0;
 }
 
-.sa-live__header:hover { background: rgba(255,255,255,0.015); }
+.sa-live__header:hover { background: rgb(var(--c-white) / 0.03); }
 
 .sa-live__title {
     display: flex;
@@ -286,11 +296,11 @@
 }
 
 .sa-live__label {
-    font-size: 0.72rem;
+    font-size: var(--text-xs);
     font-weight: 700;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: rgba(74,222,128,0.9);
+    color: var(--color-success);
 }
 
 .sa-live__window {
@@ -305,15 +315,15 @@
 }
 
 .sa-live__countdown {
-    font-size: 0.68rem;
-    color: rgba(var(--sa-text-dim),0.55);
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
     font-variant-numeric: tabular-nums;
 }
 
 .sa-live__toggle {
     background: none;
     border: none;
-    color: rgba(var(--sa-text-dim),0.55);
+    color: var(--color-text-muted);
     cursor: pointer;
     padding: 2px 4px;
     font-size: 0.7rem;
@@ -321,11 +331,11 @@
     border-radius: 4px;
 }
 
-.sa-live__toggle:hover { background: rgba(255,255,255,0.06); color: #ccc; }
+.sa-live__toggle:hover { background: rgb(var(--c-white) / 0.06); color: var(--color-text-primary); }
 
 /* ── Body ── */
 .sa-live__body {
-    border-top: 1px solid rgba(74,222,128,0.1);
+    border-top: 1px solid var(--color-border-subtle);
     padding: 14px 16px 16px;
     display: flex;
     flex-direction: column;
@@ -347,9 +357,9 @@
 }
 
 .sa-live__spark-label {
-    font-size: 0.68rem;
+    font-size: var(--text-xs);
     font-weight: 500;
-    color: rgba(var(--sa-text-dim),0.6);
+    color: var(--color-text-muted);
 }
 
 .sa-live__spark-peak {
@@ -358,38 +368,54 @@
     font-variant-numeric: tabular-nums;
 }
 
+/* One slot per minute; an empty minute shows only the faint baseline
+   track, so a quiet period doesn't look like a row of small bars. */
 .sa-live__spark-bars {
     display: flex;
     align-items: flex-end;
     gap: 2px;
     height: 44px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.sa-live__spark-slot {
+    flex: 1;
+    height: 100%;
+    display: flex;
+    align-items: flex-end;
 }
 
 .sa-live__spark-bar {
-    flex: 1;
+    width: 100%;
     border-radius: 2px 2px 0 0;
-    background: rgba(74,222,128,0.28);
-    min-height: 2px;
+    background: rgb(var(--c-data) / 0.55);
     transition: height 0.3s ease;
 }
 
 .sa-live__spark-bar--last {
-    background: rgba(74,222,128,0.75);
+    background: rgb(var(--c-data));
 }
 
 .sa-live__spark-times {
     display: flex;
     justify-content: space-between;
-    font-size: 0.6rem;
-    color: rgba(var(--sa-text-dim),0.5);
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
 }
 
 /* ── Hero number (Phase 4 — GA4-style simplified widget) ── */
 .sa-live__hero-label {
     margin: 0;
-    font-size: 0.7rem;
+    font-size: var(--text-xs);
     font-weight: 500;
-    color: rgba(var(--sa-text-dim),0.65);
+    color: var(--color-text-muted);
+}
+
+.sa-live__hero-sub {
+    margin: 6px 0 0;
+    font-size: var(--text-xs);
+    line-height: 1.4;
+    color: var(--color-text-muted);
 }
 
 .sa-live__hero-value {
@@ -398,13 +424,13 @@
     font-weight: 700;
     line-height: 1;
     letter-spacing: -0.02em;
-    color: rgba(228,240,228,0.97);
+    color: var(--color-text-primary);
     font-variant-numeric: tabular-nums;
 }
 
 .sa-live__divider {
     height: 1px;
-    background: rgba(74,222,128,0.1);
+    background: var(--color-border-subtle);
     margin: 2px 0;
 }
 
@@ -418,11 +444,9 @@
 .sa-live__countries-hd {
     display: flex;
     justify-content: space-between;
-    font-size: 0.65rem;
+    font-size: var(--text-xs);
     font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    color: rgba(110,110,125,0.6);
+    color: var(--color-text-muted);
 }
 
 .sa-live__country-row {
@@ -433,53 +457,53 @@
 }
 
 .sa-live__country-code {
-    font-size: 0.72rem;
+    font-size: var(--text-xs);
     font-weight: 600;
-    color: rgba(210,240,220,0.85);
+    color: var(--color-text-primary);
 }
 
 .sa-live__country-bar-wrap {
     height: 5px;
     border-radius: 3px;
-    background: rgba(255,255,255,0.05);
+    background: var(--color-bg-sunken);
     overflow: hidden;
 }
 
 .sa-live__country-bar {
     height: 100%;
     border-radius: 3px;
-    background: rgba(74,222,128,0.55);
+    background: rgb(var(--c-data) / 0.75);
 }
 
 .sa-live__country-value {
-    font-size: 0.72rem;
+    font-size: var(--text-xs);
     font-variant-numeric: tabular-nums;
-    color: rgba(var(--sa-text-dim),0.75);
+    color: var(--color-text-secondary);
     min-width: 20px;
     text-align: right;
 }
 
 .sa-live__countries-empty {
-    font-size: 0.75rem;
-    color: rgba(130,130,150,0.45);
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
     margin: 0;
 }
 
 .sa-live__mismatch {
-    font-size: 0.72rem;
-    color: #e06c2b;
+    font-size: var(--text-xs);
+    color: var(--color-warning);
     line-height: 1.4;
     margin: 0;
 }
 
 .sa-live__view-all {
     align-self: flex-start;
-    font-size: 0.75rem;
+    font-size: var(--text-sm);
     font-weight: 600;
-    color: rgba(74,222,128,0.85);
+    color: var(--color-accent-strong);
     text-decoration: none;
 }
-.sa-live__view-all:hover { color: rgba(74,222,128,1); text-decoration: underline; }
+.sa-live__view-all:hover { color: var(--color-accent-strong); text-decoration: underline; }
 
 /* ── Live View page (LiveView.js, Phase 4) — large map hero + detail grid ── */
 
@@ -1312,24 +1336,32 @@
 
 /* ── Meta row ────────────────────────────────────────────────────────────────── */
 
+/* Site key on the left, segment filters on the right; wraps to two rows
+   on narrow screens instead of squeezing the two together. */
 .sa-meta-row {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    justify-content: flex-end;
+    justify-content: space-between;
+    gap: var(--space-3) var(--space-4);
 }
 
 .sa-site-key-badge {
-    font-size: 0.72rem;
-    color: rgba(var(--sa-text-dim),0.6);
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
 }
 
 .sa-site-key-badge code {
-    font-family: "SF Mono","Fira Code","Cascadia Code",monospace;
-    font-size: 0.72rem;
-    color: rgba(var(--sa-text-secondary),0.7);
-    background: rgba(255,255,255,0.05);
-    padding: 1px 6px;
-    border-radius: 4px;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-text-secondary);
+    background: var(--color-bg-sunken);
+    border: 1px solid var(--color-border-subtle);
+    padding: 2px 8px;
+    border-radius: var(--radius-sm);
 }
 
 /* ── KPI cards ───────────────────────────────────────────────────────────────── */
@@ -1350,7 +1382,7 @@
 
 .sa-kpi:hover {
     box-shadow: 0 1px 3px rgba(0,0,0,0.5), 0 12px 32px rgba(0,0,0,0.26);
-    border-color: rgba(255,255,255,0.1);
+    border-color: var(--color-border);
 }
 
 /* Left accent bar — replaces dated top stripe */
@@ -1360,7 +1392,9 @@
     top: 14px; left: 0; bottom: 14px;
     width: 3px;
     border-radius: 0 3px 3px 0;
-    background: rgba(249, 191, 64, 0.8);
+    /* No bar by default — CMP never frames cards in a colour; only the
+       semantic variants below (warn/live/revenue/status) draw one. */
+    background: transparent;
 }
 
 /* Color carries meaning, not decoration: warn = a metric crossed a bad
@@ -2174,13 +2208,35 @@
     gap: 12px;
 }
 
-/* KPI strip — equal-width cards, expands to 6 when quality-leads is present */
+/* KPI strip — headed section; cards share the full row whatever their
+   count (a fixed 5-column grid left 2 cards stranded on the left), and wrap
+   on narrow screens. --4/--6 below still force a fixed count where wanted. */
 .sa-kpi-strip-wrap {
     position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+.sa-kpi-strip__hd {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+}
+.sa-kpi-strip__title {
+    margin: 0;
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--color-text-secondary);
+}
+.sa-kpi-strip__empty {
+    margin: 0;
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
 }
 .sa-kpi-strip {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
     gap: 12px;
 }
 .sa-kpi-strip--4 {
@@ -2193,20 +2249,25 @@
 .sa-customize-btn {
     display: inline-flex;
     align-items: center;
-    gap: 5px;
-    margin-top: 8px;
-    padding: 4px 10px;
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 6px;
+    gap: 6px;
+    height: 32px;
+    padding: 0 var(--space-3);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
     background: transparent;
-    color: rgba(180,180,200,0.6);
-    font-size: 0.72rem;
+    color: var(--color-text-secondary);
+    font-family: var(--font-sans);
+    font-size: var(--text-sm);
     cursor: pointer;
     transition: color 0.15s, border-color 0.15s;
 }
 .sa-customize-btn:hover {
-    color: rgba(200,200,220,0.9);
-    border-color: rgba(255,255,255,0.2);
+    color: var(--color-text-primary);
+    border-color: var(--color-border-strong);
+}
+.sa-customize-btn:focus-visible {
+    outline: none;
+    box-shadow: var(--shadow-focus);
 }
 
 .sa-customize-backdrop {
@@ -2336,6 +2397,201 @@
     grid-template-columns: 3fr 2fr;
     gap: 12px;
     align-items: stretch;
+}
+
+/* Text links — CMP gold text (accent-strong, AA on every layer).
+   `.sa-page a:not([class])` catches any link a page forgets to class, so it
+   never falls back to the browser's default blue. */
+.sa-link,
+.sa-page a:not([class]) {
+    color: var(--color-accent-strong);
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: var(--radius-xs);
+}
+
+.sa-link:hover,
+.sa-page a:not([class]):hover {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.sa-link:focus-visible,
+.sa-page a:not([class]):focus-visible {
+    outline: none;
+    box-shadow: var(--shadow-focus);
+}
+
+/* Links that are the row label itself (e.g. event names in a table) */
+.sa-link--quiet {
+    color: inherit;
+    font-weight: inherit;
+}
+
+.sa-link--quiet:hover {
+    color: var(--color-accent-strong);
+}
+
+.sa-chart-section__hd-right {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+}
+
+/* ── Overview Home: insights + snapshot (GA4-style) ──────────────────────── */
+
+/* Insights starts a new section — extra room on top of .sa-overview's 12px
+   gap so its heading reads as a section start, not a caption of the cards
+   above. */
+.sa-insights {
+    margin-top: var(--space-5);
+}
+
+.sa-section-hd {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-3);
+    margin-bottom: var(--space-2);
+}
+
+.sa-section-hd__title {
+    margin: 0;
+    font-size: var(--text-base);
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.sa-section-hd__sub {
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+}
+
+/* Single row that scrolls sideways instead of wrapping; cards snap into
+   place. Padding + negative margin keep card shadows/focus rings from
+   being clipped by the scroll container. */
+.sa-insights__grid {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(260px, 300px);
+    gap: 12px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 4px;
+    padding: 4px 4px 10px;
+    margin: -4px -4px -10px;
+    scrollbar-width: thin;
+    scrollbar-color: rgb(var(--c-white) / 0.18) transparent;
+}
+
+.sa-insights__grid:focus-visible {
+    outline: none;
+    box-shadow: var(--shadow-focus);
+    border-radius: var(--sa-radius, 12px);
+}
+
+.sa-insights__grid > * {
+    scroll-snap-align: start;
+}
+
+.sa-insights__empty {
+    margin: 0;
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+}
+
+/* One insight = one link into the report that explains it. Neutral card
+   (CMP never frames cards in colour); tone shows as icon + label. */
+.sa-insight {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    padding: var(--space-4);
+    border-radius: var(--sa-radius, 12px);
+    border: 1px solid var(--color-border-subtle);
+    background: var(--color-bg-raised);
+    box-shadow: var(--shadow-sm);
+    text-decoration: none;
+    transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.sa-insight:hover {
+    border-color: var(--color-border-strong);
+}
+
+.sa-insight:focus-visible {
+    outline: none;
+    box-shadow: var(--shadow-focus);
+}
+
+.sa-insight__tone {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: var(--text-xs);
+    font-weight: 600;
+    color: var(--color-text-muted);
+}
+
+.sa-insight__icon {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+}
+
+.sa-insight--good .sa-insight__icon { color: var(--color-success); }
+.sa-insight--bad  .sa-insight__icon { color: var(--color-danger); }
+.sa-insight--info .sa-insight__icon { color: var(--color-info); }
+
+/* Max two lines (long form IDs / hostnames) — full text in the tooltip */
+.sa-insight__title {
+    font-size: var(--text-base);
+    font-weight: 600;
+    line-height: 1.35;
+    color: var(--color-text-primary);
+    overflow-wrap: anywhere;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+}
+
+.sa-insight__detail {
+    font-size: var(--text-sm);
+    line-height: 1.45;
+    color: var(--color-text-secondary);
+}
+
+.sa-insight__cta {
+    margin-top: auto;
+    padding-top: var(--space-2);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--color-accent-strong);
+}
+
+.sa-snapshot-row {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    align-items: stretch;
+}
+
+.sa-snapshot {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Pin "View report" to the bottom so the three cards line up */
+.sa-snapshot .sa-panel__footer-link {
+    margin-top: auto;
+    padding-top: 12px;
+}
+
+@media (max-width: 1100px) {
+    .sa-snapshot-row { grid-template-columns: minmax(0, 1fr); }
 }
 
 /* Row 2: world-map (wide) | top countries | devices — same fix. */
@@ -2976,32 +3232,119 @@
     display: grid;
     gap: 12px;
     align-items: start;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     grid-template-areas:
-        "kpi0      kpi1      kpi2"
-        "chart     chart     chart"
-        "platforms platforms platforms"
-        "domains   domains   domains";
+        "kpi0      kpi1      kpi2      kpi3"
+        "chart     chart     chart     chart"
+        "platforms platforms platforms platforms"
+        "campaigns campaigns campaigns campaigns";
+}
+
+/* Combined view adds the per-domain panel beside the platform comparison */
+.sa-as-grid--combined {
+    grid-template-areas:
+        "kpi0      kpi1      kpi2      kpi3"
+        "chart     chart     chart     chart"
+        "platforms platforms platforms domains"
+        "campaigns campaigns campaigns campaigns";
 }
 
 .sa-as-kpi0      { grid-area: kpi0; }
 .sa-as-kpi1      { grid-area: kpi1; }
 .sa-as-kpi2      { grid-area: kpi2; }
+.sa-as-kpi3      { grid-area: kpi3; }
 .sa-as-chart     { grid-area: chart; align-self: start; }
-.sa-as-platforms { grid-area: platforms; }
-.sa-as-domains   { grid-area: domains; }
+.sa-as-platforms { grid-area: platforms; align-self: stretch; }
+.sa-as-domains   { grid-area: domains; align-self: stretch; }
+.sa-as-campaigns { grid-area: campaigns; }
 
-@media (max-width: 760px) {
-    .sa-as-grid {
-        grid-template-columns: 1fr;
-        grid-template-areas: "kpi0" "kpi1" "kpi2" "chart" "platforms" "domains";
+@media (max-width: 1100px) {
+    .sa-as-grid,
+    .sa-as-grid--combined {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-areas:
+            "kpi0      kpi1"
+            "kpi2      kpi3"
+            "chart     chart"
+            "platforms platforms"
+            "domains   domains"
+            "campaigns campaigns";
     }
+    .sa-as-grid:not(.sa-as-grid--combined) {
+        grid-template-areas:
+            "kpi0      kpi1"
+            "kpi2      kpi3"
+            "chart     chart"
+            "platforms platforms"
+            "campaigns campaigns";
+    }
+}
+
+@media (max-width: 560px) {
+    .sa-as-grid,
+    .sa-as-grid--combined,
+    .sa-as-grid:not(.sa-as-grid--combined) {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-areas: "kpi0" "kpi1" "kpi2" "kpi3" "chart" "platforms" "domains" "campaigns";
+    }
+}
+
+/* Wide comparison tables scroll inside their panel instead of the page */
+.sa-as-table-scroll {
+    overflow-x: auto;
+}
+
+.sa-as-table-scroll .sa-table {
+    min-width: 560px;
+}
+
+.sa-as-muted {
+    color: rgba(var(--sa-text-muted), 0.75);
+    font-size: 0.8rem;
+}
+
+.sa-as-note {
+    margin: 4px 0 8px;
+    font-size: 0.8rem;
+    color: rgba(var(--sa-text-muted), 0.8);
+}
+
+.sa-as-note--error {
+    color: var(--color-danger-text);
+}
+
+.sa-as-status {
+    margin-left: 6px;
+    padding: 1px 6px;
+    border-radius: 999px;
+    font-size: 0.62rem;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: rgba(var(--sa-text-muted), 0.9);
+    background: rgba(var(--sa-neutral), 0.12);
+    vertical-align: middle;
+}
+
+.sa-as-more-btn {
+    margin-top: 10px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: 1px solid rgba(var(--sa-neutral), 0.25);
+    background: transparent;
+    color: rgba(var(--sa-text-muted), 0.95);
+    font: inherit;
+    font-size: 0.78rem;
+    cursor: pointer;
+}
+
+.sa-as-more-btn:hover {
+    background: rgba(var(--sa-neutral), 0.08);
 }
 
 .sa-channel-cards {
     display: grid;
     gap: 14px;
-    grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(420px, 100%), 1fr));
     margin-top: 12px;
 }
 
@@ -3043,9 +3386,10 @@
     box-shadow: 0 0 0 1px rgba(255,255,255,0.15) inset;
 }
 
+/* Dark text on the data-series fills, like CMP's text-inverse on gold */
 .sa-channel-tile--active .sa-channel-tile__label,
 .sa-channel-tile--active .sa-channel-tile__value {
-    color: #fff;
+    color: var(--color-text-inverse);
 }
 
 .sa-channel-tile--static {
@@ -3062,7 +3406,7 @@
 .sa-channel-tile__value {
     font-size: 0.95rem;
     font-weight: 700;
-    color: rgba(230,230,230,0.92);
+    color: var(--color-text-primary);
 }
 
 @media (max-width: 620px) {
@@ -3453,7 +3797,7 @@
 /* ── Conversions section (ConversionsPanel, embedded on the Overview page) ───── */
 
 .sa-section {
-    background: rgba(26,26,30,0.75);
+    background: var(--color-bg-sunken);
     border: 1px solid rgba(255,255,255,0.08);
     border-radius: 14px;
     padding: 18px 20px;
@@ -4693,7 +5037,7 @@ details[open] .ca-context-summary::before { content: "▾"; }
     padding: 12px 16px;
     border-radius: 12px;
     border: 1px solid rgba(255,255,255,0.08);
-    background: rgba(26,26,30,0.75);
+    background: var(--color-bg-sunken);
 }
 
 .pxp-goal-field {
@@ -4767,7 +5111,7 @@ details[open] .ca-context-summary::before { content: "▾"; }
     border-radius: 12px;
     overflow: hidden;
     border: 1px solid rgba(255,255,255,0.08);
-    background: rgba(20,20,24,0.6);
+    background: var(--color-bg-sunken);
 }
 
 .pxp-editor__iframe {
@@ -4783,7 +5127,7 @@ details[open] .ca-context-summary::before { content: "▾"; }
     padding: 16px;
     border-radius: 12px;
     border: 1px solid rgba(255,255,255,0.08);
-    background: rgba(26,26,30,0.75);
+    background: var(--color-bg-sunken);
 }
 
 .pxp-launch-btn {
@@ -4929,7 +5273,7 @@ details[open] .ca-context-summary::before { content: "▾"; }
     padding: 12px 16px;
     border-radius: 12px;
     border: 1px solid rgba(255,255,255,0.08);
-    background: rgba(26,26,30,0.75);
+    background: var(--color-bg-sunken);
 }
 
 .pxp-report__page {
@@ -5177,7 +5521,7 @@ details[open] .ca-context-summary::before { content: "▾"; }
     padding: 10px 16px;
     border-radius: 12px;
     border: 1px solid rgba(255,255,255,0.08);
-    background: rgba(26,26,30,0.75);
+    background: var(--color-bg-sunken);
     color: rgba(var(--sa-accent),0.85);
 }
 
@@ -5199,7 +5543,7 @@ details[open] .ca-context-summary::before { content: "▾"; }
 }
 
 .pxp-report__card {
-    background: rgba(26,26,30,0.75);
+    background: var(--color-bg-sunken);
     border: 1px solid rgba(255,255,255,0.08);
     border-radius: 14px;
     padding: 18px 20px;
@@ -5535,7 +5879,7 @@ details[open] .ca-context-summary::before { content: "▾"; }
 .pxp-split-panel {
     padding: 20px 24px;
     margin-bottom: 16px;
-    background: rgba(26,26,30,0.75);
+    background: var(--color-bg-sunken);
     border: 1px solid rgba(255,255,255,0.08);
     border-radius: 14px;
 }
@@ -6071,58 +6415,155 @@ details[open] .ca-context-summary::before { content: "▾"; }
 }
 
 /* ── Segment filter bar ──────────────────────────────────────────────────── */
+/* In the sticky header (same row as the title) the row must stay one
+   line: it shrinks and the filters scroll sideways rather than growing
+   the header. */
+.infoHeader__toolbar .sa-meta-row {
+    flex-wrap: nowrap;
+    min-width: 0;
+    max-width: 100%;
+}
+
+/* Not enough room beside the title + date range on laptop widths: drop the
+   site key (reference info, also in Analytics Settings) before the filters. */
+@media (max-width: 1400px) {
+    .infoHeader__toolbar .sa-site-key-badge {
+        display: none;
+    }
+}
+
+.infoHeader__toolbar .sa-meta-row > .sa-seg-filter:only-child {
+    margin-left: auto;
+}
+
+.infoHeader__toolbar .sa-site-key-badge {
+    flex-shrink: 0;
+}
+
+.infoHeader__toolbar .sa-seg-filter {
+    flex-wrap: nowrap;
+    min-width: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.infoHeader__toolbar .sa-seg-filter > * {
+    flex-shrink: 0;
+}
+
+/* Segment filter — same field style as CMP's FilterBar
+   (src/Components/ui/FilterBar.js): 32px, sunken, --color-border, focus ring. */
 .sa-seg-filter {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: var(--space-2);
     flex-wrap: wrap;
-    padding: 10px 0 2px;
 }
 
 .sa-seg-filter__label {
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: rgba(160,174,192,0.55);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    color: var(--color-text-muted);
     white-space: nowrap;
 }
 
 .sa-seg-filter__select,
 .sa-seg-filter__country {
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 5px;
-    padding: 5px 8px;
-    color: rgba(210,220,235,0.85);
-    font-size: 0.78rem;
+    box-sizing: border-box;
+    height: 32px;
+    padding: 0 var(--space-2);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-bg-sunken);
+    color: var(--color-text-primary);
+    font-family: var(--font-sans);
+    font-size: var(--text-sm);
     outline: none;
+}
+
+/* Own chevron instead of the OS one, so every select (and the country
+   field next to them) renders at the same height on every platform. */
+.sa-seg-filter__select {
+    appearance: none;
+    -webkit-appearance: none;
+    padding-right: 28px;
     cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23adadad' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+}
+
+.sa-seg-filter__select option {
+    background: var(--color-bg-raised);
+    color: var(--color-text-primary);
 }
 
 .sa-seg-filter__country {
-    width: 90px;
+    width: 96px;
+}
+
+/* Uppercase the typed ISO code, not the "Country" placeholder */
+.sa-seg-filter__country:not(:placeholder-shown) {
     text-transform: uppercase;
 }
 
-.sa-seg-filter__select:focus,
-.sa-seg-filter__country:focus {
-    border-color: rgba(var(--sa-accent),0.4);
+.sa-seg-filter__country::placeholder {
+    color: var(--color-text-muted);
 }
 
+.sa-seg-filter__select:hover,
+.sa-seg-filter__country:hover {
+    border-color: var(--color-border-strong);
+}
+
+.sa-seg-filter__select:focus-visible,
+.sa-seg-filter__country:focus-visible {
+    box-shadow: var(--shadow-focus);
+}
+
+/* A set filter shows the CMP active state (gold border + subtle gold fill) */
+.sa-seg-filter__select--active,
+.sa-seg-filter__country--active {
+    border-color: var(--color-accent);
+    background-color: var(--color-accent-subtle);
+}
+
+/* Ghost button, like CMP's "Clear filters" — clearing isn't destructive */
 .sa-seg-filter__clear {
-    padding: 4px 10px;
-    border-radius: 5px;
-    border: 1px solid rgba(239,68,68,0.3);
-    background: rgba(239,68,68,0.07);
-    color: rgba(239,68,68,0.8);
-    font-size: 0.76rem;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    height: 32px;
+    padding: 0 var(--space-3);
+    border-radius: var(--radius-md);
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--color-text-secondary);
+    font-family: var(--font-sans);
+    font-size: var(--text-sm);
     font-weight: 600;
     cursor: pointer;
 }
 
 .sa-seg-filter__clear:hover {
-    background: rgba(239,68,68,0.14);
+    color: var(--color-text-primary);
+    background: rgb(var(--c-white) / 0.06);
+}
+
+.sa-seg-filter__clear:focus-visible {
+    outline: none;
+    box-shadow: var(--shadow-focus);
+}
+
+/* Destructive use of the same button (Audiences: Remove / Delete) */
+.sa-seg-filter__clear--danger {
+    border-color: rgb(var(--c-danger) / 0.35);
+    color: var(--color-danger-text);
+}
+
+.sa-seg-filter__clear--danger:hover {
+    color: var(--color-danger-text);
+    background: rgb(var(--c-danger) / 0.12);
 }
 
 /* ── Ad Spend sync bar ───────────────────────────────────────────────────── */
@@ -6176,7 +6617,7 @@ details[open] .ca-context-summary::before { content: "▾"; }
 }
 
 .sa-report-card {
-    background: rgba(26,26,30,0.75);
+    background: var(--color-bg-sunken);
     border: 1px solid rgba(255,255,255,0.08);
     border-radius: 12px;
     padding: 16px;
@@ -6559,7 +7000,7 @@ details[open] .ca-context-summary::before { content: "▾"; }
     flex-wrap: wrap;
 }
 .sa-rb-kpi {
-    background: rgba(26,26,30,0.75);
+    background: var(--color-bg-sunken);
     border: 1px solid rgba(255,255,255,0.08);
     border-radius: 10px;
     padding: 12px 16px;
@@ -6880,7 +7321,7 @@ details[open] .ca-context-summary::before { content: "▾"; }
 }
 
 .sa-rv-kpi {
-    background: rgba(26,26,30,0.75);
+    background: var(--color-bg-sunken);
     border: 1px solid rgba(255,255,255,0.08);
     border-radius: 10px;
     padding: 14px 16px;

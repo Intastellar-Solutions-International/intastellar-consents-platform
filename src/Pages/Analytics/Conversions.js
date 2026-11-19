@@ -1,5 +1,5 @@
 const { useState, useEffect, useCallback, useMemo } = React;
-const useHistory = window.ReactRouterDOM.useHistory;
+const Link = window.ReactRouterDOM.Link;
 import { ScannerHost } from "../../API/host.js";
 import Authentication from "../../Authentication/Auth.js";
 import { analyticsConversionsPath, analyticsEventDetailPath } from "../../Functions/domainPathSegments.js";
@@ -464,7 +464,6 @@ export default function ConversionsPanel({ domain, conversions, onDefsChanged })
 // tab's ConversionsPanel above; this is deliberately just enough to see
 // what's firing and register a new event without leaving Overview.
 export function EventsGlancePanel({ domain, conversions, onDefsChanged, maxRows = 8 }) {
-    const history = useHistory();
     const [defs, setDefs] = useState([]);
     const [showForm, setShowForm] = useState(false);
     const [name, setName] = useState("");
@@ -574,13 +573,9 @@ export function EventsGlancePanel({ domain, conversions, onDefsChanged, maxRows 
                         {visible.map(r => (
                             <tr key={r.name}>
                                 <td>
-                                    <a
-                                        href="#"
-                                        style={{ color: "inherit", textDecoration: "none" }}
-                                        onClick={e => { e.preventDefault(); history.push(analyticsEventDetailPath(domain, r.name)); }}
-                                    >
+                                    <Link className="sa-link sa-link--quiet" to={analyticsEventDetailPath(domain, r.name)}>
                                         {r.label}
-                                    </a>
+                                    </Link>
                                 </td>
                                 <td className="sa-table__num">{r.count.toLocaleString("de-DE")}</td>
                                 <td className="sa-table__bar"><MiniBar value={r.count} max={maxCount} /></td>
@@ -592,9 +587,9 @@ export function EventsGlancePanel({ domain, conversions, onDefsChanged, maxRows 
 
             <p className="sa-panel__sub" style={{ marginTop: 10 }}>
                 {hiddenCount > 0 && `+${hiddenCount} more event${hiddenCount > 1 ? "s" : ""} — `}
-                <a href="#" onClick={e => { e.preventDefault(); history.push(analyticsConversionsPath(domain, "setup")); }}>
-                    manage all events &amp; tracking →
-                </a>
+                <Link className="sa-link" to={analyticsConversionsPath(domain, "setup")}>
+                    Manage all events &amp; tracking →
+                </Link>
             </p>
         </div>
     );

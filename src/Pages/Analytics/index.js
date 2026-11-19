@@ -2,24 +2,25 @@ const { useState, useEffect, useMemo, useCallback } = React;
 const Link = window.ReactRouterDOM.Link;
 import {
     analyticsAudiencePath, analyticsAcquisitionPath, analyticsSettingsPath, analyticsLivePath,
+    analyticsConsentPath, analyticsConversionsPath, analyticsFormsPath, analyticsHeatmapPath,
 } from "../../Functions/domainPathSegments.js";
 import { ScannerHost } from "../../API/host.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
-import AnalyticsWorldMap from "./AnalyticsWorldMap.js";
-import ConversionFunnel from "./ConversionFunnel.js";
+import { buildInsights, InsightsSection, SnapshotRow } from "./OverviewInsights.js";
 import {
-    authHeaders, KpiCard, MiniBar, useAnalyticsPage, useAnalyticsReport, useSiteConfig,
+    authHeaders, useAnalyticsPage, useAnalyticsReport, useSiteConfig,
     toIsoDate, pctChange, IndustryBenchmarkNote, formatPercent, SegmentFilter,
     useCompareRange, usePrevRange, useLiveData,
     useForeignDomains, splitForeignDomainsByRecency,
-    formatCurrency, CURRENCY_SYMBOLS, elementLabel,
+    formatCurrency, CURRENCY_SYMBOLS,
+    LiveActivityBars,
 } from "./_shared.js";
-import { SkeletonBlock, KpiCardSkeleton, PanelSkeleton } from "./components/Skeleton.js";
+import { SkeletonBlock, PanelSkeleton } from "./components/Skeleton.js";
 import MetricTabStrip from "./components/MetricTabStrip.js";
 import EmptyState from "./components/EmptyState.js";
 import {
     IconBarChart, IconUsers, IconShieldCheck, IconGlobe, IconTrendingUp,
-    IconDocument, IconRadio, IconTarget, IconMegaphone, IconCash, IconExternalLink, IconCursorClick,
+    IconRadio, IconTarget, IconCash,
     IconScrollDepth, IconFunnel,
 } from "./Icons.js";
 import "./Analytics.css";
@@ -37,9 +38,13 @@ function LivePanel({ domain, siteKey }) {
 
     if (!domain || !data || data.noSiteKey) return null;
 
-    const maxUserBar = Math.max(...(data.perMinuteUsers || [1]), 1);
-    const topCountries = (data.countries || []).slice(0, 5);
-    const maxCountryUsers = Math.max(...topCountries.map(c => c.activeUsers), 1);
+    // Ranked by events, not users: visitors without full consent have no
+    // session_id, so their country would otherwise list as "0 users".
+    const topCountries = (data.countries || [])
+        .filter(c => c.events > 0)
+        .sort((a, b) => b.events - a.events)
+        .slice(0, 5);
+    const maxCountryEvents = Math.max(...topCountries.map(c => c.events), 1);
 
     return (
         <div className="sa-live">
@@ -60,47 +65,37 @@ function LivePanel({ domain, siteKey }) {
 
             {open && (
                 <div className="sa-live__body">
-                    <p className="sa-live__hero-label">Active users in last 30 minutes</p>
-                    <p className="sa-live__hero-value">{data.sessions.toLocaleString("de-DE")}</p>
-
-                    <div className="sa-live__sparkline">
-                        <div className="sa-live__spark-hd">
-                            <span className="sa-live__spark-label">Active users per minute</span>
-                        </div>
-                        <div className="sa-live__spark-bars">
-                            {(data.perMinuteUsers || []).map((v, i) => (
-                                <div
-                                    key={i}
-                                    className={"sa-live__spark-bar" + (i === (data.perMinuteUsers.length - 1) ? " sa-live__spark-bar--last" : "")}
-                                    style={{ height: Math.max(3, Math.round((v / maxUserBar) * 44)) + "px" }}
-                                    title={`${v} active user${v !== 1 ? "s" : ""}`}
-                                />
-                            ))}
-                        </div>
-                        <div className="sa-live__spark-times">
-                            <span>−30m</span>
-                            <span>−15m</span>
-                            <span>now</span>
-                        </div>
+                    <div>
+                        <p className="sa-live__hero-label">Active users in last 30 minutes</p>
+                        <p className="sa-live__hero-value">{data.sessions.toLocaleString("de-DE")}</p>
+                        {data.minimal > 0 && (
+                            <p className="sa-live__hero-sub">
+                                + {data.minimal.toLocaleString("de-DE")} event{data.minimal !== 1 ? "s" : ""} from
+                                visitors without full consent (not counted as users)
+                            </p>
+                        )}
                     </div>
+
+                    <LiveActivityBars perMinute={data.perMinute} perMinuteUsers={data.perMinuteUsers} />
 
                     <div className="sa-live__divider" />
 
                     <div className="sa-live__countries">
                         <div className="sa-live__countries-hd">
                             <span>Country</span>
-                            <span>Active users</span>
+                            <span>Events</span>
                         </div>
                         {topCountries.length > 0 ? topCountries.map(c => (
-                            <div key={c.code} className="sa-live__country-row">
+                            <div key={c.code} className="sa-live__country-row"
+                                title={`${c.events} event${c.events !== 1 ? "s" : ""} · ${c.activeUsers} active user${c.activeUsers !== 1 ? "s" : ""}`}>
                                 <span className="sa-live__country-code">{c.code}</span>
                                 <div className="sa-live__country-bar-wrap">
-                                    <div className="sa-live__country-bar" style={{ width: Math.max(4, Math.round((c.activeUsers / maxCountryUsers) * 100)) + "%" }} />
+                                    <div className="sa-live__country-bar" style={{ width: Math.max(4, Math.round((c.events / maxCountryEvents) * 100)) + "%" }} />
                                 </div>
-                                <span className="sa-live__country-value">{c.activeUsers}</span>
+                                <span className="sa-live__country-value">{c.events.toLocaleString("de-DE")}</span>
                             </div>
                         )) : (
-                            <p className="sa-live__countries-empty">No data available</p>
+                            <p className="sa-live__countries-empty">No visitors right now</p>
                         )}
                     </div>
 
@@ -413,9 +408,8 @@ function buildOverviewHeadline({ data, trendEvents, getLastDays }) {
     return { eyebrow: "Here's what to care about today", headline, subline };
 }
 
-// Per-business-type default KPI card ordering — extracted from KpiStrip so
-// both it and the parent (for the hero composite below) can derive the same
-// `order` without duplicating this switch. Pure function of data/siteConfig,
+// Per-business-type default KPI card ordering — the hero metric tabs take
+// the first 4 ids (customizable via CustomizePanel). Pure function of data/siteConfig,
 // no rendering.
 function kpiDefaultOrder({ data, siteConfig }) {
     const bt         = siteConfig?.businessType || "";
@@ -504,7 +498,7 @@ function kpiDefaultOrder({ data, siteConfig }) {
 // Plain-data registry for every possible overview KPI card — label/value/
 // trend/hasDaily, no JSX rendering. docs/design-audit-plan.md Phase 4: the
 // hero composite (MetricTabStrip, pulling its 4 tabs from the first 4 ids of
-// kpiDefaultOrder()/customCards, same as KpiStrip below it) needs this same
+// kpiDefaultOrder()/customCards) needs this same
 // per-card data to build its tab labels/values/deltas, and needs `hasDaily`
 // to know which metric actually has a day-by-day series to chart —
 // api/analytics-report.js's `daily` field only covers event count today, so
@@ -606,41 +600,6 @@ function buildKpiCardMeta({ data, siteConfig, trendEngaged, trendEvents, trendSe
     };
 }
 
-// docs/design-audit-plan.md Phase 4: the first 4 ids of `order` become the
-// GA4-style MetricTabStrip hero (rendered by the parent, paired with a
-// chart); this component renders the *rest* (5th+) as the existing KpiCard
-// grid, same as before this phase — so the hero and the already-mature
-// business-type/customizable card system share one `order` instead of the
-// hero duplicating or ignoring it. `cardMeta`/`order` are computed once in
-// the parent (SiteAnalytics) via buildKpiCardMeta()/kpiDefaultOrder() above,
-// since the parent's chart section also needs them (to know the selected
-// hero metric's label and hasDaily flag).
-function KpiStrip({ cardMeta, order, onCustomize }) {
-    const restIds = order.slice(4);
-    const restCards = restIds.map(id => {
-        const m = cardMeta[id];
-        if (!m) return null;
-        return (
-            <KpiCard key={id} icon={m.icon} label={m.label} value={m.value} sub={m.sub} variant={m.variant} trend={m.trend}>
-                {m.children}
-            </KpiCard>
-        );
-    }).filter(Boolean);
-    const cls = restCards.length >= 6 ? "sa-kpi-strip sa-kpi-strip--6" : "sa-kpi-strip";
-
-    return (
-        <div className="sa-kpi-strip-wrap">
-            {restCards.length > 0 && <div className={cls}>{restCards}</div>}
-            <button className="sa-customize-btn" onClick={onCustomize} title="Customize cards" aria-label="Customize dashboard cards">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
-                </svg>
-                Customize
-            </button>
-        </div>
-    );
-}
-
 function SetupCard({ domain, onKeyGenerated }) {
     const [siteKey,    setSiteKey]    = useState(null);
     const [loading,    setLoading]    = useState(true);
@@ -715,72 +674,17 @@ function SetupCard({ domain, onKeyGenerated }) {
     );
 }
 
-// ── Consent Impact Estimator ──────────────────────────────────────────────────
-// Shows observed vs estimated true traffic, accounting for the ~25-35% of
-// visitors who decline full consent and are therefore counted with less
-// granularity. Uses only analytics_events (consent_level column) — the
-// consent platform's separate DB is not consulted here.
-function ConsentImpactPanel({ impact }) {
-    if (!impact || impact.estimatedTrue == null) return null;
-    const { consentRate, observedSessions, estimatedTrue } = impact;
-    const hidden = Math.max(0, estimatedTrue - observedSessions);
-    const hiddenPct = estimatedTrue > 0 ? Math.round((hidden / estimatedTrue) * 100) : 0;
-
-    return (
-        <div className="sa-panel sa-consent-impact">
-            <h3 className="sa-panel__title">
-                <IconShieldCheck className="sa-icon" /> Consent Impact Estimator
-            </h3>
-            <p className="sa-panel__sub">
-                Visitors who decline full consent are visible only as anonymous events — their sessions
-                cannot be stitched. This estimates your true session volume based on the observed consent rate.
-            </p>
-            <div className="sa-ci-kpis">
-                <div className="sa-ci-kpi">
-                    <span className="sa-ci-kpi__label" title="This analytics tracker's own full-consent rate — not the CMP banner's acceptance rate shown on the Marketing tab, which is a different metric from a different system.">
-                        Full-consent rate
-                    </span>
-                    <span className="sa-ci-kpi__value">{formatPercent(consentRate)}</span>
-                </div>
-                <div className="sa-ci-kpi">
-                    <span className="sa-ci-kpi__label">Observed sessions</span>
-                    <span className="sa-ci-kpi__value">{observedSessions.toLocaleString("de-DE")}</span>
-                </div>
-                <div className="sa-ci-kpi">
-                    <span className="sa-ci-kpi__label">Estimated true total</span>
-                    <span className="sa-ci-kpi__value">{estimatedTrue.toLocaleString("de-DE")}</span>
-                    <span className="sa-ci-kpi__note">~{hiddenPct}% of traffic uncounted in session analytics</span>
-                </div>
-            </div>
-            <div className="sa-ci-bar-wrap">
-                <div className="sa-ci-bar">
-                    <div className="sa-ci-bar__observed" style={{ width: (100 - hiddenPct) + "%" }} title="Observed (full consent)" />
-                    <div className="sa-ci-bar__hidden"   style={{ width: hiddenPct + "%" }} title="Estimated uncounted (declined/minimal consent)" />
-                </div>
-                <div className="sa-ci-bar-labels">
-                    <span>Observed</span>
-                    <span>Uncounted</span>
-                </div>
-            </div>
-        </div>
-    );
-}
-
 // ── Loading skeletons ──────────────────────────────────────────────────────────
 // Shown while the fast /api/analytics-report call is in flight, shaped to match
 // the real layout below (KPI strip, chart + live feed, geo row) so the page
 // doesn't flash from blank to fully populated.
 
-// KpiCardSkeleton/PanelSkeleton promoted to components/Skeleton.js (Phase 1
+// SkeletonBlock/PanelSkeleton promoted to components/Skeleton.js (Phase 1
 // of docs/design-audit-plan.md) — this page now only composes them into its
 // own specific layout shape, same as before.
 function OverviewSkeleton() {
     return (
         <div className="sa-overview">
-            <div className="sa-kpi-strip">
-                {Array.from({ length: 5 }, (_, i) => <KpiCardSkeleton key={i} />)}
-            </div>
-
             <div className="sa-overview-main">
                 <div className="sa-chart-section">
                     <div className="sa-chart-section__hd">
@@ -792,10 +696,12 @@ function OverviewSkeleton() {
                 <PanelSkeleton rows={5} />
             </div>
 
-            <div className="sa-overview-geo">
-                <PanelSkeleton rows={5} />
-                <PanelSkeleton rows={5} />
-                <PanelSkeleton rows={3} />
+            <div className="sa-snapshot-row">
+                {Array.from({ length: 3 }, (_, i) => <PanelSkeleton key={i} rows={5} />)}
+            </div>
+
+            <div className="sa-insights__grid">
+                {Array.from({ length: 3 }, (_, i) => <PanelSkeleton key={i} rows={2} />)}
             </div>
         </div>
     );
@@ -844,24 +750,29 @@ export default function SiteAnalytics() {
     const prevBounceRate = useMemo(() => prevData?.totals?.uniqueSessions > 0 ? (prevData.totals.uniqueSessions - prevData.totals.engagedUsers) / prevData.totals.uniqueSessions * 100 : null, [prevData]);
     const trendBounce    = useMemo(() => pctChange(bounceRate, prevBounceRate), [bounceRate, prevBounceRate]);
 
-    // "Where we lose them" funnel (Phase 4) — same totalConversions()
-    // definition the Conversions KPI card already uses (sum of per-event
-    // counts, not session-deduped), plus its session-linked share for
-    // ConversionFunnel.js's own "N of M couldn't be tied to a session" note.
-    const linkedConversions = useMemo(
-        () => (data?.conversions || []).reduce((s, c) => s + (c.linkedCount || 0), 0),
-        [data]
-    );
+    // Home = insights + snapshot; every card links into a sidebar report.
+    const reportPaths = useMemo(() => ({
+        acquisition: analyticsAcquisitionPath(domain),
+        audience:    analyticsAudiencePath(domain),
+        consent:     analyticsConsentPath(domain),
+        conversions: analyticsConversionsPath(domain),
+        forms:       analyticsFormsPath(domain),
+        heatmap:     analyticsHeatmapPath(domain),
+    }), [domain]);
+    const insights = useMemo(() => buildInsights({
+        data, prevData,
+        conversions:     totalConversions(data?.conversions),
+        prevConversions: totalConversions(prevData?.conversions),
+        paths: reportPaths,
+    }), [data, prevData, reportPaths]);
 
     // Dashboard card customization — stored in DB via analytics-site PATCH.
     const [customCards,     setCustomCards]     = useState(null);
     const [showCustomize,   setShowCustomize]   = useState(false);
 
-    // docs/design-audit-plan.md Phase 4: cardMeta/order computed once here —
-    // KpiStrip renders cards 5+ from it, and the hero MetricTabStrip below
-    // (paired with the chart) renders the first 4, so both share one
-    // business-type/customization-aware ordering instead of the hero
-    // duplicating or overriding it.
+    // cardMeta/order computed once here — the hero MetricTabStrip below
+    // (paired with the chart) renders the first 4 ids, in the
+    // business-type/customization-aware order.
     const cardMeta = useMemo(
         () => data ? buildKpiCardMeta({ data, siteConfig, trendEngaged, trendEvents, trendSessions, trendConsent, trendBounce }) : {},
         [data, siteConfig, trendEngaged, trendEvents, trendSessions, trendConsent, trendBounce]
@@ -898,13 +809,6 @@ export default function SiteAnalytics() {
         }).catch(() => {});
     }, [domain]);
 
-    const maxPageViews  = useMemo(() => Math.max(...(data?.topPages   || []).map(p => p.views),  1), [data]);
-    const maxCountry    = useMemo(() => Math.max(...(data?.countries  || []).map(c => c.events), 1), [data]);
-    const maxReferrer   = useMemo(() => Math.max(...(data?.referrers  || []).map(r => r.events), 1), [data]);
-    const maxOutbound        = useMemo(() => Math.max(...(data?.topOutbound      || []).map(o => o.clicks),    1), [data]);
-    const maxRageSelector    = useMemo(() => Math.max(...(data?.topRageSelectors || []).map(s => s.clicks),    1), [data]);
-    const deviceTotal  = useMemo(() => (data?.devices || []).reduce((s, d) => s + d.events, 0), [data]);
-
     return (
         <div style={{ flex: "1", minWidth: 0 }}>
             <StickyPageTitle
@@ -922,40 +826,30 @@ export default function SiteAnalytics() {
                 setCompareRange={compare.setCompareRange}
                 setCompareWindowStart={compare.setCompareWindowStart}
                 setCompareWindowEnd={compare.setCompareWindowEnd}
+                toolbar={data && !data.noSiteKey ? (
+                    <div className="sa-meta-row">
+                        {data.isPropertyRollup ? (
+                            <span className="sa-site-key-badge">Property rollup &mdash; {(data.domains || []).length} domains</span>
+                        ) : (
+                            <span className="sa-site-key-badge">
+                                Site key: <code>{data.siteId}</code>
+                            </span>
+                        )}
+                        {!data.isPropertyRollup && (
+                            <SegmentFilter segment={segment} setSegment={setSegment} />
+                        )}
+                    </div>
+                ) : null}
             />
             <div className="dashboard-content">
                 <div className="sa-page">
 
-                    {data && !data.noSiteKey && (
-                        <div className="sa-meta-row">
-                            {data.isPropertyRollup ? (
-                                <span className="sa-site-key-badge">Property rollup &mdash; {(data.domains || []).length} domains</span>
-                            ) : (
-                                <span className="sa-site-key-badge">
-                                    Site key: <code>{data.siteId}</code>
-                                </span>
-                            )}
-                            {!data.isPropertyRollup && (
-                                <SegmentFilter segment={segment} setSegment={setSegment} />
-                            )}
-                        </div>
-                    )}
-
                     {!hasDomain && (
                         <p className="sa-notice">Select a specific domain in the header to view analytics.</p>
                     )}
-                    {hasDomain && loading && <OverviewSkeleton />}
-                    {hasDomain && error && (
-                        <p className="sa-notice sa-notice--error">{error}</p>
-                    )}
-
-                    {domain && showSetup && (
-                        <SetupCard
-                            domain={domain}
-                            onKeyGenerated={() => setTick(t => t + 1)}
-                        />
-                    )}
-
+                    {/* Above the skeleton, so the banner sits in the same spot
+                        while loading and after — it used to render below the
+                        skeleton and jump to the top once loading finished. */}
                     {pendingForeignDomains.length > 0 && (
                         <div className="sa-foreign-banner">
                             <span className="sa-foreign-banner__dot" />
@@ -985,6 +879,18 @@ export default function SiteAnalytics() {
                         </div>
                     )}
 
+                    {hasDomain && loading && <OverviewSkeleton />}
+                    {hasDomain && error && (
+                        <p className="sa-notice sa-notice--error">{error}</p>
+                    )}
+
+                    {domain && showSetup && (
+                        <SetupCard
+                            domain={domain}
+                            onKeyGenerated={() => setTick(t => t + 1)}
+                        />
+                    )}
+
                     {showData && (
                         <div className="sa-overview">
 
@@ -1012,10 +918,8 @@ export default function SiteAnalytics() {
 
                             {/* ── Main: hero (GA4-style metric tabs + paired chart,
                                 60 %) + live feed (40 %) ──────────────────────────
-                                docs/design-audit-plan.md Phase 4: tabs are the
-                                first 4 ids of the order KpiStrip uses below, so
-                                nothing duplicates and nothing overrides the
-                                user's own card choice. */}
+                                Tabs are the first 4 ids of kpiOrder, so the
+                                user's own card choice (Customize) decides them. */}
                             <div className="sa-overview-main">
                                 <div className="sa-chart-section">
                                     <MetricTabStrip
@@ -1035,7 +939,17 @@ export default function SiteAnalytics() {
                                         <h3 className="sa-chart-section__title">
                                             <IconTrendingUp className="sa-icon" /> {cardMeta[activeHeroMetric]?.label || "Trend"}
                                         </h3>
-                                        <span className="sa-chart-section__period">Last {getLastDays} days</span>
+                                        <div className="sa-chart-section__hd-right">
+                                            <span className="sa-chart-section__period">Last {getLastDays} days</span>
+                                            {/* Picks which 4 metrics the tabs above show */}
+                                            <button type="button" className="sa-customize-btn" onClick={() => setShowCustomize(true)}
+                                                aria-label="Customize which metrics are shown">
+                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                                                    <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                                                </svg>
+                                                Customize
+                                            </button>
+                                        </div>
                                     </div>
                                     {cardMeta[activeHeroMetric]?.hasDaily ? (
                                         cardMeta[activeHeroMetric].renderChart(data.daily)
@@ -1050,12 +964,17 @@ export default function SiteAnalytics() {
                                 <LivePanel domain={domain} siteKey={siteConfig?.id} />
                             </div>
 
-                            {/* ── KPI strip: cards 5+ (business-type-aware, customizable) ─── */}
-                            <KpiStrip
-                                cardMeta={cardMeta}
-                                order={kpiOrder}
-                                onCustomize={() => setShowCustomize(true)}
+                            {/* ── Snapshot: top 5s, each linking to its full report ── */}
+                            <SnapshotRow data={data} paths={reportPaths} />
+
+                            {/* ── Insights: what changed vs the previous period —
+                                last on the page, as its own section ── */}
+                            <InsightsSection
+                                insights={insights}
+                                comparing={!prevData}
+                                compareLabel={compare.compareActive ? "vs comparison period" : "vs previous period"}
                             />
+
                             {showCustomize && (
                                 <CustomizePanel
                                     currentCards={customCards}
@@ -1063,293 +982,6 @@ export default function SiteAnalytics() {
                                     onSave={saveCustomCards}
                                     onClose={() => setShowCustomize(false)}
                                 />
-                            )}
-
-                            {/* ── Geo row: map | countries | devices ─────────────── */}
-                            <div className="sa-overview-geo">
-                                <div className="sa-panel">
-                                    <h3 className="sa-panel__title"><IconGlobe className="sa-icon" /> Active users by country</h3>
-                                    {data.countries.length > 0
-                                        ? <AnalyticsWorldMap countries={data.countries} />
-                                        : <p className="sa-notice">No geographic data for this period.</p>}
-                                </div>
-
-                                <div className="sa-panel">
-                                    <h3 className="sa-panel__title"><IconGlobe className="sa-icon" /> Top countries</h3>
-                                    <table className="sa-table">
-                                        <thead>
-                                            <tr>
-                                                <th>Country</th>
-                                                <th className="sa-table__num">Events</th>
-                                                <th className="sa-table__bar" />
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {data.countries.slice(0, 8).map(c => (
-                                                <tr key={c.code}>
-                                                    <td>{c.code}</td>
-                                                    <td className="sa-table__num">{c.events.toLocaleString("de-DE")}</td>
-                                                    <td className="sa-table__bar">
-                                                        <MiniBar value={c.events} max={maxCountry} color="rgba(var(--sa-chart-primary),0.55)" />
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                            {!data.countries.length && (
-                                                <tr><td colSpan={3} style={{ color: "rgba(130,130,130,0.55)", fontSize: "0.8rem" }}>No data yet</td></tr>
-                                            )}
-                                        </tbody>
-                                    </table>
-                                    <Link className="sa-panel__footer-link" to={analyticsAudiencePath(domain)}>View audience →</Link>
-                                </div>
-
-                                <div className="sa-panel">
-                                    <h3 className="sa-panel__title"><IconUsers className="sa-icon" /> Devices</h3>
-                                    <div className="sa-consent-list">
-                                        {data.devices.map(d => {
-                                            const pct = deviceTotal > 0 ? Math.round((d.events / deviceTotal) * 100) : 0;
-                                            return (
-                                                <div key={d.type} className="sa-consent-row">
-                                                    <span className="sa-consent-row__label" style={{ textTransform: "capitalize" }}>{d.type}</span>
-                                                    <div className="sa-bar">
-                                                        <div className="sa-bar__seg"
-                                                            style={{ width: pct + "%", background: "rgba(var(--sa-chart-primary),0.55)" }}
-                                                            title={d.events + " events"} />
-                                                    </div>
-                                                    <span className="sa-consent-row__pct">{pct}%</span>
-                                                </div>
-                                            );
-                                        })}
-                                        {!data.devices.length && (
-                                            <p style={{ color: "rgba(130,130,130,0.55)", fontSize: "0.8rem", margin: 0 }}>No data yet</p>
-                                        )}
-                                    </div>
-                                    <Link className="sa-panel__footer-link" to={analyticsAudiencePath(domain)}>View audience →</Link>
-                                </div>
-                            </div>
-
-                            {/* ── Bottom: traffic sources | top pages ────────────── */}
-                            <div className="sa-overview-bottom">
-                                <div className="sa-panel">
-                                    <h3 className="sa-panel__title">
-                                        <IconMegaphone className="sa-icon" /> Traffic sources
-                                    </h3>
-                                    <div className="sa-table-scroll">
-                                    <table className="sa-table">
-                                        <thead>
-                                            <tr>
-                                                <th>Referrer</th>
-                                                <th className="sa-table__num">Events</th>
-                                                <th className="sa-table__num">Sessions</th>
-                                                <th className="sa-table__bar" />
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {data.referrers.slice(0, 8).map((r, i) => (
-                                                <tr key={i}>
-                                                    <td className="sa-table__path" title={r.referrer}>{r.referrer}</td>
-                                                    <td className="sa-table__num">{r.events.toLocaleString("de-DE")}</td>
-                                                    <td className="sa-table__num">{r.sessions.toLocaleString("de-DE")}</td>
-                                                    <td className="sa-table__bar">
-                                                        <MiniBar value={r.events} max={maxReferrer} color="rgba(var(--sa-chart-primary),0.55)" />
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                            {!data.referrers.length && (
-                                                <tr><td colSpan={4} style={{ color: "rgba(130,130,130,0.55)", fontSize: "0.8rem" }}>No data yet</td></tr>
-                                            )}
-                                        </tbody>
-                                    </table>
-                                    </div>
-                                    <Link className="sa-panel__footer-link" to={analyticsAcquisitionPath(domain)}>View traffic acquisition →</Link>
-                                </div>
-
-                                <div className="sa-panel">
-                                    <h3 className="sa-panel__title"><IconDocument className="sa-icon" /> Top pages</h3>
-                                    <div className="sa-table-scroll">
-                                    <table className="sa-table">
-                                        <thead>
-                                            <tr>
-                                                <th>Page</th>
-                                                <th className="sa-table__num">Views</th>
-                                                <th className="sa-table__bar" />
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {data.topPages.map(p => (
-                                                <tr key={p.pathname}>
-                                                    <td className="sa-table__path" title={p.pathname}>{p.pathname}</td>
-                                                    <td className="sa-table__num">{p.views.toLocaleString("de-DE")}</td>
-                                                    <td className="sa-table__bar">
-                                                        <MiniBar value={p.views} max={maxPageViews} />
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                    </div>
-                                </div>
-
-                                {/* Outbound/forms/rage panels depend on the slower detail
-                                    call — show placeholders instead of letting them pop in
-                                    unannounced once detailLoading settles. */}
-                                {detailLoading && (
-                                    <>
-                                        <PanelSkeleton rows={4} />
-                                        <PanelSkeleton rows={3} />
-                                    </>
-                                )}
-
-                                {!detailLoading && (data.topOutbound || []).length > 0 && (
-                                    <div className="sa-panel">
-                                        <h3 className="sa-panel__title">
-                                            <IconExternalLink className="sa-icon" /> Outbound clicks
-                                            <span className="sa-panel__consent-note">{(data.outboundClicks || 0).toLocaleString("de-DE")} total</span>
-                                        </h3>
-                                        <table className="sa-table">
-                                            <thead>
-                                                <tr>
-                                                    <th>Destination</th>
-                                                    <th className="sa-table__num">Clicks</th>
-                                                    <th className="sa-table__bar" />
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {data.topOutbound.map(o => (
-                                                    <tr key={o.host}>
-                                                        <td className="sa-table__path">{o.host}</td>
-                                                        <td className="sa-table__num">{o.clicks.toLocaleString("de-DE")}</td>
-                                                        <td className="sa-table__bar">
-                                                            <MiniBar value={o.clicks} max={maxOutbound} color="rgba(var(--sa-chart-primary),0.5)" />
-                                                        </td>
-                                                    </tr>
-                                                ))}
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                )}
-
-                                {!detailLoading && (data.formFunnel || []).length > 0 && (
-                                    <div className="sa-panel">
-                                        <h3 className="sa-panel__title">
-                                            <IconScrollDepth className="sa-icon" /> Form performance
-                                        </h3>
-                                        <table className="sa-table">
-                                            <thead>
-                                                <tr>
-                                                    <th>Form</th>
-                                                    <th className="sa-table__num">Started</th>
-                                                    <th className="sa-table__num">Submitted</th>
-                                                    <th className="sa-table__num">Completion</th>
-                                                    <th className="sa-table__bar" />
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {data.formFunnel.map(f => {
-                                                    const rate = f.completionRate;
-                                                    const rateColor = rate == null ? "rgba(120,120,140,0.5)"
-                                                        : rate < 30 ? "rgba(239,68,68,0.85)"
-                                                        : rate < 60 ? "rgba(234,179,8,0.85)"
-                                                        : "rgba(34,197,94,0.85)";
-                                                    return (
-                                                        <tr key={f.formId + (f.provider || "")}>
-                                                            <td>
-                                                                <span className="sa-form-id">{f.formId}</span>
-                                                                {f.provider && <span className="sa-form-action">{f.provider}</span>}
-                                                            </td>
-                                                            <td className="sa-table__num">{f.started.toLocaleString("de-DE")}</td>
-                                                            <td className="sa-table__num">{f.submitted.toLocaleString("de-DE")}</td>
-                                                            <td className="sa-table__num" style={{ color: rateColor, fontWeight: 600 }}>
-                                                                {rate != null ? `${rate}%` : "—"}
-                                                            </td>
-                                                            <td className="sa-table__bar">
-                                                                <MiniBar value={f.submitted} max={data.formFunnel[0]?.started || 1} color={rateColor} />
-                                                            </td>
-                                                        </tr>
-                                                    );
-                                                })}
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                )}
-
-                                {!detailLoading && ((data.topRageSelectors || []).length > 0 || (data.topRagePages || []).length > 0) && (
-                                    <div className="sa-panel">
-                                        <h3 className="sa-panel__title">
-                                            <IconCursorClick className="sa-icon" /> Frustration signals
-                                            {data.rageClicks?.frustrationRate > 0 && (
-                                                <span className="sa-panel__consent-note">
-                                                    {data.rageClicks.frustrationRate}% of sessions
-                                                </span>
-                                            )}
-                                        </h3>
-                                        {(data.topRageSelectors || []).length > 0 && (
-                                            <table className="sa-table">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Element</th>
-                                                        <th>ID / Class</th>
-                                                        <th className="sa-table__num">Rage clicks</th>
-                                                        <th className="sa-table__bar" />
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {data.topRageSelectors.map(s => (
-                                                        <tr key={s.selector}>
-                                                            <td className="sa-form-id" title={s.selector}>{elementLabel({ tag: s.elementTag })}</td>
-                                                            <td className="sa-rage__detail">
-                                                                {s.elementId    && <span className="sa-rage__id">#{s.elementId}</span>}
-                                                                {s.elementClass && <span className="sa-rage__cls">.{s.elementClass.split(" ").filter(Boolean).join(" .")}</span>}
-                                                                {!s.elementId && !s.elementClass && <span className="sa-rage__none">—</span>}
-                                                            </td>
-                                                            <td className="sa-table__num">{s.clicks.toLocaleString("de-DE")}</td>
-                                                            <td className="sa-table__bar">
-                                                                <MiniBar value={s.clicks} max={maxRageSelector} color="rgba(var(--sa-bad),0.45)" />
-                                                            </td>
-                                                        </tr>
-                                                    ))}
-                                                </tbody>
-                                            </table>
-                                        )}
-                                        {(data.topRagePages || []).length > 0 && (
-                                            <table className="sa-table" style={(data.topRageSelectors || []).length > 0 ? { marginTop: "1rem" } : {}}>
-                                                <thead>
-                                                    <tr>
-                                                        <th>Page</th>
-                                                        <th className="sa-table__num">Rage clicks</th>
-                                                        <th className="sa-table__num">Rate</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {data.topRagePages.map(p => (
-                                                        <tr key={p.page}>
-                                                            <td className="sa-table__path">{p.page}</td>
-                                                            <td className="sa-table__num">{p.rageClicks.toLocaleString("de-DE")}</td>
-                                                            <td className="sa-table__num">{p.rate != null ? `${p.rate}%` : "—"}</td>
-                                                        </tr>
-                                                    ))}
-                                                </tbody>
-                                            </table>
-                                        )}
-                                    </div>
-                                )}
-                            </div>
-
-                            {/* ── Where we lose them ──────────────────────────────
-                                docs/design-audit-plan.md Phase 4. ConversionFunnel.js
-                                already handles "no funnel events registered yet" with
-                                its own explanatory message — rendered unconditionally
-                                here rather than hidden, same as ConsentImpactPanel
-                                below it, so the account actually learns what to set up
-                                instead of the panel just silently not appearing. */}
-                            <ConversionFunnel
-                                domain={domain}
-                                funnel={data.funnel}
-                                totalConversions={totalConversions(data.conversions)}
-                                linkedConversions={linkedConversions}
-                            />
-
-                            {data.consentImpact && (
-                                <ConsentImpactPanel impact={data.consentImpact} />
                             )}
 
                         </div>

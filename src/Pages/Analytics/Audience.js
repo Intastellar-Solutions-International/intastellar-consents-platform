@@ -23,7 +23,9 @@ function topicLabel(id){ return TOPIC_LABELS[id] || ('Topic #' + id); }
 
 // Maps raw schema.org @type values and OG types → readable interest labels.
 // null = filter out (structural/generic types with no user-interest signal).
+const Link = window.ReactRouterDOM.Link;
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
+import { analyticsSettingsPath } from "../../Functions/domainPathSegments.js";
 import AnalyticsWorldMap from "./AnalyticsWorldMap.js";
 import { useAnalyticsPage, MiniBar, KpiCard, useAnalyticsReport, toIsoDate, pctChange, useCompareRange, usePrevRange } from "./_shared.js";
 import { SkeletonRows } from "./components/Skeleton.js";
@@ -91,7 +93,7 @@ function RuleInterestRow({ interest }) {
     );
 }
 
-function InterestsPanel({ ruleInterests, topicInterests, maxTopics, detailLoading }) {
+function InterestsPanel({ domain, ruleInterests, topicInterests, maxTopics, detailLoading }) {
     const [tab, setTab] = useState("rules");
 
     const hasRules  = ruleInterests.length  > 0;
@@ -122,7 +124,7 @@ function InterestsPanel({ ruleInterests, topicInterests, maxTopics, detailLoadin
             ) : !hasAny ? (
                 <p className="sa-notice" style={{ margin:0,padding:"8px 0" }}>
                     No interest data yet. Define{" "}
-                    <a href="settings" style={{ color:"rgba(var(--sa-accent),0.9)" }}>URL-pattern rules</a>{" "}
+                    <Link className="sa-link" to={analyticsSettingsPath(domain)}>URL-pattern rules</Link>{" "}
                     to classify visitors by intent — each matched session is scored on scroll depth, time on page, pages visited, and conversions to determine whether they are genuinely on-topic or just passing through.
                 </p>
             ) : tab === "rules" ? (
@@ -131,7 +133,7 @@ function InterestsPanel({ ruleInterests, topicInterests, maxTopics, detailLoadin
                 ) : !hasRules ? (
                     <p className="sa-notice" style={{ margin:0,padding:"6px 0",fontSize:12 }}>
                         No rules configured yet. Add URL-pattern → label rules in{" "}
-                        <a href="settings" style={{ color:"rgba(var(--sa-accent),0.9)" }}>Analytics Settings</a>.
+                        <Link className="sa-link" to={analyticsSettingsPath(domain)}>Analytics Settings</Link>.
                     </p>
                 ) : (
                     <div className="sa-int-rules-list">
@@ -315,6 +317,7 @@ export default function AnalyticsAudience() {
                             {/* Users by Interests — three complementary sources */}
                             <ErrorBoundary>
                                 <InterestsPanel
+                                    domain={domain}
                                     ruleInterests={data.interests || []}
                                     topicInterests={data.topicInterests || []}
                                     maxTopics={maxTopicInterests}

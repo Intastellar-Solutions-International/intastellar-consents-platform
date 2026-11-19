@@ -8,7 +8,10 @@ import {
 } from "../../Functions/domainPathSegments.js";
 import { ScannerHost } from "../../API/host.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
-import { authHeaders, toIsoDate, KpiCard, MiniBar, formatCurrency, useCompareRange } from "./_shared.js";
+import {
+    authHeaders, toIsoDate, KpiCard, MiniBar, formatCurrency, formatCount, formatPercent,
+    useCompareRange, usePrevRange, pctChange,
+} from "./_shared.js";
 import { IconCash, IconTarget, IconGlobe, IconTrendingUp } from "./Icons.js";
 import "./Analytics.css";
 
@@ -61,6 +64,140 @@ function useAdSpendReport(domainsHeaderValue, fromIso, toIso, displayCurrency, t
     return { data, loading, error };
 }
 
+// Live per-campaign numbers (api/ad-campaign-report.js) — not cached like
+// ad_daily_data, so it's slower and only fetched for a single domain.
+function useCampaignReport(domain, fromIso, toIso, displayCurrency, tick = 0) {
+    const [data,    setData]    = useState(null);
+    const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        if (!domain) { setData(null); return; }
+        let ignore = false;
+        setLoading(true);
+        const qs = new URLSearchParams({ domain, fromDate: fromIso, toDate: toIso, ...(displayCurrency ? { displayCurrency } : {}) }).toString();
+        fetch(`${ScannerHost}/api/ad-campaign-report?${qs}`, { headers: authHeaders() })
+            .then(async r => {
+                if (!r.ok) throw new Error(r.status);
+                if (!ignore) setData(await r.json());
+            })
+            .catch(() => { if (!ignore) setData({ error: true, platforms: [] }); })
+            .finally(() => { if (!ignore) setLoading(false); });
+        return () => { ignore = true; };
+    }, [domain, fromIso, toIso, displayCurrency, tick]);
+
+    return { data, loading };
+}
+
+// Cost-efficiency ratios from raw totals; null where the denominator is 0
+// so the UI shows "—" instead of Infinity/NaN.
+function efficiency({ spend = 0, clicks = 0, impressions = 0 }) {
+    return {
+        ctr: impressions > 0 ? (clicks / impressions) * 100 : null,
+        cpc: clicks > 0 ? spend / clicks : null,
+        cpm: impressions > 0 ? (spend / impressions) * 1000 : null,
+    };
+}
+
+// Sums a report's platforms into one { spend, clicks, impressions } total.
+// Only meaningful when every platform is in the same (display) currency.
+function sumPlatforms(platforms) {
+    return (platforms || []).reduce((t, p) => ({
+        spend:       t.spend + Number(p.amount || 0),
+        clicks:      t.clicks + Number(p.clicks || 0),
+        impressions: t.impressions + Number(p.impressions || 0),
+    }), { spend: 0, clicks: 0, impressions: 0 });
+}
+
+const CAMPAIGN_PAGE = 15;
+
+function CampaignTable({ report, loading, isCombined }) {
+    const [showAll, setShowAll] = useState(false);
+
+    const rows = useMemo(() => {
+        const all = [];
+        for (const p of report?.platforms || []) {
+            for (const c of p.campaigns || []) {
+                // Platforms also list paused/idle campaigns with all-zero metrics
+                if (!(c.spend || c.clicks || c.impressions)) continue;
+                all.push({ ...c, platform: p.platform });
+            }
+        }
+        return all.sort((a, b) => (b.spend || 0) - (a.spend || 0));
+    }, [report]);
+    const failed = (report?.platforms || []).filter(p => p.error);
+    const maxSpend = Math.max(...rows.map(r => r.spend || 0), 1);
+    const visible = showAll ? rows : rows.slice(0, CAMPAIGN_PAGE);
+
+    return (
+        <div className="sa-panel sa-as-campaigns">
+            <h3 className="sa-panel__title"><IconTarget className="sa-icon" /> Campaigns</h3>
+            {isCombined ? (
+                <p className="sa-as-note">Select a domain to see its campaigns — they're fetched live per ad account.</p>
+            ) : loading ? (
+                <p className="sa-as-note">Loading campaigns from the ad platforms&hellip;</p>
+            ) : report?.error ? (
+                <p className="sa-as-note sa-as-note--error">Could not load campaigns.</p>
+            ) : (
+                <>
+                    {failed.map(p => (
+                        <p key={p.platform} className="sa-as-note sa-as-note--error">
+                            {platformLabel(p.platform)}: {p.error}
+                        </p>
+                    ))}
+                    <div className="sa-as-table-scroll">
+                        <table className="sa-table">
+                            <thead>
+                                <tr>
+                                    <th>Campaign</th>
+                                    <th>Platform</th>
+                                    <th className="sa-table__num">Spend</th>
+                                    <th className="sa-table__num">Clicks</th>
+                                    <th className="sa-table__num">Impr.</th>
+                                    <th className="sa-table__num">CTR</th>
+                                    <th className="sa-table__num">CPC</th>
+                                    <th className="sa-table__bar" />
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {visible.map(c => {
+                                    const e = efficiency(c);
+                                    return (
+                                        <tr key={`${c.platform}:${c.id}`}>
+                                            <td className="sa-table__path" title={c.name}>
+                                                {c.name}
+                                                {c.status && !/^(enabled|active)$/i.test(c.status) && (
+                                                    <span className="sa-as-status">{String(c.status).toLowerCase()}</span>
+                                                )}
+                                            </td>
+                                            <td className="sa-as-muted">{platformLabel(c.platform)}</td>
+                                            <td className="sa-table__num">{formatCurrency(c.spend, c.currency)}</td>
+                                            <td className="sa-table__num">{formatCount(c.clicks)}</td>
+                                            <td className="sa-table__num">{formatCount(c.impressions)}</td>
+                                            <td className="sa-table__num">{formatPercent(e.ctr, 2)}</td>
+                                            <td className="sa-table__num">{e.cpc != null ? formatCurrency(e.cpc, c.currency) : "—"}</td>
+                                            <td className="sa-table__bar">
+                                                <MiniBar value={c.spend || 0} max={maxSpend} />
+                                            </td>
+                                        </tr>
+                                    );
+                                })}
+                                {!rows.length && (
+                                    <tr><td colSpan={8} className="sa-as-muted">No campaigns with activity in this period</td></tr>
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
+                    {rows.length > CAMPAIGN_PAGE && (
+                        <button type="button" className="sa-as-more-btn" onClick={() => setShowAll(v => !v)}>
+                            {showAll ? "Show top " + CAMPAIGN_PAGE : `Show all ${rows.length} campaigns`}
+                        </button>
+                    )}
+                </>
+            )}
+        </div>
+    );
+}
+
 function AdSpendSetupCard({ domain }) {
     return (
         <div className="sa-setup">
@@ -86,10 +223,12 @@ function AdSpendSetupCard({ domain }) {
 // widget. Each metric is normalized to its own max (0-1) before plotting —
 // spend/clicks/impressions live on wildly different scales, so a shared
 // literal y-axis would flatten whichever series has the smallest numbers.
+// CMP's validated multi-series chart palette (--c-data, --c-data-2,
+// --c-data-3 in src/styles/tokens.css), so the three lines stay distinct.
 const CHANNEL_METRICS = [
-    { key: "spend",       label: "Spend",       color: "#3987e5" },
-    { key: "clicks",      label: "Clicks",      color: "#e5484d" },
-    { key: "impressions", label: "Impressions", color: "#c98500" },
+    { key: "spend",       label: "Spend",       color: "rgb(var(--c-data))" },
+    { key: "clicks",      label: "Clicks",      color: "rgb(var(--c-data-2))" },
+    { key: "impressions", label: "Impressions", color: "rgb(var(--c-data-3))" },
 ];
 
 function ChannelMetricCard({ platform, currency, totals, daily }) {
@@ -149,11 +288,12 @@ function ChannelMetricCard({ platform, currency, totals, daily }) {
                 <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" style={{ width: "100%", display: "block" }}>
                     {CHANNEL_METRICS.filter(m => m.key !== active).map(m => (
                         <polyline key={m.key} points={pointsFor(m.key)} fill="none"
-                            stroke={m.color} strokeOpacity="0.25" strokeWidth="1.5" />
+                            style={{ stroke: m.color }} strokeOpacity="0.25" strokeWidth="1.5" />
                     ))}
                     {(() => {
                         const m = CHANNEL_METRICS.find(x => x.key === active);
-                        return <polyline points={pointsFor(active)} fill="none" stroke={m.color} strokeWidth="2.5" />;
+                        // stroke via style: SVG presentation attributes don't resolve var()
+                        return <polyline points={pointsFor(active)} fill="none" style={{ stroke: m.color }} strokeWidth="2.5" />;
                     })()}
                 </svg>
             ) : (
@@ -199,8 +339,33 @@ export default function AdSpend() {
     const { data, loading, error } = useAdSpendReport(domainsHeaderValue, fromIso, toIso, displayCurrency, tick);
 
     // Compare-to-previous-period header wiring (Phase 3, docs/design-audit-plan.md)
-    // — same shared hook as every other Analytics page (_shared.js).
+    // — same shared hook as every other Analytics page (_shared.js). The
+    // previous period defaults to the same-length window right before the
+    // selected one; the header's compare control overrides it.
     const compare = useCompareRange();
+    const prevRange = usePrevRange(fromDate, toDate, compare);
+    const { data: prevData } = useAdSpendReport(domainsHeaderValue, prevRange.fromIso, prevRange.toIso, displayCurrency, tick);
+    const compareLabel = compare.compareActive ? "vs comparison period" : "vs previous period";
+
+    const { data: campaignData, loading: campaignsLoading } =
+        useCampaignReport(domainLabel, fromIso, toIso, displayCurrency, tick);
+
+    // Every amount is in displayCurrency (the API converts), so totals and
+    // ratios can be summed across platforms.
+    const totals     = useMemo(() => sumPlatforms(data?.platforms), [data]);
+    const prevTotals = useMemo(() => sumPlatforms(prevData?.platforms), [prevData]);
+    const eff     = efficiency(totals);
+    const prevEff = efficiency(prevTotals);
+    const cac     = data?.blendedCac?.[0]?.cac ?? null;
+    const prevCac = prevData?.blendedCac?.[0]?.cac ?? null;
+    const prevByPlatform = useMemo(
+        () => new Map((prevData?.platforms || []).map(p => [p.platform, p])),
+        [prevData]
+    );
+    const delta = (cur, prev, invert = false) => {
+        const value = pctChange(cur, prev);
+        return value == null ? undefined : { value, invert, label: compareLabel };
+    };
 
     const maxPlatform = useMemo(() => Math.max(...(data?.platforms || []).map(p => p.amount), 1), [data]);
     const maxDomain   = useMemo(() => Math.max(...(data?.byDomain  || []).map(d => d.amount), 1), [data]);
@@ -280,28 +445,41 @@ export default function AdSpend() {
                     )}
 
                     {showData && (
-                        <div className="sa-as-grid">
+                        <div className={"sa-as-grid" + (isCombined ? " sa-as-grid--combined" : "")}>
 
+                            {/* Spend uses the plain up/down trend chip; the rest
+                                use delta, with cost metrics inverted so cheaper
+                                reads as good. */}
                             <KpiCard className="sa-as-kpi0"
                                 icon={<IconCash />}
                                 label="Total spend"
                                 value={data.spendByCurrency.length
                                     ? data.spendByCurrency.map(c => formatCurrency(c.amount, c.currency)).join(" · ")
                                     : "—"}
-                                sub={isCombined ? "across all domains" : domainLabel}
+                                trend={pctChange(totals.spend, prevTotals.spend)}
+                                sub={`${isCombined ? "across all domains" : domainLabel} · ${data.platforms.map(p => platformLabel(p.platform)).join(", ") || "no spend"}`}
                             />
                             <KpiCard className="sa-as-kpi1"
-                                icon={<IconGlobe />}
-                                label="Connected platforms"
-                                value={data.platforms.length}
-                                sub={data.platforms.map(p => platformLabel(p.platform)).join(", ") || null}
+                                icon={<IconTrendingUp />}
+                                label="Clicks"
+                                value={formatCount(totals.clicks)}
+                                delta={delta(totals.clicks, prevTotals.clicks)}
+                                sub={`CTR ${formatPercent(eff.ctr, 2)} · ${formatCount(totals.impressions)} impressions`}
                             />
                             <KpiCard className="sa-as-kpi2"
+                                icon={<IconGlobe />}
+                                label="Avg. cost per click"
+                                value={eff.cpc != null ? formatCurrency(eff.cpc, displayCurrency) : "—"}
+                                delta={delta(eff.cpc, prevEff.cpc, true)}
+                                sub={`CPM ${eff.cpm != null ? formatCurrency(eff.cpm, displayCurrency) : "—"}`}
+                            />
+                            <KpiCard className="sa-as-kpi3"
                                 icon={<IconTarget />}
                                 label="Blended CAC"
                                 value={data.blendedCac?.length
                                     ? data.blendedCac.map(c => c.cac != null ? formatCurrency(c.cac, c.currency) : "—").join(" · ")
                                     : "—"}
+                                delta={delta(cac, prevCac, true)}
                                 sub={data.conversions?.totalQualityLeads
                                     ? `spend ÷ ${data.conversions.totalQualityLeads.toLocaleString("de-DE")} ${data.conversions.source === "lead_quality" ? "quality leads" : "conversion events"}`
                                     : "no conversions tracked yet"}
@@ -328,32 +506,51 @@ export default function AdSpend() {
                             </div>
 
                             <div className="sa-panel sa-as-platforms">
-                                <h3 className="sa-panel__title"><IconCash className="sa-icon" /> Spend by platform</h3>
-                                <table className="sa-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Platform</th>
-                                            <th className="sa-table__num">Spend</th>
-                                            <th className="sa-table__num">Clicks</th>
-                                            <th className="sa-table__bar" />
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {data.platforms.map((p, i) => (
-                                            <tr key={i}>
-                                                <td>{platformLabel(p.platform)}</td>
-                                                <td className="sa-table__num">{formatCurrency(p.amount, p.currency)}</td>
-                                                <td className="sa-table__num">{p.clicks.toLocaleString("de-DE")}</td>
-                                                <td className="sa-table__bar">
-                                                    <MiniBar value={p.amount} max={maxPlatform} color="rgba(192,159,83,0.6)" />
-                                                </td>
+                                <h3 className="sa-panel__title"><IconCash className="sa-icon" /> Platform comparison</h3>
+                                <div className="sa-as-table-scroll">
+                                    <table className="sa-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Platform</th>
+                                                <th className="sa-table__num">Spend</th>
+                                                <th className="sa-table__num">Share</th>
+                                                <th className="sa-table__num">Clicks</th>
+                                                <th className="sa-table__num">CTR</th>
+                                                <th className="sa-table__num">CPC</th>
+                                                <th className="sa-table__num">CPM</th>
+                                                <th className="sa-table__num" title={compareLabel}>Δ spend</th>
+                                                <th className="sa-table__bar" />
                                             </tr>
-                                        ))}
-                                        {!data.platforms.length && (
-                                            <tr><td colSpan={4} style={{ color: "rgba(130,130,130,0.55)", fontSize: "0.8rem" }}>No data yet</td></tr>
-                                        )}
-                                    </tbody>
-                                </table>
+                                        </thead>
+                                        <tbody>
+                                            {data.platforms.map(p => {
+                                                const e = efficiency({ spend: p.amount, clicks: p.clicks, impressions: p.impressions });
+                                                const prev = prevByPlatform.get(p.platform);
+                                                const change = pctChange(p.amount, prev?.amount);
+                                                return (
+                                                    <tr key={p.platform}>
+                                                        <td>{platformLabel(p.platform)}</td>
+                                                        <td className="sa-table__num">{formatCurrency(p.amount, p.currency)}</td>
+                                                        <td className="sa-table__num">{formatPercent(totals.spend > 0 ? (p.amount / totals.spend) * 100 : null)}</td>
+                                                        <td className="sa-table__num">{formatCount(p.clicks)}</td>
+                                                        <td className="sa-table__num">{formatPercent(e.ctr, 2)}</td>
+                                                        <td className="sa-table__num">{e.cpc != null ? formatCurrency(e.cpc, p.currency) : "—"}</td>
+                                                        <td className="sa-table__num">{e.cpm != null ? formatCurrency(e.cpm, p.currency) : "—"}</td>
+                                                        <td className="sa-table__num sa-as-muted">
+                                                            {change == null ? "new" : `${change >= 0 ? "▲" : "▼"} ${formatPercent(Math.abs(change))}`}
+                                                        </td>
+                                                        <td className="sa-table__bar">
+                                                            <MiniBar value={p.amount} max={maxPlatform} />
+                                                        </td>
+                                                    </tr>
+                                                );
+                                            })}
+                                            {!data.platforms.length && (
+                                                <tr><td colSpan={9} className="sa-as-muted">No data yet</td></tr>
+                                            )}
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
 
                             {isCombined && (
@@ -373,17 +570,19 @@ export default function AdSpend() {
                                                     <td className="sa-table__path" title={d.domain}>{d.domain}</td>
                                                     <td className="sa-table__num">{formatCurrency(d.amount, d.currency)}</td>
                                                     <td className="sa-table__bar">
-                                                        <MiniBar value={d.amount} max={maxDomain} color="rgba(99,179,237,0.55)" />
+                                                        <MiniBar value={d.amount} max={maxDomain} />
                                                     </td>
                                                 </tr>
                                             ))}
                                             {!(data.byDomain || []).length && (
-                                                <tr><td colSpan={3} style={{ color: "rgba(130,130,130,0.55)", fontSize: "0.8rem" }}>No data yet</td></tr>
+                                                <tr><td colSpan={3} className="sa-as-muted">No data yet</td></tr>
                                             )}
                                         </tbody>
                                     </table>
                                 </div>
                             )}
+
+                            <CampaignTable report={campaignData} loading={campaignsLoading} isCombined={isCombined} />
 
                         </div>
                     )}

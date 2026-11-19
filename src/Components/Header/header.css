@@ -517,6 +517,19 @@
     display: flex;
 }
 
+/* StickyPageTitle's optional toolbar: middle column, same row as the title,
+   pushed towards the date range. min-width:0 lets it shrink and scroll
+   instead of widening the header. */
+.infoHeader__toolbar {
+    min-width: 0;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.infoHeader--toolbar .sticky-title {
+    white-space: nowrap;
+}
+
 .sticky-title {
     font-size: 1.5em;
 }
@@ -1091,6 +1104,86 @@
     text-overflow: ellipsis;
 }
 .ia-sidebar__group-label:first-child .ia-sidebar__group-label-text { border-top: none; }
+
+/* Collapsible groups — closed by default except the one holding the
+   current page, so a first visit isn't a wall of ~30 links. */
+.ia-sidebar__group {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid rgb(var(--c-white) / 0.06);
+}
+
+.ia-sidebar__group-toggle {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    width: 100%;
+    padding: var(--space-2) var(--space-3);
+    border: none;
+    background: transparent;
+    color: var(--color-text-secondary);
+    font-family: var(--font-sans);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    text-align: left;
+    cursor: pointer;
+}
+
+.ia-sidebar__group-toggle:hover {
+    color: var(--color-text-primary);
+    background: rgb(var(--c-white) / 0.04);
+}
+
+.ia-sidebar__group-toggle:focus-visible {
+    outline: none;
+    box-shadow: inset var(--shadow-focus);
+}
+
+.ia-sidebar__group-toggle--has-active {
+    color: var(--color-text-primary);
+}
+
+.ia-sidebar__group-toggle-label {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.ia-sidebar__group-count {
+    font-size: var(--text-xs);
+    font-weight: 500;
+    color: var(--color-text-muted);
+    font-variant-numeric: tabular-nums;
+}
+
+.ia-sidebar__group-chevron {
+    flex-shrink: 0;
+    color: var(--color-text-muted);
+    transform: rotate(-90deg);
+    transition: transform 0.15s ease;
+}
+
+.ia-sidebar__group--open .ia-sidebar__group-chevron {
+    transform: none;
+}
+
+.ia-sidebar__sublist {
+    list-style: none;
+    margin: 0 0 var(--space-1);
+    padding: 0;
+}
+
+/* Items inside a group sit one step in from the group header */
+.ia-sidebar__sublist .ia-sidebar__link {
+    padding-left: var(--space-5);
+}
+
+.ia-sidebar__sublist .ia-sidebar__link--indent {
+    padding-left: var(--space-8);
+}
 
 .ia-sidebar__link {
     color: rgb(var(--c-white) / 0.88);

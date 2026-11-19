@@ -1,6 +1,6 @@
 const { useState, useEffect, useMemo } = React;
 const useParams = window.ReactRouterDOM.useParams;
-const useHistory = window.ReactRouterDOM.useHistory;
+const Link = window.ReactRouterDOM.Link;
 import { ScannerHost } from "../../API/host.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import { authHeaders, useAnalyticsPageChrome, useCompareRange, KpiCard, MiniBar, formatCount } from "./_shared.js";
@@ -43,7 +43,6 @@ export default function EventDetail() {
 
     const { eventName: rawEventName } = useParams();
     const eventName = decodeURIComponent(rawEventName || "");
-    const history = useHistory();
 
     const { domain, getLastDays, setLastDays, fromDate, setFromDate, toDate, setToDate, fromIso, toIso }
         = useAnalyticsPageChrome();
@@ -82,13 +81,9 @@ export default function EventDetail() {
             <div className="dashboard-content">
                 <div className="sa-page">
                     <p className="sa-panel__sub" style={{ marginBottom: 14 }}>
-                        <a
-                            href="#"
-                            style={{ color: "rgba(192,159,83,0.85)", textDecoration: "none" }}
-                            onClick={e => { e.preventDefault(); history.push(analyticsConversionsPath(domain)); }}
-                        >
+                        <Link className="sa-link" to={analyticsConversionsPath(domain)}>
                             ← Back to Conversions
-                        </a>
+                        </Link>
                     </p>
 
                     {!domain && (
