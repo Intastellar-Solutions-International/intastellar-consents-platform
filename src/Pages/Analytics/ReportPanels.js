@@ -6,6 +6,7 @@
 // slice is empty.
 import { MiniBar, formatPercent, elementLabel } from "./_shared.js";
 import { IconExternalLink, IconCursorClick, IconShieldCheck } from "./Icons.js";
+import { STATISTICS_CONSENT } from "../../Functions/consentMetrics.js";
 
 export function OutboundClicksPanel({ data }) {
     const rows = data?.topOutbound || [];
@@ -126,12 +127,12 @@ export function ConsentImpactPanel({ impact }) {
             </h3>
             <p className="sa-panel__sub">
                 Visitors who decline full consent are visible only as anonymous events — their sessions
-                cannot be stitched. This estimates your true session volume based on the observed consent rate.
+                cannot be stitched. This estimates your true session volume based on the observed statistics consent rate.
             </p>
             <div className="sa-ci-kpis">
                 <div className="sa-ci-kpi">
-                    <span className="sa-ci-kpi__label" title="This analytics tracker's own full-consent rate — not the CMP banner's acceptance rate shown on the Marketing tab, which is a different metric from a different system.">
-                        Full-consent rate
+                    <span className="sa-ci-kpi__label" title={STATISTICS_CONSENT.description}>
+                        {STATISTICS_CONSENT.label}
                     </span>
                     <span className="sa-ci-kpi__value">{formatPercent(consentRate)}</span>
                 </div>

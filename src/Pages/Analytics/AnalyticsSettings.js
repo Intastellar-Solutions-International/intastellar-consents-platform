@@ -362,7 +362,7 @@ const BUSINESS_TYPES = [
         value: "aviation",
         label: "Aviation",
         tagline: "Bookings, route reach & international traffic",
-        highlights: ["Bookings", "Countries reached", "Consent rate"],
+        highlights: ["Bookings", "Countries reached", "Statistics consent rate"],
     },
     {
         value: "tourism",
@@ -380,13 +380,13 @@ const BUSINESS_TYPES = [
         value: "finance",
         label: "Finance & Insurance",
         tagline: "Qualified leads, form completions & consent compliance",
-        highlights: ["Qualified leads", "Form fills", "Consent rate"],
+        highlights: ["Qualified leads", "Form fills", "Statistics consent rate"],
     },
     {
         value: "healthcare",
         label: "Healthcare",
         tagline: "Appointment requests & consent-compliant engagement",
-        highlights: ["Appointment requests", "Consent rate", "Engaged users"],
+        highlights: ["Appointment requests", "Statistics consent rate", "Engaged users"],
     },
     {
         value: "education",
@@ -508,7 +508,7 @@ function SiteConfigSection({ domain }) {
             </Field>
 
             {/* Industry benchmark */}
-            <Field label="Industry" hint="Used to show industry benchmarks next to your consent rate.">
+            <Field label="Industry" hint="Used to show industry benchmarks next to your statistics consent rate.">
                 <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
                     <select value={industry} onChange={e => setIndustry(e.target.value)} style={{
                         flex: 1, padding: "8px 10px", borderRadius: 6,

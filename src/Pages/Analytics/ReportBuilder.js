@@ -10,6 +10,7 @@ import { REPORT_TEMPLATES, AD_METRICS } from "./reportTemplates.js";
 import TrendLineChart from "./TrendLineChart.js";
 import { IconTarget } from "./Icons.js";
 import "./Analytics.css";
+import { STATISTICS_CONSENT } from "../../Functions/consentMetrics.js";
 
 const REPORTS_URL = `${ScannerHost}/api/analytics-saved-reports`;
 
@@ -38,7 +39,7 @@ const METRIC_DEFS = {
         } },
     conversionRate: { label: "Conversion rate",group: "analytics", isRate: true,  isMoney: false,
         getTotal: (d) => d?.totals?.conversionRate || 0 },
-    consentRate:    { label: "Consent rate",   group: "analytics", isRate: true,  isMoney: false,
+    consentRate:    { label: STATISTICS_CONSENT.label,   group: "analytics", isRate: true,  isMoney: false,
         getTotal: (d) => { const t=d?.totals?.total||0; return t>0 ? ((d?.totals?.full_count||0)/t)*100 : 0; } },
     newUsers:       { label: "New users",      group: "analytics", isRate: false, isMoney: false,
         getTotal: (d) => { const arr=Array.isArray(d?.newVsReturning)?d.newVsReturning:[]; const r=arr.find(r=>r.is_returning===false||r.is_returning==="false"); return r?.sessions||0; } },

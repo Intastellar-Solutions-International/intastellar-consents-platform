@@ -14,7 +14,7 @@ import {
     decodeDomainPathSegment,
     navigateWithDomain,
     detectDashboardMode,
-    modePath,
+    switchModePath,
     isCombinedOrClearDomain,
 } from "../../Functions/domainPathSegments.js";
 import { pushRecentDomain } from "../../Functions/domainFavourites.js";
@@ -412,11 +412,11 @@ export default function Header(props) {
         if (mode === "analytics" && isCombinedOrClearDomain(currentDomain)) {
             const firstAnalyticsDomain = await resolveFirstAnalyticsDomain(orgId, domains);
             if (firstAnalyticsDomain) {
-                history.push(modePath(mode, platformId, firstAnalyticsDomain));
+                history.push(switchModePath(mode, platformId, firstAnalyticsDomain));
                 return;
             }
         }
-        history.push(modePath(mode, platformId, currentDomain));
+        history.push(switchModePath(mode, platformId, currentDomain));
     }
 
     return (

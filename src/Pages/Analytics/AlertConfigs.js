@@ -8,7 +8,7 @@ const ALERTS_URL = `${ScannerHost}/api/analytics-alert-configs`;
 
 const METRIC_LABELS = {
     traffic_drop:       "Traffic drop",
-    consent_rate_below: "Consent rate",
+    consent_rate_below: "Statistics consent rate",
     zero_conversions:   "Conversions (zero check)",
     conversion_drop:    "Conversion drop",
     engaged_drop:       "Engaged session drop",
@@ -16,7 +16,7 @@ const METRIC_LABELS = {
 
 const METRIC_DESCRIPTIONS = {
     traffic_drop:       "Fires when traffic drops by more than X% compared to the prior period.",
-    consent_rate_below: "Fires when the full-consent rate falls below X%.",
+    consent_rate_below: "Fires when the statistics consent rate falls below X%.",
     zero_conversions:   "Fires when conversion events fall below X (e.g. 0 = no conversions at all).",
     conversion_drop:    "Fires when conversions drop by more than X% compared to the prior period.",
     engaged_drop:       "Fires when engaged sessions (≥10s or 2+ pages) drop by more than X%.",

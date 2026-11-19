@@ -17,6 +17,7 @@ import { preConsentCookieStat, postConsentCookieStat } from "../../Functions/coo
 import { Icon } from "../ui/icons.js";
 import { auditRowChoiceSummary, auditRowChoices, consentIdOf, matchesConsentId, sortNewestFirst } from "./auditRows.js";
 import { redirectToLogin } from "../../Functions/session.js";
+import { BANNER_ACCEPTANCE } from "../../Functions/consentMetrics.js";
 
 const Link = window.ReactRouterDOM.Link;
 const useHistory = window.ReactRouterDOM.useHistory;
@@ -660,7 +661,7 @@ export default function AuditSnapshotCard(props) {
                             ) : null}
                             {activeData?.Accepted != null ? (
                                 <div className="audit-snapshot-card__stat">
-                                    <dt>Acceptance rate</dt>
+                                    <dt title={BANNER_ACCEPTANCE.description}>{BANNER_ACCEPTANCE.label}</dt>
                                     <dd>{Number(activeData.Accepted).toLocaleString(locale)}%</dd>
                                 </div>
                             ) : null}

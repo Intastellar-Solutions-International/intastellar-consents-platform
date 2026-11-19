@@ -13,7 +13,7 @@ import {
     analyticsConversionsPath, analyticsPageExperimentsPath, analyticsFormsPath,
     analyticsCohortPath, analyticsAlertsPath, analyticsScheduledReportsPath,
     analyticsReportsPath, analyticsReportBuilderPath,
-    analyticsPerformancePath, analyticsPageWeightPath, analyticsDigestPath,
+    analyticsPerformancePath, analyticsPageWeightPath, analyticsDigestPath, analyticsGettingStartedPath,
     analyticsEventDebuggerPath, analyticsAudiencesPath,
 } from "../../../Functions/domainPathSegments.js";
 
@@ -146,6 +146,11 @@ export function buildAnalyticsLinks(domain) {
         {
             name: "Overview",
             path: analyticsPath(domain),
+        },
+        {
+            // Shared CMP + Analytics checklist (also in the CMP rail)
+            name: "Get started",
+            path: analyticsGettingStartedPath(),
         },
         {
             name: "Audience",

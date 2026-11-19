@@ -110,7 +110,7 @@ export function buildInsights({ data, prevData, conversions, prevConversions, pa
                 id: "consent-benchmark",
                 tone: below ? "bad" : "good",
                 score: (below ? 55 : 30) + Math.min(Math.abs(diff), 60) / 3,
-                title: `Consent rate ${Math.round(Math.abs(diff))} pts ${below ? "below" : "above"} the ${bench.label} average`,
+                title: `Statistics consent rate ${Math.round(Math.abs(diff))} pts ${below ? "below" : "above"} the ${bench.label} average`,
                 detail: `${formatPercent(data.totals.consentRate)} vs ${formatPercent(bench.consentRatePct)}.`
                     + (below ? " Fewer consented visitors means less session-level data." : ""),
                 to: paths.consent, cta: "Open Consent",

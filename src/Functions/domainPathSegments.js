@@ -265,6 +265,11 @@ export function analyticsDigestPath() {
     return "/analytics/digest";
 }
 
+/** Shared CMP + Analytics checklist — org-level, not domain-scoped. */
+export function analyticsGettingStartedPath() {
+    return "/analytics/getting-started";
+}
+
 export function analyticsAlertsPath(domainUnicode) {
     const seg = encodeDomainPathSegment(domainUnicode);
     if (!seg) return "/analytics/alerts";
@@ -304,6 +309,10 @@ export function navigateWithDomain(history, platformId, domainUnicode, pathname)
         // Digest is a fixed portfolio-level page — stay there regardless of domain selection
         if (pathname === "/analytics/digest" || pathname === "/analytics/digest/") {
             history.push("/analytics/digest");
+            return;
+        }
+        // Getting started covers every domain — changing the domain keeps you on it
+        if (pathname === "/analytics/getting-started" || pathname === "/analytics/getting-started/") {
             return;
         }
         const leaf = ["/marketing", "/audience", "/acquisition", "/consent", "/heatmap", "/recordings", "/bots", "/user-flow", "/conversions", "/ad-spend", "/attribution", "/settings", "/google-analytics", "/search-console", "/page-experiments", "/cohorts", "/alerts", "/scheduled-reports", "/forms", "/performance", "/page-weight", "/event-debugger"].find(s => pathname.includes(s));
@@ -351,6 +360,33 @@ export function modePath(mode, platformId, domainUnicode) {
         return analyticsPath(domainUnicode);
     }
     return dashboardPath(platformId, domainUnicode);
+}
+
+// Query params that mean the same in both products (StickyPageTitle's date
+// range) — carried across a CMP ⇄ Analytics switch. Page-specific ones
+// (filters, ?site=) stay behind.
+const SHARED_QUERY_KEYS = ["from", "to", "days"];
+
+/**
+ * Where a CMP ⇄ Analytics switch should land: the matching page when both
+ * products have one (Getting started), otherwise the other product's Home —
+ * with the domain (as before) and now the selected date range kept.
+ */
+export function switchModePath(mode, platformId, domainUnicode, location = window.location) {
+    const pathname = String(location?.pathname || "");
+    let target;
+    if (/\/onboarding\/?$/.test(pathname) || /^\/analytics\/getting-started\/?$/.test(pathname)) {
+        target = mode === "analytics" ? analyticsGettingStartedPath() : `/${platformId}/onboarding`;
+    } else {
+        target = modePath(mode, platformId, domainUnicode);
+    }
+    const current = new URLSearchParams(location?.search || "");
+    const carried = new URLSearchParams();
+    for (const key of SHARED_QUERY_KEYS) {
+        if (current.has(key)) carried.set(key, current.get(key));
+    }
+    const qs = carried.toString();
+    return qs ? `${target}?${qs}` : target;
 }
 
 /** Keep DomainContext aligned with :handle on report + dashboard routes */

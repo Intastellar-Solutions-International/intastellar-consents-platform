@@ -4,9 +4,8 @@ import SideNav from "../../../Components/Header/SideNav.js";
 import { reportsLinks } from "../../../Components/Header/SideNavLinks/index.js";
 import StickyPageTitle from "../../../Components/Header/Sticky/index.js";
 import { ScannerHost } from "../../../API/host.js";
+import { analyticsSnippet } from "../../../Functions/installSnippet.js";
 import "../Style.css";
-
-const INGEST_URL = "https://analytics.consentsmanagement.com/api/a";
 
 function readCachedDomains() {
     try {
@@ -378,7 +377,7 @@ function LeadQualitySection({ domain, site, onSaved }) {
 }
 
 function SnippetBox({ siteKey }) {
-    const snippet = `<script src="${INGEST_URL}" data-site="${siteKey}" async defer></script>`;
+    const snippet = analyticsSnippet(siteKey);
     return (
         <div className="as-snippet">
             <div className="as-snippet__header">

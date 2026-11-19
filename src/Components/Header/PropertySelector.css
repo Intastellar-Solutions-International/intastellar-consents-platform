@@ -32,12 +32,7 @@
     justify-content: center;
     border-radius: var(--radius-md);
     background: rgb(var(--c-accent) / 0.18);
-}
-
-.property-selector__mode-icon img {
-    width: 16px;
-    height: 16px;
-    filter: brightness(0) saturate(100%) invert(78%) sepia(24%) saturate(500%) hue-rotate(357deg) brightness(95%);
+    color: var(--color-accent-strong);
 }
 
 .property-selector__trigger-text {
@@ -114,10 +109,9 @@
     transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 }
 
-.property-selector__mode-btn img {
-    width: 16px;
-    height: 16px;
-    filter: brightness(0) invert(1) opacity(0.65);
+/* Icons use currentColor: muted like the label, gold when active */
+.property-selector__mode-btn svg {
+    flex-shrink: 0;
 }
 
 .property-selector__mode-btn:hover {
@@ -131,8 +125,8 @@
     color: var(--color-text-primary);
 }
 
-.property-selector__mode-btn--active img {
-    filter: brightness(0) saturate(100%) invert(78%) sepia(24%) saturate(500%) hue-rotate(357deg) brightness(95%);
+.property-selector__mode-btn--active svg {
+    color: var(--color-accent-strong);
 }
 
 .property-selector__org-row {

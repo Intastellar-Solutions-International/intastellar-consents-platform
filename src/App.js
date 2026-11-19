@@ -657,6 +657,10 @@ export default function App() {
                                                 <AnalyticsSavedReports />
                                             </ErrorBoundary>}
                                         </Route>
+                                        {/* Before /analytics/:handle, which would read "getting-started" as a domain */}
+                                        <Route path="/analytics/getting-started" exact>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : <ErrorBoundary><GettingStarted /></ErrorBoundary>}
+                                        </Route>
                                         <Route path="/analytics/digest" exact>
                                             {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('growth') ? <TierGate minTier="growth" featureName="Channel Digest" fullPage /> : <ErrorBoundary>
                                                 <AnalyticsDigest />

@@ -1,14 +1,17 @@
 import API from "../../API/api";
 import Fetch from "../../Functions/fetch";
 import { getOrg } from "../../Functions/storage.js";
+import Authentication from "../../Authentication/Auth";
+import { ScannerHost } from "../../API/host.js";
+import { installSnippet } from "../../Functions/installSnippet.js";
+import { canAccess } from "../../Functions/tier.js";
+import { readJsonResult, errorMessage } from "../../Functions/apiResult.js";
 import "./AddDomain.css";
 
-const { useState, useRef } = React;
+const { useState, useRef, useEffect } = React;
 
 const DOCS_URL = "https://inta.dev/docs/cookie-banner/v1";
 const DEFAULT_COLOR = "#003399"; // the banner's own default, rgba(0, 51, 153, 1)
-const CORE_SCRIPT = "https://consents.cdn.intastellarsolutions.com/uc.js";
-const configScript = (domain) => `https://downloads.intastellarsolutions.com/cookieconsents/${domain}/config.js`;
 
 // settings.design values the banner understands ("overlay" is its default).
 // Names and looks follow the gallery at intastellar.eu/cookie-banners.
@@ -284,9 +287,52 @@ function BannerPreview({ design, color, side, logo, company, domain }) {
     );
 }
 
+const scannerHeaders = () => ({ Authorization: Authentication.getToken(), Organisation: String(Authentication.getOrganisation() ?? ""), "Content-Type": "application/json" });
+
 function InstallInstructions({ domains, embedded, onAddMore }) {
     const [active, setActive] = useState(domains[0]);
-    const snippet = `<script src="${configScript(active)}"></script>\n<script src="${CORE_SCRIPT}"></script>`;
+    // One install for both products: with Analytics on, the same code also
+    // loads the tracker. siteKeys: domain → site key | null (none yet).
+    const analyticsOnPlan = canAccess("starter");
+    const [siteKeys, setSiteKeys] = useState({});
+    const [withAnalytics, setWithAnalytics] = useState({});
+    const [enabling, setEnabling] = useState(false);
+    const [analyticsError, setAnalyticsError] = useState(null);
+
+    useEffect(() => {
+        if (!analyticsOnPlan || !active || siteKeys[active] !== undefined) return;
+        fetch(`${ScannerHost}/api/analytics-site?domain=${encodeURIComponent(active.toLowerCase())}`, { headers: scannerHeaders() })
+            .then((r) => readJsonResult(r))
+            .then((d) => {
+                const key = d?.noSiteKey ? null : d?.id || null;
+                setSiteKeys((k) => ({ ...k, [active]: key }));
+                if (key) setWithAnalytics((w) => ({ ...w, [active]: true }));
+            })
+            .catch(() => setSiteKeys((k) => ({ ...k, [active]: null })));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [active, analyticsOnPlan]);
+
+    async function toggleAnalytics(on) {
+        setAnalyticsError(null);
+        if (!on) { setWithAnalytics((w) => ({ ...w, [active]: false })); return; }
+        if (siteKeys[active]) { setWithAnalytics((w) => ({ ...w, [active]: true })); return; }
+        setEnabling(true);
+        try {
+            const response = await fetch(`${ScannerHost}/api/analytics-site`, {
+                method: "POST", headers: scannerHeaders(), body: JSON.stringify({ domain: active }),
+            });
+            const d = await readJsonResult(response, "Couldn't turn on Analytics.");
+            setSiteKeys((k) => ({ ...k, [active]: d.id }));
+            setWithAnalytics((w) => ({ ...w, [active]: true }));
+        } catch (err) {
+            setAnalyticsError(errorMessage(err));
+        } finally {
+            setEnabling(false);
+        }
+    }
+
+    const includeAnalytics = analyticsOnPlan && withAnalytics[active] && siteKeys[active];
+    const snippet = installSnippet({ domain: active, siteKey: includeAnalytics ? siteKeys[active] : null });
 
     return (
         <section className="ad-card ad-success">
@@ -297,7 +343,7 @@ function InstallInstructions({ domains, embedded, onAddMore }) {
                 {domains.length === 1 ? `${domains[0]} was added` : `${domains.length} domains were added`}
             </h2>
             <p className="ad-card__intro">
-                Add these two lines to the <code>&lt;head&gt;</code> of {domains.length === 1 ? "your website" : "each website"}, before any other script that sets cookies.
+                Add {includeAnalytics ? "this code" : "these two lines"} to the <code>&lt;head&gt;</code> of {domains.length === 1 ? "your website" : "each website"}, before any other script that sets cookies.
             </p>
 
             {domains.length > 1 ? (
@@ -316,6 +362,22 @@ function InstallInstructions({ domains, embedded, onAddMore }) {
                     ))}
                 </div>
             ) : null}
+
+            {analyticsOnPlan && (
+                <label className="ad-analytics-toggle">
+                    <input
+                        type="checkbox"
+                        checked={!!withAnalytics[active]}
+                        disabled={enabling}
+                        onChange={(e) => toggleAnalytics(e.target.checked)}
+                    />
+                    <span>
+                        <strong>{enabling ? "Turning on Analytics…" : "Also install Analytics"}</strong>
+                        <span className="ad-analytics-toggle__hint">Consent-aware traffic, ad spend and conversions from the same code — no second install.</span>
+                    </span>
+                </label>
+            )}
+            {analyticsError && <p className="ad-analytics-toggle__error" role="alert">{analyticsError}</p>}
 
             <div className="ad-code">
                 <CopyButton text={snippet} />

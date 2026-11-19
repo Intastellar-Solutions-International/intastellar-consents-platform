@@ -9,17 +9,18 @@ import {
     toggleFavouriteDomain,
     getRecentDomains,
 } from "../../Functions/domainFavourites.js";
-import dashboardIcon from "./icons/dashboard.svg";
-import reportsIcon from "./icons/reports.svg";
+import { Icon } from "../ui/icons.js";
 import Authentication from "../../Authentication/Auth.js";
 import { ScannerHost } from "../../API/host.js";
 import { t } from "../../i18n/index.js";
 
 const { useState, useEffect, useMemo, useRef } = React;
 
+// Same product icons as the login chips (Login.js) and Getting started,
+// drawn with currentColor so they follow the button's active/inactive colour.
 const MODES = [
-    { id: "cmp", label: t("CMP Dashboard"), icon: dashboardIcon },
-    { id: "analytics", label: t("Site Analytics"), icon: reportsIcon },
+    { id: "cmp", label: t("CMP Dashboard"), icon: "shield-check" },
+    { id: "analytics", label: t("Site Analytics"), icon: "bar-chart" },
 ];
 
 function getDomainVerificationStatus(domain, orgId) {
@@ -268,7 +269,7 @@ export default function PropertySelector(props) {
                 aria-haspopup="true"
             >
                 <span className="property-selector__mode-icon" aria-hidden="true">
-                    <img src={currentModeMeta.icon} alt="" />
+                    <Icon name={currentModeMeta.icon} size={16} />
                 </span>
                 <span className="property-selector__trigger-text">
                     <span className="property-selector__trigger-context">
@@ -296,7 +297,7 @@ export default function PropertySelector(props) {
                                 }}
                                 title={m.label}
                             >
-                                <img src={m.icon} alt="" />
+                                <Icon name={m.icon} size={16} />
                                 <span>{m.label}</span>
                             </button>
                         ))}

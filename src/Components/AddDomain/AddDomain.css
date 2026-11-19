@@ -1016,3 +1016,40 @@
     .ad-btn { transition: none; }
     .ad-spinner { animation-duration: 2s; }
 }
+
+/* "Also install Analytics" — one install for both products */
+.ad-analytics-toggle {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    margin: var(--space-4) 0 var(--space-2);
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-bg-sunken);
+    cursor: pointer;
+    text-align: left;
+}
+
+.ad-analytics-toggle input {
+    margin-top: 3px;
+    accent-color: var(--color-accent);
+}
+
+.ad-analytics-toggle strong {
+    display: block;
+    font-size: var(--text-sm);
+    color: var(--color-text-primary);
+}
+
+.ad-analytics-toggle__hint {
+    display: block;
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+}
+
+.ad-analytics-toggle__error {
+    margin: 0 0 var(--space-2);
+    font-size: var(--text-sm);
+    color: var(--color-danger-text);
+}

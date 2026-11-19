@@ -94,13 +94,35 @@ export default async function handler(req, res) {
     // Used by the property selector to highlight/filter domains with an active
     // site key, without a per-domain round trip for every entry in the list.
     if (req.method === "GET" && (req.query.list === "1" || req.query.list === "true")) {
+        // ?withStatus=1 (Getting started): also whether each site has ever
+        // received an event (tracker installed) and how many conversions it
+        // defines. EXISTS stops at the first row on the site_id index, so it
+        // stays cheap; the plain list (property selector) skips it entirely.
+        const withStatus = req.query.withStatus === "1" || req.query.withStatus === "true";
         const { rows } = await db.query(
-            `SELECT domain, active FROM analytics_sites WHERE organisation_id = $1`,
+            withStatus
+                ? `SELECT s.id, s.domain, s.active,
+                          EXISTS (SELECT 1 FROM analytics_events e WHERE e.site_id = s.id) AS has_events
+                     FROM analytics_sites s WHERE s.organisation_id = $1`
+                : `SELECT domain, active FROM analytics_sites WHERE organisation_id = $1`,
             [orgId]
         ).catch(() => ({ rows: [] }));
 
+        let conversionsBySite = new Map();
+        if (withStatus && rows.length) {
+            // Table is created lazily by analytics-events.js — absent means none defined.
+            const { rows: defs } = await db.query(
+                `SELECT site_id, COUNT(*)::int AS n FROM analytics_event_defs
+                  WHERE organisation_id = $1 GROUP BY site_id`,
+                [orgId]
+            ).catch(() => ({ rows: [] }));
+            conversionsBySite = new Map(defs.map(d => [d.site_id, d.n]));
+        }
+
         return res.status(200).json({
-            sites: rows.map(r => ({ domain: r.domain, active: r.active })),
+            sites: rows.map(r => withStatus
+                ? { domain: r.domain, active: r.active, siteId: r.id, hasEvents: r.has_events === true, conversions: conversionsBySite.get(r.id) || 0 }
+                : { domain: r.domain, active: r.active }),
         });
     }
 

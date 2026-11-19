@@ -261,7 +261,7 @@ function kpiBand(consent) {
     const users = Number(consent?.activeUsers) || 0;
     const perUser = users > 0 ? `<p class="delta"><span>${new Intl.NumberFormat("en-GB", { maximumFractionDigits: 1 }).format((Number(consent?.Total) || 0) / users)} records per user</span></p>` : "";
     const tiles = [
-        ["Acceptance", pct(consent?.Accepted), delta(change.accepted, " pts", "up")],
+        ["Banner acceptance", pct(consent?.Accepted), delta(change.accepted, " pts", "up")],
         ["Essential-only", pct(consent?.Declined), delta(change.declined, " pts", "down")],
         ["Consent records", num(consent?.Total), ""],
         ["Active users", num(consent?.activeUsers), perUser],
@@ -314,9 +314,9 @@ function trendChart(consent, fromDate, toDate) {
     const labels = [0, Math.floor((series.length - 1) / 2), series.length - 1].filter((v, i, a) => a.indexOf(v) === i);
     const showPrev = previous.some((v) => v != null);
     return `<section class="block">
-        <div class="block-head"><h2>${hasRate ? "Daily acceptance rate" : "Daily consent decisions"}</h2>
+        <div class="block-head"><h2>${hasRate ? "Daily banner acceptance rate" : "Daily consent decisions"}</h2>
         ${showPrev ? `<p class="legend"><span class="sw line"></span>This period <span class="sw dash"></span>Previous period</p>` : ""}</div>
-        <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${hasRate ? "Daily acceptance rate" : "Daily consent decisions"}">
+        <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${hasRate ? "Daily banner acceptance rate" : "Daily consent decisions"}">
             ${ticks.map((v) => `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" class="grid"/><text x="${L - 6}" y="${y(v) + 3}" text-anchor="end">${hasRate ? `${v}%` : num(v)}</text>`).join("")}
             ${showPrev ? `<path d="${path(previous)}" class="prev"/>` : ""}
             <path d="${path(values)}" class="cur"/>
@@ -411,7 +411,7 @@ function methodology(data) {
     const comparisonNote = data.fromDate <= BOT_FLAG_START ? " Hosting-IP bot flagging began on 3 November 2026, so earlier records have been filtered less strictly and a comparison across that date should be read with care." : "";
     const rows = [
         ["Consent record", "One stored consent event. The banner currently stores one on page loads where a choice already exists, so one visitor can have several; records per user shows how many."],
-        ["Acceptance", "Records of accept-all divided by all consent records. Essential-only and custom choice are computed the same way, and the three add up to 100%."],
+        ["Banner acceptance rate", "Records of accept-all divided by all consent records. Not the same as Analytics' statistics consent rate, which counts page views from visitors who allowed statistics cookies. Essential-only and custom choice are computed the same way, and the three add up to 100%."],
         ["Bot exclusion", data.excludeBots ? "Records from hosting or data-centre IP addresses and records showing automated behaviour are excluded." : "Suspected bot records are included in this report."],
         ["Previous period", `The same number of days immediately before the reporting period, with the same filters.${comparisonNote}`],
         ["EEA", "The 27 EU member states plus Iceland, Liechtenstein and Norway. The UK and Switzerland count as outside the EEA."],
@@ -469,7 +469,7 @@ function auditBody(data) {
         ${methodology(data)}
         ${qualityLine(data, scan)}
         <section class="appendix"><h2>Appendix A: Daily records</h2>
-            <table><thead><tr><th>Date</th><th class="r">Decisions</th><th class="r">Acceptance</th></tr></thead><tbody>
+            <table><thead><tr><th>Date</th><th class="r">Decisions</th><th class="r">Banner acceptance</th></tr></thead><tbody>
             ${series.map((d) => `<tr><td>${esc(dateLong(utc(d.key)))}</td><td class="r">${num(d.num)}</td><td class="r">${d.rate == null ? "—" : pct(d.rate)}</td></tr>`).join("")}
             </tbody></table></section>
         <section class="appendix"><h2>Appendix B: Countries</h2>${regions(data.countries)}${rankedCountries(data.countries, data.consent)}</section>

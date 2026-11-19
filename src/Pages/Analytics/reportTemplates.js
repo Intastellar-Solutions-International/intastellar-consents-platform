@@ -118,7 +118,7 @@ export const REPORT_TEMPLATES = [
     {
         key: "kpi_summary",
         name: "Executive KPI Summary",
-        description: "All your key numbers in one view — sessions, conversions, conversion rate, and consent rate.",
+        description: "All your key numbers in one view — sessions, conversions, conversion rate, and statistics consent rate.",
         chartType: "kpi",
         metrics: ["sessions", "conversions", "conversionRate", "consentRate"],
         breakdown: "none",
@@ -229,7 +229,7 @@ export const CT_SVG = {
 
 export const METRIC_LABELS = {
     sessions: "Sessions", pageViews: "Page views", conversions: "Conversions",
-    conversionRate: "Conversion rate", consentRate: "Consent rate", newUsers: "New users",
+    conversionRate: "Conversion rate", consentRate: "Statistics consent rate", newUsers: "New users",
     adSpend: "Ad spend", adClicks: "Ad clicks", adImpressions: "Impressions", blendedCac: "Blended CAC",
 };
 

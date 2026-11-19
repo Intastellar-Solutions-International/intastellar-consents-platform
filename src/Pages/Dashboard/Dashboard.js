@@ -38,10 +38,12 @@ import { formatNumber, formatPercent } from "../../Functions/format.js";
 import { OverviewTemplate, AttentionPanel } from "../../Components/templates";
 import { KpiTile, Card, SkeletonCard } from "../../Components/ui";
 import { t } from "../../i18n/index.js";
+import SetupProgressCard from "../Onboarding/SetupProgressCard.js";
 import QuickReport from "./QuickReport.js";
 import { ComplianceChecks, PerformanceBand, CategoryOptIn, DecisionSplit, CountryRanking, DeviceShare, DecisionTime, LatestScan, periodChangePercent } from "./HomeSections.js";
 import useDomainHealth from "../../Components/Shell/useDomainHealth.js";
 import { redirectToLogin } from "../../Functions/session.js";
+import { BANNER_ACCEPTANCE } from "../../Functions/consentMetrics.js";
 
 const { useState, useEffect, useRef, useContext, useMemo } = React;
 
@@ -442,6 +444,9 @@ export default function Dashboard(props) {
                     </div>
                 )}
 
+                {/* Shared CMP + Analytics checklist; hidden once setup is complete */}
+                {!demoMode && <SetupProgressCard platform={id} to={`/${id}/onboarding`} />}
+
                 {/* <div className="profilePicture-container">
                     <img src={userProfile} className="profilePicture" />
                     <p className="profile-user">Welcome, {JSON.parse(appStorage.getItem("globals")).user.name.firstName}</p>
@@ -475,7 +480,8 @@ export default function Dashboard(props) {
                         <PerformanceBand>
                             <KpiTile
                                 plain
-                                label="Acceptance"
+                                label={BANNER_ACCEPTANCE.short}
+                                hint={BANNER_ACCEPTANCE.hint}
                                 loading={activeData == null}
                                 value={formatPercent(activeData?.Accepted)}
                                 delta={compareOn && Number.isFinite(activeData?.changeRate?.accepted) ? { value: activeData.changeRate.accepted, formatted: formatPercent(activeData.changeRate.accepted), goodWhen: "up", label: "vs comparison" } : undefined}

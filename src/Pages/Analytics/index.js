@@ -3,7 +3,10 @@ const Link = window.ReactRouterDOM.Link;
 import {
     analyticsAudiencePath, analyticsAcquisitionPath, analyticsSettingsPath, analyticsLivePath,
     analyticsConsentPath, analyticsConversionsPath, analyticsFormsPath, analyticsHeatmapPath,
+    analyticsGettingStartedPath,
 } from "../../Functions/domainPathSegments.js";
+import { analyticsSnippet } from "../../Functions/installSnippet.js";
+import SetupProgressCard from "../Onboarding/SetupProgressCard.js";
 import { ScannerHost } from "../../API/host.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import { buildInsights, InsightsSection, SnapshotRow } from "./OverviewInsights.js";
@@ -24,6 +27,7 @@ import {
     IconScrollDepth, IconFunnel,
 } from "./Icons.js";
 import "./Analytics.css";
+import { STATISTICS_CONSENT } from "../../Functions/consentMetrics.js";
 
 // docs/design-audit-plan.md Phase 4: redesigned to match the simpler GA4
 // "Active users in last 30 minutes" reference instead of the previous
@@ -114,7 +118,6 @@ function LivePanel({ domain, siteKey }) {
     );
 }
 
-const INGEST_URL = "https://analytics.consentsmanagement.com/api/a";
 
 function CopyButton({ text }) {
     const [copied, setCopied] = useState(false);
@@ -328,7 +331,7 @@ const ALL_CARD_DEFS = [
     { id: "bounce",   label: "Bounce rate",     desc: "Sessions with no engagement" },
     { id: "sessions", label: "Unique sessions", desc: "Consent-gated sessions" },
     { id: "events",   label: "Total events",    desc: "All recorded events" },
-    { id: "consent",  label: "Consent rate",    desc: "statisticCookies acceptance" },
+    { id: "consent",  label: STATISTICS_CONSENT.label, desc: STATISTICS_CONSENT.hint },
     { id: "countries",label: "Countries",       desc: "Distinct visitor countries" },
     { id: "leads",    label: "Quality leads",   desc: "Engaged sessions matching lead rules" },
     { id: "revenue",  label: "Revenue",         desc: "Ecommerce revenue events" },
@@ -398,7 +401,7 @@ function buildOverviewHeadline({ data, trendEvents, getLastDays }) {
     }
     headline += ".";
 
-    let subline = `${formatPercent(consentPct)} full-consent rate over the last ${getLastDays} days`;
+    let subline = `${formatPercent(consentPct)} statistics consent rate over the last ${getLastDays} days`;
     if (data.industryBenchmark) {
         const diff = consentPct - data.industryBenchmark.consentRatePct;
         const diffStr = Math.abs(diff).toLocaleString("de-DE", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
@@ -566,8 +569,8 @@ function buildKpiCardMeta({ data, siteConfig, trendEngaged, trendEvents, trendSe
             ),
         },
         consent: {
-            icon: <IconShieldCheck />, label: "Consent rate", value: formatPercent(consentPct),
-            sub: "statisticCookies accepted — this analytics tracker's own full-consent rate",
+            icon: <IconShieldCheck />, label: STATISTICS_CONSENT.label, value: formatPercent(consentPct),
+            sub: STATISTICS_CONSENT.hint,
             variant: consentPct < 20 ? "warn" : "live", trend: trendConsent,
             // Derived client-side from daily.minimal/.full — no backend change
             // needed, same per-day event counts the "Total events" tab already
@@ -629,9 +632,7 @@ function SetupCard({ domain, onKeyGenerated }) {
         setGenerating(false);
     };
 
-    const snippet = siteKey
-        ? `<script src="${INGEST_URL}" data-site="${siteKey}" async defer></script>`
-        : null;
+    const snippet = siteKey ? analyticsSnippet(siteKey) : null;
 
     return (
         <div className="sa-setup">
@@ -642,6 +643,10 @@ function SetupCard({ domain, onKeyGenerated }) {
                 Intastellar consent cookie and only collects full analytics when the visitor
                 accepts <em>statisticCookies</em>. Minimal data (page path + consent choice)
                 is always recorded.
+            </p>
+            <p className="sa-setup__body">
+                Setting up a new site? <Link className="sa-link" to={analyticsGettingStartedPath()}>Get started</Link> has
+                one install code for the cookie banner and Analytics together.
             </p>
 
             {loading && <p className="sa-setup__loading">Loading&hellip;</p>}
@@ -878,6 +883,9 @@ export default function SiteAnalytics() {
                             </Link>
                         </div>
                     )}
+
+                    {/* Shared CMP + Analytics checklist; hidden once setup is complete */}
+                    <SetupProgressCard platform={localStorage.getItem("platform") || "gdpr"} to={analyticsGettingStartedPath()} />
 
                     {hasDomain && loading && <OverviewSkeleton />}
                     {hasDomain && error && (
