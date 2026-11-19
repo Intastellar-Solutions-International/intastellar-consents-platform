@@ -89,6 +89,7 @@ async function exchangeCode(platform, code) {
         refreshToken: data.refresh_token || null,
         expiresIn: data.expires_in || null,
         scope: data.scope || null,
+        idToken: data.id_token || null,
     };
 }
 
@@ -347,6 +348,15 @@ export default async function handler(req, res) {
 
     try {
         const tokens = await exchangeCode(platform, code);
+        if (platform === "microsoft_ads" && tokens.idToken) {
+            // Which Microsoft identity was actually used — tid 9188040d-…
+            // means a personal account, anything else a work/school one.
+            // Needed to diagnose GetUser 1310 ("user id not found").
+            try {
+                const claims = JSON.parse(Buffer.from(tokens.idToken.split(".")[1], "base64url").toString());
+                console.log("[ad-oauth-callback] microsoft_ads identity:", claims.preferred_username || claims.email, "tid:", claims.tid);
+            } catch { /* diagnostics only */ }
+        }
         const accounts = await fetchAllAccounts(platform, tokens.accessToken);
         const expiresAt = tokens.expiresIn
             ? new Date(Date.now() + tokens.expiresIn * 1000).toISOString()

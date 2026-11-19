@@ -471,7 +471,9 @@ async function msAdsSoapCall(action, bodyXml, accessToken) {
         // OperationError/BatchError entries), so surface that too.
         const detailBlock = /<(?:\w+:)?[Dd]etail[^>]*>([\s\S]*?)<\/(?:\w+:)?[Dd]etail>/i.exec(text)?.[1];
         const codeMsgPairs = detailBlock
-            ? [...detailBlock.matchAll(/<(?:\w+:)?Code>([^<]*)<\/(?:\w+:)?Code>\s*<(?:\w+:)?Message>([^<]*)<\/(?:\w+:)?Message>/gi)]
+            // Sibling elements (e.g. an empty <a:Details/>) can sit between
+            // Code and Message, so allow anything short of the error's close tag.
+            ? [...detailBlock.matchAll(/<(?:\w+:)?Code>([^<]*)<\/(?:\w+:)?Code>(?:(?!<\/(?:\w+:)?(?:Operation|Batch)Error>)[\s\S])*?<(?:\w+:)?Message>([^<]*)<\/(?:\w+:)?Message>/gi)]
                 .map((m) => `${m[1]}: ${m[2]}`)
             : [];
         const detailInfo = codeMsgPairs.length > 0
@@ -596,7 +598,9 @@ async function msAdsReportingSoapCall(action, bodyXml, accessToken, accountId) {
             || `Microsoft Ads Reporting API error (${resp.status}): ${text.slice(0, 300)}`;
         const detailBlock = /<(?:\w+:)?[Dd]etail[^>]*>([\s\S]*?)<\/(?:\w+:)?[Dd]etail>/i.exec(text)?.[1];
         const codeMsgPairs = detailBlock
-            ? [...detailBlock.matchAll(/<(?:\w+:)?Code>([^<]*)<\/(?:\w+:)?Code>\s*<(?:\w+:)?Message>([^<]*)<\/(?:\w+:)?Message>/gi)]
+            // Sibling elements (e.g. an empty <a:Details/>) can sit between
+            // Code and Message, so allow anything short of the error's close tag.
+            ? [...detailBlock.matchAll(/<(?:\w+:)?Code>([^<]*)<\/(?:\w+:)?Code>(?:(?!<\/(?:\w+:)?(?:Operation|Batch)Error>)[\s\S])*?<(?:\w+:)?Message>([^<]*)<\/(?:\w+:)?Message>/gi)]
                 .map((m) => `${m[1]}: ${m[2]}`)
             : [];
         const detailInfo = codeMsgPairs.length > 0 ? codeMsgPairs.join("; ") : detailBlock?.slice(0, 500);
