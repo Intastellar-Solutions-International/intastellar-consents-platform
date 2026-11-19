@@ -37,6 +37,19 @@
 
 import zlib from "zlib";
 
+// Hard limits on how far back each platform's API returns reliable data.
+// Used to clamp user-requested date ranges on manual syncs, and as the
+// default import window when no range is given.
+export const PLATFORM_MAX_DAYS = {
+    google_ads:            1095, // 3 years
+    meta_ads:              1095, // ~37 months
+    linkedin_ads:           730, // 2 years
+    microsoft_ads:         1095, // 3 years
+    google_search_console:  500, // GSC retains ~16 months
+    google_analytics:       365, // GA4 standard retention
+    openai_ads:             180, // OpenAI Ads API — conservative limit (API is new, retention unconfirmed)
+};
+
 export async function tryRefreshToken(db, conn) {
     if (!conn.token_expires_at) return conn;
     const expiresAt = new Date(conn.token_expires_at).getTime();

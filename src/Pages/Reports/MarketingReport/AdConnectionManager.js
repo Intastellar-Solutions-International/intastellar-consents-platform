@@ -238,14 +238,13 @@ export default function AdConnectionManager({ domain, orgId, authToken, fromDate
     }
 
     async function handleImport(platformId) {
-        if (!fromDate || !toDate) {
-            setStatus("Set a date range in the header filter first.", true);
-            return;
-        }
         setImporting(platformId);
         try {
+            // Without a range (Settings page) the API imports the platform's
+            // maximum look-back window.
+            const range = fromDate && toDate ? `&fromDate=${fromDate}&toDate=${toDate}` : "";
             const resp = await fetch(
-                `${ScannerHost}/api/ad-data-fetch?platform=${platformId}&domain=${encodeURIComponent(domain)}&fromDate=${fromDate}&toDate=${toDate}`,
+                `${ScannerHost}/api/ad-data-fetch?platform=${platformId}&domain=${encodeURIComponent(domain)}${range}`,
                 { headers: { Authorization: authToken, Organisation: String(orgId) } }
             );
             const data = await resp.json();
@@ -339,7 +338,7 @@ export default function AdConnectionManager({ domain, orgId, authToken, fromDate
                                                     className="ad-connection-card__btn ad-connection-card__btn--import"
                                                     onClick={() => handleImport(platform.id)}
                                                     disabled={isImporting}
-                                                    title={`Import ${fromDate}–${toDate} data from ${platform.label}`}
+                                                    title={fromDate && toDate ? `Import ${fromDate}–${toDate} data from ${platform.label}` : `Import all available data from ${platform.label}`}
                                                 >
                                                     {isImporting ? "Importing…" : "Import data"}
                                                 </button>

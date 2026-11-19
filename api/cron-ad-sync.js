@@ -25,7 +25,7 @@
  *   CRON_AD_SYNC_BACKFILL_DAYS  — how far back to fill on first run (default 30)
  */
 
-import { tryRefreshToken, fetchPlatformDataDaily } from "./_ad-platform-fetch.js";
+import { tryRefreshToken, fetchPlatformDataDaily, PLATFORM_MAX_DAYS } from "./_ad-platform-fetch.js";
 import { getEcbRates, fx } from "./_fx.js";
 import { getPool } from "./_db.js";
 
@@ -47,18 +47,6 @@ const BACKFILL_DAYS = Math.min(
     parseInt(process.env.CRON_AD_SYNC_BACKFILL_DAYS || "30", 10),
     90
 );
-
-// Hard limits on how far back each platform's API returns reliable data.
-// Used to clamp user-requested date ranges on manual syncs.
-const PLATFORM_MAX_DAYS = {
-    google_ads:            1095, // 3 years
-    meta_ads:              1095, // ~37 months
-    linkedin_ads:           730, // 2 years
-    microsoft_ads:         1095, // 3 years
-    google_search_console:  500, // GSC retains ~16 months
-    google_analytics:       365, // GA4 standard retention
-    openai_ads:             180, // OpenAI Ads API — conservative limit (API is new, retention unconfirmed)
-};
 
 function isoDate(d) {
     return d.toISOString().slice(0, 10);

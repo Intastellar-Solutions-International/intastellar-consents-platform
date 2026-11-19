@@ -10,7 +10,7 @@
  *   GOOGLE_ADS_DEVELOPER_TOKEN — required for Google Ads API calls
  */
 
-import { tryRefreshToken as _tryRefreshToken, fetchPlatformData } from "./_ad-platform-fetch.js";
+import { tryRefreshToken as _tryRefreshToken, fetchPlatformData, PLATFORM_MAX_DAYS } from "./_ad-platform-fetch.js";
 import { getPool } from "./_db.js";
 function validateJwt(authHeader) {
     const match = (authHeader || "").match(/^Bearer\s+(.+)$/i);
@@ -135,9 +135,19 @@ export default async function handler(req, res) {
     const orgId = parseInt(req.headers.organisation || req.headers.organization || "0", 10);
     if (!orgId) return res.status(400).json({ error: "Organisation header required" });
 
-    const { platform, domain, fromDate, toDate } = req.query;
-    if (!platform || !domain || !fromDate || !toDate) {
-        return res.status(400).json({ error: "platform, domain, fromDate, and toDate are all required" });
+    const { platform, domain } = req.query;
+    if (!platform || !domain) {
+        return res.status(400).json({ error: "platform and domain are required" });
+    }
+    // No range given (e.g. the Settings page has no date filter): import the
+    // platform's full look-back window, up to yesterday.
+    let { fromDate, toDate } = req.query;
+    if (!fromDate || !toDate) {
+        const today = new Date();
+        today.setUTCHours(0, 0, 0, 0);
+        const maxDays = PLATFORM_MAX_DAYS[platform] || 90;
+        fromDate = new Date(today.getTime() - maxDays * 86_400_000).toISOString().slice(0, 10);
+        toDate   = new Date(today.getTime() - 86_400_000).toISOString().slice(0, 10);
     }
 
     const db = getPool();
