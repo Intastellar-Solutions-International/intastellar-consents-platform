@@ -23,7 +23,7 @@ function setCors(req, res) {
     if (ALLOWED_ORIGINS.includes(origin)) res.setHeader("Access-Control-Allow-Origin", origin);
     res.setHeader("Access-Control-Allow-Credentials", "true");
     res.setHeader("Access-Control-Allow-Methods", "GET,OPTIONS");
-    res.setHeader("Access-Control-Allow-Headers", "Authorization,Organisation,Content-Type");
+    res.setHeader("Access-Control-Allow-Headers", "Authorization,Organisation,Content-Type,ExcludeBots");
 }
 
 function validateJwt(authHeader) {
@@ -205,7 +205,18 @@ async function _handler(req, res) {
     // before/after comparison; the row itself is never dropped from the DB.
     const includeEmbedded = req.query.includeEmbedded === "1";
     const embedClause = embeddedClause(includeEmbedded);
-    const EMBED_FILTER = embedClause ? `AND ${embedClause}` : "";
+    // Shared "Exclude suspected bots" preference (src/Functions/botFilter.js,
+    // ExcludeBots header, on unless "0"). A suspected bot = a pageview from a
+    // hosting / data-centre IP *without* full consent: crawlers on Google,
+    // AWS, Tencent, Hetzner… never accept the banner, while people behind
+    // iCloud Private Relay or a VPN (Cloudflare, Akamai, M247 exits) often
+    // do — accepting is a human action, so those stay counted. Rides along
+    // with EMBED_FILTER, which every analytics_events aggregate already
+    // carries (custom events and clicks have no is_hosting_ip and stay as-is).
+    const excludeBots = String(req.headers.excludebots ?? "1") !== "0";
+    const botClause = excludeBots ? "NOT (is_hosting_ip IS TRUE AND consent_level <> 'full')" : null;
+    const rowFilters = [embedClause, botClause].filter(Boolean);
+    const EMBED_FILTER = rowFilters.length ? `AND ${rowFilters.join(" AND ")}` : "";
 
     // A site's own analytics also pick up direct traffic to any *approved*
     // foreign domain (api/_self-referral.js's analytics_foreign_domains) —
@@ -234,6 +245,7 @@ async function _handler(req, res) {
         segConsent ? `consent_level = '${segConsent}'` : null,
         segChannel ? CHANNEL_SQL[segChannel]           : null,
         embedClause,
+        botClause,
         ownHostClause,
     ].filter(Boolean);
     const segAnd = segClauses.length ? "AND " + segClauses.join(" AND ") : "";
@@ -788,6 +800,7 @@ async function _handler(req, res) {
     const total = Number(t.total || 0);
 
     return res.status(200).json({
+        excludeBots,
         siteId,
         domain,
         from: fromDate,

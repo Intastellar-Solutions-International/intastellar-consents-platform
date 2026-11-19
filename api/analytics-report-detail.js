@@ -28,7 +28,7 @@ function setCors(req, res) {
     if (ALLOWED_ORIGINS.includes(origin)) res.setHeader("Access-Control-Allow-Origin", origin);
     res.setHeader("Access-Control-Allow-Credentials", "true");
     res.setHeader("Access-Control-Allow-Methods", "GET,OPTIONS");
-    res.setHeader("Access-Control-Allow-Headers", "Authorization,Organisation,Content-Type");
+    res.setHeader("Access-Control-Allow-Headers", "Authorization,Organisation,Content-Type,ExcludeBots");
 }
 
 function validateJwt(authHeader) {
@@ -134,6 +134,8 @@ async function _handler(req, res) {
         segCountry ? `country_code = '${segCountry}'` : null,
         segConsent ? `consent_level = '${segConsent}'` : null,
         segChannel ? CHANNEL_SQL[segChannel]           : null,
+        // Same bot preference as analytics-report.js (ExcludeBots header).
+        String(req.headers.excludebots ?? "1") !== "0" ? "NOT (is_hosting_ip IS TRUE AND consent_level <> 'full')" : null,
     ].filter(Boolean);
     const segAnd = segClauses.length ? "AND " + segClauses.join(" AND ") : "";
 

@@ -9,6 +9,7 @@ import Authentication from "../../Authentication/Auth";
 import { Icon } from "../ui/icons.js";
 import { OPEN_HELP_EVENT } from "../Help/index.js";
 import { t } from "../../i18n/index.js";
+import { DATA_RESIDENCY } from "../../Functions/trustCopy.js";
 
 const { useContext, useMemo } = React;
 const useLocation = window.ReactRouterDOM.useLocation;
@@ -62,6 +63,9 @@ export default function AnalyticsSideNav() {
             <button type="button" className="ia-sidebar__footer-btn" onClick={() => Authentication.Logout()}>
                 <Icon name="external-link" size={16} /> {t("Log out")}
             </button>
+            <p className="ia-sidebar__residency" title={DATA_RESIDENCY.description}>
+                <Icon name="shield-check" size={14} /> {t(DATA_RESIDENCY.label)}
+            </p>
         </>
     );
 

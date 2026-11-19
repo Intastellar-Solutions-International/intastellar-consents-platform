@@ -233,11 +233,12 @@ export default async function handler(req, res) {
     res.setHeader("Cache-Control", "no-store");
 
     // Same "Exclude suspected bots" preference as the CMP dashboards
-    // (src/Functions/botFilter.js, ExcludeBots header, on unless "0"): leaves
-    // out pageviews from hosting/data-centre IPs — crawlers on cloud ASNs
-    // (Huawei Cloud, Tencent, AWS…) that otherwise show up as live visitors.
+    // (src/Functions/botFilter.js, ExcludeBots header, on unless "0") and
+    // the same rule as analytics-report.js: a hosting / data-centre IP
+    // without full consent (crawlers on Huawei Cloud, Tencent, AWS…).
+    // Relay/VPN users who accepted the banner stay visible.
     const excludeBots = String(req.headers.excludebots ?? "1") !== "0";
-    const botClause = excludeBots ? "AND is_hosting_ip IS NOT TRUE" : "";
+    const botClause = excludeBots ? "AND NOT (is_hosting_ip IS TRUE AND consent_level <> 'full')" : "";
 
     const rawSession = String(req.query.session || "").trim();
     if (rawSession) {
@@ -476,7 +477,7 @@ export default async function handler(req, res) {
         const { rows: hiddenRows } = await db.query(
             `SELECT COUNT(*)::int AS n FROM analytics_events
               WHERE site_id = $1 AND received_at >= NOW() - INTERVAL '30 minutes'
-                AND is_embedded = false AND is_hosting_ip IS TRUE`,
+                AND is_embedded = false AND is_hosting_ip IS TRUE AND consent_level <> 'full'`,
             [siteId]
         ).catch(() => ({ rows: [] }));
         botEventsHidden = hiddenRows[0]?.n || 0;

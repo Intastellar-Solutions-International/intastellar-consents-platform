@@ -8,6 +8,7 @@ import {
 import { analyticsSnippet } from "../../Functions/installSnippet.js";
 import SetupProgressCard from "../Onboarding/SetupProgressCard.js";
 import DataSource from "../../Components/DataSource/index.js";
+import { useExcludeBots } from "../../Functions/botFilter.js";
 import { ScannerHost } from "../../API/host.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import { buildInsights, InsightsSection, SnapshotRow } from "./OverviewInsights.js";
@@ -736,6 +737,8 @@ export default function SiteAnalytics() {
     // pctChange works.
     const compare = useCompareRange();
     const prevRange = usePrevRange(fromDate, toDate, compare);
+    // Same "Exclude suspected bots" preference as the CMP and Live view
+    const [excludeBots, setExcludeBots] = useExcludeBots();
     const { data: prevData } = useAnalyticsReport(domain, prevRange.fromIso, prevRange.toIso, tick);
 
     const siteConfig    = useSiteConfig(domain);
@@ -975,11 +978,17 @@ export default function SiteAnalytics() {
                                         source="Analytics events from your site"
                                         filters={[
                                             "Users = visitors with statistics consent; others counted anonymously",
+                                            data.excludeBots === false ? "Including suspected bots" : "Suspected bots excluded",
                                             [segment.device, segment.channel, segment.consent, segment.country].some(Boolean)
                                                 ? `Filtered: ${[segment.device, segment.channel, segment.consent && `${segment.consent} consent`, segment.country].filter(Boolean).join(", ")}`
                                                 : null,
                                         ]}
                                         fetchedAt={data.fetchedAt}
+                                        action={
+                                            <button type="button" className="sa-live__bots-toggle" onClick={() => setExcludeBots(!excludeBots)}>
+                                                {excludeBots ? "Include bots" : "Exclude bots"}
+                                            </button>
+                                        }
                                     />
                                 </div>
                                 <LivePanel domain={domain} siteKey={siteConfig?.id} />

@@ -11,6 +11,7 @@ import { installSnippet } from "../../Functions/installSnippet.js";
 import { analyticsConversionsPath } from "../../Functions/domainPathSegments.js";
 import { canAccess } from "../../Functions/tier.js";
 import { readJsonResult, errorMessage } from "../../Functions/apiResult.js";
+import { DATA_RESIDENCY, NO_COOKIES_BEFORE_CONSENT } from "../../Functions/trustCopy.js";
 
 const { useState, useEffect } = React;
 const useParams = window.ReactRouterDOM.useParams;
@@ -185,6 +186,10 @@ export default function GettingStarted() {
                                         </div>
                                     )}
                                     {enableError && <ErrorState compact className="tw-mt-3" title="Analytics wasn't turned on" message={enableError} onRetry={enableAnalytics} />}
+                                    <p className="tw-m-0 tw-mt-3 tw-flex tw-flex-wrap tw-items-center tw-gap-2 tw-text-xs tw-text-text-muted" title={DATA_RESIDENCY.description}>
+                                        <Icon name="shield-check" size={14} />
+                                        {DATA_RESIDENCY.label} · {NO_COOKIES_BEFORE_CONSENT}
+                                    </p>
                                     {site && site.active === false && (
                                         <p className="tw-m-0 tw-mt-3 tw-text-sm tw-text-warning">Analytics is paused for this domain — the tracker is in the code, but visits aren't stored.</p>
                                     )}

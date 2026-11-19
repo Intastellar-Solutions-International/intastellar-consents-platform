@@ -12,7 +12,7 @@ const { useState, useEffect } = React;
  * "0 users while visitors are on the site" moment). Filters are stated, not
  * implied: pass only what is actually applied.
  */
-export default function DataSource({ source, filters = [], fetchedAt, className = "" }) {
+export default function DataSource({ source, filters = [], fetchedAt, action, className = "" }) {
     // Re-render every 30s so "Updated …" keeps moving.
     const [, setNow] = useState(0);
     useEffect(() => {
@@ -27,6 +27,7 @@ export default function DataSource({ source, filters = [], fetchedAt, className 
         <p className={`data-source tw-m-0 tw-flex tw-items-center tw-gap-2 tw-text-xs tw-text-text-muted ${className}`}>
             <Icon name="database" size={13} />
             <span>{parts.join(" · ")}</span>
+            {action}
         </p>
     );
 }

@@ -41,13 +41,14 @@ export function useCmpAcceptance(platform, domain, fromIso, toIso) {
  */
 export function useAnalyticsSnapshot(domain, fromIso, toIso) {
     const [result, setResult] = useState(null);
+    const [excludeBots] = useExcludeBots();
     useEffect(() => {
         if (!domain || !fromIso || !toIso) { setResult(null); return undefined; }
         const ac = new AbortController();
         setResult(null);
         const qs = new URLSearchParams({ domain: domain.toLowerCase(), from: fromIso, to: toIso }).toString();
         fetchJsonWithTimeout(`${ScannerHost}/api/analytics-report?${qs}`, {
-            headers: { Authorization: Authentication.getToken(), Organisation: String(Authentication.getOrganisation() ?? "") },
+            headers: { Authorization: Authentication.getToken(), Organisation: String(Authentication.getOrganisation() ?? ""), ExcludeBots: excludeBots ? "1" : "0" },
         }, { signal: ac.signal })
             .then((d) => {
                 if (d?.noSiteKey) { setResult({ noSite: true }); return; }
@@ -60,6 +61,6 @@ export function useAnalyticsSnapshot(domain, fromIso, toIso) {
             })
             .catch(() => { /* bridge stays hidden */ });
         return () => ac.abort();
-    }, [domain, fromIso, toIso]);
+    }, [domain, fromIso, toIso, excludeBots]);
     return result;
 }

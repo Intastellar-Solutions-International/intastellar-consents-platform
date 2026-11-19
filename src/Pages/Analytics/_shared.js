@@ -54,14 +54,17 @@ function cachedReport(domain, fromIso, toIso, tick) {
     return hit && (Date.now() - hit.ts < REPORT_CACHE_TTL_MS) ? hit.data : null;
 }
 
-function segCacheKey(domain, fromIso, toIso, segment) {
+function segCacheKey(domain, fromIso, toIso, segment, excludeBots = true) {
     const seg = segment || {};
-    return `${domain}|${fromIso}|${toIso}|${seg.device||""}|${seg.country||""}|${seg.channel||""}|${seg.consent||""}`;
+    return `${domain}|${fromIso}|${toIso}|${seg.device||""}|${seg.country||""}|${seg.channel||""}|${seg.consent||""}|${excludeBots ? "nobots" : "bots"}`;
 }
 
 export function useAnalyticsReport(domain, fromIso, toIso, tick = 0, segment = null) {
+    // Shared "Exclude suspected bots" preference — part of the cache key so
+    // flipping it never shows the other variant from cache.
+    const [excludeBots] = useExcludeBots();
     const [data,          setData]          = useState(() => {
-        const key = segCacheKey(domain, fromIso, toIso, segment);
+        const key = segCacheKey(domain, fromIso, toIso, segment, excludeBots);
         if (!domain || tick !== 0) return null;
         const hit = reportCache.get(key);
         return hit && (Date.now() - hit.ts < REPORT_CACHE_TTL_MS) ? hit.data : null;
@@ -73,7 +76,7 @@ export function useAnalyticsReport(domain, fromIso, toIso, tick = 0, segment = n
     useEffect(() => {
         if (!domain) { setData(null); return; }
 
-        const key = segCacheKey(domain, fromIso, toIso, segment);
+        const key = segCacheKey(domain, fromIso, toIso, segment, excludeBots);
         if (tick === 0) {
             const hit = reportCache.get(key);
             if (hit && (Date.now() - hit.ts < REPORT_CACHE_TTL_MS)) {
@@ -93,7 +96,7 @@ export function useAnalyticsReport(domain, fromIso, toIso, tick = 0, segment = n
         if (segment?.channel) params.seg_channel = segment.channel;
         if (segment?.consent) params.seg_consent = segment.consent;
         const qs = new URLSearchParams(params).toString();
-        const headers = authHeaders();
+        const headers = { ...authHeaders(), ExcludeBots: excludeBots ? "1" : "0" };
 
         let ignore = false;
 
@@ -129,7 +132,7 @@ export function useAnalyticsReport(domain, fromIso, toIso, tick = 0, segment = n
         });
 
         return () => { ignore = true; };
-    }, [domain, fromIso, toIso, tick, segment?.device, segment?.country, segment?.channel, segment?.consent]); // eslint-disable-line react-hooks/exhaustive-deps
+    }, [domain, fromIso, toIso, tick, segment?.device, segment?.country, segment?.channel, segment?.consent, excludeBots]); // eslint-disable-line react-hooks/exhaustive-deps
 
     return { data, loading, detailLoading, error };
 }
@@ -411,8 +414,8 @@ export function LiveBotNote({ data }) {
     return (
         <p className="sa-live__bots">
             {excludeBots
-                ? <>{hidden.toLocaleString("de-DE")} hit{hidden === 1 ? "" : "s"} from data-centre IPs hidden (likely bots).</>
-                : <>Including hits from data-centre IPs (likely bots).</>}
+                ? <>{hidden.toLocaleString("de-DE")} hit{hidden === 1 ? "" : "s"} from data-centre IPs without consent hidden (likely bots).</>
+                : <>Including likely bots (data-centre IPs without consent).</>}
             {" "}
             <button type="button" className="sa-live__bots-toggle" onClick={() => setExcludeBots(!excludeBots)}>
                 {excludeBots ? "Show them" : "Hide them"}
