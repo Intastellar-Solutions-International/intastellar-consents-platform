@@ -15,11 +15,32 @@ const AD_PLATFORMS = [
     { id: "openai_ads",            label: "OpenAI Ads",                  Logo: OpenAILogo,        isAnalytics: false, apiKey: true },
 ];
 
-function formatDate(iso) {
-    if (!iso) return "";
-    try {
-        return new Date(iso).toLocaleDateString(appLocale(), { day: "2-digit", month: "short", year: "numeric" });
-    } catch { return ""; }
+// "3 hours ago" in the app's locale — the last-sync line needs recency,
+// not a calendar date.
+function relativeTime(iso) {
+    const then = new Date(iso).getTime();
+    if (!Number.isFinite(then)) return "";
+    const sec = Math.round((then - Date.now()) / 1000);
+    const rtf = new Intl.RelativeTimeFormat(appLocale(), { numeric: "auto" });
+    const abs = Math.abs(sec);
+    if (abs < 60) return rtf.format(sec, "second");
+    if (abs < 3600) return rtf.format(Math.round(sec / 60), "minute");
+    if (abs < 86400) return rtf.format(Math.round(sec / 3600), "hour");
+    return rtf.format(Math.round(sec / 86400), "day");
+}
+
+// Last sync outcome (cron-ad-sync.js → last_sync_*), so a failing or empty
+// sync is visible here instead of only in the function logs.
+function syncStatus(conn) {
+    if (!conn?.last_sync_at) return { text: "Not synced yet", tone: "dim" };
+    const when = relativeTime(conn.last_sync_at);
+    switch (conn.last_sync_status) {
+        case "ok":         return { text: `Synced ${when} · ${conn.last_sync_days} day${conn.last_sync_days === 1 ? "" : "s"} added`, tone: "ok" };
+        case "up-to-date": return { text: `Up to date · checked ${when}`, tone: "ok" };
+        case "no-data":    return { text: `Synced ${when} · no data returned`, tone: "warn" };
+        case "error":      return { text: `Last sync failed ${when}`, tone: "error", error: conn.last_sync_error };
+        default:           return { text: `Synced ${when}`, tone: "dim" };
+    }
 }
 
 export default function AdConnectionManager({ domain, orgId, authToken, fromDate, toDate, onImport, onSelectAccount }) {
@@ -28,6 +49,7 @@ export default function AdConnectionManager({ domain, orgId, authToken, fromDate
     const [importing, setImporting] = useState(null);
     const [connecting, setConnecting] = useState(null);
     const [reselecting, setReselecting] = useState(null);
+    const [syncingPlatform, setSyncingPlatform] = useState(null);
     const [manualInput, setManualInput] = useState(null); // { platformId } | null
     const [manualId, setManualId] = useState("");
     const [savingManual, setSavingManual] = useState(false);
@@ -72,6 +94,35 @@ export default function AdConnectionManager({ domain, orgId, authToken, fromDate
             headers: { Authorization: authToken, Organisation: String(orgId) },
         }).catch(() => {});
     }, [authToken, orgId]);
+
+    // "Sync now": waits for the result (unlike triggerSync's fire-and-forget
+    // after connecting), reports what happened, and reloads the status line.
+    const handleSyncNow = useCallback(async (platformId) => {
+        if (!authToken || !orgId || !domain) return;
+        const label = AD_PLATFORMS.find(p => p.id === platformId)?.label || platformId;
+        setSyncingPlatform(platformId);
+        try {
+            const url = new URL(`${ScannerHost}/api/cron-ad-sync`);
+            url.searchParams.set("domain", domain);
+            url.searchParams.set("platform", platformId);
+            const resp = await fetch(url.toString(), {
+                headers: { Authorization: authToken, Organisation: String(orgId) },
+            });
+            const json = await resp.json().catch(() => ({}));
+            const r = (json.results || [])[0];
+            if (!resp.ok) setStatus(json.error || `Sync failed (${resp.status}).`, true);
+            else if (!r) setStatus(`${label}: nothing to sync.`);
+            else if (r.status === "error") setStatus(`${label}: ${r.error || "sync failed"}`, true);
+            else if (r.status === "synced") setStatus(`${label}: ${r.daysSaved} day${r.daysSaved === 1 ? "" : "s"} added.`);
+            else if (r.status === "no-data") setStatus(`${label}: the platform returned no data for the missing days.`);
+            else setStatus(`${label}: already up to date.`);
+            await fetchConnections();
+        } catch {
+            setStatus("Sync failed — check your connection.", true);
+        } finally {
+            setSyncingPlatform(null);
+        }
+    }, [authToken, orgId, domain, setStatus, fetchConnections]);
 
     // Pick up oauth_success / oauth_error query params set by the callback redirect
     useEffect(() => {
@@ -312,14 +363,25 @@ export default function AdConnectionManager({ domain, orgId, authToken, fromDate
 
                                 <div className="ad-connection-card__info">
                                     <span className="ad-connection-card__name">{platform.label}</span>
-                                    {isFullyConnected ? (
-                                        <span className="ad-connection-card__meta">
-                                            {conn.account_label || "Connected"}
-                                            {platform.isAnalytics
-                                                ? " · auto-populates dashboard"
-                                                : conn.updated_at ? ` · synced ${formatDate(conn.updated_at)}` : ""}
-                                        </span>
-                                    ) : needsAccountSelection ? (
+                                    {isFullyConnected ? (() => {
+                                        // updated_at changes on any row edit, so it was never a real
+                                        // "synced" time — the sync job's own status is shown instead.
+                                        const sync = syncStatus(conn);
+                                        return (
+                                            <>
+                                                <span className="ad-connection-card__meta">
+                                                    {conn.account_label || "Connected"}
+                                                    {platform.isAnalytics ? " · auto-populates dashboard" : ""}
+                                                </span>
+                                                <span className={`ad-connection-card__sync ad-connection-card__sync--${sync.tone}`}>
+                                                    {sync.text}
+                                                </span>
+                                                {sync.error && (
+                                                    <span className="ad-connection-card__sync-error" title={sync.error}>{sync.error}</span>
+                                                )}
+                                            </>
+                                        );
+                                    })() : needsAccountSelection ? (
                                         <span className="ad-connection-card__meta ad-connection-card__meta--dim">
                                             {platform.isAnalytics ? "Authorized — select a property to finish" : "Authorized — select an ad account to finish"}
                                         </span>
@@ -333,6 +395,13 @@ export default function AdConnectionManager({ domain, orgId, authToken, fromDate
                                 <div className="ad-connection-card__actions">
                                     {isFullyConnected ? (
                                         <>
+                                            <button
+                                                className="ad-connection-card__btn"
+                                                onClick={() => handleSyncNow(platform.id)}
+                                                disabled={syncingPlatform === platform.id}
+                                            >
+                                                {syncingPlatform === platform.id ? "Syncing…" : "Sync now"}
+                                            </button>
                                             {!platform.isAnalytics && (
                                                 <button
                                                     className="ad-connection-card__btn ad-connection-card__btn--import"

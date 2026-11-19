@@ -177,6 +177,26 @@ const DEFAULT_TO_DATE = new Date();
 // Analytics page — split out from useAnalyticsPage() below so pages with
 // their own bespoke data-fetching (Heatmap, Recordings, Bots, ...) can still
 // share it without being forced into the useAnalyticsReport() call.
+const SEGMENT_KEYS = ["device", "channel", "consent", "country"];
+const SEGMENT_VALUES = {
+    device:  ["desktop", "mobile", "tablet", "other"],
+    channel: ["organic", "paid", "paid_social", "referral", "direct"],
+    consent: ["full", "minimal"],
+};
+// Only known values are accepted from the URL — anything else is ignored
+// rather than sent to the API.
+function readSegmentFromUrl() {
+    const q = new URLSearchParams(window.location.search);
+    const pick = (key) => (SEGMENT_VALUES[key].includes(q.get(key)) ? q.get(key) : null);
+    const country = (q.get("country") || "").toUpperCase();
+    return {
+        device:  pick("device"),
+        channel: pick("channel"),
+        consent: pick("consent"),
+        country: /^[A-Z]{2}$/.test(country) ? country : "",
+    };
+}
+
 export function useAnalyticsPageChrome() {
     const { handle } = useParams();
     const [globalDomain, setGlobalDomain] = useContext(DomainContext);
@@ -214,7 +234,21 @@ export function useAnalyticsPageChrome() {
     const fromIso = useMemo(() => toIsoDate(fromDate), [fromDate]);
     const toIso   = useMemo(() => toIsoDate(toDate),   [toDate]);
 
-    const [segment, setSegment] = useState({ device: null, country: "", channel: null, consent: null });
+    // Segment filters live in the URL (?device=&channel=&consent=&country=),
+    // so a refresh or a shared link keeps them — same idea as the date range
+    // StickyPageTitle mirrors.
+    const [segment, setSegment] = useState(readSegmentFromUrl);
+    useEffect(() => {
+        const url = new URL(window.location.href);
+        for (const key of SEGMENT_KEYS) {
+            if (segment[key]) url.searchParams.set(key, segment[key]);
+            else url.searchParams.delete(key);
+        }
+        const next = url.pathname + url.search + url.hash;
+        if (next !== window.location.pathname + window.location.search + window.location.hash) {
+            window.history.replaceState(window.history.state, "", next);
+        }
+    }, [segment]);
 
     return { handle, domain, getLastDays, setLastDays, fromDate, setFromDate, toDate, setToDate, fromIso, toIso, segment, setSegment };
 }

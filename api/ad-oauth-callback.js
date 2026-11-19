@@ -258,8 +258,12 @@ async function fetchAllAccounts(platform, accessToken) {
                 return [];
         }
     } catch (err) {
+        // Rethrown, not swallowed into [] — an empty list made the UI say
+        // "No ad accounts were found" for what was really an API error
+        // (e.g. Microsoft's 1310). The handler's catch redirects with
+        // ?oauth_error=<message>, which the Ad Connections page shows.
         console.error("[fetchAllAccounts]", platform, err.message);
-        return [];
+        throw new Error(`Could not load your ad accounts: ${err.message}`);
     }
 }
 

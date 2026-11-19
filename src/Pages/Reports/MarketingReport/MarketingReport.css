@@ -2221,6 +2221,30 @@
     color: rgba(140, 140, 150, 0.65);
 }
 
+/* Last sync outcome under the account name — status in text, colour only
+   as reinforcement (CMP: never colour alone). */
+.ad-connection-card__sync {
+    display: block;
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+}
+
+.ad-connection-card__sync--ok    { color: var(--color-text-secondary); }
+.ad-connection-card__sync--warn  { color: var(--color-warning); }
+.ad-connection-card__sync--error { color: var(--color-danger-text); font-weight: 600; }
+
+.ad-connection-card__sync-error {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    margin-top: 2px;
+    font-size: var(--text-xs);
+    color: var(--color-danger-text);
+    white-space: normal;
+    overflow-wrap: anywhere;
+}
+
 .ad-connection-card__actions {
     display: flex;
     gap: var(--space-1);

@@ -5,6 +5,65 @@ import SideCart from "../../SideCart/SideCart.js";
 import { isNewShell } from "../../../Functions/featureFlags.js";
 import { t } from "../../../i18n/index.js";
 
+// ── Date range ⇄ URL ──────────────────────────────────────────────────────
+// Every dashboard page (CMP and Analytics) hands its range + setters to this
+// header, so the URL sync lives here once instead of in ~60 pages: a refresh,
+// the back button or a shared link keeps the selected range.
+//   ?from=-30&to=today&days=30   rolling window ending today (stays "last 30
+//                                days" when reopened tomorrow)
+//   ?from=2026-10-01&to=2026-10-31&days=31   fixed custom range
+// The default (last 30 days) isn't written, so URLs stay clean.
+const DAY_MS = 24 * 60 * 60 * 1000;
+function localYmd(d) {
+    const x = new Date(d);
+    return `${x.getFullYear()}-${String(x.getMonth() + 1).padStart(2, "0")}-${String(x.getDate()).padStart(2, "0")}`;
+}
+function parseYmd(s) {
+    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s || "");
+    return m ? new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3])) : null;
+}
+function startOfToday() {
+    const t = new Date();
+    t.setHours(0, 0, 0, 0);
+    return t;
+}
+export function readDateRangeFromUrl(search = window.location.search) {
+    const q = new URLSearchParams(search);
+    const from = q.get("from"), to = q.get("to");
+    if (!from || !to) return null;
+    const days = parseInt(q.get("days"), 10);
+    if (to === "today") {
+        const back = parseInt(from, 10);
+        if (!Number.isFinite(back) || back > 0 || back < -3650) return null;
+        const today = startOfToday();
+        return { fromDate: new Date(today.getTime() + back * DAY_MS), toDate: new Date(), days: Number.isFinite(days) ? days : -back };
+    }
+    const f = parseYmd(from), t = parseYmd(to);
+    if (!f || !t || f > t) return null;
+    return { fromDate: f, toDate: t, days: Number.isFinite(days) ? days : Math.round((t - f) / DAY_MS) + 1 };
+}
+function writeDateRangeToUrl({ fromDate, toDate, days }) {
+    const url = new URL(window.location.href);
+    const q = url.searchParams;
+    const today = startOfToday();
+    const endsToday = localYmd(toDate) === localYmd(today);
+    const back = Math.round((new Date(localYmd(fromDate) + "T00:00:00").getTime() - today.getTime()) / DAY_MS);
+    const isDefault = endsToday && back === -30 && (days == null || days === 30);
+    if (isDefault) {
+        q.delete("from"); q.delete("to"); q.delete("days");
+    } else if (endsToday) {
+        q.set("from", String(back)); q.set("to", "today");
+        if (days != null) q.set("days", String(days)); else q.delete("days");
+    } else {
+        q.set("from", localYmd(fromDate)); q.set("to", localYmd(toDate));
+        if (days != null) q.set("days", String(days)); else q.delete("days");
+    }
+    const next = url.pathname + (q.toString() ? "?" + q.toString() : "") + url.hash;
+    if (next !== window.location.pathname + window.location.search + window.location.hash) {
+        window.history.replaceState(window.history.state, "", next);
+    }
+}
+
 // Added showInfoButton and infoType props
 // Below this the top bar has no room for the date range, so it sits in the page header.
 const DATE_IN_PAGE_QUERY = "(max-width: 1180px)";
@@ -66,6 +125,27 @@ export default function StickyPageTitle({
     React.useEffect(() => {
         setDateSlot(dateInTopBar ? document.getElementById("shell-daterange-slot") : null);
     }, [dateInTopBar]);
+
+    // Restore the range from the URL once, then mirror every change back.
+    // Pages without date setters (title-only headers) are left alone.
+    const canSyncDates = typeof setFromDate === "function" && typeof setToDate === "function";
+    const restoredRef = React.useRef(false);
+    React.useEffect(() => {
+        if (!canSyncDates || restoredRef.current) return;
+        restoredRef.current = true;
+        const fromUrl = readDateRangeFromUrl();
+        if (!fromUrl) return;
+        setFromDate(fromUrl.fromDate);
+        setToDate(fromUrl.toDate);
+        if (typeof numberofDays === "function") numberofDays(fromUrl.days);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+    React.useEffect(() => {
+        // Skip until the restore above has run, or the page's default range
+        // would overwrite the URL before it's read.
+        if (!canSyncDates || !restoredRef.current || !fromDate || !toDate) return;
+        writeDateRangeToUrl({ fromDate, toDate, days: typeof getLastDays === "number" ? getLastDays : null });
+    }, [canSyncDates, fromDate, toDate, getLastDays]);
 
     function openSideCart() {
         document.querySelector(".sideCart").classList.add("open");

@@ -294,7 +294,7 @@ export default async function handler(req, res) {
     }
 
     if (!accounts.length) {
-        return res.status(200).json({ accounts: [], pendingId: null, message: "No ad accounts found on this Google login. The token may be expired — try reconnecting." });
+        return res.status(200).json({ accounts: [], pendingId: null, message: "No ad accounts found on this login. The token may be expired — try reconnecting." });
     }
 
     await ensurePendingTable(db);

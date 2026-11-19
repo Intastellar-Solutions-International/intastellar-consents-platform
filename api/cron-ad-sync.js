@@ -87,6 +87,28 @@ async function ensureDailyTable(db) {
     // rates fetched that day. Used by ad-spend-report.js to convert to any
     // display currency without re-hitting ECB on every page load.
     await db.query(`ALTER TABLE ad_daily_data ADD COLUMN IF NOT EXISTS spend_eur NUMERIC(14,4)`).catch(() => {});
+    // Outcome of the most recent sync per connection, so Ad Connections can
+    // show "last synced … / no data / <error>" instead of failures only
+    // living in the function logs.
+    await db.query(`
+        ALTER TABLE ad_platform_connections
+            ADD COLUMN IF NOT EXISTS last_sync_at     TIMESTAMPTZ,
+            ADD COLUMN IF NOT EXISTS last_sync_status TEXT,
+            ADD COLUMN IF NOT EXISTS last_sync_error  TEXT,
+            ADD COLUMN IF NOT EXISTS last_sync_days   INTEGER
+    `).catch(() => {});
+}
+
+// status: "ok" (days saved), "no-data" (platform returned nothing for the
+// missing days), "up-to-date", or "error". Best-effort — a failed status
+// write must never fail the sync itself.
+async function recordSync(db, conn, status, { error = null, days = null } = {}) {
+    await db.query(
+        `UPDATE ad_platform_connections
+            SET last_sync_at = NOW(), last_sync_status = $2, last_sync_error = $3, last_sync_days = $4
+          WHERE id = $1`,
+        [conn.id, status, error ? String(error).slice(0, 500) : null, days]
+    ).catch(e => console.warn("[cron-ad-sync] recordSync failed:", e.message));
 }
 
 export default async function handler(req, res) {
@@ -123,7 +145,7 @@ export default async function handler(req, res) {
 
     // Fetch connections (all for cron, scoped for manual trigger)
     const { rows: connections } = await db.query(`
-        SELECT organisation_id, domain, platform, account_id, account_label,
+        SELECT id, organisation_id, domain, platform, account_id, account_label,
                login_customer_id, account_currency,
                access_token, refresh_token, token_expires_at
         FROM ad_platform_connections
@@ -160,7 +182,7 @@ export default async function handler(req, res) {
             windowFrom = isoDate(new Date(Math.max(requestedFromMs, platformEarliestMs)));
             windowTo   = isoDate(new Date(Math.min(requestedToMs,   today.getTime() - 86_400_000)));
             if (windowFrom > windowTo) {
-                results.push({ tag, status: "skipped", reason: "date range out of platform window" });
+                results.push({ tag, platform: conn.platform, status: "skipped", reason: "date range out of platform window" });
                 continue;
             }
         }
@@ -230,7 +252,8 @@ export default async function handler(req, res) {
         }
 
         if (missingDays.length === 0) {
-            results.push({ tag, status: "up-to-date" });
+            results.push({ tag, platform: conn.platform, status: "up-to-date" });
+            await recordSync(db, conn, "up-to-date", { days: 0 });
             continue;
         }
 
@@ -243,8 +266,9 @@ export default async function handler(req, res) {
             byDay = await fetchPlatformDataDaily(conn, fromDate, toDate, db);
         } catch (err) {
             console.error(`${tag} fetch failed:`, err.message);
-            results.push({ tag, status: "error", error: err.message });
+            results.push({ tag, platform: conn.platform, status: "error", error: err.message });
             totalErrors++;
+            await recordSync(db, conn, "error", { error: err.message });
             continue;
         }
 
@@ -281,7 +305,11 @@ export default async function handler(req, res) {
         }
 
         totalDaysFetched += daysSaved;
-        results.push({ tag, status: "synced", missingDays: missingDays.length, daysSaved });
+        // 0 days saved is not a success worth reporting as "synced" — it's
+        // what a silently-failing parser looked like (see Microsoft Ads CSV).
+        const syncStatus = daysSaved > 0 ? "synced" : "no-data";
+        results.push({ tag, platform: conn.platform, status: syncStatus, missingDays: missingDays.length, daysSaved });
+        await recordSync(db, conn, daysSaved > 0 ? "ok" : "no-data", { days: daysSaved });
         console.log(`${tag} synced ${daysSaved}/${missingDays.length} days`);
     }
 

@@ -38,6 +38,25 @@ function platformLabel(id) {
     return PLATFORM_LABELS[id] || id;
 }
 
+// One line per ad platform from cron-ad-sync's results — says what actually
+// happened (days added / nothing new / the error) instead of a bare count,
+// which used to read "Synced 2 platform(s)" while one had saved nothing.
+function summarizeSync(results) {
+    const rows = (results || []).filter(r => PLATFORM_LABELS[r.platform]);
+    if (!rows.length) return [{ text: "No ad platforms to sync.", isError: false }];
+    return rows.map(r => {
+        const label = platformLabel(r.platform);
+        switch (r.status) {
+            case "synced":     return { text: `${label}: ${r.daysSaved} day${r.daysSaved === 1 ? "" : "s"} added`, isError: false };
+            case "no-data":    return { text: `${label}: no data returned for this period`, isError: false };
+            case "up-to-date": return { text: `${label}: up to date`, isError: false };
+            case "skipped":    return { text: `${label}: outside the platform's history window`, isError: false };
+            case "error":      return { text: `${label}: ${r.error || "sync failed"}`, isError: true };
+            default:           return { text: `${label}: ${r.status}`, isError: false };
+        }
+    });
+}
+
 function useAdSpendReport(domainsHeaderValue, fromIso, toIso, displayCurrency, tick = 0) {
     const [data,    setData]    = useState(null);
     const [loading, setLoading] = useState(false);
@@ -383,13 +402,12 @@ export default function AdSpend() {
             const qs = new URLSearchParams({ domain: domainLabel, fromDate: fromIso, toDate: toIso }).toString();
             const r = await fetch(`${ScannerHost}/api/cron-ad-sync?${qs}`, { headers: authHeaders() });
             const json = await r.json().catch(() => ({}));
-            if (!r.ok) { setSyncMsg("Sync failed — check console."); }
+            if (!r.ok) { setSyncMsg([{ text: json.error || `Sync failed (${r.status}).`, isError: true }]); }
             else {
-                const synced = (json.results || []).filter(x => x.status === "synced").length;
-                setSyncMsg(synced > 0 ? `Synced ${synced} platform(s).` : "Already up to date.");
+                setSyncMsg(summarizeSync(json.results));
                 setTick(t => t + 1);
             }
-        } catch { setSyncMsg("Sync failed — check network."); }
+        } catch { setSyncMsg([{ text: "Sync failed — check your connection.", isError: true }]); }
         finally { setSyncing(false); }
     }, [domainLabel, syncing, fromIso, toIso]);
 
@@ -438,7 +456,13 @@ export default function AdSpend() {
                                     <button className="sa-as-sync-btn" onClick={handleSync} disabled={syncing}>
                                         {syncing ? "Syncing…" : "Sync data now"}
                                     </button>
-                                    {syncMsg && <span className="sa-as-sync-msg">{syncMsg}</span>}
+                                    {syncMsg && (
+                                        <ul className="sa-as-sync-msg" aria-live="polite">
+                                            {syncMsg.map((m, i) => (
+                                                <li key={i} className={m.isError ? "sa-as-sync-msg__item--error" : undefined}>{m.text}</li>
+                                            ))}
+                                        </ul>
+                                    )}
                                 </div>
                             )}
                         </div>

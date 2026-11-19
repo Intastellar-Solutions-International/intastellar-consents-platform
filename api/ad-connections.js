@@ -83,6 +83,16 @@ async function ensureTable(db) {
     // destination. Picked via the same live picker Google Ads uses (see
     // api/ad-conversion-actions.js / AnalyticsSettings.js).
     await db.query(`ALTER TABLE ad_platform_connections ADD COLUMN IF NOT EXISTS conversion_action TEXT`).catch(() => {});
+    // Last sync outcome — written by cron-ad-sync.js (which also adds these),
+    // read here so the UI can show it; ensured on both sides so neither
+    // depends on the other having run first.
+    await db.query(`
+        ALTER TABLE ad_platform_connections
+            ADD COLUMN IF NOT EXISTS last_sync_at     TIMESTAMPTZ,
+            ADD COLUMN IF NOT EXISTS last_sync_status TEXT,
+            ADD COLUMN IF NOT EXISTS last_sync_error  TEXT,
+            ADD COLUMN IF NOT EXISTS last_sync_days   INTEGER
+    `).catch(() => {});
     tableReady = true;
 }
 
@@ -111,6 +121,7 @@ export default async function handler(req, res) {
             ? await db.query(
                 `SELECT id, platform, domain, account_id, account_label, login_customer_id, account_currency, scopes,
                         conversion_action, created_at, updated_at,
+                        last_sync_at, last_sync_status, last_sync_error, last_sync_days,
                         (access_token IS NOT NULL) AS has_token, NULL::uuid AS pending_id
                  FROM ad_platform_connections WHERE organisation_id=$1 AND domain=$2 ORDER BY platform`,
                 [orgId, domain]
@@ -118,6 +129,7 @@ export default async function handler(req, res) {
             : await db.query(
                 `SELECT id, platform, domain, account_id, account_label, login_customer_id, account_currency, scopes,
                         conversion_action, created_at, updated_at,
+                        last_sync_at, last_sync_status, last_sync_error, last_sync_days,
                         (access_token IS NOT NULL) AS has_token, NULL::uuid AS pending_id
                  FROM ad_platform_connections WHERE organisation_id=$1 ORDER BY domain, platform`,
                 [orgId]
