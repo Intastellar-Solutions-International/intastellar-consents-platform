@@ -1108,6 +1108,11 @@
     font-weight: 600;
 }
 .sa-metric-tab__delta--good { color: rgb(var(--sa-good)); }
+.sa-metric-tab__delta--low {
+    color: var(--color-text-muted);
+    font-weight: 500;
+}
+
 .sa-metric-tab__delta--bad  { color: rgb(var(--sa-bad)); }
 
 @media (max-width: 680px) {
@@ -1610,8 +1615,8 @@
     flex-shrink: 0;
 }
 
-.sa-chart__legend-dot--full    { background: rgba(74,222,128,0.75); }
-.sa-chart__legend-dot--minimal { background: rgba(var(--sa-accent),0.55); }
+.sa-chart__legend-dot--full    { background: rgb(var(--c-data)); }
+.sa-chart__legend-dot--minimal { background: rgb(var(--c-data-2) / 0.8); }
 
 .sa-trend-insights {
     display: flex;

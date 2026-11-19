@@ -1,6 +1,7 @@
 const { useEffect, useMemo, useState } = React;
 import { countryCodes } from "../../Components/Charts/WorldMap/countryCodes.js";
 import "../../Components/Charts/WorldMap/Style.css";
+import { appLocale } from "../../Functions/format.js";
 
 const MAP_ID = "sa-world-map";
 
@@ -38,7 +39,7 @@ function colorForShare(pct) {
  *  just a color-scaled world view plus a click-to-inspect caption. */
 export default function AnalyticsWorldMap({ countries, metricLabel = "Events", formatValue }) {
     const metricLower = metricLabel.toLowerCase();
-    const fmt = formatValue || ((v) => v.toLocaleString("de-DE"));
+    const fmt = formatValue || ((v) => v.toLocaleString(appLocale()));
     const rows = useMemo(() => (countries || []).filter((c) => c.code), [countries]);
     const max = useMemo(() => Math.max(...rows.map((c) => c.events), 1), [rows]);
     const [selected, setSelected] = useState(null);

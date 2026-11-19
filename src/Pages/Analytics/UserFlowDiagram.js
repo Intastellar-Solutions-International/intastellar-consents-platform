@@ -2,6 +2,7 @@ const { useState, useMemo, useRef, useEffect, useLayoutEffect } = React;
 import { ScannerHost } from "../../API/host.js";
 import { t } from "../../i18n/index.js";
 import { authHeaders } from "./_shared.js";
+import { appLocale } from "../../Functions/format.js";
 
 // Layout constants — tuned for readability, not data-driven. COL_WIDTH/
 // COL_GAP are floors, not fixed values — see the column-width calc in the
@@ -25,7 +26,7 @@ const TOP      = PAD + HEADER_H;
 // Barycenter passes for crossing reduction — see reduceCrossings().
 const ORDER_SWEEPS = 6;
 
-const fmt = n => n.toLocaleString("de-DE");
+const fmt = n => n.toLocaleString(appLocale());
 
 // Colors come from the Analytics.css tokens (RGB triplets) so the diagram
 // follows the same palette as every other Analytics page. SVG presentation

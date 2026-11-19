@@ -11,11 +11,12 @@
  */
 
 import { formatPercent } from "./_shared.js";
+import { appLocale } from "../../Functions/format.js";
 
 function fmtInt(n) {
     const x = Number(n);
     if (!Number.isFinite(x)) return "—";
-    return Math.round(x).toLocaleString("de-DE");
+    return Math.round(x).toLocaleString(appLocale());
 }
 
 /*

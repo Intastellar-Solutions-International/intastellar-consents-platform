@@ -11,6 +11,7 @@ import TrendLineChart from "./TrendLineChart.js";
 import { IconTarget } from "./Icons.js";
 import "./Analytics.css";
 import { STATISTICS_CONSENT } from "../../Functions/consentMetrics.js";
+import { appLocale } from "../../Functions/format.js";
 
 const REPORTS_URL = `${ScannerHost}/api/analytics-saved-reports`;
 
@@ -141,7 +142,7 @@ function BarRows({ series, formatVal }) {
                     <div className="sa-rb-bar-track">
                         <div className="sa-rb-bar-fill" style={{ width: `${(s.value/max)*100}%` }} />
                     </div>
-                    <span className="sa-rb-bar-val">{formatVal ? formatVal(s.value) : s.value?.toLocaleString("de-DE") ?? "—"}</span>
+                    <span className="sa-rb-bar-val">{formatVal ? formatVal(s.value) : s.value?.toLocaleString(appLocale()) ?? "—"}</span>
                 </div>
             ))}
         </div>
@@ -158,7 +159,7 @@ function DataTable({ series, metricLabel, formatVal }) {
                 {series.map((s, i) => (
                     <tr key={i}>
                         <td>{s.label}</td>
-                        <td>{formatVal ? formatVal(s.value) : s.value?.toLocaleString("de-DE") ?? "—"}</td>
+                        <td>{formatVal ? formatVal(s.value) : s.value?.toLocaleString(appLocale()) ?? "—"}</td>
                         <td>
                             <div className="sa-bar" style={{ minWidth: 80 }}>
                                 <div className="sa-bar__seg" style={{ width: `${(s.value/max)*100}%`, background: "rgba(192,159,83,0.55)" }} />
@@ -195,7 +196,7 @@ function DonutViz({ series, formatVal }) {
                     <div key={i} className="sa-rb-donut-row">
                         <span className="sa-rb-donut-dot" style={{ background: COLORS[i] }} />
                         <span className="sa-rb-donut-label">{s.label}</span>
-                        <span className="sa-rb-donut-count">{formatVal ? formatVal(s.value) : s.value.toLocaleString("de-DE")}</span>
+                        <span className="sa-rb-donut-count">{formatVal ? formatVal(s.value) : s.value.toLocaleString(appLocale())}</span>
                         <span className="sa-rb-donut-pct">{total > 0 ? formatPercent((s.value/total)*100, 0) : "—"}</span>
                     </div>
                 ))}
@@ -553,7 +554,7 @@ export default function ReportBuilder() {
                                 {config.metrics.map(m => {
                                     const def = METRIC_DEFS[m] || METRIC_DEFS.sessions;
                                     const val = kpiValues[m] ?? 0;
-                                    const fmt = def.isMoney ? moneyFmt(val) : def.isRate ? formatPercent(val) : val.toLocaleString("de-DE");
+                                    const fmt = def.isMoney ? moneyFmt(val) : def.isRate ? formatPercent(val) : val.toLocaleString(appLocale());
                                     return (
                                         <div key={m} className="sa-rb-kpi">
                                             <div className="sa-rb-kpi__label">{metricLabel(m, def).toUpperCase()}</div>
@@ -583,7 +584,7 @@ export default function ReportBuilder() {
                                                 {config.metrics.map(m => {
                                                     const def = METRIC_DEFS[m] || METRIC_DEFS.sessions;
                                                     const val = kpiValues[m] ?? 0;
-                                                    const fmt = def.isMoney ? moneyFmt(val) : def.isRate ? formatPercent(val) : val.toLocaleString("de-DE");
+                                                    const fmt = def.isMoney ? moneyFmt(val) : def.isRate ? formatPercent(val) : val.toLocaleString(appLocale());
                                                     return <KpiCard key={m} icon={<IconTarget />} label={metricLabel(m, def)} value={fmt} />;
                                                 })}
                                             </div>

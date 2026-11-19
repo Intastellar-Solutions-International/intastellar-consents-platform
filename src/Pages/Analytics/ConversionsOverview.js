@@ -14,6 +14,7 @@ import ConversionCampaigns from "./ConversionCampaigns.js";
 import FunnelBuilder from "./FunnelBuilder.js";
 import TrendLineChart from "./TrendLineChart.js";
 import "./Analytics.css";
+import { appLocale } from "../../Functions/format.js";
 
 // Countries with fewer total events than this are excluded from the rate
 // view — otherwise a country with 1 visit + 1 conversion reads as a
@@ -273,7 +274,7 @@ export default function AnalyticsConversionsOverview() {
                                     <KpiCard className="sa-conv-kpi1"
                                         icon={<IconTarget />}
                                         label="Total conversions"
-                                        value={totalConversions.toLocaleString("de-DE")}
+                                        value={totalConversions.toLocaleString(appLocale())}
                                         sub={`across ${manualConversions.length} registered event${manualConversions.length !== 1 ? "s" : ""}`}
                                         trend={trendTotalConversions}
                                     />
@@ -284,10 +285,10 @@ export default function AnalyticsConversionsOverview() {
                                         trend={trendConversionRate}
                                         sub={
                                             <>
-                                                {`${data.totals.convertedSessions.toLocaleString("de-DE")} of ${data.totals.uniqueSessions.toLocaleString("de-DE")} consent-linked sessions`}
+                                                {`${data.totals.convertedSessions.toLocaleString(appLocale())} of ${data.totals.uniqueSessions.toLocaleString(appLocale())} consent-linked sessions`}
                                                 {ga4.connected && ga4.sessions != null && (
                                                     <span className="sa-kpi__cross-check">
-                                                        GA4 total traffic: {ga4.sessions.toLocaleString("de-DE")} sessions
+                                                        GA4 total traffic: {ga4.sessions.toLocaleString(appLocale())} sessions
                                                         (rate above covers consent-linked sessions only)
                                                     </span>
                                                 )}

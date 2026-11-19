@@ -4,6 +4,7 @@ import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import botsLogo from "../../Components/Header/icons/bots.svg";
 import { authHeaders, useAnalyticsPageChrome, KpiCard, MiniBar, useCompareRange } from "./_shared.js";
 import { IconBot, IconGlobe, IconDocument, IconRadio, IconAlertTriangle } from "./Icons.js";
+import { appLocale } from "../../Functions/format.js";
 import "./Analytics.css";
 
 const BOTS_URL = `${ScannerHost}/api/analytics-bots`;
@@ -152,13 +153,13 @@ export default function AnalyticsBots() {
                             <KpiCard className="sa-bots-kpi1"
                                 icon={<IconBot />}
                                 label="Bot hits"
-                                value={data.totals.total.toLocaleString("de-DE")}
+                                value={data.totals.total.toLocaleString(appLocale())}
                                 sub="excluded from all other analytics"
                             />
                             <KpiCard className="sa-bots-kpi2"
                                 icon={<IconGlobe />}
                                 label="Distinct bots seen"
-                                value={data.totals.uniqueBots.toLocaleString("de-DE")}
+                                value={data.totals.uniqueBots.toLocaleString(appLocale())}
                                 sub="in this period"
                             />
 
@@ -173,7 +174,7 @@ export default function AnalyticsBots() {
                                                     style={{ width: Math.round((c.n / maxCategory) * 100) + "%", background: "rgba(192,159,83,0.55)" }}
                                                     title={`${c.n} hits`} />
                                             </div>
-                                            <span className="sa-consent-row__pct">{c.n.toLocaleString("de-DE")}</span>
+                                            <span className="sa-consent-row__pct">{c.n.toLocaleString(appLocale())}</span>
                                         </div>
                                     ))}
                                 </div>
@@ -203,7 +204,7 @@ export default function AnalyticsBots() {
                                                         ? b.hosts.join(", ")
                                                         : <span style={{ color: "rgba(130,130,130,0.4)" }}>—</span>}
                                                 </td>
-                                                <td className="sa-table__num">{b.n.toLocaleString("de-DE")}</td>
+                                                <td className="sa-table__num">{b.n.toLocaleString(appLocale())}</td>
                                                 <td className="sa-table__bar">
                                                     <MiniBar value={b.n} max={maxBot} />
                                                 </td>
@@ -233,7 +234,7 @@ export default function AnalyticsBots() {
                                             <tr key={a.org}>
                                                 <td>{a.org}</td>
                                                 <td className="sa-table__num">{a.uniqueBots}</td>
-                                                <td className="sa-table__num">{a.n.toLocaleString("de-DE")}</td>
+                                                <td className="sa-table__num">{a.n.toLocaleString(appLocale())}</td>
                                                 <td className="sa-table__bar">
                                                     <MiniBar value={a.n} max={maxAsn} color="rgba(103,178,255,0.6)" />
                                                 </td>
@@ -250,7 +251,7 @@ export default function AnalyticsBots() {
                             <div className="sa-panel sa-bots-suspicious">
                                 <h3 className="sa-panel__title"><IconAlertTriangle className="sa-icon" /> Suspicious traffic</h3>
                                 <p style={{ color: "rgba(150,150,150,0.75)", fontSize: "0.78rem", margin: "0 0 10px" }}>
-                                    {data.suspicious.total.toLocaleString("de-DE")} hit{data.suspicious.total === 1 ? "" : "s"} from a hosting/datacenter
+                                    {data.suspicious.total.toLocaleString(appLocale())} hit{data.suspicious.total === 1 ? "" : "s"} from a hosting/datacenter
                                     network with a normal browser UA — not diverted from your visitor counts, just worth a look.
                                 </p>
                                 <table className="sa-table">
@@ -265,7 +266,7 @@ export default function AnalyticsBots() {
                                         {suspicious.paged.map(o => (
                                             <tr key={o.org + o.asn}>
                                                 <td>{o.org}{o.asn ? <span style={{ color: "rgba(130,130,130,0.55)", fontSize: "0.74rem" }}> &middot; AS{o.asn}</span> : null}</td>
-                                                <td className="sa-table__num">{o.n.toLocaleString("de-DE")}</td>
+                                                <td className="sa-table__num">{o.n.toLocaleString(appLocale())}</td>
                                                 <td className="sa-table__bar">
                                                     <MiniBar value={o.n} max={maxSuspicious} color="rgba(240,138,93,0.6)" />
                                                 </td>
@@ -293,7 +294,7 @@ export default function AnalyticsBots() {
                                         {pages.paged.map(p => (
                                             <tr key={p.pathname}>
                                                 <td className="sa-table__path" title={p.pathname}>{p.pathname}</td>
-                                                <td className="sa-table__num">{p.n.toLocaleString("de-DE")}</td>
+                                                <td className="sa-table__num">{p.n.toLocaleString(appLocale())}</td>
                                                 <td className="sa-table__bar">
                                                     <MiniBar value={p.n} max={maxPage} color="rgba(167,139,250,0.6)" />
                                                 </td>

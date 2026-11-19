@@ -6,6 +6,7 @@ import { authHeaders, useAnalyticsPageChrome, useCompareRange, usePrevRange } fr
 import { IconTrendingUp } from "./Icons.js";
 import UserFlowDiagram from "./UserFlowDiagram.js";
 import "./Analytics.css";
+import { appLocale } from "../../Functions/format.js";
 
 const FLOW_URL   = `${ScannerHost}/api/analytics-user-flow`;
 const EVENTS_URL = `${ScannerHost}/api/analytics-events`;
@@ -132,7 +133,7 @@ export default function AnalyticsUserFlow() {
                                 <option value="">{t("All traffic")}</option>
                                 {goalOptions.map(ev => (
                                     <option key={ev.name} value={ev.name}>
-                                        {(ev.label || ev.name)} ({ev.sessionCount.toLocaleString("de-DE")})
+                                        {(ev.label || ev.name)} ({ev.sessionCount.toLocaleString(appLocale())})
                                     </option>
                                 ))}
                             </select>

@@ -3,6 +3,7 @@ import { ScannerHost } from "../../API/host.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import { authHeaders, useAnalyticsPageChrome, useCompareRange } from "./_shared.js";
 import "./Analytics.css";
+import { appLocale } from "../../Functions/format.js";
 
 const AUDIENCES_URL = `${ScannerHost}/api/analytics-audiences`;
 
@@ -312,7 +313,7 @@ export default function Audiences() {
                                                 <td className="sa-table__num">
                                                     {a.matchedSessions === 0
                                                         ? `No sessions matched in the last ${a.lookbackDays} days`
-                                                        : `${a.matchedSessions.toLocaleString("de-DE")} sessions / last ${a.lookbackDays}d`}
+                                                        : `${a.matchedSessions.toLocaleString(appLocale())} sessions / last ${a.lookbackDays}d`}
                                                 </td>
                                                 <td>
                                                     <button

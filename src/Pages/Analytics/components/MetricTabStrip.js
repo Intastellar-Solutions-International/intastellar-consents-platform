@@ -1,4 +1,5 @@
 import { formatPercent, deltaSentiment } from "../_shared.js";
+import { LOW_DATA_LABEL } from "../../../Functions/smallSample.js";
 
 /**
  * GA4-style metric selector — docs/design-audit-plan.md Phase 1, the KPI
@@ -26,7 +27,10 @@ import { formatPercent, deltaSentiment } from "../_shared.js";
  * key roving focus, exactly one associated panel) that this component
  * alone can't back up.
  *
- * `metrics`: [{ key, label, value, delta?: { value, label, invert } }]
+ * `metrics`: [{ key, label, value, basis?, delta?: { value, label, invert, lowData?, basis? } }]
+ * `delta.lowData` (src/Functions/smallSample.js): the change rests on too few
+ * items — shown as a muted "Too little data" with the counts on hover, never
+ * as a red/green arrow. `basis` explains a value built on a small base.
  */
 export default function MetricTabStrip({ metrics, active, onSelect, className }) {
     return (
@@ -37,7 +41,8 @@ export default function MetricTabStrip({ metrics, active, onSelect, className })
         >
             {(metrics || []).map(m => {
                 const isActive = m.key === active;
-                const sentiment = m.delta && Number.isFinite(m.delta.value) ? deltaSentiment(m.delta) : null;
+                const lowData = !!m.delta?.lowData;
+                const sentiment = !lowData && m.delta && Number.isFinite(m.delta.value) ? deltaSentiment(m.delta) : null;
                 return (
                     <button
                         key={m.key}
@@ -45,9 +50,15 @@ export default function MetricTabStrip({ metrics, active, onSelect, className })
                         className={"sa-metric-tab" + (isActive ? " sa-metric-tab--active" : "")}
                         aria-pressed={isActive}
                         onClick={() => onSelect && onSelect(m.key)}
+                        title={m.basis || undefined}
                     >
                         <span className="sa-metric-tab__label">{m.label}</span>
                         <span className="sa-metric-tab__value">{m.value}</span>
+                        {lowData && (
+                            <span className="sa-metric-tab__delta sa-metric-tab__delta--low" title={m.delta.basis || undefined}>
+                                {LOW_DATA_LABEL}
+                            </span>
+                        )}
                         {sentiment && (
                             <span
                                 className={"sa-metric-tab__delta" + (sentiment.isGood ? " sa-metric-tab__delta--good" : " sa-metric-tab__delta--bad")}

@@ -8,6 +8,7 @@ import {
 import { IconFormFill, IconBarChart, IconTarget, IconScrollDepth, IconGlobe, IconFunnel } from "./Icons.js";
 import TrendLineChart from "./TrendLineChart.js";
 import "./Analytics.css";
+import { appLocale } from "../../Functions/format.js";
 
 function useFormsReport(domain, fromIso, toIso) {
     const [data,    setData]    = useState(null);
@@ -127,7 +128,7 @@ function FormsTable({ forms, abandonMap }) {
                                 )}
                                 <MiniBar value={f.submissions} max={maxSubs} color="rgba(99,102,241,0.5)" />
                             </td>
-                            <td className="sa-table__num">{f.submissions.toLocaleString("de-DE")}</td>
+                            <td className="sa-table__num">{f.submissions.toLocaleString(appLocale())}</td>
                             <td className="sa-table__num" style={rateColor ? { color: rateColor, fontWeight: 600 } : {}}>
                                 {rate != null ? formatPercent(rate, 1) : "—"}
                             </td>
@@ -178,8 +179,8 @@ function DeviceTable({ devices }) {
                     return (
                         <tr key={d.device}>
                             <td>{DEVICE_LABEL[d.device] || d.device}</td>
-                            <td className="sa-table__num">{d.started > 0 ? d.started.toLocaleString("de-DE") : "—"}</td>
-                            <td className="sa-table__num">{d.submitted.toLocaleString("de-DE")}</td>
+                            <td className="sa-table__num">{d.started > 0 ? d.started.toLocaleString(appLocale()) : "—"}</td>
+                            <td className="sa-table__num">{d.submitted.toLocaleString(appLocale())}</td>
                             <td className="sa-table__num" style={rateColor ? { color: rateColor, fontWeight: 600 } : {}}>
                                 {rate != null ? formatPercent(rate, 1) : "—"}
                             </td>
@@ -291,7 +292,7 @@ function FormDeepDiveCard({ form, stages, abandonEntry, timeEntry, recoveryEntry
                                 <div className="sa-funnel-step__fill" style={{ width: pct + "%" }} />
                             </div>
                             <span className="sa-funnel-step__value">
-                                {stage.sessions.toLocaleString("de-DE")}
+                                {stage.sessions.toLocaleString(appLocale())}
                                 <span className="sa-funnel-step__pct">({pct}%)</span>
                             </span>
                         </div>
@@ -321,7 +322,7 @@ function FormDeepDiveCard({ form, stages, abandonEntry, timeEntry, recoveryEntry
                     {fieldErrorsForForm.map((r, i) => (
                         <div key={i} className="sa-form-funnel__error-row">
                             <code className="sa-field-name">{r.field}</code>
-                            <span className="sa-muted">{r.errorSessions.toLocaleString("de-DE")} error sessions</span>
+                            <span className="sa-muted">{r.errorSessions.toLocaleString(appLocale())} error sessions</span>
                             <span style={{ color: blockingColor(r.blockingRate), fontWeight: 600 }}>
                                 {r.blockingRate != null ? `${formatPercent(r.blockingRate, 1)} blocking` : "—"}
                             </span>
@@ -403,9 +404,9 @@ function GeoBreakdownTable({ geoBreakdown }) {
                                 <span className="sa-form-action">{r.country}</span>
                                 <MiniBar value={r.starters} max={maxStarters} color="rgba(99,102,241,0.4)" />
                             </td>
-                            <td className="sa-table__num">{r.starters > 0 ? r.starters.toLocaleString("de-DE") : "—"}</td>
-                            <td className="sa-table__num">{r.submissions.toLocaleString("de-DE")}</td>
-                            <td className="sa-table__num sa-muted">{r.errors > 0 ? r.errors.toLocaleString("de-DE") : "—"}</td>
+                            <td className="sa-table__num">{r.starters > 0 ? r.starters.toLocaleString(appLocale()) : "—"}</td>
+                            <td className="sa-table__num">{r.submissions.toLocaleString(appLocale())}</td>
+                            <td className="sa-table__num sa-muted">{r.errors > 0 ? r.errors.toLocaleString(appLocale()) : "—"}</td>
                             <td className="sa-table__num" style={rateColor ? { color: rateColor, fontWeight: 600 } : {}}>
                                 {rate != null ? formatPercent(rate, 1) : "—"}
                             </td>
@@ -460,7 +461,7 @@ function FormErrorsTable({ errors }) {
                                 )}
                                 <MiniBar value={e.occurrences} max={maxOcc} color="rgba(239,68,68,0.35)" />
                             </td>
-                            <td className="sa-table__num">{e.occurrences.toLocaleString("de-DE")}</td>
+                            <td className="sa-table__num">{e.occurrences.toLocaleString(appLocale())}</td>
                         </tr>
                     );
                 })}
@@ -488,7 +489,7 @@ function TopPagesTable({ pages }) {
                             <span title={p.page}>{p.page.length > 60 ? "…" + p.page.slice(-57) : p.page}</span>
                             <MiniBar value={p.submissions} max={maxSubs} color="rgba(192,159,83,0.5)" />
                         </td>
-                        <td className="sa-table__num">{p.submissions.toLocaleString("de-DE")}</td>
+                        <td className="sa-table__num">{p.submissions.toLocaleString(appLocale())}</td>
                     </tr>
                 ))}
             </tbody>
@@ -534,9 +535,9 @@ function AcqChannelsTable({ channels }) {
                             </td>
                             <td className="sa-muted">{r.medium}</td>
                             <td className="sa-muted" title={r.campaign}>{r.campaign === "(none)" ? <span className="sa-muted">—</span> : r.campaign.length > 40 ? r.campaign.slice(0, 39) + "…" : r.campaign}</td>
-                            <td className="sa-table__num">{r.starters.toLocaleString("de-DE")}</td>
-                            <td className="sa-table__num">{r.submissions.toLocaleString("de-DE")}</td>
-                            <td className="sa-table__num">{r.errors > 0 ? <span style={{ color: "rgba(239,68,68,0.8)" }}>{r.errors.toLocaleString("de-DE")}</span> : <span className="sa-muted">—</span>}</td>
+                            <td className="sa-table__num">{r.starters.toLocaleString(appLocale())}</td>
+                            <td className="sa-table__num">{r.submissions.toLocaleString(appLocale())}</td>
+                            <td className="sa-table__num">{r.errors > 0 ? <span style={{ color: "rgba(239,68,68,0.8)" }}>{r.errors.toLocaleString(appLocale())}</span> : <span className="sa-muted">—</span>}</td>
                             <td className="sa-table__num" style={completionColor(rate) ? { color: completionColor(rate), fontWeight: 600 } : {}}>
                                 {rate != null ? formatPercent(rate, 1) : "—"}
                             </td>
@@ -579,8 +580,8 @@ function AcqReferrersTable({ referrers }) {
                                 {r.referrer}
                                 <MiniBar value={r.starters} max={maxStarters} color="rgba(192,159,83,0.45)" />
                             </td>
-                            <td className="sa-table__num">{r.starters.toLocaleString("de-DE")}</td>
-                            <td className="sa-table__num">{r.submissions.toLocaleString("de-DE")}</td>
+                            <td className="sa-table__num">{r.starters.toLocaleString(appLocale())}</td>
+                            <td className="sa-table__num">{r.submissions.toLocaleString(appLocale())}</td>
                             <td className="sa-table__num" style={completionColor(rate) ? { color: completionColor(rate), fontWeight: 600 } : {}}>
                                 {rate != null ? formatPercent(rate, 1) : "—"}
                             </td>
@@ -617,9 +618,9 @@ function AcqPagesTable({ pages }) {
                                 {p.pathname.length > 60 ? "…" + p.pathname.slice(-57) : p.pathname}
                                 <MiniBar value={p.starters} max={maxStarters} color="rgba(192,159,83,0.45)" />
                             </td>
-                            <td className="sa-table__num">{p.starters.toLocaleString("de-DE")}</td>
-                            <td className="sa-table__num">{p.submissions.toLocaleString("de-DE")}</td>
-                            <td className="sa-table__num">{p.errors > 0 ? <span style={{ color: "rgba(239,68,68,0.8)" }}>{p.errors.toLocaleString("de-DE")}</span> : <span className="sa-muted">—</span>}</td>
+                            <td className="sa-table__num">{p.starters.toLocaleString(appLocale())}</td>
+                            <td className="sa-table__num">{p.submissions.toLocaleString(appLocale())}</td>
+                            <td className="sa-table__num">{p.errors > 0 ? <span style={{ color: "rgba(239,68,68,0.8)" }}>{p.errors.toLocaleString(appLocale())}</span> : <span className="sa-muted">—</span>}</td>
                             <td className="sa-table__num" style={completionColor(rate) ? { color: completionColor(rate), fontWeight: 600 } : {}}>
                                 {rate != null ? formatPercent(rate, 1) : "—"}
                             </td>
@@ -643,7 +644,7 @@ function buildFormsHeadline({ data, trendSubmissions }) {
     const numForms = forms.length;
     if (subs === 0 && numForms === 0) return null;
 
-    let headline = `${subs.toLocaleString("de-DE")} submission${subs === 1 ? "" : "s"} across `
+    let headline = `${subs.toLocaleString(appLocale())} submission${subs === 1 ? "" : "s"} across `
         + `${numForms} form${numForms === 1 ? "" : "s"} this period`;
     if (data.totals.completionRate != null) {
         headline += `, ${formatPercent(data.totals.completionRate, 1)} completion overall`;
@@ -762,11 +763,11 @@ export default function AnalyticsForms() {
                                 <KpiCard
                                     icon={<IconFormFill />}
                                     label="Form submissions"
-                                    value={(data.totals.submissions ?? 0).toLocaleString("de-DE")}
+                                    value={(data.totals.submissions ?? 0).toLocaleString(appLocale())}
                                     trend={trendSubmissions}
                                     sub={
                                         data.totals.sessionSubmissions < data.totals.submissions
-                                            ? `${data.totals.sessionSubmissions.toLocaleString("de-DE")} session-linked`
+                                            ? `${data.totals.sessionSubmissions.toLocaleString(appLocale())} session-linked`
                                             : "all events, any consent"
                                     }
                                 />
@@ -774,13 +775,13 @@ export default function AnalyticsForms() {
                                     icon={<IconTarget />}
                                     label="Forms started"
                                     value={data.totals.starters > 0
-                                        ? data.totals.starters.toLocaleString("de-DE")
+                                        ? data.totals.starters.toLocaleString(appLocale())
                                         : "—"}
                                     trend={data.totals.starters > 0 ? trendStarters : undefined}
                                     sub={
                                         data.totals.starters > 0
                                             ? (data.totals.sessionStarters < data.totals.starters
-                                                ? `${data.totals.sessionStarters.toLocaleString("de-DE")} session-linked`
+                                                ? `${data.totals.sessionStarters.toLocaleString(appLocale())} session-linked`
                                                 : "all events, any consent")
                                             : undefined
                                     }
@@ -800,7 +801,7 @@ export default function AnalyticsForms() {
                                 <KpiCard
                                     icon={<IconScrollDepth />}
                                     label="Unique forms"
-                                    value={(data.forms?.length ?? 0).toLocaleString("de-DE")}
+                                    value={(data.forms?.length ?? 0).toLocaleString(appLocale())}
                                 />
                             </div>
 
@@ -871,7 +872,7 @@ export default function AnalyticsForms() {
                                         Session-linked stats (dropout field, avg fields touched, recovery rate) require full consent and are a subset of
                                         the top-line starters count.
                                         {data.totals.sessionStarters < data.totals.starters && data.totals.starters > 0 && (
-                                            <>{" "}{data.totals.sessionStarters.toLocaleString("de-DE")} of {data.totals.starters.toLocaleString("de-DE")} starters have session tracking.</>
+                                            <>{" "}{data.totals.sessionStarters.toLocaleString(appLocale())} of {data.totals.starters.toLocaleString(appLocale())} starters have session tracking.</>
                                         )}
                                     </p>
                                     <FormDeepDivePanel

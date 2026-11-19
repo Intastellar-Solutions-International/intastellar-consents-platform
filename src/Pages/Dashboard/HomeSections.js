@@ -32,6 +32,16 @@ function safePercent(v) {
 }
 
 /** Total of the daily series against its aligned previous period, in percent. */
+/** Consent decisions in the period and the comparison period: { current, previous }. */
+export function periodTotals(daily) {
+    let current = 0, previous = 0;
+    for (const d of Array.isArray(daily) ? daily : []) {
+        current += Number(d?.num) || 0;
+        previous += Number(d?.previousPeriod?.num) || 0;
+    }
+    return { current, previous };
+}
+
 export function periodChangePercent(daily) {
     if (!Array.isArray(daily) || daily.length === 0) return null;
     let current = 0, previous = 0;

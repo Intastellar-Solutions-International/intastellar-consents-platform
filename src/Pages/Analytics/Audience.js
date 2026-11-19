@@ -32,6 +32,7 @@ import { SkeletonRows } from "./components/Skeleton.js";
 import { IconGlobe, IconUsers, IconRadio } from "./Icons.js";
 import ErrorBoundary from "../../Components/Error/ErrorBoundary.js";
 import "./Analytics.css";
+import { appLocale } from "../../Functions/format.js";
 
 function InterestRow({ label, sessions, events, max, color, badge }) {
     const val = sessions || events;
@@ -42,7 +43,7 @@ function InterestRow({ label, sessions, events, max, color, badge }) {
                 {label}
                 {badge && <span style={{ marginLeft:8,fontSize:10,padding:"1px 5px",borderRadius:3,background:"rgba(255,255,255,0.07)",color:"rgba(200,200,200,0.6)",verticalAlign:"middle" }}>{badge}</span>}
             </td>
-            <td className="sa-table__num">{val.toLocaleString("de-DE")}</td>
+            <td className="sa-table__num">{val.toLocaleString(appLocale())}</td>
             <td className="sa-table__bar"><MiniBar value={val} max={max} color={color || "rgba(var(--sa-accent),0.6)"} /></td>
         </tr>
     );
@@ -77,7 +78,7 @@ function RuleInterestRow({ interest }) {
                 <span style={{ width:8,height:8,borderRadius:"50%",background:color||"rgba(var(--sa-accent),0.6)",display:"inline-block",flexShrink:0 }} />
                 <span className="sa-int-rule-row__label">{label}</span>
                 <span className="sa-int-rule-row__stats">
-                    {sessions.toLocaleString("de-DE")} sessions
+                    {sessions.toLocaleString(appLocale())} sessions
                     <span className="sa-int-rule-row__score" style={{ color: tierColor }}>{avgScore}/100</span>
                     <span style={{ color: tierColor, fontSize:"0.72rem" }}>{tierLabel}</span>
                 </span>
@@ -86,8 +87,8 @@ function RuleInterestRow({ interest }) {
                 <div className="sa-int-rule-row__bar-on" style={{ width: onPct + "%" }} />
             </div>
             <div className="sa-int-rule-row__legend">
-                <span className="sa-int-rule-row__on">{onPct}% on-topic · {onTopic.toLocaleString("de-DE")}</span>
-                <span className="sa-int-rule-row__off">{offPct}% off-topic · {offTopic.toLocaleString("de-DE")}</span>
+                <span className="sa-int-rule-row__on">{onPct}% on-topic · {onTopic.toLocaleString(appLocale())}</span>
+                <span className="sa-int-rule-row__off">{offPct}% off-topic · {offTopic.toLocaleString(appLocale())}</span>
             </div>
         </div>
     );
@@ -245,14 +246,14 @@ export default function AnalyticsAudience() {
                                     <KpiCard
                                         icon={<IconUsers />}
                                         label="Unique sessions"
-                                        value={data.totals.uniqueSessions.toLocaleString("de-DE")}
+                                        value={data.totals.uniqueSessions.toLocaleString(appLocale())}
                                         sub="consent-gated sessions only"
                                         trend={trendSessions}
                                     />
                                     <KpiCard
                                         icon={<IconRadio />}
                                         label="Active users"
-                                        value={data.totals.engagedUsers.toLocaleString("de-DE")}
+                                        value={data.totals.engagedUsers.toLocaleString(appLocale())}
                                         sub="engaged: 10s+, clicked, or 2+ pages"
                                         variant="live"
                                         trend={trendEngaged}
@@ -260,7 +261,7 @@ export default function AnalyticsAudience() {
                                     <KpiCard
                                         icon={<IconGlobe />}
                                         label="Countries reached"
-                                        value={data.countries.length.toLocaleString("de-DE")}
+                                        value={data.countries.length.toLocaleString(appLocale())}
                                         trend={trendCountries}
                                     />
                                 </div>
@@ -281,7 +282,7 @@ export default function AnalyticsAudience() {
                                                     <div className="sa-bar">
                                                         <div className="sa-bar__seg"
                                                             style={{ width: nvrData.newPct + "%", background: "rgba(74,222,128,0.5)" }}
-                                                            title={nvrData.newSessions.toLocaleString("de-DE") + " sessions"} />
+                                                            title={nvrData.newSessions.toLocaleString(appLocale()) + " sessions"} />
                                                     </div>
                                                     <span className="sa-consent-row__pct">{nvrData.newPct}%</span>
                                                 </div>
@@ -290,18 +291,18 @@ export default function AnalyticsAudience() {
                                                     <div className="sa-bar">
                                                         <div className="sa-bar__seg"
                                                             style={{ width: nvrData.returningPct + "%", background: "rgba(192,159,83,0.55)" }}
-                                                            title={nvrData.returningSessions.toLocaleString("de-DE") + " sessions"} />
+                                                            title={nvrData.returningSessions.toLocaleString(appLocale()) + " sessions"} />
                                                     </div>
                                                     <span className="sa-consent-row__pct">{nvrData.returningPct}%</span>
                                                 </div>
                                             </div>
                                             <div style={{ display: "flex", gap: "16px", alignItems: "center", paddingLeft: "8px", borderLeft: "1px solid rgba(255,255,255,0.08)" }}>
                                                 <div style={{ textAlign: "center" }}>
-                                                    <div style={{ fontSize: "22px", fontWeight: 600, color: "rgba(74,222,128,0.9)" }}>{nvrData.newSessions.toLocaleString("de-DE")}</div>
+                                                    <div style={{ fontSize: "22px", fontWeight: 600, color: "rgba(74,222,128,0.9)" }}>{nvrData.newSessions.toLocaleString(appLocale())}</div>
                                                     <div style={{ fontSize: "11px", color: "rgba(240,235,225,0.5)", marginTop: "2px" }}>new</div>
                                                 </div>
                                                 <div style={{ textAlign: "center" }}>
-                                                    <div style={{ fontSize: "22px", fontWeight: 600, color: "rgba(192,159,83,0.9)" }}>{nvrData.returningSessions.toLocaleString("de-DE")}</div>
+                                                    <div style={{ fontSize: "22px", fontWeight: 600, color: "rgba(192,159,83,0.9)" }}>{nvrData.returningSessions.toLocaleString(appLocale())}</div>
                                                     <div style={{ fontSize: "11px", color: "rgba(240,235,225,0.5)", marginTop: "2px" }}>returning</div>
                                                 </div>
                                             </div>
@@ -343,7 +344,7 @@ export default function AnalyticsAudience() {
                                                 {data.countries.map(c => (
                                                     <tr key={c.code}>
                                                         <td>{c.code}</td>
-                                                        <td className="sa-table__num">{c.events.toLocaleString("de-DE")}</td>
+                                                        <td className="sa-table__num">{c.events.toLocaleString(appLocale())}</td>
                                                         <td className="sa-table__bar">
                                                             <MiniBar value={c.events} max={maxCountry} color="rgba(99,179,237,0.55)" />
                                                         </td>
@@ -397,7 +398,7 @@ export default function AnalyticsAudience() {
                                             {data.browsers.map(b => (
                                                 <tr key={b.name}>
                                                     <td>{b.name}</td>
-                                                    <td className="sa-table__num">{b.events.toLocaleString("de-DE")}</td>
+                                                    <td className="sa-table__num">{b.events.toLocaleString(appLocale())}</td>
                                                     <td className="sa-table__bar">
                                                         <MiniBar value={b.events} max={maxBrowser} color="rgba(167,139,250,0.6)" />
                                                     </td>
@@ -427,7 +428,7 @@ export default function AnalyticsAudience() {
                                             {(data.os || []).map(o => (
                                                 <tr key={o.name}>
                                                     <td>{o.name}</td>
-                                                    <td className="sa-table__num">{o.events.toLocaleString("de-DE")}</td>
+                                                    <td className="sa-table__num">{o.events.toLocaleString(appLocale())}</td>
                                                     <td className="sa-table__bar">
                                                         <MiniBar value={o.events} max={maxOs} color="rgba(129,140,248,0.6)" />
                                                     </td>
@@ -458,7 +459,7 @@ export default function AnalyticsAudience() {
                                                 {data.screens.map((s, i) => (
                                                     <tr key={i}>
                                                         <td>{s.width}&thinsp;&times;&thinsp;{s.height}</td>
-                                                        <td className="sa-table__num">{s.events.toLocaleString("de-DE")}</td>
+                                                        <td className="sa-table__num">{s.events.toLocaleString(appLocale())}</td>
                                                         <td className="sa-table__bar">
                                                             <MiniBar value={s.events} max={maxScreens} color="rgba(52,211,153,0.6)" />
                                                         </td>
@@ -490,7 +491,7 @@ export default function AnalyticsAudience() {
                                                 {data.languages.map(l => (
                                                     <tr key={l.lang}>
                                                         <td>{l.lang}</td>
-                                                        <td className="sa-table__num">{l.events.toLocaleString("de-DE")}</td>
+                                                        <td className="sa-table__num">{l.events.toLocaleString(appLocale())}</td>
                                                         <td className="sa-table__bar">
                                                             <MiniBar value={l.events} max={maxLang} color="rgba(251,146,60,0.55)" />
                                                         </td>
@@ -522,7 +523,7 @@ export default function AnalyticsAudience() {
                                                 {data.timezones.map(t => (
                                                     <tr key={t.tz}>
                                                         <td>{t.tz}</td>
-                                                        <td className="sa-table__num">{t.events.toLocaleString("de-DE")}</td>
+                                                        <td className="sa-table__num">{t.events.toLocaleString(appLocale())}</td>
                                                         <td className="sa-table__bar">
                                                             <MiniBar value={t.events} max={maxTz} color="rgba(248,113,113,0.5)" />
                                                         </td>

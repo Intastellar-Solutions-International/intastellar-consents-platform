@@ -65,10 +65,13 @@ function extractConstSource(src, name) {
     return src.slice(start, i).replace(/^export\s+/, "") + ";";
 }
 
-function loadFn(name) {
+// The formatters follow the user's app locale (appLocale(), shared with the
+// CMP). The expectations below are written for German, so that's the
+// locale the default loader provides; the English case is tested at the end.
+function loadFn(name, locale = "de-DE") {
     const fnSrc = extractFunctionSource(SRC, name);
     const constSrc = extractConstSource(SRC, "CURRENCY_SYMBOLS");
-    const ctx = vm.createContext({ Number, Math });
+    const ctx = vm.createContext({ Number, Math, appLocale: () => locale });
     vm.runInContext(constSrc, ctx);
     return vm.runInContext(`(${fnSrc})`, ctx);
 }
@@ -140,4 +143,10 @@ test("formatCount returns an em dash for null/undefined/non-finite input instead
     assert.strictEqual(formatCount(undefined), "—");
     assert.strictEqual(formatCount(NaN), "—");
     assert.strictEqual(formatCount(Infinity), "—");
+});
+
+test("formatters follow the user's locale: English shows 1,234.50 like the CMP does", () => {
+    assert.strictEqual(loadFn("formatCurrency", "en-GB")(1234.5, "EUR"), "€1,234.50");
+    assert.strictEqual(loadFn("formatCount", "en-GB")(9829), "9,829");
+    assert.strictEqual(loadFn("formatCount", "en-GB")(1100, { abbreviate: true }), "1.1k");
 });

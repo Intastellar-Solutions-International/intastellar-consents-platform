@@ -2,6 +2,7 @@ const { useState, useEffect, useMemo, useCallback } = React;
 import { ScannerHost } from "../../API/host.js";
 import { authHeaders } from "./_shared.js";
 import { IconFunnel, IconPlus, IconTrash } from "./Icons.js";
+import { appLocale } from "../../Functions/format.js";
 
 const FUNNELS_URL = `${ScannerHost}/api/analytics-funnels`;
 const EVENTS_URL  = `${ScannerHost}/api/analytics-events`;
@@ -224,7 +225,7 @@ function FunnelDetail({ domain, funnel, fromIso, toIso }) {
                                 <div className="sa-funnel-step__fill" style={{ width: pct + "%" }} />
                             </div>
                             <span className="sa-funnel-step__value">
-                                {step.sessions.toLocaleString("de-DE")}
+                                {step.sessions.toLocaleString(appLocale())}
                                 <span className="sa-funnel-step__pct">({pct}%)</span>
                             </span>
                         </div>

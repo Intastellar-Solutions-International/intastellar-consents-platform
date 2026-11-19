@@ -9,6 +9,7 @@ import Login from "./Login/Login";
 import Signup from "./Login/Signup";
 import Nav from "./Components/Header/Nav";
 import AnalyticsSideNav from "./Components/Header/AnalyticsSideNav";
+import AutoDomain from "./Components/AutoDomain.js";
 import API from "./API/api";
 import Dashboard from "./Pages/Dashboard/Dashboard.js";
 import FerryDashboard from "./Pages/Dashboard/ferry/Dashboard.js";
@@ -327,6 +328,7 @@ export default function App() {
                                                 navigation for both products; classic keeps the icon Nav. */}
                                             {newShell ? null : <Nav />}
                                             <AnalyticsSideNav />
+                                            <AutoDomain />
                                         </> : null
                                     }
                                     {/* Pages lay out inside this column, never under the rail —

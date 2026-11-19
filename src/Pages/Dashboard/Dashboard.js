@@ -42,7 +42,8 @@ import SetupProgressCard from "../Onboarding/SetupProgressCard.js";
 import { AnalyticsBridge } from "../../Components/ProductBridge/index.js";
 import DataSource from "../../Components/DataSource/index.js";
 import QuickReport from "./QuickReport.js";
-import { ComplianceChecks, PerformanceBand, CategoryOptIn, DecisionSplit, CountryRanking, DeviceShare, DecisionTime, LatestScan, periodChangePercent } from "./HomeSections.js";
+import { ComplianceChecks, PerformanceBand, CategoryOptIn, DecisionSplit, CountryRanking, DeviceShare, DecisionTime, LatestScan, periodChangePercent, periodTotals } from "./HomeSections.js";
+import { isLowDataCount, isLowDataRate } from "../../Functions/smallSample.js";
 import useDomainHealth from "../../Components/Shell/useDomainHealth.js";
 import { redirectToLogin } from "../../Functions/session.js";
 import { BANNER_ACCEPTANCE } from "../../Functions/consentMetrics.js";
@@ -353,6 +354,13 @@ export default function Dashboard(props) {
     const logging = healthChecks?.[0];
     const scan = healthChecks?.[1];
     const consentsChange = useMemo(() => periodChangePercent(activeData?.dailyNum), [activeData]);
+    // Changes built on a handful of decisions read as "Too little data"
+    // (src/Functions/smallSample.js), with the counts in the tooltip.
+    const decisionBase = useMemo(() => {
+        const { current, previous } = periodTotals(activeData?.dailyNum);
+        const basis = `${formatNumber(previous)} → ${formatNumber(current)} consent decisions`;
+        return { rateLow: isLowDataRate(current, previous), countLow: isLowDataCount(current, previous), basis };
+    }, [activeData]);
     const attentionItems = useMemo(() => {
         if (!hasDomain) return [];
         const items = [];
@@ -498,21 +506,21 @@ export default function Dashboard(props) {
                                 hint={BANNER_ACCEPTANCE.hint}
                                 loading={activeData == null}
                                 value={formatPercent(activeData?.Accepted)}
-                                delta={compareOn && Number.isFinite(activeData?.changeRate?.accepted) ? { value: activeData.changeRate.accepted, formatted: formatPercent(activeData.changeRate.accepted), goodWhen: "up", label: "vs comparison" } : undefined}
+                                delta={compareOn && Number.isFinite(activeData?.changeRate?.accepted) ? { value: activeData.changeRate.accepted, formatted: formatPercent(activeData.changeRate.accepted), goodWhen: "up", label: "vs comparison", lowData: decisionBase.rateLow, basis: decisionBase.basis } : undefined}
                             />
                             <KpiTile
                                 plain
                                 label="Essential-only"
                                 loading={activeData == null}
                                 value={formatPercent(activeData?.Declined)}
-                                delta={compareOn && Number.isFinite(activeData?.changeRate?.declined) ? { value: activeData.changeRate.declined, formatted: formatPercent(activeData.changeRate.declined), goodWhen: "down", label: "vs comparison" } : undefined}
+                                delta={compareOn && Number.isFinite(activeData?.changeRate?.declined) ? { value: activeData.changeRate.declined, formatted: formatPercent(activeData.changeRate.declined), goodWhen: "down", label: "vs comparison", lowData: decisionBase.rateLow, basis: decisionBase.basis } : undefined}
                             />
                             <KpiTile
                                 plain
                                 label="Consent decisions"
                                 loading={activeData == null}
                                 value={formatNumber(activeData?.Total)}
-                                delta={compareOn && consentsChange != null ? { value: consentsChange, formatted: formatPercent(consentsChange), goodWhen: "up", label: "vs comparison" } : undefined}
+                                delta={compareOn && consentsChange != null ? { value: consentsChange, formatted: formatPercent(consentsChange), goodWhen: "up", label: "vs comparison", lowData: decisionBase.countLow, basis: decisionBase.basis } : undefined}
                             />
                             <KpiTile plain label="Active users" loading={activeData == null} value={formatNumber(activeData?.activeUsers)} />
                         </PerformanceBand>

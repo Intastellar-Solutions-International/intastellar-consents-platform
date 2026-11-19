@@ -7,10 +7,11 @@ import { formatPercent, pctChange, MiniBar } from "./_shared.js";
 import {
     IconAlertTriangle, IconCheckCircle, IconInfoCircle, IconDocument, IconMegaphone, IconGlobe,
 } from "./Icons.js";
+import { appLocale } from "../../Functions/format.js";
 
 const MAX_INSIGHTS = 6;
 
-const fmt = n => Number(n || 0).toLocaleString("de-DE");
+const fmt = n => Number(n || 0).toLocaleString(appLocale());
 const pct = v => formatPercent(Math.abs(v), 0);
 
 // Pure: current + previous-period report → ranked insight cards. Each rule

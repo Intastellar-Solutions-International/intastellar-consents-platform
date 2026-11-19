@@ -17,7 +17,7 @@ import {
     toIsoDate, pctChange, IndustryBenchmarkNote, formatPercent, SegmentFilter,
     useCompareRange, usePrevRange, useLiveData,
     useForeignDomains, splitForeignDomainsByRecency,
-    formatCurrency, CURRENCY_SYMBOLS,
+    formatCurrency, CURRENCY_SYMBOLS, formatCount,
     LiveActivityBars, LiveBotNote,
 } from "./_shared.js";
 import { SkeletonBlock, PanelSkeleton } from "./components/Skeleton.js";
@@ -30,6 +30,9 @@ import {
 } from "./Icons.js";
 import "./Analytics.css";
 import { STATISTICS_CONSENT } from "../../Functions/consentMetrics.js";
+import { appLocale } from "../../Functions/format.js";
+import { isLowDataCount, isLowDataRate, MIN_BASE } from "../../Functions/smallSample.js";
+import { niceTicks } from "./TrendLineChart.js";
 
 // docs/design-audit-plan.md Phase 4: redesigned to match the simpler GA4
 // "Active users in last 30 minutes" reference instead of the previous
@@ -61,7 +64,7 @@ function LivePanel({ domain, siteKey }) {
                 </div>
                 <div className="sa-live__right">
                     <span className="sa-live__countdown">
-                        {open ? `${countdown}s` : `${data.sessions.toLocaleString("de-DE")} active`}
+                        {open ? `${countdown}s` : `${data.sessions.toLocaleString(appLocale())} active`}
                     </span>
                     <button type="button" className="sa-live__toggle" aria-label={open ? "Collapse" : "Expand"}>
                         {open ? "▲" : "▼"}
@@ -73,10 +76,10 @@ function LivePanel({ domain, siteKey }) {
                 <div className="sa-live__body">
                     <div>
                         <p className="sa-live__hero-label">Active users in last 30 minutes</p>
-                        <p className="sa-live__hero-value">{data.sessions.toLocaleString("de-DE")}</p>
+                        <p className="sa-live__hero-value">{data.sessions.toLocaleString(appLocale())}</p>
                         {data.minimal > 0 && (
                             <p className="sa-live__hero-sub">
-                                + {data.minimal.toLocaleString("de-DE")} event{data.minimal !== 1 ? "s" : ""} from
+                                + {data.minimal.toLocaleString(appLocale())} event{data.minimal !== 1 ? "s" : ""} from
                                 visitors without full consent (not counted as users)
                             </p>
                         )}
@@ -99,7 +102,7 @@ function LivePanel({ domain, siteKey }) {
                                 <div className="sa-live__country-bar-wrap">
                                     <div className="sa-live__country-bar" style={{ width: Math.max(4, Math.round((c.events / maxCountryEvents) * 100)) + "%" }} />
                                 </div>
-                                <span className="sa-live__country-value">{c.events.toLocaleString("de-DE")}</span>
+                                <span className="sa-live__country-value">{c.events.toLocaleString(appLocale())}</span>
                             </div>
                         )) : (
                             <p className="sa-live__countries-empty">No visitors right now</p>
@@ -160,7 +163,10 @@ function AreaChart({ daily }) {
 
     if (!daily?.length) return <div className="sa-chart sa-chart--empty">No data for this period</div>;
 
-    const maxVal = Math.max(...daily.map(d => d.minimal + d.full), 1);
+    // Shared tick rule (TrendLineChart's niceTicks, also used by the CMP's
+    // ConsentTrend): round, evenly spaced, no repeated labels on small values.
+    const yTicks = niceTicks(Math.max(...daily.map(d => d.minimal + d.full), 1));
+    const maxVal = yTicks[yTicks.length - 1];
     const n = daily.length;
     const xOf = i => PAD.l + (n === 1 ? cW / 2 : (i / (n - 1)) * cW);
     const yOf = v => PAD.t + cH - (v / maxVal) * cH;
@@ -174,8 +180,7 @@ function AreaChart({ daily }) {
     const fullArea = smoothPath(fullPts)
         + ` L${fullPts[n - 1][0]},${base} L${PAD.l},${base} Z`;
 
-    const yTicks = [0, 0.25, 0.5, 0.75, 1].map(f => Math.round(maxVal * f));
-    const fmtN = v => v >= 10000 ? (v / 1000).toFixed(0) + 'k' : v >= 1000 ? (v / 1000).toFixed(1) + 'k' : String(v);
+    const fmtN = v => formatCount(v, { abbreviate: true });
     const labelIdxs = n <= 1 ? [0] :
         [0, Math.round(n / 4), Math.round(n / 2), Math.round((n * 3) / 4), n - 1]
         .filter((v, idx, a) => a.indexOf(v) === idx && v < n);
@@ -184,13 +189,16 @@ function AreaChart({ daily }) {
         <div className="sa-area-chart">
             <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" style={{ width: "100%", display: "block" }}>
                 <defs>
+                    {/* CMP chart series (tokens.css): --c-data-2 = all visits,
+                        --c-data = with consent. Colours via style: SVG
+                        presentation attributes don't resolve var(). */}
                     <linearGradient id="sa-grad-total" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%"   stopColor="rgba(249,191,64,0.45)" />
-                        <stop offset="100%" stopColor="rgba(249,191,64,0.02)" />
+                        <stop offset="0%"   style={{ stopColor: "rgb(var(--c-data-2) / 0.35)" }} />
+                        <stop offset="100%" style={{ stopColor: "rgb(var(--c-data-2) / 0.02)" }} />
                     </linearGradient>
                     <linearGradient id="sa-grad-full" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%"   stopColor="rgba(74,222,128,0.65)" />
-                        <stop offset="100%" stopColor="rgba(74,222,128,0.04)" />
+                        <stop offset="0%"   style={{ stopColor: "rgb(var(--c-data) / 0.55)" }} />
+                        <stop offset="100%" style={{ stopColor: "rgb(var(--c-data) / 0.04)" }} />
                     </linearGradient>
                 </defs>
 
@@ -201,7 +209,7 @@ function AreaChart({ daily }) {
                             <line x1={PAD.l} y1={y} x2={W - PAD.r} y2={y}
                                 stroke="rgba(255,255,255,0.05)" strokeWidth="1" />
                             <text x={PAD.l - 6} y={y + 4} textAnchor="end"
-                                fontSize="13" fill="rgba(170,170,195,0.75)">
+                                fontSize="13" style={{ fill: "var(--color-text-muted)" }}>
                                 {fmtN(v)}
                             </text>
                         </g>
@@ -210,12 +218,12 @@ function AreaChart({ daily }) {
 
                 <path d={totalArea} fill="url(#sa-grad-total)" />
                 <path d={fullArea}  fill="url(#sa-grad-full)" />
-                <path d={smoothPath(totalPts)} fill="none" stroke="rgba(249,191,64,0.55)" strokeWidth="1.5" />
-                <path d={smoothPath(fullPts)}  fill="none" stroke="rgba(74,222,128,0.85)"  strokeWidth="1.5" />
+                <path d={smoothPath(totalPts)} fill="none" style={{ stroke: "rgb(var(--c-data-2) / 0.8)" }} strokeWidth="1.5" />
+                <path d={smoothPath(fullPts)}  fill="none" style={{ stroke: "rgb(var(--c-data))" }}  strokeWidth="1.5" />
 
                 {labelIdxs.map(i => (
                     <text key={daily[i].date} x={xOf(i)} y={H - PAD.b + 18}
-                        textAnchor="middle" fontSize="13" fill="rgba(170,170,195,0.75)">
+                        textAnchor="middle" fontSize="13" style={{ fill: "var(--color-text-muted)" }}>
                         {daily[i].date.slice(5)}
                     </text>
                 ))}
@@ -236,7 +244,13 @@ function AreaChart({ daily }) {
 // percentage, not a volume, hence the separate `yMax`/`formatValue`
 // handling). Shares smoothPath()/the same W-H-PAD layout as AreaChart so
 // switching hero tabs doesn't visibly jump the chart's proportions.
-function SingleValueChart({ daily, valueOf, color, fillFrom, fillTo, formatValue, yMax, gradientId }) {
+// One chart colour for every single-metric chart: CMP's --c-data ("chart
+// marks that measure something" — not good/bad, so bounce isn't red).
+const DATA_LINE = "rgb(var(--c-data))";
+const DATA_FILL_FROM = "rgb(var(--c-data) / 0.45)";
+const DATA_FILL_TO = "rgb(var(--c-data) / 0.02)";
+
+function SingleValueChart({ daily, valueOf, color = DATA_LINE, fillFrom = DATA_FILL_FROM, fillTo = DATA_FILL_TO, formatValue, yMax, gradientId }) {
     const W = 800, H = 182;
     const PAD = { t: 14, r: 18, b: 34, l: 46 };
     const cW = W - PAD.l - PAD.r, cH = H - PAD.t - PAD.b;
@@ -244,7 +258,9 @@ function SingleValueChart({ daily, valueOf, color, fillFrom, fillTo, formatValue
     if (!daily?.length) return <div className="sa-chart sa-chart--empty">No data for this period</div>;
 
     const values = daily.map(valueOf);
-    const maxVal = yMax ?? Math.max(...values, 1);
+    // Rates keep a fixed 0–yMax scale; counts use the shared niceTicks.
+    const yTicks = yMax != null ? [0, 0.25, 0.5, 0.75, 1].map(f => yMax * f) : niceTicks(Math.max(...values, 1));
+    const maxVal = yTicks[yTicks.length - 1];
     const n = daily.length;
     const xOf = i => PAD.l + (n === 1 ? cW / 2 : (i / (n - 1)) * cW);
     const yOf = v => PAD.t + cH - (v / maxVal) * cH;
@@ -253,8 +269,7 @@ function SingleValueChart({ daily, valueOf, color, fillFrom, fillTo, formatValue
     const pts = daily.map((d, i) => [xOf(i), yOf(valueOf(d))]);
     const area = smoothPath(pts) + ` L${pts[n - 1][0]},${base} L${PAD.l},${base} Z`;
 
-    const yTicks = [0, 0.25, 0.5, 0.75, 1].map(f => maxVal * f);
-    const fmt = formatValue || (v => v >= 10000 ? (v / 1000).toFixed(0) + 'k' : v >= 1000 ? (v / 1000).toFixed(1) + 'k' : String(Math.round(v)));
+    const fmt = formatValue || (v => formatCount(v, { abbreviate: true }));
     const labelIdxs = n <= 1 ? [0] :
         [0, Math.round(n / 4), Math.round(n / 2), Math.round((n * 3) / 4), n - 1]
         .filter((v, idx, a) => a.indexOf(v) === idx && v < n);
@@ -264,8 +279,8 @@ function SingleValueChart({ daily, valueOf, color, fillFrom, fillTo, formatValue
             <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" style={{ width: "100%", display: "block" }}>
                 <defs>
                     <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%"   stopColor={fillFrom} />
-                        <stop offset="100%" stopColor={fillTo} />
+                        <stop offset="0%"   style={{ stopColor: fillFrom }} />
+                        <stop offset="100%" style={{ stopColor: fillTo }} />
                     </linearGradient>
                 </defs>
 
@@ -276,7 +291,7 @@ function SingleValueChart({ daily, valueOf, color, fillFrom, fillTo, formatValue
                             <line x1={PAD.l} y1={y} x2={W - PAD.r} y2={y}
                                 stroke="rgba(255,255,255,0.05)" strokeWidth="1" />
                             <text x={PAD.l - 6} y={y + 4} textAnchor="end"
-                                fontSize="13" fill="rgba(170,170,195,0.75)">
+                                fontSize="13" style={{ fill: "var(--color-text-muted)" }}>
                                 {fmt(v)}
                             </text>
                         </g>
@@ -284,11 +299,11 @@ function SingleValueChart({ daily, valueOf, color, fillFrom, fillTo, formatValue
                 })}
 
                 <path d={area} fill={`url(#${gradientId})`} />
-                <path d={smoothPath(pts)} fill="none" stroke={color} strokeWidth="1.5" />
+                <path d={smoothPath(pts)} fill="none" style={{ stroke: color }} strokeWidth="1.5" />
 
                 {labelIdxs.map(i => (
                     <text key={daily[i].date} x={xOf(i)} y={H - PAD.b + 18}
-                        textAnchor="middle" fontSize="13" fill="rgba(170,170,195,0.75)">
+                        textAnchor="middle" fontSize="13" style={{ fill: "var(--color-text-muted)" }}>
                         {daily[i].date.slice(5)}
                     </text>
                 ))}
@@ -397,8 +412,8 @@ function buildOverviewHeadline({ data, trendEvents, getLastDays }) {
     const events = data.totals.total;
     const consentPct = data.totals.consentRate;
 
-    let headline = `${users.toLocaleString("de-DE")} active user${users === 1 ? "" : "s"} generated `
-        + `${events.toLocaleString("de-DE")} event${events === 1 ? "" : "s"} this period`;
+    let headline = `${users.toLocaleString(appLocale())} active user${users === 1 ? "" : "s"} generated `
+        + `${events.toLocaleString(appLocale())} event${events === 1 ? "" : "s"} this period`;
     if (trendEvents != null && Number.isFinite(trendEvents)) {
         headline += `, ${trendEvents >= 0 ? "up" : "down"} ${formatPercent(Math.abs(trendEvents))} from the period before`;
     }
@@ -407,7 +422,7 @@ function buildOverviewHeadline({ data, trendEvents, getLastDays }) {
     let subline = `${formatPercent(consentPct)} statistics consent rate over the last ${getLastDays} days`;
     if (data.industryBenchmark) {
         const diff = consentPct - data.industryBenchmark.consentRatePct;
-        const diffStr = Math.abs(diff).toLocaleString("de-DE", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+        const diffStr = Math.abs(diff).toLocaleString(appLocale(), { minimumFractionDigits: 1, maximumFractionDigits: 1 });
         subline += ` — ${diffStr}pts ${diff >= 0 ? "above" : "below"} the ${data.industryBenchmark.label} average`;
     }
 
@@ -520,18 +535,17 @@ function buildKpiCardMeta({ data, siteConfig, trendEngaged, trendEvents, trendSe
     return {
         revenue: {
             icon: <IconCash />, label: "Revenue", value: fmtRevenue(data.totals.revenue, currency),
-            sub: data.totals.transactions ? `${data.totals.transactions.toLocaleString("de-DE")} transactions` : "ecommerce events",
+            sub: data.totals.transactions ? `${data.totals.transactions.toLocaleString(appLocale())} transactions` : "ecommerce events",
             variant: "revenue", hasDaily: false,
         },
         users: {
-            icon: <IconRadio />, label: "Active users", value: data.totals.engagedUsers.toLocaleString("de-DE"),
+            icon: <IconRadio />, label: "Active users", value: data.totals.engagedUsers.toLocaleString(appLocale()),
             sub: "engaged: 10s+, clicked, or 2+ pages", variant: "live", trend: trendEngaged,
             // api/analytics-report.js's dailyEngagedRes — same engagement
             // criteria as the engagedUsers total, grouped by day (Phase 4).
             hasDaily: true,
             renderChart: (daily) => (
                 <SingleValueChart daily={daily} valueOf={d => d.engaged}
-                    color="rgba(96,165,250,0.85)" fillFrom="rgba(96,165,250,0.45)" fillTo="rgba(96,165,250,0.02)"
                     gradientId="sa-grad-users" />
             ),
         },
@@ -548,26 +562,24 @@ function buildKpiCardMeta({ data, siteConfig, trendEngaged, trendEvents, trendSe
             renderChart: (daily) => (
                 <SingleValueChart daily={daily}
                     valueOf={d => d.uniqueSessions > 0 ? ((d.uniqueSessions - d.engaged) / d.uniqueSessions) * 100 : 0}
-                    color="rgba(239,68,68,0.75)" fillFrom="rgba(239,68,68,0.4)" fillTo="rgba(239,68,68,0.02)"
                     formatValue={v => formatPercent(v, 0)} yMax={100} gradientId="sa-grad-bounce" />
             ),
         },
         events: {
             icon: <IconBarChart />, label: bt === "media" ? "Page views" : "Total events",
-            value: data.totals.total.toLocaleString("de-DE"),
-            sub: `${data.totals.minimal.toLocaleString("de-DE")} minimal · ${data.totals.full.toLocaleString("de-DE")} full`,
+            value: data.totals.total.toLocaleString(appLocale()),
+            sub: `${data.totals.minimal.toLocaleString(appLocale())} minimal · ${data.totals.full.toLocaleString(appLocale())} full`,
             trend: trendEvents, hasDaily: true,
             renderChart: (daily) => <AreaChart daily={daily} />,
         },
         sessions: {
-            icon: <IconUsers />, label: "Unique sessions", value: data.totals.uniqueSessions.toLocaleString("de-DE"),
+            icon: <IconUsers />, label: "Unique sessions", value: data.totals.uniqueSessions.toLocaleString(appLocale()),
             sub: "consent-gated sessions only", trend: trendSessions,
             // dailyRes now carries unique_sessions per day alongside the
             // existing minimal/full columns — one extra column, same query.
             hasDaily: true,
             renderChart: (daily) => (
                 <SingleValueChart daily={daily} valueOf={d => d.uniqueSessions}
-                    color="rgba(167,139,250,0.85)" fillFrom="rgba(167,139,250,0.45)" fillTo="rgba(167,139,250,0.02)"
                     gradientId="sa-grad-sessions" />
             ),
         },
@@ -582,7 +594,6 @@ function buildKpiCardMeta({ data, siteConfig, trendEngaged, trendEvents, trendSe
             renderChart: (daily) => (
                 <SingleValueChart daily={daily}
                     valueOf={d => (d.minimal + d.full) > 0 ? (d.full / (d.minimal + d.full)) * 100 : 0}
-                    color="rgba(74,222,128,0.85)" fillFrom="rgba(74,222,128,0.45)" fillTo="rgba(74,222,128,0.02)"
                     formatValue={v => formatPercent(v, 0)} yMax={100} gradientId="sa-grad-consent" />
             ),
             children: <IndustryBenchmarkNote benchmark={data.industryBenchmark} actualPct={consentPct} />,
@@ -592,11 +603,11 @@ function buildKpiCardMeta({ data, siteConfig, trendEngaged, trendEvents, trendSe
             sub: data.countries[0] ? `Top: ${data.countries[0].code}` : null, hasDaily: false,
         },
         leads: {
-            icon: <IconTarget />, label: "Quality leads", value: (data.totals.qualityLeads ?? 0).toLocaleString("de-DE"),
+            icon: <IconTarget />, label: "Quality leads", value: (data.totals.qualityLeads ?? 0).toLocaleString(appLocale()),
             sub: "engaged + page/event match", variant: "live", hasDaily: false,
         },
         conversions: {
-            icon: <IconFunnel />, label: "Conversions", value: totalConversions(data.conversions).toLocaleString("de-DE"),
+            icon: <IconFunnel />, label: "Conversions", value: totalConversions(data.conversions).toLocaleString(appLocale()),
             sub: "purchase, lead, and other registered events", variant: "live", hasDaily: false,
         },
         conversionRate: {
@@ -759,6 +770,30 @@ export default function SiteAnalytics() {
     const bounceRate     = useMemo(() => data?.totals?.uniqueSessions > 0 ? (data.totals.uniqueSessions - data.totals.engagedUsers) / data.totals.uniqueSessions * 100 : null, [data]);
     const prevBounceRate = useMemo(() => prevData?.totals?.uniqueSessions > 0 ? (prevData.totals.uniqueSessions - prevData.totals.engagedUsers) / prevData.totals.uniqueSessions * 100 : null, [prevData]);
     const trendBounce    = useMemo(() => pctChange(bounceRate, prevBounceRate), [bounceRate, prevBounceRate]);
+
+    // Which hero changes rest on too few items to mean anything (shown as
+    // "Too little data" instead of an arrow), and the counts behind each —
+    // see src/Functions/smallSample.js. Counts compare the two periods'
+    // values; rates (consent, bounce) their denominators.
+    const lowData = useMemo(() => {
+        const t = data?.totals, p = prevData?.totals;
+        if (!t) return {};
+        const n = (v) => Number(v || 0).toLocaleString(appLocale());
+        const out = {};
+        if (p) {
+            if (isLowDataCount(t.engagedUsers, p.engagedUsers)) out.users = `${n(p.engagedUsers)} → ${n(t.engagedUsers)} active users`;
+            if (isLowDataCount(t.total, p.total)) out.events = `${n(p.total)} → ${n(t.total)} events`;
+            if (isLowDataCount(t.uniqueSessions, p.uniqueSessions)) out.sessions = `${n(p.uniqueSessions)} → ${n(t.uniqueSessions)} sessions`;
+            if (isLowDataRate(t.total, p.total)) out.consent = `Based on ${n(p.total)} and ${n(t.total)} events`;
+            if (isLowDataRate(t.uniqueSessions, p.uniqueSessions)) out.bounce = `Based on ${n(p.uniqueSessions)} and ${n(t.uniqueSessions)} sessions`;
+        }
+        // The value itself on a small base (e.g. a 99,5% bounce rate from 3 sessions)
+        out.basis = {
+            bounce: t.uniqueSessions < MIN_BASE ? `Based on only ${n(t.uniqueSessions)} sessions` : undefined,
+            consent: t.total < MIN_BASE ? `Based on only ${n(t.total)} events` : undefined,
+        };
+        return out;
+    }, [data, prevData]);
 
     // Home = insights + snapshot; every card links into a sidebar report.
     const reportPaths = useMemo(() => ({
@@ -941,8 +976,9 @@ export default function SiteAnalytics() {
                                             key: id,
                                             label: cardMeta[id].label,
                                             value: cardMeta[id].value,
+                                            basis: lowData.basis?.[id],
                                             delta: cardMeta[id].trend != null && Number.isFinite(cardMeta[id].trend)
-                                                ? { value: cardMeta[id].trend }
+                                                ? { value: cardMeta[id].trend, lowData: !!lowData[id], basis: lowData[id] }
                                                 : null,
                                         }).filter(Boolean)}
                                         active={activeHeroMetric}

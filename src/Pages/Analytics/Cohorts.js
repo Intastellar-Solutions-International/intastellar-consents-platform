@@ -3,6 +3,7 @@ import { ScannerHost } from "../../API/host.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import { authHeaders, useAnalyticsPageChrome, useCompareRange } from "./_shared.js";
 import "./Analytics.css";
+import { appLocale } from "../../Functions/format.js";
 
 const COHORTS_URL = `${ScannerHost}/api/analytics-cohorts`;
 
@@ -126,7 +127,7 @@ export default function AnalyticsCohorts() {
                                             return (
                                                 <tr key={cohort.cohortWeek}>
                                                     <td className="sa-cohort-table__week">{fmtWeek(cohort.cohortWeek)}</td>
-                                                    <td className="sa-cohort-table__size">{cohort.cohortSize.toLocaleString("de-DE")}</td>
+                                                    <td className="sa-cohort-table__size">{cohort.cohortSize.toLocaleString(appLocale())}</td>
                                                     {offsets.map(o => {
                                                         const sessions = weekMap.get(o);
                                                         const pct = sessions != null ? retentionPct(sessions, cohort.cohortSize) : null;
@@ -134,7 +135,7 @@ export default function AnalyticsCohorts() {
                                                             <td key={o}
                                                                 className="sa-cohort-table__cell"
                                                                 style={{ background: pctColor(pct) }}
-                                                                title={sessions != null ? `${sessions.toLocaleString("de-DE")} sessions` : "No data"}>
+                                                                title={sessions != null ? `${sessions.toLocaleString(appLocale())} sessions` : "No data"}>
                                                                 {pct != null ? `${pct}%` : "—"}
                                                             </td>
                                                         );

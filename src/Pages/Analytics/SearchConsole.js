@@ -15,6 +15,7 @@ import TrendLineChart from "./TrendLineChart.js";
 import StatusBadge from "./components/StatusBadge.js";
 import searchConsoleLogo from "../../Components/Header/icons/search-console.svg";
 import "./Analytics.css";
+import { appLocale } from "../../Functions/format.js";
 
 const VERDICT_STATUS = { PASS: "good", FAIL: "bad", PARTIAL: "warn", NEUTRAL: "neutral" };
 const VERDICT_LABEL  = { PASS: "Indexed", FAIL: "Not indexed", PARTIAL: "Partial", NEUTRAL: "Neutral" };
@@ -109,10 +110,10 @@ function DimensionTable({ icon, title, rows, keyLabel }) {
                     {(rows || []).map((r, i) => (
                         <tr key={i}>
                             <td className="sa-table__path" title={r.key}>{r.key}</td>
-                            <td className="sa-table__num">{r.clicks.toLocaleString("de-DE")}</td>
-                            <td className="sa-table__num">{r.impressions.toLocaleString("de-DE")}</td>
+                            <td className="sa-table__num">{r.clicks.toLocaleString(appLocale())}</td>
+                            <td className="sa-table__num">{r.impressions.toLocaleString(appLocale())}</td>
                             <td className="sa-table__num">{formatPercent(r.ctr * 100)}</td>
-                            <td className="sa-table__num">{r.position.toLocaleString("de-DE", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}</td>
+                            <td className="sa-table__num">{r.position.toLocaleString(appLocale(), { minimumFractionDigits: 1, maximumFractionDigits: 1 })}</td>
                         </tr>
                     ))}
                     {!rows?.length && (
@@ -147,10 +148,10 @@ function QueryPageTable({ icon, title, rows }) {
                         <tr key={i}>
                             <td title={r.keys?.[0]}>{r.keys?.[0] || "—"}</td>
                             <td className="sa-table__path" title={r.keys?.[1]}>{r.keys?.[1] || "—"}</td>
-                            <td className="sa-table__num">{r.clicks.toLocaleString("de-DE")}</td>
-                            <td className="sa-table__num">{r.impressions.toLocaleString("de-DE")}</td>
+                            <td className="sa-table__num">{r.clicks.toLocaleString(appLocale())}</td>
+                            <td className="sa-table__num">{r.impressions.toLocaleString(appLocale())}</td>
                             <td className="sa-table__num">{formatPercent(r.ctr * 100)}</td>
-                            <td className="sa-table__num">{r.position.toLocaleString("de-DE", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}</td>
+                            <td className="sa-table__num">{r.position.toLocaleString(appLocale(), { minimumFractionDigits: 1, maximumFractionDigits: 1 })}</td>
                         </tr>
                     ))}
                     {!rows?.length && (
@@ -191,7 +192,7 @@ function IndexingStatusPanel({ icon, rows }) {
                                     label={VERDICT_LABEL[r.verdict] || r.coverageState || "Unknown"}
                                 />
                             </td>
-                            <td>{r.lastCrawlTime ? new Date(r.lastCrawlTime).toLocaleDateString("de-DE") : "—"}</td>
+                            <td>{r.lastCrawlTime ? new Date(r.lastCrawlTime).toLocaleDateString(appLocale()) : "—"}</td>
                         </tr>
                     ))}
                     {!rows?.length && (
@@ -244,10 +245,10 @@ function useGscCoverage(domain, verdict) {
 function CoverageSummary({ summary }) {
     return (
         <div className="sa-kpi-row">
-            <KpiCard icon={<IconGlobe />} label="Tracked URLs" value={summary.total.toLocaleString("de-DE")} />
-            <KpiCard icon={<IconTarget />} label="Indexed" value={summary.indexed.toLocaleString("de-DE")} />
-            <KpiCard icon={<IconTarget />} label="Not indexed" value={summary.notIndexed.toLocaleString("de-DE")} />
-            <KpiCard icon={<IconTrendingUp />} label="Pending check" value={summary.pending.toLocaleString("de-DE")} />
+            <KpiCard icon={<IconGlobe />} label="Tracked URLs" value={summary.total.toLocaleString(appLocale())} />
+            <KpiCard icon={<IconTarget />} label="Indexed" value={summary.indexed.toLocaleString(appLocale())} />
+            <KpiCard icon={<IconTarget />} label="Not indexed" value={summary.notIndexed.toLocaleString(appLocale())} />
+            <KpiCard icon={<IconTrendingUp />} label="Pending check" value={summary.pending.toLocaleString(appLocale())} />
         </div>
     );
 }
@@ -293,8 +294,8 @@ function CoverageTable({ rows, verdict, setVerdict }) {
                                     <StatusBadge status="neutral" label="Pending check" />
                                 )}
                             </td>
-                            <td>{r.lastCrawlTime ? new Date(r.lastCrawlTime).toLocaleDateString("de-DE") : "—"}</td>
-                            <td>{r.checkedAt ? new Date(r.checkedAt).toLocaleDateString("de-DE") : "—"}</td>
+                            <td>{r.lastCrawlTime ? new Date(r.lastCrawlTime).toLocaleDateString(appLocale()) : "—"}</td>
+                            <td>{r.checkedAt ? new Date(r.checkedAt).toLocaleDateString(appLocale()) : "—"}</td>
                         </tr>
                     ))}
                     {!rows?.length && (
@@ -417,10 +418,10 @@ export default function SearchConsole() {
                                         {section === "overview" && (
                                             <>
                                                 <div className="sa-kpi-row">
-                                                    <KpiCard icon={<IconTarget />} label="Clicks" value={totals.clicks.toLocaleString("de-DE")} />
-                                                    <KpiCard icon={<IconTrendingUp />} label="Impressions" value={totals.impressions.toLocaleString("de-DE")} />
+                                                    <KpiCard icon={<IconTarget />} label="Clicks" value={totals.clicks.toLocaleString(appLocale())} />
+                                                    <KpiCard icon={<IconTrendingUp />} label="Impressions" value={totals.impressions.toLocaleString(appLocale())} />
                                                     <KpiCard icon={<IconTarget />} label="Avg. CTR" value={totals.ctr != null ? formatPercent(totals.ctr) : "—"} />
-                                                    <KpiCard icon={<IconTrendingUp />} label="Avg. position" value={totals.avgPosition != null ? totals.avgPosition.toLocaleString("de-DE", { minimumFractionDigits: 1, maximumFractionDigits: 1 }) : "—"} />
+                                                    <KpiCard icon={<IconTrendingUp />} label="Avg. position" value={totals.avgPosition != null ? totals.avgPosition.toLocaleString(appLocale(), { minimumFractionDigits: 1, maximumFractionDigits: 1 }) : "—"} />
                                                 </div>
 
                                                 <div className="sa-panel">

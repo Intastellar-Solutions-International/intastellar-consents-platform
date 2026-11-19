@@ -1,5 +1,6 @@
 import { BarSegment, formatDuration } from "./_shared.js";
 import { IconClock } from "./Icons.js";
+import { appLocale } from "../../Functions/format.js";
 
 const BUCKET_COLOR = "rgba(192,159,83,0.7)";
 
@@ -14,7 +15,7 @@ export default function TimeToConvert({ timeToConvert, totalConversions }) {
             <h3 className="sa-panel__title">
                 <IconClock className="sa-icon" /> Time to convert
                 <span className="sa-panel__consent-note">
-                    median {formatDuration(timeToConvert?.medianSeconds)} &middot; {sampleSize.toLocaleString("de-DE")} measured
+                    median {formatDuration(timeToConvert?.medianSeconds)} &middot; {sampleSize.toLocaleString(appLocale())} measured
                 </span>
             </h3>
 
@@ -33,14 +34,14 @@ export default function TimeToConvert({ timeToConvert, totalConversions }) {
                                     <div className="sa-bar">
                                         <BarSegment pct={pct} color={BUCKET_COLOR} title={`${b.count} conversions`} />
                                     </div>
-                                    <span className="sa-consent-row__pct">{b.count.toLocaleString("de-DE")}</span>
+                                    <span className="sa-consent-row__pct">{b.count.toLocaleString(appLocale())}</span>
                                 </div>
                             );
                         })}
                     </div>
                     {unmeasurable > 0 && (
                         <p className="sa-panel__consent-note sa-ttc-note">
-                            {unmeasurable.toLocaleString("de-DE")} conversion{unmeasurable !== 1 ? "s" : ""} without analytics
+                            {unmeasurable.toLocaleString(appLocale())} conversion{unmeasurable !== 1 ? "s" : ""} without analytics
                             consent can't be timed — no session to measure from.
                         </p>
                     )}

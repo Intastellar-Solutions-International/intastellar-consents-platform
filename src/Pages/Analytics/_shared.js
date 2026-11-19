@@ -8,6 +8,7 @@ import {
 } from "../../Functions/domainPathSegments.js";
 import { ymdLocal } from "../../Components/Filter/filterDatePresets.js";
 import { useExcludeBots } from "../../Functions/botFilter.js";
+import { appLocale } from "../../Functions/format.js";
 
 export function authHeaders() {
     return {
@@ -414,7 +415,7 @@ export function LiveBotNote({ data }) {
     return (
         <p className="sa-live__bots">
             {excludeBots
-                ? <>{hidden.toLocaleString("de-DE")} hit{hidden === 1 ? "" : "s"} from data-centre IPs without consent hidden (likely bots).</>
+                ? <>{hidden.toLocaleString(appLocale())} hit{hidden === 1 ? "" : "s"} from data-centre IPs without consent hidden (likely bots).</>
                 : <>Including likely bots (data-centre IPs without consent).</>}
             {" "}
             <button type="button" className="sa-live__bots-toggle" onClick={() => setExcludeBots(!excludeBots)}>
@@ -590,20 +591,18 @@ export function ConsentBar({ label, yes, no }) {
     );
 }
 
-// Single formatting convention for the whole Analytics dashboard: de-DE
-// (period thousands separator, comma decimal separator) — already the
-// convention every table on the dashboard uses via .toLocaleString("de-DE")
-// for counts. Percentages/rates were inconsistently built with .toFixed()
-// or raw string concatenation instead, which always renders a period
-// decimal regardless of locale (e.g. "9.8%" next to de-DE counts like
-// "1.352") — this is the one place that should be used for any percentage
-// or rate shown anywhere on the dashboard.
+// Single formatting convention for both products: the user's app locale
+// (appLocale(), Settings → Preferences) — same as the CMP's own
+// src/Functions/format.js. Analytics used to hardcode de-DE, so an English
+// user saw "1,234.5" in the CMP and "1.234,5" here. Percentages/rates were
+// once built with .toFixed() (always a period decimal); this is the one
+// place for any percentage or rate shown on the dashboard.
 export function formatPercent(value, digits = 1) {
     if (value == null || !Number.isFinite(value)) return "—";
-    return value.toLocaleString("de-DE", { minimumFractionDigits: digits, maximumFractionDigits: digits }) + "%";
+    return value.toLocaleString(appLocale(), { minimumFractionDigits: digits, maximumFractionDigits: digits }) + "%";
 }
 
-// One canonical symbol map + locale (de-DE, matching formatPercent/every
+// One canonical symbol map + the app locale (matching formatPercent/every
 // count on the dashboard) instead of the ~7 near-duplicate, subtly
 // different copies this used to be spread across (AdSpend.js,
 // ConversionCampaigns.js, ReportBuilder.js, ReportView.js, index.js each
@@ -621,23 +620,21 @@ export const CURRENCY_SYMBOLS = {
 export function formatCurrency(amount, currency, { cents = false } = {}) {
     const value = cents ? Number(amount || 0) / 100 : Number(amount || 0);
     const symbol = CURRENCY_SYMBOLS[currency] ?? (currency ? currency + " " : "");
-    return `${symbol}${value.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    return `${symbol}${value.toLocaleString(appLocale(), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
-// One shared number formatter, de-DE locale throughout (same reasoning as
+// One shared number formatter in the app locale (same reasoning as
 // formatPercent/formatCurrency above) — BandLineChart's y-axis labels
-// (Performance.js) used to abbreviate with an English-style "1.1k" (period
-// decimal) right next to other dashboard numbers formatted "9.829" (de-DE,
-// period thousands-separator) — same digit shape, opposite punctuation
-// meaning. `abbreviate: true` now abbreviates in the same de-DE convention
-// ("1,1k") instead of switching locale conventions entirely. See
-// docs/analytics-audit-plan.md item 12.
+// (Performance.js) once abbreviated in a different convention from the
+// numbers next to them. `abbreviate: true` abbreviates in the same locale
+// ("1,1k" in German, "1.1k" in English). See docs/analytics-audit-plan.md
+// item 12.
 export function formatCount(n, { abbreviate = false } = {}) {
     if (n == null || !Number.isFinite(n)) return "—";
     if (abbreviate && Math.abs(n) >= 1000) {
-        return (n / 1000).toLocaleString("de-DE", { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + "k";
+        return (n / 1000).toLocaleString(appLocale(), { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + "k";
     }
-    return Math.round(n).toLocaleString("de-DE");
+    return Math.round(n).toLocaleString(appLocale());
 }
 
 export function formatDuration(seconds) {
@@ -645,8 +642,8 @@ export function formatDuration(seconds) {
     if (seconds < 60) return `${Math.round(seconds)}s`;
     if (seconds < 3600) return `${Math.round(seconds / 60)}m`;
     const oneDecimal = { minimumFractionDigits: 1, maximumFractionDigits: 1 };
-    if (seconds < 86400) return `${(seconds / 3600).toLocaleString("de-DE", oneDecimal)}h`;
-    return `${(seconds / 86400).toLocaleString("de-DE", oneDecimal)}d`;
+    if (seconds < 86400) return `${(seconds / 3600).toLocaleString(appLocale(), oneDecimal)}h`;
+    return `${(seconds / 86400).toLocaleString(appLocale(), oneDecimal)}d`;
 }
 
 // docs/design-audit-plan.md Phase 2 item 5: element names shown as raw
@@ -699,7 +696,7 @@ export function IndustryBenchmarkNote({ benchmark, actualPct }) {
         <div className="sa-benchmark-note">
             <span className="sa-benchmark-note__label">{benchmark.label} avg: {benchmark.consentRatePct}%</span>
             <span className={"sa-benchmark-note__diff" + (up ? " sa-benchmark-note__diff--up" : " sa-benchmark-note__diff--down")}>
-                {up ? "▲" : "▼"} {Math.abs(diff).toLocaleString("de-DE", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}pts {up ? "above" : "below"} average
+                {up ? "▲" : "▼"} {Math.abs(diff).toLocaleString(appLocale(), { minimumFractionDigits: 1, maximumFractionDigits: 1 })}pts {up ? "above" : "below"} average
             </span>
             <InfoTip text="Reference estimate, not a live average computed from other customers' traffic. Set the industry in Settings → Analytics Script." />
         </div>

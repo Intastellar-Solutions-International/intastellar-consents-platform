@@ -2,6 +2,7 @@ const { useState, useEffect, useMemo } = React;
 import { ScannerHost } from "../../API/host.js";
 import { authHeaders } from "./_shared.js";
 import { IconFunnel } from "./Icons.js";
+import { appLocale } from "../../Functions/format.js";
 
 const KIND_LABEL = {
     view_item: "Viewed product", add_to_cart: "Added to cart", view_basket: "Viewed basket",
@@ -77,7 +78,7 @@ export default function ConversionFunnel({ domain, funnel, totalConversions, lin
                                 <div className="sa-funnel-step__fill" style={{ width: pct + "%" }} />
                             </div>
                             <span className="sa-funnel-step__value">
-                                {step.sessions.toLocaleString("de-DE")}
+                                {step.sessions.toLocaleString(appLocale())}
                                 <span className="sa-funnel-step__pct">({pct}%)</span>
                             </span>
                         </div>
@@ -87,8 +88,8 @@ export default function ConversionFunnel({ domain, funnel, totalConversions, lin
 
             {funnelSteps.length > 0 && unlinked > 0 && (
                 <p className="sa-panel__consent-note sa-funnel-note">
-                    Session-linked conversions only — {unlinked.toLocaleString("de-DE")} of{" "}
-                    {(totalConversions || 0).toLocaleString("de-DE")} conversions couldn't be tied to a
+                    Session-linked conversions only — {unlinked.toLocaleString(appLocale())} of{" "}
+                    {(totalConversions || 0).toLocaleString(appLocale())} conversions couldn't be tied to a
                     session (no analytics consent) and aren't reflected in this funnel.
                 </p>
             )}

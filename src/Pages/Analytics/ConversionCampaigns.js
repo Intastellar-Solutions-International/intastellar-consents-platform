@@ -2,6 +2,7 @@ const { useState, useEffect, useMemo } = React;
 import { ScannerHost } from "../../API/host.js";
 import { authHeaders, formatCurrency } from "./_shared.js";
 import { IconMegaphone, IconChevronDown } from "./Icons.js";
+import { appLocale } from "../../Functions/format.js";
 
 const PLATFORM_LABEL = { meta_ads: "Meta", google_ads: "Google Ads", microsoft_ads: "Microsoft Ads" };
 
@@ -147,7 +148,7 @@ export default function ConversionCampaigns({ domain, fromIso, toIso, byCampaign
                             {platformRows.map(p => (
                                 <tr key={p.platform}>
                                     <td>{PLATFORM_LABEL[p.platform] || "Other paid source"}</td>
-                                    <td className="sa-table__num">{p.conversions.toLocaleString("de-DE")}</td>
+                                    <td className="sa-table__num">{p.conversions.toLocaleString(appLocale())}</td>
                                     <td className="sa-table__num">{p.hasSpend ? formatCurrency(p.spend, p.currency) : "—"}</td>
                                     <td className="sa-table__num">
                                         {p.costPerConversion != null ? formatCurrency(p.costPerConversion, p.currency) : "—"}
@@ -211,7 +212,7 @@ export default function ConversionCampaigns({ domain, fromIso, toIso, byCampaign
                                         )}
                                     </td>
                                     <td>{[r.source, r.medium].filter(Boolean).join(" / ") || "—"}</td>
-                                    <td className="sa-table__num">{r.count.toLocaleString("de-DE")}</td>
+                                    <td className="sa-table__num">{r.count.toLocaleString(appLocale())}</td>
                                     <td className="sa-table__num">
                                         {r.ad ? formatCurrency(r.ad.spend, r.ad.currency) : "—"}
                                     </td>
@@ -227,7 +228,7 @@ export default function ConversionCampaigns({ domain, fromIso, toIso, byCampaign
                                                 {(r.events || []).map(ev => (
                                                     <span key={ev.name} className="sa-campaign-event-chip">
                                                         {ev.label}
-                                                        <b>{ev.count.toLocaleString("de-DE")}</b>
+                                                        <b>{ev.count.toLocaleString(appLocale())}</b>
                                                     </span>
                                                 ))}
                                             </div>

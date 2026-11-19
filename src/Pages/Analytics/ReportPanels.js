@@ -7,6 +7,7 @@
 import { MiniBar, formatPercent, elementLabel } from "./_shared.js";
 import { IconExternalLink, IconCursorClick, IconShieldCheck } from "./Icons.js";
 import { STATISTICS_CONSENT } from "../../Functions/consentMetrics.js";
+import { appLocale } from "../../Functions/format.js";
 
 export function OutboundClicksPanel({ data }) {
     const rows = data?.topOutbound || [];
@@ -16,7 +17,7 @@ export function OutboundClicksPanel({ data }) {
         <div className="sa-panel">
             <h3 className="sa-panel__title">
                 <IconExternalLink className="sa-icon" /> Outbound clicks
-                <span className="sa-panel__consent-note">{(data.outboundClicks || 0).toLocaleString("de-DE")} total</span>
+                <span className="sa-panel__consent-note">{(data.outboundClicks || 0).toLocaleString(appLocale())} total</span>
             </h3>
             <table className="sa-table">
                 <thead>
@@ -30,7 +31,7 @@ export function OutboundClicksPanel({ data }) {
                     {rows.map(o => (
                         <tr key={o.host}>
                             <td className="sa-table__path">{o.host}</td>
-                            <td className="sa-table__num">{o.clicks.toLocaleString("de-DE")}</td>
+                            <td className="sa-table__num">{o.clicks.toLocaleString(appLocale())}</td>
                             <td className="sa-table__bar">
                                 <MiniBar value={o.clicks} max={max} />
                             </td>
@@ -76,7 +77,7 @@ export function FrustrationPanel({ data }) {
                                     {s.elementClass && <span className="sa-rage__cls">.{s.elementClass.split(" ").filter(Boolean).join(" .")}</span>}
                                     {!s.elementId && !s.elementClass && <span className="sa-rage__none">—</span>}
                                 </td>
-                                <td className="sa-table__num">{s.clicks.toLocaleString("de-DE")}</td>
+                                <td className="sa-table__num">{s.clicks.toLocaleString(appLocale())}</td>
                                 <td className="sa-table__bar">
                                     <MiniBar value={s.clicks} max={maxSelector} color="rgb(var(--c-danger) / 0.45)" />
                                 </td>
@@ -98,7 +99,7 @@ export function FrustrationPanel({ data }) {
                         {pages.map(p => (
                             <tr key={p.page}>
                                 <td className="sa-table__path">{p.page}</td>
-                                <td className="sa-table__num">{p.rageClicks.toLocaleString("de-DE")}</td>
+                                <td className="sa-table__num">{p.rageClicks.toLocaleString(appLocale())}</td>
                                 <td className="sa-table__num">{p.rate != null ? `${p.rate}%` : "—"}</td>
                             </tr>
                         ))}
@@ -138,11 +139,11 @@ export function ConsentImpactPanel({ impact }) {
                 </div>
                 <div className="sa-ci-kpi">
                     <span className="sa-ci-kpi__label">Observed sessions</span>
-                    <span className="sa-ci-kpi__value">{observedSessions.toLocaleString("de-DE")}</span>
+                    <span className="sa-ci-kpi__value">{observedSessions.toLocaleString(appLocale())}</span>
                 </div>
                 <div className="sa-ci-kpi">
                     <span className="sa-ci-kpi__label">Estimated true total</span>
-                    <span className="sa-ci-kpi__value">{estimatedTrue.toLocaleString("de-DE")}</span>
+                    <span className="sa-ci-kpi__value">{estimatedTrue.toLocaleString(appLocale())}</span>
                     <span className="sa-ci-kpi__note">~{hiddenPct}% of traffic uncounted in session analytics</span>
                 </div>
             </div>

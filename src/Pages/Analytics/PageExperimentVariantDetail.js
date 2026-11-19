@@ -7,6 +7,7 @@ import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import { ScannerHost } from "../../API/host.js";
 import { authHeaders, InfoTip, formatPercent } from "./_shared.js";
 import "./Analytics.css";
+import { appLocale } from "../../Functions/format.js";
 
 function fmtDuration(seconds) {
     if (seconds == null) return "—";
@@ -97,7 +98,7 @@ function CwvSection({ cwv }) {
             )}
 
             <p className="sa-muted" style={{ fontSize: 11, marginTop: 6 }}>
-                Based on {sampleCount.toLocaleString("de-DE")} full-consent session{sampleCount !== 1 ? "s" : ""}.
+                Based on {sampleCount.toLocaleString(appLocale())} full-consent session{sampleCount !== 1 ? "s" : ""}.
             </p>
         </>
     );
@@ -191,7 +192,7 @@ export default function PageExperimentVariantDetail() {
                                     <>
                                         <div className="pxp-detail-stats">
                                             <div className="pxp-detail-stat">
-                                                <span className="pxp-detail-stat__value">{detail.uniqueSessions.toLocaleString("de-DE")}</span>
+                                                <span className="pxp-detail-stat__value">{detail.uniqueSessions.toLocaleString(appLocale())}</span>
                                                 <span className="pxp-detail-stat__label">
                                                     Visitors
                                                     <InfoTip text="Unique sessions exposed to this variant — a repeat visit from the same session only counts once. Compare to Exposures on the results table, which counts every view including repeats." />
@@ -256,7 +257,7 @@ export default function PageExperimentVariantDetail() {
                                                         {detail.conversions.map(c => (
                                                             <tr key={c.name}>
                                                                 <td>{c.label}</td>
-                                                                <td className="sa-table__num">{c.convertedSessions.toLocaleString("de-DE")}</td>
+                                                                <td className="sa-table__num">{c.convertedSessions.toLocaleString(appLocale())}</td>
                                                                 <td className="sa-table__num">
                                                                     {c.conversionRate != null ? formatPercent(c.conversionRate * 100, 2) : "—"}
                                                                 </td>
@@ -321,7 +322,7 @@ export default function PageExperimentVariantDetail() {
                                                                             <div className="pxp-clicks-table__bar-wrap">
                                                                                 <div className="pxp-clicks-table__bar" style={{ width: `${barW}%` }} />
                                                                             </div>
-                                                                            {el.n.toLocaleString("de-DE")}
+                                                                            {el.n.toLocaleString(appLocale())}
                                                                         </td>
                                                                     </tr>
                                                                 );
@@ -364,9 +365,9 @@ export default function PageExperimentVariantDetail() {
                                                                             <div className="pxp-clicks-table__bar-wrap">
                                                                                 <div className="pxp-clicks-table__bar" style={{ width: `${barW}%` }} />
                                                                             </div>
-                                                                            {p.pageviews.toLocaleString("de-DE")}
+                                                                            {p.pageviews.toLocaleString(appLocale())}
                                                                         </td>
-                                                                        <td className="sa-table__num">{p.sessions.toLocaleString("de-DE")}</td>
+                                                                        <td className="sa-table__num">{p.sessions.toLocaleString(appLocale())}</td>
                                                                     </tr>
                                                                 );
                                                             })}

@@ -10,6 +10,7 @@ import { authHeaders, useAnalyticsPageChrome, useCompareRange } from "./_shared.
 import { IconVideo } from "./Icons.js";
 import RecordingPlayer from "./RecordingPlayer.js";
 import "./Analytics.css";
+import { appLocale } from "../../Functions/format.js";
 
 const RECORDINGS_URL = `${ScannerHost}/api/analytics-recordings`;
 const SITE_URL       = `${ScannerHost}/api/analytics-site`;
@@ -170,7 +171,7 @@ export default function AnalyticsRecordings() {
                                 <tbody>
                                     {recordings.map(r => (
                                         <tr key={r.id}>
-                                            <td>{new Date(r.startedAt).toLocaleString("de-DE")}</td>
+                                            <td>{new Date(r.startedAt).toLocaleString(appLocale())}</td>
                                             <td className="sa-table__path" title={r.entryPathname}>{r.entryPathname}</td>
                                             <td style={{ textTransform: "capitalize" }}>{r.deviceType || "—"}</td>
                                             <td>{r.browserFamily || "—"}</td>
@@ -235,7 +236,7 @@ export function AnalyticsRecordingDetail() {
                             <div className="sa-panel sa-recording-meta" style={{ marginTop: 12 }}>
                                 <div className="sa-recording-meta__row">
                                     <span className="sa-recording-meta__label">Started</span>
-                                    <span className="sa-recording-meta__value">{data.startedAt ? new Date(data.startedAt).toLocaleString("de-DE") : "—"}</span>
+                                    <span className="sa-recording-meta__value">{data.startedAt ? new Date(data.startedAt).toLocaleString(appLocale()) : "—"}</span>
                                 </div>
                                 <div className="sa-recording-meta__row">
                                     <span className="sa-recording-meta__label">Duration</span>
@@ -274,7 +275,7 @@ export function AnalyticsRecordingDetail() {
                                 <div className="sa-recording-meta__row">
                                     <span className="sa-recording-meta__label">Size</span>
                                     <span className="sa-recording-meta__value">
-                                        {data.byteSize ? `${Math.round(data.byteSize / 1024).toLocaleString("de-DE")} KB` : "—"}
+                                        {data.byteSize ? `${Math.round(data.byteSize / 1024).toLocaleString(appLocale())} KB` : "—"}
                                     </span>
                                 </div>
                             </div>

@@ -4,18 +4,19 @@ import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import { useAnalyticsPageChrome, authHeaders, formatPercent, useCompareRange } from "./_shared.js";
 import { IconDocument, IconAlertTriangle } from "./Icons.js";
 import "./Analytics.css";
+import { appLocale } from "../../Functions/format.js";
 
 // ── Formatting ───────────────────────────────────────────────────────────
 function fmtBytes(v) {
     if (v == null || !Number.isFinite(v)) return "—";
     if (v >= 1024 * 1024) return (v / (1024 * 1024)).toFixed(2).replace(".", ",") + " MB";
-    if (v >= 1024) return Math.round(v / 1024).toLocaleString("de-DE") + " KB";
-    return Math.round(v).toLocaleString("de-DE") + " B";
+    if (v >= 1024) return Math.round(v / 1024).toLocaleString(appLocale()) + " KB";
+    return Math.round(v).toLocaleString(appLocale()) + " B";
 }
 function fmtMs(v) {
     if (v == null) return "—";
     if (v >= 1000) return (v / 1000).toFixed(1).replace(".", ",") + " s";
-    return Math.round(v).toLocaleString("de-DE") + " ms";
+    return Math.round(v).toLocaleString(appLocale()) + " ms";
 }
 
 // Raw PerformanceResourceTiming initiatorType -> human label (same mapping
@@ -259,7 +260,7 @@ function TopFilesTable({ rows }) {
                     <tr key={page * PAGE_SIZE + i}>
                         <td><code style={{ wordBreak: "break-all", fontSize: "12px" }}>{r.url || "—"}</code></td>
                         <td className="sa-muted">{RES_TYPE_LABEL[r.resourceType] || r.resourceType || "—"}</td>
-                        <td className="sa-num" style={{ fontWeight: 600 }}>{r.avgKb > 0 ? `${r.avgKb.toLocaleString("de-DE")} KB` : "—"}</td>
+                        <td className="sa-num" style={{ fontWeight: 600 }}>{r.avgKb > 0 ? `${r.avgKb.toLocaleString(appLocale())} KB` : "—"}</td>
                         <td className="sa-num sa-muted">{r.occurrences}</td>
                     </tr>
                 ))}
@@ -499,7 +500,7 @@ export default function PageWeight() {
                                         <WeightDeltaChip current={data.totals.avgPageWeight} prev={data.prevTotals?.avgPageWeight} />
                                     </div>
                                     <div className="sa-perf-cwv-card__desc">
-                                        P75: {fmtBytes(data.totals.p75PageWeight)} · based on {data.totals.sampleSize.toLocaleString("de-DE")} page loads.
+                                        P75: {fmtBytes(data.totals.p75PageWeight)} · based on {data.totals.sampleSize.toLocaleString(appLocale())} page loads.
                                         {data.prevPeriod && (
                                             <span className="sa-muted" style={{ display: "block", marginTop: 4, fontSize: 11 }}>
                                                 Prev. period: {data.prevPeriod.from} – {data.prevPeriod.to}

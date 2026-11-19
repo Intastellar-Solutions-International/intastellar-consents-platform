@@ -6,6 +6,7 @@ import { authHeaders, useAnalyticsPageChrome, useAnalyticsReport, elementLabel, 
 import { FrustrationPanel } from "./ReportPanels.js";
 import { IconCursorClick, IconTarget, IconTrendingUp } from "./Icons.js";
 import "./Analytics.css";
+import { appLocale } from "../../Functions/format.js";
 
 const HEATMAP_URL    = `${ScannerHost}/api/analytics-heatmap`;
 const SCREENSHOT_URL = `${ScannerHost}/api/analytics-screenshot`;
@@ -359,7 +360,7 @@ function ScrollFunnel({ scrollDepth }) {
     return (
         <div className="sa-scroll-funnel">
             <p className="sa-heatmap__sample-size sa-heatmap__sample-size--inline">
-                Based on {maxReached.toLocaleString("de-DE")} session{maxReached !== 1 ? "s" : ""}
+                Based on {maxReached.toLocaleString(appLocale())} session{maxReached !== 1 ? "s" : ""}
             </p>
             {rows.map(r => (
                 <div key={r.bucket} className="sa-consent-row">
@@ -452,7 +453,7 @@ export default function AnalyticsHeatmap() {
                                 >
                                     {paths.map(p => (
                                         <option key={pathKey(p)} value={pathKey(p)}>
-                                            {multiHost ? `${p.host}${p.pathname}` : p.pathname} ({p.clicks.toLocaleString("de-DE")} clicks)
+                                            {multiHost ? `${p.host}${p.pathname}` : p.pathname} ({p.clicks.toLocaleString(appLocale())} clicks)
                                         </option>
                                     ))}
                                 </select>
@@ -492,12 +493,12 @@ export default function AnalyticsHeatmap() {
                                     </div>
                                     {mode === "clicks" && data && !loading && !data.noData && (
                                         <span className="sa-heatmap__sample-size">
-                                            {data.totalClicks.toLocaleString("de-DE")} clicks · {data.totalSessions.toLocaleString("de-DE")} sessions
+                                            {data.totalClicks.toLocaleString(appLocale())} clicks · {data.totalSessions.toLocaleString(appLocale())} sessions
                                         </span>
                                     )}
                                     {mode === "attention" && data && !loading && !!data.attention?.length && (
                                         <span className="sa-heatmap__sample-size">
-                                            {data.attentionSessions.toLocaleString("de-DE")} sessions
+                                            {data.attentionSessions.toLocaleString(appLocale())} sessions
                                         </span>
                                     )}
                                 </div>
@@ -539,7 +540,7 @@ export default function AnalyticsHeatmap() {
                                     <h3 className="sa-panel__title"><IconTarget className="sa-icon" /> Top clicked elements</h3>
                                     {data && !loading && !data.noData && (
                                         <p className="sa-heatmap__sample-size sa-heatmap__sample-size--inline">
-                                            Based on {data.totalSessions.toLocaleString("de-DE")} session{data.totalSessions !== 1 ? "s" : ""}
+                                            Based on {data.totalSessions.toLocaleString(appLocale())} session{data.totalSessions !== 1 ? "s" : ""}
                                         </p>
                                     )}
                                     <table className="sa-table">
@@ -559,7 +560,7 @@ export default function AnalyticsHeatmap() {
                                                     <tr key={i}>
                                                         <td title={el.text || ""}>{elementLabel(el)}</td>
                                                         <td className="sa-heatmap__raw-selector"><code>{rawSelector}</code></td>
-                                                        <td className="sa-table__num">{el.n.toLocaleString("de-DE")}</td>
+                                                        <td className="sa-table__num">{el.n.toLocaleString(appLocale())}</td>
                                                     </tr>
                                                 );
                                             })}

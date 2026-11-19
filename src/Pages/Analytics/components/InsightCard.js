@@ -1,11 +1,12 @@
 import StatusBadge from "./StatusBadge.js";
+import { appLocale } from "../../../Functions/format.js";
 
 function formatEvidenceValue(value) {
     if (value == null) return "—";
     if (typeof value === "number") {
         return Number.isInteger(value)
-            ? value.toLocaleString("de-DE")
-            : value.toLocaleString("de-DE", { maximumFractionDigits: 2 });
+            ? value.toLocaleString(appLocale())
+            : value.toLocaleString(appLocale(), { maximumFractionDigits: 2 });
     }
     return String(value);
 }
@@ -41,7 +42,7 @@ export default function InsightCard({
             {body && <p className="sa-insight-card__body">{body}</p>}
             {sampleSize != null && (
                 <p className="sa-insight-card__sample">
-                    Based on {Number(sampleSize).toLocaleString("de-DE")} visitor{sampleSize === 1 ? "" : "s"}
+                    Based on {Number(sampleSize).toLocaleString(appLocale())} visitor{sampleSize === 1 ? "" : "s"}
                 </p>
             )}
             {(action || onSnooze) && (

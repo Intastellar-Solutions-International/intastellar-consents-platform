@@ -9,6 +9,7 @@ import {
     IconExternalLink, IconPhone, IconMail, IconDownload, IconFormFill,
     IconScrollDepth, IconCopy, IconPrint, IconVideo, IconBarChart,
 } from "./Icons.js";
+import { appLocale } from "../../Functions/format.js";
 
 function authHeaders() {
     return {
@@ -163,14 +164,14 @@ function AutoCollectedBlock({ conversions }) {
                     <div
                         key={e.name}
                         className={"sa-auto-chip" + (e.count === 0 ? " sa-auto-chip--dim" : "")}
-                        title={`${e.name}${e.count > 0 ? ` · ${e.count.toLocaleString("de-DE")} events` : " · no events yet"}`}
+                        title={`${e.name}${e.count > 0 ? ` · ${e.count.toLocaleString(appLocale())} events` : " · no events yet"}`}
                     >
                         <span className="sa-auto-chip__icon" style={{ color: e.color }}>
                             <e.Icon style={{ width: 13, height: 13 }} />
                         </span>
                         <span className="sa-auto-chip__label">{e.label}</span>
                         {e.count > 0 && (
-                            <span className="sa-auto-chip__count">{e.count.toLocaleString("de-DE")}</span>
+                            <span className="sa-auto-chip__count">{e.count.toLocaleString(appLocale())}</span>
                         )}
                     </div>
                 ))}
@@ -385,14 +386,14 @@ export default function ConversionsPanel({ domain, conversions, onDefsChanged })
                                         )}
                                     </div>
                                     <div className="sa-event-row__stats">
-                                        <span>{r.count.toLocaleString("de-DE")} events</span>
+                                        <span>{r.count.toLocaleString(appLocale())} events</span>
                                         {r.value > 0 && (
                                             <span>
                                                 {formatCurrency(r.value, r.currency || "EUR")}
                                             </span>
                                         )}
                                         <span className="sa-event-row__consent-note">
-                                            {r.linkedCount.toLocaleString("de-DE")}/{r.count.toLocaleString("de-DE")} consent-linked
+                                            {r.linkedCount.toLocaleString(appLocale())}/{r.count.toLocaleString(appLocale())} consent-linked
                                         </span>
                                     </div>
                                     <div className="sa-event-row__toggles">
@@ -429,7 +430,7 @@ export default function ConversionsPanel({ domain, conversions, onDefsChanged })
                                             {payloadsLoading !== r.name && payloadsByName[r.name]?.map((p, i) => (
                                                 <div key={i} className="sa-event-row__payload">
                                                     <div className="sa-event-row__payload-meta">
-                                                        <span>{new Date(p.receivedAt).toLocaleString("de-DE")}</span>
+                                                        <span>{new Date(p.receivedAt).toLocaleString(appLocale())}</span>
                                                         <span className="sa-event-row__payload-path">{p.pathname}</span>
                                                     </div>
                                                     <pre className="sa-event-row__payload-data">
@@ -577,7 +578,7 @@ export function EventsGlancePanel({ domain, conversions, onDefsChanged, maxRows 
                                         {r.label}
                                     </Link>
                                 </td>
-                                <td className="sa-table__num">{r.count.toLocaleString("de-DE")}</td>
+                                <td className="sa-table__num">{r.count.toLocaleString(appLocale())}</td>
                                 <td className="sa-table__bar"><MiniBar value={r.count} max={maxCount} /></td>
                             </tr>
                         ))}

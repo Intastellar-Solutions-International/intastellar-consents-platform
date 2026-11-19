@@ -5,6 +5,7 @@ import { useAnalyticsPage, MiniBar, KpiCard, useAnalyticsReport, toIsoDate, pctC
 import { IconMegaphone, IconTrendingUp, IconGlobe } from "./Icons.js";
 import { OutboundClicksPanel } from "./ReportPanels.js";
 import "./Analytics.css";
+import { appLocale } from "../../Functions/format.js";
 
 const AD_RESOLVE_URL = `${ScannerHost}/api/ad-id-resolve`;
 const _acqResolveCache = new Map();
@@ -59,7 +60,7 @@ function ChannelDonut({ channels }) {
                     <div key={c.channel} className="sa-rb-donut-row">
                         <span className="sa-rb-donut-dot" style={{ background: CHANNEL_COLORS[c.channel] || "rgba(160,160,160,0.6)" }} />
                         <span className="sa-rb-donut-label">{CHANNEL_LABELS[c.channel] || c.channel}</span>
-                        <span className="sa-rb-donut-count">{c.sessions.toLocaleString("de-DE")}</span>
+                        <span className="sa-rb-donut-count">{c.sessions.toLocaleString(appLocale())}</span>
                         <span className="sa-rb-donut-pct">{formatPercent((c.sessions / total) * 100, 0)}</span>
                     </div>
                 ))}
@@ -203,14 +204,14 @@ export default function AnalyticsAcquisition() {
                                 <KpiCard
                                     icon={<IconGlobe />}
                                     label="Sessions"
-                                    value={data.totals.uniqueSessions.toLocaleString("de-DE")}
+                                    value={data.totals.uniqueSessions.toLocaleString(appLocale())}
                                     sub="consent-gated sessions only"
                                     trend={trendSessions}
                                 />
                                 <KpiCard
                                     icon={<IconTrendingUp />}
                                     label="Page views"
-                                    value={data.totals.total.toLocaleString("de-DE")}
+                                    value={data.totals.total.toLocaleString(appLocale())}
                                     trend={trendPageviews}
                                 />
                             </div>
@@ -241,8 +242,8 @@ export default function AnalyticsAcquisition() {
                                             {(data.channels || []).map(c => (
                                                 <tr key={c.channel}>
                                                     <td>{CHANNEL_LABELS[c.channel] || c.channel}</td>
-                                                    <td className="sa-table__num">{c.events.toLocaleString("de-DE")}</td>
-                                                    <td className="sa-table__num">{c.sessions.toLocaleString("de-DE")}</td>
+                                                    <td className="sa-table__num">{c.events.toLocaleString(appLocale())}</td>
+                                                    <td className="sa-table__num">{c.sessions.toLocaleString(appLocale())}</td>
                                                     <td className="sa-table__num">
                                                         {data.totals.uniqueSessions > 0 ? formatPercent((c.sessions / data.totals.uniqueSessions) * 100) : "—"}
                                                     </td>
@@ -281,8 +282,8 @@ export default function AnalyticsAcquisition() {
                                         {data.topPages.map(p => (
                                             <tr key={p.pathname}>
                                                 <td className="sa-table__path" title={p.pathname}>{p.pathname}</td>
-                                                <td className="sa-table__num">{p.views.toLocaleString("de-DE")}</td>
-                                                <td className="sa-table__num">{p.sessions.toLocaleString("de-DE")}</td>
+                                                <td className="sa-table__num">{p.views.toLocaleString(appLocale())}</td>
+                                                <td className="sa-table__num">{p.sessions.toLocaleString(appLocale())}</td>
                                                 <td className="sa-table__num">{p.bounceRate != null ? formatPercent(p.bounceRate) : "—"}</td>
                                                 <td className="sa-table__num">{p.exitRate != null ? formatPercent(p.exitRate) : "—"}</td>
                                                 <td className="sa-table__num">{p.avgDurationSec != null ? formatDuration(p.avgDurationSec) : "—"}</td>
@@ -330,7 +331,7 @@ export default function AnalyticsAcquisition() {
                                                     </td>
                                                     <td>{u.source || "—"}</td>
                                                     <td>{u.medium || "—"}</td>
-                                                    <td className="sa-table__num">{u.events.toLocaleString("de-DE")}</td>
+                                                    <td className="sa-table__num">{u.events.toLocaleString(appLocale())}</td>
                                                     <td className="sa-table__bar">
                                                         <MiniBar value={u.events} max={maxUtm} color="rgba(251,146,60,0.6)" />
                                                     </td>
@@ -372,8 +373,8 @@ export default function AnalyticsAcquisition() {
                                         {data.referrers.map((r, i) => (
                                             <tr key={i}>
                                                 <td className="sa-table__path" title={r.referrer}>{r.referrer}</td>
-                                                <td className="sa-table__num">{r.events.toLocaleString("de-DE")}</td>
-                                                <td className="sa-table__num">{r.sessions.toLocaleString("de-DE")}</td>
+                                                <td className="sa-table__num">{r.events.toLocaleString(appLocale())}</td>
+                                                <td className="sa-table__num">{r.sessions.toLocaleString(appLocale())}</td>
                                                 <td className="sa-table__bar">
                                                     <MiniBar value={r.events} max={maxReferrer} color="rgba(99,179,237,0.55)" />
                                                 </td>
@@ -422,8 +423,8 @@ export default function AnalyticsAcquisition() {
                                                         <span className="sa-panel__consent-note"> · no host reported</span>
                                                     )}
                                                 </td>
-                                                <td className="sa-table__num">{h.events.toLocaleString("de-DE")}</td>
-                                                <td className="sa-table__num">{h.sessions.toLocaleString("de-DE")}</td>
+                                                <td className="sa-table__num">{h.events.toLocaleString(appLocale())}</td>
+                                                <td className="sa-table__num">{h.sessions.toLocaleString(appLocale())}</td>
                                                 <td className="sa-table__bar">
                                                     <MiniBar value={h.events} max={maxHost} color="rgba(192,159,83,0.6)" />
                                                 </td>

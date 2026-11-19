@@ -8,6 +8,7 @@ import { ScannerHost } from "../../API/host.js";
 import { authHeaders, InfoTip, formatPercent } from "./_shared.js";
 import { IconPlus, IconTrash, IconClock, IconUsers, IconTrendingUp, IconBarChart, IconAlertTriangle } from "./Icons.js";
 import "./Analytics.css";
+import { appLocale } from "../../Functions/format.js";
 
 const CHANGE_TYPE_LABEL = {
     text: "Text", html: "HTML", style: "Style",
@@ -527,7 +528,7 @@ export default function PageExperimentEditor() {
                                     {test.status === "running" ? (
                                         <>
                                             <span className="pxp-status-note">
-                                                {test.endsAt ? `Ends ${new Date(test.endsAt).toLocaleString("de-DE")}` : "No end date"}
+                                                {test.endsAt ? `Ends ${new Date(test.endsAt).toLocaleString(appLocale())}` : "No end date"}
                                             </span>
                                             <button
                                                 type="button"
@@ -1120,7 +1121,7 @@ function ResultsPanel({ results, loading, history, domain, testId, testMeta, onS
                                         {v.isControl && <span className="pxp-report__baseline-chip">Baseline</span>}
                                     </td>
                                     <td className="sa-table__num">
-                                        {(hasGoal ? (v.conversions ?? 0) : v.exposures).toLocaleString("de-DE")} / {v.uniqueSessions.toLocaleString("de-DE")}
+                                        {(hasGoal ? (v.conversions ?? 0) : v.exposures).toLocaleString(appLocale())} / {v.uniqueSessions.toLocaleString(appLocale())}
                                     </td>
                                     {hasGoal && (
                                         <td className="sa-table__num" title={v.conversions === null ? `No analytics site registered for ${v.domain}` : undefined}>
@@ -1156,7 +1157,7 @@ function ResultsPanel({ results, loading, history, domain, testId, testMeta, onS
                             <tr className="pxp-report__total-row">
                                 <td>Total</td>
                                 <td className="sa-table__num">
-                                    {(hasGoal ? totalConversions : totalExposures).toLocaleString("de-DE")} / {totalUniqueSessions.toLocaleString("de-DE")}
+                                    {(hasGoal ? totalConversions : totalExposures).toLocaleString(appLocale())} / {totalUniqueSessions.toLocaleString(appLocale())}
                                 </td>
                                 {hasGoal && <td className="sa-table__num">&mdash;</td>}
                                 {hasGoal && <td className="sa-table__num">&mdash;</td>}
@@ -1325,7 +1326,7 @@ function ResultsPanel({ results, loading, history, domain, testId, testMeta, onS
                                                     <span className="pxp-report__variant-dot" style={{ background: variantColor(i) }} />
                                                     {v.label || v.variantKey}
                                                     {v.cwv?.sampleCount > 0 && (
-                                                        <span className="pxp-cwv-sample"> n={v.cwv.sampleCount.toLocaleString("de-DE")}</span>
+                                                        <span className="pxp-cwv-sample"> n={v.cwv.sampleCount.toLocaleString(appLocale())}</span>
                                                     )}
                                                 </th>
                                             ))}

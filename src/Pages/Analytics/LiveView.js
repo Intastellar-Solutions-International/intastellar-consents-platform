@@ -4,6 +4,7 @@ import LiveActivityMap from "./LiveActivityMap.js";
 import LiveVisitorDrawer, { countryName } from "./LiveVisitorDrawer.js";
 import { useAnalyticsPageChrome, useSiteConfig, useLiveData, formatCurrency, timeAgo, LiveActivityBars, LiveBotNote } from "./_shared.js";
 import "./Analytics.css";
+import { appLocale } from "../../Functions/format.js";
 
 /**
  * Dedicated Live View page — docs/design-audit-plan.md Phase 4. The
@@ -48,7 +49,7 @@ export default function LiveView() {
                             <div className="sa-liveview__status">
                                 <span className="sa-live__dot" />
                                 <span className="sa-liveview__status-text">
-                                    <strong>{data.sessions.toLocaleString("de-DE")}</strong> active user{data.sessions !== 1 ? "s" : ""} right now
+                                    <strong>{data.sessions.toLocaleString(appLocale())}</strong> active user{data.sessions !== 1 ? "s" : ""} right now
                                 </span>
                                 <span className="sa-live__countdown">refreshing in {countdown}s</span>
                             </div>
@@ -69,12 +70,12 @@ export default function LiveView() {
                                         <div className="sa-live__kpis">
                                             <div className="sa-live__kpi">
                                                 <span className="sa-live__kpi-label">Events</span>
-                                                <span className="sa-live__kpi-value">{data.total.toLocaleString("de-DE")}</span>
+                                                <span className="sa-live__kpi-value">{data.total.toLocaleString(appLocale())}</span>
                                                 <span className="sa-live__kpi-sub">{data.minimal}m · {data.full}f</span>
                                             </div>
                                             <div className="sa-live__kpi">
                                                 <span className="sa-live__kpi-label">Sessions</span>
-                                                <span className="sa-live__kpi-value">{data.sessions.toLocaleString("de-DE")}</span>
+                                                <span className="sa-live__kpi-value">{data.sessions.toLocaleString(appLocale())}</span>
                                                 <span className="sa-live__kpi-sub">consent-gated</span>
                                             </div>
                                             <div className="sa-live__kpi sa-live__kpi--consent" style={{ '--cpct': consentPct + '%' }}>

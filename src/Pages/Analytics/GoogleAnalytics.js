@@ -14,11 +14,12 @@ import { IconBarChart, IconUsers, IconGlobe, IconCursorClick } from "./Icons.js"
 import { Ga4SessionsChart } from "./GoogleAnalyticsChart.js";
 import googleAnalyticsLogo from "../../Components/Header/icons/google-analytics.svg";
 import "./Analytics.css";
+import { appLocale } from "../../Functions/format.js";
 
 function fmtInt(n) {
     const x = Number(n);
     if (!Number.isFinite(x)) return "—";
-    return Math.round(x).toLocaleString("de-DE");
+    return Math.round(x).toLocaleString(appLocale());
 }
 
 function fmtDuration(seconds) {

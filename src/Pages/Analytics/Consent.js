@@ -6,6 +6,7 @@ import { ConsentRatesBridge } from "../../Components/ProductBridge/index.js";
 import "./Analytics.css";
 import RelatedPages from "../../Components/RelatedPages/index.js";
 import { reportsPath } from "../../Functions/domainPathSegments.js";
+import { appLocale } from "../../Functions/format.js";
 
 export default function AnalyticsConsent() {
     document.title = "Consent | Site Analytics";
@@ -73,7 +74,7 @@ export default function AnalyticsConsent() {
                                     icon={<IconShieldCheck />}
                                     label="Statistics consent"
                                     value={statRate + "%"}
-                                    sub={`${stat.yes.toLocaleString("de-DE")} yes · ${stat.no.toLocaleString("de-DE")} no`}
+                                    sub={`${stat.yes.toLocaleString(appLocale())} yes · ${stat.no.toLocaleString(appLocale())} no`}
                                     variant={statRate < 20 ? "warn" : null}
                                 >
                                     <IndustryBenchmarkNote benchmark={data.industryBenchmark} actualPct={statRate} />
@@ -82,21 +83,21 @@ export default function AnalyticsConsent() {
                                     icon={<IconShieldCheck />}
                                     label="Functional consent"
                                     value={funcRate + "%"}
-                                    sub={`${func.yes.toLocaleString("de-DE")} yes · ${func.no.toLocaleString("de-DE")} no`}
+                                    sub={`${func.yes.toLocaleString(appLocale())} yes · ${func.no.toLocaleString(appLocale())} no`}
                                     variant={funcRate < 20 ? "warn" : null}
                                 />
                                 <KpiCard className="sa-cg-kpi3"
                                     icon={<IconShieldCheck />}
                                     label="Advertising consent"
                                     value={advRate + "%"}
-                                    sub={`${adv.yes.toLocaleString("de-DE")} yes · ${adv.no.toLocaleString("de-DE")} no`}
+                                    sub={`${adv.yes.toLocaleString(appLocale())} yes · ${adv.no.toLocaleString(appLocale())} no`}
                                     variant={advRate < 20 ? "warn" : null}
                                 />
                                 <KpiCard className="sa-cg-kpi4"
                                     icon={<IconBarChart />}
                                     label="Total events"
-                                    value={total.toLocaleString("de-DE")}
-                                    sub={`${data.totals.minimal.toLocaleString("de-DE")} minimal · ${data.totals.full.toLocaleString("de-DE")} full`}
+                                    value={total.toLocaleString(appLocale())}
+                                    sub={`${data.totals.minimal.toLocaleString(appLocale())} minimal · ${data.totals.full.toLocaleString(appLocale())} full`}
                                 />
 
                                 <div className="sa-panel sa-cg-bars">

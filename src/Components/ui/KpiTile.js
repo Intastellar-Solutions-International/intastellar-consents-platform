@@ -2,6 +2,7 @@ import { Icon } from "./icons.js";
 import ErrorState from "./ErrorState.js";
 import { SkeletonKpiTile } from "./Skeleton.js";
 import { t } from "../../i18n/index.js";
+import { LOW_DATA_LABEL } from "../../Functions/smallSample.js";
 
 /**
  * KpiTile — one headline number.
@@ -35,6 +36,15 @@ export default function KpiTile({ label, value, hint, delta, noData, plain = fal
 }
 
 export function KpiDelta({ delta }) {
+    // Too few items behind the change (src/Functions/smallSample.js): say so
+    // instead of showing an alarming arrow; the counts are in the tooltip.
+    if (delta?.lowData) {
+        return (
+            <p className="tw-m-0 tw-text-sm tw-text-text-muted" title={delta.basis || undefined}>
+                {LOW_DATA_LABEL}{delta.label ? <span className="tw-sr-only"> {delta.label}</span> : null}
+            </p>
+        );
+    }
     if (!delta || !Number.isFinite(delta.value)) return null;
     const up = delta.value > 0, flat = delta.value === 0;
     const good = flat ? null : (delta.goodWhen === "down" ? !up : up);

@@ -7,6 +7,7 @@ import { useAnalyticsPageChrome, authHeaders, MiniBar, formatPercent, formatCoun
 import { analyticsPerformancePath, analyticsPerformanceCountryPath } from "../../Functions/domainPathSegments.js";
 import { IconBarChart, IconTarget, IconScrollDepth, IconGlobe, IconClock, IconAlertTriangle, IconBrowserChrome, IconBrowserFirefox, IconBrowserSafari, IconBrowserOpera } from "./Icons.js";
 import "./Analytics.css";
+import { appLocale } from "../../Functions/format.js";
 
 // ── CWV thresholds ────────────────────────────────────────────────────────
 const THRESHOLDS = {
@@ -48,7 +49,7 @@ const MIN_BUSINESS_IMPACT_CONVERSIONS_CLIENT = 10;
 function fmtMs(v) {
     if (v == null) return "—";
     if (v >= 1000) return (v / 1000).toFixed(1).replace(".", ",") + " s";
-    return Math.round(v).toLocaleString("de-DE") + " ms";
+    return Math.round(v).toLocaleString(appLocale()) + " ms";
 }
 function fmtCls(v) {
     if (v == null) return "—";
@@ -159,21 +160,21 @@ function RatingBar({ goodPct, niPct, poorPct, goodCount, niCount, poorCount }) {
                     <div
                         className="sa-perf-rating-bar__seg sa-perf-rating-bar__seg--good"
                         style={{ width: goodPct + "%" }}
-                        title={`Good: ${goodPct.toFixed(1).replace(".", ",")}% (${goodCount.toLocaleString("de-DE")})`}
+                        title={`Good: ${goodPct.toFixed(1).replace(".", ",")}% (${goodCount.toLocaleString(appLocale())})`}
                     />
                 )}
                 {niPct > 0 && (
                     <div
                         className="sa-perf-rating-bar__seg sa-perf-rating-bar__seg--ni"
                         style={{ width: niPct + "%" }}
-                        title={`Needs improvement: ${niPct.toFixed(1).replace(".", ",")}% (${niCount.toLocaleString("de-DE")})`}
+                        title={`Needs improvement: ${niPct.toFixed(1).replace(".", ",")}% (${niCount.toLocaleString(appLocale())})`}
                     />
                 )}
                 {poorPct > 0 && (
                     <div
                         className="sa-perf-rating-bar__seg sa-perf-rating-bar__seg--poor"
                         style={{ width: poorPct + "%" }}
-                        title={`Poor: ${poorPct.toFixed(1).replace(".", ",")}% (${poorCount.toLocaleString("de-DE")})`}
+                        title={`Poor: ${poorPct.toFixed(1).replace(".", ",")}% (${poorCount.toLocaleString(appLocale())})`}
                     />
                 )}
             </div>
@@ -259,7 +260,7 @@ function PageTable({ rows }) {
                             <td className="sa-table__path" title={r.pathname}>
                                 {r.pathname.length > 55 ? "…" + r.pathname.slice(-52) : r.pathname}
                             </td>
-                            <td className="sa-table__num">{r.samples.toLocaleString("de-DE")}</td>
+                            <td className="sa-table__num">{r.samples.toLocaleString(appLocale())}</td>
                             <td className="sa-table__num" style={{ fontWeight: 700 }}><MetricValue metric="lcp" value={r.lcpP75} /></td>
                             <td style={{ verticalAlign: "middle", paddingRight: 8 }}>
                                 {p50pct != null && p90pct != null ? (
@@ -399,7 +400,7 @@ function DeviceTable({ rows }) {
                 {rows.map((r, i) => (
                     <tr key={i}>
                         <td style={{ textTransform: "capitalize" }}>{r.device}</td>
-                        <td className="sa-table__num">{r.samples.toLocaleString("de-DE")}</td>
+                        <td className="sa-table__num">{r.samples.toLocaleString(appLocale())}</td>
                         <td className="sa-table__num"><MetricValue metric="lcp"  value={r.lcpP75}  /></td>
                         <td className="sa-table__num"><MetricValue metric="cls"  value={r.clsP75}  /></td>
                         <td className="sa-table__num"><MetricValue metric="inp"  value={r.inpP75}  /></td>
@@ -749,7 +750,7 @@ function NetworkTable({ rows }) {
                 {sorted.map((r, i) => (
                     <tr key={i}>
                         <td style={{ fontWeight: 600 }}>{NET_TYPE_LABEL[r.netType] || r.netType}</td>
-                        <td className="sa-table__num">{r.samples.toLocaleString("de-DE")}</td>
+                        <td className="sa-table__num">{r.samples.toLocaleString(appLocale())}</td>
                         <td className="sa-table__num">
                             {totalSamples > 0 ? Math.round(r.samples / totalSamples * 100) + "%" : "—"}
                         </td>
@@ -761,7 +762,7 @@ function NetworkTable({ rows }) {
                         </td>
                         <td className="sa-table__num">
                             {r.saveDataCount > 0
-                                ? r.saveDataCount.toLocaleString("de-DE")
+                                ? r.saveDataCount.toLocaleString(appLocale())
                                 : <span style={{ opacity: 0.35 }}>—</span>}
                         </td>
                     </tr>
@@ -808,7 +809,7 @@ function NetworkCountryTable({ rows }) {
                             <span style={{ marginRight: 6 }}>{countryFlag(r.country)}</span>
                             {countryName(r.country)}
                         </td>
-                        <td className="sa-num">{r.samples.toLocaleString("de-DE")}</td>
+                        <td className="sa-num">{r.samples.toLocaleString(appLocale())}</td>
                         <td className="sa-num"><MetricValue metric="load" value={r.loadP75} /></td>
                         <td className="sa-num"><MetricValue metric="tbt"  value={r.tbtP75}  /></td>
                         <td className="sa-num"><MetricValue metric="lcp"  value={r.lcpP75}  /></td>
@@ -868,7 +869,7 @@ function BrowserTable({ rows }) {
                                 </span>
                             )}
                         </td>
-                        <td className="sa-table__num">{r.samples.toLocaleString("de-DE")}</td>
+                        <td className="sa-table__num">{r.samples.toLocaleString(appLocale())}</td>
                         <td className="sa-table__num"><MetricValue metric="lcp"  value={r.lcpP75}  /></td>
                         <td className="sa-table__num"><MetricValue metric="cls"  value={r.clsP75}  /></td>
                         <td className="sa-table__num"><MetricValue metric="inp"  value={r.inpP75}  /></td>
@@ -1186,7 +1187,7 @@ function MetricHistogram({ histogram, metric, bucketKey = "bucketMs", step, maxB
                 const y  = PAD.t + cH - bh;
                 return (
                     <rect key={i} x={x + 1} y={y} width={barW - 2} height={bh} fill={barColor(b.bv)} rx="1">
-                        <title>{fmtBucket(b.bv)}: {b.count.toLocaleString("de-DE")} page loads</title>
+                        <title>{fmtBucket(b.bv)}: {b.count.toLocaleString(appLocale())} page loads</title>
                     </rect>
                 );
             })}
@@ -1271,7 +1272,7 @@ function CountryTable({ rows, domain }) {
                                     </span>
                                 </Link>
                             </td>
-                            <td className="sa-table__num">{r.samples.toLocaleString("de-DE")}</td>
+                            <td className="sa-table__num">{r.samples.toLocaleString(appLocale())}</td>
                             <td className="sa-table__num" style={color ? { color, fontWeight: 700 } : {}}>{fmtMs(r.lcpP75)}</td>
                             <td className="sa-table__num"><MetricValue metric="cls"  value={r.clsP75}  /></td>
                             <td className="sa-table__num"><MetricValue metric="inp"  value={r.inpP75}  /></td>
@@ -1379,7 +1380,7 @@ function BusinessImpact({ businessImpact, qualifyingEvents }) {
                                     : `${r.conversionRate.toFixed(1).replace(".", ",")}%`}
                             </div>
                             <div className="sa-perf-bi-sessions sa-muted">
-                                {r.conversions.toLocaleString("de-DE")} / {r.sessions.toLocaleString("de-DE")} sessions
+                                {r.conversions.toLocaleString(appLocale())} / {r.sessions.toLocaleString(appLocale())} sessions
                             </div>
                         </div>
                     );

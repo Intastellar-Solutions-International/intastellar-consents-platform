@@ -16,6 +16,7 @@ import { IconCash, IconTarget, IconGlobe, IconTrendingUp } from "./Icons.js";
 import DataSource from "../../Components/DataSource/index.js";
 import "./Analytics.css";
 import RelatedPages from "../../Components/RelatedPages/index.js";
+import { appLocale } from "../../Functions/format.js";
 
 // Duplicated per-file, same convention as AdConnectionManager.js/MarketingReconciliationPanel.js
 // (no shared platform-constants module exists in this codebase).
@@ -272,7 +273,7 @@ function ChannelMetricCard({ platform, currency, totals, daily }) {
 
     const formatTile = (key, v) => {
         if (key === "spend") return formatCurrency(v, currency);
-        return Math.round(v).toLocaleString("de-DE");
+        return Math.round(v).toLocaleString(appLocale());
     };
 
     const W = 560, H = 140, PAD = { t: 10, r: 8, b: 8, l: 8 };
@@ -519,7 +520,7 @@ export default function AdSpend() {
                                     : "—"}
                                 delta={delta(cac, prevCac, true)}
                                 sub={data.conversions?.totalQualityLeads
-                                    ? `spend ÷ ${data.conversions.totalQualityLeads.toLocaleString("de-DE")} ${data.conversions.source === "lead_quality" ? "quality leads" : "conversion events"}`
+                                    ? `spend ÷ ${data.conversions.totalQualityLeads.toLocaleString(appLocale())} ${data.conversions.source === "lead_quality" ? "quality leads" : "conversion events"}`
                                     : "no conversions tracked yet"}
                             />
 

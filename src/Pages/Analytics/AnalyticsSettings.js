@@ -5,6 +5,7 @@ import { authHeaders, useAnalyticsPageChrome, useCompareRange } from "./_shared.
 import { SkeletonRows } from "./components/Skeleton.js";
 import "./Analytics.css";
 import RelatedPages from "../../Components/RelatedPages/index.js";
+import { appLocale } from "../../Functions/format.js";
 
 const AD_CONNECTIONS_URL      = `${ScannerHost}/api/ad-connections`;
 const AD_CONV_ACTIONS_URL     = `${ScannerHost}/api/ad-conversion-actions`;
@@ -634,7 +635,7 @@ function CrossSiteSection({ domain }) {
                         <div key={d.domain} className="sa-foreign-row sa-foreign-row--pending">
                             <div className="sa-foreign-row__domain">{d.domain}</div>
                             <div className="sa-foreign-row__meta">
-                                {d.hit_count.toLocaleString("de-DE")} signals · last seen {new Date(d.last_seen).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}
+                                {d.hit_count.toLocaleString(appLocale())} signals · last seen {new Date(d.last_seen).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}
                             </div>
                             <div className="sa-foreign-row__actions">
                                 <button className="sa-btn sa-btn--sm sa-btn--approve"
@@ -663,7 +664,7 @@ function CrossSiteSection({ domain }) {
                             <div className="sa-foreign-row__dot" />
                             <div className="sa-foreign-row__domain">{d.domain}</div>
                             <div className="sa-foreign-row__meta">
-                                {d.hit_count.toLocaleString("de-DE")} events tracked
+                                {d.hit_count.toLocaleString(appLocale())} events tracked
                             </div>
                             <div className="sa-foreign-row__actions">
                                 <button className="sa-btn sa-btn--sm sa-btn--ghost"

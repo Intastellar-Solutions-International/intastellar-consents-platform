@@ -10,6 +10,7 @@ import AnalyticsWorldMap from "./AnalyticsWorldMap.js";
 import { countryName } from "./LiveVisitorDrawer.js";
 import { PanelSkeleton } from "./components/Skeleton.js";
 import "./Analytics.css";
+import { appLocale } from "../../Functions/format.js";
 
 const EVENT_DETAIL_URL = `${ScannerHost}/api/analytics-event-detail`;
 
@@ -109,7 +110,7 @@ export default function EventDetail() {
                                 />
                                 <KpiCard
                                     label="Events / session"
-                                    value={data.eventsPerSession != null ? data.eventsPerSession.toLocaleString("de-DE") : "—"}
+                                    value={data.eventsPerSession != null ? data.eventsPerSession.toLocaleString(appLocale()) : "—"}
                                 />
                             </div>
 
@@ -135,7 +136,7 @@ export default function EventDetail() {
                                             <AnalyticsWorldMap
                                                 countries={data.countries}
                                                 metricLabel="Events"
-                                                formatValue={n => n.toLocaleString("de-DE")}
+                                                formatValue={n => n.toLocaleString(appLocale())}
                                             />
                                         </div>
                                         <div style={{ flex: "1 1 280px", minWidth: 240 }}>
@@ -151,7 +152,7 @@ export default function EventDetail() {
                                                     {data.countries.map(c => (
                                                         <tr key={c.code}>
                                                             <td>{countryName(c.code) || c.code}</td>
-                                                            <td className="sa-table__num">{c.events.toLocaleString("de-DE")}</td>
+                                                            <td className="sa-table__num">{c.events.toLocaleString(appLocale())}</td>
                                                             <td className="sa-table__bar">
                                                                 <MiniBar value={c.events} max={maxCountry} />
                                                             </td>
@@ -181,7 +182,7 @@ export default function EventDetail() {
                                             {data.devices.map(d => (
                                                 <tr key={d.type}>
                                                     <td>{DEVICE_LABELS[d.type] || d.type}</td>
-                                                    <td className="sa-table__num">{d.events.toLocaleString("de-DE")}</td>
+                                                    <td className="sa-table__num">{d.events.toLocaleString(appLocale())}</td>
                                                     <td className="sa-table__bar">
                                                         <MiniBar value={d.events} max={maxDevice} color="rgba(167,139,250,0.6)" />
                                                     </td>
