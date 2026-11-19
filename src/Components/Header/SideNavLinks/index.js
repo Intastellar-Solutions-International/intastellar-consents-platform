@@ -15,6 +15,7 @@ import {
     analyticsReportsPath, analyticsReportBuilderPath,
     analyticsPerformancePath, analyticsPageWeightPath, analyticsDigestPath, analyticsGettingStartedPath,
     analyticsEventDebuggerPath, analyticsAudiencesPath,
+    dashboardPath, reportsPath,
 } from "../../../Functions/domainPathSegments.js";
 
 export const reportsLinks = [
@@ -295,5 +296,41 @@ export function buildAnalyticsLinks(domain) {
             name: "Global Settings",
             path: "/settings",
         },
+    ];
+}
+
+// CMP menu in the same grouped sidebar as Analytics (AnalyticsSidebar.js) —
+// one shell for both products. Mirrors the groups the new-shell rail had
+// (ShellRail.js): Overview items on top, then collapsible groups. Paths are
+// fully resolved here; `match` marks a link active on its sub-pages too
+// (e.g. Settings on every /settings/… page). `requiresTier` hides links
+// the plan doesn't include.
+export function buildCmpLinks(platform, domain, isAdminOrg = false) {
+    const r = (leaf) => reportsPath(platform, domain, leaf);
+    return [
+        { name: "Home", path: dashboardPath(platform, domain), match: (p) => /\/[^/]+\/dashboard(\/|$)/.test(p) || /^\/[^/]+\/view\//.test(p) },
+        { name: "Get started", path: `/${platform}/onboarding`, match: (p) => p.endsWith("/onboarding") },
+
+        { divider: true, label: "Compliance" },
+        { name: "Compliance overview", path: r("/compliance"), match: (p) => p.includes("/compliance"), requiresTier: "starter" },
+        { name: "Cookie scans", path: `/${platform}/reports/scans`, match: (p) => p.includes("/reports/scans"), requiresTier: "starter" },
+        { name: "Audit log", path: r("/user-consents"), match: (p) => p.includes("/user-consents"), requiresTier: "personal" },
+        { name: "Audit reports", path: r("/audit-report"), match: (p) => p.includes("/audit-report"), requiresTier: "personal" },
+        { name: "DSR portal", path: r("/dsr"), match: (p) => p.includes("/dsr"), requiresTier: "personal" },
+
+        { divider: true, label: "Reports" },
+        { name: "Reports", path: r(""), match: (p) => /\/reports\/?$/.test(p) || /\/reports\/view\/[^/]+\/?$/.test(p) },
+        { name: "Ad reconciliation", path: r("/reconcile"), match: (p) => p.includes("/reconcile"), requiresTier: "growth" },
+
+        { divider: true, label: "Optimise" },
+        { name: "Portfolio benchmark", path: `/${platform}/compare`, match: (p) => p.includes("/compare") },
+        { name: "A/B testing", path: "/experiments", match: (p) => p.startsWith("/experiments") },
+
+        { divider: true, label: "Settings" },
+        { name: "Settings", path: "/settings", match: (p) => p.startsWith("/settings") },
+        ...(isAdminOrg ? [
+            { name: "Cookie database", path: "/cookie-database", match: (p) => p === "/cookie-database" },
+            { name: "Platform", path: "/platform", match: (p) => p === "/platform" || p.startsWith("/platform/") },
+        ] : []),
     ];
 }

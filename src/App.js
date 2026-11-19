@@ -97,7 +97,6 @@ import { canAccess, FEATURE_TIERS } from "./Functions/tier.js";
 import appStorage, { getOrg } from './Functions/storage.js';
 import { fetchUserOrganisations, storeUserOrganisations } from './Functions/organisations.js';
 import CreateFirstOrganisation from "./Pages/Onboarding/CreateFirstOrganisation.js";
-import ShellRail from "./Components/Shell/ShellRail.js";
 import { isNewShell } from "./Functions/featureFlags.js";
 
 const { useState, useEffect, useRef, createContext } = React;
@@ -324,7 +323,9 @@ export default function App() {
                                 <div className={"main-grid" + (newShell ? " shell-new" : "")}>
                                     {
                                         orgSetup !== "none" && (id && window.location.pathname != "/" || window.location.pathname != "/login") ? <>
-                                            {newShell ? <ShellRail /> : <Nav />}
+                                            {/* New shell: the grouped sidebar (AnalyticsSideNav) is the
+                                                navigation for both products; classic keeps the icon Nav. */}
+                                            {newShell ? null : <Nav />}
                                             <AnalyticsSideNav />
                                         </> : null
                                     }

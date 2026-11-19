@@ -7,6 +7,7 @@ import {
     useSyncDomainFromRoute, isCombinedOrClearDomain,
 } from "../../Functions/domainPathSegments.js";
 import { ymdLocal } from "../../Components/Filter/filterDatePresets.js";
+import { useExcludeBots } from "../../Functions/botFilter.js";
 
 export function authHeaders() {
     return {
@@ -97,8 +98,11 @@ export function useAnalyticsReport(domain, fromIso, toIso, tick = 0, segment = n
         let ignore = false;
 
         // Fast call — shows KPIs, pages, acquisition, consent immediately
+        // fetchedAt: when the numbers came from the server (kept through the
+        // cache) — the "Updated …" line shows this, not the page render time.
         const fastP = fetch(`${ScannerHost}/api/analytics-report?${qs}`, { headers })
-            .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); });
+            .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+            .then(json => (json && typeof json === "object" ? { ...json, fetchedAt: Date.now() } : json));
 
         // Slow call — CTE-heavy: interests, conversions funnels, rage clicks, forms
         const slowP = fetch(`${ScannerHost}/api/analytics-report-detail?${qs}`, { headers })
@@ -365,6 +369,8 @@ export const LIVE_INTERVAL = 30;
 export function useLiveData(domain, siteKey) {
     const [data, setData] = useState(null);
     const [countdown, setCountdown] = useState(LIVE_INTERVAL);
+    // Shared "Exclude suspected bots" preference (same as the CMP dashboards)
+    const [excludeBots] = useExcludeBots();
 
     const fetchLive = useCallback(async () => {
         if (!domain) return;
@@ -374,11 +380,11 @@ export function useLiveData(domain, siteKey) {
             const qs = siteKey
                 ? `site=${encodeURIComponent(siteKey)}`
                 : `domain=${encodeURIComponent(domain)}`;
-            const r = await fetch(`${LIVE_URL}?${qs}`, { headers: authHeaders() });
+            const r = await fetch(`${LIVE_URL}?${qs}`, { headers: { ...authHeaders(), ExcludeBots: excludeBots ? "1" : "0" } });
             if (r.ok) setData(await r.json());
         } catch {}
         setCountdown(LIVE_INTERVAL);
-    }, [domain, siteKey]);
+    }, [domain, siteKey, excludeBots]);
 
     useEffect(() => {
         fetchLive();
@@ -392,6 +398,27 @@ export function useLiveData(domain, siteKey) {
     }, []);
 
     return { data, countdown };
+}
+
+// "12 bot hits hidden · Show" — makes the bot filter visible instead of
+// numbers silently changing. Uses the same preference as the CMP's "Exclude
+// suspected bots" toggle, so switching it here switches it there too.
+export function LiveBotNote({ data }) {
+    const [excludeBots, setExcludeBots] = useExcludeBots();
+    if (!data) return null;
+    const hidden = data.botEventsHidden || 0;
+    if (excludeBots && !hidden) return null;
+    return (
+        <p className="sa-live__bots">
+            {excludeBots
+                ? <>{hidden.toLocaleString("de-DE")} hit{hidden === 1 ? "" : "s"} from data-centre IPs hidden (likely bots).</>
+                : <>Including hits from data-centre IPs (likely bots).</>}
+            {" "}
+            <button type="button" className="sa-live__bots-toggle" onClick={() => setExcludeBots(!excludeBots)}>
+                {excludeBots ? "Show them" : "Hide them"}
+            </button>
+        </p>
+    );
 }
 
 // Per-minute activity bars for the live widget and the Live View page.

@@ -2,6 +2,7 @@ import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import { useAnalyticsPage, KpiCard, ConsentBar, IndustryBenchmarkNote, useCompareRange } from "./_shared.js";
 import { IconShieldCheck, IconBarChart } from "./Icons.js";
 import { ConsentImpactPanel } from "./ReportPanels.js";
+import { ConsentRatesBridge } from "../../Components/ProductBridge/index.js";
 import "./Analytics.css";
 
 export default function AnalyticsConsent() {
@@ -9,7 +10,7 @@ export default function AnalyticsConsent() {
 
     const {
         domain, hasDomain, getLastDays, setLastDays, fromDate, setFromDate, toDate, setToDate,
-        data, loading, error, showData,
+        fromIso, toIso, data, loading, error, showData,
     } = useAnalyticsPage();
 
     // Compare-to-previous-period header wiring (Phase 3, docs/design-audit-plan.md).
@@ -140,6 +141,17 @@ export default function AnalyticsConsent() {
                             </div>
                         );
                     })()}
+
+                    {/* The CMP's banner acceptance next to this page's statistics consent */}
+                    {showData && domain && (
+                        <ConsentRatesBridge
+                            platform={localStorage.getItem("platform") || "gdpr"}
+                            domain={domain}
+                            fromIso={fromIso}
+                            toIso={toIso}
+                            statisticsConsent={data.totals?.consentRate}
+                        />
+                    )}
 
                     {/* Moved here from Overview (Home now shows insights only) */}
                     {showData && <ConsentImpactPanel impact={data.consentImpact} />}

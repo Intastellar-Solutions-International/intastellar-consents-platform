@@ -1,6 +1,6 @@
 const { useState, useEffect, useCallback } = React;
 import { ScannerHost } from "../../../API/host";
-import { appLocale } from "../../../Functions/format.js";
+import { formatRelativeTime as relativeTime } from "../../../Functions/format.js";
 import {
     GoogleLogo, GA4Logo, SearchConsoleLogo, MetaLogo, LinkedInLogo, MicrosoftLogo, OpenAILogo,
 } from "./PlatformLogos.js";
@@ -14,20 +14,6 @@ const AD_PLATFORMS = [
     { id: "microsoft_ads",         label: "Microsoft Ads",               Logo: MicrosoftLogo,     isAnalytics: false },
     { id: "openai_ads",            label: "OpenAI Ads",                  Logo: OpenAILogo,        isAnalytics: false, apiKey: true },
 ];
-
-// "3 hours ago" in the app's locale — the last-sync line needs recency,
-// not a calendar date.
-function relativeTime(iso) {
-    const then = new Date(iso).getTime();
-    if (!Number.isFinite(then)) return "";
-    const sec = Math.round((then - Date.now()) / 1000);
-    const rtf = new Intl.RelativeTimeFormat(appLocale(), { numeric: "auto" });
-    const abs = Math.abs(sec);
-    if (abs < 60) return rtf.format(sec, "second");
-    if (abs < 3600) return rtf.format(Math.round(sec / 60), "minute");
-    if (abs < 86400) return rtf.format(Math.round(sec / 3600), "hour");
-    return rtf.format(Math.round(sec / 86400), "day");
-}
 
 // Last sync outcome (cron-ad-sync.js → last_sync_*), so a failing or empty
 // sync is visible here instead of only in the function logs.

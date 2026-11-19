@@ -13,6 +13,7 @@ import {
     useCompareRange, usePrevRange, pctChange,
 } from "./_shared.js";
 import { IconCash, IconTarget, IconGlobe, IconTrendingUp } from "./Icons.js";
+import DataSource from "../../Components/DataSource/index.js";
 import "./Analytics.css";
 
 // Duplicated per-file, same convention as AdConnectionManager.js/MarketingReconciliationPanel.js
@@ -73,7 +74,7 @@ function useAdSpendReport(domainsHeaderValue, fromIso, toIso, displayCurrency, t
             .then(async r => {
                 if (!r.ok) throw new Error(r.status);
                 const json = await r.json();
-                if (!ignore) setData(json);
+                if (!ignore) setData({ ...json, fetchedAt: Date.now() });
             })
             .catch(() => { if (!ignore) setError("Could not load ad spend data."); })
             .finally(() => { if (!ignore) setLoading(false); });
@@ -466,6 +467,14 @@ export default function AdSpend() {
                                 </div>
                             )}
                         </div>
+                    )}
+
+                    {showData && (
+                        <DataSource
+                            source={`Daily data from ${data.platforms.map(p => platformLabel(p.platform)).join(", ") || "your ad platforms"}, synced each night`}
+                            filters={[`Amounts in ${displayCurrency}, converted with ECB rates`]}
+                            fetchedAt={data.fetchedAt}
+                        />
                     )}
 
                     {showData && (

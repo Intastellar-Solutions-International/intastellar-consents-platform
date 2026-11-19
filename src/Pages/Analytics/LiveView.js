@@ -2,7 +2,7 @@ const { useState, useCallback } = React;
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import LiveActivityMap from "./LiveActivityMap.js";
 import LiveVisitorDrawer, { countryName } from "./LiveVisitorDrawer.js";
-import { useAnalyticsPageChrome, useSiteConfig, useLiveData, formatCurrency, timeAgo, LiveActivityBars } from "./_shared.js";
+import { useAnalyticsPageChrome, useSiteConfig, useLiveData, formatCurrency, timeAgo, LiveActivityBars, LiveBotNote } from "./_shared.js";
 import "./Analytics.css";
 
 /**
@@ -64,6 +64,7 @@ export default function LiveView() {
                                 <div className="sa-live sa-liveview__card">
                                     <div className="sa-live__body sa-liveview__card-body">
                                         <LiveActivityBars perMinute={data.perMinute} perMinuteUsers={data.perMinuteUsers} />
+                                        <LiveBotNote data={data} />
 
                                         <div className="sa-live__kpis">
                                             <div className="sa-live__kpi">

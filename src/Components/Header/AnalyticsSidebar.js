@@ -84,6 +84,15 @@ export default function AnalyticsSidebar(props) {
         return () => mq.removeEventListener("change", onChange);
     }, []);
 
+    // The header's menu button (new shell) opens the drawer on small screens.
+    useEffect(() => {
+        const toggle = () => {
+            if (!window.matchMedia("(min-width: 1024px)").matches) setMobileOpen((o) => !o);
+        };
+        window.addEventListener("shell:toggle-rail", toggle);
+        return () => window.removeEventListener("shell:toggle-rail", toggle);
+    }, []);
+
     const closeMobile = () => setMobileOpen(false);
 
     // Resolve each link once: hidden (role/tier) → null, otherwise its URL
@@ -97,7 +106,10 @@ export default function AnalyticsSidebar(props) {
                 if (!handle) return link.path;
                 return link.path.replace(/^\/analytics/, `/analytics/${handle}`);
             }
-            if (link.path.indexOf("reports") === -1) {
+            // Only the legacy relative form "/reports/…" gets the /:id
+            // prefix — fully resolved paths (CMP links, "/gdpr/reports/…")
+            // pass through untouched.
+            if (link.path.indexOf("/reports") !== 0) {
                 return link.path;
             }
             let p = link.path;
@@ -106,7 +118,11 @@ export default function AnalyticsSidebar(props) {
             }
             return "/" + id + p;
         })();
-        return { link, url, isActive: normalizePath(location?.pathname) === normalizePath(url) };
+        // `match` lets a link stay active on its sub-pages (CMP: Settings on /settings/…).
+        const isActive = typeof link.match === "function"
+            ? link.match(location?.pathname || "")
+            : normalizePath(location?.pathname) === normalizePath(url);
+        return { link, url, isActive };
     };
 
     // Flat link list (dividers mark group starts) → top-level items + groups.
@@ -249,6 +265,7 @@ export default function AnalyticsSidebar(props) {
                         );
                     })}
                 </ul>
+                {props?.footer ? <div className="ia-sidebar__footer">{props.footer}</div> : null}
             </nav>
         </aside>
     </>

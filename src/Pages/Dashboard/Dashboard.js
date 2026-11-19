@@ -39,6 +39,8 @@ import { OverviewTemplate, AttentionPanel } from "../../Components/templates";
 import { KpiTile, Card, SkeletonCard } from "../../Components/ui";
 import { t } from "../../i18n/index.js";
 import SetupProgressCard from "../Onboarding/SetupProgressCard.js";
+import { AnalyticsBridge } from "../../Components/ProductBridge/index.js";
+import DataSource from "../../Components/DataSource/index.js";
 import QuickReport from "./QuickReport.js";
 import { ComplianceChecks, PerformanceBand, CategoryOptIn, DecisionSplit, CountryRanking, DeviceShare, DecisionTime, LatestScan, periodChangePercent } from "./HomeSections.js";
 import useDomainHealth from "../../Components/Shell/useDomainHealth.js";
@@ -77,6 +79,8 @@ export default function Dashboard(props) {
     }, [handle, id, setCurrentDomain]);
 
     const [activeData, setActiveData] = useState(null);
+    // When the consent statistics arrived — shown as "Updated …" under the KPIs.
+    const [activeDataAt, setActiveDataAt] = useState(null);
     const [activeDataCountry, setactiveDataCountry] = useState(null);
     const initialLastDays =
         localStorage.getItem("settings") != null ? JSON.parse(localStorage.getItem("settings")).dateRange : 30;
@@ -278,6 +282,7 @@ export default function Dashboard(props) {
                 if (ac.signal.aborted) return;
                 if (data && typeof data === "object" && !Array.isArray(data) && data.error == null) {
                     setActiveData(data);
+                    setActiveDataAt(Date.now());
                 } else {
                     setActiveData(null);
                     setInteractionsError(typeof data?.error === "string" ? data.error : "The server returned no statistics.");
@@ -446,6 +451,15 @@ export default function Dashboard(props) {
 
                 {/* Shared CMP + Analytics checklist; hidden once setup is complete */}
                 {!demoMode && <SetupProgressCard platform={id} to={`/${id}/onboarding`} />}
+                {/* Same domain + period in Analytics — one system, two views */}
+                {!demoMode && hasDomain && (
+                    <AnalyticsBridge
+                        platform={id}
+                        domain={selectedDomain}
+                        fromIso={fromDate.toISOString().split("T")[0]}
+                        toIso={toDate.toISOString().split("T")[0]}
+                    />
+                )}
 
                 {/* <div className="profilePicture-container">
                     <img src={userProfile} className="profilePicture" />
@@ -476,7 +490,7 @@ export default function Dashboard(props) {
                             message={interactionsError}
                             onRetry={() => setInteractionsAttempt((n) => n + 1)}
                         />
-                    ) : (
+                    ) : (<>
                         <PerformanceBand>
                             <KpiTile
                                 plain
@@ -502,7 +516,15 @@ export default function Dashboard(props) {
                             />
                             <KpiTile plain label="Active users" loading={activeData == null} value={formatNumber(activeData?.activeUsers)} />
                         </PerformanceBand>
-                    )}
+                        {activeData && (
+                            <DataSource
+                                className="tw-mt-2"
+                                source="Consent records from the cookie banner"
+                                filters={[excludeBots ? "Suspected bots excluded" : "Including suspected bots"]}
+                                fetchedAt={activeDataAt}
+                            />
+                        )}
+                    </>)}
                 >
                     {!interactionsError && (<>
                         <div className="home-grid">

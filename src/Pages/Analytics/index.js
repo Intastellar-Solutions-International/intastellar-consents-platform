@@ -7,6 +7,7 @@ import {
 } from "../../Functions/domainPathSegments.js";
 import { analyticsSnippet } from "../../Functions/installSnippet.js";
 import SetupProgressCard from "../Onboarding/SetupProgressCard.js";
+import DataSource from "../../Components/DataSource/index.js";
 import { ScannerHost } from "../../API/host.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import { buildInsights, InsightsSection, SnapshotRow } from "./OverviewInsights.js";
@@ -16,7 +17,7 @@ import {
     useCompareRange, usePrevRange, useLiveData,
     useForeignDomains, splitForeignDomainsByRecency,
     formatCurrency, CURRENCY_SYMBOLS,
-    LiveActivityBars,
+    LiveActivityBars, LiveBotNote,
 } from "./_shared.js";
 import { SkeletonBlock, PanelSkeleton } from "./components/Skeleton.js";
 import MetricTabStrip from "./components/MetricTabStrip.js";
@@ -81,6 +82,7 @@ function LivePanel({ domain, siteKey }) {
                     </div>
 
                     <LiveActivityBars perMinute={data.perMinute} perMinuteUsers={data.perMinuteUsers} />
+                    <LiveBotNote data={data} />
 
                     <div className="sa-live__divider" />
 
@@ -968,6 +970,17 @@ export default function SiteAnalytics() {
                                             dependency="daily breakdown for this metric"
                                         />
                                     )}
+                                    <DataSource
+                                        className="tw-mt-3"
+                                        source="Analytics events from your site"
+                                        filters={[
+                                            "Users = visitors with statistics consent; others counted anonymously",
+                                            [segment.device, segment.channel, segment.consent, segment.country].some(Boolean)
+                                                ? `Filtered: ${[segment.device, segment.channel, segment.consent && `${segment.consent} consent`, segment.country].filter(Boolean).join(", ")}`
+                                                : null,
+                                        ]}
+                                        fetchedAt={data.fetchedAt}
+                                    />
                                 </div>
                                 <LivePanel domain={domain} siteKey={siteConfig?.id} />
                             </div>

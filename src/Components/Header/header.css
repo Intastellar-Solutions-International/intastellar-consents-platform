@@ -1083,6 +1083,40 @@
 
 .ia-sidebar__item { margin: 0; padding: 0; }
 
+/* Help / layout / log out — pinned under the scrolling link list */
+.ia-sidebar__footer {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: var(--space-2) 0;
+    border-top: 1px solid rgb(var(--c-white) / 0.06);
+}
+
+.ia-sidebar__footer-btn {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    width: 100%;
+    padding: var(--space-2) var(--space-3);
+    border: none;
+    background: transparent;
+    color: var(--color-text-secondary);
+    font-family: var(--font-sans);
+    font-size: var(--text-sm);
+    text-align: left;
+    cursor: pointer;
+}
+
+.ia-sidebar__footer-btn:hover {
+    color: var(--color-text-primary);
+    background: rgb(var(--c-white) / 0.06);
+}
+
+.ia-sidebar__footer-btn:focus-visible {
+    outline: none;
+    box-shadow: inset var(--shadow-focus);
+}
+
 .ia-sidebar__group-label {
     margin: var(--space-2) 0 2px;
     padding: 0 var(--space-2);

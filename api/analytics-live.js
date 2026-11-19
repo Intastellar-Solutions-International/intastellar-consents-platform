@@ -172,7 +172,7 @@ function setCors(req, res) {
     if (ALLOWED_ORIGINS.includes(origin)) res.setHeader("Access-Control-Allow-Origin", origin);
     res.setHeader("Access-Control-Allow-Credentials", "true");
     res.setHeader("Access-Control-Allow-Methods", "GET,OPTIONS");
-    res.setHeader("Access-Control-Allow-Headers", "Authorization,Organisation,Content-Type");
+    res.setHeader("Access-Control-Allow-Headers", "Authorization,Organisation,Content-Type,ExcludeBots");
 }
 
 function validateJwt(authHeader) {
@@ -232,6 +232,13 @@ export default async function handler(req, res) {
     // Prevent edge/CDN caching — live data must always be fresh
     res.setHeader("Cache-Control", "no-store");
 
+    // Same "Exclude suspected bots" preference as the CMP dashboards
+    // (src/Functions/botFilter.js, ExcludeBots header, on unless "0"): leaves
+    // out pageviews from hosting/data-centre IPs — crawlers on cloud ASNs
+    // (Huawei Cloud, Tencent, AWS…) that otherwise show up as live visitors.
+    const excludeBots = String(req.headers.excludebots ?? "1") !== "0";
+    const botClause = excludeBots ? "AND is_hosting_ip IS NOT TRUE" : "";
+
     const rawSession = String(req.query.session || "").trim();
     if (rawSession) {
         try {
@@ -255,7 +262,7 @@ export default async function handler(req, res) {
                 COUNT(DISTINCT session_id) FILTER (WHERE session_id IS NOT NULL)     AS sessions
             FROM (
                 SELECT consent_level, session_id FROM analytics_events
-                WHERE site_id = $1 AND received_at >= NOW() - INTERVAL '30 minutes' AND is_embedded = false
+                WHERE site_id = $1 AND received_at >= NOW() - INTERVAL '30 minutes' AND is_embedded = false ${botClause}
                 UNION ALL
                 SELECT consent_level, session_id FROM analytics_custom_events
                 WHERE site_id = $1 AND received_at >= NOW() - INTERVAL '30 minutes'
@@ -274,7 +281,7 @@ export default async function handler(req, res) {
                 COUNT(DISTINCT session_id) FILTER (WHERE session_id IS NOT NULL) AS active_users
             FROM (
                 SELECT received_at, session_id FROM analytics_events
-                WHERE site_id = $1 AND received_at >= NOW() - INTERVAL '30 minutes' AND is_embedded = false
+                WHERE site_id = $1 AND received_at >= NOW() - INTERVAL '30 minutes' AND is_embedded = false ${botClause}
                 UNION ALL
                 SELECT received_at, session_id FROM analytics_custom_events
                 WHERE site_id = $1 AND received_at >= NOW() - INTERVAL '30 minutes'
@@ -288,7 +295,7 @@ export default async function handler(req, res) {
             SELECT pathname, COUNT(*) AS views
             FROM analytics_events
             WHERE site_id = $1
-              AND received_at >= NOW() - INTERVAL '30 minutes' AND is_embedded = false
+              AND received_at >= NOW() - INTERVAL '30 minutes' AND is_embedded = false ${botClause}
               AND pathname !~* '^/api/'
               AND pathname !~* '\\.(js|css|json|xml|txt|map|png|jpe?g|gif|svg|webp|ico|woff2?|ttf|eot|pdf)$'
             GROUP BY pathname
@@ -306,7 +313,7 @@ export default async function handler(req, res) {
             SELECT COALESCE(page_host, '(unknown)') AS host, COUNT(*) AS events
             FROM analytics_events
             WHERE site_id = $1
-              AND received_at >= NOW() - INTERVAL '30 minutes' AND is_embedded = false
+              AND received_at >= NOW() - INTERVAL '30 minutes' AND is_embedded = false ${botClause}
             GROUP BY host ORDER BY events DESC LIMIT 10`,
             [siteId]
         ).catch(() => ({ rows: [] })),
@@ -318,7 +325,7 @@ export default async function handler(req, res) {
             SELECT received_at, pathname, page_host, country_code, device_type, consent_level,
                    NULL::text AS event_name
             FROM analytics_events
-            WHERE site_id = $1 AND received_at >= NOW() - INTERVAL '30 minutes' AND is_embedded = false
+            WHERE site_id = $1 AND received_at >= NOW() - INTERVAL '30 minutes' AND is_embedded = false ${botClause}
             UNION ALL
             SELECT ce.received_at, ce.pathname, ce.page_host, ce.country_code, ce.device_type, ce.consent_level,
                    ce.name AS event_name
@@ -360,7 +367,7 @@ export default async function handler(req, res) {
                 COUNT(*) AS events
             FROM (
                 SELECT country_code, session_id FROM analytics_events
-                WHERE site_id = $1 AND received_at >= NOW() - INTERVAL '30 minutes' AND is_embedded = false
+                WHERE site_id = $1 AND received_at >= NOW() - INTERVAL '30 minutes' AND is_embedded = false ${botClause}
                 UNION ALL
                 SELECT country_code, session_id FROM analytics_custom_events
                 WHERE site_id = $1 AND received_at >= NOW() - INTERVAL '30 minutes'
@@ -391,7 +398,7 @@ export default async function handler(req, res) {
                     SELECT session_id, pathname, page_host, country_code, device_type, received_at
                     FROM analytics_events
                     WHERE site_id = $1 AND received_at >= NOW() - INTERVAL '30 minutes'
-                      AND is_embedded = false AND session_id IS NOT NULL
+                      AND is_embedded = false AND session_id IS NOT NULL ${botClause}
                     UNION ALL
                     SELECT session_id, pathname, page_host, country_code, device_type, received_at
                     FROM analytics_custom_events
@@ -462,8 +469,23 @@ export default async function handler(req, res) {
     const perMinute = minuteSlots.map(s => s.events);
     const perMinuteUsers = minuteSlots.map(s => s.activeUsers);
 
+    // How much the bot filter left out, so the UI can say "N bot hits
+    // hidden" instead of numbers silently changing.
+    let botEventsHidden = 0;
+    if (excludeBots) {
+        const { rows: hiddenRows } = await db.query(
+            `SELECT COUNT(*)::int AS n FROM analytics_events
+              WHERE site_id = $1 AND received_at >= NOW() - INTERVAL '30 minutes'
+                AND is_embedded = false AND is_hosting_ip IS TRUE`,
+            [siteId]
+        ).catch(() => ({ rows: [] }));
+        botEventsHidden = hiddenRows[0]?.n || 0;
+    }
+
     return res.status(200).json({
         asOf:     now.toISOString(),
+        excludeBots,
+        botEventsHidden,
         total:    totalEvents,
         minimal:  parseInt(t.minimal  || 0),
         full:     parseInt(t.full_count || 0),

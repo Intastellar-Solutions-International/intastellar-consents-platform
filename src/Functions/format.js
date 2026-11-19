@@ -88,3 +88,17 @@ export function formatDateRange(from, to) {
     const fmt = cached("d", locale, { dateStyle: "medium" }, () => new Intl.DateTimeFormat(locale, { dateStyle: "medium" }));
     return typeof fmt.formatRange === "function" ? fmt.formatRange(a, b) : `${fmt.format(a)} – ${fmt.format(b)}`;
 }
+
+// "3 hours ago" in the app's locale — for freshness lines ("Updated …",
+// "Synced …") where recency matters more than the calendar date.
+export function formatRelativeTime(value) {
+    const then = new Date(value).getTime();
+    if (!Number.isFinite(then)) return "";
+    const sec = Math.round((then - Date.now()) / 1000);
+    const rtf = new Intl.RelativeTimeFormat(appLocale(), { numeric: "auto" });
+    const abs = Math.abs(sec);
+    if (abs < 45) return rtf.format(0, "second");
+    if (abs < 3600) return rtf.format(Math.round(sec / 60), "minute");
+    if (abs < 86400) return rtf.format(Math.round(sec / 3600), "hour");
+    return rtf.format(Math.round(sec / 86400), "day");
+}
