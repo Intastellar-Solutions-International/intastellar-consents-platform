@@ -3,8 +3,7 @@ const useParams = window.ReactRouterDOM.useParams;
 const Link = window.ReactRouterDOM.Link;
 import { DomainContext } from "../../App.js";
 import {
-    useSyncDomainFromRoute, isCombinedOrClearDomain, analyticsMarketingPath,
-} from "../../Functions/domainPathSegments.js";
+    useSyncDomainFromRoute, isCombinedOrClearDomain, } from "../../Functions/domainPathSegments.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import Authentication from "../../Authentication/Auth.js";
 import { ScannerHost } from "../../API/host.js";
@@ -301,7 +300,7 @@ export default function GoogleAnalytics() {
                             <p className="sa-setup__body">
                                 Connect a GA4 property to see sessions, engagement, channel breakdown, devices, and top pages here.
                             </p>
-                            <Link className="sa-setup__gen-btn" to={analyticsMarketingPath(domain)}>
+                            <Link className="sa-setup__gen-btn" to={`/settings/ad-connections?site=${encodeURIComponent(domain)}`}>
                                 Connect Google Analytics
                             </Link>
                         </div>

@@ -3,8 +3,7 @@ const useParams = window.ReactRouterDOM.useParams;
 const Link = window.ReactRouterDOM.Link;
 import { DomainContext } from "../../App.js";
 import {
-    useSyncDomainFromRoute, isCombinedOrClearDomain, toDomainsApiHeader, analyticsMarketingPath,
-    consentsDomainFromRoute, reportsPath,
+    useSyncDomainFromRoute, isCombinedOrClearDomain, toDomainsApiHeader, consentsDomainFromRoute, reportsPath,
 } from "../../Functions/domainPathSegments.js";
 import { ScannerHost } from "../../API/host.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
@@ -231,7 +230,7 @@ function AdSpendSetupCard({ domain }) {
                 Connect Google Ads, Meta Ads, LinkedIn Ads, or Microsoft Ads to see combined
                 spend, blended CAC, and budget pacing alerts here.
             </p>
-            <Link className="sa-setup__gen-btn" to={analyticsMarketingPath(domain)}>
+            <Link className="sa-setup__gen-btn" to={`/settings/ad-connections?site=${encodeURIComponent(domain)}`}>
                 Connect an ad account
             </Link>
         </div>

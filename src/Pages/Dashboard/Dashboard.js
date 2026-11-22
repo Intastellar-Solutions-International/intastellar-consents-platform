@@ -548,7 +548,7 @@ export default function Dashboard(props) {
                             <CategoryOptIn
                                 activeData={activeData}
                                 compareOn={compareOn}
-                                footer={<Link to={analyticsMarketingPath(currentDomain)} className="tw-text-sm tw-font-semibold tw-text-accent-strong focus-visible:tw-outline-none focus-visible:tw-shadow-focus tw-rounded-sm">Marketing recoil analysis</Link>}
+                                footer={<Link to={analyticsMarketingPath(currentDomain)} className="tw-text-sm tw-font-semibold tw-text-accent-strong focus-visible:tw-outline-none focus-visible:tw-shadow-focus tw-rounded-sm">{t("Consent by campaign")}</Link>}
                             />
                             <DeviceShare activeData={activeData} />
                         </div>

@@ -14,11 +14,14 @@ import {
     reportsPath,
 } from "../../../Functions/domainPathSegments.js";
 import {
-    MarketingOverviewCharts,
-    MarketingChannelCharts,
     MarketingTimeseriesChart,
 } from "./MarketingCharts.js";
 import MarketingSuggestionsStrip from "./MarketingSuggestionsStrip.js";
+import { PAID_CHANNELS_BY_PLATFORM, platformForChannel, adCostByPlatform, countDelta, rateDelta, ChoiceBar, ChoiceLegend } from "./CampaignConsentParts.js";
+import { KpiTile, ErrorState, Icon } from "../../../Components/ui";
+import DataSource from "../../../Components/DataSource";
+import { formatNumber, formatPercent } from "../../../Functions/format.js";
+import { t } from "../../../i18n/index.js";
 import { buildInvisibleTrafficSuggestions } from "./marketingSuggestions.js";
 import appStorage from '../../../Functions/storage.js';
 import { appLocale } from "../../../Functions/format.js";
@@ -63,22 +66,6 @@ const AD_PLATFORM_LABELS = {
     linkedin_ads:  "LinkedIn Ads",
     microsoft_ads: "Microsoft Ads",
 };
-const AD_PLATFORM_PATTERNS = {
-    google_ads:    /^(?:google|adwords|gads)/,
-    meta_ads:      /^(?:facebook|meta|instagram|messenger|fb|ig|msg|an$)/,
-    linkedin_ads:  /^(?:linkedin|liads)/,
-    microsoft_ads: /^(?:bing|microsoft|msads|msn)/,
-};
-function canonAdSource(s) {
-    return String(s || "").toLowerCase().replace(/[\s_\-.]+/g, "");
-}
-function consentsForAdPlatform(channelOverview, platformId) {
-    const pattern = AD_PLATFORM_PATTERNS[platformId];
-    if (!pattern) return 0;
-    return channelOverview
-        .filter(row => pattern.test(canonAdSource(row.channel)))
-        .reduce((sum, row) => sum + (row.consents || 0), 0);
-}
 function formatAdMoney(n, currency) {
     const SYMBOLS = { EUR: "€", USD: "$", GBP: "£", CHF: "CHF", DKK: "kr", SEK: "kr", NOK: "kr" };
     const sym = SYMBOLS[currency] || (currency ? currency + " " : "");
@@ -1548,35 +1535,6 @@ function computeMarketingHighlights({
     };
 }
 
-function MarketingHighlightsSection({ highlights }) {
-    if (!highlights) {
-        return null;
-    }
-    return (
-        <section className="marketing-highlights" aria-labelledby="marketing-highlights-heading">
-            <h2 id="marketing-highlights-heading" className="marketing-report-section__title marketing-highlights__h2">
-                Highlights
-            </h2>
-            <p className="marketing-highlights__eyebrow">{highlights.eyebrow}</p>
-            <p className="marketing-highlights__headline">{highlights.headline}</p>
-            <p className="marketing-highlights__sub">{highlights.subline}</p>
-            {highlights.items.length > 0 ? (
-                <ul className="marketing-highlights__list">
-                    {highlights.items.map((it, i) => (
-                        <li
-                            key={`${it.title}-${i}`}
-                            className={`marketing-highlights__item marketing-highlights__item--${it.accent}`}
-                        >
-                            <span className="marketing-highlights__item-title">{it.title}</span>
-                            <p className="marketing-highlights__item-body">{it.body}</p>
-                        </li>
-                    ))}
-                </ul>
-            ) : null}
-        </section>
-    );
-}
-
 const _mrResolveCache = new Map();
 
 function mrIsNumericId(val) {
@@ -1592,7 +1550,7 @@ function channelToPlatform(channel) {
 }
 
 export default function MarketingReport() {
-    document.title = "Marketing | Analytics | Intastellar Consents";
+    document.title = "Campaign consent | Analytics | Intastellar Consents";
     const [currentDomain, setGlobalDomain] = useContext(DomainContext);
     // Reached from /analytics/:handle/marketing, which carries no platform
     // :id — fall back to the platform stashed at login time, same as the
@@ -2327,627 +2285,261 @@ export default function MarketingReport() {
         setCampaignTableSort({ column: null, step: 0 });
     }, [selectedChannel]);
 
-    const kpiCards = useMemo(() => {
-        const cards = [
-            {
-                key: "channels",
-                label: selectedChannel ? "Campaigns in channel" : "Channels",
-                value: selectedChannel
-                    ? drilldownRows.length.toLocaleString(appLocale())
-                    : channelOverview.length.toLocaleString(appLocale()),
-                hint: null,
-                compare:
-                    compareUi && selectedChannel && drillBaselineCampaignCount != null ? (
-                        <MarketingCompareInline
-                            kind="volume"
-                            current={drilldownRows.length}
-                            previous={drillBaselineCampaignCount}
-                        />
-                    ) : compareUi && !selectedChannel && baselineChannelCount != null ? (
-                        <MarketingCompareInline
-                            kind="volume"
-                            current={channelOverview.length}
-                            previous={baselineChannelCount}
-                        />
-                    ) : null,
-            },
-            {
-                key: "consents",
-                label: selectedChannel ? "Consents (this channel)" : "Consents in view",
-                value: (selectedChannel ? drillConsents : totalConsents).toLocaleString(appLocale()),
-                hint: selectedChannel
-                    ? null
-                    : "Total includes all attributed rows for this period (not only the table page).",
-                compare:
-                    compareUi && selectedChannel && drillBaselineConsents != null ? (
-                        <MarketingCompareInline kind="volume" current={drillConsents} previous={drillBaselineConsents} />
-                    ) : compareUi && !selectedChannel && totalBaselineConsents != null ? (
-                        <MarketingCompareInline kind="volume" current={totalConsents} previous={totalBaselineConsents} />
-                    ) : null,
-            },
-            {
-                key: "measurement-ready",
-                label: selectedChannel ? "Full-stack consents (channel)" : "Full-stack consent events",
-                value: measurementReadyCount.toLocaleString(appLocale()),
-                hint: "Accept-all choices: optional analytics & marketing categories fully on. Useful for budget discussions — not revenue or ROAS.",
-                compare:
-                    compareUi && baselineMeasurementReadyCount != null ? (
-                        <MarketingCompareInline
-                            kind="volume"
-                            current={measurementReadyCount}
-                            previous={baselineMeasurementReadyCount}
-                        />
-                    ) : null,
-            },
-            {
-                key: "measurement-share",
-                label: selectedChannel ? "Full-stack share (channel)" : "Full-stack share of tagged traffic",
-                value:
-                    measurementReadySharePct != null && Number.isFinite(measurementReadySharePct)
-                        ? `${measurementReadySharePct.toLocaleString(appLocale(), { maximumFractionDigits: 1 })}%`
-                        : "—",
-                hint: "Share of attributed consent events in this view with accept-all. Compare periods to see if spend reaches consenting audiences.",
-                compare:
-                    compareUi &&
-                    baselineMeasurementReadySharePct != null &&
-                    measurementReadySharePct != null &&
-                    Number.isFinite(measurementReadySharePct) &&
-                    Number.isFinite(baselineMeasurementReadySharePct) ? (
-                        <MarketingCompareInline
-                            kind="rate"
-                            current={measurementReadySharePct}
-                            previous={baselineMeasurementReadySharePct}
-                        />
-                    ) : null,
-            },
-            /*
-             * The reconciliation-first KPI: this is the number a marketer
-             * looking at GA4 / Ads Manager actually cares about. We show
-             * it with a warning variant so it reads as something to act
-             * on, not just a neutral fact. Growth is a regression, so the
-             * compare delta uses `lowerIsBetter` to flip up/down colors.
-             */
-            {
-                key: "invisible-traffic",
-                label: selectedChannel
-                    ? "Analytics-invisible (channel)"
-                    : "Analytics-invisible traffic",
-                value: invisibleConsents.toLocaleString(appLocale()),
-                hint:
-                    invisibleSharePct != null
-                        ? `${invisibleSharePct.toLocaleString(appLocale(), { maximumFractionDigits: 1 })}% of attributed consents chose essential-only or granular — these visits won't reach GA4, Ads Manager, or the Meta pixel.`
-                        : "Attributed consents that chose essential-only or granular — they won't reach GA4, Ads Manager, or the Meta pixel.",
-                variant: "warn",
-                compare:
-                    compareUi && baselineInvisibleConsents != null ? (
-                        <MarketingCompareInline
-                            kind="volume"
-                            current={invisibleConsents}
-                            previous={baselineInvisibleConsents}
-                            lowerIsBetter
-                        />
-                    ) : null,
-            },
-        ];
-        if (summary && typeof summary === "object") {
-            if (summary.sessionsWithMarketingParams != null) {
-                cards.push({
-                    key: "sessions-marketing",
-                    label: "Sessions w/ marketing params",
-                    value: String(summary.sessionsWithMarketingParams),
-                    hint: null,
-                    compare: null,
-                });
-            }
-            if (summary.distinctCampaigns != null) {
-                cards.push({
-                    key: "distinct-campaigns",
-                    label: "Distinct campaigns",
-                    value: String(summary.distinctCampaigns),
-                    hint: null,
-                    compare: null,
-                });
-            }
-        }
-        // GA4 coverage KPIs — only show on overview (not per-channel drilldown)
-        if (!selectedChannel && ga4Summary && ga4Summary.sessions > 0) {
-            const ga4Sess = ga4Summary.sessions;
-            const capturePct = Math.round((totalConsents / ga4Sess) * 1000) / 10;
-            const darkZone = Math.max(0, ga4Sess - totalConsents);
-            cards.push({
-                key: "ga4-coverage",
-                label: "GA4 consent coverage",
-                value: Number.isFinite(capturePct) ? `${capturePct}%` : "—",
-                hint: `${totalConsents.toLocaleString(appLocale())} consent events from ${ga4Sess.toLocaleString(appLocale())} GA4 sessions. Sessions that did not generate a consent event are the dark zone.`,
-                variant: capturePct < 15 ? "warn" : null,
-                compare: null,
-            });
-            cards.push({
-                key: "ga4-dark-zone",
-                label: "Session dark zone",
-                value: darkZone.toLocaleString(appLocale()),
-                hint: "GA4 sessions that reached the site but generated no consent event. Includes returning visitors with prior consent, bounces before banner load, and bot traffic.",
-                variant: "warn",
-                compare: null,
-            });
-        }
-        return cards;
-    }, [
-        totalConsents,
-        drillConsents,
-        summary,
-        selectedChannel,
-        drilldownRows.length,
-        channelOverview.length,
-        compareUi,
-        drillBaselineCampaignCount,
-        drillBaselineConsents,
-        baselineChannelCount,
-        totalBaselineConsents,
-        measurementReadyCount,
-        measurementReadySharePct,
-        baselineMeasurementReadyCount,
-        baselineMeasurementReadySharePct,
-        invisibleConsents,
-        invisibleSharePct,
-        baselineInvisibleConsents,
-        ga4Summary,
-    ]);
+    // ── Campaign consent: headline numbers ───────────────────────────────────
+    const scopeConsents = selectedChannel ? drillConsents : totalConsents;
+    const scopeBaselineConsents = selectedChannel ? drillBaselineConsents : totalBaselineConsents;
+
+    // Ad spend per platform vs. consents from its paid channels.
+    const adCosts = useMemo(
+        () => adCostByPlatform(adPerfData?.platforms, channelOverview),
+        [adPerfData, channelOverview]
+    );
+    const showCostColumn = Object.values(adCosts).some((c) => c.amount > 0 && c.consents > 0);
+
+    // One "cost per consent" tile — only when the relevant platforms share a
+    // currency (no silent mixing of € and $).
+    const costTile = useMemo(() => {
+        const list = Object.entries(adCosts).filter(([platform, c]) =>
+            c.amount > 0 && (!selectedChannel || PAID_CHANNELS_BY_PLATFORM[platform]?.includes(selectedChannel)));
+        if (!list.length || new Set(list.map(([, c]) => c.currency)).size !== 1) return null;
+        const amount = list.reduce((s, [, c]) => s + c.amount, 0);
+        const consents = list.reduce((s, [, c]) => s + c.consents, 0);
+        const acceptAll = list.reduce((s, [, c]) => s + c.acceptAll, 0);
+        if (!consents) return null;
+        return {
+            perConsent: formatAdMoney(amount / consents, list[0][1].currency),
+            perMeasurable: acceptAll ? formatAdMoney(amount / acceptAll, list[0][1].currency) : null,
+            platforms: list.map(([platform]) => AD_PLATFORM_LABELS[platform] || platform).join(", "),
+        };
+    }, [adCosts, selectedChannel]);
+
+    const [fetchedAt, setFetchedAt] = useState(null);
+    useEffect(() => { if (!loading) setFetchedAt(Date.now()); }, [loading]);
+
+    const hasData = !error && rows.length > 0;
+
+    function costCell(channel) {
+        const platform = platformForChannel(channel);
+        const c = platform ? adCosts[platform] : null;
+        if (!c || !(c.amount > 0) || !(c.consents > 0)) return <span className="cc-muted">—</span>;
+        const label = AD_PLATFORM_LABELS[platform] || platform;
+        return (
+            <span className="cc-cost" title={t("{platform} spend {amount} ÷ {count} consents from its paid channels", { platform: label, amount: formatAdMoney(c.amount, c.currency), count: formatNumber(c.consents) })}>
+                <span className="cc-cost__main">{formatAdMoney(c.amount / c.consents, c.currency)}</span>
+                {c.acceptAll > 0 && (
+                    <span className="cc-cost__sub">{t("{amount} per accept-all", { amount: formatAdMoney(c.amount / c.acceptAll, c.currency) })}</span>
+                )}
+            </span>
+        );
+    }
+
+    function rateText(pct) {
+        return pct != null && Number.isFinite(pct) ? formatPercent(pct) : "—";
+    }
 
     return (
-        <>
-            <div style={{ flex: "1" }}>
-                <StickyPageTitle
-                    loadingUpdated={loading}
-                    finalLoaded={loading}
-                    title="Marketing"
-                    numberofDays={setLastDays}
-                    getLastDays={getLastDays}
-                    setActiveData={setActiveData}
-                    fromDate={fromDate}
-                    toDate={toDate}
-                    setFromDate={setFromDate}
-                    setToDate={setToDate}
-                    previousPeriod={previousPeriod}
-                    previousPeriod2={previousPeriod2}
-                    compareRange={compareRange}
-                    setCompareRange={setCompareRange}
-                    setCompareWindowStart={setPreviousPeriod}
-                    setCompareWindowEnd={setPreviousPeriod2}
-                />
-                <div className="dashboard-content marketing-report-page">
+        <div style={{ flex: "1" }}>
+            <StickyPageTitle
+                loadingUpdated={loading}
+                finalLoaded={loading}
+                title={t("Campaign consent")}
+                numberofDays={setLastDays}
+                getLastDays={getLastDays}
+                setActiveData={setActiveData}
+                fromDate={fromDate}
+                toDate={toDate}
+                setFromDate={setFromDate}
+                setToDate={setToDate}
+                previousPeriod={previousPeriod}
+                previousPeriod2={previousPeriod2}
+                compareRange={compareRange}
+                setCompareRange={setCompareRange}
+                setCompareWindowStart={setPreviousPeriod}
+                setCompareWindowEnd={setPreviousPeriod2}
+            />
+            <div className="dashboard-content cc-page">
+                <p className="cc-intro">
+                    {t("How visitors from each channel and campaign answer your cookie banner — and how many of them your analytics and ad platforms can actually measure.")}
+                </p>
 
-                    {/* ── Compact page header ─────────────────────────────── */}
-                    <div className="ca-page-header">
-                        <div className="ca-page-header__left">
-                            {/* "Marketing" itself is already shown by StickyPageTitle above (renamed
-                                from "Channel Analytics" to match the nav label — docs/design-audit-
-                                plan.md Phase 2 item 3) — this row only needs a heading once drilled
-                                into a specific channel. */}
-                            {selectedChannel && (
-                                <h1 className="ca-page-header__title">
-                                    <button className="ca-back-btn" onClick={() => setSelectedChannel(null)}>
-                                        ← Channels
-                                    </button>
-                                    <span className="ca-page-header__channel">{selectedChannel}</span>
-                                </h1>
-                            )}
-                            {compareOn && (
-                                <span className="ca-compare-pill">
-                                    {formatPeriodRange(fromDate, toDate)} vs {formatPeriodRange(previousPeriod, previousPeriod2)}
-                                </span>
+                {selectedChannel && (
+                    <div className="cc-drill">
+                        <button type="button" className="cc-drill__back" onClick={() => setSelectedChannel(null)}>
+                            <Icon name="chevron-left" size={14} /> {t("All channels")}
+                        </button>
+                        <h2 className="cc-drill__title">{selectedChannel}</h2>
+                    </div>
+                )}
+
+                {compareBaselineNote ? <p className="cc-note" role="status">{compareBaselineNote}</p> : null}
+                {error ? <ErrorState message={error} /> : null}
+
+                {/* ── Headline numbers ─────────────────────────────────────── */}
+                {(hasData || loading) && (
+                    <div className={`cc-kpis${costTile ? " cc-kpis--4" : ""}`}>
+                        <KpiTile
+                            loading={loading && !rows.length}
+                            label={t("Consent decisions")}
+                            value={formatNumber(scopeConsents)}
+                            hint={selectedChannel ? t("From this channel's campaigns") : t("From visits with campaign tags or ad click IDs")}
+                            delta={compareUi ? countDelta(scopeConsents, scopeBaselineConsents) : null}
+                        />
+                        <KpiTile
+                            loading={loading && !rows.length}
+                            label={t("Accepted all")}
+                            value={rateText(measurementReadySharePct)}
+                            hint={t("{count} visitors you can measure in analytics and ad platforms", { count: formatNumber(measurementReadyCount) })}
+                            delta={compareUi ? rateDelta(measurementReadySharePct, baselineMeasurementReadySharePct, scopeConsents, scopeBaselineConsents) : null}
+                        />
+                        <KpiTile
+                            loading={loading && !rows.length}
+                            label={t("Not measurable")}
+                            value={formatNumber(invisibleConsents)}
+                            hint={invisibleSharePct != null
+                                ? t("{pct} chose essential only or some categories — GA4 and ad platforms won't see them", { pct: formatPercent(invisibleSharePct) })
+                                : t("Chose essential only or some categories — GA4 and ad platforms won't see them")}
+                            delta={compareUi ? countDelta(invisibleConsents, baselineInvisibleConsents, "down") : null}
+                        />
+                        {costTile && (
+                            <KpiTile
+                                label={t("Cost per consent")}
+                                value={costTile.perConsent}
+                                hint={costTile.perMeasurable
+                                    ? t("{amount} per visitor who accepted all · {platforms}", { amount: costTile.perMeasurable, platforms: costTile.platforms })
+                                    : costTile.platforms}
+                            />
+                        )}
+                    </div>
+                )}
+
+                {hasData && (
+                    <DataSource
+                        source={t("Consent decisions with campaign tags or ad click IDs")}
+                        filters={[
+                            compareOn ? t("Compared with {range}", { range: formatPeriodRange(previousPeriod, previousPeriod2) }) : null,
+                            costTile || showCostColumn ? t("Ad spend from connected ad platforms") : null,
+                        ]}
+                        fetchedAt={fetchedAt}
+                        helpArticle="campaign-consent"
+                        action={
+                            <a className="cc-link" href={reportsPath(id, listDomainLabel, "/reconcile")}>{t("Compare with ad platforms")}</a>
+                        }
+                    />
+                )}
+
+                {/* ── Channels / campaigns ─────────────────────────────────── */}
+                <section className="cc-card" aria-labelledby="cc-table-heading">
+                    <div className="cc-card__head">
+                        <div>
+                            <h2 id="cc-table-heading" className="cc-card__title">
+                                {selectedChannel ? t("Campaigns") : t("Channels")}
+                            </h2>
+                            <p className="cc-card__sub">
+                                {loading
+                                    ? t("Loading…")
+                                    : selectedChannel
+                                      ? t("{count} campaigns · hover a bar for the exact split", { count: formatNumber(drilldownRows.length) })
+                                      : t("{count} channels · select one to see its campaigns", { count: formatNumber(channelOverview.length) })}
+                            </p>
+                        </div>
+                        <div className="cc-card__tools">
+                            <ChoiceLegend />
+                            {rows.length > 0 && (
+                                <button type="button" className="cc-btn"
+                                    onClick={() => {
+                                        if (selectedChannel) {
+                                            const slug = selectedChannel.replace(/[^\w\-]+/g, "_").slice(0, 48);
+                                            triggerCsvDownload(`${exportFilenameBase}_campaigns_${slug}.csv`, buildMarketingCsvCampaignRows(sortedDrilldownRows, exportCsvMeta));
+                                        } else {
+                                            triggerCsvDownload(`${exportFilenameBase}_channels.csv`, buildMarketingCsvChannelRows(sortedChannelOverview, exportCsvMeta));
+                                        }
+                                    }}>
+                                    <Icon name="file-text" size={14} /> {t("Export CSV")}
+                                </button>
                             )}
                         </div>
-                        <a href={reportsPath(id, listDomainLabel, "/reconcile")}
-                           className="ca-reconcile-link">
-                            Ad Reconciliation →
-                        </a>
                     </div>
 
-                    {compareBaselineNote ? (
-                        <p className="marketing-report-compare-warning" role="status">
-                            {compareBaselineNote}
-                        </p>
-                    ) : null}
-
-                    {error ? (
-                        <div className="marketing-report-error" role="alert">{error}</div>
-                    ) : null}
-
-                    {/* ── Consent KPI strip ───────────────────────────────── */}
-                    {!error && rows.length > 0 && (
-                        <div className="ca-kpi-strip">
-                            {kpiCards.slice(0, 5).map((c) => (
-                                <div key={c.key || c.label}
-                                     className={["ca-kpi", c.variant ? `ca-kpi--${c.variant}` : ""].filter(Boolean).join(" ")}
-                                     title={c.hint || ""}>
-                                    <span className="ca-kpi__value">{c.value}</span>
-                                    <span className="ca-kpi__label">{c.label}</span>
-                                    {c.compare ? <div className="ca-kpi__compare">{c.compare}</div> : null}
-                                </div>
-                            ))}
-                        </div>
-                    )}
-
-                    {/* ── Ad Performance ──────────────────────────────────── */}
-                    {!selectedChannel && !adPerfLoading && adPerfData?.platforms?.length > 0 && (
-                        <div className="ca-ad-perf">
-                            <h3 className="ca-ad-perf__title">Ad Performance</h3>
-                            <div className="ca-ad-perf__cards">
-                                {adPerfData.platforms.map(p => {
-                                    const matched = consentsForAdPlatform(channelOverview, p.platform);
-                                    const cpc = p.clicks > 0 ? p.amount / p.clicks : null;
-                                    const cpconsent = matched > 0 ? p.amount / matched : null;
-                                    return (
-                                        <div key={p.platform} className="ca-ad-perf-card">
-                                            <span className="ca-ad-perf-card__platform">
-                                                {AD_PLATFORM_LABELS[p.platform] || p.platform}
-                                            </span>
-                                            <div className="ca-ad-perf-card__metrics">
-                                                <span className="ca-ad-perf-card__metric">
-                                                    <span className="ca-ad-perf-card__val">{formatAdMoney(p.amount, p.currency)}</span>
-                                                    <span className="ca-ad-perf-card__lbl">spend</span>
-                                                </span>
-                                                <span className="ca-ad-perf-card__metric">
-                                                    <span className="ca-ad-perf-card__val">{p.clicks.toLocaleString(appLocale())}</span>
-                                                    <span className="ca-ad-perf-card__lbl">clicks</span>
-                                                </span>
-                                                <span className="ca-ad-perf-card__metric">
-                                                    <span className="ca-ad-perf-card__val">{p.impressions.toLocaleString(appLocale())}</span>
-                                                    <span className="ca-ad-perf-card__lbl">impressions</span>
-                                                </span>
-                                                {cpc != null && (
-                                                    <span className="ca-ad-perf-card__metric">
-                                                        <span className="ca-ad-perf-card__val">{formatAdMoney(cpc, p.currency)}</span>
-                                                        <span className="ca-ad-perf-card__lbl">CPC</span>
-                                                    </span>
-                                                )}
-                                                {cpconsent != null && (
-                                                    <span className="ca-ad-perf-card__metric ca-ad-perf-card__metric--accent">
-                                                        <span className="ca-ad-perf-card__val">{formatAdMoney(cpconsent, p.currency)}</span>
-                                                        <span className="ca-ad-perf-card__lbl">cost / consent</span>
-                                                    </span>
-                                                )}
-                                            </div>
-                                        </div>
-                                    );
-                                })}
-                            </div>
-                        </div>
-                    )}
-
-                    {/* ── Highlights ──────────────────────────────────────── */}
-                    {!error && !(loading && rows.length === 0) ? (
-                        <MarketingHighlightsSection highlights={highlights} />
-                    ) : null}
-
-                    {/* ── Suggestions ─────────────────────────────────────── */}
-                    {!error && rows.length > 0 && invisibleSuggestions.length > 0 ? (
-                        <MarketingSuggestionsStrip
-                            suggestions={invisibleSuggestions}
-                            domainKey={listDomainLabel}
-                        />
-                    ) : null}
-
-                    {/* ── Main table ──────────────────────────────────────── */}
-                    <section className="marketing-report-section ca-table-section" aria-labelledby="detail-table-heading-top">
-                        <div className="ca-table-header">
-                            <h2 id="detail-table-heading-top" className="marketing-report-section__title" style={{margin:0}}>
-                                {selectedChannel ? `Campaigns · ${selectedChannel}` : "Channels & campaigns"}
-                            </h2>
-                            <div className="ca-table-toolbar">
-                                {rows.length > 0 && (
-                                    <>
-                                        <button type="button" className="marketing-report-export"
-                                            onClick={() => {
-                                                const data = selectedChannel ? sortedDrilldownRows : rows;
-                                                const slug = selectedChannel ? selectedChannel.replace(/[^\w\-]+/g, "_").slice(0, 48) : "";
-                                                triggerCsvDownload(`${exportFilenameBase}_campaigns${slug ? `_${slug}` : ""}.csv`, buildMarketingCsvCampaignRows(data, exportCsvMeta));
-                                            }}>
-                                            {selectedChannel ? "Export campaigns CSV" : "Export campaigns CSV"}
-                                        </button>
-                                        <button type="button" className="marketing-report-export marketing-report-export--secondary"
-                                            onClick={() => triggerCsvDownload(`${exportFilenameBase}_channels.csv`, buildMarketingCsvChannelRows(sortedChannelOverview, exportCsvMeta))}>
-                                            Export channels CSV
-                                        </button>
-                                    </>
-                                )}
-                                <span className="marketing-report-toolbar__meta">
-                                    {loading ? "Loading…"
-                                        : selectedChannel
-                                          ? `${drilldownRows.length} campaign${drilldownRows.length === 1 ? "" : "s"} · ${drilldownRows.reduce((s, r) => s + r.consents, 0).toLocaleString(appLocale())} consents`
-                                          : `${channelOverview.length} channel${channelOverview.length === 1 ? "" : "s"} · ${totalConsents.toLocaleString(appLocale())} consents`}
-                                </span>
-                            </div>
-                        </div>
-                        <div className="marketing-report-table-wrap">
+                    <div className="cc-table-wrap">
                         {rows.length === 0 && !loading ? (
-                            <div className="marketing-report-empty">
-                                No marketing rows for this scope and period. When your API returns data, it will appear
-                                here.
+                            <div className="cc-empty">
+                                <p className="cc-empty__title">{t("No campaign traffic in this period")}</p>
+                                <p className="cc-empty__body">{t("Visits count here when the landing URL has UTM tags (utm_source, utm_campaign) or an ad click ID such as gclid or fbclid. Try a longer date range.")}</p>
                             </div>
-                        ) : selectedChannel ? (
-                            <table className="marketing-report-table marketing-report-table--with-choices">
+                        ) : (
+                            <table className="cc-table">
                                 <thead>
                                     <tr>
-                                        <MarketingTableSortTh
-                                            label="Campaign name"
-                                            columnKey="utmCampaign"
-                                            kind={CAMPAIGN_SORT_KEYS.utmCampaign}
-                                            sortState={campaignTableSort}
-                                            onCycle={cycleCampaignTableSort}
-                                            className="marketing-report-table__col-campaign"
-                                        />
-                                        <MarketingTableSortTh
-                                            label="Consents"
-                                            columnKey="consents"
-                                            kind={CAMPAIGN_SORT_KEYS.consents}
-                                            sortState={campaignTableSort}
-                                            onCycle={cycleCampaignTableSort}
-                                            className="marketing-report-table__col-num"
-                                        />
-                                        <MarketingTableSortTh
-                                            label="Acceptance %"
-                                            columnKey="acceptPct"
-                                            kind={CAMPAIGN_SORT_KEYS.acceptPct}
-                                            sortState={campaignTableSort}
-                                            onCycle={cycleCampaignTableSort}
-                                            className="marketing-report-table__col-num"
-                                        />
-                                        <MarketingTableSortTh
-                                            label="Accept all"
-                                            columnKey="acceptAll"
-                                            kind={CAMPAIGN_SORT_KEYS.acceptAll}
-                                            sortState={campaignTableSort}
-                                            onCycle={cycleCampaignTableSort}
-                                            className="marketing-report-table__col-choice"
-                                        />
-                                        <MarketingTableSortTh
-                                            label="Essential only"
-                                            columnKey="essentialOnly"
-                                            kind={CAMPAIGN_SORT_KEYS.essentialOnly}
-                                            sortState={campaignTableSort}
-                                            onCycle={cycleCampaignTableSort}
-                                            className="marketing-report-table__col-choice"
-                                        />
-                                        <MarketingTableSortTh
-                                            label="Granular"
-                                            columnKey="granular"
-                                            kind={CAMPAIGN_SORT_KEYS.granular}
-                                            sortState={campaignTableSort}
-                                            onCycle={cycleCampaignTableSort}
-                                            className="marketing-report-table__col-choice"
-                                        />
+                                        {selectedChannel ? (
+                                            <MarketingTableSortTh label={t("Campaign")} columnKey="utmCampaign" kind={CAMPAIGN_SORT_KEYS.utmCampaign}
+                                                sortState={campaignTableSort} onCycle={cycleCampaignTableSort} className="cc-col-name" />
+                                        ) : (
+                                            <MarketingTableSortTh label={t("Channel")} columnKey="channel" kind={CHANNEL_SORT_KEYS.channel}
+                                                sortState={channelTableSort} onCycle={cycleChannelTableSort} className="cc-col-name" />
+                                        )}
+                                        <MarketingTableSortTh label={t("Decisions")} columnKey="consents"
+                                            kind={selectedChannel ? CAMPAIGN_SORT_KEYS.consents : CHANNEL_SORT_KEYS.consents}
+                                            sortState={selectedChannel ? campaignTableSort : channelTableSort}
+                                            onCycle={selectedChannel ? cycleCampaignTableSort : cycleChannelTableSort} className="cc-col-num" />
+                                        <MarketingTableSortTh label={t("Accepted all")} columnKey="acceptPct"
+                                            kind={selectedChannel ? CAMPAIGN_SORT_KEYS.acceptPct : CHANNEL_SORT_KEYS.acceptPct}
+                                            sortState={selectedChannel ? campaignTableSort : channelTableSort}
+                                            onCycle={selectedChannel ? cycleCampaignTableSort : cycleChannelTableSort} className="cc-col-num" />
+                                        <th scope="col" className="cc-col-bar">{t("How they chose")}</th>
+                                        {showCostColumn && !selectedChannel && <th scope="col" className="cc-col-num">{t("Cost per consent")}</th>}
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {drilldownRows.length === 0 ? (
-                                        <tr>
-                                            <td colSpan={6} className="marketing-report-table__empty-row">
-                                                No campaigns for this channel.
-                                            </td>
-                                        </tr>
-                                    ) : (
-                                        sortedDrilldownRows.map((r, i) => {
-                                            const blindSpot = isAnalyticsBlindSpot(r);
+                                    {selectedChannel ? (
+                                        drilldownRows.length === 0 ? (
+                                            <tr><td colSpan={4} className="cc-table__empty">{t("No campaigns for this channel.")}</td></tr>
+                                        ) : sortedDrilldownRows.map((r, i) => {
+                                            const platform = channelToPlatform(selectedChannel);
+                                            const resolved = platform && mrIsNumericId(r.utmCampaign) ? resolvedMrCampaigns[`${platform}:${r.utmCampaign}`] : null;
                                             return (
-                                            <tr
-                                                key={`${r.channel}-${r.utmCampaign}-${i}`}
-                                                className={
-                                                    blindSpot
-                                                        ? "marketing-report-table__row--blind-spot"
-                                                        : undefined
-                                                }
-                                            >
-                                                <td className="marketing-report-table__col-campaign">
-                                                    {(() => {
-                                                        const platform = channelToPlatform(selectedChannel);
-                                                        const resolved = platform && mrIsNumericId(r.utmCampaign)
-                                                            ? resolvedMrCampaigns[`${platform}:${r.utmCampaign}`]
-                                                            : null;
-                                                        return resolved
-                                                            ? <span title={`ID: ${r.utmCampaign}`}>{resolved.name}</span>
-                                                            : r.utmCampaign;
-                                                    })()}
-                                                    {blindSpot ? (
-                                                        <span
-                                                            className="marketing-report-blind-spot-badge"
-                                                            title={`Under ${BLIND_SPOT_MAX_VISIBILITY_PCT}% of this campaign's consents will reach your analytics tools.`}
-                                                        >
-                                                            analytics blind spot
+                                                <tr key={`${r.channel}-${r.utmCampaign}-${i}`}>
+                                                    <td className="cc-col-name">
+                                                        <span className="cc-name" title={resolved ? `ID: ${r.utmCampaign}` : r.utmCampaign}>
+                                                            {resolved ? resolved.name : r.utmCampaign}
                                                         </span>
-                                                    ) : null}
-                                                </td>
-                                                <td className="marketing-report-table__col-num">
-                                                    <MarketingMetricStack
-                                                        compareUi={compareUi}
-                                                        primary={r.consents.toLocaleString(appLocale())}
-                                                        current={r.consents}
-                                                        previous={r.prevConsents}
-                                                        kind="volume"
-                                                    />
-                                                </td>
-                                                <td className="marketing-report-table__col-num">
-                                                    <MarketingMetricStack
-                                                        compareUi={compareUi}
-                                                        primary={
-                                                            r.acceptPct != null && Number.isFinite(r.acceptPct)
-                                                                ? `${r.acceptPct.toLocaleString(appLocale(), { maximumFractionDigits: 1 })}%`
-                                                                : "—"
-                                                        }
-                                                        current={r.acceptPct}
-                                                        previous={r.prevAcceptPct}
-                                                        kind="rate"
-                                                    />
-                                                </td>
-                                                <td className="marketing-report-table__col-choice">
-                                                    {formatChoiceCountPct(r.acceptAll, r.consents)}
-                                                </td>
-                                                <td className="marketing-report-table__col-choice">
-                                                    {formatChoiceCountPct(r.essentialOnly, r.consents)}
-                                                </td>
-                                                <td className="marketing-report-table__col-choice">
-                                                    {formatChoiceCountPct(r.granular, r.consents)}
-                                                </td>
-                                            </tr>
+                                                        {isAnalyticsBlindSpot(r) && <BlindSpotTag />}
+                                                    </td>
+                                                    <td className="cc-col-num">
+                                                        <MarketingMetricStack compareUi={compareUi} primary={formatNumber(r.consents)} current={r.consents} previous={r.prevConsents} kind="volume" />
+                                                    </td>
+                                                    <td className="cc-col-num">
+                                                        <MarketingMetricStack compareUi={compareUi} primary={rateText(r.acceptPct)} current={r.acceptPct} previous={r.prevAcceptPct} kind="rate" />
+                                                    </td>
+                                                    <td className="cc-col-bar"><ChoiceBar row={r} /></td>
+                                                </tr>
                                             );
                                         })
-                                    )}
-                                </tbody>
-                            </table>
-                        ) : (
-                            <>
-                            <table className="marketing-report-table marketing-report-table--with-choices">
-                                <thead>
-                                    <tr>
-                                        <MarketingTableSortTh
-                                            label="Channel"
-                                            columnKey="channel"
-                                            kind={CHANNEL_SORT_KEYS.channel}
-                                            sortState={channelTableSort}
-                                            onCycle={cycleChannelTableSort}
-                                            className="marketing-report-table__col-channel"
-                                        />
-                                        <MarketingTableSortTh
-                                            label="Campaigns"
-                                            columnKey="campaignCount"
-                                            kind={CHANNEL_SORT_KEYS.campaignCount}
-                                            sortState={channelTableSort}
-                                            onCycle={cycleChannelTableSort}
-                                            className="marketing-report-table__col-num"
-                                        />
-                                        <MarketingTableSortTh
-                                            label="Consents"
-                                            columnKey="consents"
-                                            kind={CHANNEL_SORT_KEYS.consents}
-                                            sortState={channelTableSort}
-                                            onCycle={cycleChannelTableSort}
-                                            className="marketing-report-table__col-num"
-                                        />
-                                        <MarketingTableSortTh
-                                            label="Acceptance %"
-                                            columnKey="acceptPct"
-                                            kind={CHANNEL_SORT_KEYS.acceptPct}
-                                            sortState={channelTableSort}
-                                            onCycle={cycleChannelTableSort}
-                                            className="marketing-report-table__col-num"
-                                        />
-                                        <MarketingTableSortTh
-                                            label="Accept all"
-                                            columnKey="acceptAll"
-                                            kind={CHANNEL_SORT_KEYS.acceptAll}
-                                            sortState={channelTableSort}
-                                            onCycle={cycleChannelTableSort}
-                                            className="marketing-report-table__col-choice"
-                                        />
-                                        <MarketingTableSortTh
-                                            label="Essential only"
-                                            columnKey="essentialOnly"
-                                            kind={CHANNEL_SORT_KEYS.essentialOnly}
-                                            sortState={channelTableSort}
-                                            onCycle={cycleChannelTableSort}
-                                            className="marketing-report-table__col-choice"
-                                        />
-                                        <MarketingTableSortTh
-                                            label="Granular"
-                                            columnKey="granular"
-                                            kind={CHANNEL_SORT_KEYS.granular}
-                                            sortState={channelTableSort}
-                                            onCycle={cycleChannelTableSort}
-                                            className="marketing-report-table__col-choice"
-                                        />
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {pagedChannelOverview.map((r) => {
-                                        const blindSpot = isAnalyticsBlindSpot(r);
-                                        return (
-                                        <tr
-                                            key={r.channel}
-                                            className={[
-                                                "marketing-report-table__row--clickable",
-                                                blindSpot ? "marketing-report-table__row--blind-spot" : "",
-                                            ]
-                                                .filter(Boolean)
-                                                .join(" ")}
-                                            tabIndex={0}
-                                            role="button"
-                                            aria-label={
-                                                blindSpot
-                                                    ? `Open campaign breakdown for ${r.channel} — analytics blind spot`
-                                                    : `Open campaign breakdown for ${r.channel}`
-                                            }
+                                    ) : pagedChannelOverview.map((r) => (
+                                        <tr key={r.channel} className="cc-row--link" tabIndex={0}
+                                            aria-label={t("Open campaigns for {channel}", { channel: r.channel })}
                                             onClick={() => setSelectedChannel(r.channel)}
                                             onKeyDown={(e) => {
-                                                if (e.key === "Enter" || e.key === " ") {
-                                                    e.preventDefault();
-                                                    setSelectedChannel(r.channel);
-                                                }
-                                            }}
-                                        >
-                                            <td className="marketing-report-table__col-channel">
-                                                <span className="marketing-report-channel-cell">
-                                                    <span className="marketing-report-channel-cell__label">
-                                                        {r.channel}
-                                                    </span>
-                                                    {blindSpot ? (
-                                                        <span
-                                                            className="marketing-report-blind-spot-badge"
-                                                            title={`Under ${BLIND_SPOT_MAX_VISIBILITY_PCT}% of ${r.channel}'s consents will reach your analytics tools.`}
-                                                        >
-                                                            analytics blind spot
-                                                        </span>
-                                                    ) : null}
-                                                    <span className="marketing-report-channel-cell__chevron" aria-hidden>
-                                                        →
-                                                    </span>
-                                                </span>
+                                                if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setSelectedChannel(r.channel); }
+                                            }}>
+                                            <td className="cc-col-name">
+                                                <span className="cc-name">{r.channel}</span>
+                                                <span className="cc-count">{t("{count} campaigns", { count: formatNumber(r.campaignCount) })}</span>
+                                                {isAnalyticsBlindSpot(r) && <BlindSpotTag />}
                                             </td>
-                                            <td className="marketing-report-table__col-num">
-                                                <MarketingMetricStack
-                                                    compareUi={compareUi}
-                                                    primary={r.campaignCount.toLocaleString(appLocale())}
-                                                    current={r.campaignCount}
-                                                    previous={r.prevCampaignCount}
-                                                    kind="volume"
-                                                />
+                                            <td className="cc-col-num">
+                                                <MarketingMetricStack compareUi={compareUi} primary={formatNumber(r.consents)} current={r.consents} previous={r.prevConsents} kind="volume" />
                                             </td>
-                                            <td className="marketing-report-table__col-num">
-                                                <MarketingMetricStack
-                                                    compareUi={compareUi}
-                                                    primary={r.consents.toLocaleString(appLocale())}
-                                                    current={r.consents}
-                                                    previous={r.prevConsents}
-                                                    kind="volume"
-                                                />
+                                            <td className="cc-col-num">
+                                                <MarketingMetricStack compareUi={compareUi} primary={rateText(r.acceptPct)} current={r.acceptPct} previous={r.prevAcceptPct} kind="rate" />
                                             </td>
-                                            <td className="marketing-report-table__col-num">
-                                                <MarketingMetricStack
-                                                    compareUi={compareUi}
-                                                    primary={
-                                                        r.acceptPct != null && Number.isFinite(r.acceptPct)
-                                                            ? `${r.acceptPct.toLocaleString(appLocale(), { maximumFractionDigits: 1 })}%`
-                                                            : "—"
-                                                    }
-                                                    current={r.acceptPct}
-                                                    previous={r.prevAcceptPct}
-                                                    kind="rate"
-                                                />
-                                            </td>
-                                            <td className="marketing-report-table__col-choice">
-                                                {formatChoiceCountPct(r.acceptAll, r.consents)}
-                                            </td>
-                                            <td className="marketing-report-table__col-choice">
-                                                {formatChoiceCountPct(r.essentialOnly, r.consents)}
-                                            </td>
-                                            <td className="marketing-report-table__col-choice">
-                                                {formatChoiceCountPct(r.granular, r.consents)}
-                                            </td>
+                                            <td className="cc-col-bar"><ChoiceBar row={r} /></td>
+                                            {showCostColumn && <td className="cc-col-num">{costCell(r.channel)}</td>}
                                         </tr>
-                                        );
-                                    })}
+                                    ))}
                                 </tbody>
                             </table>
+                        )}
+                        {!selectedChannel && rows.length > 0 && (
                             <MarketingTablePagination
                                 page={channelTablePage}
                                 pageCount={channelTablePageCount}
@@ -2956,65 +2548,71 @@ export default function MarketingReport() {
                                 onPageChange={setChannelTablePage}
                                 label="channels"
                             />
-                            </>
                         )}
                     </div>
-                    </section>
                     {rows.length > 0 && unclassifiedConsents > 0 ? (
-                        <p className="marketing-report-footnote" role="note">
-                            {unclassifiedConsents.toLocaleString(appLocale())} consent
-                            {unclassifiedConsents === 1 ? "" : "s"} in this period had no classifiable choice pattern
-                            (missing or legacy payload). They are included in <strong>Consents</strong> but not in the
-                            three choice columns.
+                        <p className="cc-footnote" role="note">
+                            {t("{count} decisions have no recorded choice (older banner versions). They count in Decisions but not in the bar.", { count: formatNumber(unclassifiedConsents) })}
                         </p>
                     ) : null}
+                </section>
 
-                    {/* ── Channel charts (overview or drill-in) ───────────── */}
-                    {!error && rows.length > 0 ? (
-                        selectedChannel ? (
-                            <>
-                                <MarketingChannelCharts
-                                    channelName={selectedChannel}
-                                    drilldownRows={drilldownRows}
-                                    drillConsents={drillConsents}
-                                    mergedContext={mergedContext}
-                                />
-                                <MarketingTimeseriesChart
-                                    channelName={selectedChannel}
-                                    deriveChannel={deriveMarketingChannel}
-                                    timeseriesRows={timeseriesRows}
-                                    baselineTimeseriesRows={baselineTimeseriesRows}
-                                    fromDate={fromDate}
-                                    toDate={toDate}
-                                    compareEnabled={compareUi}
-                                    loading={timeseriesLoading}
-                                    errorMessage={timeseriesError}
-                                />
-                            </>
-                        ) : (
-                            <MarketingOverviewCharts
-                                channelOverview={channelOverview}
-                                rows={rows}
-                            />
-                        )
-                    ) : null}
+                {/* ── Trend for one channel ────────────────────────────────── */}
+                {hasData && selectedChannel && (
+                    <MarketingTimeseriesChart
+                        channelName={selectedChannel}
+                        deriveChannel={deriveMarketingChannel}
+                        timeseriesRows={timeseriesRows}
+                        baselineTimeseriesRows={baselineTimeseriesRows}
+                        fromDate={fromDate}
+                        toDate={toDate}
+                        compareEnabled={compareUi}
+                        loading={timeseriesLoading}
+                        errorMessage={timeseriesError}
+                    />
+                )}
 
-                    {/* ── What's driving differences (collapsed by default) ── */}
-                    {rows.length > 0 ? (
-                        <details className="ca-context-details">
-                            <summary className="ca-context-summary">
-                                What's driving differences
-                                <span className="ca-context-summary__hint">geography · landing paths · UTM variants</span>
-                            </summary>
-                            <MarketingContextSection
-                                heading={selectedChannel ? `${selectedChannel} · detail` : "All channels · detail"}
-                                rows={selectedChannel ? drilldownRows : rows}
-                            />
-                        </details>
-                    ) : null}
+                {/* ── What stands out + what to fix ────────────────────────── */}
+                {hasData && highlights?.items?.length > 0 && (
+                    <section className="cc-card" aria-labelledby="cc-highlights-heading">
+                        <h2 id="cc-highlights-heading" className="cc-card__title">{t("What stands out")}</h2>
+                        <ul className="cc-insights">
+                            {highlights.items.map((it, i) => (
+                                <li key={`${it.title}-${i}`} className={`cc-insight cc-insight--${it.accent}`}>
+                                    <span className="cc-insight__title">{it.title}</span>
+                                    <p className="cc-insight__body">{it.body}</p>
+                                </li>
+                            ))}
+                        </ul>
+                    </section>
+                )}
 
-                </div>
+                {hasData && invisibleSuggestions.length > 0 ? (
+                    <MarketingSuggestionsStrip suggestions={invisibleSuggestions} domainKey={listDomainLabel} />
+                ) : null}
+
+                {/* ── Countries, landing pages, UTM variants ───────────────── */}
+                {rows.length > 0 ? (
+                    <details className="cc-card cc-details">
+                        <summary className="cc-details__summary">
+                            {t("Where it differs")}
+                            <span className="cc-details__hint">{t("countries · landing pages · UTM variants")}</span>
+                        </summary>
+                        <MarketingContextSection
+                            heading={selectedChannel ? t("{channel} · detail", { channel: selectedChannel }) : t("All channels · detail")}
+                            rows={selectedChannel ? drilldownRows : rows}
+                        />
+                    </details>
+                ) : null}
             </div>
-        </>
+        </div>
+    );
+}
+
+function BlindSpotTag() {
+    return (
+        <span className="cc-tag" title={t("Under {pct}% of these visitors accepted all — most of this traffic is invisible to analytics and ad platforms.", { pct: BLIND_SPOT_MAX_VISIBILITY_PCT })}>
+            {t("Mostly not measurable")}
+        </span>
     );
 }

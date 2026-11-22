@@ -471,12 +471,12 @@ export default function App() {
                                             </ErrorBoundary>}
                                         </Route>
                                         <Route path="/analytics/:handle/marketing" exact>
-                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('growth') ? <TierGate minTier="growth" featureName="Channel Analytics" fullPage /> : <ErrorBoundary>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('growth') ? <TierGate minTier="growth" featureName="Campaign consent" fullPage /> : <ErrorBoundary>
                                                 {domainError ? <AddDomain /> : <MarketingReport organisations={organisations} />}
                                             </ErrorBoundary>}
                                         </Route>
                                         <Route path="/analytics/marketing" exact>
-                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('growth') ? <TierGate minTier="growth" featureName="Channel Analytics" fullPage /> : <ErrorBoundary>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('growth') ? <TierGate minTier="growth" featureName="Campaign consent" fullPage /> : <ErrorBoundary>
                                                 {domainError ? <AddDomain /> : <MarketingReport organisations={organisations} />}
                                             </ErrorBoundary>}
                                         </Route>

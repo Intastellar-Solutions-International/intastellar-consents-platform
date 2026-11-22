@@ -162,7 +162,7 @@ export function buildAnalyticsLinks(domain) {
             label: "Marketing",
         },
         {
-            name: "Marketing",
+            name: "Campaign consent",
             path: analyticsMarketingPath(domain),
         },
         {

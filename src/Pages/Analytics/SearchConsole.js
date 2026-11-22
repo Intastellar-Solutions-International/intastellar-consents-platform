@@ -4,7 +4,7 @@ const useHistory = window.ReactRouterDOM.useHistory;
 const Link = window.ReactRouterDOM.Link;
 import { DomainContext } from "../../App.js";
 import {
-    useSyncDomainFromRoute, isCombinedOrClearDomain, analyticsMarketingPath, analyticsSearchConsolePath,
+    useSyncDomainFromRoute, isCombinedOrClearDomain, analyticsSearchConsolePath,
 } from "../../Functions/domainPathSegments.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import Authentication from "../../Authentication/Auth.js";
@@ -390,7 +390,7 @@ export default function SearchConsole() {
                                     <p className="sa-setup__body">
                                         Connect a verified property to see organic search clicks, impressions, and ranking here.
                                     </p>
-                                    <Link className="sa-setup__gen-btn" to={analyticsMarketingPath(domain)}>
+                                    <Link className="sa-setup__gen-btn" to={`/settings/ad-connections?site=${encodeURIComponent(domain)}`}>
                                         Connect Search Console
                                     </Link>
                                 </div>
