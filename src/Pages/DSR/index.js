@@ -1,7 +1,8 @@
 import StickyPageTitle from "../../Components/Header/Sticky";
 import { ListTemplate } from "../../Components/templates";
 import { Badge, Button, Card, Drawer, FilterBar, FilterSearch, FilterSelect, KpiTile, Pagination, Table } from "../../Components/ui";
-import { readCachedDomains } from "../../Functions/cachedDomains.js";
+import { readCachedDomains, headerDomainIn } from "../../Functions/cachedDomains.js";
+import { DomainContext } from "../../App.js";
 import { DEADLINE_RULES, REQUEST_TYPES, dueDate } from "../../Functions/dsr.js";
 import { dsrSummary } from "../../Functions/dsrSummary.js";
 import { formatNumber } from "../../Functions/format.js";
@@ -9,7 +10,7 @@ import { AREA, DsrStatusBadge, FIELD, LABEL, daysLeftLabel, fetchDsr, isClosed, 
 import DsrSetup from "./DsrSetup.js";
 import "./Style.css";
 
-const { useState, useEffect, useMemo } = React;
+const { useState, useEffect, useMemo, useContext } = React;
 const useParams = window.ReactRouterDOM.useParams;
 const useHistory = window.ReactRouterDOM.useHistory;
 const useLocation = window.ReactRouterDOM.useLocation;
@@ -46,10 +47,12 @@ function downloadCsv(rows) {
 
 /** Logs a request that reached the organisation by email, post or phone. */
 function NewRequestForm({ onCreated }) {
-    const [form, setForm] = useState(emptyForm);
+    const domains = useMemo(readCachedDomains, []);
+    // Pre-filled with the domain you're working in; "Not domain-specific" stays available.
+    const [headerDomain] = useContext(DomainContext);
+    const [form, setForm] = useState(() => ({ ...emptyForm(), domain: headerDomainIn(domains, headerDomain) }));
     const [state, setState] = useState(null); // null | "saving" | error text
     const set = (key) => (e) => { const { value } = e.target; setForm((f) => ({ ...f, [key]: value })); };
-    const domains = useMemo(readCachedDomains, []);
     const due = form.received_at ? dueDate(`${form.received_at}T00:00:00Z`, form.regulation) : null;
     const identified = form.requester_name.trim() || form.requester_email.trim() || form.consent_id.trim();
 

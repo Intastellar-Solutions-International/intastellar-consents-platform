@@ -8,6 +8,8 @@ import { analyticsPerformancePath, analyticsPerformanceCountryPath } from "../..
 import { IconBarChart, IconTarget, IconScrollDepth, IconGlobe, IconClock, IconAlertTriangle, IconBrowserChrome, IconBrowserFirefox, IconBrowserSafari, IconBrowserOpera } from "./Icons.js";
 import "./Analytics.css";
 import { appLocale } from "../../Functions/format.js";
+import AnalyticsSiteGate from "./components/AnalyticsSiteGate.js";
+import ErrorState from "./components/ErrorState.js";
 
 // ── CWV thresholds ────────────────────────────────────────────────────────
 const THRESHOLDS = {
@@ -74,23 +76,28 @@ function MetricValue({ metric, value }) {
 function usePerfReport(domain, fromIso, toIso, country) {
     const [data,    setData]    = useState(null);
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const [retry, setRetry] = useState(0);
 
     useEffect(() => {
         if (!domain) { setData(null); return; }
         let ignore = false;
         setLoading(true);
+        setError(null);
         const qp = { domain, from: fromIso, to: toIso };
         if (country) qp.country = country;
         const qs = new URLSearchParams(qp).toString();
         fetch(`${ScannerHost}/api/analytics-performance?${qs}`, { headers: authHeaders() })
-            .then(r => r.ok ? r.json() : null)
+            // 404 = no Analytics site for this domain (AnalyticsSiteGate says so);
+            // any other failure is a real error, not "no data".
+            .then(r => (r.status === 404 ? null : r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
             .then(d => { if (!ignore) setData(d); })
-            .catch(() => { if (!ignore) setData(null); })
+            .catch(() => { if (!ignore) { setData(null); setError("Could not load performance data."); } })
             .finally(() => { if (!ignore) setLoading(false); });
         return () => { ignore = true; };
-    }, [domain, fromIso, toIso, country]);
+    }, [domain, fromIso, toIso, country, retry]);
 
-    return { data, loading };
+    return { data, loading, error, reload: () => setRetry((n) => n + 1) };
 }
 
 // ── Country helpers ───────────────────────────────────────────────────────
@@ -1415,7 +1422,7 @@ export default function AnalyticsPerformance() {
         fromIso, toIso,
     } = useAnalyticsPageChrome();
 
-    const { data, loading } = usePerfReport(domain, fromIso, toIso, country || null);
+    const { data, loading, error: loadError, reload } = usePerfReport(domain, fromIso, toIso, country || null);
 
     const showData = data && !data.noData;
 
@@ -1442,6 +1449,8 @@ export default function AnalyticsPerformance() {
             />
             <div className="dashboard-content">
                 <div className="sa-page">
+                    {domain && <AnalyticsSiteGate domain={domain} />}
+                    {loadError && <ErrorState message={loadError} onRetry={reload} />}
                     {/* Back link for country view */}
                     {isCountryView && domain && (
                         <div className="sa-perf-back">

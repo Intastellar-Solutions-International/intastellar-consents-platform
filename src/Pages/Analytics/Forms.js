@@ -9,25 +9,32 @@ import { IconFormFill, IconBarChart, IconTarget, IconScrollDepth, IconGlobe, Ico
 import TrendLineChart from "./TrendLineChart.js";
 import "./Analytics.css";
 import { appLocale } from "../../Functions/format.js";
+import AnalyticsSiteGate from "./components/AnalyticsSiteGate.js";
+import ErrorState from "./components/ErrorState.js";
 
 function useFormsReport(domain, fromIso, toIso) {
     const [data,    setData]    = useState(null);
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const [retry, setRetry] = useState(0);
 
     useEffect(() => {
         if (!domain) { setData(null); return; }
         let ignore = false;
         setLoading(true);
+        setError(null);
         const qs = new URLSearchParams({ domain, from: fromIso, to: toIso }).toString();
         fetch(`${ScannerHost}/api/analytics-forms?${qs}`, { headers: authHeaders() })
-            .then(r => r.ok ? r.json() : null)
+            // 404 = no Analytics site for this domain (AnalyticsSiteGate says so);
+            // any other failure is a real error, not "no data".
+            .then(r => (r.status === 404 ? null : r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
             .then(d => { if (!ignore) setData(d); })
-            .catch(() => { if (!ignore) setData(null); })
+            .catch(() => { if (!ignore) { setData(null); setError("Could not load forms."); } })
             .finally(() => { if (!ignore) setLoading(false); });
         return () => { ignore = true; };
-    }, [domain, fromIso, toIso]);
+    }, [domain, fromIso, toIso, retry]);
 
-    return { data, loading };
+    return { data, loading, error, reload: () => setRetry((n) => n + 1) };
 }
 
 // Was a literal no-op — see docs/analytics-audit-plan.md item 7. Mirrors
@@ -685,7 +692,7 @@ export default function AnalyticsForms() {
         fromIso, toIso,
     } = useAnalyticsPageChrome();
 
-    const { data, loading } = useFormsReport(domain, fromIso, toIso);
+    const { data, loading, error: loadError, reload } = useFormsReport(domain, fromIso, toIso);
 
     const trendData = (data?.daily || []).map(d => ({
         label: d.day,
@@ -737,6 +744,8 @@ export default function AnalyticsForms() {
             />
             <div className="dashboard-content">
                 <div className="sa-page">
+                    {domain && <AnalyticsSiteGate domain={domain} />}
+                    {loadError && <ErrorState message={loadError} onRetry={reload} />}
                     {!domain && (
                         <p className="sa-notice">Select a domain to view form analytics.</p>
                     )}

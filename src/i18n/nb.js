@@ -382,6 +382,9 @@ const nb = {
     "Ads & marketing": "Annonser & markedsføring",
     "Account, privacy & data": "Konto, personvern & data",
     "Data stored in the EU": "Data lagret i EU",
+    "Analytics isn't turned on for {domain} yet": "Analytics er ikke slått på for {domain} ennå",
+    "Turn it on and add the tracker to your site — this page fills with data from the first visit.": "Slå det på og legg til sporeren på nettstedet ditt – siden fylles med data fra første besøk.",
+    "Set up Analytics": "Sett opp Analytics",
 };
 
 export default nb;

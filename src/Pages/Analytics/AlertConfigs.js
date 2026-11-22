@@ -3,6 +3,7 @@ import { ScannerHost } from "../../API/host.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import { authHeaders, useAnalyticsPageChrome, useCompareRange } from "./_shared.js";
 import "./Analytics.css";
+import AnalyticsSiteGate from "./components/AnalyticsSiteGate.js";
 
 const ALERTS_URL = `${ScannerHost}/api/analytics-alert-configs`;
 
@@ -282,6 +283,7 @@ export default function AnalyticsAlerts() {
             />
             <div className="dashboard-content">
                 <div className="sa-page">
+                    {domain && <AnalyticsSiteGate domain={domain} />}
                     {!domain && (
                         <p className="sa-notice">Select a domain in the header to manage alerts.</p>
                     )}

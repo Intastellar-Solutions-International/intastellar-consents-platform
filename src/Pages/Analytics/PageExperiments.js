@@ -6,6 +6,7 @@ import { ScannerHost } from "../../API/host.js";
 import { authHeaders, useAnalyticsPageChrome } from "./_shared.js";
 import { IconPlus, IconTrash } from "./Icons.js";
 import "./Analytics.css";
+import AnalyticsSiteGate from "./components/AnalyticsSiteGate.js";
 
 const STATUS_LABEL = { draft: "Draft", running: "Running", paused: "Paused", archived: "Archived", completed: "Completed" };
 
@@ -75,6 +76,7 @@ export default function PageExperiments() {
             <StickyPageTitle title="Page Experiments" />
             <div className="dashboard-content">
                 <div className="sa-page">
+                    {domain && <AnalyticsSiteGate domain={domain} />}
                     {!domain && (
                         <p className="sa-notice">Select a domain in the header to view page experiments.</p>
                     )}

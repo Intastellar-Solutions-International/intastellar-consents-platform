@@ -5,6 +5,7 @@ import { WorkspaceContext } from "../../App.js";
 import { canAccess, FEATURE_TIERS } from "../../Functions/tier.js";
 import { authHeaders, useAnalyticsPageChrome, useCompareRange } from "./_shared.js";
 import "./Analytics.css";
+import AnalyticsSiteGate from "./components/AnalyticsSiteGate.js";
 
 const REPORTS_URL = `${ScannerHost}/api/analytics-scheduled-reports`;
 
@@ -496,6 +497,7 @@ export default function AnalyticsScheduledReports() {
             />
             <div className="dashboard-content">
                 <div className="sa-page">
+                    {domain && <AnalyticsSiteGate domain={domain} />}
                     {clientScope && (
                         <ReportsSection
                             scope={clientScope}

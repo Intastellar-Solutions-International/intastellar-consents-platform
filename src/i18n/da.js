@@ -382,6 +382,9 @@ const da = {
     "Ads & marketing": "Annoncer & marketing",
     "Account, privacy & data": "Konto, privatliv & data",
     "Data stored in the EU": "Data gemt i EU",
+    "Analytics isn't turned on for {domain} yet": "Analytics er endnu ikke slået til for {domain}",
+    "Turn it on and add the tracker to your site — this page fills with data from the first visit.": "Slå det til, og tilføj trackeren til dit website – siden fyldes med data fra første besøg.",
+    "Set up Analytics": "Konfigurer Analytics",
 };
 
 export default da;

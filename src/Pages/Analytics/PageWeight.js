@@ -5,6 +5,8 @@ import { useAnalyticsPageChrome, authHeaders, formatPercent, useCompareRange } f
 import { IconDocument, IconAlertTriangle } from "./Icons.js";
 import "./Analytics.css";
 import { appLocale } from "../../Functions/format.js";
+import AnalyticsSiteGate from "./components/AnalyticsSiteGate.js";
+import ErrorState from "./components/ErrorState.js";
 
 // ── Formatting ───────────────────────────────────────────────────────────
 function fmtBytes(v) {
@@ -64,21 +66,26 @@ function pageWeightSeverity(v) {
 function usePageWeightReport(domain, fromIso, toIso) {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const [retry, setRetry] = useState(0);
 
     useEffect(() => {
         if (!domain) { setData(null); return; }
         let ignore = false;
         setLoading(true);
+        setError(null);
         const qs = new URLSearchParams({ domain, from: fromIso, to: toIso }).toString();
         fetch(`${ScannerHost}/api/analytics-page-weight?${qs}`, { headers: authHeaders() })
-            .then(r => r.ok ? r.json() : null)
+            // 404 = no Analytics site for this domain (AnalyticsSiteGate says so);
+            // any other failure is a real error, not "no data".
+            .then(r => (r.status === 404 ? null : r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
             .then(d => { if (!ignore) setData(d); })
-            .catch(() => { if (!ignore) setData(null); })
+            .catch(() => { if (!ignore) { setData(null); setError("Could not load page weight data."); } })
             .finally(() => { if (!ignore) setLoading(false); });
         return () => { ignore = true; };
-    }, [domain, fromIso, toIso]);
+    }, [domain, fromIso, toIso, retry]);
 
-    return { data, loading };
+    return { data, loading, error, reload: () => setRetry((n) => n + 1) };
 }
 
 // ── Weight delta chip — lower is better, unlike KpiCard's built-in trend
@@ -438,7 +445,7 @@ export default function PageWeight() {
         fromIso, toIso,
     } = useAnalyticsPageChrome();
 
-    const { data, loading } = usePageWeightReport(domain, fromIso, toIso);
+    const { data, loading, error: loadError, reload } = usePageWeightReport(domain, fromIso, toIso);
     const showData = data && !data.noData && !data.noPageWeightYet;
 
     const diagnostics = useMemo(() => {
@@ -472,6 +479,8 @@ export default function PageWeight() {
             />
             <div className="dashboard-content">
                 <div className="sa-page">
+                    {domain && <AnalyticsSiteGate domain={domain} />}
+                    {loadError && <ErrorState message={loadError} onRetry={reload} />}
                     {!domain && (
                         <p className="sa-notice">Select a domain to view page weight data.</p>
                     )}

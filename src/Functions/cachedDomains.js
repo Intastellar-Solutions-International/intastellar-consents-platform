@@ -9,6 +9,13 @@ export function toUnicodeDomain(domain) {
 }
 
 /** The organisation's domain names, from the list the header keeps in localStorage. */
+/** The header's domain (DomainContext value) when it's one of `domains`, else "". */
+export function headerDomainIn(domains, headerDomain) {
+    if (!headerDomain || headerDomain === "combined view") return "";
+    const wanted = String(headerDomain).trim().toLowerCase();
+    return (domains || []).find((d) => d.toLowerCase() === wanted) || "";
+}
+
 export function readCachedDomains() {
     try {
         const names = JSON.parse(localStorage.getItem("domains"));

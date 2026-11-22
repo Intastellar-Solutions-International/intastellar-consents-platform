@@ -7,6 +7,7 @@ import { SkeletonRows } from "./components/Skeleton.js";
 import { analyticsReportBuilderPath, analyticsReportViewPath } from "../../Functions/domainPathSegments.js";
 import { REPORT_TEMPLATES, CATEGORY_ORDER, CT_SVG, METRIC_LABELS, CATEGORY_COLOR } from "./reportTemplates.js";
 import "./Analytics.css";
+import AnalyticsSiteGate from "./components/AnalyticsSiteGate.js";
 
 const REPORTS_URL = `${ScannerHost}/api/analytics-saved-reports`;
 
@@ -224,6 +225,7 @@ export default function SavedReports() {
             />
             <div className="dashboard-content">
                 <div className="sa-page">
+                    {domain && <AnalyticsSiteGate domain={domain} />}
 
                     {/* ── Template library ─────────────────────────── */}
                     <div className="sa-panel">

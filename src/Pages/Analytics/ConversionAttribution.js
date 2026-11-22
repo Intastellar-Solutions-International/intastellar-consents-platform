@@ -4,6 +4,7 @@ import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import { authHeaders, useAnalyticsPageChrome, toIsoDate, formatCurrency, useCompareRange } from "./_shared.js";
 import { PanelSkeleton } from "./components/Skeleton.js";
 import "./Analytics.css";
+import AnalyticsSiteGate from "./components/AnalyticsSiteGate.js";
 
 const ATTRIBUTION_URL = `${ScannerHost}/api/analytics-attribution`;
 const PUSH_URL        = `${ScannerHost}/api/ad-conversion-push`;
@@ -334,6 +335,7 @@ export default function ConversionAttribution() {
             />
             <div className="dashboard-content">
                 <div className="sa-page">
+                    {domain && <AnalyticsSiteGate domain={domain} />}
 
                     {/* ── Header actions ────────────────────────── */}
                     {domain && (

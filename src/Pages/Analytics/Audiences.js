@@ -4,6 +4,7 @@ import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import { authHeaders, useAnalyticsPageChrome, useCompareRange } from "./_shared.js";
 import "./Analytics.css";
 import { appLocale } from "../../Functions/format.js";
+import AnalyticsSiteGate from "./components/AnalyticsSiteGate.js";
 
 const AUDIENCES_URL = `${ScannerHost}/api/analytics-audiences`;
 
@@ -125,7 +126,9 @@ export default function Audiences() {
         if (!domain) { setAudiences([]); setLoading(false); return; }
         setLoading(true); setError(null);
         fetch(`${AUDIENCES_URL}?domain=${encodeURIComponent(domain)}`, { headers: authHeaders() })
-            .then(r => r.ok ? r.json() : Promise.reject())
+            // 404 = no Analytics site for this domain: not an error —
+            // AnalyticsSiteGate at the top of the page explains it.
+            .then(r => r.status === 404 ? { audiences: [] } : r.ok ? r.json() : Promise.reject())
             .then(d => setAudiences(d.audiences || []))
             .catch(() => setError("Could not load audiences."))
             .finally(() => setLoading(false));
@@ -196,6 +199,7 @@ export default function Audiences() {
             />
             <div className="dashboard-content">
                 <div className="sa-page">
+                    {domain && <AnalyticsSiteGate domain={domain} />}
                     {!domain && (
                         <p className="sa-notice">Select a domain in the header to manage audiences.</p>
                     )}

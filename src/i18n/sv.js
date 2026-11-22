@@ -382,6 +382,9 @@ const sv = {
     "Ads & marketing": "Annonser & marknadsföring",
     "Account, privacy & data": "Konto, integritet & data",
     "Data stored in the EU": "Data lagras i EU",
+    "Analytics isn't turned on for {domain} yet": "Analytics är inte påslaget för {domain} ännu",
+    "Turn it on and add the tracker to your site — this page fills with data from the first visit.": "Slå på det och lägg till spåraren på din webbplats – sidan fylls med data från första besöket.",
+    "Set up Analytics": "Konfigurera Analytics",
 };
 
 export default sv;

@@ -816,6 +816,33 @@ export function useForeignDomains(domain) {
     return { domains, refresh: () => setReload(n => n + 1) };
 }
 
+// ── Does this domain have Analytics at all? ──────────────────────────────────
+// "ok" | "none" | "loading" | "unknown" (check failed — callers stay quiet).
+// Cached per domain for the session: several pages ask, and the answer only
+// changes when someone turns Analytics on (Get started reloads its own data).
+const siteStatusCache = new Map();
+export function useAnalyticsSiteStatus(domain) {
+    const key = String(domain || "").toLowerCase();
+    const [status, setStatus] = useState(() => (key ? siteStatusCache.get(key) || "loading" : "unknown"));
+    useEffect(() => {
+        if (!key) { setStatus("unknown"); return; }
+        const cached = siteStatusCache.get(key);
+        if (cached) { setStatus(cached); return; }
+        let ignore = false;
+        setStatus("loading");
+        fetch(`${ScannerHost}/api/analytics-site?domain=${encodeURIComponent(key)}`, { headers: authHeaders() })
+            .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
+            .then((d) => {
+                const next = d?.noSiteKey || !d?.id ? "none" : "ok";
+                siteStatusCache.set(key, next);
+                if (!ignore) setStatus(next);
+            })
+            .catch(() => { if (!ignore) setStatus("unknown"); });
+        return () => { ignore = true; };
+    }, [key]);
+    return status;
+}
+
 // ── Site config (businessType, industry, etc.) ────────────────────────────────
 export function useSiteConfig(domain) {
     const [config, setConfig] = useState(null);

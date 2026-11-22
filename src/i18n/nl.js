@@ -382,6 +382,9 @@ const nl = {
     "Ads & marketing": "Advertenties & marketing",
     "Account, privacy & data": "Account, privacy & gegevens",
     "Data stored in the EU": "Gegevens opgeslagen in de EU",
+    "Analytics isn't turned on for {domain} yet": "Analytics staat nog niet aan voor {domain}",
+    "Turn it on and add the tracker to your site — this page fills with data from the first visit.": "Zet het aan en voeg de tracker toe aan je website – deze pagina vult zich vanaf het eerste bezoek met gegevens.",
+    "Set up Analytics": "Analytics instellen",
 };
 
 export default nl;

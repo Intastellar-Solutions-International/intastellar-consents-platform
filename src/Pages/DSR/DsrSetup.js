@@ -1,9 +1,10 @@
 import { Badge, Button, FileDropzone, Modal } from "../../Components/ui";
-import { readCachedDomains } from "../../Functions/cachedDomains.js";
+import { readCachedDomains, headerDomainIn } from "../../Functions/cachedDomains.js";
+import { DomainContext } from "../../App.js";
 import { DEADLINE_RULES } from "../../Functions/dsr.js";
 import { FIELD, LABEL, fetchDsr, postDsr, regulationLabel } from "./dsrShared.js";
 
-const { useState, useEffect, useMemo } = React;
+const { useState, useEffect, useMemo, useContext } = React;
 const formLink = (form) => (form.custom_domain && form.custom_domain_status === "active" ? `https://${form.custom_domain}` : `https://www.intastellarconsents.com/privacy-request/${form.token}`);
 const LOGO_ACCEPT = ".png,.jpg,.jpeg,.webp,.svg,image/png,image/jpeg,image/webp,image/svg+xml";
 const MAX_LOGO_BYTES = 200 * 1024;
@@ -157,7 +158,9 @@ function FormFields({ values, onChange, domains }) {
 }
 
 function CreateForm({ domains, onData, onDone }) {
-    const [values, setValues] = useState({ company_name: "", domain: "", notify_email: "", default_regulation: "GDPR", logo: "" });
+    // A new portal starts on the domain you're working in (still changeable).
+    const [headerDomain] = useContext(DomainContext);
+    const [values, setValues] = useState(() => ({ company_name: "", domain: headerDomainIn(domains, headerDomain), notify_email: "", default_regulation: "GDPR", logo: "" }));
     const [state, setState] = useState(null); // null | "saving" | error text
     async function save(e) {
         e.preventDefault();

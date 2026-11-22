@@ -382,6 +382,9 @@ const pl = {
     "Ads & marketing": "Reklama i marketing",
     "Account, privacy & data": "Konto, prywatność i dane",
     "Data stored in the EU": "Dane przechowywane w UE",
+    "Analytics isn't turned on for {domain} yet": "Analytics nie jest jeszcze włączone dla {domain}",
+    "Turn it on and add the tracker to your site — this page fills with data from the first visit.": "Włącz je i dodaj tracker do swojej strony – ta strona zapełni się danymi od pierwszej wizyty.",
+    "Set up Analytics": "Skonfiguruj Analytics",
 };
 
 export default pl;
