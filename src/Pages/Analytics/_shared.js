@@ -547,7 +547,7 @@ export function KpiCard({
                 {value}
                 {trend != null && Number.isFinite(trend) && (
                     <span className={"sa-kpi__trend" + (trend >= 0 ? " sa-kpi__trend--up" : " sa-kpi__trend--down")}
-                          title="vs. previous period of the same length">
+                          title={t("vs. previous period of the same length")}>
                         {trend >= 0 ? "▲" : "▼"} {formatPercent(Math.abs(trend))}
                     </span>
                 )}
@@ -556,7 +556,7 @@ export function KpiCard({
                     return (
                         <span
                             className={"sa-kpi__trend" + (isGood ? " sa-kpi__trend--good" : " sa-kpi__trend--bad")}
-                            title={delta.label || "vs. previous period of the same length"}
+                            title={delta.label || t("vs. previous period of the same length")}
                         >
                             {isUp ? "▲" : "▼"} {formatPercent(Math.abs(delta.value))}
                         </span>

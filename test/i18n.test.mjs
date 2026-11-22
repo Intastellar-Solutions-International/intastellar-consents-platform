@@ -8,6 +8,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { test } from "./_harness.mjs";
 import { platformStrings, loadDictionary } from "../scripts/i18n-strings.mjs";
+import { hardcodedTexts } from "../scripts/i18n-hardcoded.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const languages = vm.createContext({});
@@ -51,4 +52,15 @@ test("i18n: language choice — saved, then browser, then English", () => {
     assert.strictEqual(languages.pickLanguage("xx", ["pt-BR"]), "en");
     // Norwegian arrives as nb, no or nn; all are Bokmål here.
     for (const tag of ["nb-NO", "no", "nn-NO"]) assert.strictEqual(languages.pickLanguage(null, [tag]), "nb", tag);
+});
+
+// English written straight into page code never reaches t(), so the tests
+// above can't see it. This count may only go down: lower it when you move
+// texts into t(). `node scripts/i18n-hardcoded.mjs [path]` shows where.
+const HARDCODED_MAX = 2451;
+
+test("i18n: no new untranslated text written straight into page code", () => {
+    const found = hardcodedTexts();
+    assert.ok(found.length <= HARDCODED_MAX,
+        `${found.length} hard-coded texts (max ${HARDCODED_MAX}) — wrap new texts in t("…"); node scripts/i18n-hardcoded.mjs lists them`);
 });

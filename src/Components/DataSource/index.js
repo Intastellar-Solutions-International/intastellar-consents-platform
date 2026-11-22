@@ -24,7 +24,7 @@ export default function DataSource({ source, filters = [], fetchedAt, action, he
     }, [fetchedAt]);
 
     const parts = [source, ...filters.filter(Boolean)];
-    if (fetchedAt) parts.push(`Updated ${formatRelativeTime(fetchedAt)}`);
+    if (fetchedAt) parts.push(t("Updated {time}", { time: formatRelativeTime(fetchedAt) }));
     return (
         <p className={`data-source tw-m-0 tw-flex tw-items-center tw-gap-2 tw-text-xs tw-text-text-muted ${className}`}>
             <Icon name="database" size={13} />

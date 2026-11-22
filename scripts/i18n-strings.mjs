@@ -31,6 +31,12 @@ export function platformStrings() {
             for (const m of src.matchAll(/\b(?:name|label): "([^"]+)"/g)) found.add(m[1]);
         }
         for (const m of src.matchAll(/featureName="([^"]+)"/g)) found.add(m[1]);
+        // RelatedPages links: label and hint are shown through t().
+        for (const m of src.matchAll(/\{ product: "[a-z]+", label: "([^"]+)"[^}]*\}/g)) {
+            found.add(m[1]);
+            const hint = m[0].match(/hint: "([^"]+)"/);
+            if (hint) found.add(hint[1]);
+        }
         for (const m of src.matchAll(/<(?:StickyPageTitle|SideNav)\b[^>]*?\stitle="([^"]+)"/g)) found.add(m[1]);
     }
     return [...found].sort();
