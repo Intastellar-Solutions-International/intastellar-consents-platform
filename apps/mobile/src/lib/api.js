@@ -71,8 +71,27 @@ export async function fetchDomains(session) {
         .filter((d) => d && d !== "combined view" && d !== "undefined.");
 }
 
+/** Domains with Analytics set up and active (same list as the web's domain picker). */
+export async function fetchAnalyticsDomains(session) {
+    const body = await getJson(`${SCANNER_HOST}/api/analytics-site?list=1`, session);
+    return new Set((body?.sites || []).filter((s) => s.active).map((s) => String(s.domain).toLowerCase()));
+}
+
 export const fetchReport = (session, domain, from, to) =>
     getJson(`${SCANNER_HOST}/api/analytics-report?${qs({ domain, from, to })}`, session);
+
+/** A one-time code that opens the web dashboard signed in (api/app-handoff.js). */
+export async function createHandoff(session, user) {
+    const res = await fetch(`${SCANNER_HOST}/api/app-handoff`, {
+        method: "POST",
+        headers: headers(session, { "X-User-Email": user?.email || "" }),
+        body: JSON.stringify({ action: "create", user: { name: user?.name, image: user?.image } }),
+    });
+    if (res.status === 401) { onExpired(); throw new SessionExpiredError(); }
+    const body = await res.json().catch(() => null);
+    if (!res.ok || !body?.code) throw new Error(body?.error || "Hand-over failed");
+    return body.code;
+}
 
 export const fetchLive = (session, domain) =>
     getJson(`${SCANNER_HOST}/api/analytics-live?${qs({ domain })}`, session);

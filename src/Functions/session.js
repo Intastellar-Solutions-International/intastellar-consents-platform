@@ -11,7 +11,7 @@ const LOGIN_PATHS = /^\/(login|auth-login|signup)([/?#]|$)/;
 
 // Only same-site app paths: starts with one "/", no scheme or "//host",
 // never a login page (that would loop).
-function isSafeReturnPath(path) {
+export function isSafeReturnPath(path) {
     return typeof path === "string"
         && path.startsWith("/")
         && !path.startsWith("//")

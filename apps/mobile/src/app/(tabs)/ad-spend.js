@@ -4,7 +4,7 @@ import { useSession } from "../../lib/session.js";
 import { useRequest } from "../../lib/useRequest.js";
 import { fetchAdSpend } from "../../lib/api.js";
 import { formatMoney, formatNumber, formatPercent, formatRelative, periodRange } from "../../lib/format.js";
-import { openWeb } from "../../lib/web.js";
+import { useOpenWeb } from "../../lib/web.js";
 import { colors, space, text } from "../../lib/theme.js";
 import { t } from "../../lib/i18n.js";
 import { Card, Loading, Message, Screen, SourceLine } from "../../components/ui.js";
@@ -22,6 +22,7 @@ function totals(platforms) {
 }
 
 export default function AdSpend() {
+    const openWeb = useOpenWeb();
     const { session, organisationId, domain, days } = useSession();
     const range = useMemo(() => periodRange(days), [days]);
     const report = useRequest(async () => {

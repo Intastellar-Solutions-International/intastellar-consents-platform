@@ -1,7 +1,7 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import Constants from "expo-constants";
 import { useSession } from "../../lib/session.js";
-import { openWeb } from "../../lib/web.js";
+import { useOpenWeb } from "../../lib/web.js";
 import { colors, space, text } from "../../lib/theme.js";
 import { t } from "../../lib/i18n.js";
 import { Button, Card, Screen } from "../../components/ui.js";
@@ -16,6 +16,7 @@ function Row({ label, onPress, selected }) {
 }
 
 export default function More() {
+    const openWeb = useOpenWeb();
     const { user, organisations, organisationId, setOrganisationId, signOut } = useSession();
     const name = [user?.name?.first, user?.name?.last].filter(Boolean).join(" ");
     return (

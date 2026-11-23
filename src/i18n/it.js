@@ -934,6 +934,11 @@ const it = {
     "just now": "proprio ora",
     "{count} min ago": "{count} min fa",
     "{count} h ago": "{count} h fa",
+    // App → web hand-over
+    "Open the page again from the app, or sign in here.": "Riapri la pagina dall'app oppure accedi qui.",
+    "Sign in": "Accedi",
+    "This link has expired": "Questo link è scaduto",
+    "No domain has Analytics yet": "Nessun dominio ha ancora Analytics",
 };
 
 export default it;

@@ -934,6 +934,11 @@ const de = {
     "just now": "gerade eben",
     "{count} min ago": "vor {count} Min.",
     "{count} h ago": "vor {count} Std.",
+    // App → web hand-over
+    "Open the page again from the app, or sign in here.": "Öffnen Sie die Seite erneut aus der App oder melden Sie sich hier an.",
+    "Sign in": "Anmelden",
+    "This link has expired": "Dieser Link ist abgelaufen",
+    "No domain has Analytics yet": "Noch keine Domain mit Analytics",
 };
 
 export default de;

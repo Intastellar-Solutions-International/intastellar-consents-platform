@@ -934,6 +934,11 @@ const nl = {
     "just now": "zojuist",
     "{count} min ago": "{count} min. geleden",
     "{count} h ago": "{count} uur geleden",
+    // App → web hand-over
+    "Open the page again from the app, or sign in here.": "Open de pagina opnieuw vanuit de app, of log hier in.",
+    "Sign in": "Inloggen",
+    "This link has expired": "Deze link is verlopen",
+    "No domain has Analytics yet": "Nog geen domein met Analytics",
 };
 
 export default nl;

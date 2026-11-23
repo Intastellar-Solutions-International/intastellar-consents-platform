@@ -934,6 +934,11 @@ const pl = {
     "just now": "przed chwilą",
     "{count} min ago": "{count} min temu",
     "{count} h ago": "{count} godz. temu",
+    // App → web hand-over
+    "Open the page again from the app, or sign in here.": "Otwórz stronę ponownie z aplikacji lub zaloguj się tutaj.",
+    "Sign in": "Zaloguj się",
+    "This link has expired": "Ten link wygasł",
+    "No domain has Analytics yet": "Żadna domena nie ma jeszcze Analytics",
 };
 
 export default pl;

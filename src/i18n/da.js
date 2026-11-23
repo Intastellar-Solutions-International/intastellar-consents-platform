@@ -934,6 +934,11 @@ const da = {
     "just now": "lige nu",
     "{count} min ago": "for {count} min. siden",
     "{count} h ago": "for {count} t. siden",
+    // App → web hand-over
+    "Open the page again from the app, or sign in here.": "Åbn siden igen fra appen, eller log ind her.",
+    "Sign in": "Log ind",
+    "This link has expired": "Linket er udløbet",
+    "No domain has Analytics yet": "Intet domæne har Analytics endnu",
 };
 
 export default da;

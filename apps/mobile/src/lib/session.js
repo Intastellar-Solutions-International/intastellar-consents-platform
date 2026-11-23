@@ -9,7 +9,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as SecureStore from "expo-secure-store";
 import { useIntastellarRN } from "@intastellar/signin-sdk-react-native";
 import { APP_NAME, CLIENT_ID, LOGIN_URI } from "./config.js";
-import { fetchDomains, fetchOrganisations, setOnSessionExpired, verifyAccountToken } from "./api.js";
+import { fetchAnalyticsDomains, fetchDomains, fetchOrganisations, setOnSessionExpired, verifyAccountToken } from "./api.js";
 
 const TOKEN_KEY = "ia_token";
 const STATE_KEY = "ia_session";
@@ -23,7 +23,8 @@ export function SessionProvider({ children }) {
     const [user, setUser] = useState(null);
     const [organisations, setOrganisations] = useState([]);
     const [organisationId, setOrganisationId] = useState(null);
-    const [domains, setDomains] = useState([]);
+    const [domains, setDomains] = useState([]);          // domains with Analytics
+    const [allDomainCount, setAllDomainCount] = useState(0); // every domain of the organisation
     const [domainsState, setDomainsState] = useState("idle"); // idle | loading | ready | error
     const [domain, setDomain] = useState(null);
     const [days, setDays] = useState(30);
@@ -128,8 +129,12 @@ export function SessionProvider({ children }) {
     // there. "idle" reads as loading until the first answer arrives.
     const fetchDomainList = useCallback(() => {
         if (!session || organisationId == null) return;
-        fetchDomains(session)
-            .then((list) => {
+        // Only domains with Analytics — this is the Analytics app. If that
+        // list can't be loaded, show every domain rather than none.
+        Promise.all([fetchDomains(session), fetchAnalyticsDomains(session).catch(() => null)])
+            .then(([all, withAnalytics]) => {
+                const list = withAnalytics ? all.filter((d) => withAnalytics.has(d.toLowerCase())) : all;
+                setAllDomainCount(all.length);
                 setDomains(list);
                 setDomain((current) => (current && list.includes(current) ? current : list[0] || null));
                 setDomainsState("ready");
@@ -143,7 +148,7 @@ export function SessionProvider({ children }) {
         status, user, session, signingIn, signInWithToken,
         signInError: signInError || sdk.error, signIn: () => { setSignInError(null); return sdk.signin(); }, signOut,
         organisations, organisationId, setOrganisationId: (id) => { setOrganisationId(id); setDomain(null); setDomains([]); setDomainsState("loading"); },
-        domains, domainsState, reloadDomains, domain, setDomain,
+        domains, allDomainCount, domainsState, reloadDomains, domain, setDomain,
         days, setDays,
     };
     return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>;

@@ -934,6 +934,11 @@ const nb = {
     "just now": "akkurat nå",
     "{count} min ago": "for {count} min siden",
     "{count} h ago": "for {count} t siden",
+    // App → web hand-over
+    "Open the page again from the app, or sign in here.": "Åpne siden på nytt fra appen, eller logg inn her.",
+    "Sign in": "Logg inn",
+    "This link has expired": "Lenken har utløpt",
+    "No domain has Analytics yet": "Ingen domener har Analytics ennå",
 };
 
 export default nb;

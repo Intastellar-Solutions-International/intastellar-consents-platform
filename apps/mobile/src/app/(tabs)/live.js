@@ -3,7 +3,7 @@ import { useSession } from "../../lib/session.js";
 import { useRequest } from "../../lib/useRequest.js";
 import { fetchLive } from "../../lib/api.js";
 import { formatNumber, formatRelative } from "../../lib/format.js";
-import { openWeb } from "../../lib/web.js";
+import { useOpenWeb } from "../../lib/web.js";
 import { colors, radius, space, text } from "../../lib/theme.js";
 import { t } from "../../lib/i18n.js";
 import { Card, Loading, Message, Screen, SourceLine, styles as ui } from "../../components/ui.js";
@@ -14,6 +14,7 @@ import DomainGate from "../../components/DomainGate.js";
 const POLL_MS = 30000;
 
 export default function Live() {
+    const openWeb = useOpenWeb();
     const { session, organisationId, domain } = useSession();
     const live = useRequest(() => fetchLive(session, domain), `${organisationId}|${domain}`, { enabled: !!domain, intervalMs: POLL_MS });
     const d = live.data;

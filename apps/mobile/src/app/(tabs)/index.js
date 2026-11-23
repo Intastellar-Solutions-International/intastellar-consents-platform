@@ -4,7 +4,7 @@ import { useSession } from "../../lib/session.js";
 import { useRequest } from "../../lib/useRequest.js";
 import { fetchReport } from "../../lib/api.js";
 import { formatNumber, formatPercent, formatRelative, periodRange } from "../../lib/format.js";
-import { openWeb } from "../../lib/web.js";
+import { useOpenWeb } from "../../lib/web.js";
 import { t } from "../../lib/i18n.js";
 import { STATISTICS_CONSENT } from "../../../../../src/Functions/consentMetrics.js";
 import { Card, Loading, Message, Screen, SourceLine, styles } from "../../components/ui.js";
@@ -14,6 +14,7 @@ import ScopeBar from "../../components/ScopeBar.js";
 import DomainGate from "../../components/DomainGate.js";
 
 export default function Home() {
+    const openWeb = useOpenWeb();
     const { session, organisationId, domain, days } = useSession();
     const range = useMemo(() => periodRange(days), [days]);
     const report = useRequest(async () => {

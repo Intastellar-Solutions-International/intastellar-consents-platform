@@ -10,7 +10,7 @@ export default function SignIn() {
     return (
         <SafeAreaView style={styles.safe}>
             <View style={styles.body}>
-                <Image source={require("../../assets/icon.png")} style={styles.logo} accessibilityIgnoresInvertColors />
+                <Image source={require("../../assets/logo-mark.png")} style={styles.logo} resizeMode="contain" accessibilityIgnoresInvertColors accessibilityLabel="Intastellar" />
                 <Text style={styles.title} accessibilityRole="header">Intastellar Analytics</Text>
                 <Text style={styles.lede}>{t("Consent-aware traffic, ad spend and conversions from the same code — no second install.")}</Text>
             </View>
@@ -26,7 +26,7 @@ export default function SignIn() {
 const styles = StyleSheet.create({
     safe: { flex: 1, backgroundColor: colors.bgBase, padding: space[6], justifyContent: "space-between" },
     body: { flex: 1, justifyContent: "center", gap: space[3] },
-    logo: { width: 64, height: 64, borderRadius: 14, marginBottom: space[2] },
+    logo: { width: 132, height: 51, marginBottom: space[3] },
     title: { color: colors.textPrimary, fontSize: text.xxl, fontWeight: "600" },
     lede: { color: colors.textSecondary, fontSize: text.base, lineHeight: 22 },
     actions: { gap: space[3] },

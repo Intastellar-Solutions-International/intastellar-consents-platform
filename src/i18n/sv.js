@@ -934,6 +934,11 @@ const sv = {
     "just now": "nyss",
     "{count} min ago": "för {count} min sedan",
     "{count} h ago": "för {count} tim sedan",
+    // App → web hand-over
+    "Open the page again from the app, or sign in here.": "Öppna sidan igen från appen, eller logga in här.",
+    "Sign in": "Logga in",
+    "This link has expired": "Länken har gått ut",
+    "No domain has Analytics yet": "Ingen domän har Analytics än",
 };
 
 export default sv;
