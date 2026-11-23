@@ -46,7 +46,10 @@ export function signatureValid(raw, secret) {
     }
 }
 
-const claimEmail = (c) => [c.email, c.user?.email, c.data?.email, c.sub].find((v) => typeof v === "string" && v.includes("@")) || null;
+// Intastellar Accounts puts the account's details under PAYLOAD
+// (Checkcookies.php → JWTGenerate); without reading it, callers that don't
+// send X-User-Email (the mobile app) were refused with 401.
+const claimEmail = (c) => [c.email, c.PAYLOAD?.email, c.user?.email, c.data?.email, c.sub].find((v) => typeof v === "string" && v.includes("@")) || null;
 
 export function isMember(response, organisationId, email) {
     if (typeof response === "string") return false;
