@@ -41,7 +41,7 @@ export function KpiDelta({ delta }) {
     if (delta?.lowData) {
         return (
             <p className="tw-m-0 tw-text-sm tw-text-text-muted" title={delta.basis || undefined}>
-                {LOW_DATA_LABEL}{delta.label ? <span className="tw-sr-only"> {delta.label}</span> : null}
+                {t(LOW_DATA_LABEL)}{delta.label ? <span className="tw-sr-only"> {delta.label}</span> : null}
             </p>
         );
     }

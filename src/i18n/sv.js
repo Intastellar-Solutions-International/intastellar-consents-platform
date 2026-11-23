@@ -912,6 +912,28 @@ const sv = {
     "medium": "medel",
     "low": "låg",
     "Compliance snapshot": "Compliance-ögonblicksbild",
+    // Mobile app (apps/mobile)
+    "Choose domain": "Välj domän",
+    "Data will appear here within a few minutes of the first visitor.": "Data visas här några minuter efter den första besökaren.",
+    "Domains are added on the web dashboard. They appear here right after.": "Domäner läggs till i webbpanelen. De visas här direkt efter.",
+    "Domains couldn't be loaded": "Domänerna kunde inte läsas in",
+    "More": "Mer",
+    "No domain": "Ingen domän",
+    "Open on the web": "Öppna på webben",
+    "Sign in with Intastellar": "Logga in med Intastellar",
+    "Sign-in didn't work. Please try again.": "Inloggningen fungerade inte. Försök igen.",
+    "This section failed to load": "Det här avsnittet kunde inte läsas in",
+    "Too little data": "För lite data",
+    "Try again": "Försök igen",
+    "Use the account you use on the web dashboard.": "Använd kontot du använder i webbpanelen.",
+    "Web dashboard": "Webbpanel",
+    "no change": "ingen förändring",
+    "{count} d": "{count} d",
+    "{count} impressions": "{count} visningar",
+    "Signing in…": "Loggar in…",
+    "just now": "nyss",
+    "{count} min ago": "för {count} min sedan",
+    "{count} h ago": "för {count} tim sedan",
 };
 
 export default sv;

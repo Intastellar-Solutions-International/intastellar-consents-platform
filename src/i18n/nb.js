@@ -912,6 +912,28 @@ const nb = {
     "medium": "middels",
     "low": "lav",
     "Compliance snapshot": "Compliance-øyeblikksbilde",
+    // Mobile app (apps/mobile)
+    "Choose domain": "Velg domene",
+    "Data will appear here within a few minutes of the first visitor.": "Data vises her noen minutter etter den første besøkende.",
+    "Domains are added on the web dashboard. They appear here right after.": "Domener legges til i nettdashbordet. De vises her rett etter.",
+    "Domains couldn't be loaded": "Domenene kunne ikke lastes",
+    "More": "Mer",
+    "No domain": "Intet domene",
+    "Open on the web": "Åpne på nettet",
+    "Sign in with Intastellar": "Logg inn med Intastellar",
+    "Sign-in didn't work. Please try again.": "Innloggingen mislyktes. Prøv igjen.",
+    "This section failed to load": "Denne delen kunne ikke lastes",
+    "Too little data": "For lite data",
+    "Try again": "Prøv igjen",
+    "Use the account you use on the web dashboard.": "Bruk kontoen du bruker i nettdashbordet.",
+    "Web dashboard": "Nettdashbord",
+    "no change": "ingen endring",
+    "{count} d": "{count} d",
+    "{count} impressions": "{count} visninger",
+    "Signing in…": "Logger inn…",
+    "just now": "akkurat nå",
+    "{count} min ago": "for {count} min siden",
+    "{count} h ago": "for {count} t siden",
 };
 
 export default nb;

@@ -912,6 +912,28 @@ const fr = {
     "medium": "moyenne",
     "low": "basse",
     "Compliance snapshot": "Instantané de conformité",
+    // Mobile app (apps/mobile)
+    "Choose domain": "Choisir un domaine",
+    "Data will appear here within a few minutes of the first visitor.": "Les données apparaîtront ici quelques minutes après le premier visiteur.",
+    "Domains are added on the web dashboard. They appear here right after.": "Les domaines s’ajoutent dans le tableau de bord web. Ils apparaissent ici juste après.",
+    "Domains couldn't be loaded": "Les domaines n’ont pas pu être chargés",
+    "More": "Plus",
+    "No domain": "Aucun domaine",
+    "Open on the web": "Ouvrir sur le web",
+    "Sign in with Intastellar": "Se connecter avec Intastellar",
+    "Sign-in didn't work. Please try again.": "La connexion a échoué. Veuillez réessayer.",
+    "This section failed to load": "Cette section n’a pas pu être chargée",
+    "Too little data": "Trop peu de données",
+    "Try again": "Réessayer",
+    "Use the account you use on the web dashboard.": "Utilisez le compte que vous utilisez sur le tableau de bord web.",
+    "Web dashboard": "Tableau de bord web",
+    "no change": "aucun changement",
+    "{count} d": "{count} j",
+    "{count} impressions": "{count} impressions",
+    "Signing in…": "Connexion…",
+    "just now": "à l’instant",
+    "{count} min ago": "il y a {count} min",
+    "{count} h ago": "il y a {count} h",
 };
 
 export default fr;

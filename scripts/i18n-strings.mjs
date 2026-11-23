@@ -21,10 +21,13 @@ const unescape = (s) => s.replace(/\\"/g, '"').replace(/\\\\/g, "\\");
 
 export function platformStrings() {
     const found = new Set();
-    for (const file of files(path.join(root, "src"))) {
+    // The mobile app (apps/mobile) shares these dictionaries, so its texts count too.
+    const mobileSrc = path.join(root, "apps", "mobile", "src");
+    const sources = [...files(path.join(root, "src")), ...(fs.existsSync(mobileSrc) ? files(mobileSrc) : [])];
+    for (const file of sources) {
         if (file.includes(`${path.sep}i18n${path.sep}`) || file.includes(`${path.sep}Login${path.sep}`)) continue;
         const src = fs.readFileSync(file, "utf8");
-        const uses = /from "[./]*i18n\/index\.js"/.test(src);
+        const uses = /from "(?:[./]*i18n\/index|[./]*lib\/i18n|\.\/i18n)\.js"/.test(src);
         if (uses) for (const m of src.matchAll(/\btx?\("((?:[^"\\]|\\.)+)"/g)) found.add(unescape(m[1]));
         // Shown through t() where they're rendered.
         if (file.endsWith(path.join("SideNavLinks", "index.js"))) {

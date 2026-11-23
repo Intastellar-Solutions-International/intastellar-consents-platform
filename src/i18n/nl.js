@@ -912,6 +912,28 @@ const nl = {
     "medium": "gemiddeld",
     "low": "laag",
     "Compliance snapshot": "Compliance-momentopname",
+    // Mobile app (apps/mobile)
+    "Choose domain": "Domein kiezen",
+    "Data will appear here within a few minutes of the first visitor.": "Gegevens verschijnen hier enkele minuten na de eerste bezoeker.",
+    "Domains are added on the web dashboard. They appear here right after.": "Domeinen voeg je toe in het webdashboard. Ze verschijnen hier direct daarna.",
+    "Domains couldn't be loaded": "Domeinen konden niet worden geladen",
+    "More": "Meer",
+    "No domain": "Geen domein",
+    "Open on the web": "Openen op het web",
+    "Sign in with Intastellar": "Inloggen met Intastellar",
+    "Sign-in didn't work. Please try again.": "Inloggen is niet gelukt. Probeer het opnieuw.",
+    "This section failed to load": "Dit onderdeel kon niet worden geladen",
+    "Too little data": "Te weinig gegevens",
+    "Try again": "Opnieuw proberen",
+    "Use the account you use on the web dashboard.": "Gebruik het account dat je voor het webdashboard gebruikt.",
+    "Web dashboard": "Webdashboard",
+    "no change": "geen verandering",
+    "{count} d": "{count} d",
+    "{count} impressions": "{count} vertoningen",
+    "Signing in…": "Bezig met inloggen…",
+    "just now": "zojuist",
+    "{count} min ago": "{count} min. geleden",
+    "{count} h ago": "{count} uur geleden",
 };
 
 export default nl;

@@ -912,6 +912,28 @@ const de = {
     "medium": "mittel",
     "low": "niedrig",
     "Compliance snapshot": "Compliance-Snapshot",
+    // Mobile app (apps/mobile)
+    "Choose domain": "Domain wählen",
+    "Data will appear here within a few minutes of the first visitor.": "Daten erscheinen hier wenige Minuten nach dem ersten Besucher.",
+    "Domains are added on the web dashboard. They appear here right after.": "Domains werden im Web-Dashboard hinzugefügt. Sie erscheinen hier sofort danach.",
+    "Domains couldn't be loaded": "Domains konnten nicht geladen werden",
+    "More": "Mehr",
+    "No domain": "Keine Domain",
+    "Open on the web": "Im Web öffnen",
+    "Sign in with Intastellar": "Mit Intastellar anmelden",
+    "Sign-in didn't work. Please try again.": "Die Anmeldung hat nicht geklappt. Bitte versuchen Sie es erneut.",
+    "This section failed to load": "Dieser Bereich konnte nicht geladen werden",
+    "Too little data": "Zu wenige Daten",
+    "Try again": "Erneut versuchen",
+    "Use the account you use on the web dashboard.": "Verwenden Sie das Konto, mit dem Sie das Web-Dashboard nutzen.",
+    "Web dashboard": "Web-Dashboard",
+    "no change": "keine Veränderung",
+    "{count} d": "{count} T",
+    "{count} impressions": "{count} Impressionen",
+    "Signing in…": "Anmeldung läuft…",
+    "just now": "gerade eben",
+    "{count} min ago": "vor {count} Min.",
+    "{count} h ago": "vor {count} Std.",
 };
 
 export default de;

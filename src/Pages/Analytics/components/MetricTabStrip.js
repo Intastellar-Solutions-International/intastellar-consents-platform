@@ -1,5 +1,6 @@
 import { formatPercent, deltaSentiment } from "../_shared.js";
 import { LOW_DATA_LABEL } from "../../../Functions/smallSample.js";
+import { t } from "../../../i18n/index.js";
 
 /**
  * GA4-style metric selector — docs/design-audit-plan.md Phase 1, the KPI
@@ -56,7 +57,7 @@ export default function MetricTabStrip({ metrics, active, onSelect, className })
                         <span className="sa-metric-tab__value">{m.value}</span>
                         {lowData && (
                             <span className="sa-metric-tab__delta sa-metric-tab__delta--low" title={m.delta.basis || undefined}>
-                                {LOW_DATA_LABEL}
+                                {t(LOW_DATA_LABEL)}
                             </span>
                         )}
                         {sentiment && (

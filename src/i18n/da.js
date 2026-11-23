@@ -912,6 +912,28 @@ const da = {
     "medium": "mellem",
     "low": "lav",
     "Compliance snapshot": "Compliance-øjebliksbillede",
+    // Mobile app (apps/mobile)
+    "Choose domain": "Vælg domæne",
+    "Data will appear here within a few minutes of the first visitor.": "Data vises her få minutter efter den første besøgende.",
+    "Domains are added on the web dashboard. They appear here right after.": "Domæner tilføjes i webdashboardet. De vises her lige efter.",
+    "Domains couldn't be loaded": "Domæner kunne ikke indlæses",
+    "More": "Mere",
+    "No domain": "Intet domæne",
+    "Open on the web": "Åbn på nettet",
+    "Sign in with Intastellar": "Log ind med Intastellar",
+    "Sign-in didn't work. Please try again.": "Login lykkedes ikke. Prøv igen.",
+    "This section failed to load": "Denne sektion kunne ikke indlæses",
+    "Too little data": "For få data",
+    "Try again": "Prøv igen",
+    "Use the account you use on the web dashboard.": "Brug den konto, du bruger i webdashboardet.",
+    "Web dashboard": "Webdashboard",
+    "no change": "ingen ændring",
+    "{count} d": "{count} d",
+    "{count} impressions": "{count} visninger",
+    "Signing in…": "Logger ind…",
+    "just now": "lige nu",
+    "{count} min ago": "for {count} min. siden",
+    "{count} h ago": "for {count} t. siden",
 };
 
 export default da;
