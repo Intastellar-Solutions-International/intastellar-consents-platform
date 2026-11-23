@@ -939,6 +939,23 @@ const nl = {
     "Sign in": "Inloggen",
     "This link has expired": "Deze link is verlopen",
     "No domain has Analytics yet": "Nog geen domein met Analytics",
+    "Your password stays with Intastellar Accounts; the app only receives your basic profile.": "Je wachtwoord blijft bij Intastellar Accounts; de app ontvangt alleen je basisprofiel.",
+    // Mobile app: alerts
+    "Alert rules are set on the web dashboard.": "Meldingsregels stel je in op het webdashboard.",
+    "No alerts in the last 30 days": "Geen meldingen in de afgelopen 30 dagen",
+    "Now {value} — your alert is set at {threshold}.": "Nu {value} – je melding staat op {threshold}.",
+    "Open settings": "Instellingen openen",
+    "Push notifications": "Pushmeldingen",
+    "Set up alerts": "Meldingen instellen",
+    "Alerts arrive on this phone as soon as they fire.": "Meldingen komen op deze telefoon binnen zodra ze afgaan.",
+    "Get your alerts as notifications on this phone.": "Ontvang je meldingen als pushmeldingen op deze telefoon.",
+    "Notifications are turned off for Intastellar Analytics in your phone's settings.": "Meldingen voor Intastellar Analytics staan uit in de instellingen van je telefoon.",
+    "Push notifications need the installed app — they don't work in Expo Go.": "Pushmeldingen werken alleen in de geïnstalleerde app – niet in Expo Go.",
+    "Push notifications only work on a real phone.": "Pushmeldingen werken alleen op een echte telefoon.",
+    "Traffic drop": "Daling in verkeer",
+    "Consent rate": "Toestemmingspercentage",
+    "Conversion drop": "Daling in conversies",
+    "Engaged users drop": "Daling in betrokken gebruikers",
 };
 
 export default nl;

@@ -37,7 +37,14 @@
           "imageWidth": 160
         }
       ],
-      "expo-font"
+      "expo-font",
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/android-icon-monochrome.png",
+          "color": "#c09f53"
+        }
+      ]
     ],
     "scheme": "intastellaranalytics",
     "backgroundColor": "#373737",

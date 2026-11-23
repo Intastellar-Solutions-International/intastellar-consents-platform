@@ -939,6 +939,23 @@ const sv = {
     "Sign in": "Logga in",
     "This link has expired": "Länken har gått ut",
     "No domain has Analytics yet": "Ingen domän har Analytics än",
+    "Your password stays with Intastellar Accounts; the app only receives your basic profile.": "Ditt lösenord stannar hos Intastellar Accounts; appen får bara din grundprofil.",
+    // Mobile app: alerts
+    "Alert rules are set on the web dashboard.": "Larmregler ställs in i webbpanelen.",
+    "No alerts in the last 30 days": "Inga larm de senaste 30 dagarna",
+    "Now {value} — your alert is set at {threshold}.": "Nu {value} – ditt larm är satt till {threshold}.",
+    "Open settings": "Öppna inställningar",
+    "Push notifications": "Pushnotiser",
+    "Set up alerts": "Ställ in larm",
+    "Alerts arrive on this phone as soon as they fire.": "Larm kommer till den här telefonen så fort de utlöses.",
+    "Get your alerts as notifications on this phone.": "Få dina larm som notiser på den här telefonen.",
+    "Notifications are turned off for Intastellar Analytics in your phone's settings.": "Notiser för Intastellar Analytics är avstängda i telefonens inställningar.",
+    "Push notifications need the installed app — they don't work in Expo Go.": "Pushnotiser kräver den installerade appen – de fungerar inte i Expo Go.",
+    "Push notifications only work on a real phone.": "Pushnotiser fungerar bara på en riktig telefon.",
+    "Traffic drop": "Trafikminskning",
+    "Consent rate": "Samtyckesgrad",
+    "Conversion drop": "Minskade konverteringar",
+    "Engaged users drop": "Färre engagerade användare",
 };
 
 export default sv;

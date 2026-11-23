@@ -24,6 +24,7 @@ export default function TabLayout() {
             <Tabs.Screen name="index" options={{ title: t("Home"), tabBarIcon: tabIcon("home") }} />
             <Tabs.Screen name="live" options={{ title: t("Live"), tabBarIcon: tabIcon("activity") }} />
             <Tabs.Screen name="ad-spend" options={{ title: t("Ad Spend"), tabBarIcon: tabIcon("dollar-sign") }} />
+            <Tabs.Screen name="alerts" options={{ title: t("Alerts"), tabBarIcon: tabIcon("bell") }} />
             <Tabs.Screen name="more" options={{ title: t("More"), tabBarIcon: tabIcon("menu") }} />
         </Tabs>
     );

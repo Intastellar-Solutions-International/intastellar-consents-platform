@@ -939,6 +939,23 @@ const nb = {
     "Sign in": "Logg inn",
     "This link has expired": "Lenken har utløpt",
     "No domain has Analytics yet": "Ingen domener har Analytics ennå",
+    "Your password stays with Intastellar Accounts; the app only receives your basic profile.": "Passordet ditt blir hos Intastellar Accounts; appen mottar bare grunnprofilen din.",
+    // Mobile app: alerts
+    "Alert rules are set on the web dashboard.": "Varselregler settes opp i nettdashbordet.",
+    "No alerts in the last 30 days": "Ingen varsler de siste 30 dagene",
+    "Now {value} — your alert is set at {threshold}.": "Nå {value} – varselet ditt er satt til {threshold}.",
+    "Open settings": "Åpne innstillinger",
+    "Push notifications": "Pushvarsler",
+    "Set up alerts": "Sett opp varsler",
+    "Alerts arrive on this phone as soon as they fire.": "Varsler kommer til denne telefonen så snart de utløses.",
+    "Get your alerts as notifications on this phone.": "Få varslene dine som pushvarsler på denne telefonen.",
+    "Notifications are turned off for Intastellar Analytics in your phone's settings.": "Varsler for Intastellar Analytics er slått av i telefonens innstillinger.",
+    "Push notifications need the installed app — they don't work in Expo Go.": "Pushvarsler krever den installerte appen – de virker ikke i Expo Go.",
+    "Push notifications only work on a real phone.": "Pushvarsler virker bare på en ekte telefon.",
+    "Traffic drop": "Trafikkfall",
+    "Consent rate": "Samtykkerate",
+    "Conversion drop": "Fall i konverteringer",
+    "Engaged users drop": "Fall i aktive brukere",
 };
 
 export default nb;

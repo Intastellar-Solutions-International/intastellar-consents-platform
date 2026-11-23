@@ -939,6 +939,23 @@ const da = {
     "Sign in": "Log ind",
     "This link has expired": "Linket er udløbet",
     "No domain has Analytics yet": "Intet domæne har Analytics endnu",
+    "Your password stays with Intastellar Accounts; the app only receives your basic profile.": "Din adgangskode bliver hos Intastellar Accounts; appen modtager kun din basisprofil.",
+    // Mobile app: alerts
+    "Alert rules are set on the web dashboard.": "Alarmregler sættes op i webdashboardet.",
+    "No alerts in the last 30 days": "Ingen alarmer de seneste 30 dage",
+    "Now {value} — your alert is set at {threshold}.": "Nu {value} – din alarm er sat til {threshold}.",
+    "Open settings": "Åbn indstillinger",
+    "Push notifications": "Pushnotifikationer",
+    "Set up alerts": "Opsæt alarmer",
+    "Alerts arrive on this phone as soon as they fire.": "Alarmer kommer på denne telefon, så snart de udløses.",
+    "Get your alerts as notifications on this phone.": "Få dine alarmer som notifikationer på denne telefon.",
+    "Notifications are turned off for Intastellar Analytics in your phone's settings.": "Notifikationer for Intastellar Analytics er slået fra i telefonens indstillinger.",
+    "Push notifications need the installed app — they don't work in Expo Go.": "Pushnotifikationer kræver den installerede app – de virker ikke i Expo Go.",
+    "Push notifications only work on a real phone.": "Pushnotifikationer virker kun på en rigtig telefon.",
+    "Traffic drop": "Fald i trafik",
+    "Consent rate": "Samtykkerate",
+    "Conversion drop": "Fald i konverteringer",
+    "Engaged users drop": "Fald i aktive brugere",
 };
 
 export default da;

@@ -1,4 +1,5 @@
 import { emailLayout, emailEsc, emailP, INTASTELLAR_LOGO_ATTACHMENT } from "./_email-layout.js";
+import { sendMobilePush } from "./_mobile-push.js";
 /**
  * Shared alert-check logic — used by ad-alerts.js (manual trigger) and
  * ad-snapshots.js (auto-trigger on snapshot save).
@@ -182,6 +183,11 @@ export async function checkAndFireAlerts(db, { orgId, domain, snapshot }) {
             body: fired.length > 1 ? `+ ${fired.length - 1} more alert${fired.length > 2 ? "s" : ""}` : top.body,
             tag: `ad-alert-${domain}`,
         }).catch(() => {});
+        // Same alert to the organisation's phones (mobile app opt-in).
+        sendMobilePush(db, orgId, {
+            title: `${top.title} · ${domain}`,
+            body: fired.length > 1 ? `+ ${fired.length - 1} more alert${fired.length > 2 ? "s" : ""}` : (top.body || ""),
+        }, { data: { type: "alert", kind: "ads", domain } }).catch(() => {});
     }
 
     return fired;

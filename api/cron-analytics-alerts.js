@@ -1,3 +1,4 @@
+import { sendMobilePush } from "./_mobile-push.js";
 import { emailLayout, emailEsc, emailP, INTASTELLAR_LOGO_ATTACHMENT } from "./_email-layout.js";
 import { getPool } from "./_db.js";
 /**
@@ -9,8 +10,10 @@ import { getPool } from "./_db.js";
  * hammering users with repeated alerts.
  *
  * Notification channels:
- *   - Email: via Resend (RESEND_API_KEY env var)
- *   - Push:  via Web Push (VAPID keys env vars) — same infra as ad-alerts
+ *   - Email:  via Resend (RESEND_API_KEY env var), when notify_email is on
+ *   - Mobile: Expo push to every phone the organisation registered in the
+ *             app (_mobile-push.js). notify_push (browser push) was never
+ *             wired up for analytics alerts.
  *
  * The consent platform's DB lives on a different server and is not queried
  * here; all metrics are computed from analytics_events (same DB as analytics).
@@ -179,6 +182,12 @@ export default async function handler(req, res) {
             `INSERT INTO analytics_alert_history (config_id, metric_value, message) VALUES ($1,$2,$3)`,
             [cfg.id, value, message]
         ).catch(() => {});
+
+        // Push to the organisation's phones (apps/mobile opt-in), worded in
+        // each phone's language.
+        await sendMobilePush(db, cfg.organisation_id, {
+            analytics: { metric: cfg.metric, label: cfg.label, domain: cfg.domain, value, threshold: Number(cfg.threshold) },
+        }, { data: { type: "alert", kind: "analytics", domain: cfg.domain } }).catch(() => {});
 
         // Notify via email — recipients is a JSON array of addresses stored
         // directly on the config (see note above the config-fetch query).

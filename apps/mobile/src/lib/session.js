@@ -9,6 +9,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as SecureStore from "expo-secure-store";
 import { useIntastellarRN } from "@intastellar/signin-sdk-react-native";
 import { APP_NAME, CLIENT_ID, LOGIN_URI } from "./config.js";
+import { disablePush, refreshPushRegistration } from "./push.js";
 import { fetchAnalyticsDomains, fetchDomains, fetchOrganisations, setOnSessionExpired, verifyAccountToken } from "./api.js";
 
 const TOKEN_KEY = "ia_token";
@@ -105,6 +106,8 @@ export function SessionProvider({ children }) {
     });
 
     const signOut = useCallback(async () => {
+        // Stop alerts to this phone before the session is gone (shared phones).
+        if (token) await disablePush({ token, organisationId });
         await Promise.all([
             SecureStore.deleteItemAsync(TOKEN_KEY).catch(() => {}),
             AsyncStorage.removeItem(STATE_KEY).catch(() => {}),
@@ -118,12 +121,15 @@ export function SessionProvider({ children }) {
         setDomainsState("idle");
         setDomain(null);
         setStatus("signedOut");
-    }, [sdk]);
+    }, [sdk, token, organisationId]);
 
     // Any request answered with "expired" ends the session.
     useEffect(() => { setOnSessionExpired(() => { signOut(); }); }, [signOut]);
 
     const session = useMemo(() => (token ? { token, organisationId } : null), [token, organisationId]);
+
+    // Keep this phone's push registration on the current organisation and language.
+    useEffect(() => { if (session) refreshPushRegistration(session); }, [session]);
 
     // Domains of the active organisation; keep the chosen one if it's still
     // there. "idle" reads as loading until the first answer arrives.

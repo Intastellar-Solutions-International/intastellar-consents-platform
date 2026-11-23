@@ -44,6 +44,14 @@ export function formatRelative(ms) {
     return t("{count} h ago", { count: hours });
 }
 
+/** Relative time today, the date (and time) for anything older. */
+export function formatWhen(iso) {
+    const ms = new Date(iso).getTime();
+    if (!Number.isFinite(ms)) return "";
+    if (Date.now() - ms < 20 * 3600 * 1000) return formatRelative(ms);
+    return new Date(ms).toLocaleString(locale, { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
+}
+
 /** YYYY-MM-DD in local time — what the API's from/to expect. */
 export function ymd(d) {
     const p = (n) => String(n).padStart(2, "0");

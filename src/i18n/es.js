@@ -939,6 +939,23 @@ const es = {
     "Sign in": "Iniciar sesión",
     "This link has expired": "Este enlace ha caducado",
     "No domain has Analytics yet": "Ningún dominio tiene Analytics todavía",
+    "Your password stays with Intastellar Accounts; the app only receives your basic profile.": "Tu contraseña se queda en Intastellar Accounts; la app solo recibe tu perfil básico.",
+    // Mobile app: alerts
+    "Alert rules are set on the web dashboard.": "Las reglas de alerta se configuran en el panel web.",
+    "No alerts in the last 30 days": "No hay alertas en los últimos 30 días",
+    "Now {value} — your alert is set at {threshold}.": "Ahora {value}: tu alerta está configurada en {threshold}.",
+    "Open settings": "Abrir ajustes",
+    "Push notifications": "Notificaciones push",
+    "Set up alerts": "Configurar alertas",
+    "Alerts arrive on this phone as soon as they fire.": "Las alertas llegan a este teléfono en cuanto se activan.",
+    "Get your alerts as notifications on this phone.": "Recibe tus alertas como notificaciones en este teléfono.",
+    "Notifications are turned off for Intastellar Analytics in your phone's settings.": "Las notificaciones de Intastellar Analytics están desactivadas en los ajustes de tu teléfono.",
+    "Push notifications need the installed app — they don't work in Expo Go.": "Las notificaciones push necesitan la app instalada; no funcionan en Expo Go.",
+    "Push notifications only work on a real phone.": "Las notificaciones push solo funcionan en un teléfono real.",
+    "Traffic drop": "Caída del tráfico",
+    "Consent rate": "Tasa de consentimiento",
+    "Conversion drop": "Caída de conversiones",
+    "Engaged users drop": "Caída de usuarios activos",
 };
 
 export default es;

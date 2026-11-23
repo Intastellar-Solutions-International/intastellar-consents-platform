@@ -77,6 +77,10 @@ export async function fetchAnalyticsDomains(session) {
     return new Set((body?.sites || []).filter((s) => s.active).map((s) => String(s.domain).toLowerCase()));
 }
 
+/** Recent analytics and ad alerts of the organisation (api/mobile-push.js). */
+export const fetchAlerts = (session) =>
+    getJson(`${SCANNER_HOST}/api/mobile-push`, session).then((body) => body?.alerts || []);
+
 export const fetchReport = (session, domain, from, to) =>
     getJson(`${SCANNER_HOST}/api/analytics-report?${qs({ domain, from, to })}`, session);
 
