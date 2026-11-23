@@ -21,7 +21,7 @@ import { PAID_CHANNELS_BY_PLATFORM, platformForChannel, adCostByPlatform, countD
 import { KpiTile, ErrorState, Icon } from "../../../Components/ui";
 import DataSource from "../../../Components/DataSource";
 import { formatNumber, formatPercent } from "../../../Functions/format.js";
-import { t } from "../../../i18n/index.js";
+import { t, tx } from "../../../i18n/index.js";
 import { buildInvisibleTrafficSuggestions } from "./marketingSuggestions.js";
 import appStorage from '../../../Functions/storage.js';
 import { appLocale } from "../../../Functions/format.js";
@@ -797,9 +797,7 @@ function MarketingContextSection({ heading, rows }) {
                     {heading}
                 </h3>
                 <p className="marketing-context__empty-note">
-                    No geographic or landing-path breakdown in the API response yet. After you deploy the updated{" "}
-                    <code>marketingAttribution</code> endpoint, top countries, paths, and UTM content/term slices appear
-                    here.
+                    {t("No country or landing-page breakdown for this period yet.")}
                 </p>
             </section>
         );
@@ -814,11 +812,7 @@ function MarketingContextSection({ heading, rows }) {
                 <td className="marketing-context__label">{row.id}</td>
                 <td className="marketing-context__num">{row.consents.toLocaleString(appLocale())}</td>
                 <td className="marketing-context__num">{fmtPct(row.acceptPct)}</td>
-                <td className="marketing-context__split">
-                    {formatChoiceCountPct(row.acceptAll, row.consents)} ·{" "}
-                    {formatChoiceCountPct(row.essentialOnly, row.consents)} ·{" "}
-                    {formatChoiceCountPct(row.granular, row.consents)}
-                </td>
+                <td className="marketing-context__split"><ChoiceBar row={row} /></td>
             </tr>
         ));
 
@@ -828,20 +822,19 @@ function MarketingContextSection({ heading, rows }) {
                 {heading}
             </h3>
             <p className="marketing-context__lede">
-                Merged from campaign-level slices in this view (union of each campaign’s top dimensions). Percentages
-                use accept-all vs all classified choices within each slice.
+                {t("Combined from each campaign's top countries, pages and UTM values. Accepted all % is the share of recorded choices in each row.")}
             </p>
             <div className="marketing-context__grid">
                 {merged.topCountries.length > 0 ? (
                     <div className="marketing-context__block">
-                        <h3 className="marketing-context__block-title">Top countries</h3>
+                        <h3 className="marketing-context__block-title">{t("Top countries")}</h3>
                         <table className="marketing-context__table">
                             <thead>
                                 <tr>
-                                    <th>Country</th>
-                                    <th className="marketing-context__num">Consents</th>
-                                    <th className="marketing-context__num">Accept %</th>
-                                    <th>All / Essential / Granular</th>
+                                    <th>{t("Country")}</th>
+                                    <th className="marketing-context__num">{t("Decisions")}</th>
+                                    <th className="marketing-context__num">{t("Accepted all")}</th>
+                                    <th>{t("How they chose")}</th>
                                 </tr>
                             </thead>
                             <tbody>{miniRows(merged.topCountries)}</tbody>
@@ -850,14 +843,14 @@ function MarketingContextSection({ heading, rows }) {
                 ) : null}
                 {merged.topLandingPaths.length > 0 ? (
                     <div className="marketing-context__block">
-                        <h3 className="marketing-context__block-title">Top landing paths</h3>
+                        <h3 className="marketing-context__block-title">{t("Top landing pages")}</h3>
                         <table className="marketing-context__table">
                             <thead>
                                 <tr>
-                                    <th>Path</th>
-                                    <th className="marketing-context__num">Consents</th>
-                                    <th className="marketing-context__num">Accept %</th>
-                                    <th>All / Essential / Granular</th>
+                                    <th>{t("Page")}</th>
+                                    <th className="marketing-context__num">{t("Decisions")}</th>
+                                    <th className="marketing-context__num">{t("Accepted all")}</th>
+                                    <th>{t("How they chose")}</th>
                                 </tr>
                             </thead>
                             <tbody>{miniRows(merged.topLandingPaths)}</tbody>
@@ -866,14 +859,14 @@ function MarketingContextSection({ heading, rows }) {
                 ) : null}
                 {merged.topUtmContent.length > 0 ? (
                     <div className="marketing-context__block">
-                        <h3 className="marketing-context__block-title">UTM content</h3>
+                        <h3 className="marketing-context__block-title">{t("UTM content")}</h3>
                         <table className="marketing-context__table">
                             <thead>
                                 <tr>
-                                    <th>Value</th>
-                                    <th className="marketing-context__num">Consents</th>
-                                    <th className="marketing-context__num">Accept %</th>
-                                    <th>All / Essential / Granular</th>
+                                    <th>{t("Value")}</th>
+                                    <th className="marketing-context__num">{t("Decisions")}</th>
+                                    <th className="marketing-context__num">{t("Accepted all")}</th>
+                                    <th>{t("How they chose")}</th>
                                 </tr>
                             </thead>
                             <tbody>{miniRows(merged.topUtmContent)}</tbody>
@@ -882,14 +875,14 @@ function MarketingContextSection({ heading, rows }) {
                 ) : null}
                 {merged.topUtmTerms.length > 0 ? (
                     <div className="marketing-context__block">
-                        <h3 className="marketing-context__block-title">UTM term</h3>
+                        <h3 className="marketing-context__block-title">{t("UTM term")}</h3>
                         <table className="marketing-context__table">
                             <thead>
                                 <tr>
-                                    <th>Value</th>
-                                    <th className="marketing-context__num">Consents</th>
-                                    <th className="marketing-context__num">Accept %</th>
-                                    <th>All / Essential / Granular</th>
+                                    <th>{t("Value")}</th>
+                                    <th className="marketing-context__num">{t("Decisions")}</th>
+                                    <th className="marketing-context__num">{t("Accepted all")}</th>
+                                    <th>{t("How they chose")}</th>
                                 </tr>
                             </thead>
                             <tbody>{miniRows(merged.topUtmTerms)}</tbody>
@@ -1194,9 +1187,9 @@ function MarketingCompareInline({ current, previous, kind = "volume", lowerIsBet
         return (
             <span
                 className="marketing-report-delta marketing-report-delta--new"
-                title="No matching attribution row in the comparison window"
+                title={t("Not present in the comparison period")}
             >
-                new
+                {t("new")}
             </span>
         );
     }
@@ -1215,7 +1208,7 @@ function MarketingCompareInline({ current, previous, kind = "volume", lowerIsBet
                 : "";
         const cls = invertTrendClassIfNeeded(rawCls, lowerIsBetter);
         return (
-            <span className={["marketing-report-delta", cls].filter(Boolean).join(" ")} title="Change vs comparison window (points)">
+            <span className={["marketing-report-delta", cls].filter(Boolean).join(" ")} title={t("Change vs comparison period (percentage points)")}>
                 {pts}
             </span>
         );
@@ -1227,7 +1220,7 @@ function MarketingCompareInline({ current, previous, kind = "volume", lowerIsBet
     return (
         <span
             className={["marketing-report-delta", cls].filter(Boolean).join(" ")}
-            title="Change vs comparison window"
+            title={t("Change vs comparison period")}
         >
             {rel}
         </span>
@@ -1314,15 +1307,15 @@ function MarketingTablePagination({ page, pageCount, totalRows, pageSize, onPage
     const lastRow = Math.min(totalRows, page * pageSize);
     const pageNumbers = buildMarketingPageNumbers(page, pageCount);
     return (
-        <nav className="marketing-report-pagination" aria-label={`${label} pagination`}>
+        <nav className="marketing-report-pagination" aria-label={t("Pages")}>
             <button
                 type="button"
                 className="marketing-report-pagination__btn"
                 onClick={() => goTo(page - 1)}
                 disabled={page <= 1}
-                aria-label="Previous page"
+                aria-label={t("Previous page")}
             >
-                ← Previous
+                {t("← Previous")}
             </button>
             <ul className="marketing-report-pagination__pages">
                 {pageNumbers.map((p, i) =>
@@ -1343,7 +1336,7 @@ function MarketingTablePagination({ page, pageCount, totalRows, pageSize, onPage
                                 }`}
                                 onClick={() => goTo(p)}
                                 aria-current={p === page ? "page" : undefined}
-                                aria-label={`Page ${p}`}
+                                aria-label={t("Page {page}", { page: p })}
                             >
                                 {p}
                             </button>
@@ -1356,14 +1349,12 @@ function MarketingTablePagination({ page, pageCount, totalRows, pageSize, onPage
                 className="marketing-report-pagination__btn"
                 onClick={() => goTo(page + 1)}
                 disabled={page >= pageCount}
-                aria-label="Next page"
+                aria-label={t("Next page")}
             >
-                Next →
+                {t("Next →")}
             </button>
             <span className="marketing-report-pagination__meta">
-                Showing <strong>{firstRow.toLocaleString(appLocale())}</strong>
-                –<strong>{lastRow.toLocaleString(appLocale())}</strong> of{" "}
-                <strong>{totalRows.toLocaleString(appLocale())}</strong> {label}
+                {tx("Showing {from}–{to} of {total}", { from: <strong>{firstRow.toLocaleString(appLocale())}</strong>, to: <strong>{lastRow.toLocaleString(appLocale())}</strong>, total: <strong>{totalRows.toLocaleString(appLocale())}</strong> })}
             </span>
         </nav>
     );

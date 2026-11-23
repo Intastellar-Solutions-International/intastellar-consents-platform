@@ -4,6 +4,7 @@ import appStorage from "../../Functions/storage.js";
 import { fetchUserOrganisations, storeUserOrganisations } from "../../Functions/organisations.js";
 import "./Onboarding.css";
 import { redirectToLogin } from "../../Functions/session.js";
+import { t } from "../../i18n/index.js";
 
 const { useState } = React;
 
@@ -49,7 +50,7 @@ export default function CreateFirstOrganisation() {
             storeUserOrganisations(account, organisations);
             window.location.reload();
         } catch {
-            setError("We couldn't create your organisation. Please try again in a moment.");
+            setError(t("We couldn't create your organisation. Please try again in a moment."));
             setBusy(false);
         }
     };
@@ -65,21 +66,20 @@ export default function CreateFirstOrganisation() {
                         <path d="M9 10h.01M15 10h.01" />
                     </svg>
                 </span>
-                <h1 className="onboarding__title">Create your organisation</h1>
+                <h1 className="onboarding__title">{t("Create your organisation")}</h1>
                 <p className="onboarding__intro">
-                    Your domains, banner settings, analytics and billing all belong to an organisation.
-                    Name yours to get started — you can invite your team afterwards.
+                    {t("Your domains, banner settings, analytics and billing all belong to an organisation. Name yours to get started — you can invite your team afterwards.")}
                 </p>
 
                 {error ? <p className="onboarding__error" role="alert">{error}</p> : null}
 
-                <label className="onboarding__label" htmlFor="onboarding-organisation-name">Organisation name</label>
+                <label className="onboarding__label" htmlFor="onboarding-organisation-name">{t("Organisation name")}</label>
                 <input
                     id="onboarding-organisation-name"
                     className="onboarding__input"
                     type="text"
                     autoComplete="organization"
-                    placeholder="Company or team name"
+                    placeholder={t("Company or team name")}
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     autoFocus
@@ -88,17 +88,17 @@ export default function CreateFirstOrganisation() {
 
                 {email ? (
                     <p className="onboarding__admin">
-                        <span className="onboarding__admin-role">Admin</span>
+                        <span className="onboarding__admin-role">{t("Admin")}</span>
                         <span className="onboarding__admin-email">{email}</span>
                     </p>
                 ) : null}
 
                 <button type="submit" className="onboarding__submit" disabled={busy || !name.trim()} aria-busy={busy}>
                     {busy ? <span className="onboarding__spinner" aria-hidden="true" /> : null}
-                    {busy ? "Creating…" : "Create organisation"}
+                    {busy ? t("Creating…") : t("Create organisation")}
                 </button>
                 <a className="onboarding__switch" href="/login" onClick={() => appStorage.removeItem("globals")}>
-                    Use a different account
+                    {t("Use a different account")}
                 </a>
             </form>
         </section>

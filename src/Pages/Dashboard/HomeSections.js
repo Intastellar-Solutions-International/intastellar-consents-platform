@@ -13,6 +13,7 @@ import API from "../../API/api";
 import { fetchJsonWithTimeout } from "../../Functions/fetchWithTimeout.js";
 import { reportsPath } from "../../Functions/domainPathSegments.js";
 import { readCachedDomains, toUnicodeDomain } from "../../Functions/cachedDomains.js";
+import { t } from "../../i18n/index.js";
 
 const { useState, useMemo, useEffect } = React;
 const Link = window.ReactRouterDOM.Link;
@@ -83,8 +84,8 @@ export function PerformanceBand({ children }) {
     return (
         <section aria-labelledby="home-performance-title" className="home-performance">
             <div className="home-performance__intro">
-                <h2 id="home-performance-title" className="tw-m-0 tw-text-2xl tw-font-normal tw-text-text-primary">Consent performance</h2>
-                <p className="tw-m-0 tw-text-sm tw-text-text-secondary">How visitors answered your banner in the selected period.</p>
+                <h2 id="home-performance-title" className="tw-m-0 tw-text-2xl tw-font-normal tw-text-text-primary">{t("Consent performance")}</h2>
+                <p className="tw-m-0 tw-text-sm tw-text-text-secondary">{t("How visitors answered your banner in the selected period.")}</p>
             </div>
             <div className="home-performance__stats">{children}</div>
         </section>
@@ -98,13 +99,13 @@ const CATEGORIES = [
 ];
 
 export function CategoryOptIn({ activeData, compareOn, footer }) {
-    if (activeData == null) return <SkeletonCard height={320} label="Loading category opt-in…" />;
+    if (activeData == null) return <SkeletonCard height={320} label={t("Loading category opt-in…")} />;
     return (
-        <Card title="Opt-in by category">
+        <Card title={t("Opt-in by category")}>
             <div className="tw-flex tw-flex-col tw-gap-4">
                 <div className="tw-flex tw-gap-3 tw-text-xs tw-text-text-secondary">
-                    <span className="tw-flex tw-items-center tw-gap-1"><span className="tw-w-3 tw-h-3 tw-rounded-xs tw-bg-data" />Opted in</span>
-                    <span className="tw-flex tw-items-center tw-gap-1"><span className="tw-w-3 tw-h-3 tw-rounded-xs tw-bg-white/10" />Opted out</span>
+                    <span className="tw-flex tw-items-center tw-gap-1"><span className="tw-w-3 tw-h-3 tw-rounded-xs tw-bg-data" />{t("Opted in")}</span>
+                    <span className="tw-flex tw-items-center tw-gap-1"><span className="tw-w-3 tw-h-3 tw-rounded-xs tw-bg-white/10" />{t("Opted out")}</span>
                 </div>
                 {CATEGORIES.map((c) => {
                     const rate = activeData[c.rate];
@@ -118,11 +119,11 @@ export function CategoryOptIn({ activeData, compareOn, footer }) {
                                 </div>
                                 <div className="tw-flex tw-gap-4 tw-text-right">
                                     <div>
-                                        <p className="tw-m-0 tw-text-xs tw-text-text-muted">Accepted</p>
+                                        <p className="tw-m-0 tw-text-xs tw-text-text-muted">{t("Accepted")}</p>
                                         <p className="tw-m-0 tw-text-base tw-text-text-primary tw-tabular-nums">{formatNumber(activeData.interactions_number?.[c.key])}</p>
                                     </div>
                                     <div>
-                                        <p className="tw-m-0 tw-text-xs tw-text-text-muted">Opt-in rate</p>
+                                        <p className="tw-m-0 tw-text-xs tw-text-text-muted">{t("Opt-in rate")}</p>
                                         <p className="tw-m-0 tw-text-base tw-text-text-primary tw-tabular-nums">{formatPercent(rate)}</p>
                                     </div>
                                 </div>
@@ -134,7 +135,7 @@ export function CategoryOptIn({ activeData, compareOn, footer }) {
                         </div>
                     );
                 })}
-                <p className="tw-m-0 tw-text-xs tw-text-text-muted">Categories are calculated independently and may overlap.</p>
+                <p className="tw-m-0 tw-text-xs tw-text-text-muted">{t("Categories are calculated independently and may overlap.")}</p>
                 {footer}
             </div>
         </Card>
@@ -148,14 +149,14 @@ const SPLIT_MIN_ARC = 0.6; // keeps a very small share visible
 /** Donut of how visitors decided. The legend carries the exact figures. */
 export function DecisionSplit({ activeData, demoMode }) {
     const [hovered, setHovered] = useState(null);
-    if (activeData == null) return <SkeletonCard height={320} label="Loading decision split…" />;
+    if (activeData == null) return <SkeletonCard height={320} label={t("Loading decision split…")} />;
     const { total, segments } = decisionSplit(activeData);
     const present = segments.filter((s) => s.count > 0);
     const center = segments.find((s) => s.key === hovered) || segments[0];
     let offset = 0;
     return (
-        <Card title="How visitors decided">
-            {total === 0 ? <p className="tw-m-0 tw-text-sm tw-text-text-muted">No decisions recorded in this period.</p> : (
+        <Card title={t("How visitors decided")}>
+            {total === 0 ? <p className="tw-m-0 tw-text-sm tw-text-text-muted">{t("No decisions recorded in this period.")}</p> : (
                 <div className="tw-flex tw-flex-col tw-items-center tw-gap-4">
                     <div className="tw-relative" style={{ width: 200, height: 200 }}>
                         <svg viewBox="0 0 42 42" role="img" aria-label={segments.map((s) => `${s.label} ${formatPercent(s.percent)}`).join(", ")} style={{ width: "100%", height: "100%", transform: "rotate(-90deg)" }}>
@@ -208,12 +209,12 @@ export function CountryRanking({ countries, activeData, demoMode }) {
         .sort((a, b) => b.num.total - a.num.total), [countries]);
     const shown = showAll ? ranked : ranked.slice(0, COUNTRIES_SHOWN);
     const regions = [
-        { label: "EU visitors", count: activeData?.euUsers, rate: activeData?.euAcceptedRate },
-        { label: "Non-EU visitors", count: activeData?.noneEUUsers, rate: activeData?.noneEUAcceptedRate },
+        { label: t("EU visitors"), count: activeData?.euUsers, rate: activeData?.euAcceptedRate },
+        { label: t("Non-EU visitors"), count: activeData?.noneEUUsers, rate: activeData?.noneEUAcceptedRate },
     ];
 
     return (
-        <Card title="Where decisions come from">
+        <Card title={t("Where decisions come from")}>
             <div className="tw-flex tw-flex-wrap tw-gap-8">
                 {regions.map((r) => (
                     <div key={r.label}>
@@ -226,11 +227,11 @@ export function CountryRanking({ countries, activeData, demoMode }) {
                 ))}
             </div>
             {shown.length === 0 ? (
-                <p className="tw-m-0 tw-mt-4 tw-text-sm tw-text-text-muted">No country data for this period.</p>
+                <p className="tw-m-0 tw-mt-4 tw-text-sm tw-text-text-muted">{t("No country data for this period.")}</p>
             ) : (
                 <>
                     <div className="home-country-row tw-mt-4 tw-text-xs tw-text-text-muted" aria-hidden="true">
-                        <span /><span /><span className="tw-text-right">Decisions</span><span className="tw-text-right">Accepted</span>
+                        <span /><span /><span className="tw-text-right">{t("Decisions")}</span><span className="tw-text-right">{t("Accepted")}</span>
                     </div>
                     <ul className="tw-m-0 tw-p-0 tw-list-none">
                         {shown.map((c) => (
@@ -250,7 +251,7 @@ export function CountryRanking({ countries, activeData, demoMode }) {
                     </ul>
                     {ranked.length > COUNTRIES_SHOWN && (
                         <Button size="sm" variant="ghost" className="tw-mt-2" onClick={() => setShowAll((v) => !v)}>
-                            {showAll ? "Show fewer" : `Show all ${ranked.length} countries`}
+                            {showAll ? t("Show fewer") : t("Show all {count} countries", { count: ranked.length })}
                         </Button>
                     )}
                 </>
@@ -267,10 +268,10 @@ const DEVICES = [
 ];
 
 export function DeviceShare({ activeData }) {
-    if (activeData == null) return <SkeletonCard height={200} label="Loading device type…" />;
+    if (activeData == null) return <SkeletonCard height={200} label={t("Loading device type…")} />;
     const shares = normalizeShares(activeData.device_type);
     return (
-        <Card title="Device type">
+        <Card title={t("Device type")}>
             <ul className="tw-m-0 tw-p-0 tw-list-none tw-flex tw-flex-col tw-gap-3">
                 {DEVICES.map((d) => (
                     <li key={d.key}>
@@ -289,13 +290,13 @@ export function DeviceShare({ activeData }) {
 
 export function DecisionTime({ timeToDecision, onOpen }) {
     return (
-        <Card title="Median decision time">
+        <Card title={t("Median decision time")}>
             <div className="tw-flex tw-flex-col tw-items-start tw-gap-1">
                 <p className="tw-m-0 tw-text-5xl tw-text-text-primary tw-tabular-nums">
                     {timeToDecision?.median > 0 ? `${formatNumber(timeToDecision.median)} s` : "—"}
                 </p>
-                {timeToDecision?.count > 0 && <p className="tw-m-0 tw-text-sm tw-text-text-muted">{formatNumber(timeToDecision.count)} interactions · global</p>}
-                <Button size="md" className="tw-mt-3" onClick={onOpen}>See breakdown</Button>
+                {timeToDecision?.count > 0 && <p className="tw-m-0 tw-text-sm tw-text-text-muted">{t("{count} interactions · global", { count: formatNumber(timeToDecision.count) })}</p>}
+                <Button size="md" className="tw-mt-3" onClick={onOpen}>{t("See breakdown")}</Button>
             </div>
         </Card>
     );
@@ -321,8 +322,8 @@ function RecentScans({ platformId, workspace }) {
     if (scans && scans.length === 0) return null;
     return (
         <div className="tw-w-full tw-pt-3 tw-border-0 tw-border-t tw-border-solid tw-border-border-subtle">
-            <p className="tw-m-0 tw-text-xs tw-text-text-muted">Recent scans</p>
-            {scans == null ? <SkeletonText lines={RECENT_SCANS} label="Loading recent scans…" /> : (
+            <p className="tw-m-0 tw-text-xs tw-text-text-muted">{t("Recent scans")}</p>
+            {scans == null ? <SkeletonText lines={RECENT_SCANS} label={t("Loading recent scans…")} /> : (
                 <ul className="tw-m-0 tw-p-0 tw-list-none">
                     {scans.map((s) => (
                         <li key={s.id}>
@@ -346,10 +347,10 @@ export function LatestScan({ domain, scanSummary, scanResult, compliancePath, al
     const LINK = "tw-text-sm tw-font-semibold tw-text-accent-strong focus-visible:tw-outline-none focus-visible:tw-shadow-focus tw-rounded-sm";
     if (!domain) {
         return (
-            <Card title="Latest cookie scan">
+            <Card title={t("Latest cookie scan")}>
                 <div className="tw-flex tw-flex-col tw-items-start tw-gap-3">
-                    <p className="tw-m-0 tw-text-sm tw-text-text-secondary">Scans run per domain. Choose a domain to see its pre-consent transfers and cookies, or browse every scan.</p>
-                    <Link to={allScansPath} className={LINK}>View all scans</Link>
+                    <p className="tw-m-0 tw-text-sm tw-text-text-secondary">{t("Scans run per domain. Choose a domain to see its pre-consent transfers and cookies, or browse every scan.")}</p>
+                    <Link to={allScansPath} className={LINK}>{t("View all scans")}</Link>
                     {recent}
                 </div>
             </Card>
@@ -365,34 +366,34 @@ export function LatestScan({ domain, scanSummary, scanResult, compliancePath, al
     const thirdParty = preCookies.filter((c) => !c.domain?.replace(/^\./, "").endsWith(bareDomain)).length;
     const ageDays = scanSummary?.scanned_at ? Math.floor((Date.now() - new Date(scanSummary.scanned_at).getTime()) / 86400000) : null;
     const stale = ageDays != null && ageDays >= 14;
-    const age = ageDays == null ? "No scan yet" : ageDays === 0 ? "Scanned today" : `Scanned ${ageDays} day${ageDays !== 1 ? "s" : ""} ago`;
+    const age = ageDays == null ? t("No scan yet") : ageDays === 0 ? t("Scanned today") : ageDays === 1 ? t("Scanned 1 day ago") : t("Scanned {count} days ago", { count: ageDays });
 
     return (
-        <Card title="Latest cookie scan" description={<span className={stale ? "tw-text-warning" : undefined}>{age}</span>}>
+        <Card title={t("Latest cookie scan")} description={<span className={stale ? "tw-text-warning" : undefined}>{age}</span>}>
             <div className="tw-flex tw-flex-col tw-gap-3">
                 <div className="tw-grid tw-grid-cols-2 tw-gap-3">
                     <div>
                         <p className="tw-m-0 tw-text-3xl tw-text-text-primary tw-tabular-nums">{scanSummary ? transfers.length : "—"}</p>
-                        <p className="tw-m-0 tw-text-sm tw-text-text-secondary">Pre-consent transfers</p>
+                        <p className="tw-m-0 tw-text-sm tw-text-text-secondary">{t("Pre-consent transfers")}</p>
                         <p className="tw-m-0 tw-text-xs tw-text-text-muted">
-                            {scanSummary ? (nonEU > 0 ? `${nonEU} non-EU · ${transfers.length - nonEU} EU` : "All within EU") : "No scan yet"}
+                            {scanSummary ? (nonEU > 0 ? t("{nonEu} non-EU · {eu} EU", { nonEu: nonEU, eu: transfers.length - nonEU }) : t("All within EU")) : t("No scan yet")}
                         </p>
                     </div>
                     <div>
                         <p className="tw-m-0 tw-text-3xl tw-text-text-primary tw-tabular-nums">{preStat.count != null ? preStat.count : preStat.label}</p>
-                        <p className="tw-m-0 tw-text-sm tw-text-text-secondary">Pre-consent cookies</p>
+                        <p className="tw-m-0 tw-text-sm tw-text-text-secondary">{t("Pre-consent cookies")}</p>
                         <p className="tw-m-0 tw-text-xs tw-text-text-muted">
                             {preStat.count != null
-                                ? (thirdParty > 0 ? `${thirdParty} third-party · ${preCookies.length - thirdParty} first-party` : "All first-party")
-                                : preStat.reason}
+                                ? (thirdParty > 0 ? t("{third} third-party · {first} first-party", { third: thirdParty, first: preCookies.length - thirdParty }) : t("All first-party"))
+                                : t(preStat.reason)}
                         </p>
-                        {preStat.afterConsent != null && <p className="tw-m-0 tw-text-xs tw-text-text-muted">of {preStat.total} found · {preStat.afterConsent} set after accepting</p>}
+                        {preStat.afterConsent != null && <p className="tw-m-0 tw-text-xs tw-text-text-muted">{t("of {total} found · {after} set after accepting", { total: preStat.total, after: preStat.afterConsent })}</p>}
                     </div>
                 </div>
                 <div className="tw-flex tw-flex-wrap tw-items-center tw-gap-3">
-                    <Button size="md" loading={scanLoading} onClick={onScan}>{scanLoading ? "Scanning…" : "Scan now"}</Button>
-                    <Link to={compliancePath} className={LINK}>Review in Compliance</Link>
-                    <Link to={allScansPath} className={LINK}>View all scans</Link>
+                    <Button size="md" loading={scanLoading} onClick={onScan}>{scanLoading ? t("Scanning…") : t("Scan now")}</Button>
+                    <Link to={compliancePath} className={LINK}>{t("Review in Compliance")}</Link>
+                    <Link to={allScansPath} className={LINK}>{t("View all scans")}</Link>
                 </div>
                 {recent}
             </div>

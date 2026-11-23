@@ -3,6 +3,7 @@ import { DomainContext } from "../../App.js";
 import { detectDashboardMode, isCombinedOrClearDomain, analyticsReportViewPath } from "../../Functions/domainPathSegments.js";
 import { authHeaders } from "../../Pages/Analytics/_shared.js";
 import { ScannerHost } from "../../API/host.js";
+import { t } from "../../i18n/index.js";
 
 const { useContext, useEffect, useMemo, useRef, useState } = React;
 const useLocation = window.ReactRouterDOM.useLocation;
@@ -70,7 +71,7 @@ export default function AnalyticsHeaderSearch() {
     const reportItems = useMemo(() => {
         return reports.map(r => ({
             group: "Reports",
-            name: r.name || "Untitled report",
+            name: r.name || t("Untitled report"),
             path: analyticsReportViewPath(globalDomain, r.id),
         }));
     }, [reports, globalDomain]);
@@ -120,7 +121,7 @@ export default function AnalyticsHeaderSearch() {
                 onFocus={() => setOpen(true)}
                 onChange={e => { setQuery(e.target.value); setSelected(0); setOpen(true); }}
                 onKeyDown={onKeyDownInput}
-                placeholder="Search pages & reports… (⌘K)"
+                placeholder={t("Search pages & reports… (⌘K)")}
                 style={{
                     width: "100%", padding: "7px 12px", fontSize: 13, borderRadius: 7,
                     border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.05)",
@@ -136,7 +137,7 @@ export default function AnalyticsHeaderSearch() {
                 }}>
                     {results.length === 0 && (
                         <p style={{ padding: "12px 14px", fontSize: 13, color: "rgba(130,130,130,0.6)" }}>
-                            No matches.
+                            {t("No matches.")}
                         </p>
                     )}
                     {results.map((item, i) => {

@@ -1,6 +1,7 @@
 const { useState, useRef, useEffect } = React;
 import Months from "./Modules/Months";
 import "./Styles/Calendar.css";
+import { t } from "../../i18n/index.js";
 
 function formatLocalYmd(d) {
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
@@ -101,8 +102,8 @@ export default function Calendar({
     return (
         <div ref={containerRef} className="filter-cal-scroll will-change-scroll">
             <div className="p-2 filter-cal-inner">
-                <div className="filter-cal-year-nav" role="navigation" aria-label="Calendar year">
-                    <button type="button" onClick={handlePrevYear} className="filter-cal-year-nav__btn" aria-label="Previous year">
+                <div className="filter-cal-year-nav" role="navigation" aria-label={t("Calendar year")}>
+                    <button type="button" onClick={handlePrevYear} className="filter-cal-year-nav__btn" aria-label={t("Previous year")}>
                         &lsaquo;
                     </button>
                     <span className="filter-cal-year-nav__label">{visibleYear}</span>
@@ -111,19 +112,19 @@ export default function Calendar({
                         onClick={handleNextYear}
                         className="filter-cal-year-nav__btn"
                         disabled={visibleYear === currentYear}
-                        aria-label="Next year"
+                        aria-label={t("Next year")}
                     >
                         &rsaquo;
                     </button>
                 </div>
                 {comparePreviewStart && comparePreviewEnd ? (
                     <p className="filter-cal-compare-preview" role="status">
-                        <span className="filter-cal-compare-preview__label">Comparison preview</span>
+                        <span className="filter-cal-compare-preview__label">{t("Comparison preview")}</span>
                         <span className="filter-cal-compare-preview__range">
                             {comparePreviewStart} → {comparePreviewEnd}
                         </span>
                         <span className="filter-cal-compare-preview__hint">
-                            Gold band: selected period · Blue band: comparison baseline
+                            {t("Gold band: selected period · Blue band: comparison baseline")}
                         </span>
                     </p>
                 ) : null}

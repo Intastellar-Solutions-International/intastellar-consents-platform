@@ -1,5 +1,6 @@
 const { useState, useEffect, useRef } = React;
 import "./Style.css";
+import SiteIcon from "../ui/SiteIcon.js";
 
 export default function Select(props) {
     const [isOpen, setIsOpen] = useState(false);
@@ -122,7 +123,7 @@ export default function Select(props) {
                                                     props.onChange(JSON.stringify({ id: parsed.id, name: parsed.name }))
                                                 )}
                                             >
-                                                {parsed.icon ? <img src={parsed.icon} alt="" /> : null}
+                                                {parsed.icon ? <SiteIcon src={parsed.icon} name={parsed.name} /> : null}
                                                 {props?.labels ? props?.labels[key] : parsed.name}
                                             </li>
                                         );
@@ -142,7 +143,7 @@ export default function Select(props) {
                                                     )
                                                 )}
                                             >
-                                                {item.icon ? <img src={item.icon} alt="" /> : null}
+                                                {item.icon ? <SiteIcon src={item.icon} name={item.type} /> : null}
                                                 {props?.labels ? props?.labels[key] : item.type}
                                             </li>
                                         );
@@ -253,7 +254,7 @@ export default function Select(props) {
                                                         )
                                                     }
                                                 >
-                                                    {item.icon ? <img className="company-logo" src={item.icon} alt="" /> : null}
+                                                    <SiteIcon className="company-logo" src={item.icon} name={item.name} />
                                                     <span className="dropdown-menu__domain-name">{item.name}</span>
                                                     {item.verificationStatus && item.name !== "combined view" && (
                                                         <span className={`dropdown-menu__verify-tag dropdown-menu__verify-tag--${item.verificationStatus}`}>
@@ -306,9 +307,7 @@ export default function Select(props) {
                                                     )
                                                 }
                                             >
-                                                {item.icon && item.icon !== "undefined" ? (
-                                                    <img className="company-logo" src={item.icon} alt="" />
-                                                ) : null}
+                                                <SiteIcon className="company-logo" src={item.icon} name={item.name} />
                                                 {props?.labels ? props?.labels[key] : item.name}
                                             </li>
                                         );
@@ -325,7 +324,7 @@ export default function Select(props) {
                                                 );
                                             }}
                                         >
-                                            {item?.icon ? <img src={item.icon} alt="" /> : null}
+                                            {item?.icon ? <SiteIcon src={item.icon} name={String(item)} /> : null}
                                             {props?.labels ? props?.labels[key] : item}
                                         </li>
                                     );

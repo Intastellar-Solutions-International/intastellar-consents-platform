@@ -6,9 +6,11 @@ import { loadAuditReportIndex, addAuditReportEntry } from "../../Functions/audit
 import { REPORTS, reportTypeOf, requestReportPdf, downloadBlob, reportFilename, newReportEntry } from "../../Functions/auditReportPdf.js";
 import { formatDate } from "../../Functions/format.js";
 import { readCachedDomains } from "../../Functions/cachedDomains.js";
+import { t } from "../../i18n/index.js";
 
 const { useState, useEffect, useMemo } = React;
 
+// Descriptions and period labels are English and shown through t().
 const PRESETS = [
     { id: "audit", description: "Findings, evidence and full records for auditors" },
     { id: "summary", description: "One page on acceptance, categories and regions" },
@@ -66,12 +68,12 @@ export default function QuickReport({ platformId, domain, fromDate, toDate }) {
             if (res.ok) {
                 downloadBlob(res.blob, reportFilename(type, chosenDomain, fromYmd, toYmd));
                 onDone?.();
-                setResult({ ok: true, text: "Report downloaded." });
+                setResult({ ok: true, text: t("Report downloaded.") });
             } else if (res.error) {
-                setResult({ ok: false, text: `The report couldn't be generated: ${res.error}` });
+                setResult({ ok: false, text: t("The report couldn't be generated: {error}", { error: res.error }) });
             }
         } catch {
-            setResult({ ok: false, text: "The report couldn't be generated. Check your connection and try again." });
+            setResult({ ok: false, text: t("The report couldn't be generated. Check your connection and try again.") });
         } finally {
             setBusyId(null);
         }
@@ -85,40 +87,40 @@ export default function QuickReport({ platformId, domain, fromDate, toDate }) {
     }
 
     return (
-        <Card title="Quick report">
+        <Card title={t("Quick report")}>
             <div className="tw-flex tw-flex-col tw-gap-3">
                 <fieldset className="tw-m-0 tw-p-0 tw-border-0 tw-flex tw-flex-col tw-gap-1">
-                    <legend className="tw-p-0 tw-pb-1 tw-text-xs tw-text-text-muted">Report type</legend>
+                    <legend className="tw-p-0 tw-pb-1 tw-text-xs tw-text-text-muted">{t("Report type")}</legend>
                     {PRESETS.map((p) => (
                         <label key={p.id} className={`tw-flex tw-items-start tw-gap-2 tw-px-2 tw-py-2 tw-rounded-md tw-cursor-pointer ${preset === p.id ? "tw-bg-accent-subtle" : "hover:tw-bg-white/5"}`}>
                             <input type="radio" name="quick-report-preset" checked={preset === p.id} onChange={() => { setPreset(p.id); setResult(null); }} style={{ accentColor: "rgb(var(--c-accent))", marginTop: 3 }} />
                             <span className="tw-min-w-0">
-                                <span className="tw-block tw-text-sm tw-text-text-primary">{REPORTS[p.id].name}</span>
-                                <span className="tw-block tw-text-xs tw-text-text-muted">{p.description}</span>
+                                <span className="tw-block tw-text-sm tw-text-text-primary">{t(REPORTS[p.id].name)}</span>
+                                <span className="tw-block tw-text-xs tw-text-text-muted">{t(p.description)}</span>
                             </span>
                         </label>
                     ))}
                 </fieldset>
                 <div className="tw-grid tw-grid-cols-2 tw-gap-2">
                     <label className={LABEL}>
-                        Domain
+                        {t("Domain")}
                         <select className={FIELD} value={chosenDomain} onChange={(e) => { setChosenDomain(e.target.value); setResult(null); }} style={{ colorScheme: "dark" }}>
-                            <option value="">Choose…</option>
+                            <option value="">{t("Choose…")}</option>
                             {domains.map((d) => <option key={d} value={d}>{d}</option>)}
                         </select>
                     </label>
                     <label className={LABEL}>
-                        Period
+                        {t("Period")}
                         <select className={FIELD} value={period} onChange={(e) => { setPeriod(e.target.value); setResult(null); }} style={{ colorScheme: "dark" }}>
-                            <option value="page">Same as page</option>
-                            {PERIODS.map(([value, label]) => <option key={value} value={value}>{label}</option>)}
+                            <option value="page">{t("Same as page")}</option>
+                            {PERIODS.map(([value, label]) => <option key={value} value={value}>{t(label)}</option>)}
                         </select>
                     </label>
                 </div>
                 <Button variant="primary" loading={busyId === "new"} disabled={!chosenDomain || busyId != null} onClick={generate}>
-                    {busyId === "new" ? "Generating…" : "Generate report"}
+                    {busyId === "new" ? t("Generating…") : t("Generate report")}
                 </Button>
-                {!chosenDomain && <p className="tw-m-0 tw-text-xs tw-text-text-muted">Choose a domain to generate this report.</p>}
+                {!chosenDomain && <p className="tw-m-0 tw-text-xs tw-text-text-muted">{t("Choose a domain to generate this report.")}</p>}
                 {result && (
                     <p role={result.ok ? "status" : "alert"} className={`tw-m-0 tw-flex tw-items-center tw-gap-1 tw-text-sm ${result.ok ? "tw-text-success" : "tw-text-danger-text"}`}>
                         <Icon name={result.ok ? "check-circle" : "alert-octagon"} size={16} />{result.text}
@@ -126,15 +128,15 @@ export default function QuickReport({ platformId, domain, fromDate, toDate }) {
                 )}
                 {reports.length > 0 && (
                     <div className="tw-pt-3 tw-border-0 tw-border-t tw-border-solid tw-border-border-subtle">
-                        <p className="tw-m-0 tw-text-xs tw-text-text-muted">Recent</p>
+                        <p className="tw-m-0 tw-text-xs tw-text-text-muted">{t("Recent")}</p>
                         <ul className="tw-m-0 tw-p-0 tw-list-none">
                             {reports.slice(0, RECENT_SHOWN).map((r) => (
                                 <li key={r.id} className="tw-flex tw-items-center tw-justify-between tw-gap-2 tw-py-1">
                                     <span className="tw-min-w-0">
-                                        <span className="tw-block tw-text-sm tw-text-text-secondary tw-truncate">{REPORTS[reportTypeOf(r)].name}</span>
+                                        <span className="tw-block tw-text-sm tw-text-text-secondary tw-truncate">{t(REPORTS[reportTypeOf(r)].name)}</span>
                                         <span className="tw-block tw-text-xs tw-text-text-muted tw-truncate">{formatDate(r.fromDate)} – {formatDate(r.toDate)}</span>
                                     </span>
-                                    <Button size="sm" variant="ghost" loading={busyId === r.id} disabled={busyId != null} aria-label={`Download ${REPORTS[reportTypeOf(r)].name} for ${r.fromDate} to ${r.toDate}`} onClick={() => download(r.id, reportTypeOf(r), r.fromDate, r.toDate)}>Download</Button>
+                                    <Button size="sm" variant="ghost" loading={busyId === r.id} disabled={busyId != null} aria-label={t("Download {report} for {from} to {to}", { report: t(REPORTS[reportTypeOf(r)].name), from: r.fromDate, to: r.toDate })} onClick={() => download(r.id, reportTypeOf(r), r.fromDate, r.toDate)}>{t("Download")}</Button>
                                 </li>
                             ))}
                         </ul>

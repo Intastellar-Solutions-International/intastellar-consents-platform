@@ -10,6 +10,7 @@ import {
     getRecentDomains,
 } from "../../Functions/domainFavourites.js";
 import { Icon } from "../ui/icons.js";
+import SiteIcon from "../ui/SiteIcon.js";
 import Authentication from "../../Authentication/Auth.js";
 import { ScannerHost } from "../../API/host.js";
 import { t } from "../../i18n/index.js";
@@ -328,7 +329,7 @@ export default function PropertySelector(props) {
                                                     );
                                                 }}
                                             >
-                                                {org.icon ? <img src={org.icon} alt="" /> : null}
+                                                <SiteIcon src={org.icon} name={org.name} size={20} />
                                                 {org.name}
                                             </button>
                                         </li>
@@ -431,12 +432,12 @@ export default function PropertySelector(props) {
                                                     (dimForNoAnalytics ? " property-selector__row--no-analytics" : "")
                                                 }
                                                 onClick={() => handleDomainClick(item)}
-                                                title={dimForNoAnalytics ? "Analytics not set up yet on this domain — click to open and enable it" : undefined}
+                                                title={dimForNoAnalytics ? t("Analytics not set up yet on this domain — click to open and enable it") : undefined}
                                             >
                                                 {active && (
                                                     <span className="property-selector__check" aria-hidden="true">✓</span>
                                                 )}
-                                                {item.icon ? <img className="property-selector__favicon" src={item.icon} alt="" /> : null}
+                                                {isRealDomain && <SiteIcon className="property-selector__favicon" src={item.icon} name={item.name} />}
                                                 <span className="property-selector__row-name property-selector__row-name--mono">
                                                     {item.label || item.name}
                                                 </span>

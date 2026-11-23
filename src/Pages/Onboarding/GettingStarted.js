@@ -12,6 +12,7 @@ import { analyticsConversionsPath } from "../../Functions/domainPathSegments.js"
 import { canAccess } from "../../Functions/tier.js";
 import { readJsonResult, errorMessage } from "../../Functions/apiResult.js";
 import { DATA_RESIDENCY, NO_COOKIES_BEFORE_CONSENT } from "../../Functions/trustCopy.js";
+import { t, tx } from "../../i18n/index.js";
 
 const { useState, useEffect } = React;
 const useParams = window.ReactRouterDOM.useParams;
@@ -28,7 +29,7 @@ function CopyCode({ text }) {
         <Button size="sm" icon={copied ? "check" : "copy"} onClick={() => {
             navigator.clipboard?.writeText(text).then(() => { setCopied(true); setTimeout(() => setCopied(false), 2000); }).catch(() => {});
         }}>
-            {copied ? "Copied" : "Copy code"}
+            {copied ? t("Copied") : t("Copy code")}
         </Button>
     );
 }
@@ -39,17 +40,17 @@ function StepRow({ step, index, onAction }) {
             <Card padding="sm">
                 <div className="tw-flex tw-flex-wrap tw-items-center tw-gap-3">
                     <span className={`tw-flex tw-items-center tw-justify-center tw-shrink-0 tw-w-8 tw-h-8 tw-rounded-full tw-text-sm tw-tabular-nums ${step.done ? "tw-text-success" : "tw-bg-bg-sunken tw-text-text-secondary"}`}>
-                        {step.done ? <Icon name="check-circle" size={24} label="Done" /> : index + 1}
+                        {step.done ? <Icon name="check-circle" size={24} label={t("Done")} /> : index + 1}
                     </span>
                     <div className="tw-flex-1 tw-min-w-0" style={{ flexBasis: 200 }}>
                         <h3 className="tw-m-0 tw-flex tw-flex-wrap tw-items-center tw-gap-2 tw-text-base tw-font-semibold tw-text-text-primary">
-                            {step.title}
-                            {step.optional && <Badge>Optional</Badge>}
+                            {t(step.title)}
+                            {step.optional && <Badge>{t("Optional")}</Badge>}
                         </h3>
-                        <p className="tw-m-0 tw-text-sm tw-text-text-secondary">{step.description}</p>
+                        <p className="tw-m-0 tw-text-sm tw-text-text-secondary">{t(step.description)}</p>
                     </div>
                     {!step.done && !step.locked && (
-                        <Button variant={step.next ? "primary" : "secondary"} size="sm" onClick={() => onAction(step)}>{step.action}</Button>
+                        <Button variant={step.next ? "primary" : "secondary"} size="sm" onClick={() => onAction(step)}>{t(step.action)}</Button>
                     )}
                 </div>
             </Card>
@@ -101,7 +102,7 @@ export default function GettingStarted() {
                 headers: { Authorization: Authentication.getToken(), Organisation: String(Authentication.getOrganisation() ?? ""), "Content-Type": "application/json" },
                 body: JSON.stringify({ domain: activeDomain }),
             });
-            await readJsonResult(response, "Couldn't turn on Analytics.");
+            await readJsonResult(response, t("Couldn't turn on Analytics."));
             reload();
         } catch (err) {
             setEnableError(errorMessage(err));
@@ -128,21 +129,21 @@ export default function GettingStarted() {
 
     return (
         <>
-            <StickyPageTitle title="Get started" />
+            <StickyPageTitle title={t("Get started")} />
             <div className="dashboard-content tw-flex tw-flex-col tw-gap-5" style={{ maxWidth: 1100 }}>
                 <div>
                     <p className="tw-m-0 tw-text-sm tw-text-text-secondary">
                         {finished
-                            ? "Everything's set up: the banner records consent and Analytics receives visits. The optional steps below add ad spend and conversions."
-                            : "One setup for both products: add your domain, install one piece of code, then finish the Consent and Analytics steps."}
+                            ? t("Everything's set up: the banner records consent and Analytics receives visits. The optional steps below add ad spend and conversions.")
+                            : t("One setup for both products: add your domain, install one piece of code, then finish the Consent and Analytics steps.")}
                     </p>
-                    <p className="tw-m-0 tw-mt-3 tw-text-sm tw-text-text-primary tw-tabular-nums">{plan.completed} of {plan.total} required steps complete</p>
+                    <p className="tw-m-0 tw-mt-3 tw-text-sm tw-text-text-primary tw-tabular-nums">{t("{done} of {total} required steps complete", { done: plan.completed, total: plan.total })}</p>
                     <div className="tw-h-2 tw-mt-1 tw-bg-white/10 tw-rounded-full" aria-hidden="true">
                         <div className="tw-h-full tw-bg-data tw-rounded-full" style={{ width: `${plan.total ? (plan.completed / plan.total) * 100 : 0}%`, transition: "width 0.3s ease" }} />
                     </div>
                 </div>
 
-                {loading ? <SkeletonText lines={8} label="Checking your setup…" /> : (
+                {loading ? <SkeletonText lines={8} label={t("Checking your setup…")} /> : (
                     <>
                         <ol className="tw-m-0 tw-p-0 tw-list-none tw-flex tw-flex-col tw-gap-3">
                             {shared.map((step, i) => <StepRow key={step.id} step={step} index={i} onAction={onAction} />)}
@@ -153,17 +154,17 @@ export default function GettingStarted() {
                                 <Card>
                                     <div className="tw-flex tw-flex-wrap tw-items-start tw-justify-between tw-gap-3">
                                         <div className="tw-min-w-0">
-                                            <h2 id="install-title" className="tw-m-0 tw-text-base tw-font-semibold tw-text-text-primary">Install on your site</h2>
+                                            <h2 id="install-title" className="tw-m-0 tw-text-base tw-font-semibold tw-text-text-primary">{t("Install on your site")}</h2>
                                             <p className="tw-m-0 tw-mt-1 tw-text-sm tw-text-text-secondary">
-                                                Add this to the <code>&lt;head&gt;</code> of every page, before any other script that sets cookies.
-                                                {site && analyticsOnPlan ? " It loads the cookie banner and the Analytics tracker — one install for both." : ""}
+                                                {tx("Add this to the {tag} of every page, before any other script that sets cookies.", { tag: <code>&lt;head&gt;</code> })}
+                                                {site && analyticsOnPlan ? " " + t("It loads the cookie banner and the Analytics tracker — one install for both.") : ""}
                                             </p>
                                         </div>
                                         {snippet && <CopyCode text={snippet} />}
                                     </div>
 
                                     {domains.length > 1 && (
-                                        <div className="tw-flex tw-flex-wrap tw-gap-2 tw-mt-3" role="tablist" aria-label="Domain">
+                                        <div className="tw-flex tw-flex-wrap tw-gap-2 tw-mt-3" role="tablist" aria-label={t("Domain")}>
                                             {domains.map((d) => (
                                                 <Button key={d} size="sm" role="tab" aria-selected={d === activeDomain}
                                                     variant={d === activeDomain ? "primary" : "secondary"} onClick={() => setActiveDomain(d)}>
@@ -180,18 +181,18 @@ export default function GettingStarted() {
                                     {analyticsOnPlan && activeDomain && !site && (
                                         <div id="enable-analytics" className="tw-flex tw-flex-wrap tw-items-center tw-gap-3 tw-mt-3">
                                             <p className="tw-m-0 tw-flex-1 tw-text-sm tw-text-text-secondary" style={{ flexBasis: 240 }}>
-                                                This code only installs the banner. Turn on Analytics for <strong className="tw-text-text-primary">{activeDomain}</strong> and the tracker is added to it.
+                                                {tx("This code only installs the banner. Turn on Analytics for {domain} and the tracker is added to it.", { domain: <strong className="tw-text-text-primary">{activeDomain}</strong> })}
                                             </p>
-                                            <Button variant="primary" size="sm" loading={enabling} onClick={enableAnalytics}>Turn on Analytics</Button>
+                                            <Button variant="primary" size="sm" loading={enabling} onClick={enableAnalytics}>{t("Turn on Analytics")}</Button>
                                         </div>
                                     )}
-                                    {enableError && <ErrorState compact className="tw-mt-3" title="Analytics wasn't turned on" message={enableError} onRetry={enableAnalytics} />}
+                                    {enableError && <ErrorState compact className="tw-mt-3" title={t("Analytics wasn't turned on")} message={enableError} onRetry={enableAnalytics} />}
                                     <p className="tw-m-0 tw-mt-3 tw-flex tw-flex-wrap tw-items-center tw-gap-2 tw-text-xs tw-text-text-muted" title={DATA_RESIDENCY.description}>
                                         <Icon name="shield-check" size={14} />
                                         {DATA_RESIDENCY.label} · {NO_COOKIES_BEFORE_CONSENT}
                                     </p>
                                     {site && site.active === false && (
-                                        <p className="tw-m-0 tw-mt-3 tw-text-sm tw-text-warning">Analytics is paused for this domain — the tracker is in the code, but visits aren't stored.</p>
+                                        <p className="tw-m-0 tw-mt-3 tw-text-sm tw-text-warning">{t("Analytics is paused for this domain — the tracker is in the code, but visits aren't stored.")}</p>
                                     )}
                                 </Card>
                             </section>
@@ -207,8 +208,8 @@ export default function GettingStarted() {
                                         <div className="tw-flex tw-items-center tw-gap-2">
                                             <Icon name={meta.icon} size={18} />
                                             <div className="tw-min-w-0">
-                                                <h2 id={`track-${track}`} className="tw-m-0 tw-text-base tw-font-semibold tw-text-text-primary">{meta.title}</h2>
-                                                <p className="tw-m-0 tw-text-xs tw-text-text-muted">{meta.subtitle}</p>
+                                                <h2 id={`track-${track}`} className="tw-m-0 tw-text-base tw-font-semibold tw-text-text-primary">{t(meta.title)}</h2>
+                                                <p className="tw-m-0 tw-text-xs tw-text-text-muted">{t(meta.subtitle)}</p>
                                             </div>
                                             {!locked && (
                                                 <span className="tw-ml-auto tw-text-xs tw-text-text-muted tw-tabular-nums">
@@ -219,9 +220,9 @@ export default function GettingStarted() {
                                         {locked ? (
                                             <Card>
                                                 <p className="tw-m-0 tw-text-sm tw-text-text-secondary">
-                                                    Analytics is included from the Starter plan: consent-aware traffic, ad spend and conversions for the same domains.
+                                                    {t("Analytics is included from the Starter plan: consent-aware traffic, ad spend and conversions for the same domains.")}
                                                 </p>
-                                                <Button className="tw-mt-3" size="sm" onClick={() => history.push("/settings/plans")}>See plans</Button>
+                                                <Button className="tw-mt-3" size="sm" onClick={() => history.push("/settings/plans")}>{t("See plans")}</Button>
                                             </Card>
                                         ) : (
                                             <ol className="tw-m-0 tw-p-0 tw-list-none tw-flex tw-flex-col tw-gap-3">

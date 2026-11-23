@@ -49,6 +49,22 @@ export function t(text, vars) {
     return translateWith(DICTIONARIES[getLanguage()], text, vars);
 }
 
+/**
+ * Like t(), but a placeholder can be an element — for sentences that wrap a
+ * link or <code>, so translators get the whole sentence, never fragments:
+ *   tx("Paste it into the {tag} of every page.", { tag: <code>&lt;head&gt;</code> })
+ * Returns an array of strings and elements to render as children.
+ */
+export function tx(text, vars = {}) {
+    const out = (DICTIONARIES[getLanguage()] || {})[text] || text;
+    return out.split(/(\{\w+\})/).filter((part) => part !== "").map((part, i) => {
+        const m = part.match(/^\{(\w+)\}$/);
+        if (!m || !(m[1] in vars)) return part;
+        const v = vars[m[1]];
+        return React.isValidElement(v) ? React.cloneElement(v, { key: i }) : String(v);
+    });
+}
+
 // For components that switch language without a reload (the login page).
 export function useLanguage() {
     const { useState, useEffect } = React;

@@ -13,6 +13,7 @@ import {
     computeCompareWindow,
     addDays,
 } from "./filterDatePresets.js";
+import { t } from "../../i18n/index.js";
 
 function filterPresetBtnClass(isActive) {
     return "filter-calendar-preset" + (isActive ? " filter-calendar-preset--active" : "");
@@ -196,8 +197,8 @@ export default function Filter({
 
     const badgeText =
         typeof numberOfDays === "number" && numberOfDays >= 0
-            ? "Last " + numberOfDays + " days"
-            : String(numberOfDays ?? "");
+            ? t("Last {count} days", { count: numberOfDays })
+            : numberOfDays ? t(String(numberOfDays)) : ""; // preset names ("This week") are t() keys
 
     return (
         <div
@@ -213,7 +214,7 @@ export default function Filter({
                 <span className="filter-calendar-trigger__badge">{badgeText}</span>
                 <span className="filter-calendar-trigger__dates">
                     {demoMode && (
-                        <span className="filter-calendar-trigger__line filter-calendar-trigger__line--demo">Demo mode</span>
+                        <span className="filter-calendar-trigger__line filter-calendar-trigger__line--demo">{t("Demo mode")}</span>
                     )}
                     {!demoMode && (
                         <span className="filter-calendar-trigger__line">
@@ -239,12 +240,12 @@ export default function Filter({
                         aria-hidden="true"
                         onClick={handleCalendarToggle}
                     />
-                    <div className="filter-calendar-popover" role="dialog" aria-label="Choose date range">
+                    <div className="filter-calendar-popover" role="dialog" aria-label={t("Choose date range")}>
                     <section className="filter-calendar-popover__body">
                         <section className="filter-calendar-presets">
                             <div className="filter-calendar-presets__toggle-row">
                                 <span className="filter-calendar-compare-toggle__label" id={compareSwitchLabelId}>
-                                    Compare to prior period
+                                    {t("Compare to prior period")}
                                 </span>
                                 <button
                                     type="button"
@@ -279,7 +280,7 @@ export default function Filter({
                                 }}
                                 className={filterPresetBtnClass(selectedDays === "Yesterday")}
                             >
-                                Yesterday
+                                {t("Yesterday")}
                             </button>
                             <button
                                 type="button"
@@ -289,7 +290,7 @@ export default function Filter({
                                 }}
                                 className={filterPresetBtnClass(selectedDays === 7)}
                             >
-                                Last 7 days
+                                {t("Last 7 days")}
                             </button>
                             <button
                                 type="button"
@@ -302,7 +303,7 @@ export default function Filter({
                                 }}
                                 className={filterPresetBtnClass(selectedDays === "last_week")}
                             >
-                                Last week
+                                {t("Last week")}
                             </button>
                             <button
                                 type="button"
@@ -315,7 +316,7 @@ export default function Filter({
                                 }}
                                 className={filterPresetBtnClass(selectedDays === "this_week")}
                             >
-                                This week
+                                {t("This week")}
                             </button>
                             <button
                                 type="button"
@@ -325,7 +326,7 @@ export default function Filter({
                                 }}
                                 className={filterPresetBtnClass(selectedDays === 28)}
                             >
-                                Last 28 days
+                                {t("Last 28 days")}
                             </button>
                             <button
                                 type="button"
@@ -335,7 +336,7 @@ export default function Filter({
                                 }}
                                 className={filterPresetBtnClass(selectedDays === 30)}
                             >
-                                Last 30 days
+                                {t("Last 30 days")}
                             </button>
                             <button
                                 type="button"
@@ -348,7 +349,7 @@ export default function Filter({
                                 }}
                                 className={filterPresetBtnClass(selectedDays === "qtd")}
                             >
-                                Quarter to date
+                                {t("Quarter to date")}
                             </button>
                             <button
                                 type="button"
@@ -361,7 +362,7 @@ export default function Filter({
                                 }}
                                 className={filterPresetBtnClass(selectedDays === "ytd")}
                             >
-                                This year
+                                {t("This year")}
                             </button>
                             <button
                                 type="button"
@@ -371,7 +372,7 @@ export default function Filter({
                                 }}
                                 className={filterPresetBtnClass(selectedDays === 90)}
                             >
-                                Last 90 days
+                                {t("Last 90 days")}
                             </button>
                             <button
                                 type="button"
@@ -381,16 +382,16 @@ export default function Filter({
                                 }}
                                 className={filterPresetBtnClass(selectedDays === "12 months")}
                             >
-                                Last 12 months
+                                {t("Last 12 months")}
                             </button>
                             <button type="button" onClick={(e) => { e.preventDefault(); applyLastYearCalendar(); }} className={filterPresetBtnClass(selectedDays === 365)}>
-                                Last year
+                                {t("Last year")}
                             </button>
 
                             <section className="filter-calendar-presets__compare-wrap">
                                 {isCompare && (
                                     <section className="filter-calendar-presets__compare">
-                                        <p className="filter-calendar-presets__compare-label">Comparison baseline</p>
+                                        <p className="filter-calendar-presets__compare-label">{t("Comparison baseline")}</p>
                                         <button
                                             type="button"
                                             onClick={(e) => {
@@ -400,7 +401,7 @@ export default function Filter({
                                             }}
                                             className={filterPresetBtnClass(selectedComparison === "Previous period")}
                                         >
-                                            Previous period
+                                            {t("Previous period")}
                                         </button>
                                         <button
                                             type="button"
@@ -411,7 +412,7 @@ export default function Filter({
                                             }}
                                             className={filterPresetBtnClass(selectedComparison === "Preceding period")}
                                         >
-                                            Preceding period
+                                            {t("Preceding period")}
                                         </button>
                                         <button
                                             type="button"
@@ -422,7 +423,7 @@ export default function Filter({
                                             }}
                                             className={filterPresetBtnClass(selectedComparison === "Previous quarter")}
                                         >
-                                            Compare window 90 days
+                                            {t("Compare window 90 days")}
                                         </button>
                                         <button
                                             type="button"
@@ -433,7 +434,7 @@ export default function Filter({
                                             }}
                                             className={filterPresetBtnClass(selectedComparison === "Last 180 days")}
                                         >
-                                            Compare window 180 days
+                                            {t("Compare window 180 days")}
                                         </button>
                                         <button
                                             type="button"
@@ -444,7 +445,7 @@ export default function Filter({
                                             }}
                                             className={filterPresetBtnClass(selectedComparison === "Same period last year")}
                                         >
-                                            Same period last year
+                                            {t("Same period last year")}
                                         </button>
                                     </section>
                                 )}
@@ -478,10 +479,10 @@ export default function Filter({
                     </section>
                     <footer className="filter-calendar-popover__footer">
                         <button type="button" onClick={handleCalendarToggle} className="filter-calendar-popover__btn filter-calendar-popover__btn--secondary">
-                            Cancel
+                            {t("Cancel")}
                         </button>
                         <button type="button" onClick={handleApply} className="filter-calendar-popover__btn filter-calendar-popover__btn--primary">
-                            Apply
+                            {t("Apply")}
                         </button>
                     </footer>
                     </div>

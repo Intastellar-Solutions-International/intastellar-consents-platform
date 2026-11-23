@@ -7,6 +7,7 @@ import Widget from "../../Components/widget/widget.js";
 import Select from "../../Components/SelectInput/Selector.js";
 import Table from "../../Components/Tabel/index.js";
 import "./CookiesDashboard.css";
+import { t } from "../../i18n/index.js";
 
 const SEVERITY_ORDER = ["critical", "high", "medium", "low", "info"];
 
@@ -103,7 +104,7 @@ export default function CookiesDashboard() {
     return (
         <>
             <StickyPageTitle
-                title="Cookies Dashboard"
+                title={t("Cookies Dashboard")}
                 numberofDays={setLastDays}
                 getLastDays={getLastDays}
                 setActiveData={setActiveData}
@@ -120,11 +121,11 @@ export default function CookiesDashboard() {
             />
             <div className="dashboard-content cookies-dashboard">
                 {loading ? (
-                    <p className="cookies-dashboard__loading">Loading…</p>
+                    <p className="cookies-dashboard__loading">{t("Loading…")}</p>
                 ) : activeData?.status === "success" ? (
                     <>
                         <div className="cookies-dashboard__toolbar">
-                            <p className="cookies-dashboard__toolbar-label">Domain scope</p>
+                            <p className="cookies-dashboard__toolbar-label">{t("Domain scope")}</p>
                             <Select
                                 defaultValue={domainFilter === "Select a Domain" ? "combined view" : domainFilter}
                                 items={domainItems}
@@ -140,7 +141,7 @@ export default function CookiesDashboard() {
 
                         <div className="cookies-dashboard__domains">
                             {visibleEntries.length === 0 ? (
-                                <p className="cookies-dashboard__empty">No domains match the current filter.</p>
+                                <p className="cookies-dashboard__empty">{t("No domains match the current filter.")}</p>
                             ) : null}
                             {visibleEntries.map(([domain, domainData]) => {
                                 const findings = domainData.findings || [];
@@ -163,7 +164,7 @@ export default function CookiesDashboard() {
                                         <div className="cookies-domain-card__body">
                                             {findings.length > 0 ? (
                                                 <div className="cookies-section">
-                                                    <h3 className="cookies-section__title">Findings</h3>
+                                                    <h3 className="cookies-section__title">{t("Findings")}</h3>
                                                     <ul className="cookies-findings">
                                                         {findings.map((finding, index) => (
                                                             <li key={index} className="cookies-findings__item">
@@ -176,7 +177,7 @@ export default function CookiesDashboard() {
 
                                             {sortedWarnings.length > 0 ? (
                                                 <div className="cookies-section">
-                                                    <h3 className="cookies-section__title">Warnings</h3>
+                                                    <h3 className="cookies-section__title">{t("Warnings")}</h3>
                                                     <ul className="cookies-warnings">
                                                         {sortedWarnings.map((warning, index) => (
                                                             <li
@@ -195,7 +196,7 @@ export default function CookiesDashboard() {
                                             ) : null}
 
                                             <div className="cookies-section">
-                                                <h3 className="cookies-section__title">Overview</h3>
+                                                <h3 className="cookies-section__title">{t("Overview")}</h3>
                                                 <div className="cookies-stats">
                                                     <Widget type="First-party cookies" totalNumber={domainData.firstPartyCookies} />
                                                     <Widget type="Third-party cookies" totalNumber={domainData.thirdPartyCookies} />
@@ -205,7 +206,7 @@ export default function CookiesDashboard() {
                                             </div>
 
                                             <div className="cookies-section">
-                                                <h3 className="cookies-section__title">Cookie inventory</h3>
+                                                <h3 className="cookies-section__title">{t("Cookie inventory")}</h3>
                                                 <div className="cookies-table-wrap">
                                                     <Table
                                                         data={rows}
@@ -228,7 +229,7 @@ export default function CookiesDashboard() {
                         </div>
                     </>
                 ) : (
-                    <p className="cookies-dashboard__empty">No data found for the selected domain(s) and date range.</p>
+                    <p className="cookies-dashboard__empty">{t("No data found for the selected domain(s) and date range.")}</p>
                 )}
             </div>
         </>

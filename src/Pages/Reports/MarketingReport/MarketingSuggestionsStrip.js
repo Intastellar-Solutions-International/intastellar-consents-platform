@@ -1,4 +1,5 @@
 import { appLocale } from "../../../Functions/format.js";
+import { t } from "../../../i18n/index.js";
 /*
  * --- MarketingSuggestionsStrip ----------------------------------------
  *
@@ -117,10 +118,10 @@ export default function MarketingSuggestionsStrip({
                     id="marketing-suggestions-heading"
                     className="marketing-suggestions__title"
                 >
-                    Suggestions for the gap
+                    {t("Suggestions")}
                 </h2>
                 <p className="marketing-suggestions__hint">
-                    Concrete moves to shrink your analytics-invisible traffic. Snooze a card if you've already actioned it — it'll come back if the metric stays bad.
+                    {t("Concrete steps to make more of your campaign traffic measurable. Snooze a card once you've acted on it — it comes back if the number stays bad.")}
                 </p>
             </header>
             <ul className="marketing-suggestions__list">
@@ -135,9 +136,9 @@ export default function MarketingSuggestionsStrip({
                         <div className="marketing-suggestions__card-head">
                             <span
                                 className={`marketing-suggestions__severity marketing-suggestions__severity--${s.severity}`}
-                                aria-label={`${s.severity} priority`}
+                                aria-label={t("{level} priority", { level: t(s.severity) })}
                             >
-                                {s.severity}
+                                {t(s.severity)}
                             </span>
                             <h3 className="marketing-suggestions__card-title">{s.title}</h3>
                         </div>
@@ -155,15 +156,15 @@ export default function MarketingSuggestionsStrip({
                                 type="button"
                                 className="marketing-suggestions__snooze"
                                 onClick={() => snooze(s.id)}
-                                aria-label={`Snooze "${s.title}" for ${SNOOZE_DAYS} days`}
-                                title={`Hide for ${SNOOZE_DAYS} days. The next data refresh after that will surface it again if the metric still warrants it.`}
+                                aria-label={t("Snooze \"{title}\" for {count} days", { title: s.title, count: SNOOZE_DAYS })}
+                                title={t("Hide for {count} days. It comes back after that if the number still warrants it.", { count: SNOOZE_DAYS })}
                             >
-                                Snooze {SNOOZE_DAYS} d
+                                {t("Snooze {count} days", { count: SNOOZE_DAYS })}
                             </button>
                         </div>
                         {s.evidence && Object.keys(s.evidence).length > 0 ? (
                             <details className="marketing-suggestions__evidence">
-                                <summary>Why this?</summary>
+                                <summary>{t("Why this?")}</summary>
                                 <ul>
                                     {Object.entries(s.evidence).map(([k, v]) => (
                                         <li key={k}>

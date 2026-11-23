@@ -33,6 +33,7 @@ import { STATISTICS_CONSENT } from "../../Functions/consentMetrics.js";
 import { appLocale } from "../../Functions/format.js";
 import { isLowDataCount, isLowDataRate, MIN_BASE } from "../../Functions/smallSample.js";
 import { niceTicks } from "./TrendLineChart.js";
+import { t, tx } from "../../i18n/index.js";
 
 // docs/design-audit-plan.md Phase 4: redesigned to match the simpler GA4
 // "Active users in last 30 minutes" reference instead of the previous
@@ -60,13 +61,13 @@ function LivePanel({ domain, siteKey }) {
             <div className="sa-live__header" onClick={() => setOpen(o => !o)} role="button" aria-expanded={open}>
                 <div className="sa-live__title">
                     <span className="sa-live__dot" />
-                    <span className="sa-live__label">Live</span>
+                    <span className="sa-live__label">{t("Live")}</span>
                 </div>
                 <div className="sa-live__right">
                     <span className="sa-live__countdown">
-                        {open ? `${countdown}s` : `${data.sessions.toLocaleString(appLocale())} active`}
+                        {open ? `${countdown}s` : t("{count} active", { count: data.sessions.toLocaleString(appLocale()) })}
                     </span>
-                    <button type="button" className="sa-live__toggle" aria-label={open ? "Collapse" : "Expand"}>
+                    <button type="button" className="sa-live__toggle" aria-label={open ? t("Collapse") : t("Expand")}>
                         {open ? "▲" : "▼"}
                     </button>
                 </div>
@@ -75,12 +76,13 @@ function LivePanel({ domain, siteKey }) {
             {open && (
                 <div className="sa-live__body">
                     <div>
-                        <p className="sa-live__hero-label">Active users in last 30 minutes</p>
+                        <p className="sa-live__hero-label">{t("Active users in last 30 minutes")}</p>
                         <p className="sa-live__hero-value">{data.sessions.toLocaleString(appLocale())}</p>
                         {data.minimal > 0 && (
                             <p className="sa-live__hero-sub">
-                                + {data.minimal.toLocaleString(appLocale())} event{data.minimal !== 1 ? "s" : ""} from
-                                visitors without full consent (not counted as users)
+                                {data.minimal === 1
+                                    ? t("+ 1 event from visitors without full consent (not counted as users)")
+                                    : t("+ {count} events from visitors without full consent (not counted as users)", { count: data.minimal.toLocaleString(appLocale()) })}
                             </p>
                         )}
                     </div>
@@ -92,12 +94,12 @@ function LivePanel({ domain, siteKey }) {
 
                     <div className="sa-live__countries">
                         <div className="sa-live__countries-hd">
-                            <span>Country</span>
-                            <span>Events</span>
+                            <span>{t("Country")}</span>
+                            <span>{t("Events")}</span>
                         </div>
                         {topCountries.length > 0 ? topCountries.map(c => (
                             <div key={c.code} className="sa-live__country-row"
-                                title={`${c.events} event${c.events !== 1 ? "s" : ""} · ${c.activeUsers} active user${c.activeUsers !== 1 ? "s" : ""}`}>
+                                title={t("{events} events · {users} active users", { events: c.events, users: c.activeUsers })}>
                                 <span className="sa-live__country-code">{c.code}</span>
                                 <div className="sa-live__country-bar-wrap">
                                     <div className="sa-live__country-bar" style={{ width: Math.max(4, Math.round((c.events / maxCountryEvents) * 100)) + "%" }} />
@@ -105,18 +107,18 @@ function LivePanel({ domain, siteKey }) {
                                 <span className="sa-live__country-value">{c.events.toLocaleString(appLocale())}</span>
                             </div>
                         )) : (
-                            <p className="sa-live__countries-empty">No visitors right now</p>
+                            <p className="sa-live__countries-empty">{t("No visitors right now")}</p>
                         )}
                     </div>
 
                     {data.trackerMismatch && (
                         <p className="sa-live__mismatch">
-                            Tracker is sending events under a different site key — the script tag on <strong>{domain}</strong> likely has a stale or wrong <code>data-site</code> value. Check Analytics Settings → Script.
+                            {tx("Tracker is sending events under a different site key — the script tag on {domain} likely has a stale or wrong {attr} value. Check Analytics Settings → Script.", { domain: <strong>{domain}</strong>, attr: <code>data-site</code> })}
                         </p>
                     )}
 
                     <Link className="sa-live__view-all" to={analyticsLivePath(domain)}>
-                        View real time →
+                        {t("View real time →")}
                     </Link>
                 </div>
             )}
@@ -139,7 +141,7 @@ function CopyButton({ text }) {
             className={"sa-copy-btn" + (copied ? " sa-copy-btn--done" : "")}
             onClick={copy}
         >
-            {copied ? "Copied!" : "Copy snippet"}
+            {copied ? t("Copied!") : t("Copy snippet")}
         </button>
     );
 }
@@ -161,7 +163,7 @@ function AreaChart({ daily }) {
     const PAD = { t: 14, r: 18, b: 34, l: 46 };
     const cW = W - PAD.l - PAD.r, cH = H - PAD.t - PAD.b;
 
-    if (!daily?.length) return <div className="sa-chart sa-chart--empty">No data for this period</div>;
+    if (!daily?.length) return <div className="sa-chart sa-chart--empty">{t("No data for this period")}</div>;
 
     // Shared tick rule (TrendLineChart's niceTicks, also used by the CMP's
     // ConsentTrend): round, evenly spaced, no repeated labels on small values.
@@ -230,9 +232,9 @@ function AreaChart({ daily }) {
             </svg>
             <div className="sa-chart__legend">
                 <span className="sa-chart__legend-dot sa-chart__legend-dot--full" />
-                <span>With consent</span>
+                <span>{t("With consent")}</span>
                 <span className="sa-chart__legend-dot sa-chart__legend-dot--minimal" />
-                <span>No consent (minimal)</span>
+                <span>{t("No consent (minimal)")}</span>
             </div>
         </div>
     );
@@ -255,7 +257,7 @@ function SingleValueChart({ daily, valueOf, color = DATA_LINE, fillFrom = DATA_F
     const PAD = { t: 14, r: 18, b: 34, l: 46 };
     const cW = W - PAD.l - PAD.r, cH = H - PAD.t - PAD.b;
 
-    if (!daily?.length) return <div className="sa-chart sa-chart--empty">No data for this period</div>;
+    if (!daily?.length) return <div className="sa-chart sa-chart--empty">{t("No data for this period")}</div>;
 
     const values = daily.map(valueOf);
     // Rates keep a fixed 0–yMax scale; counts use the shared niceTicks.
@@ -368,10 +370,10 @@ function CustomizePanel({ currentCards, defaultCards, onSave, onClose }) {
         <div className="sa-customize-backdrop" onClick={onClose}>
             <div className="sa-customize-panel" onClick={e => e.stopPropagation()}>
                 <div className="sa-customize-panel__head">
-                    <span className="sa-customize-panel__title">Customize cards</span>
-                    <button className="sa-customize-panel__close" onClick={onClose} aria-label="Close">✕</button>
+                    <span className="sa-customize-panel__title">{t("Customize cards")}</span>
+                    <button className="sa-customize-panel__close" onClick={onClose} aria-label={t("Close")}>✕</button>
                 </div>
-                <p className="sa-customize-panel__sub">Choose which KPI cards appear on the dashboard.</p>
+                <p className="sa-customize-panel__sub">{t("Choose which KPI cards appear on the dashboard.")}</p>
                 <div className="sa-customize-panel__list">
                     {ALL_CARD_DEFS.map(c => (
                         <label key={c.id} className={"sa-customize-panel__item" + (draft.includes(c.id) ? " sa-customize-panel__item--on" : "")}>
@@ -381,17 +383,17 @@ function CustomizePanel({ currentCards, defaultCards, onSave, onClose }) {
                                 checked={draft.includes(c.id)}
                                 onChange={() => toggle(c.id)}
                             />
-                            <span className="sa-customize-panel__item-label">{c.label}</span>
-                            <span className="sa-customize-panel__item-desc">{c.desc}</span>
+                            <span className="sa-customize-panel__item-label">{t(c.label)}</span>
+                            <span className="sa-customize-panel__item-desc">{t(c.desc)}</span>
                         </label>
                     ))}
                 </div>
                 <div className="sa-customize-panel__actions">
                     <button className="sa-customize-panel__reset" onClick={() => { onSave(null); onClose(); }}>
-                        Reset to default
+                        {t("Reset to default")}
                     </button>
                     <button className="sa-customize-panel__apply" onClick={() => { onSave(draft); onClose(); }}>
-                        Apply
+                        {t("Apply")}
                     </button>
                 </div>
             </div>
@@ -412,21 +414,23 @@ function buildOverviewHeadline({ data, trendEvents, getLastDays }) {
     const events = data.totals.total;
     const consentPct = data.totals.consentRate;
 
-    let headline = `${users.toLocaleString(appLocale())} active user${users === 1 ? "" : "s"} generated `
-        + `${events.toLocaleString(appLocale())} event${events === 1 ? "" : "s"} this period`;
-    if (trendEvents != null && Number.isFinite(trendEvents)) {
-        headline += `, ${trendEvents >= 0 ? "up" : "down"} ${formatPercent(Math.abs(trendEvents))} from the period before`;
-    }
-    headline += ".";
+    const vars = { users: users.toLocaleString(appLocale()), events: events.toLocaleString(appLocale()), change: formatPercent(Math.abs(trendEvents ?? 0)) };
+    const hasTrend = trendEvents != null && Number.isFinite(trendEvents);
+    const headline = !hasTrend
+        ? t("{users} active users generated {events} events this period.", vars)
+        : trendEvents >= 0
+            ? t("{users} active users generated {events} events this period, up {change} from the period before.", vars)
+            : t("{users} active users generated {events} events this period, down {change} from the period before.", vars);
 
-    let subline = `${formatPercent(consentPct)} statistics consent rate over the last ${getLastDays} days`;
+    let subline = t("{rate} statistics consent rate over the last {days} days", { rate: formatPercent(consentPct), days: getLastDays });
     if (data.industryBenchmark) {
         const diff = consentPct - data.industryBenchmark.consentRatePct;
         const diffStr = Math.abs(diff).toLocaleString(appLocale(), { minimumFractionDigits: 1, maximumFractionDigits: 1 });
-        subline += ` — ${diffStr}pts ${diff >= 0 ? "above" : "below"} the ${data.industryBenchmark.label} average`;
+        const bench = { pts: diffStr, industry: t(data.industryBenchmark.label) };
+        subline += " — " + (diff >= 0 ? t("{pts} pts above the {industry} average", bench) : t("{pts} pts below the {industry} average", bench));
     }
 
-    return { eyebrow: "Here's what to care about today", headline, subline };
+    return { eyebrow: t("Here's what to care about today"), headline, subline };
 }
 
 // Per-business-type default KPI card ordering — the hero metric tabs take
@@ -534,13 +538,13 @@ function buildKpiCardMeta({ data, siteConfig, trendEngaged, trendEvents, trendSe
 
     return {
         revenue: {
-            icon: <IconCash />, label: "Revenue", value: fmtRevenue(data.totals.revenue, currency),
-            sub: data.totals.transactions ? `${data.totals.transactions.toLocaleString(appLocale())} transactions` : "ecommerce events",
+            icon: <IconCash />, label: t("Revenue"), value: fmtRevenue(data.totals.revenue, currency),
+            sub: data.totals.transactions ? t("{count} transactions", { count: data.totals.transactions.toLocaleString(appLocale()) }) : t("ecommerce events"),
             variant: "revenue", hasDaily: false,
         },
         users: {
-            icon: <IconRadio />, label: "Active users", value: data.totals.engagedUsers.toLocaleString(appLocale()),
-            sub: "engaged: 10s+, clicked, or 2+ pages", variant: "live", trend: trendEngaged,
+            icon: <IconRadio />, label: t("Active users"), value: data.totals.engagedUsers.toLocaleString(appLocale()),
+            sub: t("engaged: 10s+, clicked, or 2+ pages"), variant: "live", trend: trendEngaged,
             // api/analytics-report.js's dailyEngagedRes — same engagement
             // criteria as the engagedUsers total, grouped by day (Phase 4).
             hasDaily: true,
@@ -550,9 +554,9 @@ function buildKpiCardMeta({ data, siteConfig, trendEngaged, trendEvents, trendSe
             ),
         },
         bounce: {
-            icon: <IconScrollDepth />, label: "Bounce rate",
+            icon: <IconScrollDepth />, label: t("Bounce rate"),
             value: bounceRate != null ? formatPercent(bounceRate) : "—",
-            sub: "sessions with no engagement",
+            sub: t("sessions with no engagement"),
             variant: bounceRate != null && bounceRate > 60 ? "warn" : "blue",
             trend: trendBounce != null ? -trendBounce : undefined,
             // Same uniqueSessions/engaged columns the "users"/"sessions" tabs
@@ -566,15 +570,15 @@ function buildKpiCardMeta({ data, siteConfig, trendEngaged, trendEvents, trendSe
             ),
         },
         events: {
-            icon: <IconBarChart />, label: bt === "media" ? "Page views" : "Total events",
+            icon: <IconBarChart />, label: bt === "media" ? t("Page views") : t("Total events"),
             value: data.totals.total.toLocaleString(appLocale()),
-            sub: `${data.totals.minimal.toLocaleString(appLocale())} minimal · ${data.totals.full.toLocaleString(appLocale())} full`,
+            sub: t("{minimal} minimal · {full} full", { minimal: data.totals.minimal.toLocaleString(appLocale()), full: data.totals.full.toLocaleString(appLocale()) }),
             trend: trendEvents, hasDaily: true,
             renderChart: (daily) => <AreaChart daily={daily} />,
         },
         sessions: {
-            icon: <IconUsers />, label: "Unique sessions", value: data.totals.uniqueSessions.toLocaleString(appLocale()),
-            sub: "consent-gated sessions only", trend: trendSessions,
+            icon: <IconUsers />, label: t("Unique sessions"), value: data.totals.uniqueSessions.toLocaleString(appLocale()),
+            sub: t("consent-gated sessions only"), trend: trendSessions,
             // dailyRes now carries unique_sessions per day alongside the
             // existing minimal/full columns — one extra column, same query.
             hasDaily: true,
@@ -584,8 +588,8 @@ function buildKpiCardMeta({ data, siteConfig, trendEngaged, trendEvents, trendSe
             ),
         },
         consent: {
-            icon: <IconShieldCheck />, label: STATISTICS_CONSENT.label, value: formatPercent(consentPct),
-            sub: STATISTICS_CONSENT.hint,
+            icon: <IconShieldCheck />, label: t(STATISTICS_CONSENT.label), value: formatPercent(consentPct),
+            sub: t(STATISTICS_CONSENT.hint),
             variant: consentPct < 20 ? "warn" : "live", trend: trendConsent,
             // Derived client-side from daily.minimal/.full — no backend change
             // needed, same per-day event counts the "Total events" tab already
@@ -599,20 +603,20 @@ function buildKpiCardMeta({ data, siteConfig, trendEngaged, trendEvents, trendSe
             children: <IndustryBenchmarkNote benchmark={data.industryBenchmark} actualPct={consentPct} />,
         },
         countries: {
-            icon: <IconGlobe />, label: "Countries", value: data.countries.length,
-            sub: data.countries[0] ? `Top: ${data.countries[0].code}` : null, hasDaily: false,
+            icon: <IconGlobe />, label: t("Countries"), value: data.countries.length,
+            sub: data.countries[0] ? t("Top: {country}", { country: data.countries[0].code }) : null, hasDaily: false,
         },
         leads: {
-            icon: <IconTarget />, label: "Quality leads", value: (data.totals.qualityLeads ?? 0).toLocaleString(appLocale()),
-            sub: "engaged + page/event match", variant: "live", hasDaily: false,
+            icon: <IconTarget />, label: t("Quality leads"), value: (data.totals.qualityLeads ?? 0).toLocaleString(appLocale()),
+            sub: t("engaged + page/event match"), variant: "live", hasDaily: false,
         },
         conversions: {
-            icon: <IconFunnel />, label: "Conversions", value: totalConversions(data.conversions).toLocaleString(appLocale()),
-            sub: "purchase, lead, and other registered events", variant: "live", hasDaily: false,
+            icon: <IconFunnel />, label: t("Conversions"), value: totalConversions(data.conversions).toLocaleString(appLocale()),
+            sub: t("purchase, lead, and other registered events"), variant: "live", hasDaily: false,
         },
         conversionRate: {
-            icon: <IconTrendingUp />, label: "Conversion rate", value: formatPercent(data.totals.conversionRate ?? 0),
-            sub: "sessions with at least one conversion", hasDaily: false,
+            icon: <IconTrendingUp />, label: t("Conversion rate"), value: formatPercent(data.totals.conversionRate ?? 0),
+            sub: t("sessions with at least one conversion"), hasDaily: false,
         },
     };
 }
@@ -651,19 +655,15 @@ function SetupCard({ domain, onKeyGenerated }) {
     return (
         <div className="sa-setup">
             <div className="sa-setup__icon"><IconRadio /></div>
-            <h3 className="sa-setup__title">No data yet for <strong>{domain}</strong></h3>
+            <h3 className="sa-setup__title">{tx("No data yet for {domain}", { domain: <strong>{domain}</strong> })}</h3>
             <p className="sa-setup__body">
-                Embed the script below on every page of your site. The script reads the
-                Intastellar consent cookie and only collects full analytics when the visitor
-                accepts <em>statisticCookies</em>. Minimal data (page path + consent choice)
-                is always recorded.
+                {tx("Embed the script below on every page of your site. The script reads the Intastellar consent cookie and only collects full analytics when the visitor accepts {category}. Minimal data (page path + consent choice) is always recorded.", { category: <em>statisticCookies</em> })}
             </p>
             <p className="sa-setup__body">
-                Setting up a new site? <Link className="sa-link" to={analyticsGettingStartedPath()}>Get started</Link> has
-                one install code for the cookie banner and Analytics together.
+                {tx("Setting up a new site? {link} has one install code for the cookie banner and Analytics together.", { link: <Link className="sa-link" to={analyticsGettingStartedPath()}>{t("Get started")}</Link> })}
             </p>
 
-            {loading && <p className="sa-setup__loading">Loading&hellip;</p>}
+            {loading && <p className="sa-setup__loading">{t("Loading…")}</p>}
 
             {!loading && !siteKey && (
                 <button
@@ -672,20 +672,19 @@ function SetupCard({ domain, onKeyGenerated }) {
                     onClick={generate}
                     disabled={generating}
                 >
-                    {generating ? "Generating…" : "Generate site key"}
+                    {generating ? t("Generating…") : t("Generate site key")}
                 </button>
             )}
 
             {!loading && siteKey && (
                 <div className="sa-setup__snippet-wrap">
                     <div className="sa-setup__snippet-header">
-                        <span className="sa-setup__snippet-label">Embed snippet</span>
+                        <span className="sa-setup__snippet-label">{t("Embed snippet")}</span>
                         <CopyButton text={snippet} />
                     </div>
                     <pre className="sa-setup__snippet">{snippet}</pre>
                     <p className="sa-setup__hint">
-                        Paste into the <code>&lt;head&gt;</code> of every page. Data will appear
-                        here within a few minutes of the first visitor.
+                        {tx("Paste into the {tag} of every page. Data will appear here within a few minutes of the first visitor.", { tag: <code>&lt;head&gt;</code> })}
                     </p>
                 </div>
             )}
@@ -776,21 +775,21 @@ export default function SiteAnalytics() {
     // see src/Functions/smallSample.js. Counts compare the two periods'
     // values; rates (consent, bounce) their denominators.
     const lowData = useMemo(() => {
-        const t = data?.totals, p = prevData?.totals;
-        if (!t) return {};
+        const cur = data?.totals, p = prevData?.totals;
+        if (!cur) return {};
         const n = (v) => Number(v || 0).toLocaleString(appLocale());
         const out = {};
         if (p) {
-            if (isLowDataCount(t.engagedUsers, p.engagedUsers)) out.users = `${n(p.engagedUsers)} → ${n(t.engagedUsers)} active users`;
-            if (isLowDataCount(t.total, p.total)) out.events = `${n(p.total)} → ${n(t.total)} events`;
-            if (isLowDataCount(t.uniqueSessions, p.uniqueSessions)) out.sessions = `${n(p.uniqueSessions)} → ${n(t.uniqueSessions)} sessions`;
-            if (isLowDataRate(t.total, p.total)) out.consent = `Based on ${n(p.total)} and ${n(t.total)} events`;
-            if (isLowDataRate(t.uniqueSessions, p.uniqueSessions)) out.bounce = `Based on ${n(p.uniqueSessions)} and ${n(t.uniqueSessions)} sessions`;
+            if (isLowDataCount(cur.engagedUsers, p.engagedUsers)) out.users = t("{before} → {after} active users", { before: n(p.engagedUsers), after: n(cur.engagedUsers) });
+            if (isLowDataCount(cur.total, p.total)) out.events = t("{before} → {after} events", { before: n(p.total), after: n(cur.total) });
+            if (isLowDataCount(cur.uniqueSessions, p.uniqueSessions)) out.sessions = t("{before} → {after} sessions", { before: n(p.uniqueSessions), after: n(cur.uniqueSessions) });
+            if (isLowDataRate(cur.total, p.total)) out.consent = t("Based on {before} and {after} events", { before: n(p.total), after: n(cur.total) });
+            if (isLowDataRate(cur.uniqueSessions, p.uniqueSessions)) out.bounce = t("Based on {before} and {after} sessions", { before: n(p.uniqueSessions), after: n(cur.uniqueSessions) });
         }
         // The value itself on a small base (e.g. a 99,5% bounce rate from 3 sessions)
         out.basis = {
-            bounce: t.uniqueSessions < MIN_BASE ? `Based on only ${n(t.uniqueSessions)} sessions` : undefined,
-            consent: t.total < MIN_BASE ? `Based on only ${n(t.total)} events` : undefined,
+            bounce: cur.uniqueSessions < MIN_BASE ? t("Based on only {count} sessions", { count: n(cur.uniqueSessions) }) : undefined,
+            consent: cur.total < MIN_BASE ? t("Based on only {count} events", { count: n(cur.total) }) : undefined,
         };
         return out;
     }, [data, prevData]);
@@ -860,7 +859,7 @@ export default function SiteAnalytics() {
         <div style={{ flex: "1", minWidth: 0 }}>
             <StickyPageTitle
                 className="sa-sticky-header"
-                title="Overview"
+                title={t("Overview")}
                 numberofDays={setLastDays}
                 getLastDays={getLastDays}
                 fromDate={fromDate}
@@ -876,10 +875,10 @@ export default function SiteAnalytics() {
                 toolbar={data && !data.noSiteKey ? (
                     <div className="sa-meta-row">
                         {data.isPropertyRollup ? (
-                            <span className="sa-site-key-badge">Property rollup &mdash; {(data.domains || []).length} domains</span>
+                            <span className="sa-site-key-badge">{t("Property rollup — {count} domains", { count: (data.domains || []).length })}</span>
                         ) : (
                             <span className="sa-site-key-badge">
-                                Site key: <code>{data.siteId}</code>
+                                {tx("Site key: {key}", { key: <code>{data.siteId}</code> })}
                             </span>
                         )}
                         {!data.isPropertyRollup && (
@@ -892,7 +891,7 @@ export default function SiteAnalytics() {
                 <div className="sa-page">
 
                     {!hasDomain && (
-                        <p className="sa-notice">Select a specific domain in the header to view analytics.</p>
+                        <p className="sa-notice">{t("Select a specific domain in the header to view analytics.")}</p>
                     )}
                     {/* Above the skeleton, so the banner sits in the same spot
                         while loading and after — it used to render below the
@@ -904,24 +903,22 @@ export default function SiteAnalytics() {
                                 {recentPendingForeignDomains.length > 0 ? (
                                     <>
                                         {recentPendingForeignDomains.length === 1
-                                            ? <><strong>{recentPendingForeignDomains[0].domain}</strong> — an unrecognized domain</>
-                                            : <><strong>{recentPendingForeignDomains.length} unrecognized domains</strong></>
-                                        } seen in this date range. <strong>Not counted</strong> in any number below —
-                                        approve it here if it's actually yours.
+                                            ? tx("{domain} — an unrecognized domain seen in this date range. {notCounted} in any number below — approve it here if it's actually yours.", { domain: <strong>{recentPendingForeignDomains[0].domain}</strong>, notCounted: <strong>{t("Not counted")}</strong> })
+                                            : tx("{domains} seen in this date range. {notCounted} in any number below — approve them here if they're actually yours.", { domains: <strong>{t("{count} unrecognized domains", { count: recentPendingForeignDomains.length })}</strong>, notCounted: <strong>{t("Not counted")}</strong> })}
                                         {olderPendingForeignDomainsCount > 0 && (
-                                            <> (+{olderPendingForeignDomainsCount} older, already-excluded domain{olderPendingForeignDomainsCount === 1 ? "" : "s"} not shown here.)</>
+                                            <> {olderPendingForeignDomainsCount === 1
+                                                ? t("(+1 older, already-excluded domain not shown here.)")
+                                                : t("(+{count} older, already-excluded domains not shown here.)", { count: olderPendingForeignDomainsCount })}</>
                                         )}
                                     </>
                                 ) : (
-                                    <>
-                                        <strong>{pendingForeignDomains.length} unrecognized domain{pendingForeignDomains.length === 1 ? "" : "s"}</strong> seen
-                                        previously (none in this date range) — already excluded from every number below.
-                                        Review in case any are still active.
-                                    </>
+                                    pendingForeignDomains.length === 1
+                                        ? tx("{domains} seen previously (none in this date range) — already excluded from every number below. Review in case it's still active.", { domains: <strong>{t("1 unrecognized domain")}</strong> })
+                                        : tx("{domains} seen previously (none in this date range) — already excluded from every number below. Review in case any are still active.", { domains: <strong>{t("{count} unrecognized domains", { count: pendingForeignDomains.length })}</strong> })
                                 )}
                             </span>
                             <Link className="sa-foreign-banner__link" to={analyticsSettingsPath(domain)}>
-                                Review &amp; approve →
+                                {t("Review & approve →")}
                             </Link>
                         </div>
                     )}
@@ -961,8 +958,8 @@ export default function SiteAnalytics() {
                             {siteConfig?.businessType && (
                                 <div className="sa-mode-badge">
                                     <span className="sa-mode-badge__dot" />
-                                    Dashboard tuned for <strong>{BT_LABELS[siteConfig.businessType]}</strong>
-                                    <Link className="sa-mode-badge__link" to={analyticsSettingsPath(domain)}>Change mode</Link>
+                                    {tx("Dashboard tuned for {type}", { type: <strong>{t(BT_LABELS[siteConfig.businessType])}</strong> })}
+                                    <Link className="sa-mode-badge__link" to={analyticsSettingsPath(domain)}>{t("Change mode")}</Link>
                                 </div>
                             )}
 
@@ -988,17 +985,17 @@ export default function SiteAnalytics() {
                                     />
                                     <div className="sa-chart-section__hd">
                                         <h3 className="sa-chart-section__title">
-                                            <IconTrendingUp className="sa-icon" /> {cardMeta[activeHeroMetric]?.label || "Trend"}
+                                            <IconTrendingUp className="sa-icon" /> {cardMeta[activeHeroMetric]?.label || t("Trend")}
                                         </h3>
                                         <div className="sa-chart-section__hd-right">
-                                            <span className="sa-chart-section__period">Last {getLastDays} days</span>
+                                            <span className="sa-chart-section__period">{t("Last {count} days", { count: getLastDays })}</span>
                                             {/* Picks which 4 metrics the tabs above show */}
                                             <button type="button" className="sa-customize-btn" onClick={() => setShowCustomize(true)}
-                                                aria-label="Customize which metrics are shown">
+                                                aria-label={t("Customize which metrics are shown")}>
                                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                                                     <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
                                                 </svg>
-                                                Customize
+                                                {t("Customize")}
                                             </button>
                                         </div>
                                     </div>
@@ -1006,26 +1003,26 @@ export default function SiteAnalytics() {
                                         cardMeta[activeHeroMetric].renderChart(data.daily)
                                     ) : (
                                         <EmptyState
-                                            title="No daily breakdown yet"
-                                            message={`${cardMeta[activeHeroMetric]?.label || "This metric"} is only available as a period total today — a day-by-day trend isn't tracked for it yet.`}
+                                            title={t("No daily breakdown yet")}
+                                            message={t("{metric} is only available as a period total today — a day-by-day trend isn't tracked for it yet.", { metric: cardMeta[activeHeroMetric]?.label || t("This metric") })}
                                             dependency="daily breakdown for this metric"
                                         />
                                     )}
                                     <DataSource
                                         className="tw-mt-3"
-                                        source="Analytics events from your site"
+                                        source={t("Analytics events from your site")}
                                         filters={[
-                                            "Users = visitors with statistics consent; others counted anonymously",
-                                            data.excludeBots === false ? "Including suspected bots" : "Suspected bots excluded",
+                                            t("Users = visitors with statistics consent; others counted anonymously"),
+                                            data.excludeBots === false ? t("Including suspected bots") : t("Suspected bots excluded"),
                                             [segment.device, segment.channel, segment.consent, segment.country].some(Boolean)
-                                                ? `Filtered: ${[segment.device, segment.channel, segment.consent && `${segment.consent} consent`, segment.country].filter(Boolean).join(", ")}`
+                                                ? t("Filtered: {filters}", { filters: [segment.device, segment.channel, segment.consent && t("{choice} consent", { choice: segment.consent }), segment.country].filter(Boolean).join(", ") })
                                                 : null,
                                         ]}
                                         fetchedAt={data.fetchedAt}
                                         helpArticle="reading-the-numbers"
                                         action={
                                             <button type="button" className="sa-live__bots-toggle" onClick={() => setExcludeBots(!excludeBots)}>
-                                                {excludeBots ? "Include bots" : "Exclude bots"}
+                                                {excludeBots ? t("Include bots") : t("Exclude bots")}
                                             </button>
                                         }
                                     />

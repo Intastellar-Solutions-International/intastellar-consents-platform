@@ -286,7 +286,7 @@ export default function Dashboard(props) {
                     setActiveDataAt(Date.now());
                 } else {
                     setActiveData(null);
-                    setInteractionsError(typeof data?.error === "string" ? data.error : "The server returned no statistics.");
+                    setInteractionsError(typeof data?.error === "string" ? data.error : t("The server returned no statistics."));
                 }
                 setLoading(false);
             })
@@ -368,41 +368,41 @@ export default function Dashboard(props) {
             items.push({
                 id: "verify",
                 severity: "danger",
-                title: verificationStatus.isExpired ? "Domain verification has lapsed" : "Domain not verified",
+                title: verificationStatus.isExpired ? t("Domain verification has lapsed") : t("Domain not verified"),
                 description: verificationStatus.isExpired
-                    ? `Verification for ${verificationStatus.domain} has lapsed — consent data attribution may be paused until re-verified.`
-                    : `${verificationStatus.domain} hasn't been verified yet. Without verification, consent interactions for this domain may not be attributed to your account.`,
-                action: { label: verificationStatus.isExpired ? "Re-verify" : "See token", to: "/settings/workspaces" },
+                    ? t("Verification for {domain} has lapsed — consent data attribution may be paused until re-verified.", { domain: verificationStatus.domain })
+                    : t("{domain} hasn't been verified yet. Without verification, consent interactions for this domain may not be attributed to your account.", { domain: verificationStatus.domain }),
+                action: { label: verificationStatus.isExpired ? t("Re-verify") : t("See token"), to: "/settings/workspaces" },
             });
         }
         if (trackers.length) {
-            const vendors = `${trackers.length} advertising or tracking vendor${trackers.length === 1 ? "" : "s"}`;
+            const one = trackers.length === 1;
             items.push({
                 id: "trackers",
                 severity: phaseKnown ? "danger" : "warning",
                 title: phaseKnown
-                    ? `${vendors} load${trackers.length === 1 ? "s" : ""} before consent`
-                    : `${vendors} found in the latest cookie scan`,
-                description: trackers.slice(0, 3).join(", ") + (trackers.length > 3 ? ` and ${trackers.length - 3} more` : ""),
-                action: { label: "Review in Compliance", to: reportsPath(id, selectedDomain, "/compliance") },
+                    ? (one ? t("1 advertising or tracking vendor loads before consent") : t("{count} advertising or tracking vendors load before consent", { count: trackers.length }))
+                    : (one ? t("1 advertising or tracking vendor found in the latest cookie scan") : t("{count} advertising or tracking vendors found in the latest cookie scan", { count: trackers.length })),
+                description: trackers.slice(0, 3).join(", ") + (trackers.length > 3 ? " " + t("and {count} more", { count: trackers.length - 3 }) : ""),
+                action: { label: t("Review in Compliance"), to: reportsPath(id, selectedDomain, "/compliance") },
             });
         }
         if (logging && (logging.status === "warning" || logging.status === "error")) {
             items.push({
                 id: "logging",
                 severity: logging.status === "error" ? "danger" : "warning",
-                title: "Consent logging looks stale",
+                title: t("Consent logging looks stale"),
                 description: logging.detail ? logging.detail.charAt(0).toUpperCase() + logging.detail.slice(1) + "." : null,
-                action: { label: "Open audit log", to: reportsPath(id, selectedDomain, "/user-consents") },
+                action: { label: t("Open audit log"), to: reportsPath(id, selectedDomain, "/user-consents") },
             });
         }
         if (scan && scan.status === "warning") {
             items.push({
                 id: "scan",
                 severity: "warning",
-                title: scan.detail === t("not scanned yet") ? "No cookie scan yet" : "Cookie scan is out of date",
-                description: scan.detail === t("not scanned yet") ? "Run a scan to see which cookies and vendors load on this domain." : `Last scan ${scan.detail}.`,
-                action: { label: "Scan now", onClick: triggerOverviewScan },
+                title: scan.detail === t("not scanned yet") ? t("No cookie scan yet") : t("Cookie scan is out of date"),
+                description: scan.detail === t("not scanned yet") ? t("Run a scan to see which cookies and vendors load on this domain.") : t("Last scan {when}.", { when: scan.detail }),
+                action: { label: t("Scan now"), onClick: triggerOverviewScan },
             });
         }
         return items;
@@ -411,33 +411,33 @@ export default function Dashboard(props) {
     const healthCheckRow = (label, check) => ({
         label,
         status: !check ? "unknown" : check.status === "error" ? "danger" : check.status,
-        text: check ? check.detail : "Checking…",
+        text: check ? check.detail : t("Checking…"),
     });
     const complianceChecks = [
         {
-            label: "Domain verification",
+            label: t("Domain verification"),
             status: verificationStatus.show ? "danger" : "ok",
-            text: verificationStatus.show ? (verificationStatus.isExpired ? "Lapsed" : "Not verified") : "Verified",
+            text: verificationStatus.show ? (verificationStatus.isExpired ? t("Lapsed") : t("Not verified")) : t("Verified"),
         },
-        healthCheckRow("Consent logging", logging),
-        healthCheckRow("Cookie scan", scan),
+        healthCheckRow(t("Consent logging"), logging),
+        healthCheckRow(t("Cookie scan"), scan),
         {
-            label: "Before consent",
+            label: t("Before consent"),
             status: !scanSummary ? "unknown" : !trackers.length ? "ok" : phaseKnown ? "danger" : "warning",
-            text: !scanSummary ? "No scan yet" : trackers.length ? `${trackers.length} vendor${trackers.length === 1 ? "" : "s"}` : "No trackers",
+            text: !scanSummary ? t("No scan yet") : trackers.length ? (trackers.length === 1 ? t("1 vendor") : t("{count} vendors", { count: trackers.length })) : t("No trackers"),
         },
     ];
 
     return (
         <>
-            <StickyPageTitle demoMode={demoMode} loadingUpdated={loading} finalLoaded={loadingCountry} title={handle ? `Dashboard: ${punycode.toUnicode(handle)}` : "Dashboard"} url={url} method={method} header={header} numberofDays={setLastDays} getLastDays={getLastDays} setActiveData={setActiveData} fromDate={fromDate} toDate={toDate} setFromDate={setFromDate} setToDate={setToDate} previousPeriod={previousPeriod} previousPeriod2={previousPeriod2} compareRange={compareRange} setCompareRange={setCompareRange} setCompareWindowStart={setPreviousPeriod} setCompareWindowEnd={setPreviousPeriod2} />
+            <StickyPageTitle demoMode={demoMode} loadingUpdated={loading} finalLoaded={loadingCountry} title={handle ? t("Dashboard: {domain}", { domain: punycode.toUnicode(handle) }) : t("Dashboard")} url={url} method={method} header={header} numberofDays={setLastDays} getLastDays={getLastDays} setActiveData={setActiveData} fromDate={fromDate} toDate={toDate} setFromDate={setFromDate} setToDate={setToDate} previousPeriod={previousPeriod} previousPeriod2={previousPeriod2} compareRange={compareRange} setCompareRange={setCompareRange} setCompareWindowStart={setPreviousPeriod} setCompareWindowEnd={setPreviousPeriod2} />
             <div className="dashboard-content">
                 <BotFilterToggle />
                 {/* Workspace banner */}
                 {activeWorkspace && (
                     <div className="dashboard-workspace-banner">
                         <div className="dashboard-workspace-banner__left">
-                            <span className="dashboard-workspace-banner__kicker">Workspace</span>
+                            <span className="dashboard-workspace-banner__kicker">{t("Workspace")}</span>
                             <span className="dashboard-workspace-banner__name">{activeWorkspace.name}</span>
                         </div>
                         {activeWorkspace.domains?.length > 0 && (
@@ -486,7 +486,7 @@ export default function Dashboard(props) {
                                         <ComplianceChecks checks={complianceChecks} />
                                     </div>
                                 ) : (
-                                    <p className="tw-m-0 tw-text-sm tw-text-text-secondary">Choose a domain to see what needs attention.</p>
+                                    <p className="tw-m-0 tw-text-sm tw-text-text-secondary">{t("Choose a domain to see what needs attention.")}</p>
                                 )}
                             </Card>
                             <QuickReport platformId={id} domain={hasDomain ? selectedDomain : null} fromDate={fromDate} toDate={toDate} />
@@ -494,7 +494,7 @@ export default function Dashboard(props) {
                     </>}
                     main={interactionsError ? (
                         <SectionError
-                            title="Consent statistics couldn't be loaded"
+                            title={t("Consent statistics couldn't be loaded")}
                             message={interactionsError}
                             onRetry={() => setInteractionsAttempt((n) => n + 1)}
                         />
@@ -510,25 +510,25 @@ export default function Dashboard(props) {
                             />
                             <KpiTile
                                 plain
-                                label="Essential-only"
+                                label={t("Essential-only")}
                                 loading={activeData == null}
                                 value={formatPercent(activeData?.Declined)}
                                 delta={compareOn && Number.isFinite(activeData?.changeRate?.declined) ? { value: activeData.changeRate.declined, formatted: formatPercent(activeData.changeRate.declined), goodWhen: "down", label: "vs comparison", lowData: decisionBase.rateLow, basis: decisionBase.basis } : undefined}
                             />
                             <KpiTile
                                 plain
-                                label="Consent decisions"
+                                label={t("Consent decisions")}
                                 loading={activeData == null}
                                 value={formatNumber(activeData?.Total)}
                                 delta={compareOn && consentsChange != null ? { value: consentsChange, formatted: formatPercent(consentsChange), goodWhen: "up", label: "vs comparison", lowData: decisionBase.countLow, basis: decisionBase.basis } : undefined}
                             />
-                            <KpiTile plain label="Active users" loading={activeData == null} value={formatNumber(activeData?.activeUsers)} />
+                            <KpiTile plain label={t("Active users")} loading={activeData == null} value={formatNumber(activeData?.activeUsers)} />
                         </PerformanceBand>
                         {activeData && (
                             <DataSource
                                 className="tw-mt-2"
-                                source="Consent records from the cookie banner"
-                                filters={[excludeBots ? "Suspected bots excluded" : "Including suspected bots"]}
+                                source={t("Consent records from the cookie banner")}
+                                filters={[excludeBots ? t("Suspected bots excluded") : t("Including suspected bots")]}
                                 fetchedAt={activeDataAt}
                                 helpArticle="reading-the-numbers"
                             />
@@ -537,7 +537,7 @@ export default function Dashboard(props) {
                 >
                     {!interactionsError && (<>
                         <div className="home-grid">
-                            {activeData == null ? <SkeletonCard height={360} label="Loading consent trend…" /> : (
+                            {activeData == null ? <SkeletonCard height={360} label={t("Loading consent trend…")} /> : (
                                 <ErrorBoundary>
                                     <ConsentTrend daily={activeData.dailyNum} granularity={activeData.granularity} fromDate={fromDate} toDate={toDate} compareOn={compareOn} />
                                 </ErrorBoundary>
@@ -555,9 +555,9 @@ export default function Dashboard(props) {
                     </>)}
 
                     <div className="home-grid">
-                        {loadingCountry ? <SkeletonCard height={360} label="Loading countries…" /> : countryError ? (
+                        {loadingCountry ? <SkeletonCard height={360} label={t("Loading countries…")} /> : countryError ? (
                             <SectionError
-                                title="Country data couldn't be loaded"
+                                title={t("Country data couldn't be loaded")}
                                 message={countryError}
                                 onRetry={() => setCountryAttempt((n) => n + 1)}
                             />

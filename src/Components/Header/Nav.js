@@ -81,7 +81,7 @@ export default function Nav() {
                             {isAdminOrg && (
                                 <Link className={"navItems" + (path === "/platform" || path.startsWith("/platform/") ? " --active" : "")} to="/platform">
                                     <i className="dashboard-icons" style={{ backgroundImage: `url(${platformIcon})` }} data-icon={platformIcon}></i>
-                                    <span className="hiddenCollapsed">Platform</span>
+                                    <span className="hiddenCollapsed">{t("Platform")}</span>
                                 </Link>
                             )}
                             <Link className={"navItems" + (path.indexOf("/settings") > -1 ? " --active" : "")} to={"/settings"}><i className="dashboard-icons settings" style={{

@@ -7,6 +7,7 @@ import { installSnippet } from "../../Functions/installSnippet.js";
 import { canAccess } from "../../Functions/tier.js";
 import { readJsonResult, errorMessage } from "../../Functions/apiResult.js";
 import "./AddDomain.css";
+import { t, tx } from "../../i18n/index.js";
 
 const { useState, useRef, useEffect } = React;
 
@@ -194,7 +195,7 @@ function CopyButton({ text }) {
                 });
             }}
         >
-            {copied ? "Copied" : "Copy"}
+            {copied ? t("Copied") : t("Copy")}
         </button>
     );
 }
@@ -321,7 +322,7 @@ function InstallInstructions({ domains, embedded, onAddMore }) {
             const response = await fetch(`${ScannerHost}/api/analytics-site`, {
                 method: "POST", headers: scannerHeaders(), body: JSON.stringify({ domain: active }),
             });
-            const d = await readJsonResult(response, "Couldn't turn on Analytics.");
+            const d = await readJsonResult(response, t("Couldn't turn on Analytics."));
             setSiteKeys((k) => ({ ...k, [active]: d.id }));
             setWithAnalytics((w) => ({ ...w, [active]: true }));
         } catch (err) {
@@ -340,14 +341,24 @@ function InstallInstructions({ domains, embedded, onAddMore }) {
                 <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg>
             </span>
             <h2 className="ad-card__title">
-                {domains.length === 1 ? `${domains[0]} was added` : `${domains.length} domains were added`}
+                {domains.length === 1 ? t("{domain} was added", { domain: domains[0] }) : t("{count} domains were added", { count: domains.length })}
             </h2>
             <p className="ad-card__intro">
-                Add {includeAnalytics ? "this code" : "these two lines"} to the <code>&lt;head&gt;</code> of {domains.length === 1 ? "your website" : "each website"}, before any other script that sets cookies.
+                {(() => {
+                    const tag = { tag: <code>&lt;head&gt;</code> };
+                    if (domains.length === 1) {
+                        return includeAnalytics
+                            ? tx("Add this code to the {tag} of your website, before any other script that sets cookies.", tag)
+                            : tx("Add these two lines to the {tag} of your website, before any other script that sets cookies.", tag);
+                    }
+                    return includeAnalytics
+                        ? tx("Add this code to the {tag} of each website, before any other script that sets cookies.", tag)
+                        : tx("Add these two lines to the {tag} of each website, before any other script that sets cookies.", tag);
+                })()}
             </p>
 
             {domains.length > 1 ? (
-                <div className="ad-segmented ad-segmented--wrap" role="tablist" aria-label="Domain">
+                <div className="ad-segmented ad-segmented--wrap" role="tablist" aria-label={t("Domain")}>
                     {domains.map((d) => (
                         <button
                             key={d}
@@ -372,8 +383,8 @@ function InstallInstructions({ domains, embedded, onAddMore }) {
                         onChange={(e) => toggleAnalytics(e.target.checked)}
                     />
                     <span>
-                        <strong>{enabling ? "Turning on Analytics…" : "Also install Analytics"}</strong>
-                        <span className="ad-analytics-toggle__hint">Consent-aware traffic, ad spend and conversions from the same code — no second install.</span>
+                        <strong>{enabling ? t("Turning on Analytics…") : t("Also install Analytics")}</strong>
+                        <span className="ad-analytics-toggle__hint">{t("Consent-aware traffic, ad spend and conversions from the same code — no second install.")}</span>
                     </span>
                 </label>
             )}
@@ -385,16 +396,15 @@ function InstallInstructions({ domains, embedded, onAddMore }) {
             </div>
 
             <p className="ad-hint">
-                Need a different setup (Google Tag Manager, WordPress, Shopify)? See the{" "}
-                <a href={DOCS_URL} target="_blank" rel="noopener noreferrer">cookie banner documentation</a>.
+                {tx("Need a different setup (Google Tag Manager, WordPress, Shopify)? See the {link}.", { link: <a href={DOCS_URL} target="_blank" rel="noopener noreferrer">{t("cookie banner documentation")}</a> })}
             </p>
 
             <div className="ad-actions">
                 {embedded ? (
-                    <button type="button" className="ad-btn ad-btn--secondary" onClick={onAddMore}>Add more domains</button>
+                    <button type="button" className="ad-btn ad-btn--secondary" onClick={onAddMore}>{t("Add more domains")}</button>
                 ) : (
                     // The app only learns about the new domains on load.
-                    <button type="button" className="ad-btn ad-btn--primary" onClick={() => window.location.reload()}>Go to dashboard</button>
+                    <button type="button" className="ad-btn ad-btn--primary" onClick={() => window.location.reload()}>{t("Go to dashboard")}</button>
                 )}
             </div>
         </section>
@@ -461,10 +471,9 @@ export default function AddDomain({ embedded }) {
 
     const header = !embedded ? (
         <header className="ad-header">
-            <h1 className="ad-header__title">Add your first domain</h1>
+            <h1 className="ad-header__title">{t("Add your first domain")}</h1>
             <p className="ad-header__intro">
-                Add the websites you want Intastellar Consents to manage, choose how the cookie banner
-                looks, and we'll give you the code to install it.
+                {t("Add the websites you want Intastellar Consents to manage, choose how the cookie banner looks, and we'll give you the code to install it.")}
             </p>
         </header>
     ) : null;
@@ -487,14 +496,14 @@ export default function AddDomain({ embedded }) {
                         <div className="ad-card__head">
                             <span className="ad-step">1</span>
                             <div>
-                                <h2 className="ad-card__title">Domains</h2>
-                                <p className="ad-card__intro">Root domains only — subdomains are covered automatically.</p>
+                                <h2 className="ad-card__title">{t("Domains")}</h2>
+                                <p className="ad-card__intro">{t("Root domains only — subdomains are covered automatically.")}</p>
                             </div>
                         </div>
                         <TagInput
                             id="ad-domains"
-                            label="Website domain"
-                            hint="Press Enter to add. You can paste several at once."
+                            label={t("Website domain")}
+                            hint={t("Press Enter to add. You can paste several at once.")}
                             values={domains}
                             onChange={setDomains}
                             parse={parseDomain}
@@ -508,14 +517,14 @@ export default function AddDomain({ embedded }) {
                         <div className="ad-card__head">
                             <span className="ad-step">2</span>
                             <div>
-                                <h2 className="ad-card__title">Banner settings</h2>
-                                <p className="ad-card__intro">Applies to every domain above. You can change all of this later.</p>
+                                <h2 className="ad-card__title">{t("Banner settings")}</h2>
+                                <p className="ad-card__intro">{t("Applies to every domain above. You can change all of this later.")}</p>
                             </div>
                         </div>
 
                         <div className="ad-grid">
                             <div className="ad-field ad-field--full">
-                                <span className="ad-label" id="ad-design-label">Design</span>
+                                <span className="ad-label" id="ad-design-label">{t("Design")}</span>
                                 <div className="ad-designs" role="radiogroup" aria-labelledby="ad-design-label">
                                     {DESIGNS.map((d) => (
                                         <button
@@ -528,17 +537,17 @@ export default function AddDomain({ embedded }) {
                                         >
                                             <DesignThumb design={d.id} color={color} side={side} />
                                             <span className="ad-design__name">
-                                                {d.name}
-                                                {d.id === "overlay" ? <span className="ad-design__tag">Default</span> : null}
+                                                {t(d.name)}
+                                                {d.id === "overlay" ? <span className="ad-design__tag">{t("Default")}</span> : null}
                                             </span>
-                                            <span className="ad-design__description">{d.description}</span>
+                                            <span className="ad-design__description">{t(d.description)}</span>
                                         </button>
                                     ))}
                                 </div>
                             </div>
 
                             <div className="ad-field ad-field--full">
-                                <label className="ad-label" htmlFor="ad-policy">Privacy policy URL</label>
+                                <label className="ad-label" htmlFor="ad-policy">{t("Privacy policy URL")}</label>
                                 <input
                                     id="ad-policy"
                                     className="ad-input"
@@ -550,7 +559,7 @@ export default function AddDomain({ embedded }) {
                             </div>
 
                             <div className="ad-field">
-                                <label className="ad-label" htmlFor="ad-company">Company name</label>
+                                <label className="ad-label" htmlFor="ad-company">{t("Company name")}</label>
                                 <input
                                     id="ad-company"
                                     className="ad-input"
@@ -562,7 +571,7 @@ export default function AddDomain({ embedded }) {
                             </div>
 
                             <div className="ad-field">
-                                <label className="ad-label" htmlFor="ad-logo">Logo URL <span className="ad-optional">optional</span></label>
+                                <label className="ad-label" htmlFor="ad-logo">{t("Logo URL")} <span className="ad-optional">{t("optional")}</span></label>
                                 <input
                                     id="ad-logo"
                                     className="ad-input"
@@ -575,14 +584,14 @@ export default function AddDomain({ embedded }) {
 
                             <div className="ad-field">
                                 <label className="ad-label" htmlFor="ad-color">
-                                    Brand colour
-                                    {currentDesign.fixedPalette ? <span className="ad-optional">not used by {currentDesign.name}</span> : null}
+                                    {t("Brand colour")}
+                                    {currentDesign.fixedPalette ? <span className="ad-optional">{t("not used by {design}", { design: t(currentDesign.name) })}</span> : null}
                                 </label>
                                 <div className={"ad-color" + (currentDesign.fixedPalette ? " ad-color--muted" : "")}>
                                     <input
                                         className="ad-color__swatch"
                                         type="color"
-                                        aria-label="Pick brand colour"
+                                        aria-label={t("Pick brand colour")}
                                         value={/^#[0-9a-f]{6}$/i.test(color) ? color : DEFAULT_COLOR}
                                         onChange={(e) => setColor(e.target.value)}
                                     />
@@ -599,7 +608,7 @@ export default function AddDomain({ embedded }) {
 
                             {position ? (
                                 <div className="ad-field">
-                                    <span className="ad-label" id="ad-arrange-label">{position.label}</span>
+                                    <span className="ad-label" id="ad-arrange-label">{t(position.label)}</span>
                                     <div className="ad-segmented" role="radiogroup" aria-labelledby="ad-arrange-label">
                                         {position.options.map(([value, label]) => (
                                             <button
@@ -610,7 +619,7 @@ export default function AddDomain({ embedded }) {
                                                 className={"ad-segmented__option" + (side === value ? " ad-segmented__option--active" : "")}
                                                 onClick={() => setSide(value)}
                                             >
-                                                {label}
+                                                {t(label)}
                                             </button>
                                         ))}
                                     </div>
@@ -619,12 +628,12 @@ export default function AddDomain({ embedded }) {
                         </div>
 
                         <details className="ad-advanced">
-                            <summary>Advanced</summary>
+                            <summary>{t("Advanced")}</summary>
                             <div className="ad-grid">
                                 <TagInput
                                     id="ad-required"
-                                    label="Required cookies"
-                                    hint="Strictly necessary cookies that are always allowed, e.g. a session cookie."
+                                    label={t("Required cookies")}
+                                    hint={t("Strictly necessary cookies that are always allowed, e.g. a session cookie.")}
                                     values={requiredCookies}
                                     onChange={setRequiredCookies}
                                     parse={parseCookie}
@@ -632,8 +641,8 @@ export default function AddDomain({ embedded }) {
                                 />
                                 <TagInput
                                     id="ad-partners"
-                                    label="Partner domains"
-                                    hint="Other domains you own that should share the visitor's consent."
+                                    label={t("Partner domains")}
+                                    hint={t("Other domains you own that should share the visitor's consent.")}
                                     values={partnerDomains}
                                     onChange={setPartnerDomains}
                                     parse={parseDomain}
@@ -646,15 +655,15 @@ export default function AddDomain({ embedded }) {
 
                 <aside className="ad-aside">
                     <section className="ad-card ad-card--sticky">
-                        <h2 className="ad-card__title">Preview</h2>
+                        <h2 className="ad-card__title">{t("Preview")}</h2>
                         <BannerPreview design={design} color={color} side={side} logo={logo} company={company} domain={domains[0]} />
                         <dl className="ad-summary">
-                            <div><dt>Design</dt><dd>{currentDesign.name}</dd></div>
-                            <div><dt>Domains</dt><dd>{domains.length || "None yet"}</dd></div>
-                            {organisation?.name ? <div><dt>Organisation</dt><dd>{organisation.name}</dd></div> : null}
+                            <div><dt>{t("Design")}</dt><dd>{currentDesign.name}</dd></div>
+                            <div><dt>{t("Domains")}</dt><dd>{domains.length || t("None yet")}</dd></div>
+                            {organisation?.name ? <div><dt>{t("Organisation")}</dt><dd>{organisation.name}</dd></div> : null}
                         </dl>
                         {status === "error" ? (
-                            <p className="ad-error ad-error--box" role="alert">We couldn't save your domains. Please try again in a moment.</p>
+                            <p className="ad-error ad-error--box" role="alert">{t("We couldn't save your domains. Please try again in a moment.")}</p>
                         ) : null}
                         <button
                             type="submit"
@@ -664,11 +673,11 @@ export default function AddDomain({ embedded }) {
                         >
                             {status === "saving" ? <span className="ad-spinner" aria-hidden="true" /> : null}
                             {status === "saving"
-                                ? "Saving…"
-                                : domains.length > 1 ? `Add ${domains.length} domains` : "Add domain"}
+                                ? t("Saving…")
+                                : domains.length > 1 ? t("Add {count} domains", { count: domains.length }) : t("Add domain")}
                         </button>
                         <p className="ad-hint ad-hint--center">
-                            <a href={DOCS_URL} target="_blank" rel="noopener noreferrer">Read the documentation</a>
+                            <a href={DOCS_URL} target="_blank" rel="noopener noreferrer">{t("Read the documentation")}</a>
                         </p>
                     </section>
                 </aside>

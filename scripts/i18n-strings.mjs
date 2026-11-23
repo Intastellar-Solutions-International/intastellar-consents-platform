@@ -25,7 +25,7 @@ export function platformStrings() {
         if (file.includes(`${path.sep}i18n${path.sep}`) || file.includes(`${path.sep}Login${path.sep}`)) continue;
         const src = fs.readFileSync(file, "utf8");
         const uses = /from "[./]*i18n\/index\.js"/.test(src);
-        if (uses) for (const m of src.matchAll(/\bt\("((?:[^"\\]|\\.)+)"/g)) found.add(unescape(m[1]));
+        if (uses) for (const m of src.matchAll(/\btx?\("((?:[^"\\]|\\.)+)"/g)) found.add(unescape(m[1]));
         // Shown through t() where they're rendered.
         if (file.endsWith(path.join("SideNavLinks", "index.js"))) {
             for (const m of src.matchAll(/\b(?:name|label): "([^"]+)"/g)) found.add(m[1]);

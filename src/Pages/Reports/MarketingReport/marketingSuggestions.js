@@ -1,4 +1,7 @@
-import { appLocale } from "../../../Functions/format.js";
+import { appLocale, formatNumber } from "../../../Functions/format.js";
+import { t } from "../../../i18n/index.js";
+
+const pct = (n, digits = 0) => formatNumber(n, { maximumFractionDigits: digits, minimumFractionDigits: digits });
 /*
  * --- Invisible-traffic suggestions registry ----------------------------
  *
@@ -82,10 +85,10 @@ export function buildInvisibleTrafficSuggestions(input) {
             out.push({
                 id: `blind-spot-channel:${top.row.channel}`,
                 severity: "high",
-                title: `${top.row.channel} is your biggest analytics blind spot`,
-                body: `${top.invisible.toLocaleString(appLocale())} of ${top.consents.toLocaleString(appLocale())} ${top.row.channel} consents (${top.invisiblePct.toFixed(0)}%) never reach analytics. A banner variant scoped to ${top.row.channel} visitors usually recovers 10–25 percentage points.`,
+                title: t("{channel} is your biggest analytics blind spot", { channel: top.row.channel }),
+                body: t("{invisible} of {total} {channel} consent decisions ({pct}%) never reach analytics. A banner variant for {channel} visitors usually recovers 10–25 percentage points.", { invisible: top.invisible.toLocaleString(appLocale()), total: top.consents.toLocaleString(appLocale()), channel: top.row.channel, pct: pct(top.invisiblePct) }),
                 action: {
-                    label: `Test a banner for ${top.row.channel} visitors`,
+                    label: t("Test a banner for {channel} visitors", { channel: top.row.channel }),
                     href: `/experiments?new=1&scope=${encodeURIComponent(`channel:${top.row.channel}`)}`,
                 },
                 evidence: {
@@ -116,12 +119,9 @@ export function buildInvisibleTrafficSuggestions(input) {
             out.push({
                 id: "invisible-trend-spike",
                 severity: "high",
-                title: `Invisible traffic rose ${delta.toFixed(1)} pts vs prior period`,
-                body: `Currently ${current.toFixed(1)}% — last window was ${baseline.toFixed(1)}%. Snapshot now to track recovery, then check whether a recent banner change or a new low-consent campaign caused the jump.`,
-                action: {
-                    label: "Snapshot now to track recovery",
-                    href: "#marketing-reconciliation-panel",
-                },
+                title: t("Unmeasurable traffic rose {pts} pts vs the previous period", { pts: pct(delta, 1) }),
+                body: t("Now {current}% — the previous period was {baseline}%. Check whether a recent banner change or a new low-consent campaign caused the jump.", { current: pct(current, 1), baseline: pct(baseline, 1) }),
+                // No action: the old one pointed at a panel that isn't on this page.
                 evidence: {
                     deltaPts: Number(delta.toFixed(1)),
                     currentPct: Number(current.toFixed(1)),
@@ -149,10 +149,10 @@ export function buildInvisibleTrafficSuggestions(input) {
             out.push({
                 id: "essential-only-dominant",
                 severity: "medium",
-                title: `${essentialOnlyPct.toFixed(0)}% of visitors pick essential-only`,
-                body: `That share is high. Banners that lead with risk language ("we may track you") tend to push users here; banners that explain what gets accepted in plain words tend to recover acceptance. Worth an A/B on the first sentence.`,
+                title: t("{pct}% of visitors choose essential only", { pct: pct(essentialOnlyPct) }),
+                body: t("That share is high. Banners that lead with risk language (\"we may track you\") push visitors here; banners that explain in plain words what is accepted tend to recover acceptance. Worth an A/B test on the first sentence."),
                 action: {
-                    label: "Test a clearer copy variant",
+                    label: t("Test a clearer banner text"),
                     href: "/experiments?new=1&hypothesis=essential-only-copy",
                 },
                 evidence: {

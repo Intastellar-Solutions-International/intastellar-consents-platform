@@ -17,6 +17,7 @@ import { PremiumTier } from "../../Components/tiers/index.js";
 import appStorage from '../../Functions/storage.js';
 import { appLocale } from "../../Functions/format.js";
 import { redirectToLogin } from "../../Functions/session.js";
+import { t } from "../../i18n/index.js";
 
 const { useState, useEffect, useRef, useContext, useMemo } = React;
 
@@ -289,11 +290,11 @@ export default function DomainDashbord(props) {
                             </div>
                             </>
                         ) : (
-                        <p style={{ marginTop: "12px", color: "var(--color-text-muted)" }}>No time-to-decision data for the selected region filter.</p>
+                        <p style={{ marginTop: "12px", color: "var(--color-text-muted)" }}>{t("No time-to-decision data for the selected region filter.")}</p>
                         )}
                         </>
                         ) : (
-                        <p style={{ marginTop: "12px", color: "var(--color-text-muted)" }}>Time-to-decision metrics are not available for this domain or date range.</p>
+                        <p style={{ marginTop: "12px", color: "var(--color-text-muted)" }}>{t("Time-to-decision metrics are not available for this domain or date range.")}</p>
                         )}
                         </> : <>
                             <div className="grid-container grid-5" style={{ gap: "20px", marginBottom: "20px" }}>
@@ -344,7 +345,7 @@ export default function DomainDashbord(props) {
                         }} /* renderCountryPanelExtras={(c) =>
                                         c.device_type ? (
                                             <DeviceTypeInteractions
-                                                title="Device mix in this country"
+                                                title={t("Device mix in this country")}
                                                 activeData={{ device_type: c.device_type, Total: c.num?.total }}
                                                 fromDate={fromDate}
                                                 toDate={toDate}

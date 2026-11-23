@@ -52,7 +52,7 @@ export default function AnalyticsSideNav() {
     const footer = (
         <>
             <button type="button" className="ia-sidebar__footer-btn" onClick={() => window.dispatchEvent(new Event(OPEN_HELP_EVENT))}>
-                <Icon name="help-circle" size={16} /> Help
+                <Icon name="help-circle" size={16} /> {t("Help")}
             </button>
             {newShell && (
                 <button type="button" className="ia-sidebar__footer-btn" title={t("Switch back to the previous layout")}

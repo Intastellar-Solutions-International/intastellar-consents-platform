@@ -3,6 +3,7 @@ import { Button, Card } from "../../Components/ui";
 import { onboardingSteps } from "../../Functions/onboardingSteps.js";
 import { useOnboardingFacts } from "../../Functions/onboardingFacts.js";
 import { canAccess } from "../../Functions/tier.js";
+import { t } from "../../i18n/index.js";
 
 const useHistory = window.ReactRouterDOM.useHistory;
 
@@ -29,14 +30,14 @@ function SetupProgress({ platform, to }) {
             <div className="tw-flex tw-flex-wrap tw-items-center tw-gap-4">
                 <div className="tw-flex-1 tw-min-w-0" style={{ flexBasis: 260 }}>
                     <p className="tw-m-0 tw-text-sm tw-font-semibold tw-text-text-primary tw-tabular-nums">
-                        Setup: {plan.completed} of {plan.total} steps complete
+                        {t("Setup: {done} of {total} steps complete", { done: plan.completed, total: plan.total })}
                     </p>
-                    {next && <p className="tw-m-0 tw-text-sm tw-text-text-secondary">Next: {next.title}</p>}
+                    {next && <p className="tw-m-0 tw-text-sm tw-text-text-secondary">{t("Next: {step}", { step: t(next.title) })}</p>}
                     <div className="tw-mt-2 tw-bg-white/10 tw-rounded-full" style={{ height: 6 }} aria-hidden="true">
                         <div className="tw-h-full tw-bg-data tw-rounded-full" style={{ width: `${(plan.completed / plan.total) * 100}%` }} />
                     </div>
                 </div>
-                <Button variant="primary" size="sm" onClick={() => history.push(to)}>Continue setup</Button>
+                <Button variant="primary" size="sm" onClick={() => history.push(to)}>{t("Continue setup")}</Button>
             </div>
         </Card>
     );
