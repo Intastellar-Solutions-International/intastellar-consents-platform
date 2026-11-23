@@ -1,7 +1,8 @@
 // What a data screen shows before it has a domain to show: loading the
 // domain list, the list failed, or the organisation has no domains yet.
 import { useSession } from "../lib/session.js";
-import { Loading, Message } from "./ui.js";
+import { Message } from "./ui.js";
+import { SkeletonKpis } from "./Skeleton.js";
 import { useOpenWeb } from "../lib/web.js";
 import { t } from "../lib/i18n.js";
 
@@ -11,7 +12,7 @@ export default function DomainGate({ children }) {
     if (organisationId == null) {
         return <Message title={t("Create your organisation")} body={t("Your domains, banner settings, analytics and billing all belong to an organisation. Name yours to get started — you can invite your team afterwards.")} action={t("Open on the web")} onAction={() => openWeb("/")} />;
     }
-    if ((domainsState === "loading" || domainsState === "idle") && !domains.length) return <Loading />;
+    if ((domainsState === "loading" || domainsState === "idle") && !domains.length) return <SkeletonKpis />;
     if (domainsState === "error") {
         return <Message tone="error" title={t("Domains couldn't be loaded")} action={t("Try again")} onAction={reloadDomains} />;
     }

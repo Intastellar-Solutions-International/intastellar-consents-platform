@@ -81,8 +81,23 @@ export async function fetchAnalyticsDomains(session) {
 export const fetchAlerts = (session) =>
     getJson(`${SCANNER_HOST}/api/mobile-push`, session).then((body) => body?.alerts || []);
 
-export const fetchReport = (session, domain, from, to) =>
-    getJson(`${SCANNER_HOST}/api/analytics-report?${qs({ domain, from, to })}`, session);
+// Reports are reused for a minute: Home and a metric's detail screen ask for
+// the same period, and switching back shouldn't reload everything.
+const REPORT_TTL_MS = 60 * 1000;
+const reportCache = new Map();
+export function fetchReport(session, domain, from, to, { fresh = false } = {}) {
+    const key = `${session.organisationId}|${domain}|${from}|${to}`;
+    const hit = reportCache.get(key);
+    if (!fresh && hit && Date.now() - hit.at < REPORT_TTL_MS) return hit.promise;
+    const promise = getJson(`${SCANNER_HOST}/api/analytics-report?${qs({ domain, from, to })}`, session);
+    reportCache.set(key, { at: Date.now(), promise });
+    promise.catch(() => reportCache.delete(key));
+    return promise;
+}
+
+/** Campaign rows (consent decisions per UTM source/medium/campaign) for one domain. */
+export const fetchCampaignConsent = (session, domain, from, to) =>
+    getJson(`${PRIMARY_HOST}/analytics/gdpr/marketingAttribution`, session, { Domains: domain, FromDate: from, ToDate: to });
 
 /** A one-time code that opens the web dashboard signed in (api/app-handoff.js). */
 export async function createHandoff(session, user) {

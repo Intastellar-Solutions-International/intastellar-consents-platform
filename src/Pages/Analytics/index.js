@@ -335,8 +335,13 @@ const BT_LABELS = {
 // view) — the canonical conversions count unified in
 // docs/analytics-audit-plan.md item 5, now also surfaced here as an
 // optional Overview KPI card (Phase 2).
+/** Headline conversions: tier "lead" or "sale" only — not auto-collected events
+ * (scroll depth, outbound clicks…, tier "micro") or registered CTA clicks
+ * ("intent"). Same rule as ConversionsOverview and the conversion rate. */
 export function totalConversions(conversions) {
-    return (conversions || []).reduce((s, c) => s + (c.count || 0), 0);
+    return (conversions || [])
+        .filter((c) => c?.tier === "lead" || c?.tier === "sale")
+        .reduce((s, c) => s + (c.count || 0), 0);
 }
 
 function fmtRevenue(amount, currency = "EUR") {

@@ -4,6 +4,7 @@ import * as Notifications from "expo-notifications";
 import { StatusBar } from "expo-status-bar";
 import * as SplashScreen from "expo-splash-screen";
 import { SessionProvider, useSession } from "../lib/session.js";
+import LockGate from "../components/LockGate.js";
 import { colors } from "../lib/theme.js";
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
@@ -28,16 +29,19 @@ function Navigation() {
     if (status === "loading") return null;
     const signedIn = status === "signedIn";
     return (
+        <LockGate active={signedIn}>
         <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.bgBase } }}>
             <Stack.Protected guard={!signedIn}>
                 <Stack.Screen name="sign-in" />
             </Stack.Protected>
             <Stack.Protected guard={signedIn}>
                 <Stack.Screen name="(tabs)" />
+                <Stack.Screen name="metric/[id]" />
             </Stack.Protected>
             {/* Redirect target for sign-in; reachable in both states. */}
             <Stack.Screen name="auth" />
         </Stack>
+        </LockGate>
     );
 }
 

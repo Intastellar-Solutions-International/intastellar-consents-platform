@@ -1,5 +1,6 @@
 import { Tabs } from "expo-router";
 import Feather from "@expo/vector-icons/Feather";
+import * as Haptics from "expo-haptics";
 import { colors } from "../../lib/theme.js";
 import { t } from "../../lib/i18n.js";
 
@@ -13,6 +14,7 @@ function tabIcon(name) {
 export default function TabLayout() {
     return (
         <Tabs
+            screenListeners={{ tabPress: () => { Haptics.selectionAsync().catch(() => {}); } }}
             screenOptions={{
                 headerShown: false,
                 tabBarActiveTintColor: colors.accentStrong,

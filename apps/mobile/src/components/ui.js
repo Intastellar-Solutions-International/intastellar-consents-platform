@@ -2,18 +2,22 @@
 // gold only for the primary action.
 import { ActivityIndicator, Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import * as Haptics from "expo-haptics";
 import { colors, radius, space, text } from "../lib/theme.js";
 
+/** Large title, an optional bar that sticks below it while scrolling, and content. */
 export function Screen({ title, header, children, refreshing, onRefresh }) {
+    const refresh = onRefresh ? () => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {}); onRefresh(); } : undefined;
     return (
         <SafeAreaView style={styles.safe} edges={["top"]}>
             <ScrollView
                 contentContainerStyle={styles.scroll}
-                refreshControl={onRefresh ? <RefreshControl refreshing={!!refreshing} onRefresh={onRefresh} tintColor={colors.textMuted} /> : undefined}
+                stickyHeaderIndices={header ? [1] : undefined}
+                refreshControl={refresh ? <RefreshControl refreshing={!!refreshing} onRefresh={refresh} tintColor={colors.textMuted} /> : undefined}
             >
-                {title ? <Text style={styles.title} accessibilityRole="header">{title}</Text> : null}
-                {header}
-                {children}
+                <Text style={styles.title} accessibilityRole="header">{title || ""}</Text>
+                {header ? <View>{header}</View> : null}
+                <View style={styles.content}>{children}</View>
             </ScrollView>
         </SafeAreaView>
     );
@@ -66,8 +70,9 @@ export function SourceLine({ parts }) {
 
 export const styles = StyleSheet.create({
     safe: { flex: 1, backgroundColor: colors.bgBase },
-    scroll: { padding: space[4], gap: space[4], paddingBottom: space[8] },
-    title: { color: colors.textPrimary, fontSize: text.xxl, fontWeight: "400" },
+    scroll: { paddingHorizontal: space[4], paddingBottom: space[8] },
+    title: { color: colors.textPrimary, fontSize: 32, fontWeight: "700", letterSpacing: -0.5, paddingTop: space[2], paddingBottom: space[1] },
+    content: { gap: space[4], paddingTop: space[2] },
     card: { backgroundColor: colors.bgRaised, borderRadius: radius.lg, borderWidth: 1, borderColor: colors.borderSubtle, padding: space[4], gap: space[3] },
     cardTitle: { color: colors.textPrimary, fontSize: text.base, fontWeight: "600" },
     button: { minHeight: 44, borderRadius: radius.md, paddingHorizontal: space[4], alignItems: "center", justifyContent: "center" },

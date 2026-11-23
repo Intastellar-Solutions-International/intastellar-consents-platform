@@ -44,6 +44,12 @@
           "icon": "./assets/android-icon-monochrome.png",
           "color": "#c09f53"
         }
+      ],
+      [
+        "expo-local-authentication",
+        {
+          "faceIDPermission": "Intastellar Analytics uses Face ID to unlock the app when the app lock is on."
+        }
       ]
     ],
     "scheme": "intastellaranalytics",

@@ -9,7 +9,8 @@ import { useOpenWeb } from "../../lib/web.js";
 import { formatNumber, formatWhen } from "../../lib/format.js";
 import { colors, radius, space, text } from "../../lib/theme.js";
 import { t } from "../../lib/i18n.js";
-import { Button, Card, Loading, Message, Screen } from "../../components/ui.js";
+import { Button, Card, Message, Screen } from "../../components/ui.js";
+import { SkeletonCard } from "../../components/Skeleton.js";
 
 const METRIC_NAMES = {
     traffic_drop: "Traffic drop",
@@ -90,7 +91,7 @@ export default function Alerts() {
                 {push.state === "denied" ? <Button label={t("Open settings")} variant="secondary" onPress={() => Linking.openSettings()} /> : null}
             </Card>
 
-            {alerts.loading && !alerts.data ? <Loading /> : alerts.error ? (
+            {alerts.loading && !alerts.data ? <SkeletonCard lines={4} /> : alerts.error ? (
                 <Message tone="error" title={t("This section failed to load")} action={t("Try again")} onAction={alerts.retry} />
             ) : !alerts.data?.length ? (
                 <Message title={t("No alerts in the last 30 days")} body={t("Alert rules are set on the web dashboard.")}

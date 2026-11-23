@@ -7,10 +7,12 @@ import { formatMoney, formatNumber, formatPercent, formatRelative, periodRange }
 import { useOpenWeb } from "../../lib/web.js";
 import { colors, space, text } from "../../lib/theme.js";
 import { t } from "../../lib/i18n.js";
-import { Card, Loading, Message, Screen, SourceLine } from "../../components/ui.js";
+import { Card, Message, Screen, SourceLine } from "../../components/ui.js";
 import KpiTile, { KpiGrid, delta } from "../../components/KpiTile.js";
 import ScopeBar from "../../components/ScopeBar.js";
 import DomainGate from "../../components/DomainGate.js";
+import CampaignConsentCard from "../../components/CampaignConsentCard.js";
+import { SkeletonCard, SkeletonKpis } from "../../components/Skeleton.js";
 
 const CURRENCY = "EUR";
 const PLATFORM_LABELS = { google_ads: "Google Ads", meta_ads: "Meta Ads", linkedin_ads: "LinkedIn Ads", microsoft_ads: "Microsoft Ads" };
@@ -43,7 +45,7 @@ export default function AdSpend() {
     return (
         <Screen title={t("Ad Spend")} header={<ScopeBar />} refreshing={report.refreshing} onRefresh={domain ? report.refresh : undefined}>
             <DomainGate>
-                {report.loading && !report.data ? <Loading /> : report.error ? (
+                {report.loading && !report.data ? <><SkeletonKpis /><SkeletonCard lines={3} /></> : report.error ? (
                     <Message tone="error" title={t("Could not load ad spend data.")} action={t("Try again")} onAction={report.retry} />
                 ) : cur?.noConnections ? (
                     <Message title={t("No ad platforms connected for {domain}", { domain })}
@@ -69,6 +71,7 @@ export default function AdSpend() {
                                 </View>
                             )) : <Text style={styles.muted}>{t("No data for this period")}</Text>}
                         </Card>
+                        <CampaignConsentCard />
                         <SourceLine parts={[
                             t("Amounts in {currency}, converted with ECB rates", { currency: CURRENCY }),
                             report.fetchedAt ? t("Updated {time}", { time: formatRelative(report.fetchedAt) }) : null,

@@ -38,15 +38,26 @@ const totalConversions = vm.runInContext(`(${fnSrc})`, vm.createContext({}));
 
 test("totalConversions sums per-event counts across the conversions list", () => {
     const conversions = [
-        { name: "purchase", count: 12 },
-        { name: "lead", count: 5 },
-        { name: "form_submit", count: 3 },
+        { name: "purchase", tier: "sale", count: 12 },
+        { name: "lead", tier: "lead", count: 5 },
+        { name: "form_submit", tier: "lead", count: 3 },
     ];
     assert.strictEqual(totalConversions(conversions), 20);
 });
 
+test("totalConversions counts only real conversions (lead/sale), not auto-collected or click events", () => {
+    const conversions = [
+        { name: "purchase", tier: "sale", count: 4 },
+        { name: "scroll_depth", tier: "micro", count: 900 },
+        { name: "outbound_click", tier: "micro", count: 120 },
+        { name: "clicked_cta", tier: "intent", count: 30 },
+        { name: "untiered", count: 7 },
+    ];
+    assert.strictEqual(totalConversions(conversions), 4);
+});
+
 test("totalConversions treats a missing count as zero rather than producing NaN", () => {
-    assert.strictEqual(totalConversions([{ name: "purchase" }]), 0);
+    assert.strictEqual(totalConversions([{ name: "purchase", tier: "sale" }]), 0);
 });
 
 test("totalConversions returns 0 for an empty or missing conversions list", () => {
@@ -59,6 +70,6 @@ test("totalConversions is not deduped by session — it sums raw event counts, s
     // A session that fires the same conversion event twice should count
     // twice here, same as data.totals.convertedSessions is a *different*,
     // session-deduped number used for conversionRate instead.
-    const conversions = [{ name: "clicked_book_demo", count: 2 }];
+    const conversions = [{ name: "book_demo", tier: "lead", count: 2 }];
     assert.strictEqual(totalConversions(conversions), 2);
 });

@@ -13,10 +13,10 @@ export function useRequest(load, key, { enabled = true, intervalMs } = {}) {
     useEffect(() => { loadRef.current = load; });
     const run = useRef(0);
 
-    const fetchFor = useCallback(async (forKey) => {
+    const fetchFor = useCallback(async (forKey, { fresh = false } = {}) => {
         const id = ++run.current;
         try {
-            const data = await loadRef.current();
+            const data = await loadRef.current({ fresh });
             if (id === run.current) setState({ key: forKey, data, error: null, fetchedAt: Date.now() });
         } catch (error) {
             if (id !== run.current || error instanceof SessionExpiredError) return;
@@ -41,7 +41,7 @@ export function useRequest(load, key, { enabled = true, intervalMs } = {}) {
         loading: enabled && !current,
         refreshing,
         fetchedAt: current ? state.fetchedAt : null,
-        refresh: () => { setRefreshing(true); fetchFor(key); },
+        refresh: () => { setRefreshing(true); fetchFor(key, { fresh: true }); },
         retry: () => { setState((s) => ({ ...s, key: null })); fetchFor(key); },
     };
 }
