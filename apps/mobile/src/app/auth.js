@@ -12,13 +12,14 @@ import { colors, space, text } from "../lib/theme.js";
 import { t } from "../lib/i18n.js";
 
 export default function AuthRedirect() {
-    const { token } = useLocalSearchParams();
+    const { token, refresh_token: refreshParam } = useLocalSearchParams();
     const { status, signInError, signIn, signInWithToken } = useSession();
     const value = Array.isArray(token) ? token[0] : token;
+    const refreshToken = (Array.isArray(refreshParam) ? refreshParam[0] : refreshParam) || undefined;
 
     useEffect(() => {
-        if (value && status === "signedOut") signInWithToken(value);
-    }, [value, status, signInWithToken]);
+        if (value && status === "signedOut") signInWithToken(value, refreshToken);
+    }, [value, refreshToken, status, signInWithToken]);
 
     if (status === "signedIn") return <Redirect href="/" />;
     if (!value) return <Redirect href="/sign-in" />;

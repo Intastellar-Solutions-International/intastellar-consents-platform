@@ -15,3 +15,6 @@ export const WEB_APP = "https://www.intastellarconsents.com";
 export const LOGIN_URI = Linking.createURL("auth");
 export const CLIENT_ID = "d2eefd7f1564fa4c9714000456183a6b0f51e8c9519e1089ec41ce905ffc0c453dfac91ae8645c41ebae9c59e7a6e5233b1339e41a15723a9ba6d934bbb3e92d";
 export const APP_NAME = "Intastellar Analytics";
+
+// Intastellar Accounts' refresh endpoint (token.php next to Checkcookies.php).
+export const TOKEN_URL = "https://www.intastellaraccounts.com/signin/v2/ws/oauth/token.php";

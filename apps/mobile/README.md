@@ -5,7 +5,7 @@ Everything else opens the web dashboard in an in-app browser.
 
 ## Run it
 
-Expo needs Node 18+ (the web build uses the repo's Node 16 — use nvm):
+Expo SDK 58 needs **Node 22.13+** (the web build uses the repo's Node 16). `apps/mobile/.nvmrc` pins it — run `nvm use` in this folder first:
 
 ```bash
 cd apps/mobile

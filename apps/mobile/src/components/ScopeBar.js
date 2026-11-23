@@ -8,6 +8,7 @@ import * as Haptics from "expo-haptics";
 import Feather from "@expo/vector-icons/Feather";
 import { useSession } from "../lib/session.js";
 import { colors, radius, space, text } from "../lib/theme.js";
+import Glass, { useLiquidGlass } from "./Glass.js";
 import { t } from "../lib/i18n.js";
 
 const PERIODS = [7, 30, 90];
@@ -31,17 +32,21 @@ export default function ScopeBar({ showPeriod = true }) {
         return q ? domains.filter((d) => d.includes(q)) : domains;
     }, [domains, query]);
     const pick = (fn) => { Haptics.selectionAsync().catch(() => {}); fn(); };
+    // With glass, content scrolls visibly under the floating capsules.
+    const glass = useLiquidGlass();
 
     return (
-        <View style={styles.bar}>
-            <Pressable accessibilityRole="button" accessibilityLabel={t("Choose domain")} accessibilityHint={domain || undefined}
-                style={({ pressed }) => [styles.domain, pressed && styles.pressed]} onPress={() => setOpen(true)} disabled={!domains.length}>
-                <DomainTile domain={domain} />
-                <Text style={styles.domainText} numberOfLines={1}>{domain || t("No domain")}</Text>
-                <Feather name="chevron-down" size={16} color={colors.textMuted} />
-            </Pressable>
+        <View style={[styles.bar, glass && styles.barGlass]}>
+            <Glass interactive style={styles.domainShape}>
+                <Pressable accessibilityRole="button" accessibilityLabel={t("Choose domain")} accessibilityHint={domain || undefined}
+                    style={({ pressed }) => [styles.domain, pressed && styles.pressed]} onPress={() => setOpen(true)} disabled={!domains.length}>
+                    <DomainTile domain={domain} />
+                    <Text style={styles.domainText} numberOfLines={1}>{domain || t("No domain")}</Text>
+                    <Feather name="chevron-down" size={16} color={colors.textMuted} />
+                </Pressable>
+            </Glass>
             {showPeriod && (
-                <View style={styles.chips} accessibilityRole="tablist">
+                <Glass interactive style={styles.chips} accessibilityRole="tablist">
                     {PERIODS.map((d) => {
                         const active = d === days;
                         return (
@@ -51,7 +56,7 @@ export default function ScopeBar({ showPeriod = true }) {
                             </Pressable>
                         );
                     })}
-                </View>
+                </Glass>
             )}
 
             <Modal visible={open} animationType="slide" presentationStyle="pageSheet" onRequestClose={() => setOpen(false)}>
@@ -95,12 +100,14 @@ export default function ScopeBar({ showPeriod = true }) {
 
 const styles = StyleSheet.create({
     bar: { flexDirection: "row", alignItems: "center", gap: space[2], paddingVertical: space[2], backgroundColor: colors.bgBase },
+    barGlass: { backgroundColor: "transparent" },
     pressed: { opacity: 0.7 },
-    domain: { flex: 1, flexDirection: "row", alignItems: "center", gap: space[2], height: 40, paddingLeft: 7, paddingRight: space[3], borderRadius: 20, backgroundColor: colors.bgRaised, borderWidth: 1, borderColor: colors.borderSubtle },
+    domainShape: { flex: 1, borderRadius: 20 },
+    domain: { flexDirection: "row", alignItems: "center", gap: space[2], height: 40, paddingLeft: 7, paddingRight: space[3] },
     domainText: { flex: 1, color: colors.textPrimary, fontSize: text.sm, fontWeight: "500" },
     tile: { alignItems: "center", justifyContent: "center", backgroundColor: "rgba(192,159,83,0.18)" },
     tileText: { color: colors.accentStrong, fontWeight: "700" },
-    chips: { flexDirection: "row", gap: 4, padding: 3, borderRadius: 20, backgroundColor: colors.bgRaised, borderWidth: 1, borderColor: colors.borderSubtle },
+    chips: { flexDirection: "row", gap: 4, padding: 3, borderRadius: 20 },
     chip: { height: 32, paddingHorizontal: space[3], borderRadius: 16, justifyContent: "center" },
     chipActive: { backgroundColor: colors.accent },
     chipText: { color: colors.textSecondary, fontSize: text.xs, fontWeight: "600" },

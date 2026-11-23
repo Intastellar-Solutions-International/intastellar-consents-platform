@@ -43,7 +43,9 @@ function Glow() {
 }
 
 export default function SignIn() {
-    const { signIn, signingIn, signInError } = useSession();
+    const { signIn, signingIn, signInError, returningUser, forgetAccount } = useSession();
+    const first = returningUser?.name?.first || "";
+    const initials = [returningUser?.name?.first, returningUser?.name?.last].filter(Boolean).map((n) => n[0]).join("").toUpperCase() || (returningUser?.email || "?")[0].toUpperCase();
     const [browserOpen, setBrowserOpen] = useState(false);
     const busy = browserOpen || signingIn;
 
@@ -66,11 +68,23 @@ export default function SignIn() {
                     </Rise>
                     <Rise delay={90} style={styles.heading}>
                         <Text style={styles.title} accessibilityRole="header">Intastellar Analytics</Text>
-                        <Text style={styles.lede}>{L.ledeNew}</Text>
+                        <Text style={styles.lede}>{returningUser ? `${L.welcomeBack}${first ? `, ${first}` : ""}` : L.ledeNew}</Text>
                     </Rise>
                 </View>
 
-                <View style={styles.points} accessibilityLabel={L.pointsLabel_analytics}>
+                {returningUser ? (
+                    <Rise delay={200} style={styles.account}>
+                        {returningUser.image
+                            ? <Image source={{ uri: returningUser.image }} style={styles.avatar} accessibilityIgnoresInvertColors />
+                            : <View style={[styles.avatar, styles.avatarFallback]}><Text style={styles.avatarText}>{initials}</Text></View>}
+                        <View style={{ flex: 1 }}>
+                            <Text style={styles.accountName} numberOfLines={1}>{[returningUser.name?.first, returningUser.name?.last].filter(Boolean).join(" ") || returningUser.email}</Text>
+                            <Text style={styles.accountEmail} numberOfLines={1}>{returningUser.email}</Text>
+                        </View>
+                    </Rise>
+                ) : null}
+
+                <View style={[styles.points, returningUser && { display: "none" }]} accessibilityLabel={L.pointsLabel_analytics}>
                     {(L.points_analytics || []).map((point, i) => (
                         <Rise key={point.title} delay={200 + i * 80} style={styles.point}>
                             <View style={styles.pointIcon}><Feather name={POINT_ICONS[i] || "check"} size={18} color={colors.accentStrong} /></View>
@@ -97,11 +111,16 @@ export default function SignIn() {
                                 <Text style={styles.buttonLabel}>{L.signingIn}</Text>
                             </View>
                         ) : (
-                            <Text style={styles.buttonLabel}>{L.signInWith}</Text>
+                            <Text style={styles.buttonLabel}>{returningUser ? L.continue : L.signInWith}</Text>
                         )}
                     </Pressable>
                     <Text style={styles.hint}>{t("Your password stays with Intastellar Accounts; the app only receives your basic profile.")}</Text>
-                    <Text style={styles.signup}>
+                    {returningUser ? (
+                        <Text style={styles.signup}>
+                            <Text style={styles.link} accessibilityRole="button" onPress={forgetAccount}>{L.useAnother}</Text>
+                        </Text>
+                    ) : null}
+                    <Text style={[styles.signup, returningUser && { display: "none" }]}>
                         {L.newHere_analytics}{" "}
                         <Text style={styles.link} accessibilityRole="link" onPress={() => openWeb("https://intastellar.eu/#get-started")}>{L.createAccount}</Text>
                     </Text>
@@ -131,6 +150,12 @@ const styles = StyleSheet.create({
     pointTitle: { color: colors.textPrimary, fontSize: text.sm, fontWeight: "600" },
     pointBody: { color: colors.textMuted, fontSize: text.xs, lineHeight: 17 },
     actions: { gap: space[3], paddingTop: space[2], paddingBottom: space[4] },
+    account: { flexDirection: "row", alignItems: "center", gap: space[3], padding: space[4], borderRadius: radius.lg, backgroundColor: "rgba(63,63,63,0.72)", borderWidth: 1, borderColor: colors.borderSubtle, marginBottom: space[4] },
+    avatar: { width: 48, height: 48, borderRadius: 24 },
+    avatarFallback: { alignItems: "center", justifyContent: "center", backgroundColor: "rgba(192,159,83,0.2)" },
+    avatarText: { color: colors.accentStrong, fontSize: text.lg, fontWeight: "700" },
+    accountName: { color: colors.textPrimary, fontSize: text.base, fontWeight: "600" },
+    accountEmail: { color: colors.textMuted, fontSize: text.sm },
     error: { color: colors.dangerText, fontSize: text.sm, textAlign: "center" },
     button: { height: 54, borderRadius: 14, backgroundColor: colors.accent, alignItems: "center", justifyContent: "center", shadowColor: colors.accent, shadowOpacity: 0.35, shadowRadius: 16, shadowOffset: { width: 0, height: 6 }, elevation: 4 },
     buttonPressed: { transform: [{ scale: 0.98 }], backgroundColor: colors.accentStrong },

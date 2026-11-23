@@ -1,28 +1,49 @@
 // Requests to the same endpoints the web dashboard uses, with the same
-// headers (src/Pages/Analytics/_shared.js → authHeaders). An expired token
-// signs the user out instead of showing empty screens.
+// headers (src/Pages/Analytics/_shared.js → authHeaders). Tokens come from
+// tokenStore.js, refreshed before they expire; a refused expired token is
+// refreshed once and the request retried. Only when that fails does the
+// session end ("Welcome back").
 import { PRIMARY_HOST, SCANNER_HOST } from "./config.js";
+import { tokenExpired } from "./token.js";
+import { freshToken, hasRefreshToken, refreshNow } from "./tokenStore.js";
 
 export class SessionExpiredError extends Error {}
+/** An endpoint refused a token that hasn't expired — that card fails, the session stays. */
+export class NotAuthorisedError extends Error {}
 
 let onExpired = () => {};
 export function setOnSessionExpired(fn) { onExpired = fn; }
 
-function headers(session, extra) {
+function headers(token, session, extra) {
     return {
-        Authorization: `Bearer ${session.token}`,
+        Authorization: `Bearer ${token}`,
         Organisation: String(session.organisationId ?? ""),
+        ...(session.email ? { "X-User-Email": session.email } : {}),
         "Content-Type": "application/json",
         ExcludeBots: "1", // same default as the web: suspected bots excluded
         ...extra,
     };
 }
 
-async function getJson(url, session, extra) {
-    const res = await fetch(url, { headers: headers(session, extra) });
-    if (res.status === 401) { onExpired(); throw new SessionExpiredError(); }
-    const body = await res.json().catch(() => null);
-    if (body === "Err_Login_Expired") { onExpired(); throw new SessionExpiredError(); }
+// "Unauthorised" ends the session only when the token really has expired.
+// Some endpoints (e.g. the PHP API's "Err_Login_Expired") also say so for
+// other refusals; signing out on those dropped people back to the login
+// screen right after signing in.
+function refused(url, token, status) {
+    if (tokenExpired(token)) { onExpired(); return new SessionExpiredError(); }
+    console.warn(`[api] ${url.split("?")[0]} refused a valid sign-in (${status}) — staying signed in`);
+    return new NotAuthorisedError("Not authorised for this data");
+}
+
+async function getJson(url, session, extra, retried = false) {
+    const token = (await freshToken()) || session.token;
+    const res = await fetch(url, { headers: headers(token, session, extra) });
+    const body = res.status === 401 ? null : await res.json().catch(() => null);
+    if (res.status === 401 || body === "Err_Login_Expired") {
+        // Expired despite the early refresh (clock skew, app was asleep): refresh once, retry.
+        if (!retried && hasRefreshToken() && tokenExpired(token) && await refreshNow()) return getJson(url, session, extra, true);
+        throw refused(url, token, res.status === 401 ? 401 : "Err_Login_Expired");
+    }
     if (!res.ok) {
         const error = new Error((body && body.error) || `Request failed (${res.status})`);
         error.status = res.status;
@@ -101,12 +122,13 @@ export const fetchCampaignConsent = (session, domain, from, to) =>
 
 /** A one-time code that opens the web dashboard signed in (api/app-handoff.js). */
 export async function createHandoff(session, user) {
+    const token = (await freshToken()) || session.token;
     const res = await fetch(`${SCANNER_HOST}/api/app-handoff`, {
         method: "POST",
-        headers: headers(session, { "X-User-Email": user?.email || "" }),
+        headers: headers(token, session, { "X-User-Email": user?.email || "" }),
         body: JSON.stringify({ action: "create", user: { name: user?.name, image: user?.image } }),
     });
-    if (res.status === 401) { onExpired(); throw new SessionExpiredError(); }
+    if (res.status === 401) throw refused(`${SCANNER_HOST}/api/app-handoff`, token, 401);
     const body = await res.json().catch(() => null);
     if (!res.ok || !body?.code) throw new Error(body?.error || "Hand-over failed");
     return body.code;

@@ -18,10 +18,13 @@
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
-      "package": "com.intastellar.analytics"
-    },
-    "web": {
-      "favicon": "./assets/favicon.png"
+      "package": "com.intastellar.analytics",
+      "permissions": [
+        "android.permission.USE_BIOMETRIC",
+        "android.permission.USE_FINGERPRINT",
+        "android.permission.USE_BIOMETRIC",
+        "android.permission.USE_FINGERPRINT"
+      ]
     },
     "plugins": [
       "expo-localization",
@@ -61,6 +64,16 @@
       "eas": {
         "projectId": "63e03f01-ca8e-4bd7-ab76-e51ce9b31910"
       }
-    }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/63e03f01-ca8e-4bd7-ab76-e51ce9b31910"
+    },
+    "platforms": [
+      "ios",
+      "android"
+    ]
   }
 }

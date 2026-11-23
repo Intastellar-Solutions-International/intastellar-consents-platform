@@ -11,6 +11,8 @@ export function Screen({ title, header, children, refreshing, onRefresh }) {
     return (
         <SafeAreaView style={styles.safe} edges={["top"]}>
             <ScrollView
+                // Clears the floating (Liquid Glass) tab bar on iOS 26.
+                contentInsetAdjustmentBehavior="automatic"
                 contentContainerStyle={styles.scroll}
                 stickyHeaderIndices={header ? [1] : undefined}
                 refreshControl={refresh ? <RefreshControl refreshing={!!refreshing} onRefresh={refresh} tintColor={colors.textMuted} /> : undefined}

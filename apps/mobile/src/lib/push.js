@@ -8,6 +8,7 @@ import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
 import { AndroidImportance } from "expo-notifications";
 import { SCANNER_HOST } from "./config.js";
+import { freshToken } from "./tokenStore.js";
 import { language } from "./i18n.js";
 import { colors } from "./theme.js";
 
@@ -26,7 +27,7 @@ export class PushUnavailable extends Error {
 async function call(session, body) {
     const res = await fetch(`${SCANNER_HOST}/api/mobile-push`, {
         method: "POST",
-        headers: { Authorization: `Bearer ${session.token}`, Organisation: String(session.organisationId ?? ""), "Content-Type": "application/json" },
+        headers: { Authorization: `Bearer ${(await freshToken()) || session.token}`, Organisation: String(session.organisationId ?? ""), ...(session.email ? { "X-User-Email": session.email } : {}), "Content-Type": "application/json" },
         body: JSON.stringify(body),
     });
     if (!res.ok) throw new Error((await res.json().catch(() => null))?.error || `Request failed (${res.status})`);

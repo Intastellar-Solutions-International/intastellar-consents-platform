@@ -158,6 +158,15 @@ test("dsr access: another organisation, forged or expired tokens are refused", a
     assert.strictEqual((await requireMember({ headers: {} }, { fetchImpl: reply(ORG), secret: SECRET })).status, 401);
 });
 
+test("dsr access: the email in an Intastellar Accounts token (PAYLOAD.email) is enough — no X-User-Email needed", async () => {
+    const accountsToken = token({ ...FUTURE, iss: "Intastellar Account", PAYLOAD: { email: "me@x.dk", user_id: "abc" } });
+    const req = auth(accountsToken);
+    delete req.headers["x-user-email"];
+    assert.deepStrictEqual(await requireMember(req, { fetchImpl: reply(ORG), secret: SECRET }), { organisationId: 7, email: "me@x.dk" });
+    // …and a header that disagrees with it is still refused.
+    assert.strictEqual((await requireMember(auth(accountsToken, "7", "other@x.dk"), { fetchImpl: reply(ORG), secret: SECRET })).status, 401);
+});
+
 test("dsr access: the claimed email can't differ from the token's", async () => {
     assert.strictEqual((await requireMember(auth(token({ ...FUTURE, email: "c@x.dk" }), "7", "me@x.dk"), { fetchImpl: reply(ORG), secret: SECRET })).status, 401);
 });
