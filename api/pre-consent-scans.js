@@ -15,7 +15,7 @@ import { normalizeBannerDomain } from "./_banner-domain.js";
 import { summarizeConsentPhase, scanConsentStep } from "./_consent-phase.js";
 import { summarizeScan } from "./_report-html.js";
 import { NOT_FIRST_VISIT, ensureScanColumns } from "./_scan-schema.js";
-import { validateJwt } from "./_member-auth.js";
+import { validateJwt, withMembership } from "./_member-auth.js";
 
 const MAX_DOMAINS = 5000;
 const MAX_PAGE_SIZE = 100;
@@ -92,7 +92,7 @@ function toListRow(row) {
     };
 }
 
-export default async function handler(req, res) {
+async function handler(req, res) {
     setCors(req, res);
     if (req.method === "OPTIONS") return res.status(204).end();
     if (req.method !== "POST") {
@@ -116,3 +116,5 @@ export default async function handler(req, res) {
         return res.status(500).json({ error: "Internal server error" });
     }
 }
+
+export default withMembership(handler);

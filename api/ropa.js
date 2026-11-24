@@ -1,6 +1,6 @@
 import { getPool } from "./_db.js";
 import { NOT_FIRST_VISIT, ensureScanColumns } from "./_scan-schema.js";
-import { validateJwt } from "./_member-auth.js";
+import { validateJwt, withMembership } from "./_member-auth.js";
 /**
  * GET  /api/ropa              — list entries (org-wide + domain-specific if ?domain= provided)
  * GET  /api/ropa?id=123       — get a single entry
@@ -191,7 +191,7 @@ async function handleAutoPopulate(db, organisationId, body, res) {
     return res.status(201).json({ created: created.length, entries: created });
 }
 
-export default async function handler(req, res) {
+async function handler(req, res) {
     setCors(req, res);
     if (req.method === "OPTIONS") return res.status(204).end();
 
@@ -258,3 +258,5 @@ export default async function handler(req, res) {
         return res.status(500).json({ error: "Internal server error" });
     }
 }
+
+export default withMembership(handler);

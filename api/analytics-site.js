@@ -12,7 +12,7 @@
 import { randomBytes } from "crypto";
 import { isValidIndustry } from "./_industry-benchmarks.js";
 import { getPool } from "./_db.js";
-import { validateJwt } from "./_member-auth.js";
+import { validateJwt, withMembership } from "./_member-auth.js";
 const ALLOWED_ORIGINS = [
     "https://www.intastellarconsents.com",
     "https://www.consentsmanagement.com",
@@ -34,7 +34,7 @@ function generateSiteId() {
     return randomBytes(12).toString("base64url").slice(0, 16);
 }
 
-export default async function handler(req, res) {
+async function handler(req, res) {
     setCors(req, res);
     if (req.method === "OPTIONS") return res.status(204).end();
 
@@ -298,3 +298,5 @@ export default async function handler(req, res) {
 
     return res.status(405).end();
 }
+
+export default withMembership(handler);

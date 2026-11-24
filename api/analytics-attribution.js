@@ -1,6 +1,6 @@
 import { getPool } from "./_db.js";
 import { isHeadlineConversionSql } from "./_conversions.js";
-import { validateJwt } from "./_member-auth.js";
+import { validateJwt, withMembership } from "./_member-auth.js";
 /**
  * GET /api/analytics-attribution?domain=example.com&from=2024-01-01&to=2024-01-31
  *
@@ -57,7 +57,7 @@ function setCors(req, res) {
     res.setHeader("Access-Control-Allow-Headers", "Authorization,Organisation,Content-Type");
 }
 
-export default async function handler(req, res) {
+async function handler(req, res) {
     setCors(req, res);
     if (req.method === "OPTIONS") return res.status(204).end();
     if (req.method !== "GET") return res.status(405).end();
@@ -186,3 +186,5 @@ export default async function handler(req, res) {
         },
     });
 }
+
+export default withMembership(handler);

@@ -28,7 +28,7 @@
 import { tryRefreshToken, fetchPlatformDataDaily, PLATFORM_MAX_DAYS } from "./_ad-platform-fetch.js";
 import { getEcbRates, fx } from "./_fx.js";
 import { getPool } from "./_db.js";
-import { validateJwt } from "./_member-auth.js";
+import { validateJwt, withMembership } from "./_member-auth.js";
 
 const BACKFILL_DAYS = Math.min(
     parseInt(process.env.CRON_AD_SYNC_BACKFILL_DAYS || "30", 10),
@@ -98,7 +98,7 @@ async function recordSync(db, conn, status, { error = null, days = null } = {}) 
     ).catch(e => console.warn("[cron-ad-sync] recordSync failed:", e.message));
 }
 
-export default async function handler(req, res) {
+async function handler(req, res) {
     if (req.method !== "GET" && req.method !== "POST") {
         return res.status(405).json({ error: "Method not allowed" });
     }
@@ -308,3 +308,5 @@ export default async function handler(req, res) {
         results,
     });
 }
+
+export default withMembership(handler);

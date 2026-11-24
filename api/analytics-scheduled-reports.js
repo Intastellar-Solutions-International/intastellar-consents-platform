@@ -1,7 +1,7 @@
 import { getPool } from "./_db.js";
 import { renderScheduledReport, sendReportEmail } from "./_scheduled-report.js";
 import { organisationHasPlan } from "./_stripe.js";
-import { validateJwt } from "./_member-auth.js";
+import { validateJwt, withMembership } from "./_member-auth.js";
 /**
  * GET/POST/PUT/DELETE /api/analytics-scheduled-reports
  *
@@ -88,7 +88,7 @@ function normalizeRecipients(raw) {
     return cleaned;
 }
 
-export default async function handler(req, res) {
+async function handler(req, res) {
     try {
         return await _handler(req, res);
     } catch (err) {
@@ -292,3 +292,5 @@ async function _handler(req, res) {
 
     return res.status(405).end();
 }
+
+export default withMembership(handler);

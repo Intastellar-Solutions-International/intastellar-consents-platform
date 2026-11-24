@@ -1,5 +1,5 @@
 import { getPool } from "./_db.js";
-import { validateJwt } from "./_member-auth.js";
+import { validateJwt, withMembership } from "./_member-auth.js";
 /**
  * GET    /api/ab-tests?domain=<domain>                        → list tests for a domain
  * GET    /api/ab-tests?domain=<domain>&testId=<id>             → single test + its variants (editor payload)
@@ -103,7 +103,7 @@ async function ensureTables(db) {
     await db.query(`CREATE INDEX IF NOT EXISTS idx_ab_variants_test ON ab_test_variants (test_id)`).catch(() => {});
 }
 
-export default async function handler(req, res) {
+async function handler(req, res) {
     setCors(req, res);
     if (req.method === "OPTIONS") return res.status(204).end();
 
@@ -398,3 +398,5 @@ export default async function handler(req, res) {
 
     return res.status(405).end();
 }
+
+export default withMembership(handler);

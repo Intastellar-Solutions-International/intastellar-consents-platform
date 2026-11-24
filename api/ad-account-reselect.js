@@ -11,7 +11,7 @@
 
 import { fetchMicrosoftAdsAccounts } from "./_ad-platform-fetch.js";
 import { getPool } from "./_db.js";
-import { validateJwt } from "./_member-auth.js";
+import { validateJwt, withMembership } from "./_member-auth.js";
 const ALLOWED_ORIGINS = [
     "https://www.intastellarconsents.com",
     "https://www.consentsmanagement.com",
@@ -167,7 +167,7 @@ async function fetchAllAccounts(platform, accessToken) {
     }
 }
 
-export default async function handler(req, res) {
+async function handler(req, res) {
     setCors(req, res);
     if (req.method === "OPTIONS") return res.status(204).end();
 
@@ -289,3 +289,5 @@ export default async function handler(req, res) {
 
     return res.status(200).json({ pendingId: pending[0].id, accounts });
 }
+
+export default withMembership(handler);

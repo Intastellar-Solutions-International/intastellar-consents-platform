@@ -1,5 +1,5 @@
 import { getPool } from "./_db.js";
-import { validateJwt } from "./_member-auth.js";
+import { validateJwt, withMembership } from "./_member-auth.js";
 /**
  * GET /api/analytics-heatmap?domain=<domain>&from=<YYYY-MM-DD>&to=<YYYY-MM-DD>[&pathname=<path>&host=<host>&device=all|desktop|tablet|mobile&grid=5]
  *
@@ -75,7 +75,7 @@ function sameHostClause(hostCol, domainParam) {
 // table, just a different set of prefixes relevant to this list.
 const INTERNAL_PATH_EXCLUDE = `pathname !~* '^/(admin|wp-admin)(/|$)'`;
 
-export default async function handler(req, res) {
+async function handler(req, res) {
     setCors(req, res);
     if (req.method === "OPTIONS") return res.status(204).end();
     if (req.method !== "GET") return res.status(405).end();
@@ -278,3 +278,5 @@ export default async function handler(req, res) {
         attentionSessions: Number(attentionSessionsRes.rows[0]?.sessions || 0),
     });
 }
+
+export default withMembership(handler);

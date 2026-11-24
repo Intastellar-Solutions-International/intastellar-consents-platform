@@ -12,7 +12,7 @@
 
 import { tryRefreshToken as _tryRefreshToken, fetchPlatformData, PLATFORM_MAX_DAYS } from "./_ad-platform-fetch.js";
 import { getPool } from "./_db.js";
-import { validateJwt } from "./_member-auth.js";
+import { validateJwt, withMembership } from "./_member-auth.js";
 const ALLOWED_ORIGINS = [
     "https://www.intastellarconsents.com",
     "https://www.consentsmanagement.com",
@@ -104,7 +104,7 @@ async function fromCache(db, orgId, domain, platform, fromDate, toDate) {
     } catch { return null; }
 }
 
-export default async function handler(req, res) {
+async function handler(req, res) {
     setCors(req, res);
     if (req.method === "OPTIONS") return res.status(204).end();
     if (req.method !== "GET") return res.status(405).json({ error: "Method not allowed" });
@@ -163,3 +163,5 @@ export default async function handler(req, res) {
         return res.status(502).json({ error: err.message });
     }
 }
+
+export default withMembership(handler);

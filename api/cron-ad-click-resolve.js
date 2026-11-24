@@ -53,7 +53,7 @@
 
 import { tryRefreshToken, fetchGoogleAdsClicksByGclid } from "./_ad-platform-fetch.js";
 import { getPool } from "./_db.js";
-import { validateJwt } from "./_member-auth.js";
+import { validateJwt, withMembership } from "./_member-auth.js";
 
 const LOOKBACK_DAYS = Math.min(parseInt(process.env.CRON_AD_CLICK_RESOLVE_LOOKBACK_DAYS || "3", 10), 90);
 const BATCH_SIZE     = Math.min(parseInt(process.env.CRON_AD_CLICK_RESOLVE_BATCH_SIZE    || "50", 10), 200);
@@ -84,7 +84,7 @@ function isoDate(d) {
     return d.toISOString().slice(0, 10);
 }
 
-export default async function handler(req, res) {
+async function handler(req, res) {
     if (req.method !== "GET" && req.method !== "POST") {
         return res.status(405).json({ error: "Method not allowed" });
     }
@@ -236,3 +236,5 @@ export default async function handler(req, res) {
         results,
     });
 }
+
+export default withMembership(handler);

@@ -23,7 +23,7 @@
 
 import { getEcbRates, fx, FALLBACK_RATES } from "./_fx.js";
 import { getPool } from "./_db.js";
-import { validateJwt } from "./_member-auth.js";
+import { validateJwt, withMembership } from "./_member-auth.js";
 let _migrationsRun = false;
 async function ensureColumns(db) {
     if (_migrationsRun) return;
@@ -66,7 +66,7 @@ function safeDate(str, fallback) {
 // so conversion at report time only needs ECB rates for the final
 // EUR → displayCurrency step, not for the native → EUR step.
 
-export default async function handler(req, res) {
+async function handler(req, res) {
     setCors(req, res);
     if (req.method === "OPTIONS") return res.status(204).end();
     if (req.method !== "GET") return res.status(405).json({ error: "Method not allowed" });
@@ -395,3 +395,5 @@ async function _handler(req, res, orgId) {
         blendedCac,
     });
 }
+
+export default withMembership(handler);

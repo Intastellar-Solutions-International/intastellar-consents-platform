@@ -1,5 +1,5 @@
 import { getPool } from "./_db.js";
-import { validateJwt } from "./_member-auth.js";
+import { validateJwt, withMembership } from "./_member-auth.js";
 /**
  * GET /api/analytics-page-weight?domain=<domain>&from=<YYYY-MM-DD>&to=<YYYY-MM-DD>
  *
@@ -54,7 +54,7 @@ const P75 = (col) => Pn(col, 0.75);
 // cls/...), so this only exists for symmetry/clarity at call sites.
 const PW_P75 = P75("pageWeight");
 
-export default async function handler(req, res) {
+async function handler(req, res) {
     setCors(req, res);
     if (req.method === "OPTIONS") return res.status(204).end();
 
@@ -276,3 +276,5 @@ export default async function handler(req, res) {
         prevPeriod: { from: prevFromDate, to: prevToDate },
     });
 }
+
+export default withMembership(handler);

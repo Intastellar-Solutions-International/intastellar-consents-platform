@@ -18,7 +18,7 @@ import { scanDomain } from "./_scan-core.js";
 import { summarizeConsentPhase } from "./_consent-phase.js";
 import { getPool } from "./_db.js";
 import { ACCEPT_ALL, scanRegion, ensureScanColumns, dispatchFirstVisitScan } from "./_scan-schema.js";
-import { validateJwt } from "./_member-auth.js";
+import { validateJwt, withMembership } from "./_member-auth.js";
 
 // ── DB pool (reused across warm invocations) ──────────────────────────────────
 // ── JWT validation (mirrors PHP — checks claims only, no signature) ────────────
@@ -42,7 +42,7 @@ function setCors(req, res) {
 }
 
 // ── Handler ───────────────────────────────────────────────────────────────────
-export default async function handler(req, res) {
+async function handler(req, res) {
     setCors(req, res);
 
     if (req.method === "OPTIONS") {
@@ -104,3 +104,5 @@ export default async function handler(req, res) {
         ...(error ? { error } : {}),
     });
 }
+
+export default withMembership(handler);

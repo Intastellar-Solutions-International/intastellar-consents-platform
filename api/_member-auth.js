@@ -141,6 +141,25 @@ export async function requireMember(req, { fetchImpl = globalThis.fetch, secret,
     return { organisationId, email };
 }
 
+/**
+ * Wraps an endpoint so a signed-in person can only act on organisations they
+ * belong to: a request with an Intastellar Accounts token and an
+ * Organisation header must pass requireMember (cached) before the handler
+ * runs. Everything else — preflight, no token, expired token, cron calls —
+ * goes straight to the handler, whose own validateJwt decides as before.
+ */
+export function withMembership(handler, options) {
+    return async function membershipChecked(req, res) {
+        const raw = rawJwt(req.headers?.authorization);
+        const claims = raw && jwtClaims(raw);
+        if (req.method !== "OPTIONS" && claims?.iss === "Intastellar Account" && req.headers.organisation) {
+            const member = await requireMember(req, options);
+            if (member.error) return res.status(member.status).json({ error: member.error });
+        }
+        return handler(req, res);
+    };
+}
+
 /** requireMember, limited to members of the organisation that runs the platform. */
 export async function requirePlatformAdmin(req, options) {
     const member = await requireMember(req, options);

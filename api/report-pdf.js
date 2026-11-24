@@ -14,7 +14,7 @@ import { domainToASCII } from "node:url";
 import chromium from "@sparticuz/chromium";
 import puppeteer from "puppeteer-core";
 import { buildReportHtml, REPORT_TYPES, esc } from "./_report-html.js";
-import { validateJwt } from "./_member-auth.js";
+import { validateJwt, withMembership } from "./_member-auth.js";
 
 const CONSENT_API = "https://apis.intastellarsolutions.com/analytics/gdpr";
 const SCAN_API = "https://www.intastellarconsents.com/api/pre-consent-transfers";
@@ -124,7 +124,7 @@ async function renderPdf(html, title, domain) {
     }
 }
 
-export default async function handler(req, res) {
+async function handler(req, res) {
     setCors(req, res);
     if (req.method === "OPTIONS") return res.status(204).end();
     if (req.method !== "POST") {
@@ -173,3 +173,5 @@ export default async function handler(req, res) {
         return res.status(500).json({ error: "The report could not be generated." });
     }
 }
+
+export default withMembership(handler);

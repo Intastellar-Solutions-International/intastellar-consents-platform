@@ -1,5 +1,5 @@
 import { getPool } from "./_db.js";
-import { validateJwt } from "./_member-auth.js";
+import { validateJwt, withMembership } from "./_member-auth.js";
 /**
  * GET    /api/analytics-datalayer-rules?domain=<domain>                    → list rules
  * POST   /api/analytics-datalayer-rules   body: { domain, datalayerEvent,
@@ -66,7 +66,7 @@ async function ensureTable(db) {
     `).catch(() => {});
 }
 
-export default async function handler(req, res) {
+async function handler(req, res) {
     setCors(req, res);
     if (req.method === "OPTIONS") return res.status(204).end();
 
@@ -190,3 +190,5 @@ export default async function handler(req, res) {
 
     return res.status(405).end();
 }
+
+export default withMembership(handler);

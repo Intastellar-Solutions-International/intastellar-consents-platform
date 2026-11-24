@@ -1,6 +1,6 @@
 import { getPool } from "./_db.js";
 import { tryRefreshToken } from "./_ad-platform-fetch.js";
-import { validateJwt } from "./_member-auth.js";
+import { validateJwt, withMembership } from "./_member-auth.js";
 /**
  * GET  /api/ad-conversion-push?domain=  — list recent push records for the org
  * POST /api/ad-conversion-push          — process pending conversions and push to ad platforms
@@ -234,7 +234,7 @@ async function dispatchPush(db, connection, push) {
 
 // ── Handler ───────────────────────────────────────────────────────────────────
 
-export default async function handler(req, res) {
+async function handler(req, res) {
     setCors(req, res);
     if (req.method === "OPTIONS") return res.status(204).end();
 
@@ -427,3 +427,5 @@ export async function processPendingPushes(db, { orgId = null, domain = null, li
 
     return { processed: results.length, sent, failed, results };
 }
+
+export default withMembership(handler);

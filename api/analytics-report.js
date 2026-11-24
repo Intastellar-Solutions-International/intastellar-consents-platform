@@ -9,7 +9,7 @@ import { INDUSTRY_BENCHMARKS } from "./_industry-benchmarks.js";
 import { getPool } from "./_db.js";
 import { selfReferralClause, noiseReferralClause, getApprovedDomains, isValidHostname } from "./_self-referral.js";
 import { isHeadlineConversionSql, classifyTier } from "./_conversions.js";
-import { validateJwt } from "./_member-auth.js";
+import { validateJwt, withMembership } from "./_member-auth.js";
 const ALLOWED_ORIGINS = [
     "https://www.intastellarconsents.com",
     "https://www.consentsmanagement.com",
@@ -92,7 +92,7 @@ function humanizeCampaign(raw) {
     return v;
 }
 
-export default async function handler(req, res) {
+async function handler(req, res) {
     try {
         return await _handler(req, res);
     } catch (err) {
@@ -957,3 +957,5 @@ async function _handler(req, res) {
         })),
     });
 }
+
+export default withMembership(handler);

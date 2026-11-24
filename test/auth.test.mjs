@@ -3,7 +3,7 @@
 import assert from "node:assert/strict";
 import { createHmac } from "node:crypto";
 import { test } from "./_harness.mjs";
-import { validateJwt, configuredSecrets } from "../api/_member-auth.js";
+import { validateJwt, configuredSecrets, withMembership } from "../api/_member-auth.js";
 
 const b64u = (o) => Buffer.from(JSON.stringify(o)).toString("base64url");
 // Same shape as Intastellar Accounts' JWTGenerate: HS512, double base64url signature, whole token base64'd.
@@ -47,4 +47,38 @@ test("auth: cron service tokens only where allowed, and only the configured one"
 test("auth: without any secret configured it behaves as before (claims only)", () => {
     assert.ok(validateJwt(accountsToken(claims, "anything"), { env: {} }));
     assert.equal(validateJwt(accountsToken({ ...claims, exp: 1 }, "anything"), { env: {} }), null);
+});
+
+// withMembership: the wrapper around the endpoints that take an Organisation header.
+function fakeRes() {
+    return { code: 200, body: null, status(c) { this.code = c; return this; }, json(b) { this.body = b; return this; } };
+}
+const membership = (orgIds) => async () => ({ ok: true, json: async () => ({ organisations: orgIds.map((id) => ({ id, users: [{ email: "me@x.dk" }] })) }) });
+
+test("auth: endpoints only serve organisations the signed-in person belongs to", async () => {
+    let ran = 0;
+    const handler = async (req, res) => { ran++; return res.status(200).json({ ok: true }); };
+    const wrapped = withMembership(handler, { fetchImpl: membership([7]), secret: "real-secret" });
+    const authorization = accountsToken(claims, "real-secret");
+
+    const own = fakeRes();
+    await wrapped({ method: "GET", headers: { authorization, organisation: "7" } }, own);
+    assert.equal(own.code, 200);
+
+    const other = fakeRes();
+    await wrapped({ method: "GET", headers: { authorization, organisation: "8" } }, other);
+    assert.equal(other.code, 403, "someone else's organisation");
+    assert.equal(ran, 1, "the endpoint never ran for the foreign organisation");
+});
+
+test("auth: preflight, unsigned and cron calls reach the endpoint's own checks unchanged", async () => {
+    const seen = [];
+    const handler = async (req, res) => { seen.push(req.headers.authorization || "none"); return res.status(200).json({}); };
+    const wrapped = withMembership(handler, { fetchImpl: async () => { throw new Error("no membership lookup expected"); } });
+    const cron = `${b64u({ alg: "none" })}.${b64u({ iss: "Intastellar Cron", sub: "cron_scan_domains", exp: 9999999999 })}.x`;
+    await wrapped({ method: "OPTIONS", headers: { organisation: "8" } }, fakeRes());
+    await wrapped({ method: "GET", headers: { organisation: "8" } }, fakeRes());
+    await wrapped({ method: "GET", headers: { authorization: `Bearer ${cron}`, organisation: "8" } }, fakeRes());
+    await wrapped({ method: "GET", headers: { authorization: "Bearer some-cron-secret" } }, fakeRes());
+    assert.equal(seen.length, 4);
 });

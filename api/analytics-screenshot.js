@@ -15,7 +15,7 @@
 import { getPool } from "./_db.js";
 import chromium from "@sparticuz/chromium";
 import puppeteer from "puppeteer-core";
-import { validateJwt } from "./_member-auth.js";
+import { validateJwt, withMembership } from "./_member-auth.js";
 
 const ALLOWED_ORIGINS = [
     "https://www.intastellarconsents.com",
@@ -52,7 +52,7 @@ const DEVICE_VIEWPORTS = {
 };
 const DEFAULT_VIEWPORT = { width: 1280, height: 720 };
 
-export default async function handler(req, res) {
+async function handler(req, res) {
     setCors(req, res);
     if (req.method === "OPTIONS") return res.status(204).end();
 
@@ -153,3 +153,5 @@ export default async function handler(req, res) {
         return res.status(500).json({ error: "Screenshot failed" });
     }
 }
+
+export default withMembership(handler);

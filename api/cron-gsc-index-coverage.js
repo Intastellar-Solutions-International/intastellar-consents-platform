@@ -25,7 +25,7 @@
 
 import { tryRefreshToken, inspectGscUrl } from "./_ad-platform-fetch.js";
 import { getPool } from "./_db.js";
-import { validateJwt } from "./_member-auth.js";
+import { validateJwt, withMembership } from "./_member-auth.js";
 
 const BATCH_SIZE = Math.min(parseInt(process.env.GSC_INDEX_BATCH_SIZE || "50", 10) || 50, 500);
 
@@ -99,7 +99,7 @@ async function discoverSiteUrls(accessToken, siteUrl) {
     }
 }
 
-export default async function handler(req, res) {
+async function handler(req, res) {
     if (req.method !== "GET" && req.method !== "POST") {
         return res.status(405).json({ error: "Method not allowed" });
     }
@@ -197,3 +197,5 @@ export default async function handler(req, res) {
 
     return res.status(200).json({ ok: true, sites: results.length, results });
 }
+
+export default withMembership(handler);

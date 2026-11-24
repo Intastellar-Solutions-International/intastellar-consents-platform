@@ -1,5 +1,5 @@
 import { getPool } from "./_db.js";
-import { validateJwt } from "./_member-auth.js";
+import { validateJwt, withMembership } from "./_member-auth.js";
 /**
  * GET /api/analytics-bots?domain=<domain>&from=<YYYY-MM-DD>&to=<YYYY-MM-DD>
  *
@@ -30,7 +30,7 @@ function safeDate(str, fallback) {
     return isNaN(d.getTime()) ? fallback : d.toISOString().slice(0, 10);
 }
 
-export default async function handler(req, res) {
+async function handler(req, res) {
     setCors(req, res);
     if (req.method === "OPTIONS") return res.status(204).end();
     if (req.method !== "GET") return res.status(405).end();
@@ -201,3 +201,5 @@ export default async function handler(req, res) {
         },
     });
 }
+
+export default withMembership(handler);

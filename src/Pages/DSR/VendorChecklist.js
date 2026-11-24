@@ -18,7 +18,9 @@ function companyName() {
 
 async function reconnectForDeletion(platform, domain) {
     const params = new URLSearchParams({ platform, domain, returnPath: window.location.pathname, org: Authentication.getOrganisation(), deletion: "1" });
-    const response = await fetch(`${ScannerHost}/api/ad-oauth-start?${params}`);
+    const response = await fetch(`${ScannerHost}/api/ad-oauth-start?${params}`, {
+        headers: { Authorization: Authentication.getToken(), Organisation: String(Authentication.getOrganisation()) },
+    });
     const data = await response.json();
     if (!response.ok || !data.authUrl) throw new Error("The connection couldn't be started.");
     window.location.href = data.authUrl;

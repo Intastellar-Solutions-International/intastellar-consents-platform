@@ -19,7 +19,7 @@
 
 import { getPool } from "./_db.js";
 import { selfReferralClause, noiseReferralClause, getApprovedDomains } from "./_self-referral.js";
-import { validateJwt } from "./_member-auth.js";
+import { validateJwt, withMembership } from "./_member-auth.js";
 
 const ALLOWED_ORIGINS = [
     "https://www.intastellarconsents.com",
@@ -177,7 +177,7 @@ function buildMembershipQuery(siteId, domain, approvedDomains, audienceLookbackD
     return { text, values };
 }
 
-export default async function handler(req, res) {
+async function handler(req, res) {
     try {
         return await _handler(req, res);
     } catch (err) {
@@ -290,3 +290,5 @@ async function _handler(req, res) {
 
     return res.status(405).end();
 }
+
+export default withMembership(handler);

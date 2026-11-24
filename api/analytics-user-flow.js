@@ -1,6 +1,6 @@
 import { getPool } from "./_db.js";
 import { selfReferralClause, noiseReferralClause, getApprovedDomains } from "./_self-referral.js";
-import { validateJwt } from "./_member-auth.js";
+import { validateJwt, withMembership } from "./_member-auth.js";
 /**
  * GET /api/analytics-user-flow?domain=<domain>&from=<YYYY-MM-DD>&to=<YYYY-MM-DD>
  *      [&goal=<eventName>&direction=to|from]
@@ -161,7 +161,7 @@ function capFlow(rawEdges) {
     return { finalByDepth, toKeepSets };
 }
 
-export default async function handler(req, res) {
+async function handler(req, res) {
     setCors(req, res);
     if (req.method === "OPTIONS") return res.status(204).end();
     if (req.method !== "GET") return res.status(405).end();
@@ -686,3 +686,5 @@ export default async function handler(req, res) {
         validationErrors: validationErrorRows,
     });
 }
+
+export default withMembership(handler);

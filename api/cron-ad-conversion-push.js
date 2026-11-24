@@ -33,14 +33,14 @@
 
 import { getPool } from "./_db.js";
 import { processPendingPushes } from "./ad-conversion-push.js";
-import { validateJwt } from "./_member-auth.js";
+import { validateJwt, withMembership } from "./_member-auth.js";
 
 const DEFAULT_LIMIT = Math.min(
     parseInt(process.env.CRON_AD_CONVERSION_PUSH_LIMIT || "300", 10),
     1000
 );
 
-export default async function handler(req, res) {
+async function handler(req, res) {
     if (req.method !== "GET" && req.method !== "POST") {
         return res.status(405).json({ error: "Method not allowed" });
     }
@@ -66,3 +66,5 @@ export default async function handler(req, res) {
 
     return res.status(200).json(result);
 }
+
+export default withMembership(handler);

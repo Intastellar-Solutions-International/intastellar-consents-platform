@@ -2134,7 +2134,7 @@ export default function MarketingReconciliationPanel({
                 `&returnPath=${encodeURIComponent(returnPath)}`,
                 `&org=${encodeURIComponent(orgId)}`,
             ].join("");
-            const resp = await fetch(url);
+            const resp = await fetch(url, { headers: { Authorization: authToken, Organisation: String(orgId) } });
             const data = await resp.json();
             if (!resp.ok || !data.authUrl) {
                 setSyncMsg({ text: data.error || "Could not start connection.", error: true });

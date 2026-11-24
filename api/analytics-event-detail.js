@@ -7,7 +7,7 @@
  */
 
 import { getPool } from "./_db.js";
-import { validateJwt } from "./_member-auth.js";
+import { validateJwt, withMembership } from "./_member-auth.js";
 
 const ALLOWED_ORIGINS = [
     "https://www.intastellarconsents.com",
@@ -31,7 +31,7 @@ function safeDate(str, fallback) {
     return isNaN(d.getTime()) ? fallback : d.toISOString().slice(0, 10);
 }
 
-export default async function handler(req, res) {
+async function handler(req, res) {
     try {
         return await _handler(req, res);
     } catch (err) {
@@ -136,3 +136,5 @@ async function _handler(req, res) {
         devices: devicesRes.rows.map(r => ({ type: r.type, events: Number(r.events) })),
     });
 }
+
+export default withMembership(handler);

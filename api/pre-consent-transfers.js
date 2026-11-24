@@ -21,7 +21,7 @@ import { getPool } from "./_db.js";
 import { normalizeBannerDomain } from "./_banner-domain.js";
 import { summarizeConsentPhase, applyFirstVisit, firstVisitApplies } from "./_consent-phase.js";
 import { FIRST_VISIT, NOT_FIRST_VISIT, ensureScanColumns } from "./_scan-schema.js";
-import { validateJwt } from "./_member-auth.js";
+import { validateJwt, withMembership } from "./_member-auth.js";
 
 const BANNER_CATEGORY = {
     advertising:    "marketing",
@@ -78,7 +78,7 @@ function setCors(req, res) {
     res.setHeader("Access-Control-Max-Age", "86400");
 }
 
-export default async function handler(req, res) {
+async function handler(req, res) {
     setCors(req, res);
 
     if (req.method === "OPTIONS") {
@@ -201,3 +201,5 @@ export default async function handler(req, res) {
         res.status(500).json({ error: "Internal server error" });
     }
 }
+
+export default withMembership(handler);

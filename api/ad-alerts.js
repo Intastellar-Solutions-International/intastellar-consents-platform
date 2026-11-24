@@ -24,7 +24,7 @@
 import { checkAndFireAlerts } from "./_alert-check.js";
 import { getPool } from "./_db.js";
 import { ensureScanNotificationSchema, syncScanNotifications, getNotificationPreferences, setNotificationPreference } from "./_scan-notifications.js";
-import { validateJwt } from "./_member-auth.js";
+import { validateJwt, withMembership } from "./_member-auth.js";
 // ── Schema setup ─────────────────────────────────────────────────────────────
 
 let schemaReady = false;
@@ -126,7 +126,7 @@ function setCors(req, res) {
 
 // ── Handler ───────────────────────────────────────────────────────────────────
 
-export default async function handler(req, res) {
+async function handler(req, res) {
     setCors(req, res);
     if (req.method === "OPTIONS") return res.status(204).end();
 
@@ -341,3 +341,5 @@ export default async function handler(req, res) {
         return res.status(500).json({ error: "Internal server error" });
     }
 }
+
+export default withMembership(handler);

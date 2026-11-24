@@ -1,6 +1,6 @@
 import { getPool } from "./_db.js";
 import { createDebugSession, debugSessionOrg, purgeExpiredDebugData, DEBUG_TTL_HOURS } from "./_debug-hits.js";
-import { validateJwt } from "./_member-auth.js";
+import { validateJwt, withMembership } from "./_member-auth.js";
 /**
  * POST /api/analytics-debug                          → { token } — starts a debug session
  * GET  /api/analytics-debug?token=<t>&after=<id>     → { hits } — hits newer than `after`
@@ -30,7 +30,7 @@ function setCors(req, res) {
     res.setHeader("Access-Control-Allow-Headers", "Authorization,Organisation,Content-Type");
 }
 
-export default async function handler(req, res) {
+async function handler(req, res) {
     setCors(req, res);
     res.setHeader("Cache-Control", "no-store");
     if (req.method === "OPTIONS") return res.status(204).end();
@@ -75,3 +75,5 @@ export default async function handler(req, res) {
         return res.status(500).json({ error: "Event debugger request failed" });
     }
 }
+
+export default withMembership(handler);

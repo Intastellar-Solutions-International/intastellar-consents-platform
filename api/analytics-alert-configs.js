@@ -1,5 +1,5 @@
 import { getPool } from "./_db.js";
-import { validateJwt } from "./_member-auth.js";
+import { validateJwt, withMembership } from "./_member-auth.js";
 /**
  * GET/POST/PUT/DELETE /api/analytics-alert-configs
  *
@@ -82,7 +82,7 @@ export function normalizeRecipients(raw) {
     return cleaned;
 }
 
-export default async function handler(req, res) {
+async function handler(req, res) {
     setCors(req, res);
     if (req.method === "OPTIONS") return res.status(204).end();
 
@@ -209,3 +209,5 @@ export default async function handler(req, res) {
 
     return res.status(405).end();
 }
+
+export default withMembership(handler);

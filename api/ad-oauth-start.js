@@ -1,9 +1,11 @@
 /**
  * GET /api/ad-oauth-start?platform=google_ads&domain=example.com&org=123&returnPath=/path
  *
- * 302-redirects to the OAuth provider login page.
- * No JWT required — security is provided by the HMAC-signed state param,
- * which the callback endpoint verifies before storing any tokens.
+ * Returns { authUrl } for the OAuth provider's login page.
+ * Signed in, as a member of `org` (requireMember; Authorization + Organisation
+ * headers). The HMAC-signed state then carries that organisation to the
+ * callback — the signature alone only proves this server issued the state,
+ * not that the person who asked belongs to the organisation.
  *
  * Required env vars (one set per platform):
  *   GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
@@ -15,6 +17,7 @@
  */
 
 import { createHmac, randomBytes } from "crypto";
+import { requireMember } from "./_member-auth.js";
 
 const REDIRECT_URI = process.env.OAUTH_REDIRECT_URI
     || "https://www.intastellarconsents.com/api/ad-oauth-callback";
@@ -98,11 +101,11 @@ export default async function handler(req, res) {
     const { platform, domain, returnPath, org } = req.query;
     if (!platform || !domain) return res.status(400).json({ error: "platform and domain are required" });
 
-    const orgId = parseInt(org || req.headers.organisation || req.headers.organization || "0", 10);
-    if (!orgId) return res.status(400).json({ error: "org param is required" });
+    const member = await requireMember(req);
+    if (member.error) return res.status(member.status).json({ error: member.error });
+    const orgId = member.organisationId;
+    if (org && parseInt(org, 10) !== orgId) return res.status(403).json({ error: "Forbidden" });
 
-    // The orgId is embedded in an HMAC-signed state — the callback verifies
-    // the signature, so no JWT validation is needed at this step.
     const state = buildState({ platform, domain, orgId, returnPath: returnPath || "" });
     const authUrl = buildAuthUrl(platform, state, { deletion: req.query.deletion === "1" });
 

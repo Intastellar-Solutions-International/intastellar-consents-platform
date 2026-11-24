@@ -31,7 +31,7 @@
 import { tryRefreshToken, fetchGoogleAdsCampaigns, fetchMetaAdsCampaigns, fetchMicrosoftAdsCampaigns } from "./_ad-platform-fetch.js";
 import { getPool } from "./_db.js";
 import { getEcbRates, fx } from "./_fx.js";
-import { validateJwt } from "./_member-auth.js";
+import { validateJwt, withMembership } from "./_member-auth.js";
 
 const VALID_CURRENCIES = new Set(["EUR","USD","GBP","DKK","SEK","NOK","CHF","PLN","AUD","CAD","SGD"]);
 const ALLOWED_ORIGINS = [
@@ -62,7 +62,7 @@ const CAMPAIGN_FETCHERS = {
     microsoft_ads: fetchMicrosoftAdsCampaigns,
 };
 
-export default async function handler(req, res) {
+async function handler(req, res) {
     setCors(req, res);
     if (req.method === "OPTIONS") return res.status(204).end();
     if (req.method !== "GET") return res.status(405).json({ error: "Method not allowed" });
@@ -131,3 +131,5 @@ export default async function handler(req, res) {
         platforms,
     });
 }
+
+export default withMembership(handler);

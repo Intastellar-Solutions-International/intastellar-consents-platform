@@ -1,5 +1,5 @@
 import { getPool } from "./_db.js";
-import { validateJwt } from "./_member-auth.js";
+import { validateJwt, withMembership } from "./_member-auth.js";
 /**
  * GET    /api/ad-connections?domain=example.com  — list connections for org (optionally filtered by domain)
  * DELETE /api/ad-connections?platform=google_ads&domain=example.com — remove a connection
@@ -74,7 +74,7 @@ async function ensureTable(db) {
     tableReady = true;
 }
 
-export default async function handler(req, res) {
+async function handler(req, res) {
     setCors(req, res);
     if (req.method === "OPTIONS") return res.status(204).end();
 
@@ -245,3 +245,5 @@ export default async function handler(req, res) {
 
     return res.status(405).json({ error: "Method not allowed" });
 }
+
+export default withMembership(handler);

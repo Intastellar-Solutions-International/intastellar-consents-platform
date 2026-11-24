@@ -12,7 +12,7 @@
 
 import { getPrivate } from "./_blob-stores.js";
 import { getPool } from "./_db.js";
-import { validateJwt } from "./_member-auth.js";
+import { validateJwt, withMembership } from "./_member-auth.js";
 const ALLOWED_ORIGINS = [
     "https://www.intastellarconsents.com",
     "https://www.consentsmanagement.com",
@@ -43,7 +43,7 @@ function safeDate(str, fallback, endOfDay = false) {
     return isNaN(d.getTime()) ? fallback : d.toISOString();
 }
 
-export default async function handler(req, res) {
+async function handler(req, res) {
     setCors(req, res);
     if (req.method === "OPTIONS") return res.status(204).end();
     if (req.method !== "GET") return res.status(405).end();
@@ -176,3 +176,5 @@ export default async function handler(req, res) {
         nextCursor: rows.length === limit ? rows[rows.length - 1].started_at : null,
     });
 }
+
+export default withMembership(handler);

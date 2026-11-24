@@ -13,7 +13,7 @@
  */
 
 import { getPool } from "./_db.js";
-import { validateJwt } from "./_member-auth.js";
+import { validateJwt, withMembership } from "./_member-auth.js";
 
 const ALLOWED_ORIGINS = [
     "https://www.intastellarconsents.com",
@@ -34,7 +34,7 @@ function setCors(req, res) {
 
 const VALID_VERDICTS = new Set(["PASS", "FAIL", "PARTIAL", "NEUTRAL"]);
 
-export default async function handler(req, res) {
+async function handler(req, res) {
     setCors(req, res);
     if (req.method === "OPTIONS") return res.status(204).end();
     if (req.method !== "GET") return res.status(405).end();
@@ -118,3 +118,5 @@ export default async function handler(req, res) {
         nextCursor: rows.length === limit ? rows[rows.length - 1].url : null,
     });
 }
+
+export default withMembership(handler);

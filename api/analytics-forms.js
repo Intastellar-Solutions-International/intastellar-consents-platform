@@ -1,5 +1,5 @@
 import { getPool } from "./_db.js";
-import { validateJwt } from "./_member-auth.js";
+import { validateJwt, withMembership } from "./_member-auth.js";
 
 // Dedup key for form_started/form_submit rows — see docs/analytics-audit-plan.md
 // item 7. A real visitor can generate more than one row for the same form
@@ -84,7 +84,7 @@ function setCors(req, res) {
     res.setHeader("Access-Control-Allow-Headers", "Authorization,Organisation,Content-Type");
 }
 
-export default async function handler(req, res) {
+async function handler(req, res) {
     setCors(req, res);
     if (req.method === "OPTIONS") return res.status(204).end();
 
@@ -804,3 +804,5 @@ export default async function handler(req, res) {
         })),
     });
 }
+
+export default withMembership(handler);
