@@ -79,6 +79,49 @@ export function computeConsentImpact(totalsRow, dailyRows) {
 }
 
 /**
+ * The channel rules (organic / paid / paid_social / referral / direct) for a
+ * site, as SQL over analytics_events columns — one definition for this
+ * report, the traffic model and analytics-explain.js.
+ */
+export function channelSql(domain, approvedDomains) {
+    // Channel segment maps to UTM+referrer conditions (no user text in SQL).
+    const META_SOURCE_PATTERN = `'^(fb|facebook|ig|instagram|msg|messenger|an)$'`;
+    // The site's own domain (any subdomain) and any explicitly-approved
+    // cross-site domain (e.g. a booking widget host) is never a real
+    // "referral" — see docs/analytics-audit-plan.md item 2. Nor is dev/local
+    // or referrer-spam noise — see item 3.
+    const SELF_REFERRAL = selfReferralClause(domain, approvedDomains);
+    const NOISE_REFERRAL = noiseReferralClause();
+    // Google/Microsoft/Meta auto-append a click ID to the landing URL on
+    // every ad click regardless of whether the advertiser also set UTM
+    // tags (captured into analytics_events by api/a.js). Without this,
+    // UTM-less ad clicks fall through to "organic" (Google Ads search
+    // clicks commonly still carry referrer_host=google.com with no UTM,
+    // matching the organic referrer regex below) or "direct" — silently
+    // undercounting paid. See MarketingReconciliationPanel.js's identical
+    // "gclid-unmatched" problem on the UTM-only reconciliation side.
+    const HAS_CLICK_ID = `(gclid IS NOT NULL OR msclkid IS NOT NULL OR fbclid IS NOT NULL)`;
+    const CHANNEL_SQL = {
+        organic:     `(NOT ${HAS_CLICK_ID} AND (utm_medium = 'organic' OR (COALESCE(utm_medium,'')='' AND COALESCE(utm_source,'')='' AND referrer_host ~* '(google|bing|duckduckgo|yahoo|baidu|yandex|ecosia)\\.')))`,
+        paid:        `(utm_medium ~* '^(cpc|ppc|paid|cpm|display)' OR (COALESCE(utm_source,'')!='' AND COALESCE(utm_medium,'') NOT IN ('organic','') AND utm_source !~* ${META_SOURCE_PATTERN}) OR (COALESCE(utm_source,'')='' AND (gclid IS NOT NULL OR msclkid IS NOT NULL)))`,
+        paid_social: `(utm_source ~* ${META_SOURCE_PATTERN} OR (COALESCE(utm_source,'')='' AND fbclid IS NOT NULL))`,
+        referral:    `(COALESCE(referrer_host,'')!='' AND COALESCE(utm_source,'')='' AND COALESCE(utm_medium,'')='' AND NOT ${HAS_CLICK_ID} AND NOT ${SELF_REFERRAL} AND NOT ${NOISE_REFERRAL})`,
+        direct:      `((COALESCE(referrer_host,'')='' OR ${SELF_REFERRAL} OR ${NOISE_REFERRAL}) AND COALESCE(utm_source,'')='' AND COALESCE(utm_medium,'')='' AND NOT ${HAS_CLICK_ID})`,
+    };
+
+    // A row's channel — one definition for the Channels table and the
+    // traffic model (_modelled-traffic.js), so the two can't drift apart.
+    const CHANNEL_CASE = `CASE
+                    WHEN ${CHANNEL_SQL.organic}     THEN 'organic'
+                    WHEN ${CHANNEL_SQL.paid_social} THEN 'paid_social'
+                    WHEN ${CHANNEL_SQL.paid}         THEN 'paid'
+                    WHEN ${CHANNEL_SQL.referral}     THEN 'referral'
+                    ELSE 'direct'
+                END`;
+    return { SELF_REFERRAL, NOISE_REFERRAL, CHANNEL_SQL, CHANNEL_CASE };
+}
+
+/**
  * A custom-dimension segment (seg_dim_key / seg_dim_value) → SQL clause or
  * null. The key must be a dimension name (a-z, 0-9, _); the value is quoted
  * with pg's escapeLiteral — this clause joins text-built SQL (segAnd).
@@ -190,40 +233,7 @@ async function _handler(req, res) {
     // Custom dimension (consented page views only — see a.js sanitizeDims).
     const segDim = dimensionClause(req.query.seg_dim_key, req.query.seg_dim_value);
 
-    // Channel segment maps to UTM+referrer conditions (no user text in SQL).
-    const META_SOURCE_PATTERN = `'^(fb|facebook|ig|instagram|msg|messenger|an)$'`;
-    // The site's own domain (any subdomain) and any explicitly-approved
-    // cross-site domain (e.g. a booking widget host) is never a real
-    // "referral" — see docs/analytics-audit-plan.md item 2. Nor is dev/local
-    // or referrer-spam noise — see item 3.
-    const SELF_REFERRAL = selfReferralClause(domain, approvedDomains);
-    const NOISE_REFERRAL = noiseReferralClause();
-    // Google/Microsoft/Meta auto-append a click ID to the landing URL on
-    // every ad click regardless of whether the advertiser also set UTM
-    // tags (captured into analytics_events by api/a.js). Without this,
-    // UTM-less ad clicks fall through to "organic" (Google Ads search
-    // clicks commonly still carry referrer_host=google.com with no UTM,
-    // matching the organic referrer regex below) or "direct" — silently
-    // undercounting paid. See MarketingReconciliationPanel.js's identical
-    // "gclid-unmatched" problem on the UTM-only reconciliation side.
-    const HAS_CLICK_ID = `(gclid IS NOT NULL OR msclkid IS NOT NULL OR fbclid IS NOT NULL)`;
-    const CHANNEL_SQL = {
-        organic:     `(NOT ${HAS_CLICK_ID} AND (utm_medium = 'organic' OR (COALESCE(utm_medium,'')='' AND COALESCE(utm_source,'')='' AND referrer_host ~* '(google|bing|duckduckgo|yahoo|baidu|yandex|ecosia)\\.')))`,
-        paid:        `(utm_medium ~* '^(cpc|ppc|paid|cpm|display)' OR (COALESCE(utm_source,'')!='' AND COALESCE(utm_medium,'') NOT IN ('organic','') AND utm_source !~* ${META_SOURCE_PATTERN}) OR (COALESCE(utm_source,'')='' AND (gclid IS NOT NULL OR msclkid IS NOT NULL)))`,
-        paid_social: `(utm_source ~* ${META_SOURCE_PATTERN} OR (COALESCE(utm_source,'')='' AND fbclid IS NOT NULL))`,
-        referral:    `(COALESCE(referrer_host,'')!='' AND COALESCE(utm_source,'')='' AND COALESCE(utm_medium,'')='' AND NOT ${HAS_CLICK_ID} AND NOT ${SELF_REFERRAL} AND NOT ${NOISE_REFERRAL})`,
-        direct:      `((COALESCE(referrer_host,'')='' OR ${SELF_REFERRAL} OR ${NOISE_REFERRAL}) AND COALESCE(utm_source,'')='' AND COALESCE(utm_medium,'')='' AND NOT ${HAS_CLICK_ID})`,
-    };
-
-    // A row's channel — one definition for the Channels table and the
-    // traffic model (_modelled-traffic.js), so the two can't drift apart.
-    const CHANNEL_CASE = `CASE
-                    WHEN ${CHANNEL_SQL.organic}     THEN 'organic'
-                    WHEN ${CHANNEL_SQL.paid_social} THEN 'paid_social'
-                    WHEN ${CHANNEL_SQL.paid}         THEN 'paid'
-                    WHEN ${CHANNEL_SQL.referral}     THEN 'referral'
-                    ELSE 'direct'
-                END`;
+    const { SELF_REFERRAL, NOISE_REFERRAL, CHANNEL_SQL, CHANNEL_CASE } = channelSql(domain, approvedDomains);
 
     // Embedded-context pageviews (a booking widget or similar preloaded as an
     // iframe on every page, firing its own pageviews under the same site key)

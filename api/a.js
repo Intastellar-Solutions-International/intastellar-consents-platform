@@ -5,6 +5,7 @@ import { recordDebugHit, DEBUG_TOKEN_RE } from "./_debug-hits.js";
 import { createEmbedCache } from "./_minify-embed.js";
 import { classifyTier } from "./_conversions.js";
 import { sanitizeDims } from "./_dims.js";
+import { cleanBannerRef } from "./_banner-experiment.js";
 /**
  * GET  /api/a  → serves the Intastellar First-Party Analytics embed script
  * POST /api/a  → ingest endpoint receiving pageview events from embedded sites
@@ -383,6 +384,11 @@ async function ensureTables(db) {
         -- Custom dimensions (intaAnalytics.set / window.intaDimensions):
         -- consented page views only, sanitizeDims() below.
         ALTER TABLE analytics_events      ADD COLUMN IF NOT EXISTS custom_dims    JSONB;
+        -- Consent-banner A/B test the visitor saw (_banner-experiment.js).
+        ALTER TABLE analytics_events        ADD COLUMN IF NOT EXISTS banner_exp     VARCHAR(64);
+        ALTER TABLE analytics_events        ADD COLUMN IF NOT EXISTS banner_variant VARCHAR(64);
+        ALTER TABLE analytics_custom_events ADD COLUMN IF NOT EXISTS banner_exp     VARCHAR(64);
+        ALTER TABLE analytics_custom_events ADD COLUMN IF NOT EXISTS banner_variant VARCHAR(64);
         ALTER TABLE analytics_bot_visits  ADD COLUMN IF NOT EXISTS asn            INTEGER;
         ALTER TABLE analytics_bot_visits  ADD COLUMN IF NOT EXISTS as_org         VARCHAR(255);
         ALTER TABLE analytics_bot_visits  ADD COLUMN IF NOT EXISTS is_hosting_ip  BOOLEAN;
@@ -1231,6 +1237,14 @@ function fetchBrowserTopics(c){
   }catch(ex){}
 }
 
+// Consent-banner A/B test: the banner sets window.INTA.experiment.id and
+// window.INTA.experimentVariant. Sent with every page view and event so
+// consent rate and conversions compare per banner variant — identifies no one.
+function bannerExp(){
+  try{var x=window.INTA;if(x&&x.experiment&&x.experiment.id&&x.experimentVariant)return{e:String(x.experiment.id).slice(0,64),v:String(x.experimentVariant).slice(0,64)};}catch(e){}
+  return null;
+}
+
 // Custom dimensions — intaAnalytics.set('plan','pro') / set({plan:'pro'}),
 // or window.intaDimensions = {...} before this script loads. Up to 5 keys
 // (a-z, 0-9, _), values up to 100 characters; sent with consented page
@@ -1250,6 +1264,7 @@ try{if(window.intaDimensions)setDim(window.intaDimensions);}catch(e){}
 function sendMinimal(c){
   // No sid: a minimal pageview must not create or read the session cookie.
   var pl={s:SITE,cl:'minimal',u:location.pathname,r:document.referrer||'',h:getHost(),dt:devType(),cs:hasStat(c)?1:0,cf:hasFun(c)?1:0,ca:hasAdv(c)?1:0,emb:EMB?1:0};
+  var be=bannerExp();if(be){pl.be=be.e;pl.bv=be.v;}
   send(JSON.stringify(pl));
 }
 
@@ -1284,6 +1299,7 @@ function sendFull(c,final){
   };
   if(_bt.length&&hasFun(c))pl.bt=_bt;
   if(Object.keys(_dims).length)pl.cd=_dims;
+  var be=bannerExp();if(be){pl.be=be.e;pl.bv=be.v;}
   send(JSON.stringify(pl));
 }
 
@@ -1454,8 +1470,10 @@ function track(name,opts){
     }
     if(Object.keys(ed).length)extra=ed;
   }
+  var be=bannerExp();
   send(JSON.stringify({
     s:SITE,t:'ev',n:String(name).slice(0,64),
+    be:be?be.e:undefined,bv:be?be.v:undefined,
     cl:full?'full':'minimal',
     sid:full?getSid():undefined,
     v:(typeof opts.value==='number'&&isFinite(opts.value))?opts.value:undefined,
@@ -2229,7 +2247,7 @@ export default async function handler(req, res) {
             dur, cs, cf, ca, emb, g: isGranular, n: eventName, v: eventValue, cur: eventCurrency,
             txn: eventTransactionId, pr: rawProducts, ed: rawExtraData, src: eventSource, tid: abTestId, vid: abVariantId, nv,
             gc: gclid, mc: msclkid, fc: fbclid,
-            bt: rawBrowserTopics, cd: rawDims } = body;
+            bt: rawBrowserTopics, cd: rawDims, be: rawBannerExp, bv: rawBannerVariant } = body;
 
     // See is_embedded column comment in ensureTables() — true when the embed
     // script detected it was running inside a nested browsing context.
@@ -2248,6 +2266,10 @@ export default async function handler(req, res) {
         const ids = rawBrowserTopics.slice(0, 5).filter(n => Number.isInteger(n) && n > 0 && n <= 9999);
         return ids.length ? JSON.stringify(ids) : null;
     })();
+
+    // Consent-banner A/B test the visitor saw (both levels; identifies no one).
+    const bannerExpId = cleanBannerRef(rawBannerExp);
+    const bannerVariant = bannerExpId ? cleanBannerRef(rawBannerVariant) : null;
 
     // Custom dimensions: consented page views only (see sanitizeDims).
     const customDims = consentLevel === "full" ? sanitizeDims(rawDims) : null;
@@ -2442,8 +2464,8 @@ export default async function handler(req, res) {
              (site_id, organisation_id, session_id, consent_level, consent_stat, consent_func, consent_adv,
               name, value_cents, currency, transaction_id, pathname, page_host, country_code, device_type, source,
               gclid, msclkid, fbclid, utm_campaign, utm_content, utm_source, utm_medium, products, extra_data,
-              browser_family, is_embedded, consent_granular)
-             VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28)
+              browser_family, is_embedded, consent_granular, banner_exp, banner_variant)
+             VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28,$29,$30)
              RETURNING id`,
             [
                 siteId, orgId, isMinimal ? null : (sid ? String(sid).slice(0, 64) : null),
@@ -2460,6 +2482,7 @@ export default async function handler(req, res) {
                 eventBrowserFamily || null,
                 isEmbeddedEvent,
                 isMinimal ? null : consentGranular,
+                bannerExpId, bannerVariant,
             ]
         ).catch(() => ({ rows: [] }));
 
@@ -2639,15 +2662,15 @@ export default async function handler(req, res) {
             `INSERT INTO analytics_events
              (site_id, organisation_id, session_id, consent_level, consent_stat, consent_func, consent_adv,
               url, pathname, page_host, country_code, region, device_type, referrer_host,
-              asn, as_org, is_hosting_ip, is_embedded)
-             VALUES ($1,$2,$3,'minimal',$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17)`,
+              asn, as_org, is_hosting_ip, is_embedded, banner_exp, banner_variant)
+             VALUES ($1,$2,$3,'minimal',$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19)`,
             [
                 siteId, orgId, minSessionId,
                 cs === 1 || cs === true, cf === 1 || cf === true, ca === 1 || ca === true,
                 urlColumn, pathname, pageHostSanitized,
                 country, region, deviceType, minReferrerHost,
                 network.asn, network.asOrg, network.isHosting,
-                isEmbeddedEvent,
+                isEmbeddedEvent, bannerExpId, bannerVariant,
             ]
         ).catch(() => { pageviewInsertFailed = true; });
     } else {
@@ -2677,8 +2700,8 @@ export default async function handler(req, res) {
               browser_family, os_family, language, timezone,
               duration_sec, scroll_depth, attention_ms, pageview_id, is_new_visitor,
               gclid, msclkid, fbclid,
-              browser_topics, asn, as_org, is_hosting_ip, is_embedded, consent_granular, custom_dims)
-             VALUES ($1,$2,$3,'full',$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28,$29,$30,$31,$32,$33,$34,$35,$36,$37,$38,$39,$40,$41)
+              browser_topics, asn, as_org, is_hosting_ip, is_embedded, consent_granular, custom_dims, banner_exp, banner_variant)
+             VALUES ($1,$2,$3,'full',$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28,$29,$30,$31,$32,$33,$34,$35,$36,$37,$38,$39,$40,$41,$42,$43)
              ON CONFLICT (pageview_id) DO UPDATE SET
                duration_sec     = EXCLUDED.duration_sec,
                scroll_depth     = COALESCE(EXCLUDED.scroll_depth,     analytics_events.scroll_depth),
@@ -2687,7 +2710,9 @@ export default async function handler(req, res) {
                consent_granular = COALESCE(EXCLUDED.consent_granular, analytics_events.consent_granular),
                -- A dimension set after the entry beacon arrives with the exit one: merge.
                custom_dims      = CASE WHEN EXCLUDED.custom_dims IS NULL THEN analytics_events.custom_dims
-                                       ELSE COALESCE(analytics_events.custom_dims, '{}'::jsonb) || EXCLUDED.custom_dims END`,
+                                       ELSE COALESCE(analytics_events.custom_dims, '{}'::jsonb) || EXCLUDED.custom_dims END,
+               banner_exp       = COALESCE(EXCLUDED.banner_exp,       analytics_events.banner_exp),
+               banner_variant   = COALESCE(EXCLUDED.banner_variant,   analytics_events.banner_variant)`,
             [
                 siteId, orgId, String(sid).slice(0, 64),           // $1 $2 $3
                 cs === 1 || cs === true,                            // $4 consent_stat
@@ -2718,6 +2743,7 @@ export default async function handler(req, res) {
                 isEmbeddedEvent,                                           // $39 is_embedded
                 consentGranular,                                           // $40 consent_granular
                 customDims,                                                // $41 custom_dims JSONB
+                bannerExpId, bannerVariant,                                // $42 $43 banner A/B test
             ]
         ).catch(() => { pageviewInsertFailed = true; });
     }
