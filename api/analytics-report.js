@@ -10,6 +10,7 @@ import { getPool } from "./_db.js";
 import { selfReferralClause, noiseReferralClause, getApprovedDomains, isValidHostname } from "./_self-referral.js";
 import { isHeadlineConversionSql, classifyTier } from "./_conversions.js";
 import { validateJwt, withMembership } from "./_member-auth.js";
+import { modelSiteTraffic, referrerGroupSql } from "./_modelled-traffic.js";
 const ALLOWED_ORIGINS = [
     "https://www.intastellarconsents.com",
     "https://www.consentsmanagement.com",
@@ -72,6 +73,20 @@ export function computeConsentImpact(totalsRow, dailyRows) {
                 estimated: d_rate > 0 ? Math.round(d_full / d_rate) : d_total,
             };
         }),
+    };
+}
+
+// The estimator's figures from the stratified model when it ran (same totals
+// the Channels / Top pages columns use), so the dashboard shows one number.
+export function withModel(impact, modelled) {
+    if (!modelled) return { ...impact, method: "site-rate" };
+    return {
+        ...impact,
+        method: modelled.method,
+        observedSessions: modelled.observedSessions,
+        estimatedTrue: modelled.sessions,
+        coverage: Math.round(modelled.coverage * 1000) / 10,
+        dailyEstimates: impact.dailyEstimates.map(d => ({ date: d.date, estimated: modelled.daily[d.date] ?? 0 })),
     };
 }
 
@@ -183,6 +198,16 @@ async function _handler(req, res) {
         referral:    `(COALESCE(referrer_host,'')!='' AND COALESCE(utm_source,'')='' AND COALESCE(utm_medium,'')='' AND NOT ${HAS_CLICK_ID} AND NOT ${SELF_REFERRAL} AND NOT ${NOISE_REFERRAL})`,
         direct:      `((COALESCE(referrer_host,'')='' OR ${SELF_REFERRAL} OR ${NOISE_REFERRAL}) AND COALESCE(utm_source,'')='' AND COALESCE(utm_medium,'')='' AND NOT ${HAS_CLICK_ID})`,
     };
+
+    // A row's channel — one definition for the Channels table and the
+    // traffic model (_modelled-traffic.js), so the two can't drift apart.
+    const CHANNEL_CASE = `CASE
+                    WHEN ${CHANNEL_SQL.organic}     THEN 'organic'
+                    WHEN ${CHANNEL_SQL.paid_social} THEN 'paid_social'
+                    WHEN ${CHANNEL_SQL.paid}         THEN 'paid'
+                    WHEN ${CHANNEL_SQL.referral}     THEN 'referral'
+                    ELSE 'direct'
+                END`;
 
     // Embedded-context pageviews (a booking widget or similar preloaded as an
     // iframe on every page, firing its own pageviews under the same site key)
@@ -756,13 +781,7 @@ async function _handler(req, res) {
         // caused how much traffic" for the Acquisition page.
         db.query(`
             SELECT
-                CASE
-                    WHEN ${CHANNEL_SQL.organic}     THEN 'organic'
-                    WHEN ${CHANNEL_SQL.paid_social} THEN 'paid_social'
-                    WHEN ${CHANNEL_SQL.paid}         THEN 'paid'
-                    WHEN ${CHANNEL_SQL.referral}     THEN 'referral'
-                    ELSE 'direct'
-                END AS channel,
+                ${CHANNEL_CASE} AS channel,
                 COUNT(*)                                                          AS events,
                 COUNT(DISTINCT session_id) FILTER (WHERE session_id IS NOT NULL)  AS sessions
             FROM analytics_events
@@ -784,6 +803,18 @@ async function _handler(req, res) {
 
     const t = totalsRes.rows[0] || {};
     const total = Number(t.total || 0);
+
+    // Sessions including visitors who declined (see _modelled-traffic.js).
+    // Not for a consent or channel segment: anonymous rows carry no UTM /
+    // click id, so a channel filter would split them unlike consenting rows.
+    const modelled = total > 0 && !segConsent && !segChannel
+        ? await modelSiteTraffic(db, {
+            siteId, from: fromDate, toExclusive: toDateExclusive, filter: segAnd,
+            groupSql: referrerGroupSql(SELF_REFERRAL, NOISE_REFERRAL),
+            channelSql: CHANNEL_CASE,
+            pathnames: pagesRes.rows.map(r => r.pathname),
+        }).catch((err) => { console.error("[analytics-report] traffic model failed:", err?.message); return null; })
+        : null;
 
     return res.status(200).json({
         excludeBots,
@@ -834,6 +865,7 @@ async function _handler(req, res) {
                     pathname: r.pathname,
                     views:    Number(r.views    || 0),
                     sessions: Number(r.sessions || 0),
+                    modelledSessions: modelled?.pages[r.pathname] ?? null,
                     // null (not 0) when there's no session-linked data for this
                     // page yet — a page with only minimal-consent traffic has
                     // no bounce/exit/duration signal to report, which reads
@@ -854,16 +886,27 @@ async function _handler(req, res) {
         // full-consent fraction. Not derived from the consent platform's own DB
         // (which lives on a separate server); computed entirely from the consent_level
         // field captured in analytics_events at event time.
-        consentImpact: computeConsentImpact(totalsRes.rows[0], dailyRes.rows),
+        consentImpact: withModel(computeConsentImpact(totalsRes.rows[0], dailyRes.rows), modelled),
+        modelled: modelled && {
+            method: modelled.method, sessions: modelled.sessions,
+            observedSessions: modelled.observedSessions, coverage: Math.round(modelled.coverage * 1000) / 10,
+        },
         lastTouchByChannel: lastTouchByChannelRes.rows.map(r => ({
             channel:  r.channel,
             sessions: Number(r.sessions || 0),
         })),
-        channels: channelsRes.rows.map(r => ({
-            channel:  r.channel,
-            events:   Number(r.events   || 0),
-            sessions: Number(r.sessions || 0),
-        })),
+        channels: channelsRes.rows.map(r => {
+            // The channel's own scale (modelled ÷ consenting landing sessions)
+            // applied to the sessions shown, so the column never reads lower.
+            const m = modelled?.channels[r.channel];
+            const sessions = Number(r.sessions || 0);
+            return {
+                channel:  r.channel,
+                events:   Number(r.events   || 0),
+                sessions,
+                modelledSessions: m?.observed ? Math.round(sessions * (m.modelled / m.observed)) : null,
+            };
+        }),
         segment: { device: segDevice, country: segCountry, channel: segChannel, consent: segConsent },
         countries: countriesRes.rows.map(r => ({
             code:   r.country_code,
