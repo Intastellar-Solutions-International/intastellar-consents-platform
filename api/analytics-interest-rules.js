@@ -9,6 +9,7 @@
  */
 
 import { getPool } from "./_db.js";
+import { validateJwt } from "./_member-auth.js";
 
 const ALLOWED_ORIGINS = [
     "https://www.intastellarconsents.com",
@@ -25,21 +26,6 @@ function setCors(req, res) {
     res.setHeader("Access-Control-Allow-Credentials", "true");
     res.setHeader("Access-Control-Allow-Methods", "GET,POST,DELETE,OPTIONS");
     res.setHeader("Access-Control-Allow-Headers", "Authorization,Organisation,Content-Type");
-}
-
-function validateJwt(authHeader) {
-    const match = (authHeader || "").match(/^Bearer\s+(.+)$/i);
-    if (!match) return null;
-    try {
-        const decoded = Buffer.from(match[1], "base64").toString("utf8");
-        const parts = decoded.split(".");
-        if (parts.length !== 3) return null;
-        const payload = JSON.parse(Buffer.from(parts[1], "base64").toString("utf8"));
-        const now = Math.floor(Date.now() / 1000);
-        if (payload.iss !== "Intastellar Account") return null;
-        if ((payload.nbf && payload.nbf > now) || (payload.exp && payload.exp < now)) return null;
-        return payload;
-    } catch { return null; }
 }
 
 async function ensureTable(db) {

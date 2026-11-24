@@ -24,6 +24,7 @@
 import { checkAndFireAlerts } from "./_alert-check.js";
 import { getPool } from "./_db.js";
 import { ensureScanNotificationSchema, syncScanNotifications, getNotificationPreferences, setNotificationPreference } from "./_scan-notifications.js";
+import { validateJwt } from "./_member-auth.js";
 // ── Schema setup ─────────────────────────────────────────────────────────────
 
 let schemaReady = false;
@@ -90,21 +91,6 @@ async function ensureSchema(db) {
 }
 
 // ── Auth ──────────────────────────────────────────────────────────────────────
-
-function validateJwt(authHeader) {
-    const match = (authHeader || "").match(/^Bearer\s+(.+)$/i);
-    if (!match) return null;
-    try {
-        const parts = Buffer.from(match[1], "base64").toString("utf8").split(".");
-        if (parts.length !== 3) return null;
-        const payload = JSON.parse(Buffer.from(parts[1], "base64").toString("utf8"));
-        const now = Math.floor(Date.now() / 1000);
-        if ((payload.exp && payload.exp < now) || (payload.nbf && payload.nbf > now)) return null;
-        return payload;
-    } catch {
-        return null;
-    }
-}
 
 function cleanDomain(raw) {
     if (!raw) return null;

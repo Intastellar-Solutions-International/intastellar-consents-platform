@@ -1,4 +1,5 @@
 import { getPool } from "./_db.js";
+import { validateJwt } from "./_member-auth.js";
 /**
  * GET    /api/ad-connections?domain=example.com  — list connections for org (optionally filtered by domain)
  * DELETE /api/ad-connections?platform=google_ads&domain=example.com — remove a connection
@@ -8,29 +9,6 @@ import { getPool } from "./_db.js";
  * Required env vars:
  *   POSTGRES_URL — Neon connection string
  */
-function validateJwt(authHeader) {
-    const match = (authHeader || "").match(/^Bearer\s+(.+)$/i);
-    if (!match) return null;
-    try {
-        // Token is base64-encoded wholesale (per Authentication.php JWTDecode):
-        // base64_decode(token) → "header.payload.sig", then payload is decoded again.
-        const decoded = Buffer.from(match[1], "base64").toString("utf8");
-        const parts = decoded.split(".");
-        if (parts.length !== 3) return null;
-        const payload = JSON.parse(Buffer.from(parts[1], "base64").toString("utf8"));
-        const now = Math.floor(Date.now() / 1000);
-        const iss = payload.iss ?? "";
-        if (iss === "Intastellar Account") {
-            if ((payload.nbf && payload.nbf > now) || (payload.exp && payload.exp < now)) return null;
-        } else if (iss === "Intastellar Cron") {
-            if (payload.sub !== "cron_scan_domains" || (payload.exp && payload.exp < now)) return null;
-        } else {
-            return null;
-        }
-        return payload;
-    } catch { return null; }
-}
-
 const ALLOWED_ORIGINS = [
     "https://www.intastellarconsents.com",
     "https://www.consentsmanagement.com",
@@ -102,7 +80,7 @@ export default async function handler(req, res) {
 
     const authHeader = req.headers.authorization
         || (req.query.token ? `Bearer ${req.query.token}` : "");
-    const jwt = validateJwt(authHeader);
+    const jwt = validateJwt(authHeader, { allowCron: true });
     if (!jwt) return res.status(401).json({ error: "Unauthorized" });
 
     const orgId = parseInt(

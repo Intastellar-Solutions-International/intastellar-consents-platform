@@ -28,7 +28,12 @@ function getAuthToken(): ?string
 
 function validateToken(string $token): ?object
 {
-    $secret = $_ENV['JWT_SECRET'] ?? getenv('JWT_SECRET') ?: null;
+    // JWT_SECRETS: comma-separated, newest first — lets the signing key rotate
+    // (old and new both accepted for a while). JWT_SECRET still works alone.
+    $secrets = array_values(array_unique(array_filter(array_map('trim', array_merge(
+        explode(',', (string)($_ENV['JWT_SECRETS'] ?? getenv('JWT_SECRETS') ?: '')),
+        [(string)($_ENV['JWT_SECRET'] ?? getenv('JWT_SECRET') ?: '')]
+    )))));
 
     // Resolve the raw "header.payload.sig" string — try plain first, then base64-decoded
     $raw = null;
@@ -67,21 +72,25 @@ function validateToken(string $token): ?object
         return null;
     }
 
-    // Verify signature when secret is configured
-    if ($secret) {
+    // Verify the signature against any configured secret
+    if ($secrets) {
         $algo = ($alg === 'hs512') ? 'sha512' : 'sha256';
         $data = $headerB64 . '.' . $payloadB64;
-        $hmac = hash_hmac($algo, $data, $secret, true);
-
-        // Standard encoding: base64url(hmac_binary)
-        $single = rtrim(strtr(base64_encode($hmac), '+/', '-_'), '=');
-        // Double encoding: base64url(base64url(hmac_binary))  — JWTGenerate() quirk
-        $double = rtrim(strtr(base64_encode($single), '+/', '-_'), '=');
-
-        if (!hash_equals($single, $sigPart) && !hash_equals($double, $sigPart)) {
+        $valid = false;
+        foreach ($secrets as $secret) {
+            $hmac = hash_hmac($algo, $data, $secret, true);
+            // Standard encoding: base64url(hmac_binary)
+            $single = rtrim(strtr(base64_encode($hmac), '+/', '-_'), '=');
+            // Double encoding: base64url(base64url(hmac_binary))  — JWTGenerate() quirk
+            $double = rtrim(strtr(base64_encode($single), '+/', '-_'), '=');
+            if (hash_equals($single, $sigPart) || hash_equals($double, $sigPart)) { $valid = true; break; }
+        }
+        if (!$valid) {
             error_log('[auth] JWT signature mismatch (alg=' . $algo . ')');
             return null;
         }
+    } else {
+        error_log('[auth] JWT_SECRET(S) not set — token signatures are NOT verified');
     }
 
     return $payload;

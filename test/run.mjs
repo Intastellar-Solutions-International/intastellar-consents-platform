@@ -62,6 +62,7 @@ import "./help.test.mjs";
 import "./campaign-consent.test.mjs";
 import "./app-handoff.test.mjs";
 import "./mobile-push.test.mjs";
+import "./auth.test.mjs";
 import "./transfer-compliance.test.mjs";
 import "./legal-basis.test.mjs";
 import "./evidence.test.mjs";

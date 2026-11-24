@@ -11,6 +11,7 @@
 
 import { checkAndFireAlerts } from "./_alert-check.js";
 import { getPool } from "./_db.js";
+import { validateJwt } from "./_member-auth.js";
 let tableReady = false;
 async function ensureTable(db) {
     if (tableReady) return;
@@ -68,21 +69,6 @@ function setCors(req, res) {
     res.setHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, OPTIONS");
     res.setHeader("Access-Control-Allow-Headers", "Authorization, Organisation, Content-Type");
     res.setHeader("Access-Control-Max-Age", "86400");
-}
-
-function validateJwt(authHeader) {
-    const match = (authHeader || "").match(/^Bearer\s+(.+)$/i);
-    if (!match) return null;
-    try {
-        const parts = Buffer.from(match[1], "base64").toString("utf8").split(".");
-        if (parts.length !== 3) return null;
-        const payload = JSON.parse(Buffer.from(parts[1], "base64").toString("utf8"));
-        const now = Math.floor(Date.now() / 1000);
-        if ((payload.exp && payload.exp < now) || (payload.nbf && payload.nbf > now)) return null;
-        return payload;
-    } catch {
-        return null;
-    }
 }
 
 function cleanDomain(raw) {

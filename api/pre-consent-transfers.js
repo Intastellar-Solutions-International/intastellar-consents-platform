@@ -21,6 +21,7 @@ import { getPool } from "./_db.js";
 import { normalizeBannerDomain } from "./_banner-domain.js";
 import { summarizeConsentPhase, applyFirstVisit, firstVisitApplies } from "./_consent-phase.js";
 import { FIRST_VISIT, NOT_FIRST_VISIT, ensureScanColumns } from "./_scan-schema.js";
+import { validateJwt } from "./_member-auth.js";
 
 const BANNER_CATEGORY = {
     advertising:    "marketing",
@@ -75,21 +76,6 @@ function setCors(req, res) {
     res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
     res.setHeader("Access-Control-Allow-Headers", "Authorization, Organisation, Content-Type");
     res.setHeader("Access-Control-Max-Age", "86400");
-}
-
-function validateJwt(authHeader) {
-    const match = (authHeader || "").match(/^Bearer\s+(.+)$/i);
-    if (!match) return null;
-    try {
-        const parts = Buffer.from(match[1], "base64").toString("utf8").split(".");
-        if (parts.length !== 3) return null;
-        const payload = JSON.parse(Buffer.from(parts[1], "base64").toString("utf8"));
-        const now = Math.floor(Date.now() / 1000);
-        if ((payload.exp && payload.exp < now) || (payload.nbf && payload.nbf > now)) return null;
-        return payload;
-    } catch {
-        return null;
-    }
 }
 
 export default async function handler(req, res) {

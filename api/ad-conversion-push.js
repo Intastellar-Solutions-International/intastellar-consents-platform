@@ -1,5 +1,6 @@
 import { getPool } from "./_db.js";
 import { tryRefreshToken } from "./_ad-platform-fetch.js";
+import { validateJwt } from "./_member-auth.js";
 /**
  * GET  /api/ad-conversion-push?domain=  — list recent push records for the org
  * POST /api/ad-conversion-push          — process pending conversions and push to ad platforms
@@ -26,21 +27,6 @@ import { tryRefreshToken } from "./_ad-platform-fetch.js";
  *   MICROSOFT_ADS_CLIENT_ID / MICROSOFT_ADS_CLIENT_SECRET — Microsoft Ads token refresh
  *   (Google Ads uses the Data Manager API — no developer token needed)
  */
-function validateJwt(authHeader) {
-    const match = (authHeader || "").match(/^Bearer\s+(.+)$/i);
-    if (!match) return null;
-    try {
-        const decoded = Buffer.from(match[1], "base64").toString("utf8");
-        const parts = decoded.split(".");
-        if (parts.length !== 3) return null;
-        const payload = JSON.parse(Buffer.from(parts[1], "base64").toString("utf8"));
-        const now = Math.floor(Date.now() / 1000);
-        if (payload.iss !== "Intastellar Account") return null;
-        if ((payload.nbf && payload.nbf > now) || (payload.exp && payload.exp < now)) return null;
-        return payload;
-    } catch { return null; }
-}
-
 const ALLOWED_ORIGINS = [
     "https://www.intastellarconsents.com",
     "https://www.consentsmanagement.com",

@@ -18,24 +18,10 @@ import { scanDomain } from "./_scan-core.js";
 import { summarizeConsentPhase } from "./_consent-phase.js";
 import { getPool } from "./_db.js";
 import { ACCEPT_ALL, scanRegion, ensureScanColumns, dispatchFirstVisitScan } from "./_scan-schema.js";
+import { validateJwt } from "./_member-auth.js";
 
 // ── DB pool (reused across warm invocations) ──────────────────────────────────
 // ── JWT validation (mirrors PHP — checks claims only, no signature) ────────────
-function validateJwt(authHeader) {
-    const match = (authHeader || "").match(/^Bearer\s+(.+)$/i);
-    if (!match) return null;
-    try {
-        const parts = Buffer.from(match[1], "base64").toString("utf8").split(".");
-        if (parts.length !== 3) return null;
-        const payload = JSON.parse(Buffer.from(parts[1], "base64").toString("utf8"));
-        const now = Math.floor(Date.now() / 1000);
-        if ((payload.exp && payload.exp < now) || (payload.nbf && payload.nbf > now)) return null;
-        return payload;
-    } catch {
-        return null;
-    }
-}
-
 // ── CORS ──────────────────────────────────────────────────────────────────────
 const ALLOWED_ORIGINS = [
     "https://www.intastellarconsents.com",

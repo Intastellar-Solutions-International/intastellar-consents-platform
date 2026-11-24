@@ -14,6 +14,7 @@ import { domainToASCII } from "node:url";
 import chromium from "@sparticuz/chromium";
 import puppeteer from "puppeteer-core";
 import { buildReportHtml, REPORT_TYPES, esc } from "./_report-html.js";
+import { validateJwt } from "./_member-auth.js";
 
 const CONSENT_API = "https://apis.intastellarsolutions.com/analytics/gdpr";
 const SCAN_API = "https://www.intastellarconsents.com/api/pre-consent-transfers";
@@ -43,21 +44,6 @@ function setCors(req, res) {
     res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
     res.setHeader("Access-Control-Allow-Headers", "Authorization, Organisation, X-User-Email, Content-Type, ExcludeBots");
     res.setHeader("Access-Control-Max-Age", "86400");
-}
-
-function validateJwt(authHeader) {
-    const match = (authHeader || "").match(/^Bearer\s+(.+)$/i);
-    if (!match) return null;
-    try {
-        const parts = Buffer.from(match[1], "base64").toString("utf8").split(".");
-        if (parts.length !== 3) return null;
-        const payload = JSON.parse(Buffer.from(parts[1], "base64").toString("utf8"));
-        const now = Math.floor(Date.now() / 1000);
-        if ((payload.exp && payload.exp < now) || (payload.nbf && payload.nbf > now)) return null;
-        return payload;
-    } catch {
-        return null;
-    }
 }
 
 async function fetchConsentApi(endpoint, req, domain, fromDate, toDate) {

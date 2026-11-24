@@ -14,27 +14,7 @@
 
 import { tryRefreshToken, fetchPlatformDataDaily } from "./_ad-platform-fetch.js";
 import { getPool } from "./_db.js";
-function validateJwt(authHeader) {
-    const match = (authHeader || "").match(/^Bearer\s+(.+)$/i);
-    if (!match) return null;
-    try {
-        const decoded = Buffer.from(match[1], "base64").toString("utf8");
-        const parts = decoded.split(".");
-        if (parts.length !== 3) return null;
-        const payload = JSON.parse(Buffer.from(parts[1], "base64").toString("utf8"));
-        const now = Math.floor(Date.now() / 1000);
-        const iss = payload.iss ?? "";
-        if (iss === "Intastellar Account") {
-            if ((payload.nbf && payload.nbf > now) || (payload.exp && payload.exp < now)) return null;
-        } else if (iss === "Intastellar Cron") {
-            if (payload.sub !== "cron_scan_domains" || (payload.exp && payload.exp < now)) return null;
-        } else {
-            return null;
-        }
-        return payload;
-    } catch { return null; }
-}
-
+import { validateJwt } from "./_member-auth.js";
 const ALLOWED_ORIGINS = [
     "https://www.intastellarconsents.com",
     "https://www.consentsmanagement.com",
@@ -320,7 +300,7 @@ export default async function handler(req, res) {
     if (req.method === "OPTIONS") return res.status(204).end();
     if (req.method !== "GET") return res.status(405).json({ error: "Method not allowed" });
 
-    const jwt = validateJwt(req.headers.authorization);
+    const jwt = validateJwt(req.headers.authorization, { allowCron: true });
     if (!jwt) return res.status(401).json({ error: "Unauthorized" });
 
     const orgId = parseInt(req.headers.organisation || req.headers.organization || "0", 10);

@@ -46,6 +46,55 @@ export function signatureValid(raw, secret) {
     }
 }
 
+/**
+ * Signing secrets for Intastellar Accounts tokens: JWT_SECRETS (comma
+ * separated, newest first — lets the key rotate without signing everyone
+ * out) plus JWT_SECRET. Empty when neither is set.
+ */
+export function configuredSecrets(env = process.env) {
+    return [...String(env.JWT_SECRETS || "").split(","), env.JWT_SECRET || ""]
+        .map((s) => s.trim())
+        .filter((s, i, all) => s && all.indexOf(s) === i);
+}
+
+let warnedNoSecret = false;
+
+/**
+ * The one token check for API endpoints (replaces the per-file copies that
+ * only read claims). Returns the claims, or null.
+ * - Intastellar Accounts tokens: expiry, issuer and — when a secret is
+ *   configured — the signature.
+ * - "Intastellar Cron" service tokens: only with { allowCron: true }, and
+ *   only if identical to DOMAINS_API_KEY (constant-time compare).
+ * Without any secret configured it still accepts account tokens by their
+ * claims (as before) and logs a warning, so deploying this never locks
+ * anyone out; the signature check switches on with JWT_SECRET(S).
+ */
+export function validateJwt(authHeader, { allowCron = false, env = process.env, now = Date.now() } = {}) {
+    const raw = rawJwt(authHeader);
+    if (!raw) return null;
+    const claims = jwtClaims(raw, now / 1000);
+    if (!claims) return null;
+
+    if (claims.iss === "Intastellar Cron") {
+        if (!allowCron || claims.sub !== "cron_scan_domains") return null;
+        const given = Buffer.from(String(authHeader).replace(/^Bearer\s+/i, ""));
+        const expected = Buffer.from(String(env.DOMAINS_API_KEY || ""));
+        return expected.length && given.length === expected.length && timingSafeEqual(given, expected) ? claims : null;
+    }
+    if (claims.iss !== "Intastellar Account") return null;
+
+    const secrets = configuredSecrets(env);
+    if (!secrets.length) {
+        if (!warnedNoSecret) {
+            warnedNoSecret = true;
+            console.warn("[auth] JWT_SECRET(S) not set — token signatures are NOT verified");
+        }
+        return claims;
+    }
+    return secrets.some((secret) => signatureValid(raw, secret)) ? claims : null;
+}
+
 // Intastellar Accounts puts the account's details under PAYLOAD
 // (Checkcookies.php → JWTGenerate); without reading it, callers that don't
 // send X-User-Email (the mobile app) were refused with 401.
@@ -59,12 +108,13 @@ export function isMember(response, organisationId, email) {
 }
 
 /** { organisationId, email } for a confirmed member, otherwise { status, error }. */
-export async function requireMember(req, { fetchImpl = fetch, secret = process.env.JWT_SECRET, now = Date.now() } = {}) {
+export async function requireMember(req, { fetchImpl = globalThis.fetch, secret, now = Date.now() } = {}) {
     const unauthorized = { status: 401, error: "Unauthorized" };
     const raw = rawJwt(req.headers.authorization);
     const claims = raw && jwtClaims(raw, now / 1000);
     if (!claims) return unauthorized;
-    if (secret && !signatureValid(raw, secret)) return unauthorized;
+    const secrets = secret ? [secret] : configuredSecrets();
+    if (secrets.length && !secrets.some((key) => signatureValid(raw, key))) return unauthorized;
 
     const organisationId = parseInt(req.headers.organisation || "0", 10);
     if (!organisationId) return { status: 400, error: "Missing Organisation header" };
