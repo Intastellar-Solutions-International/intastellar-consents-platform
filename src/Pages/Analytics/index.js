@@ -11,6 +11,7 @@ import DataSource from "../../Components/DataSource/index.js";
 import { useExcludeBots } from "../../Functions/botFilter.js";
 import { ScannerHost } from "../../API/host.js";
 import { AnnotationStrip, ExportMenu, HERO_CHART, useAnnotations } from "./DataTools.js";
+import { HistoryNote, HistoryTables } from "./HistoryImport.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import { buildInsights, InsightsSection, SnapshotRow } from "./OverviewInsights.js";
 import {
@@ -729,6 +730,28 @@ function OverviewSkeleton() {
     );
 }
 
+// Imported Google Analytics 4 numbers for days before tracking began
+// (HistoryImport.js) — a section of its own, never blended into our charts.
+function HistoryPanel({ history }) {
+    const daily = history.daily.map((d) => ({ date: d.date, sessions: Number(d.sessions || 0) }));
+    return (
+        <div className="sa-panel sa-history">
+            <h3 className="sa-panel__title">
+                <IconTrendingUp className="sa-icon" /> {t("Before Intastellar Analytics")}
+            </h3>
+            <HistoryNote history={history} />
+            <div className="sa-history__kpis">
+                <span><strong>{history.totals.sessions.toLocaleString(appLocale())}</strong> {t("Sessions")}</span>
+                <span><strong>{history.totals.users.toLocaleString(appLocale())}</strong> {t("Users")}</span>
+                <span><strong>{history.totals.pageviews.toLocaleString(appLocale())}</strong> {t("Page views")}</span>
+                {history.totals.keyEvents > 0 ? <span><strong>{Math.round(history.totals.keyEvents).toLocaleString(appLocale())}</strong> {t("Key events")}</span> : null}
+            </div>
+            <SingleValueChart daily={daily} valueOf={(d) => d.sessions} gradientId="sa-history-fill" color="var(--color-data)" />
+            <HistoryTables history={history} only={["channels", "pages"]} />
+        </div>
+    );
+}
+
 // ── Main overview page ────────────────────────────────────────────────────────
 export default function SiteAnalytics() {
     document.title = "Overview, Analytics | Intastellar Consents";
@@ -1063,6 +1086,8 @@ export default function SiteAnalytics() {
 
                         </div>
                     )}
+
+                    {!loading && data?.history && <HistoryPanel history={data.history} />}
 
                 </div>
             </div>

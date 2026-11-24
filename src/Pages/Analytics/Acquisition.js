@@ -4,6 +4,7 @@ import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import { useAnalyticsPage, MiniBar, KpiCard, useAnalyticsReport, toIsoDate, pctChange, formatPercent, formatDuration, SegmentFilter, authHeaders, useCompareRange, usePrevRange } from "./_shared.js";
 import { IconMegaphone, IconTrendingUp, IconGlobe } from "./Icons.js";
 import { ModelledNote, OutboundClicksPanel } from "./ReportPanels.js";
+import { HistoryNote, HistoryTables } from "./HistoryImport.js";
 import { t } from "../../i18n/index.js";
 import "./Analytics.css";
 import { appLocale } from "../../Functions/format.js";
@@ -448,6 +449,13 @@ export default function AnalyticsAcquisition() {
 
                     {/* Moved here from Overview (Home now shows insights only) */}
                     {showData && <OutboundClicksPanel data={data} />}
+                    {!loading && data?.history?.wholePeriod && (
+                        <div className="sa-panel sa-history">
+                            <h3 className="sa-panel__title">{t("Before Intastellar Analytics")}</h3>
+                            <HistoryNote history={data.history} />
+                            <HistoryTables history={data.history} />
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

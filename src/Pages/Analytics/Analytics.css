@@ -8655,3 +8655,13 @@ details[open] .ca-context-summary::before { content: "▾"; }
 .sa-export__options p { margin: 4px 10px 2px; font-size: 0.75rem; color: var(--color-text-secondary); }
 .sa-export__status { font-size: 0.78rem; color: var(--color-text-secondary); }
 .sa-export__status--error { color: var(--color-danger-text); }
+
+/* GA4 history (HistoryImport.js) */
+.sa-history-note { font-size: 0.8rem; color: var(--color-text-secondary); margin: 0 0 12px; max-width: 80ch; }
+.sa-history__kpis { display: flex; flex-wrap: wrap; gap: 8px 24px; margin-bottom: 12px; color: var(--color-text-secondary); }
+.sa-history__kpis strong { color: var(--color-text-primary); font-size: 1.1rem; margin-right: 4px; }
+.sa-history .ga4-two-col { margin-top: 16px; }
+.sa-history-import__progress { display: grid; grid-template-columns: minmax(120px, 240px) 1fr; gap: 12px; align-items: center; margin: 8px 0; }
+.sa-history-import__actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.sa-history-import__error { color: var(--color-danger-text); }
+.sa-history-import__hint { font-size: 0.78rem; color: var(--color-text-secondary); margin: 8px 0 0; }

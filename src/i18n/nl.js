@@ -1014,6 +1014,27 @@ const nl = {
     "What happened?": "Wat is er gebeurd?",
     "{count} rows exported.": "{count} rijen geëxporteerd.",
     "{coverage} of page views are in groups with consenting visitors; the rest can't be modelled and are left out.": "{coverage} van de paginaweergaven valt in groepen met instemmende bezoekers; de rest kan niet worden gemodelleerd en wordt weggelaten.",
+    // Analytics: GA4 history import
+    "(not set)": "(niet ingesteld)",
+    "Before Intastellar Analytics": "Vóór Intastellar Analytics",
+    "Continue import": "Import hervatten",
+    "Copies daily totals, channels, devices and countries, and the top pages per month, so your charts go back further than your Intastellar tracking. Only aggregated numbers are imported, no data about individual visitors.": "Kopieert dagtotalen, kanalen, apparaten en landen, en de toppagina's per maand, zodat je grafieken verder teruggaan dan je Intastellar-tracking. Alleen samengevoegde cijfers worden geïmporteerd, geen gegevens over individuele bezoekers.",
+    "Delete imported data": "Geïmporteerde gegevens verwijderen",
+    "Device": "Apparaat",
+    "Devices": "Apparaten",
+    "Import again": "Opnieuw importeren",
+    "Import history": "Geschiedenis importeren",
+    "Import your Google Analytics history": "Je Google Analytics-geschiedenis importeren",
+    "Imported from Google Analytics 4 for {from} – {to}, before Intastellar Analytics tracking began on {start}. GA4 counts sessions its own way, so compare trends rather than exact numbers.": "Geïmporteerd uit Google Analytics 4 voor {from} – {to}, voordat tracking met Intastellar Analytics begon op {start}. GA4 telt sessies op zijn eigen manier, dus vergelijk trends in plaats van exacte aantallen.",
+    "Imported from Google Analytics 4 for {from} – {to}. GA4 counts sessions its own way, so compare trends rather than exact numbers.": "Geïmporteerd uit Google Analytics 4 voor {from} – {to}. GA4 telt sessies op zijn eigen manier, dus vergelijk trends in plaats van exacte aantallen.",
+    "Imported: {from} – {to} ({count} rows).": "Geïmporteerd: {from} – {to} ({count} rijen).",
+    "Importing… {percent} % (back to {date})": "Importeren… {percent} % (terug tot {date})",
+    "Key events": "Belangrijke gebeurtenissen",
+    "The import runs while this page is open. Continue where it stopped any time.": "De import loopt zolang deze pagina open is. Ga altijd verder waar hij stopte.",
+    "The import stopped: {reason}": "De import is gestopt: {reason}",
+    "The request failed.": "Het verzoek is mislukt.",
+    "This Google Analytics property has no data to import.": "Deze Google Analytics-property heeft geen gegevens om te importeren.",
+    "Users": "Gebruikers",
 };
 
 export default nl;

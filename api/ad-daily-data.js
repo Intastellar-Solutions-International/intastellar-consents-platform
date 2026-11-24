@@ -12,7 +12,7 @@
  * Headers: Authorization: Bearer <token>   Organisation: <org_id>
  */
 
-import { tryRefreshToken, fetchPlatformDataDaily } from "./_ad-platform-fetch.js";
+import { tryRefreshToken, fetchPlatformDataDaily, inspectGscUrl } from "./_ad-platform-fetch.js";
 import { getPool } from "./_db.js";
 import { validateJwt, withMembership } from "./_member-auth.js";
 const ALLOWED_ORIGINS = [

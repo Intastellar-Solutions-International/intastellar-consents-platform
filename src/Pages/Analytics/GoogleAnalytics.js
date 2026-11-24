@@ -9,6 +9,7 @@ import Authentication from "../../Authentication/Auth.js";
 import { ScannerHost } from "../../API/host.js";
 import { toIsoDate, formatPercent, KpiCard, useCompareRange } from "./_shared.js";
 import { PanelSkeleton } from "./components/Skeleton.js";
+import { Ga4ImportPanel } from "./HistoryImport.js";
 import { IconBarChart, IconUsers, IconGlobe, IconCursorClick } from "./Icons.js";
 import { Ga4SessionsChart } from "./GoogleAnalyticsChart.js";
 import googleAnalyticsLogo from "../../Components/Header/icons/google-analytics.svg";
@@ -308,6 +309,9 @@ export default function GoogleAnalytics() {
 
                     {(ga4.connected || (ga4.loading && ga4.rows)) && (
                         <div className="sa-ga4-stack">
+
+                            {/* ── History import into Intastellar Analytics ───── */}
+                            {ga4.connected && <Ga4ImportPanel domain={domain} />}
 
                             {/* ── KPI strip ──────────────────────────────────────── */}
                             {summary && (

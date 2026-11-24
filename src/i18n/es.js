@@ -1014,6 +1014,27 @@ const es = {
     "What happened?": "¿Qué pasó?",
     "{count} rows exported.": "{count} filas exportadas.",
     "{coverage} of page views are in groups with consenting visitors; the rest can't be modelled and are left out.": "{coverage} de las páginas vistas están en grupos con visitantes que dieron su consentimiento; el resto no se puede modelar y queda fuera.",
+    // Analytics: GA4 history import
+    "(not set)": "(sin definir)",
+    "Before Intastellar Analytics": "Antes de Intastellar Analytics",
+    "Continue import": "Continuar importación",
+    "Copies daily totals, channels, devices and countries, and the top pages per month, so your charts go back further than your Intastellar tracking. Only aggregated numbers are imported, no data about individual visitors.": "Copia los totales diarios, canales, dispositivos y países, y las páginas principales por mes, para que tus gráficos lleguen más atrás que tu seguimiento con Intastellar. Solo se importan cifras agregadas, ningún dato sobre visitantes individuales.",
+    "Delete imported data": "Eliminar datos importados",
+    "Device": "Dispositivo",
+    "Devices": "Dispositivos",
+    "Import again": "Importar de nuevo",
+    "Import history": "Importar historial",
+    "Import your Google Analytics history": "Importa tu historial de Google Analytics",
+    "Imported from Google Analytics 4 for {from} – {to}, before Intastellar Analytics tracking began on {start}. GA4 counts sessions its own way, so compare trends rather than exact numbers.": "Importado de Google Analytics 4 para {from} – {to}, antes de que empezara el seguimiento con Intastellar Analytics el {start}. GA4 cuenta las sesiones a su manera, así que compara tendencias y no cifras exactas.",
+    "Imported from Google Analytics 4 for {from} – {to}. GA4 counts sessions its own way, so compare trends rather than exact numbers.": "Importado de Google Analytics 4 para {from} – {to}. GA4 cuenta las sesiones a su manera, así que compara tendencias y no cifras exactas.",
+    "Imported: {from} – {to} ({count} rows).": "Importado: {from} – {to} ({count} filas).",
+    "Importing… {percent} % (back to {date})": "Importando… {percent} % (hasta el {date})",
+    "Key events": "Eventos clave",
+    "The import runs while this page is open. Continue where it stopped any time.": "La importación sigue mientras esta página esté abierta. Continúa donde se detuvo cuando quieras.",
+    "The import stopped: {reason}": "La importación se detuvo: {reason}",
+    "The request failed.": "La solicitud falló.",
+    "This Google Analytics property has no data to import.": "Esta propiedad de Google Analytics no tiene datos que importar.",
+    "Users": "Usuarios",
 };
 
 export default es;

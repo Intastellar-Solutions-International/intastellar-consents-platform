@@ -324,7 +324,8 @@ export function useAnalyticsPage() {
     // analytics pages show data for workspace combined views too.
     const hasDomain = !!chrome.domain || isPropertyRollup;
 
-    const showSetup = !loading && data && (data.noSiteKey || data.noData);
+    // A period with only imported GA4 history (before tracking began) isn't "set up tracking".
+    const showSetup = !loading && data && (data.noSiteKey || (data.noData && !data.history));
     const showData  = !loading && data && !data.noSiteKey && !data.noData;
 
     return { ...chrome, tick, setTick, data, loading, detailLoading, error, showSetup, showData, isPropertyRollup, hasDomain };

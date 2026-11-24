@@ -1014,6 +1014,27 @@ const nb = {
     "What happened?": "Hva skjedde?",
     "{count} rows exported.": "{count} rader eksportert.",
     "{coverage} of page views are in groups with consenting visitors; the rest can't be modelled and are left out.": "{coverage} av sidevisningene ligger i grupper med samtykkende besøkende; resten kan ikke modelleres og er utelatt.",
+    // Analytics: GA4 history import
+    "(not set)": "(ikke angitt)",
+    "Before Intastellar Analytics": "Før Intastellar Analytics",
+    "Continue import": "Fortsett importen",
+    "Copies daily totals, channels, devices and countries, and the top pages per month, so your charts go back further than your Intastellar tracking. Only aggregated numbers are imported, no data about individual visitors.": "Kopierer daglige totaler, kanaler, enheter og land samt de mest besøkte sidene per måned, slik at diagrammene går lenger tilbake enn Intastellar-sporingen. Bare sammenstilte tall importeres, ingen data om enkeltbesøkende.",
+    "Delete imported data": "Slett importerte data",
+    "Device": "Enhet",
+    "Devices": "Enheter",
+    "Import again": "Importer på nytt",
+    "Import history": "Importer historikk",
+    "Import your Google Analytics history": "Importer Google Analytics-historikken din",
+    "Imported from Google Analytics 4 for {from} – {to}, before Intastellar Analytics tracking began on {start}. GA4 counts sessions its own way, so compare trends rather than exact numbers.": "Importert fra Google Analytics 4 for {from} – {to}, før sporingen med Intastellar Analytics startet {start}. GA4 teller økter på sin egen måte, så sammenlign trender heller enn eksakte tall.",
+    "Imported from Google Analytics 4 for {from} – {to}. GA4 counts sessions its own way, so compare trends rather than exact numbers.": "Importert fra Google Analytics 4 for {from} – {to}. GA4 teller økter på sin egen måte, så sammenlign trender heller enn eksakte tall.",
+    "Imported: {from} – {to} ({count} rows).": "Importert: {from} – {to} ({count} rader).",
+    "Importing… {percent} % (back to {date})": "Importerer… {percent} % (tilbake til {date})",
+    "Key events": "Nøkkelhendelser",
+    "The import runs while this page is open. Continue where it stopped any time.": "Importen kjører mens denne siden er åpen. Fortsett der den stoppet når som helst.",
+    "The import stopped: {reason}": "Importen stoppet: {reason}",
+    "The request failed.": "Forespørselen mislyktes.",
+    "This Google Analytics property has no data to import.": "Denne Google Analytics-egenskapen har ingen data å importere.",
+    "Users": "Brukere",
 };
 
 export default nb;

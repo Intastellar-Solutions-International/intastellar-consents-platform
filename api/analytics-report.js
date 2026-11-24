@@ -11,6 +11,7 @@ import { selfReferralClause, noiseReferralClause, getApprovedDomains, isValidHos
 import { isHeadlineConversionSql, classifyTier } from "./_conversions.js";
 import { validateJwt, withMembership } from "./_member-auth.js";
 import { modelSiteTraffic, referrerGroupSql } from "./_modelled-traffic.js";
+import { importedHistory } from "./_ga4-import.js";
 const ALLOWED_ORIGINS = [
     "https://www.intastellarconsents.com",
     "https://www.consentsmanagement.com",
@@ -816,6 +817,12 @@ async function _handler(req, res) {
         }).catch((err) => { console.error("[analytics-report] traffic model failed:", err?.message); return null; })
         : null;
 
+    // Imported Google Analytics 4 numbers for days before our own tracking
+    // started (_ga4-import.js) — kept apart from our figures, never mixed in.
+    const history = !segConsent && !segChannel && !segDevice && !segCountry
+        ? await importedHistory(db, siteId, fromDate, toDate).catch((err) => { console.error("[analytics-report] history failed:", err?.message); return null; })
+        : null;
+
     return res.status(200).json({
         excludeBots,
         siteId,
@@ -823,6 +830,7 @@ async function _handler(req, res) {
         from: fromDate,
         to: toDate,
         noData: total === 0,
+        history,
         industryBenchmark,
         totals: {
             total,
