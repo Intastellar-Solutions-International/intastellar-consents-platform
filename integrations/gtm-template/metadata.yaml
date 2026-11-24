@@ -1,0 +1,5 @@
+homepage: "https://www.intastellarconsents.com"
+documentation: "https://github.com/Intastellar-Solutions-International/intastellar-analytics-gtm-template#readme"
+versions:
+  - sha: REPLACE_WITH_COMMIT_SHA_OF_TEMPLATE_TPL
+    changeNotes: Initial release.
