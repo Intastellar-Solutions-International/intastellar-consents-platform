@@ -3,7 +3,8 @@ import { ScannerHost } from "../../API/host.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import { useAnalyticsPage, MiniBar, KpiCard, useAnalyticsReport, toIsoDate, pctChange, formatPercent, formatDuration, SegmentFilter, authHeaders, useCompareRange, usePrevRange } from "./_shared.js";
 import { IconMegaphone, IconTrendingUp, IconGlobe } from "./Icons.js";
-import { OutboundClicksPanel } from "./ReportPanels.js";
+import { ModelledNote, OutboundClicksPanel } from "./ReportPanels.js";
+import { t } from "../../i18n/index.js";
 import "./Analytics.css";
 import { appLocale } from "../../Functions/format.js";
 
@@ -234,6 +235,7 @@ export default function AnalyticsAcquisition() {
                                                 <th>Channel</th>
                                                 <th className="sa-table__num">Events</th>
                                                 <th className="sa-table__num">Sessions</th>
+                                                {data.modelled ? <th className="sa-table__num" title={t("Including visitors who declined statistics cookies")}>{t("Modelled sessions")}</th> : null}
                                                 <th className="sa-table__num">% of sessions</th>
                                                 <th className="sa-table__bar" />
                                             </tr>
@@ -244,6 +246,7 @@ export default function AnalyticsAcquisition() {
                                                     <td>{CHANNEL_LABELS[c.channel] || c.channel}</td>
                                                     <td className="sa-table__num">{c.events.toLocaleString(appLocale())}</td>
                                                     <td className="sa-table__num">{c.sessions.toLocaleString(appLocale())}</td>
+                                                    {data.modelled ? <td className="sa-table__num sa-table__modelled">{c.modelledSessions != null ? `≈ ${c.modelledSessions.toLocaleString(appLocale())}` : "—"}</td> : null}
                                                     <td className="sa-table__num">
                                                         {data.totals.uniqueSessions > 0 ? formatPercent((c.sessions / data.totals.uniqueSessions) * 100) : "—"}
                                                     </td>
@@ -253,11 +256,12 @@ export default function AnalyticsAcquisition() {
                                                 </tr>
                                             ))}
                                             {!data.channels?.length && (
-                                                <tr><td colSpan={5} style={{ color: "rgba(130,130,130,0.55)", fontSize: "0.8rem" }}>No data yet</td></tr>
+                                                <tr><td colSpan={data.modelled ? 6 : 5} style={{ color: "rgba(130,130,130,0.55)", fontSize: "0.8rem" }}>No data yet</td></tr>
                                             )}
                                         </tbody>
                                     </table>
                                 </div>
+                                <ModelledNote modelled={data.modelled} />
                             </div>
 
                             {/* Top pages */}
@@ -272,6 +276,7 @@ export default function AnalyticsAcquisition() {
                                             <th>Page</th>
                                             <th className="sa-table__num">Views</th>
                                             <th className="sa-table__num">Sessions</th>
+                                            {data.modelled ? <th className="sa-table__num" title={t("Including visitors who declined statistics cookies")}>{t("Modelled sessions")}</th> : null}
                                             <th className="sa-table__num">Bounce rate</th>
                                             <th className="sa-table__num">Exit rate</th>
                                             <th className="sa-table__num">Avg. time on page</th>
@@ -284,6 +289,7 @@ export default function AnalyticsAcquisition() {
                                                 <td className="sa-table__path" title={p.pathname}>{p.pathname}</td>
                                                 <td className="sa-table__num">{p.views.toLocaleString(appLocale())}</td>
                                                 <td className="sa-table__num">{p.sessions.toLocaleString(appLocale())}</td>
+                                                {data.modelled ? <td className="sa-table__num sa-table__modelled">{p.modelledSessions != null ? `≈ ${p.modelledSessions.toLocaleString(appLocale())}` : "—"}</td> : null}
                                                 <td className="sa-table__num">{p.bounceRate != null ? formatPercent(p.bounceRate) : "—"}</td>
                                                 <td className="sa-table__num">{p.exitRate != null ? formatPercent(p.exitRate) : "—"}</td>
                                                 <td className="sa-table__num">{p.avgDurationSec != null ? formatDuration(p.avgDurationSec) : "—"}</td>

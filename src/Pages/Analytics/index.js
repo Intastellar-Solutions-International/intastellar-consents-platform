@@ -10,6 +10,7 @@ import SetupProgressCard from "../Onboarding/SetupProgressCard.js";
 import DataSource from "../../Components/DataSource/index.js";
 import { useExcludeBots } from "../../Functions/botFilter.js";
 import { ScannerHost } from "../../API/host.js";
+import { AnnotationStrip, ExportMenu, HERO_CHART, useAnnotations } from "./DataTools.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import { buildInsights, InsightsSection, SnapshotRow } from "./OverviewInsights.js";
 import {
@@ -159,8 +160,7 @@ function smoothPath(pts) {
 }
 
 function AreaChart({ daily }) {
-    const W = 800, H = 182;
-    const PAD = { t: 14, r: 18, b: 34, l: 46 };
+    const { W, H, PAD } = HERO_CHART;
     const cW = W - PAD.l - PAD.r, cH = H - PAD.t - PAD.b;
 
     if (!daily?.length) return <div className="sa-chart sa-chart--empty">{t("No data for this period")}</div>;
@@ -253,8 +253,7 @@ const DATA_FILL_FROM = "rgb(var(--c-data) / 0.45)";
 const DATA_FILL_TO = "rgb(var(--c-data) / 0.02)";
 
 function SingleValueChart({ daily, valueOf, color = DATA_LINE, fillFrom = DATA_FILL_FROM, fillTo = DATA_FILL_TO, formatValue, yMax, gradientId }) {
-    const W = 800, H = 182;
-    const PAD = { t: 14, r: 18, b: 34, l: 46 };
+    const { W, H, PAD } = HERO_CHART;
     const cW = W - PAD.l - PAD.r, cH = H - PAD.t - PAD.b;
 
     if (!daily?.length) return <div className="sa-chart sa-chart--empty">{t("No data for this period")}</div>;
@@ -755,6 +754,9 @@ export default function SiteAnalytics() {
     // Same "Exclude suspected bots" preference as the CMP and Live view
     const [excludeBots, setExcludeBots] = useExcludeBots();
     const { data: prevData } = useAnalyticsReport(domain, prevRange.fromIso, prevRange.toIso, tick);
+    // Notes on the timeline — one site only (not a property rollup), same period as the chart.
+    const singleSite = !!(data && !data.noSiteKey && !data.isPropertyRollup);
+    const notes = useAnnotations(singleSite ? domain : null, data?.from, data?.to);
 
     const siteConfig    = useSiteConfig(domain);
     const { domains: foreignDomains } = useForeignDomains(domain);
@@ -889,6 +891,7 @@ export default function SiteAnalytics() {
                         {!data.isPropertyRollup && (
                             <SegmentFilter segment={segment} setSegment={setSegment} />
                         )}
+                        {singleSite && <ExportMenu domain={domain} from={data.from} to={data.to} excludeBots={excludeBots} />}
                     </div>
                 ) : null}
             />
@@ -1005,7 +1008,10 @@ export default function SiteAnalytics() {
                                         </div>
                                     </div>
                                     {cardMeta[activeHeroMetric]?.hasDaily ? (
-                                        cardMeta[activeHeroMetric].renderChart(data.daily)
+                                        <>
+                                            {cardMeta[activeHeroMetric].renderChart(data.daily)}
+                                            {singleSite && <AnnotationStrip key={data.to} daily={data.daily} notes={notes} defaultDay={data.to} />}
+                                        </>
                                     ) : (
                                         <EmptyState
                                             title={t("No daily breakdown yet")}

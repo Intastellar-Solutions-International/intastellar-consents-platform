@@ -161,7 +161,7 @@ export default function AnalyticsConsent() {
                     )}
 
                     {/* Moved here from Overview (Home now shows insights only) */}
-                    {showData && <ConsentImpactPanel impact={data.consentImpact} />}
+                    {showData && <ConsentImpactPanel impact={data.consentImpact} modelled={data.modelled} />}
                 </div>
             </div>
         </div>

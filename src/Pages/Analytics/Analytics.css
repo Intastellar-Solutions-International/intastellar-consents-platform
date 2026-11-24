@@ -8609,3 +8609,49 @@ details[open] .ca-context-summary::before { content: "▾"; }
 
 .sa-site-gate__cta:hover { background: var(--color-accent-strong); }
 .sa-site-gate__cta:focus-visible { outline: none; box-shadow: var(--shadow-focus); }
+
+/* Modelled sessions (api/_modelled-traffic.js) */
+.sa-table__modelled { color: var(--color-text-secondary); font-style: italic; }
+.sa-model-note { margin-top: 12px; font-size: 0.8rem; color: var(--color-text-secondary); }
+.sa-model-note summary { cursor: pointer; }
+.sa-model-note p { margin: 8px 0 0; line-height: 1.5; max-width: 72ch; }
+
+/* Notes on the timeline (DataTools.js → AnnotationStrip) */
+.sa-notes { margin-top: 4px; }
+.sa-notes__track { position: relative; height: 14px; }
+.sa-notes__pin {
+    position: absolute; top: 2px; width: 10px; height: 10px; margin-left: -5px;
+    border-radius: 50% 50% 50% 0; transform: rotate(-45deg);
+    background: var(--color-accent); cursor: help;
+}
+.sa-notes__panel { font-size: 0.82rem; }
+.sa-notes__panel summary { cursor: pointer; color: var(--color-text-secondary); width: fit-content; }
+.sa-notes__list { list-style: none; margin: 8px 0; padding: 0; display: grid; gap: 6px; }
+.sa-notes__list li { display: grid; grid-template-columns: 6.5rem 1fr auto auto; gap: 10px; align-items: baseline; }
+.sa-notes__day, .sa-notes__by { color: var(--color-text-secondary); font-variant-numeric: tabular-nums; }
+.sa-notes__by { font-size: 0.75rem; }
+.sa-notes__delete { background: none; border: 0; color: var(--color-text-secondary); cursor: pointer; font-size: 1rem; line-height: 1; }
+.sa-notes__empty { color: var(--color-text-secondary); margin: 8px 0; max-width: 72ch; }
+.sa-notes__form { display: grid; grid-template-columns: auto 1fr auto; gap: 8px; margin-top: 8px; }
+.sa-notes__form input { min-width: 0; }
+.sa-notes__error { color: var(--color-danger-text); margin: 6px 0 0; }
+@media (max-width: 600px) {
+    .sa-notes__list li { grid-template-columns: 1fr auto; }
+    .sa-notes__form { grid-template-columns: 1fr; }
+}
+
+/* Export CSV in the Overview header (DataTools.js → ExportMenu) */
+.sa-export { position: relative; display: inline-flex; align-items: center; gap: 8px; }
+.sa-export__menu > summary { list-style: none; }
+.sa-export__menu > summary::-webkit-details-marker { display: none; }
+.sa-export__options {
+    position: absolute; right: 0; top: calc(100% + 6px); z-index: 20; width: 260px;
+    display: grid; gap: 4px; padding: 8px; border-radius: 10px;
+    background: var(--color-bg-raised); border: 1px solid var(--color-border);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+.sa-export__options button { text-align: left; padding: 8px 10px; border: 0; border-radius: 6px; background: none; color: inherit; cursor: pointer; }
+.sa-export__options button:hover:not(:disabled) { background: var(--color-accent-subtle); }
+.sa-export__options p { margin: 4px 10px 2px; font-size: 0.75rem; color: var(--color-text-secondary); }
+.sa-export__status { font-size: 0.78rem; color: var(--color-text-secondary); }
+.sa-export__status--error { color: var(--color-danger-text); }

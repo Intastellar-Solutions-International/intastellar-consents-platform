@@ -8,6 +8,26 @@ import { MiniBar, formatPercent, elementLabel } from "./_shared.js";
 import { IconExternalLink, IconCursorClick, IconShieldCheck } from "./Icons.js";
 import { STATISTICS_CONSENT } from "../../Functions/consentMetrics.js";
 import { appLocale } from "../../Functions/format.js";
+import { t } from "../../i18n/index.js";
+
+/**
+ * "How it's calculated" for modelled sessions (api/_modelled-traffic.js) —
+ * shown wherever a modelled number appears, so it's never a black box.
+ * `modelled`: the report's { method, coverage } (coverage in percent).
+ */
+export function ModelledNote({ modelled }) {
+    if (!modelled) return null;
+    return (
+        <details className="sa-model-note">
+            <summary>{t("Modelled sessions include visitors who declined statistics cookies. How it's calculated")}</summary>
+            <p>{t("Every page view is counted, also from visitors who declined statistics cookies, but their page views can't be linked into sessions. We group page views by day, type of referrer (none, search, social, other) and device, and work out the share of consenting views in each group. Each consenting session then stands for 1 ÷ that share. Small groups use the day's or the site's share.")}</p>
+            <p>{t("Assumption: within a group, visitors who decline view about as many pages per visit as visitors who accept. No visitor is identified or tracked for this.")}</p>
+            {modelled.coverage < 99 ? (
+                <p>{t("{coverage} of page views are in groups with consenting visitors; the rest can't be modelled and are left out.", { coverage: formatPercent(modelled.coverage) })}</p>
+            ) : null}
+        </details>
+    );
+}
 
 export function OutboundClicksPanel({ data }) {
     const rows = data?.topOutbound || [];
@@ -115,7 +135,7 @@ export function FrustrationPanel({ data }) {
 // visitors who decline full consent and are therefore counted with less
 // granularity. Uses only analytics_events (consent_level column) — the
 // consent platform's separate DB is not consulted here.
-export function ConsentImpactPanel({ impact }) {
+export function ConsentImpactPanel({ impact, modelled }) {
     if (!impact || impact.estimatedTrue == null) return null;
     const { consentRate, observedSessions, estimatedTrue } = impact;
     const hidden = Math.max(0, estimatedTrue - observedSessions);
@@ -127,8 +147,7 @@ export function ConsentImpactPanel({ impact }) {
                 <IconShieldCheck className="sa-icon" /> Consent Impact Estimator
             </h3>
             <p className="sa-panel__sub">
-                Visitors who decline full consent are visible only as anonymous events — their sessions
-                cannot be stitched. This estimates your true session volume based on the observed statistics consent rate.
+                {t("Visitors who decline statistics cookies are counted as anonymous page views, without sessions. This estimates your real number of sessions, grouped by day, referrer and device.")}
             </p>
             <div className="sa-ci-kpis">
                 <div className="sa-ci-kpi">
@@ -142,7 +161,7 @@ export function ConsentImpactPanel({ impact }) {
                     <span className="sa-ci-kpi__value">{observedSessions.toLocaleString(appLocale())}</span>
                 </div>
                 <div className="sa-ci-kpi">
-                    <span className="sa-ci-kpi__label">Estimated true total</span>
+                    <span className="sa-ci-kpi__label">{t("Modelled sessions")}</span>
                     <span className="sa-ci-kpi__value">{estimatedTrue.toLocaleString(appLocale())}</span>
                     <span className="sa-ci-kpi__note">~{hiddenPct}% of traffic uncounted in session analytics</span>
                 </div>
@@ -157,6 +176,7 @@ export function ConsentImpactPanel({ impact }) {
                     <span>Uncounted</span>
                 </div>
             </div>
+            <ModelledNote modelled={modelled} />
         </div>
     );
 }
