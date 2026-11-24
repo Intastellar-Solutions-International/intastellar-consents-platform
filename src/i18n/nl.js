@@ -1061,6 +1061,8 @@ const nl = {
     "Mobile": "Mobiel",
     "Tablet": "Tablet",
     "Other": "Overig",
+    "Segment {name}: {segment}": "Segment {name}: {segment}",
+    "Swap A and B": "A en B omwisselen",
 };
 
 export default nl;

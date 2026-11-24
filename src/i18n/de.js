@@ -1061,6 +1061,8 @@ const de = {
     "Mobile": "Mobil",
     "Tablet": "Tablet",
     "Other": "Sonstige",
+    "Segment {name}: {segment}": "Segment {name}: {segment}",
+    "Swap A and B": "A und B tauschen",
 };
 
 export default de;

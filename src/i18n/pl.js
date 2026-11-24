@@ -1061,6 +1061,8 @@ const pl = {
     "Mobile": "Telefon",
     "Tablet": "Tablet",
     "Other": "Inne",
+    "Segment {name}: {segment}": "Segment {name}: {segment}",
+    "Swap A and B": "Zamień A i B",
 };
 
 export default pl;

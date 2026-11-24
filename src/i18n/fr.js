@@ -1061,6 +1061,8 @@ const fr = {
     "Mobile": "Mobile",
     "Tablet": "Tablette",
     "Other": "Autre",
+    "Segment {name}: {segment}": "Segment {name} : {segment}",
+    "Swap A and B": "Inverser A et B",
 };
 
 export default fr;

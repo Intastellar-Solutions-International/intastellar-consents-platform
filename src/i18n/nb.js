@@ -1061,6 +1061,8 @@ const nb = {
     "Mobile": "Mobil",
     "Tablet": "Nettbrett",
     "Other": "Annet",
+    "Segment {name}: {segment}": "Segment {name}: {segment}",
+    "Swap A and B": "Bytt om A og B",
 };
 
 export default nb;

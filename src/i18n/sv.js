@@ -1061,6 +1061,8 @@ const sv = {
     "Mobile": "Mobil",
     "Tablet": "Surfplatta",
     "Other": "Övrigt",
+    "Segment {name}: {segment}": "Segment {name}: {segment}",
+    "Swap A and B": "Byt plats på A och B",
 };
 
 export default sv;

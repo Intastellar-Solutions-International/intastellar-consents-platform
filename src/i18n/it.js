@@ -1061,6 +1061,8 @@ const it = {
     "Mobile": "Mobile",
     "Tablet": "Tablet",
     "Other": "Altro",
+    "Segment {name}: {segment}": "Segmento {name}: {segment}",
+    "Swap A and B": "Scambia A e B",
 };
 
 export default it;

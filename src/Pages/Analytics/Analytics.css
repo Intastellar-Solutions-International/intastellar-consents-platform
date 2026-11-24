@@ -8667,7 +8667,6 @@ details[open] .ca-context-summary::before { content: "▾"; }
 .sa-history-import__hint { font-size: 0.78rem; color: var(--color-text-secondary); margin: 8px 0 0; }
 
 /* Segments page (Segments.js) */
-.sa-seg-pickers { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; margin-bottom: 16px; }
 .sa-seg-sidebyside__hd { display: flex; align-items: center; gap: 6px; margin: 0 0 8px; font-size: 0.85rem; color: var(--color-text-secondary); }
 .sa-seg-sidebyside__hd strong { color: var(--color-text-primary); font-weight: 600; }
 .sa-seg-swatch { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: middle; }
@@ -8682,6 +8681,25 @@ details[open] .ca-context-summary::before { content: "▾"; }
 .sa-seg-legend > span { display: inline-flex; align-items: center; }
 .sa-seg-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 16px; }
 .sa-seg-sidebyside { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+/* Grid items default to min-width: auto — without this a long path pushes the
+   B table past the panel edge. Fixed layout keeps numbers and bars visible. */
+.sa-seg-grid > *, .sa-seg-sidebyside > * { min-width: 0; }
+.sa-seg-sidebyside .sa-table { table-layout: fixed; width: 100%; }
+.sa-seg-sidebyside .sa-table th:nth-child(2), .sa-seg-sidebyside .sa-table td:nth-child(2) { width: 6.5rem; }
+.sa-seg-sidebyside .sa-table th:nth-child(3), .sa-seg-sidebyside .sa-table td:nth-child(3) { width: 22%; }
+.sa-seg-sidebyside .sa-table td:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* A / B pickers in the sticky header (toolbar) */
+.sa-seg-toolbar { display: flex; align-items: center; gap: 8px; flex-wrap: nowrap; min-width: 0; }
+.sa-seg-pick { position: relative; min-width: 0; }
+.sa-seg-pick > summary { list-style: none; display: inline-flex; align-items: center; gap: 6px; max-width: 280px; cursor: pointer; }
+.sa-seg-pick > summary::-webkit-details-marker { display: none; }
+.sa-seg-pick__desc { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--color-text-secondary); }
+.sa-seg-pick__menu {
+    position: absolute; left: 0; top: calc(100% + 6px); z-index: 30; padding: 12px; border-radius: 10px;
+    background: var(--color-bg-raised); border: 1px solid var(--color-border); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    width: max-content; max-width: min(640px, 90vw);
+}
+.sa-seg-pick__menu .sa-seg-filter { flex-wrap: wrap; }
 .sa-seg-dims { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; }
 .sa-seg-dims__key { margin: 0 0 6px; font-size: 0.9rem; font-family: var(--font-mono, ui-monospace, monospace); }
 .sa-code { background: var(--color-bg-sunken); border: 1px solid var(--color-border-subtle); border-radius: 8px; padding: 12px; overflow-x: auto; font-size: 0.8rem; }

@@ -204,6 +204,23 @@ function DimensionsPanel({ dimensions, onCompare }) {
     );
 }
 
+/** Compact header control: "A · All visitors ▾" opening the segment's filters. */
+function SegmentPicker({ name, color, segment, setSegment, dimensions }) {
+    return (
+        <details className="sa-seg-pick">
+            <summary className="sa-customize-btn" aria-label={t("Segment {name}: {segment}", { name, segment: describeSegment(segment) })}>
+                <span className="sa-seg-swatch" style={{ background: color }} />
+                <strong>{name}</strong>
+                <span className="sa-seg-pick__desc">{describeSegment(segment)}</span>
+                <span aria-hidden="true">▾</span>
+            </summary>
+            <div className="sa-seg-pick__menu">
+                <SegmentFilter segment={segment} setSegment={setSegment} dimensions={dimensions} />
+            </div>
+        </details>
+    );
+}
+
 export default function AnalyticsSegments() {
     document.title = "Segments, Analytics | Intastellar Consents";
     const { domain, getLastDays, setLastDays, fromDate, setFromDate, toDate, setToDate, fromIso, toIso } = useAnalyticsPageChrome();
@@ -232,6 +249,14 @@ export default function AnalyticsSegments() {
                 toDate={toDate}
                 setFromDate={setFromDate}
                 setToDate={setToDate}
+                toolbar={domain ? (
+                    <div className="sa-meta-row sa-seg-toolbar">
+                        <SegmentPicker name="A" color={COLORS.a} segment={segA} setSegment={setSegA} dimensions={dimensions} />
+                        <button type="button" className="sa-customize-btn" aria-label={t("Swap A and B")} title={t("Swap A and B")}
+                            onClick={() => { setSegA(segB); setSegB(segA); }}>⇄</button>
+                        <SegmentPicker name="B" color={COLORS.b} segment={segB} setSegment={setSegB} dimensions={dimensions} />
+                    </div>
+                ) : null}
             />
             <div className="dashboard-content">
                 <div className="sa-page">
@@ -240,16 +265,10 @@ export default function AnalyticsSegments() {
                         <>
                             <div className="sa-panel">
                                 <h3 className="sa-panel__title">{t("Compare segments")}</h3>
-                                <div className="sa-seg-pickers">
-                                    <div>
-                                        <p className="sa-seg-sidebyside__hd"><span className="sa-seg-swatch" style={{ background: COLORS.a }} />{t("Segment A")}: <strong>{describeSegment(segA)}</strong></p>
-                                        <SegmentFilter segment={segA} setSegment={setSegA} dimensions={dimensions} />
-                                    </div>
-                                    <div>
-                                        <p className="sa-seg-sidebyside__hd"><span className="sa-seg-swatch" style={{ background: COLORS.b }} />{t("Segment B")}: <strong>{describeSegment(segB)}</strong></p>
-                                        <SegmentFilter segment={segB} setSegment={setSegB} dimensions={dimensions} />
-                                    </div>
-                                </div>
+                                <p className="sa-seg-legend">
+                                    <span><span className="sa-seg-swatch" style={{ background: COLORS.a }} />A — {describeSegment(segA)}</span>
+                                    <span><span className="sa-seg-swatch" style={{ background: COLORS.b }} />B — {describeSegment(segB)}</span>
+                                </p>
                                 {consentingOnly ? <p className="sa-history-note">{t("Custom dimensions and full consent only cover visitors who accepted statistics cookies, so those segments show consenting traffic only.")}</p> : null}
                                 {(loadingA || loadingB) && !ready ? <p className="sa-notice">{t("Loading…")}</p> : null}
                                 {ready ? <MetricsTable a={a} b={b} /> : null}

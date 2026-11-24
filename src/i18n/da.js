@@ -1061,6 +1061,8 @@ const da = {
     "Mobile": "Mobil",
     "Tablet": "Tablet",
     "Other": "Andet",
+    "Segment {name}: {segment}": "Segment {name}: {segment}",
+    "Swap A and B": "Byt om på A og B",
 };
 
 export default da;
