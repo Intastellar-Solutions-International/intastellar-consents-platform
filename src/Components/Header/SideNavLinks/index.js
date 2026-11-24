@@ -5,7 +5,7 @@ import heatmapLogo from "../icons/heatmap.svg";
 import recordingsLogo from "../icons/recordings.svg";
 
 import {
-    analyticsPath, analyticsAudiencePath, analyticsAcquisitionPath, analyticsConsentPath,
+    analyticsPath, analyticsAudiencePath, analyticsSegmentsPath, analyticsAcquisitionPath, analyticsConsentPath,
     analyticsMarketingPath, analyticsAdSpendPath, analyticsAttributionPath, analyticsSettingsPath, analyticsGoogleAnalyticsPath,
     analyticsSearchConsolePath,
     analyticsHeatmapPath, analyticsRecordingsPath, analyticsBotsPath, analyticsLivePath,
@@ -156,6 +156,10 @@ export function buildAnalyticsLinks(domain) {
         {
             name: "Audience",
             path: analyticsAudiencePath(domain),
+        },
+        {
+            name: "Segments",
+            path: analyticsSegmentsPath(domain),
         },
         {
             divider: true,

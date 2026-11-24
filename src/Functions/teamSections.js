@@ -3,7 +3,7 @@
 // handles, organisation ids and record ids are dropped from the path.
 
 const ANALYTICS_SECTIONS = [
-    "audience", "acquisition", "consent", "heatmap", "live", "recordings", "bots",
+    "audience", "segments", "acquisition", "consent", "heatmap", "live", "recordings", "bots",
     "user-flow", "conversions", "page-experiments", "marketing", "ad-spend", "settings",
     "event-debugger", "forms", "performance", "page-weight", "attribution",
     "google-analytics", "search-console", "cohorts", "alerts", "scheduled-reports",

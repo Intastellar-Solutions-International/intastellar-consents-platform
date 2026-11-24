@@ -67,6 +67,7 @@ import "./modelled-traffic.test.mjs";
 import "./analytics-data.test.mjs";
 import "./ga4-import.test.mjs";
 import "./gtm-template.test.mjs";
+import "./segments.test.mjs";
 import "./transfer-compliance.test.mjs";
 import "./legal-basis.test.mjs";
 import "./evidence.test.mjs";

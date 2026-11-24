@@ -16,7 +16,7 @@ import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import { buildInsights, InsightsSection, SnapshotRow } from "./OverviewInsights.js";
 import {
     authHeaders, useAnalyticsPage, useAnalyticsReport, useSiteConfig,
-    toIsoDate, pctChange, IndustryBenchmarkNote, formatPercent, SegmentFilter,
+    toIsoDate, pctChange, IndustryBenchmarkNote, formatPercent, SegmentFilter, useDimensions,
     useCompareRange, usePrevRange, useLiveData,
     useForeignDomains, splitForeignDomainsByRecency,
     formatCurrency, CURRENCY_SYMBOLS, formatCount,
@@ -780,6 +780,7 @@ export default function SiteAnalytics() {
     // Notes on the timeline — one site only (not a property rollup), same period as the chart.
     const singleSite = !!(data && !data.noSiteKey && !data.isPropertyRollup);
     const notes = useAnnotations(singleSite ? domain : null, data?.from, data?.to);
+    const dimensions = useDimensions(singleSite ? domain : null, data?.from, data?.to);
 
     const siteConfig    = useSiteConfig(domain);
     const { domains: foreignDomains } = useForeignDomains(domain);
@@ -912,7 +913,7 @@ export default function SiteAnalytics() {
                             </span>
                         )}
                         {!data.isPropertyRollup && (
-                            <SegmentFilter segment={segment} setSegment={setSegment} />
+                            <SegmentFilter segment={segment} setSegment={setSegment} dimensions={dimensions} />
                         )}
                         {singleSite && <ExportMenu domain={domain} from={data.from} to={data.to} excludeBots={excludeBots} />}
                     </div>

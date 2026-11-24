@@ -36,7 +36,7 @@ export const DATASETS = {
             ["utm_source", "utm_source"], ["utm_medium", "utm_medium"], ["utm_campaign", "utm_campaign"], ["utm_content", "utm_content"],
             ["country", "country_code"], ["region", "region"], ["device", "device_type"], ["browser", "browser_family"], ["os", "os_family"],
             ["language", "language"], ["duration_sec", "duration_sec"], ["scroll_depth", "scroll_depth"],
-            ["new_visitor", "is_new_visitor"], ["embedded", "is_embedded"], ["session_id", "session_id"],
+            ["new_visitor", "is_new_visitor"], ["embedded", "is_embedded"], ["dimensions", "custom_dims::text"], ["session_id", "session_id"],
         ],
         // Same "suspected bot" rule as the reports (hosting network, no consent).
         botFilter: "NOT (is_hosting_ip IS TRUE AND consent_level <> 'full')",

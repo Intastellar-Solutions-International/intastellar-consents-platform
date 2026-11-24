@@ -59,7 +59,8 @@ function cachedReport(domain, fromIso, toIso, tick) {
 
 function segCacheKey(domain, fromIso, toIso, segment, excludeBots = true) {
     const seg = segment || {};
-    return `${domain}|${fromIso}|${toIso}|${seg.device||""}|${seg.country||""}|${seg.channel||""}|${seg.consent||""}|${excludeBots ? "nobots" : "bots"}`;
+    const dim = seg.dimension ? `${seg.dimension.key}=${seg.dimension.value}` : "";
+    return `${domain}|${fromIso}|${toIso}|${seg.device||""}|${seg.country||""}|${seg.channel||""}|${seg.consent||""}|${dim}|${excludeBots ? "nobots" : "bots"}`;
 }
 
 export function useAnalyticsReport(domain, fromIso, toIso, tick = 0, segment = null) {
@@ -98,6 +99,7 @@ export function useAnalyticsReport(domain, fromIso, toIso, tick = 0, segment = n
         if (segment?.country) params.seg_country = segment.country;
         if (segment?.channel) params.seg_channel = segment.channel;
         if (segment?.consent) params.seg_consent = segment.consent;
+        if (segment?.dimension) { params.seg_dim_key = segment.dimension.key; params.seg_dim_value = segment.dimension.value; }
         const qs = new URLSearchParams(params).toString();
         const headers = { ...authHeaders(), ExcludeBots: excludeBots ? "1" : "0" };
 
@@ -135,7 +137,7 @@ export function useAnalyticsReport(domain, fromIso, toIso, tick = 0, segment = n
         });
 
         return () => { ignore = true; };
-    }, [domain, fromIso, toIso, tick, segment?.device, segment?.country, segment?.channel, segment?.consent, excludeBots]); // eslint-disable-line react-hooks/exhaustive-deps
+    }, [domain, fromIso, toIso, tick, segment?.device, segment?.country, segment?.channel, segment?.consent, segment?.dimension?.key, segment?.dimension?.value, excludeBots]); // eslint-disable-line react-hooks/exhaustive-deps
 
     return { data, loading, detailLoading, error };
 }
@@ -204,6 +206,7 @@ function readSegmentFromUrl() {
         channel: pick("channel"),
         consent: pick("consent"),
         country: /^[A-Z]{2}$/.test(country) ? country : "",
+        dimension: parseDimensionOption(q.get("dim")),
     };
 }
 
@@ -254,6 +257,8 @@ export function useAnalyticsPageChrome() {
             if (segment[key]) url.searchParams.set(key, segment[key]);
             else url.searchParams.delete(key);
         }
+        if (segment.dimension) url.searchParams.set("dim", dimensionOption(segment.dimension));
+        else url.searchParams.delete("dim");
         const next = url.pathname + url.search + url.hash;
         if (next !== window.location.pathname + window.location.search + window.location.hash) {
             window.history.replaceState(window.history.state, "", next);
@@ -301,7 +306,7 @@ export function useAnalyticsPage() {
     const [tick, setTick] = useState(0);
     const segParam = useMemo(() => {
         const s = chrome.segment;
-        const hasAny = s.device || s.country || s.channel || s.consent;
+        const hasAny = s.device || s.country || s.channel || s.consent || s.dimension;
         return hasAny ? s : null;
     }, [chrome.segment]);
 
@@ -726,12 +731,36 @@ export function MiniBar({ value, max, color = "rgb(var(--c-data) / 0.75)" }) {
 // Segment filter bar — renders a row of compact dropdowns to filter the
 // analytics-report by device, country, traffic channel, and consent level.
 // `segment` and `setSegment` come from useAnalyticsPageChrome().
-export function SegmentFilter({ segment, setSegment }) {
+/** The site's custom dimensions (api/analytics-dimensions.js) for a period; [] while loading or without any. */
+export function useDimensions(domain, fromIso, toIso) {
+    const [dimensions, setDimensions] = useState([]);
+    useEffect(() => {
+        if (!domain || !fromIso || !toIso) return undefined;
+        let cancelled = false;
+        const qs = new URLSearchParams({ domain, from: fromIso, to: toIso });
+        fetch(`${ScannerHost}/api/analytics-dimensions?${qs}`, { headers: authHeaders() })
+            .then(r => (r.ok ? r.json() : { dimensions: [] }))
+            .then(body => { if (!cancelled) setDimensions(body.dimensions || []); })
+            .catch(() => { if (!cancelled) setDimensions([]); });
+        return () => { cancelled = true; };
+    }, [domain, fromIso, toIso]);
+    return dimensions;
+}
+
+/** Option value for a custom-dimension segment ("key=value"), and back. */
+export const dimensionOption = (d) => (d ? `${d.key}=${d.value}` : "");
+export const parseDimensionOption = (v) => {
+    const i = String(v || "").indexOf("=");
+    return i > 0 ? { key: v.slice(0, i), value: v.slice(i + 1) } : null;
+};
+
+/** `dimensions` (optional): from /api/analytics-dimensions — adds a custom-dimension filter. */
+export function SegmentFilter({ segment, setSegment, dimensions }) {
     function set(k, v) {
         setSegment(s => ({ ...s, [k]: v || null }));
     }
 
-    const activeCount = [segment.device, segment.country, segment.channel, segment.consent].filter(Boolean).length;
+    const activeCount = [segment.device, segment.country, segment.channel, segment.consent, segment.dimension].filter(Boolean).length;
     const cls = (base, value) => base + (value ? ` ${base}--active` : "");
 
     return (
@@ -780,9 +809,23 @@ export function SegmentFilter({ segment, setSegment }) {
                 onChange={e => setSegment(s => ({ ...s, country: e.target.value.toUpperCase().slice(0, 2) }))}
             />
 
+            {dimensions?.length ? (
+                <select className={cls("sa-seg-filter__select", segment.dimension)}
+                    aria-label={t("Custom dimension")}
+                    value={dimensionOption(segment.dimension)}
+                    onChange={e => setSegment(s => ({ ...s, dimension: parseDimensionOption(e.target.value) }))}>
+                    <option value="">{t("All dimensions")}</option>
+                    {dimensions.map(d => (
+                        <optgroup key={d.key} label={d.key}>
+                            {d.values.map(v => <option key={v.value} value={dimensionOption({ key: d.key, value: v.value })}>{v.value}</option>)}
+                        </optgroup>
+                    ))}
+                </select>
+            ) : null}
+
             {activeCount > 0 && (
                 <button type="button" className="sa-seg-filter__clear"
-                    onClick={() => setSegment({ device: null, country: "", channel: null, consent: null })}>
+                    onClick={() => setSegment({ device: null, country: "", channel: null, consent: null, dimension: null })}>
                     Clear filters ({activeCount})
                 </button>
             )}

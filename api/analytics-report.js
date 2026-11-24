@@ -12,6 +12,7 @@ import { isHeadlineConversionSql, classifyTier } from "./_conversions.js";
 import { validateJwt, withMembership } from "./_member-auth.js";
 import { modelSiteTraffic, referrerGroupSql } from "./_modelled-traffic.js";
 import { importedHistory } from "./_ga4-import.js";
+import pg from "pg";
 const ALLOWED_ORIGINS = [
     "https://www.intastellarconsents.com",
     "https://www.consentsmanagement.com",
@@ -75,6 +76,18 @@ export function computeConsentImpact(totalsRow, dailyRows) {
             };
         }),
     };
+}
+
+/**
+ * A custom-dimension segment (seg_dim_key / seg_dim_value) → SQL clause or
+ * null. The key must be a dimension name (a-z, 0-9, _); the value is quoted
+ * with pg's escapeLiteral — this clause joins text-built SQL (segAnd).
+ */
+export function dimensionClause(key, value) {
+    const k = String(key || "");
+    const v = String(value ?? "");
+    if (!/^[a-z0-9_]{1,32}$/.test(k) || !v || v.length > 100) return null;
+    return `custom_dims->>'${k}' = ${pg.escapeLiteral(v)}`;
 }
 
 // The estimator's figures from the stratified model when it ran (same totals
@@ -174,6 +187,8 @@ async function _handler(req, res) {
     const segCountry = /^[A-Z]{2}$/.test(rawCountry)           ? rawCountry             : null;
     const segChannel = VALID_CHANNELS.has(req.query.seg_channel) ? req.query.seg_channel : null;
     const segConsent = VALID_CONSENTS.has(req.query.seg_consent) ? req.query.seg_consent : null;
+    // Custom dimension (consented page views only — see a.js sanitizeDims).
+    const segDim = dimensionClause(req.query.seg_dim_key, req.query.seg_dim_value);
 
     // Channel segment maps to UTM+referrer conditions (no user text in SQL).
     const META_SOURCE_PATTERN = `'^(fb|facebook|ig|instagram|msg|messenger|an)$'`;
@@ -256,6 +271,7 @@ async function _handler(req, res) {
         segCountry ? `country_code = '${segCountry}'` : null,
         segConsent ? `consent_level = '${segConsent}'` : null,
         segChannel ? CHANNEL_SQL[segChannel]           : null,
+        segDim,
         embedClause,
         botClause,
         ownHostClause,
@@ -808,7 +824,7 @@ async function _handler(req, res) {
     // Sessions including visitors who declined (see _modelled-traffic.js).
     // Not for a consent or channel segment: anonymous rows carry no UTM /
     // click id, so a channel filter would split them unlike consenting rows.
-    const modelled = total > 0 && !segConsent && !segChannel
+    const modelled = total > 0 && !segConsent && !segChannel && !segDim
         ? await modelSiteTraffic(db, {
             siteId, from: fromDate, toExclusive: toDateExclusive, filter: segAnd,
             groupSql: referrerGroupSql(SELF_REFERRAL, NOISE_REFERRAL),
@@ -819,7 +835,7 @@ async function _handler(req, res) {
 
     // Imported Google Analytics 4 numbers for days before our own tracking
     // started (_ga4-import.js) — kept apart from our figures, never mixed in.
-    const history = !segConsent && !segChannel && !segDevice && !segCountry
+    const history = !segConsent && !segChannel && !segDevice && !segCountry && !segDim
         ? await importedHistory(db, siteId, fromDate, toDate).catch((err) => { console.error("[analytics-report] history failed:", err?.message); return null; })
         : null;
 
@@ -915,7 +931,8 @@ async function _handler(req, res) {
                 modelledSessions: m?.observed ? Math.round(sessions * (m.modelled / m.observed)) : null,
             };
         }),
-        segment: { device: segDevice, country: segCountry, channel: segChannel, consent: segConsent },
+        segment: { device: segDevice, country: segCountry, channel: segChannel, consent: segConsent,
+                   dimension: segDim ? { key: req.query.seg_dim_key, value: req.query.seg_dim_value } : null },
         countries: countriesRes.rows.map(r => ({
             code:   r.country_code,
             events: Number(r.events || 0),

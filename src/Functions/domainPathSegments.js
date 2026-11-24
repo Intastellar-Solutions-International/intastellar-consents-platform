@@ -118,6 +118,12 @@ export function analyticsAudiencePath(domainUnicode) {
     return `/analytics/${seg}/audience`;
 }
 
+export function analyticsSegmentsPath(domainUnicode) {
+    const seg = encodeDomainPathSegment(domainUnicode);
+    if (!seg) return "/analytics/segments";
+    return `/analytics/${seg}/segments`;
+}
+
 export function analyticsAcquisitionPath(domainUnicode) {
     const seg = encodeDomainPathSegment(domainUnicode);
     if (!seg) return "/analytics/acquisition";
@@ -315,9 +321,10 @@ export function navigateWithDomain(history, platformId, domainUnicode, pathname)
         if (pathname === "/analytics/getting-started" || pathname === "/analytics/getting-started/") {
             return;
         }
-        const leaf = ["/marketing", "/audience", "/acquisition", "/consent", "/heatmap", "/recordings", "/bots", "/user-flow", "/conversions", "/ad-spend", "/attribution", "/settings", "/google-analytics", "/search-console", "/page-experiments", "/cohorts", "/alerts", "/scheduled-reports", "/forms", "/performance", "/page-weight", "/event-debugger"].find(s => pathname.includes(s));
+        const leaf = ["/marketing", "/audience", "/segments", "/acquisition", "/consent", "/heatmap", "/recordings", "/bots", "/user-flow", "/conversions", "/ad-spend", "/attribution", "/settings", "/google-analytics", "/search-console", "/page-experiments", "/cohorts", "/alerts", "/scheduled-reports", "/forms", "/performance", "/page-weight", "/event-debugger"].find(s => pathname.includes(s));
         if (leaf === "/marketing")        history.push(analyticsMarketingPath(domainUnicode));
         else if (leaf === "/audience")    history.push(analyticsAudiencePath(domainUnicode));
+        else if (leaf === "/segments")    history.push(analyticsSegmentsPath(domainUnicode));
         else if (leaf === "/acquisition") history.push(analyticsAcquisitionPath(domainUnicode));
         else if (leaf === "/consent")     history.push(analyticsConsentPath(domainUnicode));
         else if (leaf === "/heatmap")     history.push(analyticsHeatmapPath(domainUnicode));

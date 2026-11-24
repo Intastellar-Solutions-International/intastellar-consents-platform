@@ -4,6 +4,7 @@ import { verifyBotDNS } from "./_rdns.js";
 import { recordDebugHit, DEBUG_TOKEN_RE } from "./_debug-hits.js";
 import { createEmbedCache } from "./_minify-embed.js";
 import { classifyTier } from "./_conversions.js";
+import { sanitizeDims } from "./_dims.js";
 /**
  * GET  /api/a  → serves the Intastellar First-Party Analytics embed script
  * POST /api/a  → ingest endpoint receiving pageview events from embedded sites
@@ -379,6 +380,9 @@ async function ensureTables(db) {
         ALTER TABLE analytics_events      ADD COLUMN IF NOT EXISTS asn            INTEGER;
         ALTER TABLE analytics_events      ADD COLUMN IF NOT EXISTS as_org         VARCHAR(255);
         ALTER TABLE analytics_events      ADD COLUMN IF NOT EXISTS is_hosting_ip  BOOLEAN;
+        -- Custom dimensions (intaAnalytics.set / window.intaDimensions):
+        -- consented page views only, sanitizeDims() below.
+        ALTER TABLE analytics_events      ADD COLUMN IF NOT EXISTS custom_dims    JSONB;
         ALTER TABLE analytics_bot_visits  ADD COLUMN IF NOT EXISTS asn            INTEGER;
         ALTER TABLE analytics_bot_visits  ADD COLUMN IF NOT EXISTS as_org         VARCHAR(255);
         ALTER TABLE analytics_bot_visits  ADD COLUMN IF NOT EXISTS is_hosting_ip  BOOLEAN;
@@ -1227,6 +1231,22 @@ function fetchBrowserTopics(c){
   }catch(ex){}
 }
 
+// Custom dimensions — intaAnalytics.set('plan','pro') / set({plan:'pro'}),
+// or window.intaDimensions = {...} before this script loads. Up to 5 keys
+// (a-z, 0-9, _), values up to 100 characters; sent with consented page
+// views only, and kept across SPA navigations. A value set after the page
+// view still arrives with the page's closing beacon.
+var _dims={};
+function setDim(k,v){
+  if(k&&typeof k==='object'){for(var x in k){if(Object.prototype.hasOwnProperty.call(k,x))setDim(x,k[x]);}return;}
+  k=String(k||'').toLowerCase().slice(0,32);
+  if(!/^[a-z0-9_]+$/.test(k))return;
+  if(v==null||v===''){delete _dims[k];return;}
+  if(!_dims.hasOwnProperty(k)&&Object.keys(_dims).length>=5)return;
+  _dims[k]=String(v).slice(0,100);
+}
+try{if(window.intaDimensions)setDim(window.intaDimensions);}catch(e){}
+
 function sendMinimal(c){
   // No sid: a minimal pageview must not create or read the session cookie.
   var pl={s:SITE,cl:'minimal',u:location.pathname,r:document.referrer||'',h:getHost(),dt:devType(),cs:hasStat(c)?1:0,cf:hasFun(c)?1:0,ca:hasAdv(c)?1:0,emb:EMB?1:0};
@@ -1263,6 +1283,7 @@ function sendFull(c,final){
     gc:_iaCid.g||undefined,mc:_iaCid.ms||undefined,fc:_iaCid.fb||undefined
   };
   if(_bt.length&&hasFun(c))pl.bt=_bt;
+  if(Object.keys(_dims).length)pl.cd=_dims;
   send(JSON.stringify(pl));
 }
 
@@ -1459,7 +1480,7 @@ function track(name,opts){
     dw:dw
   }));
 }
-window.intaAnalytics={track:track};
+window.intaAnalytics={track:track,set:setDim};
 
 // ── SPA / virtual-page navigation ────────────────────────────────────────
 // Patches history.pushState/replaceState and listens to popstate so React,
@@ -2208,7 +2229,7 @@ export default async function handler(req, res) {
             dur, cs, cf, ca, emb, g: isGranular, n: eventName, v: eventValue, cur: eventCurrency,
             txn: eventTransactionId, pr: rawProducts, ed: rawExtraData, src: eventSource, tid: abTestId, vid: abVariantId, nv,
             gc: gclid, mc: msclkid, fc: fbclid,
-            bt: rawBrowserTopics } = body;
+            bt: rawBrowserTopics, cd: rawDims } = body;
 
     // See is_embedded column comment in ensureTables() — true when the embed
     // script detected it was running inside a nested browsing context.
@@ -2227,6 +2248,9 @@ export default async function handler(req, res) {
         const ids = rawBrowserTopics.slice(0, 5).filter(n => Number.isInteger(n) && n > 0 && n <= 9999);
         return ids.length ? JSON.stringify(ids) : null;
     })();
+
+    // Custom dimensions: consented page views only (see sanitizeDims).
+    const customDims = consentLevel === "full" ? sanitizeDims(rawDims) : null;
 
     // Dwell-time-per-band — exactly 10 bands (10% of page height each),
     // each a non-negative ms count. Reject anything malformed outright
@@ -2653,14 +2677,17 @@ export default async function handler(req, res) {
               browser_family, os_family, language, timezone,
               duration_sec, scroll_depth, attention_ms, pageview_id, is_new_visitor,
               gclid, msclkid, fbclid,
-              browser_topics, asn, as_org, is_hosting_ip, is_embedded, consent_granular)
-             VALUES ($1,$2,$3,'full',$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28,$29,$30,$31,$32,$33,$34,$35,$36,$37,$38,$39,$40)
+              browser_topics, asn, as_org, is_hosting_ip, is_embedded, consent_granular, custom_dims)
+             VALUES ($1,$2,$3,'full',$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28,$29,$30,$31,$32,$33,$34,$35,$36,$37,$38,$39,$40,$41)
              ON CONFLICT (pageview_id) DO UPDATE SET
                duration_sec     = EXCLUDED.duration_sec,
                scroll_depth     = COALESCE(EXCLUDED.scroll_depth,     analytics_events.scroll_depth),
                attention_ms     = COALESCE(EXCLUDED.attention_ms,     analytics_events.attention_ms),
                browser_topics   = COALESCE(EXCLUDED.browser_topics,   analytics_events.browser_topics),
-               consent_granular = COALESCE(EXCLUDED.consent_granular, analytics_events.consent_granular)`,
+               consent_granular = COALESCE(EXCLUDED.consent_granular, analytics_events.consent_granular),
+               -- A dimension set after the entry beacon arrives with the exit one: merge.
+               custom_dims      = CASE WHEN EXCLUDED.custom_dims IS NULL THEN analytics_events.custom_dims
+                                       ELSE COALESCE(analytics_events.custom_dims, '{}'::jsonb) || EXCLUDED.custom_dims END`,
             [
                 siteId, orgId, String(sid).slice(0, 64),           // $1 $2 $3
                 cs === 1 || cs === true,                            // $4 consent_stat
@@ -2690,6 +2717,7 @@ export default async function handler(req, res) {
                 network.asn, network.asOrg, network.isHosting,             // $36 $37 $38
                 isEmbeddedEvent,                                           // $39 is_embedded
                 consentGranular,                                           // $40 consent_granular
+                customDims,                                                // $41 custom_dims JSONB
             ]
         ).catch(() => { pageviewInsertFailed = true; });
     }

@@ -8665,3 +8665,26 @@ details[open] .ca-context-summary::before { content: "▾"; }
 .sa-history-import__actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
 .sa-history-import__error { color: var(--color-danger-text); }
 .sa-history-import__hint { font-size: 0.78rem; color: var(--color-text-secondary); margin: 8px 0 0; }
+
+/* Segments page (Segments.js) */
+.sa-seg-pickers { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; margin-bottom: 16px; }
+.sa-seg-sidebyside__hd { display: flex; align-items: center; gap: 6px; margin: 0 0 8px; font-size: 0.85rem; color: var(--color-text-secondary); }
+.sa-seg-sidebyside__hd strong { color: var(--color-text-primary); font-weight: 600; }
+.sa-seg-swatch { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: middle; }
+.sa-seg-swatch--dashed { background: none; border-top: 2px dashed; height: 0; border-radius: 0; width: 14px; }
+.sa-seg-compare__table th:first-child, .sa-seg-compare__table td:first-child { width: 40%; }
+.sa-seg-diff--up { color: var(--color-success); }
+.sa-seg-diff--down { color: var(--color-danger-text); }
+.sa-seg-diff--same { color: var(--color-text-secondary); }
+.sa-seg-metric { display: flex; gap: 6px; }
+.sa-customize-btn--active { border-color: var(--color-accent); color: var(--color-text-primary); background: var(--color-accent-subtle); }
+.sa-seg-legend { display: flex; flex-wrap: wrap; gap: 8px 20px; margin: 8px 0 0; font-size: 0.8rem; color: var(--color-text-secondary); }
+.sa-seg-legend > span { display: inline-flex; align-items: center; }
+.sa-seg-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 16px; }
+.sa-seg-sidebyside { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.sa-seg-dims { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; }
+.sa-seg-dims__key { margin: 0 0 6px; font-size: 0.9rem; font-family: var(--font-mono, ui-monospace, monospace); }
+.sa-code { background: var(--color-bg-sunken); border: 1px solid var(--color-border-subtle); border-radius: 8px; padding: 12px; overflow-x: auto; font-size: 0.8rem; }
+@media (max-width: 600px) {
+    .sa-seg-grid, .sa-seg-sidebyside { grid-template-columns: 1fr; }
+}

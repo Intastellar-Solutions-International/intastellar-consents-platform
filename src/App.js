@@ -60,6 +60,7 @@ import AnalyticsScriptSettings from "./Pages/Settings/AnalyticsScript";
 import SiteAnalytics from "./Pages/Analytics";
 import AnalyticsAudience from "./Pages/Analytics/Audience.js";
 import AnalyticsAcquisition from "./Pages/Analytics/Acquisition.js";
+import AnalyticsSegments from "./Pages/Analytics/Segments.js";
 import AnalyticsConsent from "./Pages/Analytics/Consent.js";
 import AnalyticsHeatmap from "./Pages/Analytics/Heatmap.js";
 import AnalyticsLiveView from "./Pages/Analytics/LiveView.js";
@@ -353,6 +354,16 @@ export default function App() {
                                         <Route path="/analytics/audience" exact>
                                             {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Audience Analytics" fullPage /> : <ErrorBoundary>
                                                 <AnalyticsAudience />
+                                            </ErrorBoundary>}
+                                        </Route>
+                                        <Route path="/analytics/:handle/segments" exact>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Segments" fullPage /> : <ErrorBoundary>
+                                                <AnalyticsSegments />
+                                            </ErrorBoundary>}
+                                        </Route>
+                                        <Route path="/analytics/segments" exact>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Segments" fullPage /> : <ErrorBoundary>
+                                                <AnalyticsSegments />
                                             </ErrorBoundary>}
                                         </Route>
                                         <Route path="/analytics/:handle/acquisition" exact>

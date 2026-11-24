@@ -14,6 +14,7 @@ import { getPool } from "./_db.js";
 import { selfReferralClause, noiseReferralClause, getApprovedDomains } from "./_self-referral.js";
 import { isHeadlineConversionSql } from "./_conversions.js";
 import { validateJwt, withMembership } from "./_member-auth.js";
+import { dimensionClause } from "./analytics-report.js";
 
 const ALLOWED_ORIGINS = [
     "https://www.intastellarconsents.com",
@@ -120,6 +121,7 @@ async function _handler(req, res) {
         segCountry ? `country_code = '${segCountry}'` : null,
         segConsent ? `consent_level = '${segConsent}'` : null,
         segChannel ? CHANNEL_SQL[segChannel]           : null,
+        dimensionClause(req.query.seg_dim_key, req.query.seg_dim_value),
         // Same bot preference as analytics-report.js (ExcludeBots header).
         String(req.headers.excludebots ?? "1") !== "0" ? "NOT (is_hosting_ip IS TRUE AND consent_level <> 'full')" : null,
     ].filter(Boolean);
