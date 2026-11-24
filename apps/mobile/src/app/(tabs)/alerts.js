@@ -4,7 +4,7 @@ import Feather from "@expo/vector-icons/Feather";
 import { useSession } from "../../lib/session.js";
 import { useRequest } from "../../lib/useRequest.js";
 import { fetchAlerts } from "../../lib/api.js";
-import { PushUnavailable, disablePush, enablePush, pushPermission, storedPushToken } from "../../lib/push.js";
+import { PushRequestError, PushUnavailable, disablePush, enablePush, pushPermission, sendTestPush, storedPushToken } from "../../lib/push.js";
 import { useOpenWeb } from "../../lib/web.js";
 import { formatNumber, formatWhen } from "../../lib/format.js";
 import { colors, radius, space, text } from "../../lib/theme.js";
@@ -56,6 +56,33 @@ function usePushState(session) {
     return { state, busy, toggle };
 }
 
+// What the test button says after trying.
+function testResult(error) {
+    if (!error) return { tone: "ok", text: "Sent — it should arrive within a few seconds." };
+    if (!(error instanceof PushRequestError)) return { tone: "error", text: "Couldn't reach the server. Check your connection and try again." };
+    if (error.status === 429) return { tone: "info", text: "Wait a moment — one test every 30 seconds." };
+    if (error.status === 404 || error.code === "DeviceNotRegistered") return { tone: "error", text: "This phone isn't registered any more. Turn push off and on again." };
+    if (error.code === "InvalidCredentials") return { tone: "error", text: "Push isn't set up for this build yet: the Apple / Google push key is missing in EAS." };
+    return { tone: "error", text: "Expo didn't deliver the test ({code}).", code: error.code || "Unknown" };
+}
+
+function TestPushButton({ session }) {
+    const [state, setState] = useState(null); // null | "sending" | { tone, text, code }
+    const send = async () => {
+        setState("sending");
+        try { await sendTestPush(session); setState(testResult(null)); } catch (error) { setState(testResult(error)); }
+    };
+    const color = state?.tone === "ok" ? colors.success : state?.tone === "info" ? colors.textSecondary : colors.dangerText;
+    return (
+        <View style={{ gap: space[2] }}>
+            <Button label={t("Send test notification")} variant="secondary" onPress={send} loading={state === "sending"} />
+            {state && state !== "sending" ? (
+                <Text style={{ color, fontSize: text.sm }} accessibilityLiveRegion="polite">{t(state.text, { code: state.code })}</Text>
+            ) : null}
+        </View>
+    );
+}
+
 const PUSH_HINTS = {
     on: "Alerts arrive on this phone as soon as they fire.",
     off: "Get your alerts as notifications on this phone.",
@@ -89,6 +116,7 @@ export default function Alerts() {
                     />
                 </View>
                 {push.state === "denied" ? <Button label={t("Open settings")} variant="secondary" onPress={() => Linking.openSettings()} /> : null}
+                {push.state === "on" ? <TestPushButton session={session} /> : null}
             </Card>
 
             {alerts.loading && !alerts.data ? <SkeletonCard lines={4} /> : alerts.error ? (

@@ -2,7 +2,7 @@
 // wording, batching, removing uninstalled phones, and the alert list.
 import assert from "node:assert/strict";
 import { test } from "./_harness.mjs";
-import { EXPO_TOKEN_RE, MAX_DEVICES_PER_USER, analyticsAlertMessage, registerDevice, sendMobilePush, listAlerts } from "../api/_mobile-push.js";
+import { EXPO_TOKEN_RE, MAX_DEVICES_PER_USER, analyticsAlertMessage, registerDevice, sendMobilePush, sendTestPush, listAlerts } from "../api/_mobile-push.js";
 
 const member = { organisationId: 7, email: "felix@example.com" };
 const token = (n) => `ExponentPushToken[device${String(n).padStart(6, "0")}xx]`;
@@ -17,6 +17,13 @@ function fakeDb(devices = []) {
             if (/INSERT INTO mobile_push_devices/.test(sql)) { devices.push({ expo_token: params[0], organisation_id: params[1], email: params[2], language: params[4] }); return { rows: [] }; }
             if (/SELECT expo_token, language FROM mobile_push_devices/.test(sql)) return { rows: devices.filter((d) => d.organisation_id === params[0]) };
             if (/DELETE FROM mobile_push_devices WHERE expo_token = ANY/.test(sql)) { deleted.push(...params[0]); return { rows: [] }; }
+            if (/UPDATE mobile_push_devices SET last_test_at/.test(sql)) {
+                const d = devices.find((x) => x.expo_token === params[0] && x.email === params[1]);
+                if (!d || (d.lastTest && Date.now() - d.lastTest < params[2] * 1000)) return { rows: [] };
+                d.lastTest = Date.now();
+                return { rows: [{ language: d.language }] };
+            }
+            if (/SELECT 1 FROM mobile_push_devices/.test(sql)) return { rows: devices.filter((x) => x.expo_token === params[0] && x.email === params[1]) };
             if (/FROM analytics_alert_history/.test(sql)) return { rows: [{ id: 1, at: "2026-11-20T07:00:00Z", value: "34.5", metric: "traffic_drop", label: null, threshold: "30", operator: "gt", period_days: 7, domain: "a.test" }] };
             if (/FROM ad_notifications/.test(sql)) return { rows: [{ id: "x", at: "2026-11-22T07:00:00Z", domain: "a.test", severity: "warning", title: "Cost high", body: "CPC up" }] };
             throw new Error(`unexpected: ${sql.slice(0, 50)}`);
@@ -73,4 +80,25 @@ test("mobile push: alert list merges analytics and ad alerts, newest first", asy
     assert.deepEqual(items.map((i) => i.id), ["ads:x", "analytics:1"]);
     assert.equal(items[1].value, 34.5);
     assert.equal(items[1].threshold, 30);
+});
+
+test("mobile push: a test notification reaches only the caller's own phone, once per 30 s", async () => {
+    const db = fakeDb([{ expo_token: token(1), organisation_id: 7, email: member.email, language: "de" }, { expo_token: token(2), organisation_id: 7, email: "other@x.test", language: "en" }]);
+    const sentTo = [];
+    const fetchImpl = async (url, opts) => { const batch = JSON.parse(opts.body); sentTo.push(...batch); return { json: async () => ({ data: batch.map(() => ({ status: "ok" })) }) }; };
+    assert.deepEqual(await sendTestPush(db, { member, token: token(1) }, { fetchImpl }), { sent: 1 });
+    assert.equal(sentTo[0].title, "Push funktioniert", "in the phone's language");
+    assert.equal(sentTo[0].data.type, "test");
+    assert.equal((await sendTestPush(db, { member, token: token(1) }, { fetchImpl })).status, 429, "rate limited");
+    assert.equal((await sendTestPush(db, { member, token: token(2) }, { fetchImpl })).status, 404, "someone else's phone");
+    assert.equal((await sendTestPush(db, { member, token: "nope" }, { fetchImpl })).status, 400);
+    assert.equal(sentTo.length, 1);
+});
+
+test("mobile push: a refused test returns Expo's reason (e.g. missing push credentials)", async () => {
+    const db = fakeDb([{ expo_token: token(1), organisation_id: 7, email: member.email, language: "en" }]);
+    const fetchImpl = async () => ({ json: async () => ({ data: [{ status: "error", details: { error: "InvalidCredentials" } }] }) });
+    const out = await sendTestPush(db, { member, token: token(1) }, { fetchImpl });
+    assert.equal(out.status, 502);
+    assert.equal(out.code, "InvalidCredentials");
 });

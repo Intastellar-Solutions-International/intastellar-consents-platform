@@ -1,6 +1,6 @@
 import { getPool } from "./_db.js";
 import { requireMember } from "./_member-auth.js";
-import { ensureMobilePushTable, listAlerts, registerDevice, unregisterDevice } from "./_mobile-push.js";
+import { ensureMobilePushTable, listAlerts, registerDevice, sendTestPush, unregisterDevice } from "./_mobile-push.js";
 
 /**
  * /api/mobile-push — the mobile app's alerts (see _mobile-push.js).
@@ -8,6 +8,7 @@ import { ensureMobilePushTable, listAlerts, registerDevice, unregisterDevice } f
  *   GET                                         → { alerts }  recent alerts of the organisation
  *   POST { action: "register", token, platform, language }   opt this phone in
  *   POST { action: "unregister", token }                     opt it out
+ *   POST { action: "test", token }     one test notification to this phone (own phone only, 1 per 30 s)
  *
  * Signed in: Authorization + Organisation (requireMember).
  */
@@ -31,8 +32,10 @@ export default async function handler(req, res) {
             ? await registerDevice(db, { member, token, platform, language })
             : action === "unregister"
                 ? await unregisterDevice(db, { member, token })
-                : { status: 400, error: "Unknown action" };
-        return result.error ? res.status(result.status).json({ error: result.error }) : res.status(200).json(result);
+                : action === "test"
+                    ? await sendTestPush(db, { member, token })
+                    : { status: 400, error: "Unknown action" };
+        return result.error ? res.status(result.status).json({ error: result.error, code: result.code }) : res.status(200).json(result);
     } catch (err) {
         console.error("[mobile-push]", err.message);
         return res.status(500).json({ error: "Request failed" });

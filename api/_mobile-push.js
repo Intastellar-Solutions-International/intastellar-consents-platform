@@ -29,6 +29,7 @@ export function ensureMobilePushTable(db = getPool()) {
             );
             CREATE INDEX IF NOT EXISTS mobile_push_devices_org_idx ON mobile_push_devices (organisation_id);
             CREATE INDEX IF NOT EXISTS mobile_push_devices_email_idx ON mobile_push_devices (email);
+            ALTER TABLE mobile_push_devices ADD COLUMN IF NOT EXISTS last_test_at TIMESTAMPTZ;
         `).catch((err) => { tableReady = null; throw err; });
     }
     return tableReady;
@@ -104,6 +105,46 @@ export function analyticsAlertMessage(alert, language = "en") {
  * `message`: { title, body } (same text for all) or { analytics: alert }
  * (worded per phone's language). `data` travels with the notification.
  */
+/**
+ * Sends prepared messages via Expo, removes uninstalled phones.
+ * → { sent, removed, errors: [Expo error codes] }
+ */
+async function deliver(db, messages, fetchImpl) {
+    const headers = { Accept: "application/json", "Content-Type": "application/json" };
+    if (process.env.EXPO_ACCESS_TOKEN) headers.Authorization = `Bearer ${process.env.EXPO_ACCESS_TOKEN}`;
+
+    let sent = 0;
+    const gone = [];
+    const errors = [];
+    for (let i = 0; i < messages.length; i += CHUNK) {
+        const chunk = messages.slice(i, i + CHUNK);
+        try {
+            const res = await fetchImpl(EXPO_PUSH_URL, { method: "POST", headers, body: JSON.stringify(chunk) });
+            const tickets = (await res.json().catch(() => null))?.data || [];
+            tickets.forEach((ticket, j) => {
+                if (ticket?.status === "ok") sent++;
+                else {
+                    const code = ticket?.details?.error || "Unknown";
+                    errors.push(code);
+                    if (code === "DeviceNotRegistered") gone.push(chunk[j].to);
+                }
+            });
+        } catch (err) {
+            console.error("[mobile-push] send failed:", err.message);
+            errors.push("Unreachable");
+        }
+    }
+    if (gone.length) {
+        await db.query("DELETE FROM mobile_push_devices WHERE expo_token = ANY($1)", [gone]).catch(() => {});
+    }
+    return { sent, removed: gone.length, errors };
+}
+
+/**
+ * Sends to every phone registered for `organisationId`.
+ * `message`: { title, body } (same text for all) or { analytics: alert }
+ * (worded per phone's language). `data` travels with the notification.
+ */
 export async function sendMobilePush(db, organisationId, message, { data = {}, fetchImpl = globalThis.fetch } = {}) {
     let devices;
     try {
@@ -119,29 +160,48 @@ export async function sendMobilePush(db, organisationId, message, { data = {}, f
         const text = message.analytics ? analyticsAlertMessage(message.analytics, d.language) : message;
         return { to: d.expo_token, title: text.title, body: text.body, sound: "default", channelId: "alerts", data };
     });
+    const { sent, removed } = await deliver(db, messages, fetchImpl);
+    return { sent, removed };
+}
 
-    const headers = { Accept: "application/json", "Content-Type": "application/json" };
-    if (process.env.EXPO_ACCESS_TOKEN) headers.Authorization = `Bearer ${process.env.EXPO_ACCESS_TOKEN}`;
+const TEST_MESSAGE = {
+    en: ["Push works", "Alerts for your sites will arrive on this phone."],
+    de: ["Push funktioniert", "Alarme für Ihre Websites kommen auf dieses Telefon."],
+    da: ["Push virker", "Alarmer for dine websites kommer på denne telefon."],
+    sv: ["Push fungerar", "Larm för dina webbplatser kommer till den här telefonen."],
+    nb: ["Push fungerer", "Varsler for nettstedene dine kommer til denne telefonen."],
+    nl: ["Push werkt", "Meldingen voor je websites komen op deze telefoon binnen."],
+    fr: ["Les notifications fonctionnent", "Les alertes de vos sites arriveront sur ce téléphone."],
+    es: ["Las notificaciones funcionan", "Las alertas de tus sitios llegarán a este teléfono."],
+    it: ["Le notifiche funzionano", "Gli avvisi dei tuoi siti arriveranno su questo telefono."],
+    pl: ["Powiadomienia działają", "Alerty z Twoich stron będą trafiać na ten telefon."],
+};
+export const TEST_PUSH_INTERVAL_SECONDS = 30;
 
-    let sent = 0;
-    const gone = [];
-    for (let i = 0; i < messages.length; i += CHUNK) {
-        const chunk = messages.slice(i, i + CHUNK);
-        try {
-            const res = await fetchImpl(EXPO_PUSH_URL, { method: "POST", headers, body: JSON.stringify(chunk) });
-            const tickets = (await res.json().catch(() => null))?.data || [];
-            tickets.forEach((ticket, j) => {
-                if (ticket?.status === "ok") sent++;
-                else if (ticket?.details?.error === "DeviceNotRegistered") gone.push(chunk[j].to);
-            });
-        } catch (err) {
-            console.error("[mobile-push] send failed:", err.message);
-        }
+/**
+ * One test notification to the caller's own phone. → { sent: 1 } or
+ * { status, error, code } — `code` is Expo's reason (e.g. InvalidCredentials
+ * when the Apple / Firebase push key isn't set up in EAS yet).
+ */
+export async function sendTestPush(db, { member, token }, { fetchImpl = globalThis.fetch } = {}) {
+    if (!EXPO_TOKEN_RE.test(String(token || ""))) return { status: 400, error: "Invalid push token" };
+    // Only the account that registered the phone, at most every 30 s (atomic).
+    const { rows } = await db.query(
+        `UPDATE mobile_push_devices SET last_test_at = NOW()
+          WHERE expo_token = $1 AND email = $2
+            AND (last_test_at IS NULL OR last_test_at < NOW() - make_interval(secs => $3))
+          RETURNING language`,
+        [token, member.email, TEST_PUSH_INTERVAL_SECONDS],
+    );
+    if (!rows.length) {
+        const { rows: known } = await db.query("SELECT 1 FROM mobile_push_devices WHERE expo_token = $1 AND email = $2", [token, member.email]);
+        return known.length
+            ? { status: 429, error: "Wait a moment before sending another test" }
+            : { status: 404, error: "This phone isn't registered — turn push on first" };
     }
-    if (gone.length) {
-        await db.query("DELETE FROM mobile_push_devices WHERE expo_token = ANY($1)", [gone]).catch(() => {});
-    }
-    return { sent, removed: gone.length };
+    const [title, body] = TEST_MESSAGE[rows[0].language] || TEST_MESSAGE.en;
+    const result = await deliver(db, [{ to: token, title, body, sound: "default", channelId: "alerts", data: { type: "test" } }], fetchImpl);
+    return result.sent === 1 ? { sent: 1 } : { status: 502, error: "Expo didn't accept the notification", code: result.errors[0] || "Unknown" };
 }
 
 // ── Alert list for the app ───────────────────────────────────────────────────

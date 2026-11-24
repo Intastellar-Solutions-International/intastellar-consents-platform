@@ -981,6 +981,14 @@ const pl = {
     "Paid Social": "Płatne social media",
     "Referral": "Odesłanie",
     "Direct": "Bezpośrednie",
+    // Mobile app: test push
+    "Send test notification": "Wyślij powiadomienie testowe",
+    "Sent — it should arrive within a few seconds.": "Wysłano – powinno dotrzeć w ciągu kilku sekund.",
+    "Couldn't reach the server. Check your connection and try again.": "Nie udało się połączyć z serwerem. Sprawdź połączenie i spróbuj ponownie.",
+    "Wait a moment — one test every 30 seconds.": "Chwileczkę – jeden test co 30 sekund.",
+    "This phone isn't registered any more. Turn push off and on again.": "Ten telefon nie jest już zarejestrowany. Wyłącz i ponownie włącz powiadomienia.",
+    "Push isn't set up for this build yet: the Apple / Google push key is missing in EAS.": "Powiadomienia nie są jeszcze skonfigurowane dla tej wersji: brakuje klucza push Apple / Google w EAS.",
+    "Expo didn't deliver the test ({code}).": "Expo nie dostarczyło testu ({code}).",
 };
 
 export default pl;

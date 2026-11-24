@@ -24,13 +24,28 @@ export class PushUnavailable extends Error {
     constructor(reason) { super(reason); this.reason = reason; }
 }
 
+/** A refused request: `status` (HTTP) and Expo's `code` when it refused a push. */
+export class PushRequestError extends Error {
+    constructor(message, status, code) { super(message); this.status = status; this.code = code; }
+}
+
 async function call(session, body) {
     const res = await fetch(`${SCANNER_HOST}/api/mobile-push`, {
         method: "POST",
         headers: { Authorization: `Bearer ${(await freshToken()) || session.token}`, Organisation: String(session.organisationId ?? ""), ...(session.email ? { "X-User-Email": session.email } : {}), "Content-Type": "application/json" },
         body: JSON.stringify(body),
     });
-    if (!res.ok) throw new Error((await res.json().catch(() => null))?.error || `Request failed (${res.status})`);
+    if (!res.ok) {
+        const err = await res.json().catch(() => null);
+        throw new PushRequestError(err?.error || `Request failed (${res.status})`, res.status, err?.code);
+    }
+}
+
+/** Sends one test notification to this phone (server allows one per 30 s). */
+export async function sendTestPush(session) {
+    const token = await storedPushToken();
+    if (!token) throw new PushRequestError("Push is off", 404);
+    await call(session, { action: "test", token });
 }
 
 /** The token this phone registered, or null when push is off. */

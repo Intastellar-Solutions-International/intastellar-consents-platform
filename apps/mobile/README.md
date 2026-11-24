@@ -53,9 +53,16 @@ API: the same endpoints and headers as the web (`Authorization`,
 
 ## Build and release
 
-```bash
-npx eas-cli@latest build --profile production --platform all
-npx eas-cli@latest submit
-```
+Profiles in `eas.json` (run from `apps/mobile`, Node 22 — `nvm use`):
 
-Bundle id / package: `com.intastellar.analytics` (app.json).
+| Profile | For | Command |
+|---|---|---|
+| `development` | Your iPhone / Android phone, with the dev menu; loads JS from `npx expo start` | `npx eas-cli@latest build --profile development --platform ios` |
+| `development-simulator` | iOS Simulator | `npx eas-cli@latest build --profile development-simulator --platform ios` |
+| `preview` | Testers (internal distribution), receives updates on channel `preview` | `npx eas-cli@latest build --profile preview --platform all` |
+| `production` | App Store / Google Play, channel `production`, build number bumped automatically | `npx eas-cli@latest build --profile production --platform all` then `npx eas-cli@latest submit` |
+
+- **First iOS build on a real phone:** register it once with `npx eas-cli@latest device:create`, then build. EAS offers to create the certificates and the **Apple push key** — say yes, or push notifications fail (the Alerts tab's *Send test notification* then reports `InvalidCredentials`).
+- **Android push** needs a Firebase project (`google-services.json`) and its key uploaded with `npx eas-cli@latest credentials`.
+- **Updates** (`npx eas-cli@latest update --channel preview`) reach `preview` / `production` builds only — development builds load JS from your dev server instead.
+- Push, Face ID, Liquid Glass and haptics all need a build; Expo Go lacks some of them.

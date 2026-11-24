@@ -981,6 +981,14 @@ const sv = {
     "Paid Social": "Betald social",
     "Referral": "Hänvisning",
     "Direct": "Direkt",
+    // Mobile app: test push
+    "Send test notification": "Skicka testnotis",
+    "Sent — it should arrive within a few seconds.": "Skickad – den bör komma inom några sekunder.",
+    "Couldn't reach the server. Check your connection and try again.": "Kunde inte nå servern. Kontrollera anslutningen och försök igen.",
+    "Wait a moment — one test every 30 seconds.": "Vänta lite – ett test var 30:e sekund.",
+    "This phone isn't registered any more. Turn push off and on again.": "Telefonen är inte längre registrerad. Stäng av och slå på push igen.",
+    "Push isn't set up for this build yet: the Apple / Google push key is missing in EAS.": "Push är inte konfigurerat för den här builden än: Apple-/Google-pushnyckeln saknas i EAS.",
+    "Expo didn't deliver the test ({code}).": "Expo levererade inte testet ({code}).",
 };
 
 export default sv;

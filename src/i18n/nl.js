@@ -981,6 +981,14 @@ const nl = {
     "Paid Social": "Betaald sociaal",
     "Referral": "Verwijzing",
     "Direct": "Direct",
+    // Mobile app: test push
+    "Send test notification": "Testmelding sturen",
+    "Sent — it should arrive within a few seconds.": "Verstuurd – hij zou binnen een paar seconden moeten aankomen.",
+    "Couldn't reach the server. Check your connection and try again.": "Server niet bereikbaar. Controleer je verbinding en probeer het opnieuw.",
+    "Wait a moment — one test every 30 seconds.": "Even geduld – één test per 30 seconden.",
+    "This phone isn't registered any more. Turn push off and on again.": "Deze telefoon is niet meer geregistreerd. Zet push uit en weer aan.",
+    "Push isn't set up for this build yet: the Apple / Google push key is missing in EAS.": "Push is nog niet ingesteld voor deze build: de Apple-/Google-pushsleutel ontbreekt in EAS.",
+    "Expo didn't deliver the test ({code}).": "Expo heeft de test niet afgeleverd ({code}).",
 };
 
 export default nl;

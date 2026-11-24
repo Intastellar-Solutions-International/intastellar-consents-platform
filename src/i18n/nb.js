@@ -981,6 +981,14 @@ const nb = {
     "Paid Social": "Betalt sosialt",
     "Referral": "Henvisning",
     "Direct": "Direkte",
+    // Mobile app: test push
+    "Send test notification": "Send testvarsel",
+    "Sent — it should arrive within a few seconds.": "Sendt – det bør komme i løpet av noen sekunder.",
+    "Couldn't reach the server. Check your connection and try again.": "Fikk ikke kontakt med serveren. Sjekk tilkoblingen og prøv igjen.",
+    "Wait a moment — one test every 30 seconds.": "Vent litt – én test hvert 30. sekund.",
+    "This phone isn't registered any more. Turn push off and on again.": "Telefonen er ikke registrert lenger. Slå push av og på igjen.",
+    "Push isn't set up for this build yet: the Apple / Google push key is missing in EAS.": "Push er ikke satt opp for dette bygget ennå: Apple-/Google-pushnøkkelen mangler i EAS.",
+    "Expo didn't deliver the test ({code}).": "Expo leverte ikke testen ({code}).",
 };
 
 export default nb;

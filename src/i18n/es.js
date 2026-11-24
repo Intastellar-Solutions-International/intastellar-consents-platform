@@ -981,6 +981,14 @@ const es = {
     "Paid Social": "Social de pago",
     "Referral": "Referencia",
     "Direct": "Directo",
+    // Mobile app: test push
+    "Send test notification": "Enviar notificación de prueba",
+    "Sent — it should arrive within a few seconds.": "Enviada: debería llegar en unos segundos.",
+    "Couldn't reach the server. Check your connection and try again.": "No se pudo conectar con el servidor. Revisa tu conexión e inténtalo de nuevo.",
+    "Wait a moment — one test every 30 seconds.": "Espera un momento: una prueba cada 30 segundos.",
+    "This phone isn't registered any more. Turn push off and on again.": "Este teléfono ya no está registrado. Desactiva y vuelve a activar las notificaciones.",
+    "Push isn't set up for this build yet: the Apple / Google push key is missing in EAS.": "Las notificaciones aún no están configuradas para esta compilación: falta la clave push de Apple / Google en EAS.",
+    "Expo didn't deliver the test ({code}).": "Expo no entregó la prueba ({code}).",
 };
 
 export default es;
