@@ -8706,3 +8706,18 @@ details[open] .ca-context-summary::before { content: "▾"; }
 @media (max-width: 600px) {
     .sa-seg-grid, .sa-seg-sidebyside { grid-template-columns: 1fr; }
 }
+
+/* Consent and revenue (ConsentRevenue.js) */
+.sa-consent-rev__whatif { margin: 12px 0 0; padding: 10px 12px; border-radius: 8px; background: var(--color-accent-subtle); color: var(--color-text-primary); }
+.sa-consent-rev__sub { margin: 20px 0 6px; font-size: 0.9rem; }
+.sa-consent-rev__exp { margin-top: 12px; overflow-x: auto; }
+.sa-consent-rev__tag { display: inline-block; margin-left: 6px; padding: 1px 6px; border-radius: 4px; font-size: 0.7rem; background: var(--color-bg-sunken); color: var(--color-text-secondary); }
+.sa-consent-rev__tag--warn { color: var(--color-warning); }
+
+/* What changed (ChangeExplainer.js) */
+.sa-explain__summary { margin: 4px 0 0; line-height: 1.6; max-width: 90ch; }
+.sa-explain__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; margin-top: 12px; }
+.sa-explain__grid > * { min-width: 0; }
+.sa-explain__grid .sa-table { table-layout: fixed; width: 100%; }
+.sa-explain__grid .sa-table td:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sa-explain__grid .sa-table th:not(:first-child), .sa-explain__grid .sa-table td:not(:first-child) { width: 5.5rem; }

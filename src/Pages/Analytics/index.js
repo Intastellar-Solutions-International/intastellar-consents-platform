@@ -12,6 +12,7 @@ import { useExcludeBots } from "../../Functions/botFilter.js";
 import { ScannerHost } from "../../API/host.js";
 import { AnnotationStrip, ExportMenu, HERO_CHART, useAnnotations } from "./DataTools.js";
 import { HistoryNote, HistoryTables } from "./HistoryImport.js";
+import { ChangeExplainer } from "./ChangeExplainer.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import { buildInsights, InsightsSection, SnapshotRow } from "./OverviewInsights.js";
 import {
@@ -752,6 +753,10 @@ function HistoryPanel({ history }) {
     );
 }
 
+// The explanation compares whole-site traffic; with a segment filter on it
+// would explain a different number than the chart shows, so it's hidden.
+const segParamActive = (s) => !!(s && (s.device || s.country || s.channel || s.consent || s.dimension));
+
 // ── Main overview page ────────────────────────────────────────────────────────
 export default function SiteAnalytics() {
     document.title = "Overview, Analytics | Intastellar Consents";
@@ -1064,6 +1069,9 @@ export default function SiteAnalytics() {
                                 </div>
                                 <LivePanel domain={domain} siteKey={siteConfig?.id} />
                             </div>
+
+                            {/* ── What changed vs the previous period, and why ── */}
+                            {singleSite && !segParamActive(segment) && <ChangeExplainer domain={domain} from={data.from} to={data.to} excludeBots={excludeBots} />}
 
                             {/* ── Snapshot: top 5s, each linking to its full report ── */}
                             <SnapshotRow data={data} paths={reportPaths} />
