@@ -100,7 +100,7 @@ export function tierCaseSql(eventsAlias, defsAlias) {
 // The form id a form_submit carries, normalised exactly like FORM_ID_CASE in
 // api/analytics-forms.js (placeholder ids fall back to the form's action), so
 // a goal set on the Forms page matches the same submissions here.
-const formIdSql = (alias) => `(CASE
+export const formIdSql = (alias) => `(CASE
         WHEN ${alias}.extra_data->>'formId' IN ('form','unknown') OR ${alias}.extra_data->>'formId' IS NULL OR ${alias}.extra_data->>'formId' = ''
         THEN COALESCE(NULLIF(${alias}.extra_data->>'action', ''), 'form')
         ELSE ${alias}.extra_data->>'formId'
