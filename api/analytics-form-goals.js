@@ -1,6 +1,6 @@
 import { getPool } from "./_db.js";
 import { requireMember } from "./_member-auth.js";
-import { FORM_GOALS_DDL } from "./_conversions.js";
+import { FORM_GOALS_DDL, formIdSql } from "./_conversions.js";
 
 /**
  * /api/analytics-form-goals — what a form's submissions count as. By default
@@ -8,7 +8,8 @@ import { FORM_GOALS_DDL } from "./_conversions.js";
  * so reports tell them apart, or be marked "not a lead" (a newsletter), which
  * drops it from conversions everywhere (tierCaseSql in _conversions.js).
  *
- *   GET    ?domain=                     → { goals: [{ formId, leadType, counts }], leadTypes: [...] }
+ *   GET    ?domain=                     → { goals: [{ formId, leadType, counts }], leadTypes: [...],
+ *                                          forms: [{ formId, submits, page }] }  (forms seen in 90 days)
  *   PUT    ?domain=  { formId, leadType?, counts }  → the saved goal
  *   DELETE ?domain=&formId=             → back to a plain lead
  *
@@ -49,7 +50,19 @@ export async function handleFormGoals(db, member, method, query, body) {
         );
         const goals = rows.map(shape);
         const leadTypes = [...new Set(goals.map((g) => g.leadType).filter(Boolean))].sort();
-        return { status: 200, body: { goals, leadTypes } };
+        // Forms seen lately, so settings can list them (same id normalisation as the Forms report)
+        const { rows: forms } = await db.query(`
+            SELECT ${formIdSql("ace")} AS form_id,
+                   COUNT(*) FILTER (WHERE ace.name = 'form_submit') AS submits,
+                   MODE() WITHIN GROUP (ORDER BY ace.pathname) AS page
+              FROM analytics_custom_events ace
+             WHERE ace.site_id = $1 AND ace.received_at > NOW() - INTERVAL '90 days'
+               AND ace.name IN ('form_submit', 'form_started')
+             GROUP BY 1 ORDER BY 2 DESC, 1 LIMIT 50`, [siteId]).catch(() => ({ rows: [] }));
+        return {
+            status: 200,
+            body: { goals, leadTypes, forms: forms.map((f) => ({ formId: f.form_id, submits: Number(f.submits) || 0, page: f.page })) },
+        };
     }
     if (method === "PUT") {
         const goal = cleanGoal(body);
