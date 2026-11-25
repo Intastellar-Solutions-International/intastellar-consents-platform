@@ -81,6 +81,7 @@ export async function locationsReport(db, member, query) {
         db.query(`
             SELECT ${col} AS k, COUNT(*) AS pageviews,
                    COUNT(DISTINCT session_id) FILTER (WHERE consent_level = 'full') AS sessions
+                   ${q.level === "city" ? ", AVG(lat) AS lat, AVG(lon) AS lon" : ""}
               FROM analytics_events
              WHERE site_id = $1 AND received_at >= $2 AND received_at < $3 ${pvFilter} ${pvWhere}
              GROUP BY 1`, params).catch(missingColumn),

@@ -6,7 +6,7 @@ import { createEmbedCache } from "./_minify-embed.js";
 import { classifyTier } from "./_conversions.js";
 import { sanitizeDims } from "./_dims.js";
 import { cleanBannerRef } from "./_banner-experiment.js";
-import { cleanCity } from "./_locations.js";
+import { cleanCity, coarsePoint } from "./_locations.js";
 /**
  * GET  /api/a  → serves the Intastellar First-Party Analytics embed script
  * POST /api/a  → ingest endpoint receiving pageview events from embedded sites
@@ -425,6 +425,10 @@ async function ensureTables(db) {
         -- The page view a consented event happened on (same client id as
         -- analytics_events.pageview_id) — links a conversion to its exact page.
         ALTER TABLE analytics_custom_events ADD COLUMN IF NOT EXISTS pageview_id VARCHAR(40);
+        -- Where the city is, rounded to 0.1° (~10 km) — enough to place a
+        -- city dot on the Locations map. Consented page views only, like city.
+        ALTER TABLE analytics_events ADD COLUMN IF NOT EXISTS lat REAL;
+        ALTER TABLE analytics_events ADD COLUMN IF NOT EXISTS lon REAL;
     `).catch(() => {});
     await db.query(`
         CREATE INDEX IF NOT EXISTS idx_ae_hosting  ON analytics_events (site_id, is_hosting_ip) WHERE is_hosting_ip;
@@ -2326,6 +2330,7 @@ export default async function handler(req, res) {
     const country = (req.headers["x-vercel-ip-country"]  || "").slice(0, 2)  || null;
     const region  = (req.headers["x-vercel-ip-country-region"] || "").slice(0, 64) || null;
     const city    = cleanCity(req.headers["x-vercel-ip-city"]);
+    const point   = coarsePoint(req.headers["x-vercel-ip-latitude"], req.headers["x-vercel-ip-longitude"]);
 
     const deviceType = dt === "m" ? "mobile" : dt === "t" ? "tablet" : "desktop";
     const pageHostSanitized = pageHost ? String(pageHost).slice(0, 255).toLowerCase() || null : null;
@@ -2714,8 +2719,8 @@ export default async function handler(req, res) {
               browser_family, os_family, language, timezone,
               duration_sec, scroll_depth, attention_ms, pageview_id, is_new_visitor,
               gclid, msclkid, fbclid,
-              browser_topics, asn, as_org, is_hosting_ip, is_embedded, consent_granular, custom_dims, banner_exp, banner_variant, city)
-             VALUES ($1,$2,$3,'full',$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28,$29,$30,$31,$32,$33,$34,$35,$36,$37,$38,$39,$40,$41,$42,$43,$44)
+              browser_topics, asn, as_org, is_hosting_ip, is_embedded, consent_granular, custom_dims, banner_exp, banner_variant, city, lat, lon)
+             VALUES ($1,$2,$3,'full',$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28,$29,$30,$31,$32,$33,$34,$35,$36,$37,$38,$39,$40,$41,$42,$43,$44,$45,$46)
              ON CONFLICT (pageview_id) DO UPDATE SET
                duration_sec     = EXCLUDED.duration_sec,
                scroll_depth     = COALESCE(EXCLUDED.scroll_depth,     analytics_events.scroll_depth),
@@ -2759,6 +2764,7 @@ export default async function handler(req, res) {
                 customDims,                                                // $41 custom_dims JSONB
                 bannerExpId, bannerVariant,                                // $42 $43 banner A/B test
                 city,                                                      // $44 city (consented only)
+                point.lat, point.lon,                                      // $45 $46 city position, 0.1°
             ]
         ).catch(() => { pageviewInsertFailed = true; });
     }

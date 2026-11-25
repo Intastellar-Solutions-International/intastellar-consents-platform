@@ -25,6 +25,14 @@ export function cleanCity(header) {
     return s || null;
 }
 
+/** x-vercel-ip-latitude/-longitude → a 0.1° (~10 km) point, or nulls. */
+export function coarsePoint(lat, lon) {
+    const a = Number(lat), b = Number(lon);
+    if (lat == null || lon == null || lat === "" || lon === "" || !Number.isFinite(a) || !Number.isFinite(b)
+        || Math.abs(a) > 90 || Math.abs(b) > 180) return { lat: null, lon: null };
+    return { lat: Math.round(a * 10) / 10, lon: Math.round(b * 10) / 10 };
+}
+
 /** Validated query → the filter the SQL needs, or an error. */
 export function locationQuery(query) {
     const level = LEVELS.includes(query.level) ? query.level : "country";
@@ -72,9 +80,15 @@ export function shapeLocations({ level, country, pv = [], conv = [], products = 
         return rows.get(key);
     };
     for (const r of pv) {
-        const x = row(keyOf(r.k));
+        const key = keyOf(r.k);
+        const x = row(key);
         x.pageviews += num(r.pageviews);
         x.sessions += num(r.sessions);
+        // Map position of a named city (never of "Other cities")
+        if (level === "city" && key && key !== OTHER_KEY && r.lat != null && r.lon != null) {
+            x.lat = Math.round(Number(r.lat) * 10) / 10;
+            x.lon = Math.round(Number(r.lon) * 10) / 10;
+        }
     }
     let currency = null;
     for (const r of conv) {
