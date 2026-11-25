@@ -80,7 +80,7 @@ const DATA = {
 
 test("client report email names the client, counts its domains and lists each one", () => {
     const html = buildReportEmailHtml({ domain: "a.com", frequency: "weekly", label: null, data: DATA, clientName: "Acme & Co" });
-    assert.match(html, /Acme &amp; Co · 2 domains · Last 7 days/);
+    assert.match(html, /Acme &amp; Co · 2 domains · Weekly report/);
     assert.match(html, /By domain/);
     assert.ok(html.indexOf("b.com") < html.indexOf("a.com"), "busiest domain first");
 });
@@ -99,4 +99,39 @@ test("organisationHasPlan compares the current plan against the minimum", async 
     assert.strictEqual(await organisationHasPlan(withPlan("growth"), 5, "growth"), true);
     assert.strictEqual(await organisationHasPlan(fakeDb(), 5, "growth"), false);
     assert.strictEqual(await organisationHasPlan(fakeDb(), 1, "agency-pro"), true, "Intastellar's own organisation");
+});
+
+test("report email: headline, period, context and the dashboard link", async () => {
+    const { reportHeadline, formatRange, reportSubject } = await import("../api/_scheduled-report.js");
+    const data = {
+        ...DATA, periodDays: 7,
+        totals: { ...DATA.totals, sessions: 82, engagedUsers: 72, conversions: 0, consentRate: 32.1 },
+        previous: { sessions: 219, engagedUsers: 124, conversions: 4, consentRate: 36.8 },
+        trends: { sessions: -62.6, engagedUsers: -41.9, conversions: -100, consentRate: -4.7 },
+        daily: [{ date: "2026-10-28", views: 10 }, { date: "2026-10-29", views: 30 }],
+        goals: [{ key: "event:booked", label: "Booked <Appointment>", count: 0, prev: 3 }],
+        channels: [{ key: "organic", sessions: 36 }, { key: "direct", sessions: 12 }],
+        topCountries: [{ code: "DK", events: 5 }],
+        perDomain: [],
+    };
+    assert.equal(reportHeadline(data, "week"), "No conversions this week, after 4 the week before.");
+    assert.equal(reportHeadline({ totals: { sessions: 100, engagedUsers: 50, conversions: 2 }, previous: { sessions: 98, engagedUsers: 51, conversions: 1 } }, "week"),
+        "A steady week: 100 sessions and 2 conversions, close to the week before.", "a 2 → 1 change is too small to lead with");
+    assert.equal(reportHeadline({ totals: { sessions: 300, engagedUsers: 100, conversions: 0 }, previous: { sessions: 200, engagedUsers: 95, conversions: 0 } }, "month"),
+        "Sessions up 50%: 300 this month, 200 the month before.");
+    assert.equal(formatRange("2026-11-18", "2026-11-24"), "18–24 Nov 2026");
+    assert.equal(formatRange("2026-10-26", "2026-11-24"), "26 Oct – 24 Nov 2026");
+    assert.match(reportSubject({ domain: "a.com", frequency: "weekly", data }), /^a\.com: your week — No conversions this week, after 4 the week before\.$/);
+
+    const html = buildReportEmailHtml({ domain: "a.com", frequency: "weekly", label: null, data });
+    assert.match(html, /What stands out/);
+    assert.match(html, /▼ −5 pts|▼ −4\.7 pts/, "consent change in points, not percent");
+    assert.match(html, /vs 219/);
+    assert.match(html, /Booked &lt;Appointment&gt;/);
+    assert.match(html, /Organic search/);
+    assert.match(html, /Denmark/);
+    assert.match(html, /https:\/\/www\.intastellarconsents\.com\/analytics\/a%2Ecom"/);
+    assert.match(html, /\/analytics\/a%2Ecom\/scheduled-reports/);
+    assert.match(html, /cid:intastellar-analytics-logo/);
+    assert.match(html, /display:none;max-height:0/, "inbox preview line");
 });

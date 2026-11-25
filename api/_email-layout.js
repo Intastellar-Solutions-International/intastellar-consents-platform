@@ -1,4 +1,4 @@
-import { EMAIL_LOGO_PNG_BASE64 } from "./_email-logo.js";
+import { EMAIL_LOGO_PNG_BASE64, EMAIL_ANALYTICS_LOGO_PNG_BASE64 } from "./_email-logo.js";
 
 /**
  * The look of every email we send. Tables and inline styles, because that is
@@ -10,6 +10,10 @@ export const emailEsc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&"
 const LOGO_CID = "intastellar-logo";
 export const INTASTELLAR_LOGO_ATTACHMENT = { filename: "intastellar-consents.png", content: EMAIL_LOGO_PNG_BASE64, content_id: LOGO_CID };
 const INTASTELLAR_BRAND = `<img src="cid:${LOGO_CID}" alt="Intastellar Consents" height="26" style="display:block;height:26px;width:auto;max-width:220px;border:0">`;
+
+const ANALYTICS_LOGO_CID = "intastellar-analytics-logo";
+export const ANALYTICS_LOGO_ATTACHMENT = { filename: "intastellar-analytics.png", content: EMAIL_ANALYTICS_LOGO_PNG_BASE64, content_id: ANALYTICS_LOGO_CID };
+export const ANALYTICS_BRAND = `<img src="cid:${ANALYTICS_LOGO_CID}" alt="Intastellar Analytics" width="151" height="32" style="display:block;height:32px;width:151px;border:0">`;
 
 export const EMAIL_FONT = "font-family:Arial,Helvetica,sans-serif;";
 const TONES = { critical: ["#b42318", "#fef3f2"], warning: ["#b54708", "#fffaeb"], info: ["#175cd3", "#eff8ff"], brand: ["#7a5c17", "#faf5e8"] };
@@ -26,10 +30,12 @@ export function emailFacts(rows) {
 /**
  * heading is plain text; body, note and footer are already-escaped HTML.
  * brand replaces the Intastellar logo; badge is { text, tone }; cta is { label, href }.
+ * preheader is the plain-text preview line inboxes show after the subject.
  */
-export function emailLayout({ lang = "en", brand = INTASTELLAR_BRAND, badge, heading, body, cta, note, footer, width = 520 }) {
+export function emailLayout({ lang = "en", brand = INTASTELLAR_BRAND, badge, heading, body, cta, note, footer, width = 520, preheader }) {
     const [color, tint] = TONES[badge?.tone] || TONES.brand;
     return `<!doctype html><html lang="${emailEsc(lang)}"><head><meta charset="utf-8"></head><body style="margin:0;padding:0;background:#f5f5f4">
+${preheader ? `<div style="display:none;max-height:0;overflow:hidden;mso-hide:all">${emailEsc(preheader)}&#8199;&#847;&#8199;&#847;&#8199;&#847;</div>` : ""}
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f5f5f4"><tr><td align="center" style="padding:32px 16px">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:${width}px;background:#ffffff;border:1px solid #d6d6d3;border-radius:12px">
 <tr><td style="padding:28px 28px 0">${brand}</td></tr>

@@ -99,7 +99,8 @@ test("emails: alerts and reports all use the shared layout", () => {
     for (const file of ["_alert-check", "cron-analytics-alerts", "_scheduled-report"]) {
         const source = fs.readFileSync(new URL(`../api/${file}.js`, import.meta.url), "utf8");
         assert.match(source, /emailLayout\(\{/, file);
-        assert.match(source, /attachments: \[INTASTELLAR_LOGO_ATTACHMENT\]/, file);
+        // Analytics reports carry the Analytics logo, the rest the Consents logo
+        assert.match(source, /attachments: \[(INTASTELLAR|ANALYTICS)_LOGO_ATTACHMENT\]/, file);
         assert.doesNotMatch(source, /#0f1117/, file);
     }
 });
