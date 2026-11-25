@@ -63,14 +63,15 @@ export async function locationsReport(db, member, query) {
         convWhere += " AND ace.consent_level = 'full'";
     }
 
-    // The place a conversion happened: stored on the event since city/region
-    // were added there, otherwise the session's latest page view.
+    // The place a conversion happened: stored on the event itself since
+    // region/city were added there; for older consented events, the page
+    // view it happened on (pageview_id), else the session's latest one.
     const convFrom = (join = "") => `
         FROM analytics_custom_events ace ${join}
         LEFT JOIN LATERAL (
             SELECT e.country_code, e.region, e.city FROM analytics_events e
              WHERE ace.session_id IS NOT NULL AND e.site_id = ace.site_id AND e.session_id = ace.session_id
-             ORDER BY e.received_at DESC LIMIT 1
+             ORDER BY (ace.pageview_id IS NOT NULL AND e.pageview_id = ace.pageview_id) DESC, e.received_at DESC LIMIT 1
         ) s ON true
         WHERE ace.site_id = $1 AND ace.received_at >= $2 AND ace.received_at < $3 ${convWhere}`;
     const place = `COALESCE(ace.${col}, s.${col})`;

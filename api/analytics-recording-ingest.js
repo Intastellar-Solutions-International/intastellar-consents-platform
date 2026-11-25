@@ -16,6 +16,7 @@
 
 import { put } from "@vercel/blob";
 import { getPool } from "./_db.js";
+import { cleanCity } from "./_locations.js";
 async function ensureTable(db) {
     await db.query(`
         CREATE TABLE IF NOT EXISTS analytics_recordings (
@@ -49,6 +50,9 @@ async function ensureTable(db) {
         -- actually closing it), not the length of the recorded content.
         ALTER TABLE analytics_recordings ADD COLUMN IF NOT EXISTS first_event_ts BIGINT;
         ALTER TABLE analytics_recordings ADD COLUMN IF NOT EXISTS last_event_ts  BIGINT;
+        -- Same edge headers as api/a.js; recordings only exist with consent.
+        ALTER TABLE analytics_recordings ADD COLUMN IF NOT EXISTS region VARCHAR(64);
+        ALTER TABLE analytics_recordings ADD COLUMN IF NOT EXISTS city   VARCHAR(100);
     `);
 }
 
@@ -133,6 +137,8 @@ export default async function handler(req, res) {
     }
 
     const country = (req.headers["x-vercel-ip-country"] || "").slice(0, 2) || null;
+    const region  = (req.headers["x-vercel-ip-country-region"] || "").slice(0, 64) || null;
+    const city    = cleanCity(req.headers["x-vercel-ip-city"]);
     const { browser, os } = parseUA(req.headers["user-agent"]);
     // Same 'm'/'t'/'d' short code + expansion convention as api/a.js's main
     // pageview ingest, so a recording's device_type agrees with the same
@@ -146,13 +152,13 @@ export default async function handler(req, res) {
         `INSERT INTO analytics_recordings
            (id, site_id, organisation_id, session_id, started_at, pathnames, entry_pathname,
             chunk_count, chunk_urls, byte_size, device_type, browser_family, os_family, country_code,
-            status, ended_at, duration_sec, has_snapshot, first_event_ts, last_event_ts)
+            status, ended_at, duration_sec, has_snapshot, first_event_ts, last_event_ts, region, city)
          VALUES
            ($1,$2,$3,$4,NOW(),$5,$6,1,ARRAY[$7]::text[],$8,$9,$10,$11,$12,
             CASE WHEN $13 THEN 'complete' ELSE 'active' END,
             CASE WHEN $13 THEN NOW() ELSE NULL END,
             CASE WHEN $13 THEN GREATEST(0, (COALESCE($16::bigint,$15::bigint,0) - COALESCE($15::bigint,0)) / 1000)::int ELSE NULL END,
-            $14, $15::bigint, $16::bigint)
+            $14, $15::bigint, $16::bigint, $17, $18)
          ON CONFLICT (id) DO UPDATE SET
            pathnames      = EXCLUDED.pathnames,
            chunk_count    = analytics_recordings.chunk_count + 1,
@@ -176,6 +182,7 @@ export default async function handler(req, res) {
             !!final,
             chunkHasSnapshot,
             chunkMinTs, chunkMaxTs,
+            region, city,
         ]
     ).catch(() => {});
 

@@ -422,6 +422,9 @@ async function ensureTables(db) {
         ALTER TABLE analytics_events        ADD COLUMN IF NOT EXISTS city   VARCHAR(100);
         ALTER TABLE analytics_custom_events ADD COLUMN IF NOT EXISTS region VARCHAR(64);
         ALTER TABLE analytics_custom_events ADD COLUMN IF NOT EXISTS city   VARCHAR(100);
+        -- The page view a consented event happened on (same client id as
+        -- analytics_events.pageview_id) — links a conversion to its exact page.
+        ALTER TABLE analytics_custom_events ADD COLUMN IF NOT EXISTS pageview_id VARCHAR(40);
     `).catch(() => {});
     await db.query(`
         CREATE INDEX IF NOT EXISTS idx_ae_hosting  ON analytics_events (site_id, is_hosting_ip) WHERE is_hosting_ip;
@@ -1482,6 +1485,7 @@ function track(name,opts){
     be:be?be.e:undefined,bv:be?be.v:undefined,
     cl:full?'full':'minimal',
     sid:full?getSid():undefined,
+    pv:full?pvid:undefined,
     v:(typeof opts.value==='number'&&isFinite(opts.value))?opts.value:undefined,
     cur:opts.currency?String(opts.currency).slice(0,3):undefined,
     txn:opts.transactionId?String(opts.transactionId).slice(0,64):undefined,
@@ -2472,8 +2476,8 @@ export default async function handler(req, res) {
              (site_id, organisation_id, session_id, consent_level, consent_stat, consent_func, consent_adv,
               name, value_cents, currency, transaction_id, pathname, page_host, country_code, device_type, source,
               gclid, msclkid, fbclid, utm_campaign, utm_content, utm_source, utm_medium, products, extra_data,
-              browser_family, is_embedded, consent_granular, banner_exp, banner_variant, region, city)
-             VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28,$29,$30,$31,$32)
+              browser_family, is_embedded, consent_granular, banner_exp, banner_variant, region, city, pageview_id)
+             VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28,$29,$30,$31,$32,$33)
              RETURNING id`,
             [
                 siteId, orgId, isMinimal ? null : (sid ? String(sid).slice(0, 64) : null),
@@ -2492,6 +2496,7 @@ export default async function handler(req, res) {
                 isMinimal ? null : consentGranular,
                 bannerExpId, bannerVariant,
                 region, isMinimal ? null : city,
+                !isMinimal && pageviewId ? String(pageviewId).slice(0, 40) : null,
             ]
         ).catch(() => ({ rows: [] }));
 
