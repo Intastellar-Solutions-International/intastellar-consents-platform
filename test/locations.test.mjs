@@ -205,3 +205,66 @@ test("revenue dashboards: the server and dashboard lists agree", async () => {
     const report = readFileSync(new URL("../api/_scheduled-report.js", import.meta.url), "utf8");
     assert.match(report, /revenueCents > 0 && siteDomainRows\.some\(r => REVENUE_DASHBOARDS\.includes\(r\.business_type\)\)/);
 });
+
+test("form goals: a form marked 'not a lead' stops counting; lead types name the rows", async () => {
+    const { classifyTier, tierCaseSql, formLeadTypeSql } = await import("../api/_conversions.js");
+    assert.equal(classifyTier("form_submit", null), "lead");
+    assert.equal(classifyTier("form_submit", null, { excludedForm: true }), "micro");
+    assert.equal(classifyTier("booked", "lead", { excludedForm: true }), "lead", "only form submits are affected");
+    const sql = tierCaseSql("ace", "d");
+    assert.match(sql, /'form_submit'\) AND NOT EXISTS \(SELECT 1 FROM analytics_form_goals fg/);
+    assert.match(sql, /fg\.counts = false/);
+    // Same form id normalisation as the Forms report, so goals match its rows
+    const forms = readFileSync(new URL("../api/analytics-forms.js", import.meta.url), "utf8");
+    assert.match(forms, /THEN COALESCE\(NULLIF\(extra_data->>'action', ''\), 'form'\)/);
+    assert.match(formLeadTypeSql("ace"), /THEN COALESCE\(NULLIF\(ace\.extra_data->>'action', ''\), 'form'\)/);
+    const { cleanGoal } = await import("../api/analytics-form-goals.js");
+    assert.deepEqual(cleanGoal({ formId: " book-demo ", leadType: "  Demo   call " }), { formId: "book-demo", leadType: "Demo call", counts: true });
+    assert.deepEqual(cleanGoal({ formId: "news", leadType: "x", counts: false }), { formId: "news", leadType: null, counts: false });
+    assert.ok(cleanGoal({}).error);
+});
+
+test("goals: chips per goal with an All total; keys are validated", async () => {
+    const { shapeGoals, cleanGoalKey, goalKeySql, shapePath, bucketMinutes, median } = await import("../api/_goals.js");
+    const goals = shapeGoals([
+        { goal_key: "type:Demo", cur: "29", prev: "20" },
+        { goal_key: "forms", cur: "6", prev: "6" },
+        { goal_key: "type:Trial", cur: "13", prev: "0" },
+        { goal_key: "event:booked", cur: "0", prev: "0" },
+    ], new Map());
+    assert.deepEqual(goals.map((g) => [g.key, g.count]), [["all", 48], ["type:Demo", 29], ["type:Trial", 13], ["forms", 6]]);
+    assert.equal(Math.round(goals[1].trend), 45);
+    assert.equal(goals[2].trend, null, "no trend without a previous count");
+    assert.equal(cleanGoalKey("type:Demo"), "type:Demo");
+    assert.equal(cleanGoalKey("event:purchase"), "event:purchase");
+    assert.equal(cleanGoalKey("event:x' OR 1=1"), "all");
+    assert.equal(cleanGoalKey(undefined), "all");
+    assert.match(goalKeySql("ace"), /WHEN ace\.name = 'form_submit' THEN 'forms'/);
+    assert.deepEqual(shapePath([{ key: "visited", count: 200 }, { key: "started", count: 20 }, { key: "converted", count: 15 }]).map((s) => [s.key, s.dropPct]),
+        [["visited", null], ["started", 90], ["converted", 25]]);
+    assert.deepEqual(bucketMinutes([0.5, 3, 12, 90, 3000]).map((b) => b.count), [1, 1, 1, 1, 1]);
+    assert.equal(median([4, 1, 9]), 4);
+    assert.equal(median([]), null);
+});
+
+test("goals endpoint: one goal's queries filter by its key; settings own the setup", async () => {
+    const { goalsReport } = await import("../api/analytics-goals.js");
+    const calls = [];
+    const db = { query: async (sql, params) => {
+        calls.push({ sql, params });
+        if (/FROM analytics_sites/.test(sql)) return { rows: [{ id: "s1" }] };
+        if (/FROM analytics_foreign_domains/.test(sql)) return { rows: [] };
+        return { rows: [{}] };
+    } };
+    const r = await goalsReport(db, { organisationId: 7 }, { domain: "a.aero", from: "2026-11-01", to: "2026-11-30", goal: "type:Demo", by: "landing", touch: "last" });
+    assert.equal(r.status, 200);
+    const daily = calls.find((c) => /date_trunc\('day'/.test(c.sql));
+    assert.deepEqual(daily.params, ["s1", "2026-11-01", "2026-12-01", "type:Demo"]);
+    assert.match(daily.sql, /= \$4/);
+    const touched = calls.find((c) => /touched AS/.test(c.sql));
+    assert.match(touched.sql, /e\.pathname AS k/);
+    assert.match(touched.sql, /e\.received_at DESC/, "last touch");
+    assert.equal(r.body.path.kind, "form");
+    const page = readFileSync(new URL("../src/Pages/Analytics/ConversionsOverview.js", import.meta.url), "utf8");
+    assert.match(page, /section === "setup"[^\n]*analyticsSettingsPath\(domain\) \+ "#goals"/);
+});

@@ -9048,3 +9048,183 @@ details[open] .ca-context-summary::before { content: "▾"; }
     .sa-loc__select, .sa-loc__input { min-width: 0; width: 100%; }
     .sa-pinned-grid { grid-template-columns: minmax(0, 1fr); }
 }
+
+/* ── Form goals (Forms.js → FormGoalPicker): what a form's submits count as ── */
+.sa-form-goal__select { min-width: 150px; padding: 5px 8px; }
+.sa-form-goal {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+}
+.sa-form-goal__input {
+    width: 120px;
+    padding: 5px 8px;
+    border: 1px solid var(--color-border-subtle);
+    border-radius: var(--radius-md);
+    background: rgb(var(--c-white) / 0.05);
+    color: var(--color-text-primary);
+    font: inherit;
+    font-size: var(--text-sm);
+}
+
+/* ── Conversions by goal (ConversionsOverview.js) ─────────────────────────── */
+
+.sa-goal-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+}
+.sa-goal-chip {
+    display: inline-flex;
+    align-items: baseline;
+    gap: var(--space-2);
+    padding: 8px 14px;
+    border: 1px solid var(--color-border-subtle);
+    border-radius: var(--radius-full);
+    background: var(--color-bg-raised);
+    color: var(--color-text-secondary);
+    font: inherit;
+    font-size: var(--text-sm);
+    cursor: pointer;
+}
+.sa-goal-chip:hover { border-color: var(--color-border-strong); }
+.sa-goal-chip:focus-visible { outline: none; box-shadow: var(--shadow-focus); }
+.sa-goal-chip--active {
+    border-color: var(--color-accent);
+    background: var(--color-accent-subtle);
+    color: var(--color-text-primary);
+}
+.sa-goal-chip__label { font-weight: 600; }
+.sa-goal-chip__count { font-variant-numeric: tabular-nums; color: var(--color-text-primary); }
+
+.sa-goal-trend { font-size: var(--text-xs); font-weight: 600; white-space: nowrap; }
+.sa-goal-trend--up   { color: var(--color-success); }
+.sa-goal-trend--down { color: var(--color-danger-text); }
+
+/* Trend card beside the path; sources beside time + device */
+.sa-goals-top {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    gap: 12px;
+    align-items: start;
+}
+.sa-goals-bottom {
+    display: grid;
+    grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+    gap: 12px;
+    align-items: start;
+}
+.sa-goals-top[aria-busy="true"], .sa-goals-bottom[aria-busy="true"] { opacity: 0.6; }
+
+.sa-goal-hero__head {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: var(--space-4);
+    align-items: start;
+    margin-bottom: var(--space-3);
+}
+.sa-goal-hero__eyebrow {
+    margin: 0;
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-accent-strong);
+}
+.sa-goal-hero__value {
+    margin: var(--space-1) 0 0;
+    font-size: var(--text-4xl);
+    font-weight: 600;
+    line-height: 1.1;
+    color: var(--color-text-primary);
+    font-variant-numeric: tabular-nums;
+}
+.sa-goal-hero__value .sa-goal-trend { font-size: var(--text-sm); vertical-align: middle; }
+.sa-goal-hero__sub, .sa-goal-hero__note {
+    margin: var(--space-1) 0 0;
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+}
+.sa-goal-hero__note { color: var(--color-text-muted); justify-self: end; max-width: 320px; text-align: right; }
+
+.sa-goal-path__steps {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    margin: var(--space-3) 0 0;
+    padding: 0;
+    list-style: none;
+}
+.sa-goal-path__step {
+    display: grid;
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr) auto 3.5rem;
+    align-items: center;
+    gap: var(--space-3);
+    font-size: var(--text-sm);
+}
+.sa-goal-path__label { color: var(--color-text-primary); }
+.sa-goal-path__count { font-weight: 600; font-variant-numeric: tabular-nums; color: var(--color-text-primary); }
+.sa-goal-path__drop { text-align: right; color: var(--color-danger-text); font-variant-numeric: tabular-nums; }
+.sa-goal-path__alert {
+    display: flex;
+    gap: var(--space-2);
+    margin: var(--space-4) 0 0;
+    padding: var(--space-3);
+    border-radius: var(--radius-md);
+    background: rgb(var(--c-danger) / 0.1);
+    border: 1px solid rgb(var(--c-danger) / 0.3);
+    font-size: var(--text-sm);
+    color: var(--color-text-primary);
+}
+.sa-goal-path__alert .sa-icon { color: var(--color-danger); flex-shrink: 0; margin-top: 2px; }
+.sa-goal-path__alert a { color: var(--color-accent-strong); }
+
+.sa-goal-sources__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2) var(--space-3);
+    margin-bottom: var(--space-3);
+}
+.sa-goal-sources__head .sa-panel__title { margin: 0; }
+.sa-goal-sources__controls { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+
+.sa-goal-small { display: grid; gap: 12px; }
+.sa-goal-bars {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    margin: var(--space-2) 0 0;
+    padding: 0;
+    list-style: none;
+}
+.sa-goal-bars li {
+    display: grid;
+    grid-template-columns: 7rem minmax(0, 1fr) 3rem;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+}
+.sa-goal-bars__n { text-align: right; font-variant-numeric: tabular-nums; color: var(--color-text-primary); }
+
+.sa-goals-manage { margin: 0; text-align: right; font-size: var(--text-sm); }
+.sa-goals-manage a { color: var(--color-accent-strong); font-weight: 600; text-decoration: none; }
+.sa-goals-manage a:hover { text-decoration: underline; }
+
+@media (max-width: 1100px) {
+    .sa-goals-top, .sa-goals-bottom { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 640px) {
+    .sa-goal-hero__head { grid-template-columns: minmax(0, 1fr); }
+    .sa-goal-hero__note { justify-self: start; text-align: left; }
+    .sa-goal-path__step { grid-template-columns: minmax(0, 1fr) auto 3rem; }
+    .sa-goal-path__bar { display: none; }
+}
+.sa-goals-settings__title {
+    margin: var(--space-5) 0 var(--space-2);
+    font-size: var(--text-base);
+    font-weight: 600;
+    color: var(--color-text-primary);
+}

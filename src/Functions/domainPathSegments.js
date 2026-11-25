@@ -166,7 +166,7 @@ export function analyticsUserFlowPath(domainUnicode) {
     return `/analytics/${seg}/user-flow`;
 }
 
-/** section: omit (or "overview") for the base tab, or "deepdive" | "setup" for a specific one — see ConversionsOverview.js's SECTIONS. */
+/** section: omit for the Conversions page; the old "setup" section now redirects to Analytics settings → Goals. */
 export function analyticsConversionsPath(domainUnicode, section) {
     const seg = encodeDomainPathSegment(domainUnicode);
     const suffix = section && section !== "overview" ? `/${section}` : "";

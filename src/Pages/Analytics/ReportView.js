@@ -245,8 +245,9 @@ export default function ReportView() {
     // name (e.g. "Booking confirmed") than the generic metric label.
     const eventLabelFor = useMemo(() => {
         if (!eventFilter) return null;
-        const hit = (data?.conversions || []).find(c => c.name === eventFilter);
-        return hit?.label || eventFilter;
+        // form_submit can come back as several rows (one per lead type) — then the event name
+        const hits = (data?.conversions || []).filter(c => c.name === eventFilter);
+        return (hits.length === 1 && hits[0].label) || eventFilter;
     }, [data, eventFilter]);
     const metricLabel = (m) => (m === "conversions" && eventLabelFor) ? eventLabelFor : (METRIC_LABELS[m] || m);
 

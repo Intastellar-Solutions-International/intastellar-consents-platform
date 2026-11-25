@@ -1,7 +1,9 @@
 const { useState, useEffect, useCallback, useMemo } = React;
 import { ScannerHost } from "../../API/host.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
-import { authHeaders, useAnalyticsPageChrome, useCompareRange, useShowsRevenue } from "./_shared.js";
+import { authHeaders, useAnalyticsPageChrome, useCompareRange, useShowsRevenue, useAnalyticsReport } from "./_shared.js";
+import ConversionsPanel from "./Conversions.js";
+import { useFormGoals, FormGoalPicker } from "./Forms.js";
 import { t } from "../../i18n/index.js";
 import { SkeletonRows } from "./components/Skeleton.js";
 import "./Analytics.css";
@@ -49,14 +51,63 @@ function Field({ label, hint, children }) {
 
 // ── Section wrapper ───────────────────────────────────────────────────────────
 
-function Section({ title, children }) {
+function Section({ title, children, id }) {
     return (
-        <div className="sa-panel">
+        <div className="sa-panel" id={id}>
             <h3 className="sa-panel__title">{title}</h3>
             <div style={{ marginTop: 14 }}>
                 {children}
             </div>
         </div>
+    );
+}
+
+// ── Goals: what counts as a conversion ──────────────────────────────────────
+// Moved here from the Conversions page (which now only reports): forms get a
+// lead type or "not a lead", and site events are registered with their kind.
+function GoalsSection({ domain, fromIso, toIso }) {
+    const formGoals = useFormGoals(domain);
+    const { data } = useAnalyticsReport(domain, fromIso, toIso);
+    // /conversions/setup and "Manage goals" links land on #goals
+    useEffect(() => {
+        if (window.location.hash === "#goals") document.getElementById("goals")?.scrollIntoView({ behavior: "smooth" });
+    }, []);
+    return (
+        <>
+            <p className="sa-panel__sub">
+                {t("Every form submission counts as a lead. Give a form a lead type such as Demo or Trial to report it as its own goal on the Conversions page, or mark it as not a lead (a newsletter, for example) so it stops counting.")}
+            </p>
+            <h4 className="sa-goals-settings__title">{t("Forms")}</h4>
+            {formGoals.forms.length === 0 ? (
+                <p className="sa-history-note">{t("No form submissions in the last 90 days.")}</p>
+            ) : (
+                <table className="sa-table">
+                    <thead>
+                        <tr>
+                            <th>{t("Form")}</th>
+                            <th>{t("Usually on")}</th>
+                            <th className="sa-table__num">{t("Submissions (90 days)")}</th>
+                            <th>{t("Counts as")}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {formGoals.forms.map((f) => (
+                            <tr key={f.formId}>
+                                <td className="sa-table__path" title={f.formId}>{f.formId}</td>
+                                <td className="sa-table__path" title={f.page || ""}>{f.page || "—"}</td>
+                                <td className="sa-table__num">{f.submits.toLocaleString(appLocale())}</td>
+                                <td>
+                                    <FormGoalPicker domain={domain} formId={f.formId} goal={formGoals.goals.get(f.formId)}
+                                        leadTypes={formGoals.leadTypes} onSaved={formGoals.reload} />
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            )}
+            <h4 className="sa-goals-settings__title">{t("Events")}</h4>
+            <ConversionsPanel domain={domain} conversions={data?.conversions || []} onDefsChanged={() => {}} />
+        </>
     );
 }
 
@@ -923,7 +974,7 @@ function InterestRulesSection({ domain }) {
 export default function AnalyticsSettings() {
     document.title = "Analytics Settings | Site Analytics";
 
-    const { domain, getLastDays, setLastDays, fromDate, setFromDate, toDate, setToDate }
+    const { domain, getLastDays, setLastDays, fromDate, setFromDate, toDate, setToDate, fromIso, toIso }
         = useAnalyticsPageChrome();
 
     // Compare-to-previous-period header wiring (Phase 3, docs/design-audit-plan.md).
@@ -957,6 +1008,10 @@ export default function AnalyticsSettings() {
 
                     <Section title="Site Configuration">
                         <SiteConfigSection domain={domain} />
+                    </Section>
+
+                    <Section title={t("Goals")} id="goals">
+                        <GoalsSection domain={domain} fromIso={fromIso} toIso={toIso} />
                     </Section>
 
                     <Section title="Cross-site tracking">

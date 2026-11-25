@@ -8,7 +8,7 @@ import { ScannerHost } from "../../API/host.js";
 import { onboardingSteps } from "../../Functions/onboardingSteps.js";
 import { useOnboardingFacts } from "../../Functions/onboardingFacts.js";
 import { installSnippet } from "../../Functions/installSnippet.js";
-import { analyticsConversionsPath } from "../../Functions/domainPathSegments.js";
+import { analyticsSettingsPath } from "../../Functions/domainPathSegments.js";
 import { canAccess } from "../../Functions/tier.js";
 import { readJsonResult, errorMessage } from "../../Functions/apiResult.js";
 import { DATA_RESIDENCY, NO_COOKIES_BEFORE_CONSENT } from "../../Functions/trustCopy.js";
@@ -87,7 +87,8 @@ export default function GettingStarted() {
     const site = activeDomain ? sites.find((s) => s.domain === activeDomain.toLowerCase()) : null;
     const plan = onboardingSteps(facts, platform, {
         analytics: analyticsOnPlan,
-        conversionsPath: activeDomain ? analyticsConversionsPath(activeDomain) : undefined,
+        // Goals are set up in Analytics settings → Goals (the Conversions page only reports)
+        conversionsPath: activeDomain ? analyticsSettingsPath(activeDomain) + "#goals" : undefined,
     });
     const finished = plan.completed === plan.total;
     const snippet = activeDomain ? installSnippet({ domain: activeDomain, siteKey: analyticsOnPlan ? site?.siteId : null }) : "";

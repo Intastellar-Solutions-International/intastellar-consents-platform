@@ -1,4 +1,4 @@
-const { useState, useEffect, useMemo } = React;
+const { useState, useEffect, useMemo, useCallback } = React;
 import { ScannerHost } from "../../API/host.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import {
@@ -94,7 +94,69 @@ function httpCodeDesc(message) {
     return null;
 }
 
-function FormsTable({ forms, abandonMap }) {
+const FORM_GOALS_URL = `${ScannerHost}/api/analytics-form-goals`;
+
+/** What each form's submits count as (api/analytics-form-goals.js). */
+export function useFormGoals(domain) {
+    const [state, setState] = useState({ goals: new Map(), leadTypes: [], forms: [] });
+    const load = useCallback(() => {
+        if (!domain) return;
+        fetch(`${FORM_GOALS_URL}?${new URLSearchParams({ domain })}`, { headers: authHeaders() })
+            .then((r) => (r.ok ? r.json() : { goals: [], leadTypes: [], forms: [] }))
+            .then((d) => setState({ goals: new Map((d.goals || []).map((g) => [g.formId, g])), leadTypes: d.leadTypes || [], forms: d.forms || [] }))
+            .catch(() => {});
+    }, [domain]);
+    useEffect(load, [load]);
+    return { ...state, reload: load };
+}
+
+// Every form submit is a lead by default; here a form gets a lead type
+// ("Demo", "Trial") so reports tell them apart, or is marked "not a lead"
+// (a newsletter) so it stops counting as a conversion anywhere.
+export function FormGoalPicker({ domain, formId, goal, leadTypes, onSaved }) {
+    const [adding, setAdding] = useState(false);
+    const [draft, setDraft] = useState("");
+    const [saving, setSaving] = useState(false);
+    const value = !goal ? "lead" : !goal.counts ? "none" : goal.leadType ? `type:${goal.leadType}` : "lead";
+
+    const save = (next) => {
+        setSaving(true);
+        const qs = new URLSearchParams({ domain });
+        const req = next === null
+            ? fetch(`${FORM_GOALS_URL}?${new URLSearchParams({ domain, formId })}`, { method: "DELETE", headers: authHeaders() })
+            : fetch(`${FORM_GOALS_URL}?${qs}`, { method: "PUT", headers: authHeaders(), body: JSON.stringify({ formId, ...next }) });
+        req.finally(() => { setSaving(false); setAdding(false); setDraft(""); onSaved(); });
+    };
+    const onChange = (v) => {
+        if (v === "new") { setAdding(true); return; }
+        if (v === "lead") save(null);
+        else if (v === "none") save({ counts: false });
+        else save({ counts: true, leadType: v.slice(5) });
+    };
+
+    if (adding) {
+        return (
+            <form className="sa-form-goal" onSubmit={(e) => { e.preventDefault(); if (draft.trim()) save({ counts: true, leadType: draft.trim() }); }}>
+                <input className="sa-form-goal__input" value={draft} maxLength={60} autoFocus placeholder={t("e.g. Demo")}
+                    aria-label={t("Lead type name")} onChange={(e) => setDraft(e.target.value)} />
+                <button type="submit" className="sa-btn sa-btn--sm" disabled={saving || !draft.trim()}>{t("Save")}</button>
+                <button type="button" className="sa-btn sa-btn--sm sa-btn--ghost" onClick={() => setAdding(false)}>{t("Cancel")}</button>
+            </form>
+        );
+    }
+    const types = [...new Set([...leadTypes, ...(goal?.leadType ? [goal.leadType] : [])])].sort();
+    return (
+        <select className="sa-select sa-form-goal__select" value={value} disabled={saving}
+            aria-label={t("What submissions of this form count as")} onChange={(e) => onChange(e.target.value)}>
+            <option value="lead">{t("Lead")}</option>
+            {types.map((lt) => <option key={lt} value={`type:${lt}`}>{t("Lead: {type}", { type: lt })}</option>)}
+            <option value="new">{t("New lead type…")}</option>
+            <option value="none">{t("Not a lead")}</option>
+        </select>
+    );
+}
+
+function FormsTable({ forms, abandonMap, domain, formGoals }) {
     const maxSubs = useMemo(() => Math.max(...(forms || []).map(f => f.submissions), 1), [forms]);
 
     if (!forms || !forms.length) {
@@ -111,6 +173,7 @@ function FormsTable({ forms, abandonMap }) {
                     <th className="sa-table__num">Abandoned</th>
                     <th className="sa-table__num">Pages</th>
                     <th>Top page</th>
+                    <th title={t("What a submission of this form counts as in conversions")}>{t("Counts as")}</th>
                 </tr>
             </thead>
             <tbody>
@@ -149,6 +212,10 @@ function FormsTable({ forms, abandonMap }) {
                                 {f.topPage
                                     ? (f.topPage.length > 50 ? "…" + f.topPage.slice(-47) : f.topPage)
                                     : "—"}
+                            </td>
+                            <td>
+                                <FormGoalPicker domain={domain} formId={f.formId} goal={formGoals.goals.get(f.formId)}
+                                    leadTypes={formGoals.leadTypes} onSaved={formGoals.reload} />
                             </td>
                         </tr>
                     );
@@ -711,6 +778,7 @@ export default function AnalyticsForms() {
     } = useAnalyticsPageChrome();
 
     const { data, loading, error: loadError, reload } = useFormsReport(domain, fromIso, toIso);
+    const formGoals = useFormGoals(domain);
 
     const trendData = (data?.daily || []).map(d => ({
         label: d.day,
@@ -842,7 +910,7 @@ export default function AnalyticsForms() {
                                     <h3 className="sa-panel__title">
                                         <IconFormFill className="sa-icon" /> Forms
                                     </h3>
-                                    <FormsTable forms={data.forms} abandonMap={abandonMap} />
+                                    <FormsTable forms={data.forms} abandonMap={abandonMap} domain={domain} formGoals={formGoals} />
                                 </div>
 
                                 <div className="sa-panel">

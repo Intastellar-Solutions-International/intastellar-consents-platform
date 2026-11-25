@@ -29,32 +29,42 @@ if (!POSTGRES_URL) {
     const { Pool } = await import("pg");
     const pool = new Pool({ connectionString: POSTGRES_URL, ssl: { rejectUnauthorized: false } });
 
-    // [name, kind, expectedTier]
+    // [name, kind, extra_data, expectedTier]
     const cases = [
-        ["form_submit", "custom", "lead"],
-        ["form_submit", null, "lead"],
-        ["booked", "lead", "lead"],
-        ["purchase", "purchase", "sale"],
-        ["add_to_cart_event", "add_to_cart", "sale"],
-        ["clicked_book_demo", "click", "intent"],
-        ["scroll_depth", null, "micro"],
-        ["something_custom", "custom", "micro"],
+        ["form_submit", "custom", { formId: "contact" }, "lead"],
+        ["form_submit", null, null, "lead"],
+        ["booked", "lead", null, "lead"],
+        ["purchase", "purchase", null, "sale"],
+        ["add_to_cart_event", "add_to_cart", null, "sale"],
+        ["clicked_book_demo", "click", null, "intent"],
+        ["scroll_depth", null, null, "micro"],
+        ["something_custom", "custom", null, "micro"],
+        // Forms marked "not a lead" in analytics_form_goals — by id, and by
+        // action when the id is a placeholder (same as the Forms report)
+        ["form_submit", "custom", { formId: "newsletter" }, "micro"],
+        ["form_submit", null, { formId: "form", action: "/subscribe" }, "micro"],
+        ["form_submit", null, { formId: "book-demo" }, "lead"],
     ];
 
     test("tierCaseSql's Postgres SQL matches every expected case", async () => {
         try {
-            const values = cases.map((_, i) => `($${i * 2 + 1}::text, $${i * 2 + 2}::text)`).join(", ");
+            const values = cases.map((_, i) => `($${i * 3 + 1}::text, $${i * 3 + 2}::text, $${i * 3 + 3}::jsonb, ${i})`).join(", ");
+            // The CTE stands in for the real analytics_form_goals table (a CTE
+            // name shadows a table of the same name), so nothing is written.
             const sql = `
-                SELECT ace.name, ace.kind, ${tierCaseSql("ace", "ace")} AS tier
-                FROM (VALUES ${values}) AS ace(name, kind)`;
-            const params = cases.flatMap(([name, kind]) => [name, kind]);
+                WITH analytics_form_goals(site_id, form_id, lead_type, counts) AS (
+                    VALUES ('s1', 'newsletter', NULL::text, false), ('s1', '/subscribe', NULL, false), ('s1', 'book-demo', 'Demo', true)
+                )
+                SELECT ace.i, ${tierCaseSql("ace", "ace")} AS tier
+                FROM (SELECT 's1'::text AS site_id, v.* FROM (VALUES ${values}) AS v(name, kind, extra_data, i)) AS ace`;
+            const params = cases.flatMap(([name, kind, extra]) => [name, kind, extra ? JSON.stringify(extra) : null]);
             const { rows } = await pool.query(sql, params);
 
-            for (const [name, kind, expected] of cases) {
-                const row = rows.find(r => r.name === name && r.kind === kind);
+            cases.forEach(([name, kind, extra, expected], i) => {
+                const row = rows.find(r => r.i === i);
                 assert.ok(row, `no row returned for ${name}/${kind}`);
-                assert.strictEqual(row.tier, expected, `expected tier=${expected} for ${name}/${kind}, got ${row.tier}`);
-            }
+                assert.strictEqual(row.tier, expected, `expected tier=${expected} for ${name}/${kind}/${JSON.stringify(extra)}, got ${row.tier}`);
+            });
         } finally {
             await pool.end();
         }
