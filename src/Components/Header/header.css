@@ -1268,39 +1268,38 @@
 }
 
 /* Mobile drawer — below 1024px, per the design brief. Same pattern as
-   SideNav.js's own drawer (toggle + backdrop + slide-in), independent
-   classes, breakpoint moved from that component's 769px to the brief's
-   1024px. */
-.ia-sidebar-toggle { display: none; }
+   SideNav.js's own drawer (backdrop + slide-in), independent classes,
+   breakpoint moved from that component's 769px to the brief's 1024px.
+   Opened by the header's menu button, which Analytics shows up to the
+   same breakpoint (below). */
 .ia-sidebar-backdrop { display: none; }
 
-@media (max-width: 1023px) {
-    .ia-sidebar-toggle {
-        display: inline-flex;
-        align-items: center;
-        gap: var(--space-2);
-        position: fixed;
-        top: 76px;
-        left: 12px;
-        z-index: 102;
-        padding: var(--space-2) var(--space-3);
-        margin: 0;
-        border: 1px solid rgb(var(--c-white) / 0.12);
-        border-radius: var(--sa-radius-sm, 8px);
-        background: linear-gradient(180deg, var(--color-bg-base) 0%, var(--color-bg-base) 100%);
-        color: rgb(var(--c-white) / 0.92);
-        font: inherit;
-        font-size: var(--sa-font-sm, 0.85rem);
+@media (min-width: 901px) and (max-width: 1023px) {
+    /* Menu, logo, domain picker, search and account share one row here:
+       a smaller logo and a search box that gives way keep them apart. */
+    .dashboard-header--analytics .dashboard-logo { height: 36px; }
+    .dashboard-header--analytics .analytics-header-search { min-width: 0; flex: 0 1 220px; }
+    .dashboard-header--analytics .analytics-header-search__box { min-width: 140px; }
+    .dashboard-header--analytics .dashboard-profile > .flex.profileImage { margin-left: var(--space-3); }
+    .dashboard-header--analytics .menu {
+        display: block;
+        padding: var(--space-2);
+        margin-right: var(--space-1);
         cursor: pointer;
-        box-shadow: var(--shadow-md);
+        background-color: transparent;
+        border: none;
+        border-radius: var(--radius-md);
     }
-    .ia-sidebar-toggle__bars { display: flex; flex-direction: column; gap: var(--space-1); }
-    .ia-sidebar-toggle__bar { display: block; width: 18px; height: 2px; background: currentColor; border-radius: var(--radius-xs); }
-    .ia-sidebar-toggle__label {
-        position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
-        overflow: hidden; clip: rect(0,0,0,0); border: 0;
+    .dashboard-header--analytics .menu-bar {
+        width: 22px;
+        height: 2px;
+        margin: var(--space-1) auto;
+        background-color: rgb(var(--c-white) / 0.92);
+        border-radius: var(--radius-xs);
     }
+}
 
+@media (max-width: 1023px) {
     .ia-sidebar-backdrop {
         display: block;
         position: fixed;
@@ -1363,4 +1362,26 @@
         cursor: pointer;
     }
     .ia-sidebar__close:hover { background: rgb(var(--c-white) / 0.08); }
+}
+
+/* Analytics header search (AnalyticsHeaderSearch.js). Below 900px the header
+   is a grid (logo + account on top, domain picker below); the search gets
+   its own full-width row instead of being auto-placed into a cell, where it
+   widened the right column and pushed the bell and avatar over the logo. */
+.analytics-header-search__box { min-width: 220px; }
+
+@media (max-width: 900px) {
+    /* .dashboard-profile in each selector: beats Shell.css's .shell-profile rules */
+    .dashboard-header--analytics .dashboard-profile .logo_container { grid-column: 1; grid-row: 1; }
+    .dashboard-header--analytics .dashboard-profile > .flex.profileImage { grid-column: 2; grid-row: 1; }
+    .dashboard-header--analytics .dashboard-profile .company_container { grid-column: 1 / -1; grid-row: 2; }
+    /* Only holds the date range on desktop in Analytics — nothing to show here */
+    .dashboard-header--analytics .dashboard-profile .shell-topbar-tools { display: none; }
+    .dashboard-header--analytics .dashboard-profile .analytics-header-search {
+        grid-column: 1 / -1;
+        grid-row: 3;
+        min-width: 0;
+        width: 100%;
+    }
+    .dashboard-header--analytics .analytics-header-search__box { min-width: 0; }
 }

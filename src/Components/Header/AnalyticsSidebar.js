@@ -84,7 +84,7 @@ export default function AnalyticsSidebar(props) {
         return () => mq.removeEventListener("change", onChange);
     }, []);
 
-    // The header's menu button (new shell) opens the drawer on small screens.
+    // The header's menu button opens the drawer on small screens (both shells).
     useEffect(() => {
         const toggle = () => {
             if (!window.matchMedia("(min-width: 1024px)").matches) setMobileOpen((o) => !o);
@@ -199,22 +199,9 @@ export default function AnalyticsSidebar(props) {
         );
     };
 
+    // Opened from the header's menu button (shell:toggle-rail above) — no
+    // floating button of its own, which sat on top of the page title.
     return <>
-        <button
-            type="button"
-            className="ia-sidebar-toggle"
-            aria-expanded={mobileOpen}
-            aria-controls="ia-analytics-sidebar"
-            onClick={() => setMobileOpen((o) => !o)}
-        >
-            <span className="ia-sidebar-toggle__bars" aria-hidden>
-                <span className="ia-sidebar-toggle__bar" />
-                <span className="ia-sidebar-toggle__bar" />
-                <span className="ia-sidebar-toggle__bar" />
-            </span>
-            <span className="ia-sidebar-toggle__label">{t("Menu")}</span>
-        </button>
-
         <div
             className={"ia-sidebar-backdrop" + (mobileOpen ? " ia-sidebar-backdrop--visible" : "")}
             onClick={closeMobile}

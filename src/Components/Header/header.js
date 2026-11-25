@@ -421,14 +421,17 @@ export default function Header(props) {
 
     return (
         <>
-            <header className="dashboard-header">
+            <header className={"dashboard-header" + (dashboardMode === "analytics" ? " dashboard-header--analytics" : "")}>
                 <div className={"dashboard-profile" + (newShell ? " shell-profile" : "")}>
                     <section className="logo-selector-container">
                         <section className="logo_container">
-                            <button className="menu" aria-label={t("Toggle navigation")} onClick={() => {
-                                if (newShell) window.dispatchEvent(new Event("shell:toggle-rail"));
-                                else document.querySelector(".navOverlay")?.classList.toggle("expand");
-                            }}>
+                            <button className="menu" aria-label={t("Toggle navigation")}
+                                aria-controls={dashboardMode === "analytics" ? "ia-analytics-sidebar" : undefined}
+                                onClick={() => {
+                                    // Analytics has its own drawer (AnalyticsSidebar listens for this in both shells)
+                                    if (newShell || dashboardMode === "analytics") window.dispatchEvent(new Event("shell:toggle-rail"));
+                                    else document.querySelector(".navOverlay")?.classList.toggle("expand");
+                                }}>
                                 <div className="menu-bar"></div>
                                 <div className="menu-bar"></div>
                                 <div className="menu-bar"></div>

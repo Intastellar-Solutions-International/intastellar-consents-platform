@@ -113,7 +113,7 @@ export default function AnalyticsHeaderSearch() {
     const showDropdown = open;
 
     return (
-        <div ref={wrapperRef} style={{ position: "relative", minWidth: 220 }}>
+        <div ref={wrapperRef} className="analytics-header-search__box" style={{ position: "relative" }}>
             <input
                 ref={inputRef}
                 type="text"
