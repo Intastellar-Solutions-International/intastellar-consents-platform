@@ -1,5 +1,6 @@
 import { getPool } from "./_db.js";
 import { renderScheduledReport, sendReportEmail } from "./_scheduled-report.js";
+import { inlineLogosForPreview } from "./_email-layout.js";
 import { organisationHasPlan } from "./_stripe.js";
 import { validateJwt, withMembership } from "./_member-auth.js";
 /**
@@ -138,7 +139,8 @@ async function _handler(req, res) {
         if (rows[0].workspace_id && !(await clientReportsAllowed())) return res.status(402).json(PLAN_REQUIRED);
         const report = await renderScheduledReport(db, rows[0]);
         if (!report) return res.status(422).json({ error: "None of this report's domains have analytics data yet." });
-        return res.status(200).json(report);
+        // Shown in a browser tab, where the email's attached logo doesn't exist
+        return res.status(200).json({ ...report, html: inlineLogosForPreview(report.html) });
     }
 
     // ── LIST ──────────────────────────────────────────────────────────────────

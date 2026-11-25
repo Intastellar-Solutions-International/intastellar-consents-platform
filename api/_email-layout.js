@@ -13,6 +13,17 @@ const INTASTELLAR_BRAND = `<img src="cid:${LOGO_CID}" alt="Intastellar Consents"
 
 const ANALYTICS_LOGO_CID = "intastellar-analytics-logo";
 export const ANALYTICS_LOGO_ATTACHMENT = { filename: "intastellar-analytics.png", content: EMAIL_ANALYTICS_LOGO_PNG_BASE64, content_id: ANALYTICS_LOGO_CID };
+/**
+ * For showing an email in a browser (the report preview): attachments don't
+ * exist there, so the logos' cid: references become inline data. Emails
+ * themselves keep the attachments — mail clients block data: images.
+ */
+export function inlineLogosForPreview(html) {
+    return String(html)
+        .replaceAll(`cid:${LOGO_CID}`, `data:image/png;base64,${EMAIL_LOGO_PNG_BASE64}`)
+        .replaceAll(`cid:${ANALYTICS_LOGO_CID}`, `data:image/png;base64,${EMAIL_ANALYTICS_LOGO_PNG_BASE64}`);
+}
+
 export const ANALYTICS_BRAND = `<img src="cid:${ANALYTICS_LOGO_CID}" alt="Intastellar Analytics" width="151" height="32" style="display:block;height:32px;width:151px;border:0">`;
 
 export const EMAIL_FONT = "font-family:Arial,Helvetica,sans-serif;";

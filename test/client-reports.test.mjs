@@ -1,6 +1,7 @@
 // Agency Pro client reports: which sites a scheduled-report config covers,
 // the per-domain email, and the server-side plan check that gates them.
 import assert from "node:assert/strict";
+import fs from "node:fs";
 import { test } from "./_harness.mjs";
 import { resolveReportSites, buildReportData, buildReportEmailHtml } from "../api/_scheduled-report.js";
 import { organisationHasPlan } from "../api/_stripe.js";
@@ -134,4 +135,15 @@ test("report email: headline, period, context and the dashboard link", async () 
     assert.match(html, /\/analytics\/a%2Ecom\/scheduled-reports/);
     assert.match(html, /cid:intastellar-analytics-logo/);
     assert.match(html, /display:none;max-height:0/, "inbox preview line");
+});
+
+test("report preview shows the logo inline; the email keeps it as an attachment", async () => {
+    const { inlineLogosForPreview } = await import("../api/_email-layout.js");
+    const html = buildReportEmailHtml({ domain: "a.com", frequency: "weekly", label: null, data: DATA });
+    assert.match(html, /src="cid:intastellar-analytics-logo"/);
+    const preview = inlineLogosForPreview(html);
+    assert.doesNotMatch(preview, /cid:/);
+    assert.match(preview, /src="data:image\/png;base64,iVBOR/);
+    const api = fs.readFileSync(new URL("../api/analytics-scheduled-reports.js", import.meta.url), "utf8");
+    assert.match(api, /html: inlineLogosForPreview\(report\.html\)/);
 });
