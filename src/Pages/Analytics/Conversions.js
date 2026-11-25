@@ -206,6 +206,97 @@ function AutoCollectedBlock({ conversions }) {
  * so events fired without being "registered" here still show up (flagged
  * as unregistered) rather than being silently dropped.
  */
+// Same tiers as api/_conversions.js: lead / sale kinds count as conversions,
+// a click is a step toward one, anything else is only tracked.
+const SALE_KINDS = new Set(["purchase", "view_item", "add_to_cart", "remove_from_cart", "wishlist_add", "view_basket", "begin_checkout", "checkout", "payment_info", "refund", "apply_coupon"]);
+function countsAs(kind) {
+    if (kind === "lead" || SALE_KINDS.has(kind)) return "conversion";
+    if (kind === "click") return "intent";
+    return "tracked";
+}
+
+/** The event types to pick from — shop types only on revenue dashboards. */
+function KindOptions({ revenueMode }) {
+    return (
+        <>
+            <option value="custom">{t("Custom — tracked, not a conversion")}</option>
+            <option value="lead">{t("Lead — counts as a conversion (form, booking, demo request)")}</option>
+            <option value="click">{t("Click — a step toward a conversion")}</option>
+            {revenueMode && (
+                <>
+                    <option value="purchase">{t("Purchase — counts as a conversion")}</option>
+                    <optgroup label={t("Checkout funnel")}>
+                        <option value="view_item">Viewed product</option>
+                        <option value="add_to_cart">Added to cart</option>
+                        <option value="view_basket">Viewed basket</option>
+                        <option value="begin_checkout">Began checkout</option>
+                        <option value="checkout">Checkout</option>
+                        <option value="payment_info">Payment info</option>
+                    </optgroup>
+                    <optgroup label="E-commerce">
+                        <option value="remove_from_cart">Removed from cart</option>
+                        <option value="wishlist_add">Added to wishlist</option>
+                        <option value="refund">Refund</option>
+                        <option value="apply_coupon">Coupon applied</option>
+                    </optgroup>
+                </>
+            )}
+        </>
+    );
+}
+
+/**
+ * Change a registered event's name or type, or register one that already
+ * fires. POST /api/analytics-events upserts by name, so this is the same
+ * call as creating one.
+ */
+function EventEditor({ domain, row, revenueMode, onSaved, onCancel }) {
+    const [label, setLabel] = useState(row.label && row.label !== row.name ? row.label : "");
+    // A shop type on a dashboard that hides them stays selectable for this event
+    const [kind, setKind] = useState(row.kind || "custom");
+    const [saving, setSaving] = useState(false);
+    const [error, setError] = useState(null);
+    const save = async (e) => {
+        e.preventDefault();
+        setSaving(true);
+        setError(null);
+        const r = await fetch(`${ScannerHost}/api/analytics-events`, {
+            method: "POST",
+            headers: authHeaders(),
+            body: JSON.stringify({ domain, name: row.name, kind, label: label.trim() }),
+        }).catch(() => null);
+        setSaving(false);
+        if (!r?.ok) { setError(t("The event could not be saved.")); return; }
+        onSaved();
+    };
+    const shopKind = !revenueMode && SALE_KINDS.has(row.kind);
+    return (
+        <form className="sa-event-edit" onSubmit={save}>
+            <label className="sa-loc__field">
+                <span>{t("Name in reports")}</span>
+                <input className="sa-loc__input" value={label} maxLength={120} placeholder={row.name} onChange={(e) => setLabel(e.target.value)} />
+            </label>
+            <label className="sa-loc__field">
+                <span>{t("Type")}</span>
+                <select className="sa-select" value={kind} onChange={(e) => setKind(e.target.value)}>
+                    <KindOptions revenueMode={revenueMode} />
+                    {shopKind && <option value={row.kind}>{KIND_LABEL[row.kind] || row.kind}</option>}
+                </select>
+            </label>
+            <div className="sa-event-edit__actions">
+                <button type="submit" className="sa-btn sa-btn--sm sa-btn--primary" disabled={saving}>{row.registered ? t("Save") : t("Register")}</button>
+                <button type="button" className="sa-btn sa-btn--sm sa-btn--ghost" onClick={onCancel}>{t("Cancel")}</button>
+            </div>
+            {countsAs(kind) === "conversion" && countsAs(row.kind) !== "conversion" && (
+                <p className="sa-history-note sa-event-edit__hint">
+                    {t("From now on this event counts as a conversion, including in past periods. If a form submission already counts for the same action (a booking form, say), set that form to Not a lead under Forms, or each booking is counted twice.")}
+                </p>
+            )}
+            {error && <p className="sa-notice sa-notice--error">{error}</p>}
+        </form>
+    );
+}
+
 export default function ConversionsPanel({ domain, conversions, onDefsChanged }) {
     const [defs, setDefs] = useState([]);
     const revenueMode = useShowsRevenue(domain);
@@ -217,6 +308,7 @@ export default function ConversionsPanel({ domain, conversions, onDefsChanged })
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState(null);
     const [openSnippet, setOpenSnippet] = useState(null);
+    const [editing, setEditing] = useState(null);
     const [openPayloads, setOpenPayloads] = useState(null);
     const [payloadsByName, setPayloadsByName] = useState({});
     const [payloadsLoading, setPayloadsLoading] = useState(null);
@@ -326,29 +418,7 @@ export default function ConversionsPanel({ domain, conversions, onDefsChanged })
                         required
                     />
                     <select className="sa-event-form__select" value={kind} onChange={e => setKind(e.target.value)}>
-                        <option value="custom">Custom</option>
-                        <option value="lead">Lead (form submit / booking / demo request)</option>
-                        <option value="click">Click</option>
-                        {/* Purchase, checkout funnel and shop events only on revenue dashboards */}
-                        {revenueMode && (
-                            <>
-                                <option value="purchase">Purchase</option>
-                                <optgroup label="Checkout funnel">
-                                    <option value="view_item">Viewed product</option>
-                                    <option value="add_to_cart">Added to cart</option>
-                                    <option value="view_basket">Viewed basket</option>
-                                    <option value="begin_checkout">Began checkout</option>
-                                    <option value="checkout">Checkout</option>
-                                    <option value="payment_info">Payment info</option>
-                                </optgroup>
-                                <optgroup label="E-commerce">
-                                    <option value="remove_from_cart">Removed from cart</option>
-                                    <option value="wishlist_add">Added to wishlist</option>
-                                    <option value="refund">Refund</option>
-                                    <option value="apply_coupon">Coupon applied</option>
-                                </optgroup>
-                            </>
-                        )}
+                        <KindOptions revenueMode={revenueMode} />
                     </select>
                     {["view_item", "add_to_cart", "view_basket", "begin_checkout", "checkout", "payment_info"].includes(kind) && (
                         <p className="sa-event-form__hint">
@@ -389,6 +459,9 @@ export default function ConversionsPanel({ domain, conversions, onDefsChanged })
                                     <div className="sa-event-row__top">
                                         <span className="sa-event-row__name">{r.label}</span>
                                         <span className="sa-event-row__kind">{KIND_LABEL[r.kind] || "Custom"}</span>
+                                        <span className={`sa-event-row__counts sa-event-row__counts--${countsAs(r.kind)}`}>
+                                            {countsAs(r.kind) === "conversion" ? t("Counts as a conversion") : countsAs(r.kind) === "intent" ? t("Step toward a conversion") : t("Not a conversion")}
+                                        </span>
                                         {!r.registered && (
                                             <span className="sa-event-row__unregistered">not registered</span>
                                         )}
@@ -408,6 +481,14 @@ export default function ConversionsPanel({ domain, conversions, onDefsChanged })
                                         <button
                                             type="button"
                                             className="sa-event-row__snippet-toggle"
+                                            onClick={() => setEditing(e => (e === r.name ? null : r.name))}
+                                            aria-expanded={editing === r.name}
+                                        >
+                                            {r.registered ? t("Edit") : t("Register")}
+                                        </button>
+                                        <button
+                                            type="button"
+                                            className="sa-event-row__snippet-toggle"
                                             onClick={() => setOpenSnippet(s => (s === r.name ? null : r.name))}
                                         >
                                             {openSnippet === r.name ? "Hide snippet" : "Show snippet"}
@@ -420,6 +501,15 @@ export default function ConversionsPanel({ domain, conversions, onDefsChanged })
                                             {openPayloads === r.name ? "Hide extra data" : "View extra data"}
                                         </button>
                                     </div>
+                                    {editing === r.name && (
+                                        <EventEditor
+                                            domain={domain}
+                                            row={r}
+                                            revenueMode={revenueMode}
+                                            onCancel={() => setEditing(null)}
+                                            onSaved={() => { setEditing(null); fetchDefs(); onDefsChanged?.(); }}
+                                        />
+                                    )}
                                     {openSnippet === r.name && (
                                         <pre className="sa-event-row__snippet">{snippetFor(r.name, r.kind)}</pre>
                                     )}

@@ -1233,6 +1233,21 @@ const nl = {
     "{count} submissions of this form failed with a network error — requests may not have reached you. Test the form on the live site.": "{count} inzendingen van dit formulier mislukten door een netwerkfout – verzoeken hebben je mogelijk niet bereikt. Test het formulier op de live site.",
     "{count} times a visitor was stopped by a field error.": "{count} keer werd een bezoeker tegengehouden door een veldfout.",
     "{rate} of consented sessions converted ({count} of {sessions})": "{rate} van de sessies met toestemming converteerde ({count} van {sessions})",
+    // Analytics: edit conversion events
+    "Checkout funnel": "Checkouttrechter",
+    "Click — a step toward a conversion": "Klik – een stap richting conversie",
+    "Counts as a conversion": "Telt als conversie",
+    "Custom — tracked, not a conversion": "Aangepast – gemeten, geen conversie",
+    "Edit": "Bewerken",
+    "From now on this event counts as a conversion, including in past periods. If a form submission already counts for the same action (a booking form, say), set that form to Not a lead under Forms, or each booking is counted twice.": "Vanaf nu telt deze gebeurtenis als conversie, ook in eerdere periodes. Als een formulierinzending al meetelt voor dezelfde actie (een boekingsformulier bijvoorbeeld), zet dat formulier dan onder Formulieren op Geen lead, anders telt elke boeking dubbel.",
+    "Lead — counts as a conversion (form, booking, demo request)": "Lead – telt als conversie (formulier, boeking, demo-aanvraag)",
+    "Name in reports": "Naam in rapporten",
+    "Not a conversion": "Geen conversie",
+    "Purchase — counts as a conversion": "Aankoop – telt als conversie",
+    "Register": "Registreren",
+    "Step toward a conversion": "Stap richting conversie",
+    "The event could not be saved.": "De gebeurtenis kon niet worden opgeslagen.",
+    "Type": "Type",
 };
 
 export default nl;

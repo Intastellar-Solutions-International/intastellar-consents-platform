@@ -1233,6 +1233,21 @@ const nb = {
     "{count} submissions of this form failed with a network error — requests may not have reached you. Test the form on the live site.": "{count} innsendinger av skjemaet mislyktes med en nettverksfeil – forespørslene nådde deg kanskje ikke. Test skjemaet på det publiserte nettstedet.",
     "{count} times a visitor was stopped by a field error.": "{count} ganger ble en besøkende stoppet av en feltfeil.",
     "{rate} of consented sessions converted ({count} of {sessions})": "{rate} av øktene med samtykke konverterte ({count} av {sessions})",
+    // Analytics: edit conversion events
+    "Checkout funnel": "Kassetrakt",
+    "Click — a step toward a conversion": "Klikk – et steg mot en konvertering",
+    "Counts as a conversion": "Teller som konvertering",
+    "Custom — tracked, not a conversion": "Egendefinert – spores, ikke en konvertering",
+    "Edit": "Rediger",
+    "From now on this event counts as a conversion, including in past periods. If a form submission already counts for the same action (a booking form, say), set that form to Not a lead under Forms, or each booking is counted twice.": "Fra nå av teller denne hendelsen som en konvertering, også i tidligere perioder. Hvis en skjemainnsending allerede teller for samme handling (for eksempel et bookingskjema), sett skjemaet til Ikke et lead under Skjemaer, ellers telles hver booking to ganger.",
+    "Lead — counts as a conversion (form, booking, demo request)": "Lead – teller som konvertering (skjema, booking, demoforespørsel)",
+    "Name in reports": "Navn i rapporter",
+    "Not a conversion": "Ikke en konvertering",
+    "Purchase — counts as a conversion": "Kjøp – teller som konvertering",
+    "Register": "Registrer",
+    "Step toward a conversion": "Steg mot en konvertering",
+    "The event could not be saved.": "Hendelsen kunne ikke lagres.",
+    "Type": "Type",
 };
 
 export default nb;

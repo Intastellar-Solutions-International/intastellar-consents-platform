@@ -1233,6 +1233,21 @@ const pl = {
     "{count} submissions of this form failed with a network error — requests may not have reached you. Test the form on the live site.": "{count} wysłań tego formularza zakończyło się błędem sieci — zgłoszenia mogły do Ciebie nie dotrzeć. Przetestuj formularz na działającej stronie.",
     "{count} times a visitor was stopped by a field error.": "{count} razy odwiedzający został zatrzymany przez błąd pola.",
     "{rate} of consented sessions converted ({count} of {sessions})": "{rate} sesji ze zgodą zakończyło się konwersją ({count} z {sessions})",
+    // Analytics: edit conversion events
+    "Checkout funnel": "Lejek zakupowy",
+    "Click — a step toward a conversion": "Kliknięcie — krok w stronę konwersji",
+    "Counts as a conversion": "Liczy się jako konwersja",
+    "Custom — tracked, not a conversion": "Niestandardowe — śledzone, nie jest konwersją",
+    "Edit": "Edytuj",
+    "From now on this event counts as a conversion, including in past periods. If a form submission already counts for the same action (a booking form, say), set that form to Not a lead under Forms, or each booking is counted twice.": "Od teraz to zdarzenie liczy się jako konwersja, także w minionych okresach. Jeśli wysłanie formularza już liczy się dla tej samej akcji (np. formularz rezerwacji), ustaw ten formularz w Formularzach na Nie jest leadem, inaczej każda rezerwacja zostanie policzona dwa razy.",
+    "Lead — counts as a conversion (form, booking, demo request)": "Lead — liczy się jako konwersja (formularz, rezerwacja, prośba o demo)",
+    "Name in reports": "Nazwa w raportach",
+    "Not a conversion": "Nie jest konwersją",
+    "Purchase — counts as a conversion": "Zakup — liczy się jako konwersja",
+    "Register": "Zarejestruj",
+    "Step toward a conversion": "Krok w stronę konwersji",
+    "The event could not be saved.": "Nie udało się zapisać zdarzenia.",
+    "Type": "Typ",
 };
 
 export default pl;

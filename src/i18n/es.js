@@ -1233,6 +1233,21 @@ const es = {
     "{count} submissions of this form failed with a network error — requests may not have reached you. Test the form on the live site.": "{count} envíos de este formulario fallaron por un error de red; es posible que las solicitudes no te llegaran. Prueba el formulario en el sitio publicado.",
     "{count} times a visitor was stopped by a field error.": "{count} veces un visitante se detuvo por un error en un campo.",
     "{rate} of consented sessions converted ({count} of {sessions})": "El {rate} de las sesiones con consentimiento convirtió ({count} de {sessions})",
+    // Analytics: edit conversion events
+    "Checkout funnel": "Embudo de pago",
+    "Click — a step toward a conversion": "Clic: un paso hacia una conversión",
+    "Counts as a conversion": "Cuenta como conversión",
+    "Custom — tracked, not a conversion": "Personalizado: se registra, no es una conversión",
+    "Edit": "Editar",
+    "From now on this event counts as a conversion, including in past periods. If a form submission already counts for the same action (a booking form, say), set that form to Not a lead under Forms, or each booking is counted twice.": "A partir de ahora este evento cuenta como conversión, también en periodos pasados. Si un envío de formulario ya cuenta para la misma acción (un formulario de reserva, por ejemplo), marca ese formulario como No es un lead en Formularios, o cada reserva se contará dos veces.",
+    "Lead — counts as a conversion (form, booking, demo request)": "Lead: cuenta como conversión (formulario, reserva, solicitud de demo)",
+    "Name in reports": "Nombre en los informes",
+    "Not a conversion": "No es una conversión",
+    "Purchase — counts as a conversion": "Compra: cuenta como conversión",
+    "Register": "Registrar",
+    "Step toward a conversion": "Paso hacia una conversión",
+    "The event could not be saved.": "No se pudo guardar el evento.",
+    "Type": "Tipo",
 };
 
 export default es;

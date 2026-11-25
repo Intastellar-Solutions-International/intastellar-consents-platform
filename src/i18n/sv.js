@@ -1233,6 +1233,21 @@ const sv = {
     "{count} submissions of this form failed with a network error — requests may not have reached you. Test the form on the live site.": "{count} inskick av formuläret misslyckades med ett nätverksfel – förfrågningarna kanske inte nådde dig. Testa formuläret på den publicerade webbplatsen.",
     "{count} times a visitor was stopped by a field error.": "{count} gånger stoppades en besökare av ett fältfel.",
     "{rate} of consented sessions converted ({count} of {sessions})": "{rate} av sessionerna med samtycke konverterade ({count} av {sessions})",
+    // Analytics: edit conversion events
+    "Checkout funnel": "Kassatratt",
+    "Click — a step toward a conversion": "Klick – ett steg mot en konvertering",
+    "Counts as a conversion": "Räknas som konvertering",
+    "Custom — tracked, not a conversion": "Anpassad – spåras, inte en konvertering",
+    "Edit": "Redigera",
+    "From now on this event counts as a conversion, including in past periods. If a form submission already counts for the same action (a booking form, say), set that form to Not a lead under Forms, or each booking is counted twice.": "Från och med nu räknas händelsen som en konvertering, även för tidigare perioder. Om ett formulärinskick redan räknas för samma handling (till exempel ett bokningsformulär), sätt formuläret till Inte ett lead under Formulär, annars räknas varje bokning två gånger.",
+    "Lead — counts as a conversion (form, booking, demo request)": "Lead – räknas som konvertering (formulär, bokning, demoförfrågan)",
+    "Name in reports": "Namn i rapporter",
+    "Not a conversion": "Inte en konvertering",
+    "Purchase — counts as a conversion": "Köp – räknas som konvertering",
+    "Register": "Registrera",
+    "Step toward a conversion": "Steg mot en konvertering",
+    "The event could not be saved.": "Händelsen kunde inte sparas.",
+    "Type": "Typ",
 };
 
 export default sv;

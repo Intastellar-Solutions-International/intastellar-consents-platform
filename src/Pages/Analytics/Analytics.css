@@ -9228,3 +9228,29 @@ details[open] .ca-context-summary::before { content: "▾"; }
     font-weight: 600;
     color: var(--color-text-primary);
 }
+
+/* ── Event editor + "counts as" badge (Conversions.js, settings → Goals) ── */
+.sa-event-row__counts {
+    font-size: var(--text-xs);
+    font-weight: 600;
+    padding: 1px 8px;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--color-border-subtle);
+    color: var(--color-text-muted);
+}
+.sa-event-row__counts--conversion { color: var(--color-success); border-color: rgb(var(--c-success) / 0.35); }
+.sa-event-row__counts--intent { color: var(--color-info-text); border-color: rgb(var(--c-info) / 0.35); }
+.sa-event-edit {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr) auto;
+    align-items: end;
+    gap: var(--space-2) var(--space-3);
+    margin-top: var(--space-3);
+    padding: var(--space-3);
+    border-radius: var(--radius-md);
+    background: rgb(var(--c-white) / 0.03);
+}
+.sa-event-edit .sa-loc__input, .sa-event-edit .sa-select { min-width: 0; width: 100%; }
+.sa-event-edit__actions { display: flex; gap: var(--space-2); }
+.sa-event-edit__hint, .sa-event-edit .sa-notice { grid-column: 1 / -1; margin: 0; }
+@media (max-width: 760px) { .sa-event-edit { grid-template-columns: minmax(0, 1fr); } }

@@ -1233,6 +1233,21 @@ const it = {
     "{count} submissions of this form failed with a network error — requests may not have reached you. Test the form on the live site.": "{count} invii di questo modulo non sono riusciti per un errore di rete: le richieste potrebbero non esserti arrivate. Prova il modulo sul sito pubblicato.",
     "{count} times a visitor was stopped by a field error.": "{count} volte un visitatore è stato bloccato da un errore in un campo.",
     "{rate} of consented sessions converted ({count} of {sessions})": "Il {rate} delle sessioni con consenso ha convertito ({count} su {sessions})",
+    // Analytics: edit conversion events
+    "Checkout funnel": "Funnel di checkout",
+    "Click — a step toward a conversion": "Clic: un passo verso una conversione",
+    "Counts as a conversion": "Conta come conversione",
+    "Custom — tracked, not a conversion": "Personalizzato: tracciato, non è una conversione",
+    "Edit": "Modifica",
+    "From now on this event counts as a conversion, including in past periods. If a form submission already counts for the same action (a booking form, say), set that form to Not a lead under Forms, or each booking is counted twice.": "D’ora in poi questo evento conta come conversione, anche nei periodi passati. Se un invio di modulo conta già per la stessa azione (un modulo di prenotazione, per esempio), imposta quel modulo su Non è un lead in Moduli, altrimenti ogni prenotazione viene contata due volte.",
+    "Lead — counts as a conversion (form, booking, demo request)": "Lead: conta come conversione (modulo, prenotazione, richiesta di demo)",
+    "Name in reports": "Nome nei report",
+    "Not a conversion": "Non è una conversione",
+    "Purchase — counts as a conversion": "Acquisto: conta come conversione",
+    "Register": "Registra",
+    "Step toward a conversion": "Passo verso una conversione",
+    "The event could not be saved.": "Impossibile salvare l’evento.",
+    "Type": "Tipo",
 };
 
 export default it;
