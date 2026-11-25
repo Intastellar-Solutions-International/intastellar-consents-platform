@@ -26,11 +26,11 @@ function topicLabel(id){ return TOPIC_LABELS[id] || ('Topic #' + id); }
 const Link = window.ReactRouterDOM.Link;
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import { analyticsSettingsPath } from "../../Functions/domainPathSegments.js";
-import AnalyticsWorldMap from "./AnalyticsWorldMap.js";
-import { useAnalyticsPage, MiniBar, KpiCard, useAnalyticsReport, toIsoDate, pctChange, useCompareRange, usePrevRange } from "./_shared.js";
+import { useAnalyticsPage, MiniBar, KpiCard, useAnalyticsReport, toIsoDate, pctChange, useCompareRange, usePrevRange, useShowsRevenue } from "./_shared.js";
 import { SkeletonRows } from "./components/Skeleton.js";
 import { IconGlobe, IconUsers, IconRadio } from "./Icons.js";
 import ErrorBoundary from "../../Components/Error/ErrorBoundary.js";
+import { LocationsPanel } from "./Locations.js";
 import "./Analytics.css";
 import { appLocale } from "../../Functions/format.js";
 
@@ -178,6 +178,8 @@ export default function AnalyticsAudience() {
     // via the shared useCompareRange()/usePrevRange() hooks (_shared.js).
     const compare = useCompareRange();
     const prevRange = usePrevRange(fromDate, toDate, compare);
+    // Revenue/product parts of Locations only on revenue dashboards (null while loading)
+    const revenueMode = useShowsRevenue(domain);
     const { data: prevData } = useAnalyticsReport(domain, prevRange.fromIso, prevRange.toIso, tick);
 
     const trendSessions = useMemo(() => pctChange(data?.totals?.uniqueSessions, prevData?.totals?.uniqueSessions), [data, prevData]);
@@ -196,7 +198,6 @@ export default function AnalyticsAudience() {
         };
     }, [data]);
 
-    const maxCountry   = useMemo(() => Math.max(...(data?.countries  || []).map(c => c.events), 1), [data]);
     const maxBrowser   = useMemo(() => Math.max(...(data?.browsers   || []).map(b => b.events), 1), [data]);
     const maxOs        = useMemo(() => Math.max(...(data?.os         || []).map(o => o.events), 1), [data]);
     const maxScreens   = useMemo(() => Math.max(...(data?.screens    || []).map(s => s.events), 1), [data]);
@@ -326,34 +327,9 @@ export default function AnalyticsAudience() {
                                 />
                             </ErrorBoundary>
 
-                            {/* Countries */}
+                            {/* Map + table: countries → regions → cities, with sales per place */}
                             <ErrorBoundary>
-                                <div className="sa-panel sa-aud-countries">
-                                    <h3 className="sa-panel__title"><IconGlobe className="sa-icon" /> Countries</h3>
-                                    <div className="sa-aud-countries-grid">
-                                        {data.countries.length > 0 && <AnalyticsWorldMap countries={data.countries} />}
-                                        <table className="sa-table">
-                                            <thead>
-                                                <tr>
-                                                    <th>Country</th>
-                                                    <th className="sa-table__num">Events</th>
-                                                    <th className="sa-table__bar" />
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {data.countries.map(c => (
-                                                    <tr key={c.code}>
-                                                        <td>{c.code}</td>
-                                                        <td className="sa-table__num">{c.events.toLocaleString(appLocale())}</td>
-                                                        <td className="sa-table__bar">
-                                                            <MiniBar value={c.events} max={maxCountry} color="rgba(99,179,237,0.55)" />
-                                                        </td>
-                                                    </tr>
-                                                ))}
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
+                                <LocationsPanel domain={domain} from={data.from} to={data.to} revenueMode={revenueMode} />
                             </ErrorBoundary>
 
                             {/* Devices */}

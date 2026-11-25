@@ -3,7 +3,9 @@ import { countryCodes } from "../../Components/Charts/WorldMap/countryCodes.js";
 import "../../Components/Charts/WorldMap/Style.css";
 import { appLocale } from "../../Functions/format.js";
 
-const MAP_ID = "sa-world-map";
+// svgMap renders into an element id — one per instance so two maps on a
+// page (Audience → Locations, Conversions) don't draw into each other.
+let mapCount = 0;
 
 function buildCodeToName() {
     const m = {};
@@ -29,15 +31,17 @@ const CODE_TO_NAME = buildCodeToName();
 // arbitrary tweak: pct=0.1 (10% of max) now maps to sqrt(0.1)≈0.316
 // instead of a flat 0.1, giving real visual separation to every country
 // below the dominant one instead of flattening them together.
-function colorForShare(pct) {
+export function colorForShare(pct) {
     const clamped = Math.min(1, Math.max(0, pct));
     const opacity = 0.16 + Math.sqrt(clamped) * 0.74;
     return `rgba(192, 159, 83, ${opacity.toFixed(3)})`;
 }
 
 /** Lightweight events-by-country map for Site Analytics — no drawer/compare,
- *  just a color-scaled world view plus a click-to-inspect caption. */
-export default function AnalyticsWorldMap({ countries, metricLabel = "Events", formatValue }) {
+ *  just a color-scaled world view plus a click-to-inspect caption. With
+ *  `onSelect`, a click hands the country code over instead (Locations drill). */
+export default function AnalyticsWorldMap({ countries, metricLabel = "Events", formatValue, onSelect, hint }) {
+    const MAP_ID = useMemo(() => `sa-world-map-${++mapCount}`, []);
     const metricLower = metricLabel.toLowerCase();
     const fmt = formatValue || ((v) => v.toLocaleString(appLocale()));
     const rows = useMemo(() => (countries || []).filter((c) => c.code), [countries]);
@@ -93,7 +97,9 @@ export default function AnalyticsWorldMap({ countries, metricLabel = "Events", f
             const node = e.target.closest?.("[data-id]");
             if (!node || !el.contains(node)) return;
             const code = node.getAttribute("data-id");
-            if (code) setSelected(code);
+            if (!code) return;
+            if (onSelect) onSelect(code);
+            else setSelected(code);
         };
         el.addEventListener("click", onMapClick);
         return () => {
@@ -104,7 +110,7 @@ export default function AnalyticsWorldMap({ countries, metricLabel = "Events", f
             // refresh, map-mode toggle).
             ownTooltip?.remove();
         };
-    }, [rows, values, max, metricLabel]);
+    }, [rows, values, max, metricLabel, onSelect, MAP_ID]);
 
     if (!rows.length) {
         return <div className="sa-map sa-map--empty">No geographic data for this period.</div>;
@@ -119,7 +125,7 @@ export default function AnalyticsWorldMap({ countries, metricLabel = "Events", f
                 <p className="sa-map__caption">
                     {selectedRow
                         ? `${CODE_TO_NAME[selectedRow.code] || selectedRow.code}: ${fmt(selectedRow.events)} ${metricLower}`
-                        : `Darker regions had higher ${metricLower} in this period. Click a country for its value.`}
+                        : hint || `Darker regions had higher ${metricLower} in this period. Click a country for its value.`}
                 </p>
                 {/* No legend previously existed at all — Phase 0 finding.
                     A labeled gradient bar, not discrete buckets, since the

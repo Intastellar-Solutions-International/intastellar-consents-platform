@@ -85,7 +85,7 @@ export const REPORT_TEMPLATES = [
     {
         key: "conversion_by_event",
         name: "Conversions by Event",
-        description: "Compare volume across your tracked conversion events — e.g. bookings vs sign-ups vs purchases. Add a \"Conversion event\" filter to isolate just one.",
+        description: "Compare volume across your tracked conversion events — e.g. bookings vs sign-ups vs downloads. Add a \"Conversion event\" filter to isolate just one.",
         chartType: "table",
         metrics: ["conversions"],
         breakdown: "event",

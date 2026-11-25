@@ -1,7 +1,8 @@
 const { useState, useEffect, useCallback, useMemo } = React;
 import { ScannerHost } from "../../API/host.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
-import { authHeaders, useAnalyticsPageChrome, useCompareRange } from "./_shared.js";
+import { authHeaders, useAnalyticsPageChrome, useCompareRange, useShowsRevenue } from "./_shared.js";
+import { t } from "../../i18n/index.js";
 import { SkeletonRows } from "./components/Skeleton.js";
 import "./Analytics.css";
 import RelatedPages from "../../Components/RelatedPages/index.js";
@@ -181,6 +182,8 @@ function ConversionActionPicker({ domain, platform, draft, onChange }) {
 }
 
 function ConversionActionsSection({ domain }) {
+    // Purchase examples only on revenue dashboards (showsRevenue(), _shared.js)
+    const revenueMode = useShowsRevenue(domain);
     const [connections, setConnections] = useState([]);
     const [loading,     setLoading]     = useState(true);
     const [drafts,      setDrafts]      = useState({});   // platform → value
@@ -295,7 +298,7 @@ function ConversionActionsSection({ domain }) {
                             </div>
                         ) : (
                             /* Microsoft Ads etc: plain text input */
-                            <Field label="Conversion action" hint={PLATFORM_HINTS[platform]}>
+                            <Field label="Conversion action" hint={platform === "microsoft_ads" && !revenueMode ? PLATFORM_HINTS[platform].replace("e.g. Purchase", "e.g. Lead") : PLATFORM_HINTS[platform]}>
                                 <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
                                     <input
                                         type="text"
@@ -306,7 +309,7 @@ function ConversionActionsSection({ domain }) {
                                             border: "1px solid rgba(255,255,255,0.1)",
                                             color: "rgba(210,210,210,0.9)", fontSize: 13,
                                         }}
-                                        placeholder="Purchase"
+                                        placeholder={revenueMode ? t("Purchase") : t("Lead")}
                                         value={drafts[platform] || ""}
                                         onChange={e => setDrafts(d => ({ ...d, [platform]: e.target.value }))}
                                     />
@@ -724,7 +727,7 @@ function DisplayCurrencySection() {
 
 // ── How attribution works ─────────────────────────────────────────────────────
 
-function AttributionGuide() {
+function AttributionGuide({ revenueMode }) {
     const steps = [
         {
             label: "1. Visitor clicks an ad",
@@ -732,7 +735,7 @@ function AttributionGuide() {
         },
         {
             label: "2. Visitor converts",
-            body: "When your site calls window.intaAnalytics.track('purchase', { value: 49.99, currency: 'EUR' }), the embed includes the stored click ID in the event — if the visitor has accepted statisticCookies.",
+            body: `When your site calls ${revenueMode ? "window.intaAnalytics.track('purchase', { value: 49.99, currency: 'EUR' })" : "window.intaAnalytics.track('lead')"}, the embed includes the stored click ID in the event — if the visitor has accepted statisticCookies.`,
         },
         {
             label: "3. Push to ad platforms",
@@ -925,6 +928,7 @@ export default function AnalyticsSettings() {
 
     // Compare-to-previous-period header wiring (Phase 3, docs/design-audit-plan.md).
     const compare = useCompareRange();
+    const revenueMode = useShowsRevenue(domain);
 
     return (
         <div style={{ flex: "1", minWidth: 0 }}>
@@ -977,7 +981,7 @@ export default function AnalyticsSettings() {
                     </Section>
 
                     <Section title="How Attribution Works">
-                        <AttributionGuide />
+                        <AttributionGuide revenueMode={revenueMode} />
                     </Section>
 
                 </div>

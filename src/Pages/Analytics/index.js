@@ -13,10 +13,11 @@ import { ScannerHost } from "../../API/host.js";
 import { AnnotationStrip, ExportMenu, HERO_CHART, useAnnotations } from "./DataTools.js";
 import { HistoryNote, HistoryTables } from "./HistoryImport.js";
 import { ChangeExplainer } from "./ChangeExplainer.js";
+import { PinnedReports } from "./Locations.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import { buildInsights, InsightsSection, SnapshotRow, TopFindings, TOP_FINDINGS, periodLabel } from "./OverviewInsights.js";
 import {
-    authHeaders, useAnalyticsPage, useAnalyticsReport, useSiteConfig,
+    authHeaders, useAnalyticsPage, useAnalyticsReport, useSiteConfig, showsRevenue,
     toIsoDate, pctChange, IndustryBenchmarkNote, formatPercent, SegmentFilter, useDimensions,
     useCompareRange, usePrevRange, useLiveData,
     useForeignDomains, splitForeignDomainsByRecency,
@@ -48,6 +49,7 @@ import { t, tx } from "../../i18n/index.js";
 function LivePanel({ domain, siteKey }) {
     const { data, countdown } = useLiveData(domain, siteKey);
     const [open, setOpen] = useState(true);
+    const [byRegion, setByRegion] = useState(false);
 
     if (!domain || !data || data.noSiteKey) return null;
 
@@ -57,7 +59,12 @@ function LivePanel({ domain, siteKey }) {
         .filter(c => c.events > 0)
         .sort((a, b) => b.events - a.events)
         .slice(0, 5);
-    const maxCountryEvents = Math.max(...topCountries.map(c => c.events), 1);
+    // Same list one level down — "Hovedstaden, DK" — when Regions is picked.
+    const topPlaces = byRegion
+        ? (data.regions || []).filter(r => r.events > 0).slice(0, 5)
+            .map(r => ({ key: `${r.country}-${r.region}`, label: `${r.name}, ${r.country}`, events: r.events, activeUsers: r.activeUsers }))
+        : topCountries.map(c => ({ key: c.code, label: c.code, events: c.events, activeUsers: c.activeUsers }));
+    const maxCountryEvents = Math.max(...topPlaces.map(c => c.events), 1);
 
     return (
         <div className="sa-live">
@@ -95,15 +102,18 @@ function LivePanel({ domain, siteKey }) {
 
                     <div className="sa-live__divider" />
 
-                    <div className="sa-live__countries">
+                    <div className={"sa-live__countries" + (byRegion ? " sa-live__countries--regions" : "")}>
                         <div className="sa-live__countries-hd">
-                            <span>{t("Country")}</span>
+                            <div className="sa-loc__switch sa-live__place-switch" role="group" aria-label={t("Level")}>
+                                <button type="button" aria-pressed={!byRegion} onClick={() => setByRegion(false)}>{t("Countries")}</button>
+                                <button type="button" aria-pressed={byRegion} onClick={() => setByRegion(true)}>{t("Regions")}</button>
+                            </div>
                             <span>{t("Events")}</span>
                         </div>
-                        {topCountries.length > 0 ? topCountries.map(c => (
-                            <div key={c.code} className="sa-live__country-row"
+                        {topPlaces.length > 0 ? topPlaces.map(c => (
+                            <div key={c.key} className="sa-live__country-row"
                                 title={t("{events} events · {users} active users", { events: c.events, users: c.activeUsers })}>
-                                <span className="sa-live__country-code">{c.code}</span>
+                                <span className="sa-live__country-code" title={c.label}>{c.label}</span>
                                 <div className="sa-live__country-bar-wrap">
                                     <div className="sa-live__country-bar" style={{ width: Math.max(4, Math.round((c.events / maxCountryEvents) * 100)) + "%" }} />
                                 </div>
@@ -365,7 +375,7 @@ const ALL_CARD_DEFS = [
     { id: "conversionRate",  label: "Conversion rate",  desc: "Sessions with at least one conversion" },
 ];
 
-function CustomizePanel({ currentCards, defaultCards, onSave, onClose }) {
+function CustomizePanel({ currentCards, defaultCards, onSave, onClose, revenue }) {
     const [draft, setDraft] = useState(currentCards || defaultCards);
 
     const toggle = (id) => setDraft(d =>
@@ -381,7 +391,7 @@ function CustomizePanel({ currentCards, defaultCards, onSave, onClose }) {
                 </div>
                 <p className="sa-customize-panel__sub">{t("Choose which KPI cards appear on the dashboard.")}</p>
                 <div className="sa-customize-panel__list">
-                    {ALL_CARD_DEFS.map(c => (
+                    {ALL_CARD_DEFS.filter(c => revenue || c.id !== "revenue").map(c => (
                         <label key={c.id} className={"sa-customize-panel__item" + (draft.includes(c.id) ? " sa-customize-panel__item--on" : "")}>
                             <input
                                 type="checkbox"
@@ -516,7 +526,7 @@ function kpiDefaultOrder({ data, siteConfig }) {
         default:
             defaultOrder = ["users", "events", "sessions", "consent", "countries"];
             if (hasLeads)   defaultOrder.push("leads");
-            if (hasRevenue) defaultOrder.push("revenue");
+            // Not set / other modes: no revenue card (showsRevenue(), _shared.js)
     }
 
     // Active users, Bounce rate, and Consent rate are core engagement
@@ -622,7 +632,7 @@ function buildKpiCardMeta({ data, siteConfig, trendEngaged, trendEvents, trendSe
         },
         conversions: {
             icon: <IconFunnel />, label: t("Conversions"), value: totalConversions(data.conversions).toLocaleString(appLocale()),
-            sub: t("purchase, lead, and other registered events"), variant: "live", hasDaily: false,
+            sub: showsRevenue(siteConfig) ? t("purchase, lead, and other registered events") : t("leads and other registered events"), variant: "live", hasDaily: false,
         },
         conversionRate: {
             icon: <IconTrendingUp />, label: t("Conversion rate"), value: formatPercent(data.totals.conversionRate ?? 0),
@@ -864,7 +874,8 @@ export default function SiteAnalytics() {
         [data, siteConfig, trendEngaged, trendEvents, trendSessions, trendConsent, trendBounce]
     );
     const kpiOrder = useMemo(
-        () => data?.totals ? (customCards || kpiDefaultOrder({ data, siteConfig })) : [],
+        // A saved card set keeps "revenue" when the mode changes — drop it outside revenue modes
+        () => data?.totals ? (customCards || kpiDefaultOrder({ data, siteConfig })).filter(id => id !== "revenue" || showsRevenue(siteConfig)) : [],
         [data, siteConfig, customCards]
     );
     const heroIds = kpiOrder.slice(0, 4);
@@ -1067,6 +1078,9 @@ export default function SiteAnalytics() {
                                 <LivePanel domain={domain} siteKey={siteConfig?.id} />
                             </div>
 
+                            {/* ── Reports pinned from Audience, for this period ── */}
+                            {singleSite && <PinnedReports domain={domain} from={data.from} to={data.to} revenueMode={showsRevenue(siteConfig)} />}
+
                             {/* ── What changed vs the previous period, and why ── */}
                             {singleSite && !segParamActive(segment) && <ChangeExplainer domain={domain} from={data.from} to={data.to} excludeBots={excludeBots} />}
 
@@ -1088,6 +1102,7 @@ export default function SiteAnalytics() {
                                     defaultCards={["users", "events", "sessions", "consent", "countries"]}
                                     onSave={saveCustomCards}
                                     onClose={() => setShowCustomize(false)}
+                                    revenue={!!showsRevenue(siteConfig)}
                                 />
                             )}
 

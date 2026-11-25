@@ -1,5 +1,5 @@
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
-import { useAnalyticsPage, KpiCard, ConsentBar, IndustryBenchmarkNote, useCompareRange } from "./_shared.js";
+import { useAnalyticsPage, KpiCard, ConsentBar, IndustryBenchmarkNote, useCompareRange, useShowsRevenue } from "./_shared.js";
 import { IconShieldCheck, IconBarChart } from "./Icons.js";
 import { ConsentImpactPanel } from "./ReportPanels.js";
 import { ConsentRevenuePanel } from "./ConsentRevenue.js";
@@ -16,6 +16,8 @@ export default function AnalyticsConsent() {
         domain, hasDomain, getLastDays, setLastDays, fromDate, setFromDate, toDate, setToDate,
         fromIso, toIso, data, loading, error, showData,
     } = useAnalyticsPage();
+    // Revenue amounts in "Consent and revenue" only on revenue dashboards
+    const revenueMode = useShowsRevenue(domain);
 
     // Compare-to-previous-period header wiring (Phase 3, docs/design-audit-plan.md).
     const compare = useCompareRange();
@@ -163,7 +165,7 @@ export default function AnalyticsConsent() {
 
                     {/* Moved here from Overview (Home now shows insights only) */}
                     {showData && <ConsentImpactPanel impact={data.consentImpact} modelled={data.modelled} />}
-                    {showData && domain && <ConsentRevenuePanel domain={domain} from={data.from} to={data.to} />}
+                    {showData && domain && <ConsentRevenuePanel domain={domain} from={data.from} to={data.to} revenueMode={revenueMode} />}
                 </div>
             </div>
         </div>

@@ -1,7 +1,8 @@
 const { useState, useEffect, useMemo, useRef } = React;
 import { ScannerHost } from "../../API/host.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
-import { useAnalyticsPageChrome, authHeaders } from "./_shared.js";
+import { useAnalyticsPageChrome, authHeaders, useShowsRevenue } from "./_shared.js";
+import { t } from "../../i18n/index.js";
 import StatusBadge from "./components/StatusBadge.js";
 import EmptyState from "./components/EmptyState.js";
 import "./Analytics.css";
@@ -201,6 +202,7 @@ function HitRow({ hit }) {
 
 export default function EventDebugger() {
     const { domain } = useAnalyticsPageChrome();
+    const revenueMode = useShowsRevenue(domain);
     const initial = useMemo(readParams, []);
     const [token, setToken] = useState(initial.token);
     const [expected, setExpected] = useState(initial.expect);
@@ -342,7 +344,7 @@ export default function EventDebugger() {
                         <input
                             className="ed-input"
                             type="text"
-                            placeholder="purchase, signup, add_to_cart"
+                            placeholder={revenueMode ? t("purchase, signup, add_to_cart") : t("signup, lead, download")}
                             value={expectDraft}
                             onChange={(e) => setExpectDraft(e.target.value)}
                             aria-label="Expected event names, comma separated"

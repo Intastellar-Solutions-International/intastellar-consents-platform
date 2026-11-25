@@ -3,7 +3,8 @@ const Link = window.ReactRouterDOM.Link;
 import { ScannerHost } from "../../API/host.js";
 import Authentication from "../../Authentication/Auth.js";
 import { analyticsConversionsPath, analyticsEventDetailPath } from "../../Functions/domainPathSegments.js";
-import { MiniBar, formatCurrency } from "./_shared.js";
+import { MiniBar, formatCurrency, useShowsRevenue } from "./_shared.js";
+import { t } from "../../i18n/index.js";
 import {
     IconCash, IconCursorClick, IconTarget, IconPlus, IconTrash, IconFunnel,
     IconExternalLink, IconPhone, IconMail, IconDownload, IconFormFill,
@@ -206,6 +207,7 @@ function AutoCollectedBlock({ conversions }) {
  */
 export default function ConversionsPanel({ domain, conversions, onDefsChanged }) {
     const [defs, setDefs] = useState([]);
+    const revenueMode = useShowsRevenue(domain);
     const [loading, setLoading] = useState(true);
     const [showForm, setShowForm] = useState(false);
     const [name, setName] = useState("");
@@ -316,7 +318,7 @@ export default function ConversionsPanel({ domain, conversions, onDefsChanged })
                     <input
                         type="text"
                         className="sa-event-form__input"
-                        placeholder="event name, e.g. purchase"
+                        placeholder={revenueMode ? t("event name, e.g. purchase") : t("event name, e.g. sign_up")}
                         value={name}
                         onChange={e => setName(e.target.value.toLowerCase().replace(/[^a-z0-9_-]/g, ""))}
                         maxLength={64}
@@ -326,21 +328,26 @@ export default function ConversionsPanel({ domain, conversions, onDefsChanged })
                         <option value="custom">Custom</option>
                         <option value="lead">Lead (form submit / booking / demo request)</option>
                         <option value="click">Click</option>
-                        <option value="purchase">Purchase</option>
-                        <optgroup label="Checkout funnel">
-                            <option value="view_item">Viewed product</option>
-                            <option value="add_to_cart">Added to cart</option>
-                            <option value="view_basket">Viewed basket</option>
-                            <option value="begin_checkout">Began checkout</option>
-                            <option value="checkout">Checkout</option>
-                            <option value="payment_info">Payment info</option>
-                        </optgroup>
-                        <optgroup label="E-commerce">
-                            <option value="remove_from_cart">Removed from cart</option>
-                            <option value="wishlist_add">Added to wishlist</option>
-                            <option value="refund">Refund</option>
-                            <option value="apply_coupon">Coupon applied</option>
-                        </optgroup>
+                        {/* Purchase, checkout funnel and shop events only on revenue dashboards */}
+                        {revenueMode && (
+                            <>
+                                <option value="purchase">Purchase</option>
+                                <optgroup label="Checkout funnel">
+                                    <option value="view_item">Viewed product</option>
+                                    <option value="add_to_cart">Added to cart</option>
+                                    <option value="view_basket">Viewed basket</option>
+                                    <option value="begin_checkout">Began checkout</option>
+                                    <option value="checkout">Checkout</option>
+                                    <option value="payment_info">Payment info</option>
+                                </optgroup>
+                                <optgroup label="E-commerce">
+                                    <option value="remove_from_cart">Removed from cart</option>
+                                    <option value="wishlist_add">Added to wishlist</option>
+                                    <option value="refund">Refund</option>
+                                    <option value="apply_coupon">Coupon applied</option>
+                                </optgroup>
+                            </>
+                        )}
                     </select>
                     {["view_item", "add_to_cart", "view_basket", "begin_checkout", "checkout", "payment_info"].includes(kind) && (
                         <p className="sa-event-form__hint">
@@ -466,6 +473,7 @@ export default function ConversionsPanel({ domain, conversions, onDefsChanged })
 // what's firing and register a new event without leaving Overview.
 export function EventsGlancePanel({ domain, conversions, onDefsChanged, maxRows = 8 }) {
     const [defs, setDefs] = useState([]);
+    const revenueMode = useShowsRevenue(domain);
     const [showForm, setShowForm] = useState(false);
     const [name, setName] = useState("");
     const [kind, setKind] = useState("custom");
@@ -541,7 +549,7 @@ export function EventsGlancePanel({ domain, conversions, onDefsChanged, maxRows 
                     <input
                         type="text"
                         className="sa-event-form__input"
-                        placeholder="event name, e.g. purchase"
+                        placeholder={revenueMode ? t("event name, e.g. purchase") : t("event name, e.g. sign_up")}
                         value={name}
                         onChange={e => setName(e.target.value.toLowerCase().replace(/[^a-z0-9_-]/g, ""))}
                         maxLength={64}
@@ -551,7 +559,7 @@ export function EventsGlancePanel({ domain, conversions, onDefsChanged, maxRows 
                         <option value="custom">Custom</option>
                         <option value="lead">Lead</option>
                         <option value="click">Click</option>
-                        <option value="purchase">Purchase</option>
+                        {revenueMode && <option value="purchase">Purchase</option>}
                     </select>
                     <button type="submit" className="sa-event-form__submit" disabled={saving}>
                         {saving ? "Saving…" : "Create"}

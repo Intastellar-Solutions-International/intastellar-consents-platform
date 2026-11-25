@@ -36,7 +36,7 @@ function Diff({ value, unit }) {
     return <span className={`sa-seg-diff sa-seg-diff--${cls}`}>{unit === "pp" ? t("{value} pp", { value: `${sign}${value.toFixed(1)}` }) : `${sign}${Math.round(value)} %`}</span>;
 }
 
-function ExperimentTable({ experiment, currency }) {
+function ExperimentTable({ experiment, currency, showMoney }) {
     return (
         <div className="sa-consent-rev__exp">
             <h4 className="sa-seg-dims__key">{t("Banner test {id}", { id: experiment.id })}</h4>
@@ -48,7 +48,7 @@ function ExperimentTable({ experiment, currency }) {
                         <th className="sa-table__num">{t("Consent rate")}</th>
                         <th className="sa-table__num" title={t("Lead and sale conversions per 1,000 page views, from every visitor")}>{t("Conversions / 1,000")}</th>
                         <th className="sa-table__num" title={t("Conversions per 1,000 page views that can be attributed to a channel")}>{t("Attributable / 1,000")}</th>
-                        <th className="sa-table__num">{t("Attributable revenue")}</th>
+                        {showMoney && <th className="sa-table__num">{t("Attributable revenue")}</th>}
                     </tr>
                 </thead>
                 <tbody>
@@ -62,7 +62,7 @@ function ExperimentTable({ experiment, currency }) {
                             <td className="sa-table__num">{v.consentRate != null ? formatPercent(v.consentRate * 100) : "—"} {v.vsControl ? <Diff value={v.vsControl.consentRatePoints} unit="pp" /> : null}</td>
                             <td className="sa-table__num">{per1k(v.per1k)}</td>
                             <td className="sa-table__num">{per1k(v.attributablePer1k)} {v.vsControl ? <Diff value={v.vsControl.attributablePer1kPct} unit="%" /> : null}</td>
-                            <td className="sa-table__num">{money(v.attributableRevenue, currency)}</td>
+                            {showMoney && <td className="sa-table__num">{money(v.attributableRevenue, currency)}</td>}
                         </tr>
                     ))}
                 </tbody>
@@ -71,14 +71,18 @@ function ExperimentTable({ experiment, currency }) {
     );
 }
 
-export function ConsentRevenuePanel({ domain, from, to }) {
+// Money (revenue, attributable revenue) only on dashboards where sales carry
+// a value — showsRevenue() in _shared.js; conversions show everywhere.
+export function ConsentRevenuePanel({ domain, from, to, revenueMode }) {
     const { loading, data } = useConsentRevenue(domain, from, to);
     if (loading || !data) return null;
-    const { conversions, revenue, whatIf, experiments } = data;
+    const { conversions, whatIf, experiments } = data;
+    const showMoney = !!revenueMode;
+    const revenue = showMoney ? data.revenue : { currency: data.revenue.currency };
     const currency = revenue.currency;
     return (
         <div className="sa-panel sa-consent-rev">
-            <h3 className="sa-panel__title"><IconShieldCheck className="sa-icon" /> {t("Consent and revenue")}</h3>
+            <h3 className="sa-panel__title"><IconShieldCheck className="sa-icon" /> {showMoney ? t("Consent and revenue") : t("Consent and conversions")}</h3>
             <p className="sa-panel__sub">
                 {t("Every conversion is counted, but only conversions from visitors who accepted statistics cookies can be traced back to a channel or campaign.")}
             </p>
@@ -103,21 +107,21 @@ export function ConsentRevenuePanel({ domain, from, to }) {
                     </div>
                     {whatIf && whatIf.conversions > 0 ? (
                         <p className="sa-consent-rev__whatif">
-                            {whatIf.revenue > 0
+                            {showMoney && whatIf.revenue > 0
                                 ? t("If {points} percentage points more visitors accepted, about {count} more conversions ({revenue}) in this period could be traced to a channel.", { points: whatIf.points, count: fmt(whatIf.conversions), revenue: money(whatIf.revenue, currency) })
                                 : t("If {points} percentage points more visitors accepted, about {count} more conversions in this period could be traced to a channel.", { points: whatIf.points, count: fmt(whatIf.conversions) })}
                         </p>
                     ) : null}
                 </>
             ) : (
-                <p className="sa-notice">{t("No lead or sale conversions in this period yet.")}</p>
+                <p className="sa-notice">{showMoney ? t("No lead or sale conversions in this period yet.") : t("No conversions in this period yet.")}</p>
             )}
 
             <h4 className="sa-consent-rev__sub">{t("Banner A/B tests")}</h4>
             {experiments.length ? (
                 <>
                     <p className="sa-history-note">{t("A higher consent rate only pays off if conversions follow. Compare attributable conversions per 1,000 page views, not just the consent rate.")}</p>
-                    {experiments.map((e) => <ExperimentTable key={e.id} experiment={e} currency={currency} />)}
+                    {experiments.map((e) => <ExperimentTable key={e.id} experiment={e} currency={currency} showMoney={showMoney} />)}
                 </>
             ) : (
                 <p className="sa-history-note">

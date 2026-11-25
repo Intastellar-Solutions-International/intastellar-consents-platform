@@ -1310,7 +1310,7 @@ function BusinessImpact({ businessImpact, qualifyingEvents }) {
                 <p>
                     Go to <strong>Analytics → Settings → Qualifying events</strong> and add the event name
                     you track when a visitor completes a key action — for example a booking confirmation,
-                    a form submission, or a purchase. Any event fired via{" "}
+                    a form submission or a sign-up. Any event fired via{" "}
                     <code>window.intaAnalytics.track(&quot;event_name&quot;)</code> can be used.
                 </p>
             </div>
@@ -1354,7 +1354,7 @@ function BusinessImpact({ businessImpact, qualifyingEvents }) {
                 <div className="sa-perf-bi-callout">
                     Sessions with <strong>Good</strong> Core Web Vitals convert at a{" "}
                     <strong>{Math.round(uplift)}% higher rate</strong> than <strong>Poor</strong> sessions
-                    — a direct performance-to-revenue signal.
+                    — a direct performance-to-conversion signal.
                 </div>
             )}
             {!eitherLowSample && uplift !== null && uplift <= 0 && (

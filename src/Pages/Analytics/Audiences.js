@@ -1,7 +1,8 @@
 const { useState, useEffect, useCallback } = React;
 import { ScannerHost } from "../../API/host.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
-import { authHeaders, useAnalyticsPageChrome, useCompareRange } from "./_shared.js";
+import { authHeaders, useAnalyticsPageChrome, useCompareRange, useShowsRevenue } from "./_shared.js";
+import { t } from "../../i18n/index.js";
 import "./Analytics.css";
 import { appLocale } from "../../Functions/format.js";
 import AnalyticsSiteGate from "./components/AnalyticsSiteGate.js";
@@ -47,7 +48,7 @@ function summarizeConditions(conditions) {
     }).join("  AND  ");
 }
 
-function ConditionRow({ condition, onChange, onRemove }) {
+function ConditionRow({ condition, onChange, onRemove, revenueMode }) {
     const def = conditionDef(condition.type);
     return (
         <div className="sa-event-form" style={{ alignItems: "center" }}>
@@ -72,7 +73,7 @@ function ConditionRow({ condition, onChange, onRemove }) {
                 <input
                     type="text"
                     className="sa-event-form__input"
-                    placeholder={def.placeholder}
+                    placeholder={def.value === "event_fired" && !revenueMode ? t("e.g. sign_up") : def.placeholder}
                     maxLength={def.maxLength || 255}
                     value={condition.value}
                     onChange={e => {
@@ -109,6 +110,8 @@ export default function Audiences() {
     document.title = "Audiences | Site Analytics";
 
     const { domain, getLastDays, setLastDays, fromDate, setFromDate, toDate, setToDate } = useAnalyticsPageChrome();
+    // "e.g. purchase" example only on revenue dashboards (showsRevenue(), _shared.js)
+    const revenueMode = useShowsRevenue(domain);
     const compare = useCompareRange();
 
     const [audiences, setAudiences] = useState([]);
@@ -258,6 +261,7 @@ export default function Audiences() {
                                                 condition={c}
                                                 onChange={next => updateCondition(i, next)}
                                                 onRemove={() => removeCondition(i)}
+                                                revenueMode={revenueMode}
                                             />
                                             {i < conditions.length - 1 && (
                                                 <span style={{ fontSize: 12, color: "rgba(130,130,130,0.6)" }}>AND</span>

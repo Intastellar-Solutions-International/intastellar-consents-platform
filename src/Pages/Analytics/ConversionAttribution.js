@@ -1,7 +1,7 @@
 const { useState, useEffect, useCallback, useRef } = React;
 import { ScannerHost } from "../../API/host.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
-import { authHeaders, useAnalyticsPageChrome, toIsoDate, formatCurrency, useCompareRange } from "./_shared.js";
+import { authHeaders, useAnalyticsPageChrome, toIsoDate, formatCurrency, useCompareRange, useShowsRevenue } from "./_shared.js";
 import { PanelSkeleton } from "./components/Skeleton.js";
 import "./Analytics.css";
 import AnalyticsSiteGate from "./components/AnalyticsSiteGate.js";
@@ -198,6 +198,8 @@ export default function ConversionAttribution() {
 
     const { domain, getLastDays, setLastDays, fromDate, setFromDate, toDate, setToDate }
         = useAnalyticsPageChrome();
+    // Purchase example only on revenue dashboards (showsRevenue(), _shared.js)
+    const revenueMode = useShowsRevenue(domain);
 
     const [data,        setData]        = useState(null);
     const [loading,     setLoading]     = useState(false);
@@ -412,7 +414,9 @@ export default function ConversionAttribution() {
                                         },
                                         {
                                             title: "3. Fire conversion events",
-                                            desc: "Call window.intaAnalytics.track('purchase', { value: 49.99, currency: 'EUR' }) on your thank-you or confirmation page.",
+                                            desc: revenueMode
+                                                ? "Call window.intaAnalytics.track('purchase', { value: 49.99, currency: 'EUR' }) on your thank-you or confirmation page."
+                                                : "Call window.intaAnalytics.track('lead') on your thank-you or confirmation page.",
                                         },
                                         {
                                             title: "4. Push to platforms",

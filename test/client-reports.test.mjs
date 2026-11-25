@@ -31,7 +31,7 @@ test("single-site report still resolves by site_id", async () => {
 
 test("report data queries every site and breaks totals down per domain", async () => {
     const db = fakeDb((sql) => {
-        if (/SELECT id, domain FROM analytics_sites/.test(sql)) return [{ id: "s1", domain: "a.com" }, { id: "s2", domain: "b.com" }];
+        if (/SELECT id, domain(, business_type)? FROM analytics_sites/.test(sql)) return [{ id: "s1", domain: "a.com" }, { id: "s2", domain: "b.com" }];
         if (/prev_sessions/.test(sql)) return [
             { site_id: "s1", total: 10, full_count: 5, sessions: 4, prev_sessions: 2 },
             { site_id: "s2", total: 40, full_count: 30, sessions: 20, prev_sessions: 20 },
@@ -57,7 +57,7 @@ test("report data queries every site and breaks totals down per domain", async (
 
 test("a one-site report has no per-domain breakdown and plain paths", async () => {
     const db = fakeDb((sql) => {
-        if (/SELECT id, domain FROM analytics_sites/.test(sql)) return [{ id: "s1", domain: "a.com" }];
+        if (/SELECT id, domain(, business_type)? FROM analytics_sites/.test(sql)) return [{ id: "s1", domain: "a.com" }];
         if (/GROUP BY site_id, pathname/.test(sql)) return [{ site_id: "s1", pathname: "/", views: 1 }];
         return [];
     });

@@ -5,7 +5,7 @@ const { useState, useMemo } = React;
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import {
     useAnalyticsPageChrome, useAnalyticsReport, useDimensions, SegmentFilter,
-    formatPercent, pctChange, MiniBar,
+    formatPercent, pctChange, MiniBar, useShowsRevenue,
 } from "./_shared.js";
 import { niceTicks } from "./TrendLineChart.js";
 import { appLocale } from "../../Functions/format.js";
@@ -60,7 +60,7 @@ function DiffCell({ diff }) {
     return <td className={`sa-table__num sa-seg-diff sa-seg-diff--${diff.value > 0 ? "up" : diff.value < 0 ? "down" : "same"}`}>{text}</td>;
 }
 
-function MetricsTable({ a, b }) {
+function MetricsTable({ a, b, revenueMode }) {
     return (
         <table className="sa-table sa-seg-compare__table">
             <thead>
@@ -72,7 +72,7 @@ function MetricsTable({ a, b }) {
                 </tr>
             </thead>
             <tbody>
-                {METRICS.map((m) => {
+                {METRICS.filter((m) => m.key !== "revenue" || revenueMode).map((m) => {
                     const va = a ? m.value(a) : null;
                     const vb = b ? m.value(b) : null;
                     if (va == null && vb == null) return null;
@@ -228,6 +228,8 @@ export default function AnalyticsSegments() {
     const [segB, setSegB] = useState({ ...EMPTY, device: "mobile" });
     const [metric, setMetric] = useState("pageviews");
     const dimensions = useDimensions(domain, fromIso, toIso);
+    // Revenue row only on revenue dashboards (showsRevenue(), _shared.js)
+    const revenueMode = useShowsRevenue(domain);
     const { data: a, loading: loadingA } = useAnalyticsReport(domain, fromIso, toIso, 0, hasAny(segA) ? segA : null);
     const { data: b, loading: loadingB } = useAnalyticsReport(domain, fromIso, toIso, 0, hasAny(segB) ? segB : null);
     const ready = a && b && !a.noSiteKey && !b.noSiteKey;
@@ -271,7 +273,7 @@ export default function AnalyticsSegments() {
                                 </p>
                                 {consentingOnly ? <p className="sa-history-note">{t("Custom dimensions and full consent only cover visitors who accepted statistics cookies, so those segments show consenting traffic only.")}</p> : null}
                                 {(loadingA || loadingB) && !ready ? <p className="sa-notice">{t("Loading…")}</p> : null}
-                                {ready ? <MetricsTable a={a} b={b} /> : null}
+                                {ready ? <MetricsTable a={a} b={b} revenueMode={revenueMode} /> : null}
                             </div>
 
                             {ready ? (

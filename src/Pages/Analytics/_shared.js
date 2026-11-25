@@ -888,6 +888,21 @@ export function useAnalyticsSiteStatus(domain) {
 }
 
 // ── Site config (businessType, industry, etc.) ────────────────────────────────
+// Dashboard modes where sales carry a value: e-commerce, and the booking
+// modes (a booking has a price). Revenue, purchases, products and the
+// checkout funnel only show on these (Analytics settings → dashboard mode).
+export const REVENUE_DASHBOARDS = ["ecommerce", "aviation", "tourism", "hospitality"];
+
+/** true / false once the site settings are known, null while loading. */
+export function showsRevenue(siteConfig) {
+    if (!siteConfig) return null;
+    return REVENUE_DASHBOARDS.includes(siteConfig.businessType);
+}
+
+export function useShowsRevenue(domain) {
+    return showsRevenue(useSiteConfig(domain));
+}
+
 export function useSiteConfig(domain) {
     const [config, setConfig] = useState(null);
     useEffect(() => {
