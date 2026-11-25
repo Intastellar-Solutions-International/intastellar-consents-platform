@@ -6,6 +6,7 @@ import { createEmbedCache } from "./_minify-embed.js";
 import { classifyTier } from "./_conversions.js";
 import { sanitizeDims } from "./_dims.js";
 import { cleanBannerRef } from "./_banner-experiment.js";
+import { cleanCity } from "./_locations.js";
 /**
  * GET  /api/a  → serves the Intastellar First-Party Analytics embed script
  * POST /api/a  → ingest endpoint receiving pageview events from embedded sites
@@ -416,6 +417,11 @@ async function ensureTables(db) {
         -- docs/analytics-audit-plan.md item 6.
         ALTER TABLE analytics_events        ADD COLUMN IF NOT EXISTS consent_granular BOOLEAN;
         ALTER TABLE analytics_custom_events ADD COLUMN IF NOT EXISTS consent_granular BOOLEAN;
+        -- City (x-vercel-ip-city) on consented page views and events only;
+        -- region on every event, like country. See api/_locations.js.
+        ALTER TABLE analytics_events        ADD COLUMN IF NOT EXISTS city   VARCHAR(100);
+        ALTER TABLE analytics_custom_events ADD COLUMN IF NOT EXISTS region VARCHAR(64);
+        ALTER TABLE analytics_custom_events ADD COLUMN IF NOT EXISTS city   VARCHAR(100);
     `).catch(() => {});
     await db.query(`
         CREATE INDEX IF NOT EXISTS idx_ae_hosting  ON analytics_events (site_id, is_hosting_ip) WHERE is_hosting_ip;
@@ -2311,9 +2317,11 @@ export default async function handler(req, res) {
     const orgId = sites[0].organisation_id;
     const siteDomain = sites[0].domain;
 
-    // Country/region from Vercel edge headers — IP is never stored
+    // Country/region/city from Vercel edge headers — IP is never stored.
+    // City is only written for visitors with statistics consent.
     const country = (req.headers["x-vercel-ip-country"]  || "").slice(0, 2)  || null;
     const region  = (req.headers["x-vercel-ip-country-region"] || "").slice(0, 64) || null;
+    const city    = cleanCity(req.headers["x-vercel-ip-city"]);
 
     const deviceType = dt === "m" ? "mobile" : dt === "t" ? "tablet" : "desktop";
     const pageHostSanitized = pageHost ? String(pageHost).slice(0, 255).toLowerCase() || null : null;
@@ -2464,8 +2472,8 @@ export default async function handler(req, res) {
              (site_id, organisation_id, session_id, consent_level, consent_stat, consent_func, consent_adv,
               name, value_cents, currency, transaction_id, pathname, page_host, country_code, device_type, source,
               gclid, msclkid, fbclid, utm_campaign, utm_content, utm_source, utm_medium, products, extra_data,
-              browser_family, is_embedded, consent_granular, banner_exp, banner_variant)
-             VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28,$29,$30)
+              browser_family, is_embedded, consent_granular, banner_exp, banner_variant, region, city)
+             VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28,$29,$30,$31,$32)
              RETURNING id`,
             [
                 siteId, orgId, isMinimal ? null : (sid ? String(sid).slice(0, 64) : null),
@@ -2483,6 +2491,7 @@ export default async function handler(req, res) {
                 isEmbeddedEvent,
                 isMinimal ? null : consentGranular,
                 bannerExpId, bannerVariant,
+                region, isMinimal ? null : city,
             ]
         ).catch(() => ({ rows: [] }));
 
@@ -2700,8 +2709,8 @@ export default async function handler(req, res) {
               browser_family, os_family, language, timezone,
               duration_sec, scroll_depth, attention_ms, pageview_id, is_new_visitor,
               gclid, msclkid, fbclid,
-              browser_topics, asn, as_org, is_hosting_ip, is_embedded, consent_granular, custom_dims, banner_exp, banner_variant)
-             VALUES ($1,$2,$3,'full',$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28,$29,$30,$31,$32,$33,$34,$35,$36,$37,$38,$39,$40,$41,$42,$43)
+              browser_topics, asn, as_org, is_hosting_ip, is_embedded, consent_granular, custom_dims, banner_exp, banner_variant, city)
+             VALUES ($1,$2,$3,'full',$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28,$29,$30,$31,$32,$33,$34,$35,$36,$37,$38,$39,$40,$41,$42,$43,$44)
              ON CONFLICT (pageview_id) DO UPDATE SET
                duration_sec     = EXCLUDED.duration_sec,
                scroll_depth     = COALESCE(EXCLUDED.scroll_depth,     analytics_events.scroll_depth),
@@ -2744,6 +2753,7 @@ export default async function handler(req, res) {
                 consentGranular,                                           // $40 consent_granular
                 customDims,                                                // $41 custom_dims JSONB
                 bannerExpId, bannerVariant,                                // $42 $43 banner A/B test
+                city,                                                      // $44 city (consented only)
             ]
         ).catch(() => { pageviewInsertFailed = true; });
     }
