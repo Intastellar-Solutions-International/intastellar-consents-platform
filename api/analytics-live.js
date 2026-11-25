@@ -79,7 +79,7 @@ async function sessionDetail(db, siteId, domain, sessionId) {
                    NULLIF(utm_medium, '')    AS entry_utm_medium,
                    NULLIF(utm_campaign, '')  AS entry_utm_campaign,
                    gclid IS NOT NULL AS has_gclid, msclkid IS NOT NULL AS has_msclkid, fbclid IS NOT NULL AS has_fbclid,
-                   country_code, region, device_type, browser_family, os_family, language, timezone,
+                   country_code, region, city, device_type, browser_family, os_family, language, timezone,
                    screen_width, screen_height, viewport_width, viewport_height,
                    is_new_visitor, consent_stat, consent_func, consent_adv, consent_granular
             FROM analytics_events
@@ -130,6 +130,9 @@ async function sessionDetail(db, siteId, domain, sessionId) {
             country: last.country_code,
             region: last.region || null,
             regionName: regionName(last.country_code, last.region),
+            // Full-consent page views only (query above), so city never shows
+            // for a visitor who didn't accept statistics cookies.
+            city: last.city || null,
             device: last.device_type,
             browser: last.browser_family,
             os: last.os_family,

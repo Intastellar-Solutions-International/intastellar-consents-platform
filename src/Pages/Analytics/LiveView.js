@@ -134,7 +134,7 @@ export default function LiveView() {
                                                     {v.host && v.host !== domain ? `${v.host}` : ""}{v.path}
                                                 </span>;
                                                 const meta = <div className="sa-live__event-meta">
-                                                    {v.country && <span className="sa-live__event-flag" title={countryName(v.country)}>{v.country}</span>}
+                                                    {v.country && <span className="sa-live__event-flag" title={[v.regionName, countryName(v.country)].filter(Boolean).join(", ")}>{v.regionName ? `${v.regionName}, ${v.country}` : v.country}</span>}
                                                     {v.device && <span className="sa-live__event-flag">{v.device}</span>}
                                                     <span className={"sa-live__event-level sa-live__event-level--" + (v.fullConsent ? "full" : "minimal")}>
                                                         {v.fullConsent ? "full" : "no consent"}

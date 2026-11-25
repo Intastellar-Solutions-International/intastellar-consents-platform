@@ -114,7 +114,7 @@ export default function LiveVisitorDrawer({ siteKey, domain, sessionId, refreshK
     const v = session?.visitor;
     const src = session?.source;
     const title = !v ? "Visitor"
-        : `${v.isNew === false ? "Returning visitor" : v.isNew ? "New visitor" : "Visitor"} from ${countryName(v.country) || "an unknown location"}`;
+        : `${v.isNew === false ? "Returning visitor" : v.isNew ? "New visitor" : "Visitor"} from ${[v.city || v.regionName, countryName(v.country)].filter(Boolean).join(", ") || "an unknown location"}`;
     const currentPage = journey.findIndex((j) => j.kind === "page");
 
     return (
@@ -158,6 +158,8 @@ export default function LiveVisitorDrawer({ siteKey, domain, sessionId, refreshK
                                     <h3 className="lv-section__title">Visitor</h3>
                                     <dl className="lv-facts">
                                         <Fact label="Country" value={countryName(v.country)} />
+                                        <Fact label="Region" value={v.regionName} />
+                                        <Fact label="City" value={v.city} />
                                         <Fact label="Language" value={v.language} />
                                         <Fact label="Time zone" value={v.timezone} />
                                         <Fact label="Device" value={v.device && v.device[0].toUpperCase() + v.device.slice(1)} />
