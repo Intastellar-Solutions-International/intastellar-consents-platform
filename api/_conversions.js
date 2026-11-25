@@ -99,3 +99,8 @@ export function tierCaseSql(eventsAlias, defsAlias) {
 export function isHeadlineConversionSql(eventsAlias, defsAlias) {
     return `(${tierCaseSql(eventsAlias, defsAlias)} IN ('lead','sale'))`;
 }
+
+// Dashboard modes (analytics_sites.business_type) where sales carry a value:
+// e-commerce and the booking modes. Revenue and purchases only show on these —
+// same list as REVENUE_DASHBOARDS in src/Pages/Analytics/_shared.js.
+export const REVENUE_DASHBOARDS = ["ecommerce", "aviation", "tourism", "hospitality"];

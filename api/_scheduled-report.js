@@ -15,7 +15,7 @@
 
 import { emailLayout, EMAIL_FONT, INTASTELLAR_LOGO_ATTACHMENT } from "./_email-layout.js";
 import { selfReferralClause, noiseReferralClause, getApprovedDomainsForSites } from "./_self-referral.js";
-import { isHeadlineConversionSql } from "./_conversions.js";
+import { isHeadlineConversionSql, REVENUE_DASHBOARDS } from "./_conversions.js";
 
 function pctChange(cur, prev) {
     if (prev == null || prev === 0 || cur == null) return null;
@@ -54,7 +54,7 @@ export async function buildReportData(db, siteIds, periodDays) {
     // weekly/monthly emailed report doesn't show the site's own domain as a
     // top "referrer".
     const [{ rows: siteDomainRows }, approvedDomains] = await Promise.all([
-        db.query(`SELECT id, domain FROM analytics_sites WHERE id = ANY($1)`, [siteIds]).catch(() => ({ rows: [] })),
+        db.query(`SELECT id, domain, business_type FROM analytics_sites WHERE id = ANY($1)`, [siteIds]).catch(() => ({ rows: [] })),
         getApprovedDomainsForSites(db, siteIds),
     ]);
     const SELF_REFERRAL = selfReferralClause(siteDomainRows.map(r => r.domain), approvedDomains);
@@ -253,7 +253,8 @@ export async function buildReportData(db, siteIds, periodDays) {
             ? { name: conversionsRes.rows[0].name, count: Number(conversionsRes.rows[0].count || 0) }
             : null,
         perDomain,
-        revenue: revenueCents > 0
+        // Revenue only when a site's dashboard mode sells something (REVENUE_DASHBOARDS)
+        revenue: revenueCents > 0 && siteDomainRows.some(r => REVENUE_DASHBOARDS.includes(r.business_type))
             ? { total: revenueCents / 100, currency: revenueRes.rows[0]?.currency || null, transactions: Number(revenueRes.rows[0]?.transactions || 0) }
             : null,
     };
