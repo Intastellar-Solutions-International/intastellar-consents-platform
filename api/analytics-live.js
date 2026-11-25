@@ -1,5 +1,6 @@
 import { getPool } from "./_db.js";
 import { validateJwt, withMembership } from "./_member-auth.js";
+import { regionName } from "./_locations.js";
 /**
  * GET /api/analytics-live?domain=<domain>
  *
@@ -78,7 +79,7 @@ async function sessionDetail(db, siteId, domain, sessionId) {
                    NULLIF(utm_medium, '')    AS entry_utm_medium,
                    NULLIF(utm_campaign, '')  AS entry_utm_campaign,
                    gclid IS NOT NULL AS has_gclid, msclkid IS NOT NULL AS has_msclkid, fbclid IS NOT NULL AS has_fbclid,
-                   country_code, device_type, browser_family, os_family, language, timezone,
+                   country_code, region, device_type, browser_family, os_family, language, timezone,
                    screen_width, screen_height, viewport_width, viewport_height,
                    is_new_visitor, consent_stat, consent_func, consent_adv, consent_granular
             FROM analytics_events
@@ -127,6 +128,8 @@ async function sessionDetail(db, siteId, domain, sessionId) {
         visitor: last ? {
             isNew: first.is_new_visitor,
             country: last.country_code,
+            region: last.region || null,
+            regionName: regionName(last.country_code, last.region),
             device: last.device_type,
             browser: last.browser_family,
             os: last.os_family,
@@ -238,7 +241,7 @@ async function handler(req, res) {
         }
     }
 
-    const [totalsRes, minutesRes, pagesRes, hostsRes, recentRes, conversionsRes, countriesRes, activeVisitorsRes] = await Promise.all([
+    const [totalsRes, minutesRes, pagesRes, hostsRes, recentRes, conversionsRes, countriesRes, activeVisitorsRes, regionsRes] = await Promise.all([
 
         // Totals across both pageviews and custom events
         db.query(`
@@ -380,14 +383,14 @@ async function handler(req, res) {
         db.query(`
             SELECT latest.*, s.* FROM (
                 SELECT DISTINCT ON (session_id)
-                    session_id, pathname, page_host, country_code, device_type, received_at
+                    session_id, pathname, page_host, country_code, region, device_type, received_at
                 FROM (
-                    SELECT session_id, pathname, page_host, country_code, device_type, received_at
+                    SELECT session_id, pathname, page_host, country_code, region, device_type, received_at
                     FROM analytics_events
                     WHERE site_id = $1 AND received_at >= NOW() - INTERVAL '30 minutes'
                       AND is_embedded = false AND session_id IS NOT NULL ${botClause}
                     UNION ALL
-                    SELECT session_id, pathname, page_host, country_code, device_type, received_at
+                    SELECT session_id, pathname, page_host, country_code, region, device_type, received_at
                     FROM analytics_custom_events
                     WHERE site_id = $1 AND received_at >= NOW() - INTERVAL '30 minutes'
                       AND session_id IS NOT NULL
@@ -415,6 +418,27 @@ async function handler(req, res) {
             ) s ON true
             ORDER BY latest.received_at DESC
             LIMIT 50`,
+            [siteId]
+        ).catch(() => ({ rows: [] })),
+
+        // Same as the countries query, one level down: active users and
+        // events per region (region is stored on every visit, like country).
+        db.query(`
+            SELECT
+                country_code, region,
+                COUNT(DISTINCT session_id) FILTER (WHERE session_id IS NOT NULL) AS active_users,
+                COUNT(*) AS events
+            FROM (
+                SELECT country_code, region, session_id FROM analytics_events
+                WHERE site_id = $1 AND received_at >= NOW() - INTERVAL '30 minutes' AND is_embedded = false ${botClause}
+                UNION ALL
+                SELECT country_code, region, session_id FROM analytics_custom_events
+                WHERE site_id = $1 AND received_at >= NOW() - INTERVAL '30 minutes'
+            ) combined
+            WHERE country_code IS NOT NULL AND region IS NOT NULL
+            GROUP BY country_code, region
+            ORDER BY events DESC, active_users DESC
+            LIMIT 30`,
             [siteId]
         ).catch(() => ({ rows: [] })),
 
@@ -510,11 +534,20 @@ async function handler(req, res) {
             activeUsers: parseInt(r.active_users || 0),
             events:      parseInt(r.events || 0),
         })),
+        regions: regionsRes.rows.map(r => ({
+            country:     r.country_code,
+            region:      r.region,
+            name:        regionName(r.country_code, r.region),
+            activeUsers: parseInt(r.active_users || 0),
+            events:      parseInt(r.events || 0),
+        })),
         activeVisitors: activeVisitorsRes.rows.map(r => ({
             sessionId: r.session_id,
             path:      r.pathname,
             host:      r.page_host,
             country:   r.country_code,
+            region:    r.region || null,
+            regionName: regionName(r.country_code, r.region),
             device:    r.device_type,
             at:        r.received_at,
             fullConsent: r.pages > 0,
