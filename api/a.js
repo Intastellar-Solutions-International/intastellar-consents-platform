@@ -3,7 +3,7 @@ import { lookupNetwork, clientIp } from "./_geoip.js";
 import { verifyBotDNS } from "./_rdns.js";
 import { recordDebugHit, DEBUG_TOKEN_RE } from "./_debug-hits.js";
 import { createEmbedCache } from "./_minify-embed.js";
-import { classifyTier } from "./_conversions.js";
+import { classifyTier, FORM_GOALS_DDL } from "./_conversions.js";
 import { sanitizeDims } from "./_dims.js";
 import { cleanBannerRef } from "./_banner-experiment.js";
 import { cleanCity, coarsePoint } from "./_locations.js";
@@ -425,6 +425,9 @@ async function ensureTables(db) {
         -- The page view a consented event happened on (same client id as
         -- analytics_events.pageview_id) — links a conversion to its exact page.
         ALTER TABLE analytics_custom_events ADD COLUMN IF NOT EXISTS pageview_id VARCHAR(40);
+        -- Form → lead type / "not a lead" (api/analytics-form-goals.js);
+        -- the conversion rule (tierCaseSql) reads it, so it must exist.
+        ${FORM_GOALS_DDL}
         -- Where the city is, rounded to 0.1° (~10 km) — enough to place a
         -- city dot on the Locations map. Consented page views only, like city.
         ALTER TABLE analytics_events ADD COLUMN IF NOT EXISTS lat REAL;

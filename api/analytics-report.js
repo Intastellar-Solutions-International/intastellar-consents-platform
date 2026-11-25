@@ -8,7 +8,7 @@
 import { INDUSTRY_BENCHMARKS } from "./_industry-benchmarks.js";
 import { getPool } from "./_db.js";
 import { selfReferralClause, noiseReferralClause, getApprovedDomains, isValidHostname } from "./_self-referral.js";
-import { isHeadlineConversionSql, classifyTier } from "./_conversions.js";
+import { isHeadlineConversionSql, classifyTier, formLeadTypeSql, excludedFormSql } from "./_conversions.js";
 import { validateJwt, withMembership } from "./_member-auth.js";
 import { modelSiteTraffic, referrerGroupSql } from "./_modelled-traffic.js";
 import { importedHistory } from "./_ga4-import.js";
@@ -432,16 +432,21 @@ async function _handler(req, res) {
             throw err;
         }),
 
+        // Form submits are split by their form's goal (analytics_form_goals):
+        // one row per lead type ("Demo", "Trial"), one for forms marked "not
+        // a lead", and the rest as plain form submissions.
         db.query(`
             SELECT
-                name,
+                ace.name,
+                ${formLeadTypeSql("ace")}                                         AS lead_type,
+                (ace.name = 'form_submit' AND ${excludedFormSql("ace")})         AS excluded_form,
                 COUNT(*)                                                          AS count,
-                COUNT(*) FILTER (WHERE consent_level = 'full')                   AS linked_count,
-                COALESCE(SUM(value_cents), 0)                                     AS value_cents,
-                (ARRAY_AGG(currency) FILTER (WHERE currency IS NOT NULL))[1]      AS currency
-            FROM analytics_custom_events
-            WHERE site_id = $1 AND received_at >= $2 AND received_at < $3
-            GROUP BY name ORDER BY count DESC LIMIT 30`,
+                COUNT(*) FILTER (WHERE ace.consent_level = 'full')               AS linked_count,
+                COALESCE(SUM(ace.value_cents), 0)                                 AS value_cents,
+                (ARRAY_AGG(ace.currency) FILTER (WHERE ace.currency IS NOT NULL))[1] AS currency
+            FROM analytics_custom_events ace
+            WHERE ace.site_id = $1 AND ace.received_at >= $2 AND ace.received_at < $3
+            GROUP BY 1, 2, 3 ORDER BY count DESC LIMIT 40`,
             [siteId, fromDate, toDateExclusive]
         ).catch((err) => {
             if (err?.message?.includes("does not exist")) return { rows: [] };
@@ -1010,9 +1015,12 @@ async function _handler(req, res) {
                 const kind = def?.kind || "custom";
                 return {
                     name:        r.name,
-                    label:       def?.label || r.name,
+                    // A form's lead type ("Demo") names the row; same event name otherwise
+                    label:       r.lead_type || def?.label || r.name,
+                    leadType:    r.lead_type || null,
+                    excludedForm: !!r.excluded_form,
                     kind,
-                    tier:        classifyTier(r.name, kind),
+                    tier:        classifyTier(r.name, kind, { excludedForm: !!r.excluded_form }),
                     count:       Number(r.count || 0),
                     linkedCount: Number(r.linked_count || 0),
                     value:       Number(r.value_cents || 0) / 100,
