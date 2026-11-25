@@ -11,6 +11,8 @@ import "./Analytics.css";
 import { appLocale } from "../../Functions/format.js";
 import AnalyticsSiteGate from "./components/AnalyticsSiteGate.js";
 import ErrorState from "./components/ErrorState.js";
+import { TopFindings, periodLabel } from "./OverviewInsights.js";
+import { t } from "../../i18n/index.js";
 
 function useFormsReport(domain, fromIso, toIso) {
     const [data,    setData]    = useState(null);
@@ -640,47 +642,63 @@ function AcqPagesTable({ pages }) {
     );
 }
 
-// Pure, testable — same "synthesized takeaway" pattern as index.js's
-// buildOverviewHeadline() (docs/design-audit-plan.md Phase 4 item 4):
-// aggregate totals in the headline, the single most actionable finding
-// (the form most worth fixing right now) in the subline, rather than
-// leaving the reader to cross-reference the tables below to find it.
+// Pure, testable — same TopFindings block as the Overview: the form most
+// worth fixing right now leads, with where people drop off as evidence and
+// the totals listed under it, rather than leaving the reader to
+// cross-reference the tables below to find it.
 function buildFormsHeadline({ data, trendSubmissions }) {
     const subs = data.totals.submissions ?? 0;
     const forms = data.forms || [];
     const numForms = forms.length;
     if (subs === 0 && numForms === 0) return null;
 
-    let headline = `${subs.toLocaleString(appLocale())} submission${subs === 1 ? "" : "s"} across `
-        + `${numForms} form${numForms === 1 ? "" : "s"} this period`;
-    if (data.totals.completionRate != null) {
-        headline += `, ${formatPercent(data.totals.completionRate, 1)} completion overall`;
-    }
+    const n = (v) => v.toLocaleString(appLocale());
+    const totals = [];
+    totals.push(numForms === 1
+        ? t("{count} submissions on 1 form", { count: n(subs) })
+        : t("{count} submissions across {forms} forms", { count: n(subs), forms: n(numForms) }));
     if (trendSubmissions != null && Number.isFinite(trendSubmissions)) {
-        headline += `, ${trendSubmissions >= 0 ? "up" : "down"} ${formatPercent(Math.abs(trendSubmissions))} from the period before`;
+        const change = formatPercent(Math.abs(trendSubmissions));
+        totals.push(trendSubmissions >= 0
+            ? t("Submissions up {change} on the previous period", { change })
+            : t("Submissions down {change} on the previous period", { change }));
     }
-    headline += ".";
+    if (data.totals.completionRate != null) {
+        totals.push(t("{rate} of people who start a form complete it", { rate: formatPercent(data.totals.completionRate, 1) }));
+    }
 
     // Only call out a form by name once there's enough volume for the rate
-    // to mean anything — a 1-starter form at 0% isn't a real finding.
+    // to mean anything — a 1-starter form at 0% isn't a real finding — and
+    // only below 60% completion, where the completion card stops being green.
     const MIN_STARTERS = 5;
     const candidates = forms.filter(f => f.completionRate != null && f.starters >= MIN_STARTERS);
     const worst = candidates.length
         ? candidates.reduce((a, b) => (b.completionRate < a.completionRate ? b : a))
         : null;
 
-    let subline = null;
-    if (worst) {
+    if (worst && worst.completionRate < 60) {
         const abandon = (data.abandonment || []).find(a => a.formId === worst.formId);
-        subline = `${worst.label || cleanFormId(worst.formId)} has the lowest completion rate at ${formatPercent(worst.completionRate, 1)}`;
-        subline += abandon?.topDropoutField
-            ? ` — most drop-off happens at the "${abandon.topDropoutField}" field.`
-            : ".";
-    } else if (numForms > 0) {
-        subline = "No form is showing a concerning completion rate right now.";
+        const vars = { form: worst.label || cleanFormId(worst.formId), rate: formatPercent(worst.completionRate, 1) };
+        return {
+            lead: {
+                text: candidates.length > 1
+                    ? t("{form} loses the most people: only {rate} complete it", vars)
+                    : t("{form}: only {rate} of people who start it complete it", vars),
+                tone: worst.completionRate < 40 ? "bad" : "info",
+            },
+            sub: abandon?.topDropoutField
+                ? t("Most people give up at the \"{field}\" field.", { field: abandon.topDropoutField })
+                : null,
+            bullets: totals.map(text => ({ text, tone: "info" })),
+        };
     }
 
-    return { eyebrow: "Here's what to care about today", headline, subline };
+    const [first, ...rest] = totals;
+    return {
+        lead: { text: first },
+        sub: candidates.length ? t("No form is showing a concerning completion rate right now.") : null,
+        bullets: rest.map(text => ({ text, tone: "info" })),
+    };
 }
 
 export default function AnalyticsForms() {
@@ -753,19 +771,10 @@ export default function AnalyticsForms() {
 
                     {domain && !loading && data && (
                         <>
-                            {/* ── Headline sentence ───────────────────────────────
-                                docs/design-audit-plan.md Phase 5, same synthesized-
-                                takeaway pattern as Overview's (Phase 4 item 4). */}
+                            {/* ── What stands out this period ─────────────────────── */}
                             {(() => {
                                 const h = buildFormsHeadline({ data, trendSubmissions });
-                                if (!h) return null;
-                                return (
-                                    <div className="sa-overview-headline">
-                                        <p className="sa-overview-headline__eyebrow">{h.eyebrow}</p>
-                                        <p className="sa-overview-headline__text">{h.headline}</p>
-                                        {h.subline && <p className="sa-overview-headline__sub">{h.subline}</p>}
-                                    </div>
-                                );
+                                return h && <TopFindings period={periodLabel(fromIso, toIso)} {...h} />;
                             })()}
 
                             <div className="sa-kpi-strip sa-kpi-strip--4">

@@ -8,8 +8,12 @@ import {
     IconAlertTriangle, IconCheckCircle, IconInfoCircle, IconDocument, IconMegaphone, IconGlobe,
 } from "./Icons.js";
 import { appLocale } from "../../Functions/format.js";
+import { t } from "../../i18n/index.js";
 
 const MAX_INSIGHTS = 6;
+// The top of the page leads with the first insight and lists the next ones;
+// the Insights row further down only shows what's left.
+export const TOP_FINDINGS = 3;
 
 const fmt = n => Number(n || 0).toLocaleString(appLocale());
 const pct = v => formatPercent(Math.abs(v), 0);
@@ -30,14 +34,17 @@ export function buildInsights({ data, prevData, conversions, prevConversions, pa
         const prev = useUsers ? prevTotals.engagedUsers : prevTotals.total;
         const change = pctChange(cur, prev);
         if (change != null && Math.abs(change) >= 15 && (useUsers || prev >= 50)) {
-            const what = useUsers ? "Active users" : "Events";
+            const up = change >= 0;
+            const vars = { change: pct(change) };
             out.push({
                 id: "traffic",
-                tone: change >= 0 ? "good" : "bad",
+                tone: up ? "good" : "bad",
                 score: 60 + Math.min(Math.abs(change), 100) / 2,
-                title: `${what} ${change >= 0 ? "up" : "down"} ${pct(change)}`,
-                detail: `${fmt(cur)} this period vs ${fmt(prev)} in the previous one.`,
-                to: paths.acquisition, cta: "See where traffic comes from",
+                title: useUsers
+                    ? (up ? t("Active users up {change}", vars) : t("Active users down {change}", vars))
+                    : (up ? t("Events up {change}", vars) : t("Events down {change}", vars)),
+                detail: t("{current} this period vs {previous} in the previous one.", { current: fmt(cur), previous: fmt(prev) }),
+                to: paths.acquisition, cta: t("See where traffic comes from"),
             });
         }
     }
@@ -65,12 +72,12 @@ export function buildInsights({ data, prevData, conversions, prevConversions, pa
                 tone: "good",
                 score: 45 + Math.min(change ?? 100, 100) / 4,
                 title: riser.prev === 0
-                    ? `New traffic source: ${riser.referrer}`
-                    : `${riser.referrer} sent ${pct(change)} more traffic`,
+                    ? t("New traffic source: {source}", { source: riser.referrer })
+                    : t("{source} sent {change} more traffic", { source: riser.referrer, change: pct(change) }),
                 detail: riser.prev === 0
-                    ? `${fmt(riser.events)} events, none in the previous period.`
-                    : `${fmt(riser.events)} events vs ${fmt(riser.prev)} before.`,
-                to: paths.acquisition, cta: "Open Acquisition",
+                    ? t("{events} events, none in the previous period.", { events: fmt(riser.events) })
+                    : t("{events} events vs {previous} before.", { events: fmt(riser.events), previous: fmt(riser.prev) }),
+                to: paths.acquisition, cta: t("Open Acquisition"),
             });
         }
         if (faller) {
@@ -78,9 +85,9 @@ export function buildInsights({ data, prevData, conversions, prevConversions, pa
                 id: "source-down",
                 tone: "bad",
                 score: 50 + Math.min(Math.abs(faller.change), 100) / 4,
-                title: `Traffic from ${faller.referrer} fell ${pct(faller.change)}`,
-                detail: `${fmt(faller.cur)} events vs ${fmt(faller.prev)} in the previous period.`,
-                to: paths.acquisition, cta: "Open Acquisition",
+                title: t("Traffic from {source} fell {change}", { source: faller.referrer, change: pct(faller.change) }),
+                detail: t("{events} events vs {previous} in the previous period.", { events: fmt(faller.cur), previous: fmt(faller.prev) }),
+                to: paths.acquisition, cta: t("Open Acquisition"),
             });
         }
     }
@@ -94,9 +101,9 @@ export function buildInsights({ data, prevData, conversions, prevConversions, pa
                 id: "country-new",
                 tone: "info",
                 score: 35,
-                title: `New audience: visitors from ${fresh.code}`,
-                detail: `${fmt(fresh.events)} events this period — now one of your top 5 countries.`,
-                to: paths.audience, cta: "Open Audience",
+                title: t("New audience: visitors from {country}", { country: fresh.code }),
+                detail: t("{events} events this period — now one of your top 5 countries.", { events: fmt(fresh.events) }),
+                to: paths.audience, cta: t("Open Audience"),
             });
         }
     }
@@ -107,14 +114,21 @@ export function buildInsights({ data, prevData, conversions, prevConversions, pa
         const diff = data.totals.consentRate - bench.consentRatePct;
         if (Math.abs(diff) >= 10) {
             const below = diff < 0;
+            const vars = {
+                pts: Math.round(Math.abs(diff)), industry: t(bench.label),
+                rate: formatPercent(data.totals.consentRate), benchmark: formatPercent(bench.consentRatePct),
+            };
             out.push({
                 id: "consent-benchmark",
                 tone: below ? "bad" : "good",
                 score: (below ? 55 : 30) + Math.min(Math.abs(diff), 60) / 3,
-                title: `Statistics consent rate ${Math.round(Math.abs(diff))} pts ${below ? "below" : "above"} the ${bench.label} average`,
-                detail: `${formatPercent(data.totals.consentRate)} vs ${formatPercent(bench.consentRatePct)}.`
-                    + (below ? " Fewer consented visitors means less session-level data." : ""),
-                to: paths.consent, cta: "Open Consent",
+                title: below
+                    ? t("Statistics consent {pts} pts below the {industry} average", vars)
+                    : t("Statistics consent {pts} pts above the {industry} average", vars),
+                detail: below
+                    ? t("{rate} of visitors accept statistics cookies, against {benchmark} on average. Every visitor who declines is missing from your sessions and conversions.", vars)
+                    : t("{rate} of visitors accept statistics cookies, against {benchmark} on average.", vars),
+                to: paths.consent, cta: below ? t("See how visitors answer your banner") : t("Open Consent"),
             });
         }
     }
@@ -127,9 +141,11 @@ export function buildInsights({ data, prevData, conversions, prevConversions, pa
                 id: "conversions",
                 tone: change >= 0 ? "good" : "bad",
                 score: 58 + Math.min(Math.abs(change), 100) / 3,
-                title: `Conversions ${change >= 0 ? "up" : "down"} ${pct(change)}`,
-                detail: `${fmt(conversions)} vs ${fmt(prevConversions)} in the previous period.`,
-                to: paths.conversions, cta: "Open Conversions",
+                title: change >= 0
+                    ? t("Conversions up {change}", { change: pct(change) })
+                    : t("Conversions down {change}", { change: pct(change) }),
+                detail: t("{current} vs {previous} in the previous period.", { current: fmt(conversions), previous: fmt(prevConversions) }),
+                to: paths.conversions, cta: t("Open Conversions"),
             });
         }
     }
@@ -143,9 +159,9 @@ export function buildInsights({ data, prevData, conversions, prevConversions, pa
             id: "form",
             tone: "bad",
             score: 48 + (40 - weakForm.completionRate) / 2,
-            title: `Only ${formatPercent(weakForm.completionRate)} complete form "${weakForm.formId}"`,
-            detail: `${fmt(weakForm.started)} started, ${fmt(weakForm.submitted)} submitted.`,
-            to: paths.forms, cta: "Open Forms",
+            title: t("Only {rate} complete form \"{form}\"", { rate: formatPercent(weakForm.completionRate), form: weakForm.formId }),
+            detail: t("{started} started, {submitted} submitted.", { started: fmt(weakForm.started), submitted: fmt(weakForm.submitted) }),
+            to: paths.forms, cta: t("Open Forms"),
         });
     }
 
@@ -157,9 +173,11 @@ export function buildInsights({ data, prevData, conversions, prevConversions, pa
             id: "rage",
             tone: "bad",
             score: 42 + Math.min(frustration, 20) * 2,
-            title: `${frustration}% of sessions show rage clicks`,
-            detail: topPage ? `Most on ${topPage.page} (${fmt(topPage.rageClicks)} rage clicks).` : "Visitors click repeatedly on something that doesn't respond.",
-            to: paths.heatmap, cta: "Open Heatmap",
+            title: t("{rate} of sessions show rage clicks", { rate: `${frustration}%` }),
+            detail: topPage
+                ? t("Most on {page} ({count} rage clicks).", { page: topPage.page, count: fmt(topPage.rageClicks) })
+                : t("Visitors click repeatedly on something that doesn't respond."),
+            to: paths.heatmap, cta: t("Open Heatmap"),
         });
     }
 
@@ -179,9 +197,9 @@ export function buildInsights({ data, prevData, conversions, prevConversions, pa
                 id: "page-up",
                 tone: "info",
                 score: 32 + Math.min(best.change, 200) / 10,
-                title: `${best.pathname} views up ${pct(best.change)}`,
-                detail: `${fmt(best.views)} views vs ${fmt(best.prev)} before.`,
-                to: paths.acquisition, cta: "Open Acquisition",
+                title: t("{page} views up {change}", { page: best.pathname, change: pct(best.change) }),
+                detail: t("{views} views vs {previous} before.", { views: fmt(best.views), previous: fmt(best.prev) }),
+                to: paths.acquisition, cta: t("Open Acquisition"),
             });
         }
     }
@@ -190,40 +208,73 @@ export function buildInsights({ data, prevData, conversions, prevConversions, pa
 }
 
 const TONE_ICON = { good: IconCheckCircle, bad: IconAlertTriangle, info: IconInfoCircle };
-const TONE_LABEL = { good: "Positive", bad: "Needs attention", info: "Notable" };
+const toneLabel = (tone) => (tone === "good" ? t("Positive") : tone === "bad" ? t("Needs attention") : t("Notable"));
 
-export function InsightsSection({ insights, comparing, compareLabel }) {
+// "Last 30 days", from the dates actually requested — the range picker's
+// day count isn't updated when a custom from/to is picked.
+export function periodLabel(fromIso, toIso) {
+    const days = Math.round((Date.parse(toIso) - Date.parse(fromIso)) / 86400000) + 1;
+    if (!Number.isFinite(days) || days < 1) return t("This period");
+    return days === 1 ? t("One day") : t("Last {days} days", { days });
+}
+
+// The block at the top of a report page: one finding in large type, a line
+// of evidence under it, up to two more findings, and a link to act on the
+// first. `lead`/`bullets` carry a tone (good | bad | info) for the marker.
+export function TopFindings({ period, lead, sub, bullets = [], cta }) {
+    const LeadIcon = lead.tone ? TONE_ICON[lead.tone] : null;
+    return (
+        <section className="sa-top-findings" aria-labelledby="sa-top-findings-title">
+            <p className="sa-top-findings__eyebrow" id="sa-top-findings-title">
+                {t("{period} · what stands out", { period })}
+            </p>
+            <p className={`sa-top-findings__lead${lead.tone ? ` sa-top-findings__lead--${lead.tone}` : ""}`}>
+                {LeadIcon && <LeadIcon className="sa-top-findings__icon" role="img" aria-label={toneLabel(lead.tone)} />}
+                <span>{lead.text}</span>
+            </p>
+            {sub && <p className="sa-top-findings__sub">{sub}</p>}
+            {(bullets.length > 0 || cta) && (
+                <div className="sa-top-findings__foot">
+                    {bullets.length > 0 && (
+                        <ul className="sa-top-findings__list">
+                            {bullets.map(b => (
+                                <li key={b.text} className={`sa-top-findings__item sa-top-findings__item--${b.tone || "info"}`}>
+                                    {b.to ? <Link to={b.to}>{b.text}</Link> : b.text}
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+                    {cta && <Link className="sa-top-findings__cta" to={cta.to}>{cta.label} →</Link>}
+                </div>
+            )}
+        </section>
+    );
+}
+
+export function InsightsSection({ insights, compareLabel }) {
     return (
         <section className="sa-insights" aria-labelledby="sa-insights-title">
             <div className="sa-section-hd">
-                <h3 id="sa-insights-title" className="sa-section-hd__title">Insights</h3>
+                <h3 id="sa-insights-title" className="sa-section-hd__title">{t("More insights")}</h3>
                 <span className="sa-section-hd__sub">{compareLabel}</span>
             </div>
-            {comparing ? (
-                <p className="sa-insights__empty">Comparing with the previous period&hellip;</p>
-            ) : insights.length === 0 ? (
-                <p className="sa-insights__empty">
-                    Nothing stands out this period — traffic, sources and conversions are in line with the previous one.
-                </p>
-            ) : (
-                // One scrollable row; focusable so it can be scrolled with the keyboard
-                <div className="sa-insights__grid" role="region" aria-label="Insights" tabIndex={0}>
-                    {insights.map(i => {
-                        const Icon = TONE_ICON[i.tone];
-                        return (
-                            <Link key={i.id} to={i.to} className={`sa-insight sa-insight--${i.tone}`}>
-                                <span className="sa-insight__tone">
-                                    <Icon className="sa-insight__icon" aria-hidden="true" />
-                                    {TONE_LABEL[i.tone]}
-                                </span>
-                                <span className="sa-insight__title" title={i.title}>{i.title}</span>
-                                <span className="sa-insight__detail">{i.detail}</span>
-                                <span className="sa-insight__cta">{i.cta} →</span>
-                            </Link>
-                        );
-                    })}
-                </div>
-            )}
+            {/* One scrollable row; focusable so it can be scrolled with the keyboard */}
+            <div className="sa-insights__grid" role="region" aria-label={t("More insights")} tabIndex={0}>
+                {insights.map(i => {
+                    const Icon = TONE_ICON[i.tone];
+                    return (
+                        <Link key={i.id} to={i.to} className={`sa-insight sa-insight--${i.tone}`}>
+                            <span className="sa-insight__tone">
+                                <Icon className="sa-insight__icon" aria-hidden="true" />
+                                {toneLabel(i.tone)}
+                            </span>
+                            <span className="sa-insight__title" title={i.title}>{i.title}</span>
+                            <span className="sa-insight__detail">{i.detail}</span>
+                            <span className="sa-insight__cta">{i.cta} →</span>
+                        </Link>
+                    );
+                })}
+            </div>
         </section>
     );
 }

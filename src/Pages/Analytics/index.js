@@ -14,7 +14,7 @@ import { AnnotationStrip, ExportMenu, HERO_CHART, useAnnotations } from "./DataT
 import { HistoryNote, HistoryTables } from "./HistoryImport.js";
 import { ChangeExplainer } from "./ChangeExplainer.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
-import { buildInsights, InsightsSection, SnapshotRow } from "./OverviewInsights.js";
+import { buildInsights, InsightsSection, SnapshotRow, TopFindings, TOP_FINDINGS, periodLabel } from "./OverviewInsights.js";
 import {
     authHeaders, useAnalyticsPage, useAnalyticsReport, useSiteConfig,
     toIsoDate, pctChange, IndustryBenchmarkNote, formatPercent, SegmentFilter, useDimensions,
@@ -407,36 +407,40 @@ function CustomizePanel({ currentCards, defaultCards, onSave, onClose }) {
     );
 }
 
-// docs/design-audit-plan.md Phase 4: the Executive Overview's headline
-// sentence — pure presentation, synthesizing numbers this page already
-// fetches (data.totals, the same trendEvents the hero's "Total events" tab
-// already shows, data.industryBenchmark — same source IndustryBenchmarkNote
-// uses). No new calculation, no fabricated data: the trend clause is
-// dropped entirely (not shown as "0%" or omitted silently as if nothing
-// changed) when there's no real previous-period baseline to compare
-// against, same as the hero's own trend chips do via pctChange().
-function buildOverviewHeadline({ data, trendEvents, getLastDays }) {
-    const users  = data.totals.engagedUsers;
-    const events = data.totals.total;
-    const consentPct = data.totals.consentRate;
-
-    const vars = { users: users.toLocaleString(appLocale()), events: events.toLocaleString(appLocale()), change: formatPercent(Math.abs(trendEvents ?? 0)) };
-    const hasTrend = trendEvents != null && Number.isFinite(trendEvents);
-    const headline = !hasTrend
-        ? t("{users} active users generated {events} events this period.", vars)
-        : trendEvents >= 0
-            ? t("{users} active users generated {events} events this period, up {change} from the period before.", vars)
-            : t("{users} active users generated {events} events this period, down {change} from the period before.", vars);
-
-    let subline = t("{rate} statistics consent rate over the last {days} days", { rate: formatPercent(consentPct), days: getLastDays });
-    if (data.industryBenchmark) {
-        const diff = consentPct - data.industryBenchmark.consentRatePct;
-        const diffStr = Math.abs(diff).toLocaleString(appLocale(), { minimumFractionDigits: 1, maximumFractionDigits: 1 });
-        const bench = { pts: diffStr, industry: t(data.industryBenchmark.label) };
-        subline += " — " + (diff >= 0 ? t("{pts} pts above the {industry} average", bench) : t("{pts} pts below the {industry} average", bench));
+// Top of the Overview: what stands out in the selected period. Leads with
+// the highest-ranked insight (buildInsights — same rules and thresholds as
+// the Insights row, which then only shows the rest) and lists the next two.
+// When nothing crosses an insight threshold it falls back to a plain recap
+// in sessions (not events, which mostly track page views), with the trend
+// clause dropped when there's no previous-period baseline.
+function buildOverviewHeadline({ data, prevData, insights, trendSessions }) {
+    if (insights.length) {
+        const [first, ...rest] = insights.slice(0, TOP_FINDINGS);
+        return {
+            lead: { text: first.title, tone: first.tone },
+            sub: first.detail,
+            bullets: rest.map(i => ({ text: i.title, tone: i.tone, to: i.to })),
+            cta: { to: first.to, label: first.cta },
+        };
     }
 
-    return { eyebrow: t("Here's what to care about today"), headline, subline };
+    const vars = {
+        users: data.totals.engagedUsers.toLocaleString(appLocale()),
+        sessions: data.totals.uniqueSessions.toLocaleString(appLocale()),
+        change: formatPercent(Math.abs(trendSessions ?? 0)),
+    };
+    const hasTrend = trendSessions != null && Number.isFinite(trendSessions);
+    const text = !hasTrend
+        ? t("{users} active users across {sessions} sessions.", vars)
+        : trendSessions >= 0
+            ? t("{users} active users across {sessions} sessions, up {change} on the previous period.", vars)
+            : t("{users} active users across {sessions} sessions, down {change} on the previous period.", vars);
+    return {
+        lead: { text },
+        sub: prevData
+            ? t("Nothing unusual compared with the previous period: traffic, sources, consent and conversions are all within normal range.")
+            : t("Comparing with the previous period…"),
+    };
 }
 
 // Per-business-type default KPI card ordering — the hero metric tabs take
@@ -762,7 +766,7 @@ export default function SiteAnalytics() {
     document.title = "Overview, Analytics | Intastellar Consents";
 
     const {
-        domain, hasDomain, getLastDays, setLastDays, fromDate, setFromDate, toDate, setToDate,
+        domain, hasDomain, getLastDays, setLastDays, fromDate, setFromDate, toDate, setToDate, fromIso, toIso,
         tick, setTick, data, loading, detailLoading, error, showSetup, showData, segment, setSegment,
     } = useAnalyticsPage();
 
@@ -978,18 +982,11 @@ export default function SiteAnalytics() {
                     {showData && (
                         <div className="sa-overview">
 
-                            {/* ── Headline sentence ───────────────────────────────
-                                docs/design-audit-plan.md Phase 4. */}
-                            {(() => {
-                                const h = buildOverviewHeadline({ data, trendEvents, getLastDays });
-                                return (
-                                    <div className="sa-overview-headline">
-                                        <p className="sa-overview-headline__eyebrow">{h.eyebrow}</p>
-                                        <p className="sa-overview-headline__text">{h.headline}</p>
-                                        <p className="sa-overview-headline__sub">{h.subline}</p>
-                                    </div>
-                                );
-                            })()}
+                            {/* ── What stands out this period ─────────────────────── */}
+                            <TopFindings
+                                period={periodLabel(fromIso, toIso)}
+                                {...buildOverviewHeadline({ data, prevData, insights, trendSessions })}
+                            />
 
                             {/* ── Dashboard mode badge ───────────────────────────── */}
                             {siteConfig?.businessType && (
@@ -1076,13 +1073,14 @@ export default function SiteAnalytics() {
                             {/* ── Snapshot: top 5s, each linking to its full report ── */}
                             <SnapshotRow data={data} paths={reportPaths} />
 
-                            {/* ── Insights: what changed vs the previous period —
+                            {/* ── Insights the top block didn't already show —
                                 last on the page, as its own section ── */}
-                            <InsightsSection
-                                insights={insights}
-                                comparing={!prevData}
-                                compareLabel={compare.compareActive ? "vs comparison period" : "vs previous period"}
-                            />
+                            {insights.length > TOP_FINDINGS && (
+                                <InsightsSection
+                                    insights={insights.slice(TOP_FINDINGS)}
+                                    compareLabel={compare.compareActive ? t("vs comparison period") : t("vs previous period")}
+                                />
+                            )}
 
                             {showCustomize && (
                                 <CustomizePanel
