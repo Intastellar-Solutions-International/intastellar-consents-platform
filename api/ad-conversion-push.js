@@ -103,6 +103,15 @@ async function pushGoogleAds(connection, token, push) {
         };
     }
 
+    // Enhanced conversions: hashed email/phone collected alongside the click ID
+    // (see api/_pii-hash.js and the hashedEmail/hashedPhone extraction in api/a.js).
+    // Without this, Google Ads only ever sees adIdentifiers.gclid and reports
+    // "No attempted imports with user-provided data" regardless of what's
+    // configured on the Google Ads side — gclid-only is a different import path.
+    const userIdentifiers = [];
+    if (push.hashed_email) userIdentifiers.push({ emailAddress: push.hashed_email });
+    if (push.hashed_phone) userIdentifiers.push({ phoneNumber: push.hashed_phone });
+
     const event = {
         destinationReferences: ["ga-conv"],
         eventSource: "WEB", // required (proto field event_source) — every conversion
@@ -114,6 +123,7 @@ async function pushGoogleAds(connection, token, push) {
             conversionValue: Number(push.value_usd),
             currency: push.currency || "EUR",
         }),
+        ...(userIdentifiers.length && { userData: { userIdentifiers } }),
     };
 
     const resp = await fetch(
@@ -121,7 +131,13 @@ async function pushGoogleAds(connection, token, push) {
         {
             method: "POST",
             headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
-            body: JSON.stringify({ destinations: [destination], events: [event] }),
+            // encoding: "HEX" tells Google the hashed userIdentifiers above are hex
+            // (not base64) — only meaningful, so only sent, when userData is present.
+            body: JSON.stringify({
+                destinations: [destination],
+                events: [event],
+                ...(userIdentifiers.length && { encoding: "HEX" }),
+            }),
         }
     );
     const json = await resp.json().catch(() => ({}));

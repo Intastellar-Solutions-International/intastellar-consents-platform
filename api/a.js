@@ -7,6 +7,7 @@ import { classifyTier, FORM_GOALS_DDL } from "./_conversions.js";
 import { sanitizeDims } from "./_dims.js";
 import { cleanBannerRef } from "./_banner-experiment.js";
 import { cleanCity, coarsePoint } from "./_locations.js";
+import { hashEmailField, hashPhoneField } from "./_pii-hash.js";
 /**
  * GET  /api/a  → serves the Intastellar First-Party Analytics embed script
  * POST /api/a  → ingest endpoint receiving pageview events from embedded sites
@@ -372,6 +373,12 @@ async function ensureTables(db) {
         ALTER TABLE analytics_custom_events ADD COLUMN IF NOT EXISTS utm_medium     VARCHAR(255);
         ALTER TABLE analytics_conversion_pushes ADD COLUMN IF NOT EXISTS utm_campaign VARCHAR(512);
         ALTER TABLE analytics_conversion_pushes ADD COLUMN IF NOT EXISTS utm_content  VARCHAR(512);
+        -- Enhanced-conversions user data for Google Ads (api/_pii-hash.js) — always
+        -- a SHA-256 hex digest, never the plaintext email/phone. Hashed client-side
+        -- by the embed before it reaches this server; hashEmailField/hashPhoneField
+        -- hash it here too if a raw value ever arrives instead.
+        ALTER TABLE analytics_conversion_pushes ADD COLUMN IF NOT EXISTS hashed_email VARCHAR(64);
+        ALTER TABLE analytics_conversion_pushes ADD COLUMN IF NOT EXISTS hashed_phone VARCHAR(64);
         ALTER TABLE analytics_events ADD COLUMN IF NOT EXISTS page_interests TEXT[];
         ALTER TABLE analytics_events ADD COLUMN IF NOT EXISTS browser_topics JSONB;
         -- ASN / hosting-provider info, derived per-request from a local GeoLite2-ASN
@@ -2452,6 +2459,20 @@ export default async function handler(req, res) {
             );
         }
 
+        // Enhanced-conversions user data for Google Ads (see api/_pii-hash.js):
+        // pulled out of the same `data` object as everything else below, under
+        // the keys email/em (Facebook-style alias) and phone/ph. Always hashed
+        // before it's stored — hashEmailField/hashPhoneField pass a value through
+        // as-is when it's already a SHA-256 hex digest (the embed hashes
+        // client-side before this ever leaves the browser), and hash it here
+        // otherwise, so a raw email/phone is never persisted either way.
+        const PII_KEYS = new Set(["email", "em", "phone", "ph"]);
+        let hashedEmail = null, hashedPhone = null;
+        if (rawExtraData && typeof rawExtraData === "object" && !Array.isArray(rawExtraData)) {
+            hashedEmail = hashEmailField(rawExtraData.email ?? rawExtraData.em);
+            hashedPhone = hashPhoneField(rawExtraData.phone ?? rawExtraData.ph);
+        }
+
         // Same shallow-sanitize treatment as products above — re-applied here
         // (not trusted from the client-side track() sanitize alone) since the
         // ingest endpoint accepts raw POST bodies from anywhere, not just the
@@ -2460,6 +2481,7 @@ export default async function handler(req, res) {
         if (rawExtraData && typeof rawExtraData === "object" && !Array.isArray(rawExtraData)) {
             const clean = {};
             for (const rawKey of Object.keys(rawExtraData).slice(0, 20)) {
+                if (PII_KEYS.has(rawKey)) continue; // handled above — never stored raw, never duplicated here
                 const key = String(rawKey).slice(0, 40);
                 const val = rawExtraData[rawKey];
                 if (val == null) continue;
@@ -2564,10 +2586,10 @@ export default async function handler(req, res) {
                     await db.query(
                         `INSERT INTO analytics_conversion_pushes
                          (organisation_id, site_id, custom_event_id, platform, click_id, event_name,
-                          value_usd, currency, utm_campaign, utm_content)
-                         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)`,
+                          value_usd, currency, utm_campaign, utm_content, hashed_email, hashed_phone)
+                         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)`,
                         [orgId, siteId, evId, platform, clickId, String(eventName).slice(0, 64),
-                         valueUsd, cur, cleanUtmCampaign, cleanUtmContent]
+                         valueUsd, cur, cleanUtmCampaign, cleanUtmContent, hashedEmail, hashedPhone]
                     ).catch(() => {});
                 }
             }
